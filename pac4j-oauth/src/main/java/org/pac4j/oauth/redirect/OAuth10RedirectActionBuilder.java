@@ -52,7 +52,7 @@ public class OAuth10RedirectActionBuilder extends InitializableWebObject impleme
             }
             logger.debug("requestToken: {}", requestToken);
             // save requestToken in user session
-            context.setSessionAttribute(configuration.getRequestTokenSessionAttributeName(), requestToken);
+            context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(), requestToken);
             final String authorizationUrl = this.configuration.getService().getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return RedirectAction.redirect(authorizationUrl);

@@ -95,7 +95,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testRelayState() throws Exception {
         final SAML2Client client = getClient();
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        context.getSessionStore().set(context, SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         final RedirectAction action = client.getRedirectAction(context);
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }

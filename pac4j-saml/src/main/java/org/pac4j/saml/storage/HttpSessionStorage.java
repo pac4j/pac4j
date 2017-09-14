@@ -63,7 +63,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      */
     @Override
     public void storeMessage(final String messageID, final XMLObject message) {
-        log.debug("Storing message {} to session {}", messageID, context.getSessionIdentifier());
+        log.debug("Storing message {} to session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
         final Hashtable<String, XMLObject> messages = getMessages();
         messages.put(messageID, message);
         updateSession(messages);
@@ -88,11 +88,11 @@ public class HttpSessionStorage implements SAMLMessageStorage {
         final Hashtable<String, XMLObject> messages = getMessages();
         final XMLObject o = messages.get(messageID);
         if (o == null) {
-            log.debug("Message {} not found in session {}", messageID, context.getSessionIdentifier());
+            log.debug("Message {} not found in session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
             return null;
         }
 
-        log.debug("Message {} found in session {}, clearing", messageID, context.getSessionIdentifier());
+        log.debug("Message {} found in session {}, clearing", messageID, context.getSessionStore().getOrCreateSessionId(context));
         messages.clear();
         updateSession(messages);
         return o;
@@ -121,10 +121,10 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     @SuppressWarnings("unchecked")
     private Hashtable<String, XMLObject> initializeSession() {
         Hashtable<String, XMLObject> messages = (Hashtable<String, XMLObject>)
-                context.getSessionAttribute(SAML_STORAGE_KEY);
+                context.getSessionStore().get(context, SAML_STORAGE_KEY);
         if (messages == null) {
             synchronized (context) {
-                messages = (Hashtable<String, XMLObject>) context.getSessionAttribute(SAML_STORAGE_KEY);
+                messages = (Hashtable<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
                 if (messages == null) {
                     messages = new Hashtable<>();
                     updateSession(messages);
@@ -139,6 +139,6 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * in order to replicate the session across nodes or persist it correctly.
      */
     private void updateSession(final Hashtable<String, XMLObject> messages) {
-        context.setSessionAttribute(SAML_STORAGE_KEY, messages);
+        context.getSessionStore().set(context, SAML_STORAGE_KEY, messages);
     }
 }

@@ -83,7 +83,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
         // Init IDTokenVerifier
         if (jwsAlgorithm == null) {
             this.idTokenValidator = new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), _clientID);
-        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) || 
+        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
             JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
             this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
         } else {
@@ -131,7 +131,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
             // check idToken
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionAttribute(OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
+                nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
             } else {
                 nonce = null;
             }

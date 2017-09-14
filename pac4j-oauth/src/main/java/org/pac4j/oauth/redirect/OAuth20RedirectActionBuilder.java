@@ -46,7 +46,7 @@ public class OAuth20RedirectActionBuilder extends InitializableWebObject impleme
             if (this.configuration.isWithState()) {
                 final String state = getStateParameter();
                 logger.debug("save sessionState: {}", state);
-                context.setSessionAttribute(this.configuration.getStateSessionAttributeName(), state);
+                context.getSessionStore().set(context, this.configuration.getStateSessionAttributeName(), state);
 
                 service = this.configuration.buildService(context, state);
             } else {

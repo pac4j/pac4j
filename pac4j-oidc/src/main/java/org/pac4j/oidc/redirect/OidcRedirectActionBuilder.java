@@ -30,7 +30,7 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
     protected OidcConfiguration configuration;
 
     private Map<String, String> authParams;
-    
+
     public OidcRedirectActionBuilder(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -91,12 +91,12 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
         // Init state for CSRF mitigation
         State state = new State();
         params.put(OidcConfiguration.STATE, state.getValue());
-        context.setSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE, state);
+        context.getSessionStore().set(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE, state);
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             Nonce nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
-            context.setSessionAttribute(OidcConfiguration.NONCE_SESSION_ATTRIBUTE, nonce.getValue());
+            context.getSessionStore().set(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE, nonce.getValue());
         }
     }
 

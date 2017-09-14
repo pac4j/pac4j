@@ -49,7 +49,7 @@ public class YahooRedirectActionBuilder implements RedirectActionBuilder {
             final DiscoveryInformation discoveryInformation = this.client.getConsumerManager().associate(discoveries);
 
             // save discovery information in session
-            context.setSessionAttribute(this.client.getDiscoveryInformationSessionAttributeName(), discoveryInformation);
+            context.getSessionStore().set(context, this.client.getDiscoveryInformationSessionAttributeName(), discoveryInformation);
 
             // create authentication request to be sent to the OpenID provider
             final AuthRequest authRequest = this.client.getConsumerManager().authenticate(discoveryInformation,
