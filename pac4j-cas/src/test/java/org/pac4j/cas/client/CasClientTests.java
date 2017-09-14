@@ -18,7 +18,7 @@ import static org.pac4j.core.context.HttpConstants.*;
 
 /**
  * This class tests the {@link CasClient} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -79,7 +79,7 @@ public final class CasClientTests implements TestsConstants {
         configuration.setLoginUrl(CAS + LOGIN);
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CASBACK);
-        casClient.setCallbackUrlResolver((callbackUrl, context) -> HOST + callbackUrl);
+        casClient.setUrlResolver((callbackUrl, context) -> HOST + callbackUrl);
         casClient.init(null);
         assertEquals(HOST + CAS + LOGIN, configuration.computeFinalLoginUrl(null));
         assertEquals(HOST + CAS + "/", configuration.computeFinalPrefixUrl(null));

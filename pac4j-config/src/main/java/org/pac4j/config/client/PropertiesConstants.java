@@ -68,14 +68,6 @@ public interface PropertiesConstants {
     String OIDC_CLIENT_AUTHENTICATION_METHOD = "oidc.clientAuthenticationMethod";
     String OIDC_CUSTOM_PARAM_KEY = "oidc.customParamKey";
     String OIDC_CUSTOM_PARAM_VALUE = "oidc.customParamValue";
-    @Deprecated
-    String OIDC_CUSTOM_PARAM_KEY1 = "oidc.customParamKey1";
-    @Deprecated
-    String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
-    @Deprecated
-    String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
-    @Deprecated
-    String OIDC_CUSTOM_PARAM_VALUE2 = "oidc.customParamValue2";
 
     String FORMCLIENT_AUTHENTICATOR = "formClient.authenticator";
     String FORMCLIENT_LOGIN_URL = "formClient.loginUrl";
