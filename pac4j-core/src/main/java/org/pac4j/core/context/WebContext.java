@@ -61,35 +61,6 @@ public interface WebContext {
     String getRequestHeader(String name);
 
     /**
-     * Save an attribute in session.
-     *
-     * @param name name of the session attribute
-     * @param value value of the session attribute
-     */
-    default void setSessionAttribute(String name, Object value) {
-        getSessionStore().set(this, name, value);
-    }
-
-    /**
-     * Get an attribute from session.
-     *
-     * @param name name of the session attribute
-     * @return the session attribute
-     */
-    default Object getSessionAttribute(String name) {
-        return getSessionStore().get(this, name);
-    }
-
-    /**
-     * Gets the session id for this context.
-     *
-     * @return the session identifier
-     */
-    default String getSessionIdentifier() {
-        return getSessionStore().getOrCreateSessionId(this);
-    }
-
-    /**
      * Return the request method.
      *
      * @return the request method

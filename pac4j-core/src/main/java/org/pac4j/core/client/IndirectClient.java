@@ -89,7 +89,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             throw HttpAction.unauthorized("AJAX request -> 401", context, null, action.getLocation());
         }
         // authentication has already been tried -> unauthorized
-        final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
@@ -100,11 +100,11 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     private void cleanRequestedUrl(final WebContext context) {
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
+        context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
-        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+        context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
     }
 
     /**
@@ -125,7 +125,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         final C credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
         if (credentials == null) {
-            context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+            context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         } else {
             cleanAttemptedAuthentication(context);
         }

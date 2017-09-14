@@ -13,7 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
- * This implementation uses the J2E request, response and session.
+ * This implementation uses the J2E {@link HttpServletRequest} and {@link HttpServletResponse}.
  *
  * @author Jerome Leleu
  * @since 1.4.0

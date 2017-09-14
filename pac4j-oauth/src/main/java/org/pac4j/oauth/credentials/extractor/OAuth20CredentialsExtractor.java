@@ -29,9 +29,9 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
             if (CommonHelper.isNotBlank(stateParameter)) {
                 final String stateSessionAttributeName = this.configuration.getStateSessionAttributeName();
-                final String sessionState = (String) context.getSessionAttribute(stateSessionAttributeName);
+                final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName);
                 // clean from session after retrieving it
-                context.setSessionAttribute(stateSessionAttributeName, null);
+                context.getSessionStore().set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
                 if (!stateParameter.equals(sessionState)) {
                     final String message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";

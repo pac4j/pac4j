@@ -114,7 +114,7 @@ public final class MockWebContext implements WebContext {
      * @return this mock web context
      */
     public MockWebContext addSessionAttribute(final String name, final Object value) {
-        setSessionAttribute(name, value);
+        this.sessionStore.set(this, name, value);
         return this;
     }
 

@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v3.0.0**:
 
 - Handle AJAX requests in the OpenID Connect logout
+- All session interactions are done via the `SessionStore` (retrieved from the `WebContext`)
 
 **v2.2.0**:
 

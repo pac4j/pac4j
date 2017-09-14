@@ -128,10 +128,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final String requestedUrl = (String) context.getSessionAttribute(Pac4jConstants.REQUESTED_URL);
+        final String requestedUrl = (String) context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
         String redirectUrl = defaultUrl;
         if (isNotBlank(requestedUrl)) {
-            context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
+            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
             redirectUrl = requestedUrl;
         }
         logger.debug("redirectUrl: {}", redirectUrl);
