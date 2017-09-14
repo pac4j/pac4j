@@ -13,10 +13,10 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
     @Override
     public String get(final WebContext context) {
-        String token = (String) getTokenFromSessionAttribute(context);
+        String token = getTokenFromSession(context);
         if (token == null) {
             synchronized (this) {
-                token = (String) getTokenFromSessionAttribute(context);
+                token = getTokenFromSession(context);
                 if (token == null) {
                     token = java.util.UUID.randomUUID().toString();
                     context.getSessionStore().set(context, Pac4jConstants.CSRF_TOKEN, token);
@@ -26,7 +26,7 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
         return token;
     }
 
-    protected String getTokenFromSessionAttribute(final WebContext context) {
+    protected String getTokenFromSession(final WebContext context) {
         return (String) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
     }
 }
