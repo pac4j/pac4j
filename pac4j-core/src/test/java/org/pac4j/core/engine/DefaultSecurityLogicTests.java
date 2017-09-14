@@ -133,7 +133,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         profile.setId(ID);
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
@@ -148,7 +148,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final CommonProfile profile = new CommonProfile();
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
@@ -162,7 +162,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final CommonProfile profile = new CommonProfile();
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));

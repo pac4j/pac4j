@@ -60,7 +60,7 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> extends Initializabl
                 }
 
                 if (ajaxRequestResolver.isAjax(context)) {
-                  context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
+                  context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
                   context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
                   throw HttpAction.status("AJAX request -> 403", 403, context);
                 }

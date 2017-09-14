@@ -89,7 +89,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private void addProfilesToContext() {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
     }
 
     private LinkedHashMap<String, CommonProfile> getProfilesFromRequest() {
@@ -97,7 +97,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private LinkedHashMap<String, CommonProfile> getProfilesFromSession() {
-        return (LinkedHashMap<String, CommonProfile>) context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
+        return (LinkedHashMap<String, CommonProfile>) context.getSessionStore().get(context, Pac4jConstants.USER_PROFILES);
     }
 
     private void expectedNProfiles(final int n) {

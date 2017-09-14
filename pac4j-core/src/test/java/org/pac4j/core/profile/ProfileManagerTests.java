@@ -60,7 +60,7 @@ public final class ProfileManagerTests {
     @Test
     public void testGetOneProfileFromSession() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
         assertTrue(profileManager.isAuthenticated());
     }
@@ -69,7 +69,7 @@ public final class ProfileManagerTests {
     public void testGetOneProfilesFromSessionFirstOneAnonymous() {
         profiles.put("first", new AnonymousProfile());
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
     }
 
@@ -77,7 +77,7 @@ public final class ProfileManagerTests {
     public void testGetOneTwoProfilesFromSession() {
         profiles.put(CLIENT1, PROFILE1);
         profiles.put(CLIENT2, PROFILE2);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
         assertTrue(profileManager.isAuthenticated());
     }
@@ -85,7 +85,7 @@ public final class ProfileManagerTests {
     @Test
     public void testGetOneProfileFromRequest() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.get(false).isPresent());
     }
 
@@ -104,7 +104,7 @@ public final class ProfileManagerTests {
     @Test
     public void testGetAllOneProfileFromSession() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.getAll(true).get(0));
     }
 
@@ -112,7 +112,7 @@ public final class ProfileManagerTests {
     public void testGetAllTwoProfilesFromSession() {
         profiles.put(CLIENT1, PROFILE1);
         profiles.put(CLIENT2, PROFILE2);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.getAll(true).get(0));
         assertEquals(PROFILE2, profileManager.getAll(true).get(1));
     }
@@ -123,7 +123,7 @@ public final class ProfileManagerTests {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         final LinkedHashMap<String, CommonProfile> profiles2 = new LinkedHashMap<>();
         profiles2.put(CLIENT2, PROFILE2);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles2);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles2);
         assertEquals(PROFILE1, profileManager.getAll(true).get(0));
         assertEquals(PROFILE2, profileManager.getAll(true).get(1));
     }
@@ -131,14 +131,14 @@ public final class ProfileManagerTests {
     @Test
     public void testGetAllOneProfileFromRequest() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(0, profileManager.getAll(false).size());
     }
 
     @Test
     public void testRemoveSessionFalse() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         profileManager.remove(false);
         assertTrue(profileManager.get(true).isPresent());
     }
@@ -146,7 +146,7 @@ public final class ProfileManagerTests {
     @Test
     public void testRemoveSessionTrue() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         profileManager.remove(true);
         assertFalse(profileManager.get(true).isPresent());
     }
@@ -154,7 +154,7 @@ public final class ProfileManagerTests {
     @Test
     public void testLogoutSession() {
         profiles.put(CLIENT1, PROFILE1);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         profileManager.logout();
         assertFalse(profileManager.get(true).isPresent());
     }
@@ -223,8 +223,8 @@ public final class ProfileManagerTests {
     public void testSingleProfileFromSessionDirectly() {
         final CommonProfile profile = new CommonProfile();
         profile.setClientName(CLIENT1);
-        
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profile);
+
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profile);
         assertEquals(profile, profileManager.getAll(true).get(0));
     }
 
@@ -236,11 +236,11 @@ public final class ProfileManagerTests {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profile);
         assertEquals(profile, profileManager.getAll(false).get(0));
     }
-    
+
     @Test
     public void testIsAuthenticatedAnonymousProfile() {
         profiles.put(CLIENT1, AnonymousProfile.INSTANCE);
-        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(AnonymousProfile.INSTANCE, profileManager.getAll(true).get(0));
         assertFalse(profileManager.isAuthenticated());
     }
