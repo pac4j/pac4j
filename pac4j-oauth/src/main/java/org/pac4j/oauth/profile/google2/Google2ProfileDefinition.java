@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.google2;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -48,7 +47,7 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
     }
 
     @Override
-    public Google2Profile extractUserProfile(final String body) throws HttpAction {
+    public Google2Profile extractUserProfile(final String body) {
         final Google2Profile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  */
 public final class RunTwitterClient extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunTwitterClient().run();
     }
 

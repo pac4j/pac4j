@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ public final class RequireAnyAttributeAuthorizerTests {
     }
 
     @Test
-    public void testAttributeNotFound() throws HttpAction {
+    public void testAttributeNotFound() {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
         authorizer.setElements("name1");
         profile.addAttribute("name2", "anything-goes-here");
@@ -45,7 +44,7 @@ public final class RequireAnyAttributeAuthorizerTests {
     }
 
     @Test
-    public void testNoValueProvided() throws HttpAction {
+    public void testNoValueProvided() {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "anything-goes-here");
@@ -53,7 +52,7 @@ public final class RequireAnyAttributeAuthorizerTests {
     }
 
     @Test
-    public void testPatternSingleValuedAttribute() throws HttpAction {
+    public void testPatternSingleValuedAttribute() {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^value.+");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "valueAddedHere");
@@ -61,7 +60,7 @@ public final class RequireAnyAttributeAuthorizerTests {
     }
 
     @Test
-    public void testPatternFails() throws HttpAction {
+    public void testPatternFails() {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
@@ -69,7 +68,7 @@ public final class RequireAnyAttributeAuthorizerTests {
     }
 
     @Test
-    public void testMatchesPattern() throws HttpAction {
+    public void testMatchesPattern() {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v\\d");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
@@ -78,7 +77,7 @@ public final class RequireAnyAttributeAuthorizerTests {
     }
 
     @Test
-    public void testMatchesEverythingByDefault() throws HttpAction {
+    public void testMatchesEverythingByDefault() {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer();
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2"));

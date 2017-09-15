@@ -50,7 +50,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     }
 
     @Override
-    public TokenCredentials extract(final WebContext context) throws HttpAction {
+    public TokenCredentials extract(final WebContext context) {
         init(context);
 
         final CasLogoutHandler logoutHandler = configuration.getLogoutHandler();
@@ -137,7 +137,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
         }
     }
 
-    private void computeRedirectionToServerIfNecessary(final WebContext context) throws HttpAction {
+    private void computeRedirectionToServerIfNecessary(final WebContext context) {
         final String relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (CommonUtils.isNotBlank(relayStateValue)) {

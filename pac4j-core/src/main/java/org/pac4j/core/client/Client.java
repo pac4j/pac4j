@@ -37,20 +37,17 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      *
      * @param context the current web context
      * @return the performed redirection
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    HttpAction redirect(WebContext context) throws HttpAction;
+    HttpAction redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
      * this step.</p>
-     * <p>In some cases, a {@link HttpAction} may be thrown instead.</p>
      *
      * @param context the current web context
      * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    C getCredentials(WebContext context) throws HttpAction;
+    C getCredentials(WebContext context);
 
     /**
      * Get the user profile based on the provided credentials.
@@ -58,9 +55,8 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param credentials credentials
      * @param context web context
      * @return the user profile
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    U getUserProfile(C credentials, WebContext context) throws HttpAction;
+    U getUserProfile(C credentials, WebContext context);
 
     /**
      * <p>Return the logout action (indirect clients).</p>
@@ -69,7 +65,6 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
      * @return the redirection
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl) throws HttpAction;
+    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl);
 }

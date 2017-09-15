@@ -34,7 +34,7 @@ public final class IsRememberedAuthorizerTests extends IsAuthenticatedAuthorizer
     }
 
     @Test
-    public void testCommonRmeProfile() throws HttpAction {
+    public void testCommonRmeProfile() {
         profile.setRemembered(false);
         profiles.add(profile);
         assertFalse(authorizer.isAuthorized(null, profiles));

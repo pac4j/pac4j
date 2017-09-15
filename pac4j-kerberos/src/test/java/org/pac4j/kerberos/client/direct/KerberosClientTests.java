@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.BadCredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -17,14 +15,12 @@ import org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
-
 
 /**
  *
@@ -68,7 +64,7 @@ public class KerberosClientTests implements TestsConstants {
     }
 
     @Test
-    public void testMissingKerberosHeader() throws HttpAction {
+    public void testMissingKerberosHeader() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
@@ -77,7 +73,7 @@ public class KerberosClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws HttpAction, UnsupportedEncodingException, BadCredentialsException {
+    public void testAuthentication() {
         when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null, null, null));
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
         final MockWebContext context = MockWebContext.create();

@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.strava;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -73,7 +72,7 @@ public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProf
     }
 
     @Override
-    public StravaProfile extractUserProfile(String body) throws HttpAction {
+    public StravaProfile extractUserProfile(String body) {
         final StravaProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

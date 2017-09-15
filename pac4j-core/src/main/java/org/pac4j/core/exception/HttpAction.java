@@ -10,7 +10,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class HttpAction extends Exception {
+public class HttpAction extends TechnicalException {
 
     private static final long serialVersionUID = -3959659239684160075L;
 
@@ -115,10 +115,10 @@ public class HttpAction extends Exception {
      * @param nonce nonce
      * @return a digest auth popup credentials
      */
-    public static HttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, 
+    public static HttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop,
                                                 final String nonce) {
         if (CommonHelper.isNotBlank(realmName)) {
-            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\"" 
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\""
                 + qop + "\", nonce=\"" + nonce + "\"");
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);

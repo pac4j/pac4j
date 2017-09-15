@@ -1,10 +1,10 @@
 package org.pac4j.core.util;
 
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 
@@ -188,7 +188,7 @@ public final class CommonHelper {
      */
     public static String urlEncode(final String text) {
         try {
-            return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
+            return URLEncoder.encode(text, StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
             final String message = "Unable to encode text : " + text;
             throw new TechnicalException(message, e);

@@ -33,7 +33,7 @@ import java.util.LinkedList;
 
 /**
  * Generates metadata object with standard values and overriden user defined values.
- * 
+ *
  * @author Michael Remond
  * @since 1.5.0
  */

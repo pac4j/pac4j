@@ -3,8 +3,6 @@ package org.pac4j.oauth.credentials.extractor;
 import com.github.scribejava.core.exceptions.OAuthException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -38,7 +36,7 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
     }
 
     @Override
-    public C extract(final WebContext context) throws HttpAction, CredentialsException {
+    public C extract(final WebContext context) {
         init(context);
 
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
@@ -50,7 +48,7 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
         // check errors
         try {
             boolean errorFound = false;
-            final OAuthCredentialsException oauthCredentialsException = 
+            final OAuthCredentialsException oauthCredentialsException =
                 new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
                 final String value = context.getRequestParameter(key);
@@ -74,10 +72,8 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
      *
      * @param context the web context
      * @return the OAuth credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     * @throws CredentialsException the credentials are invalid
      */
-    protected abstract C getOAuthCredentials(final WebContext context) throws HttpAction, CredentialsException;
+    protected abstract C getOAuthCredentials(final WebContext context);
 
     @Override
     public String toString() {

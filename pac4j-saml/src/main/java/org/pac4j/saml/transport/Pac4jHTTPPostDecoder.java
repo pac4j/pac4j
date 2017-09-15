@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Pac4j implementation extending directly the {@link AbstractMessageDecoder} as intermediate classes use the J2E HTTP request.
@@ -77,7 +77,7 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         }
 
         if(Strings.isNullOrEmpty(encodedMessage)) {
-            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. " 
+            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. "
                 + "Invalid request for SAML 2 HTTP POST binding.");
         } else {
             logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);
@@ -85,11 +85,7 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
             if(decodedBytes == null) {
                 throw new MessageDecodingException("Unable to Base64 decode SAML message");
             } else {
-                try {
-                    logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, HttpConstants.UTF8_ENCODING));
-                } catch(final UnsupportedEncodingException e) {
-                    throw new TechnicalException(e);
-                }
+                logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
                 return new ByteArrayInputStream(decodedBytes);
             }
         }

@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.facebook;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.*;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.FacebookClient;
@@ -30,7 +29,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
     }
 
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) throws HttpAction {
+    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) {
         final OAuth20ProfileDefinition<FacebookProfile> profileDefinition = (OAuth20ProfileDefinition<FacebookProfile>) configuration
             .getProfileDefinition();
         final FacebookClient client = (FacebookClient) configuration.getClient();

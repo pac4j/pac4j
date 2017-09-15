@@ -3,14 +3,11 @@ package org.pac4j.oauth.credentials.authenticator;
 import com.github.scribejava.core.exceptions.OAuthException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +35,7 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
     }
 
     @Override
-    public void validate(final C credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final C credentials, final WebContext context) {
         init(context);
 
         try {
@@ -52,10 +49,8 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
      * Retrieve the access token from OAuth credentials.
      *
      * @param credentials credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     * @throws OAuthCredentialsException the credentials are invalid
      */
-    protected abstract void retrieveAccessToken(OAuthCredentials credentials) throws HttpAction, OAuthCredentialsException;
+    protected abstract void retrieveAccessToken(OAuthCredentials credentials);
 
     @Override
     public String toString() {

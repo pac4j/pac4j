@@ -7,8 +7,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -19,9 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +58,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
         init(context);
 
         final String username = credentials.getUsername();
@@ -77,7 +75,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
         }
     }
 
-    protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) throws HttpAction, CredentialsException {
+    protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
         final RestProfile profileClass = getProfileDefinition().newProfile();
         final RestProfile profile;
         try {
@@ -96,18 +94,10 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
      * @param username the username
      * @param password the password
      * @return the response body
-     * @throws HttpAction whether an extra HTTP action is required
-     * @throws CredentialsException whether an authentication error occurs
      */
-    protected String callRestApi(final String username, final String password) throws HttpAction, CredentialsException {
+    protected String callRestApi(final String username, final String password) {
 
-        final String basicAuth;
-        try {
-            basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes("UTF-8"));
-        } catch (final UnsupportedEncodingException e) {
-            throw new TechnicalException(e);
-        }
-
+        final String basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
         final Map<String, String> headers = new HashMap<>();
         headers.put(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX + basicAuth);
 

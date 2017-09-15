@@ -2,7 +2,6 @@ package org.pac4j.oauth.profile.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -13,12 +12,12 @@ import java.util.Arrays;
 
 /**
  * This class is the GitHub profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProfile> {
-    
+
     public static final String TYPE = "type";
     public static final String BLOG = "blog";
     public static final String URL = "url";
@@ -66,7 +65,7 @@ public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProf
     }
 
     @Override
-    public GitHubProfile extractUserProfile(final String body) throws HttpAction {
+    public GitHubProfile extractUserProfile(final String body) {
         final GitHubProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

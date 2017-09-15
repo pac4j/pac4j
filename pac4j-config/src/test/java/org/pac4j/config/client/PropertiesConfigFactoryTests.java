@@ -42,7 +42,7 @@ import static org.pac4j.ldap.test.tools.LdapServer.*;
 public final class PropertiesConfigFactoryTests implements TestsConstants {
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(FACEBOOK_ID, ID);
         properties.put(FACEBOOK_SECRET, SECRET);

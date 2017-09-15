@@ -2,7 +2,6 @@ package org.pac4j.core.matching;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.Map;
 public class DefaultMatchingChecker implements MatchingChecker {
 
     @Override
-    public boolean matches(final WebContext context, final String matcherNames, final Map<String, Matcher> matchersMap) throws HttpAction {
+    public boolean matches(final WebContext context, final String matcherNames, final Map<String, Matcher> matchersMap) {
         // if we have a matcher name (which may be a list of matchers names)
         if (CommonHelper.isNotBlank(matcherNames)) {
             final List<Matcher> matchers = new ArrayList<>();

@@ -5,13 +5,12 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static org.junit.Assert.*;
@@ -26,7 +25,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testCustomSpEntityIdForPostBinding() throws Exception {
+    public void testCustomSpEntityIdForPostBinding() {
         final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -37,7 +36,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testForceAuthIsSetForPostBinding() throws Exception {
+    public void testForceAuthIsSetForPostBinding() {
         final SAML2Client client =  getClient();
         client.getConfiguration().setForceAuth(true);
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -46,7 +45,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testSetComparisonTypeWithPostBinding() throws Exception {
+    public void testSetComparisonTypeWithPostBinding() {
         final SAML2Client client =  getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -55,7 +54,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testRelayState() throws HttpAction {
+    public void testRelayState() {
         final SAML2Client client = getClient();
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.getSessionStore().set(context, SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
@@ -73,10 +72,10 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         return SAMLConstants.SAML2_POST_BINDING_URI;
     }
 
-    private String getDecodedAuthnRequest(final String content) throws Exception {
+    private String getDecodedAuthnRequest(final String content) {
         assertTrue(content.contains("<form"));
         final String samlRequestField = StringUtils.substringBetween(content, "SAMLRequest", "</div");
         final String value = StringUtils.substringBetween(samlRequestField, "value=\"", "\"");
-        return new String(Base64.getDecoder().decode(value), HttpConstants.UTF8_ENCODING);
+        return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
     }
 }

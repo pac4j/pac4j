@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.bitbucket;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -13,7 +12,7 @@ import java.util.Arrays;
 
 /**
  * This class is the Bitbucket profile definition.
- * 
+ *
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
@@ -39,7 +38,7 @@ public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<Bitbuck
     }
 
     @Override
-    public BitbucketProfile extractUserProfile(final String body) throws HttpAction {
+    public BitbucketProfile extractUserProfile(final String body) {
         final BitbucketProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

@@ -3,10 +3,9 @@ package org.pac4j.http.credentials;
 import static java.lang.String.copyValueOf;
 
 import org.apache.commons.codec.binary.Hex;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -28,9 +27,7 @@ public final class CredentialUtil {
     public static String encryptMD5(String data) {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
-            return copyValueOf(Hex.encodeHex(digest.digest(data.getBytes(HttpConstants.UTF8_ENCODING))));
-        } catch (final UnsupportedEncodingException e) {
-            throw new TechnicalException(e);
+            return copyValueOf(Hex.encodeHex(digest.digest(data.getBytes(StandardCharsets.UTF_8))));
         } catch (final NoSuchAlgorithmException ex) {
             throw new TechnicalException("Failed to instantiate an MD5 algorithm", ex);
         }

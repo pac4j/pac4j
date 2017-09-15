@@ -2,7 +2,6 @@ package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.OAuth1Token;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
@@ -24,7 +23,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator<OAuth10Credentials,
     }
 
     @Override
-    protected void retrieveAccessToken(final OAuthCredentials credentials) throws HttpAction, OAuthCredentialsException {
+    protected void retrieveAccessToken(final OAuthCredentials credentials) {
         OAuth10Credentials oAuth10Credentials = (OAuth10Credentials) credentials;
         final OAuth1RequestToken tokenRequest = oAuth10Credentials.getRequestToken();
         final String token = oAuth10Credentials.getToken();

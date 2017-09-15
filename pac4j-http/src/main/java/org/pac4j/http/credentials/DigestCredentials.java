@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials;
 
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -40,8 +41,8 @@ public class DigestCredentials extends TokenCredentials {
      * @param nc nc
      * @param qop qop
      */
-    public DigestCredentials(final String token, final String httpMethod, final String clientName, final String username, 
-                             final String realm, final String nonce, final String uri, final String cnonce, final String nc, 
+    public DigestCredentials(final String token, final String httpMethod, final String clientName, final String username,
+                             final String realm, final String nonce, final String uri, final String cnonce, final String nc,
                              final String qop) {
         super(token, clientName);
 
@@ -73,11 +74,10 @@ public class DigestCredentials extends TokenCredentials {
      * generate digest token based on RFC 2069 and RFC 2617 guidelines
      *
      * @return digest token
-     * @throws IllegalArgumentException
      */
     private String generateDigest(boolean passwordAlreadyEncoded, String username,
                                  String realm, String password, String httpMethod, String uri, String qop,
-                                 String nonce, String nc, String cnonce) throws IllegalArgumentException {
+                                 String nonce, String nc, String cnonce) {
         String ha1;
         String a2 = httpMethod + ":" + uri;
         String ha2 = CredentialUtil.encryptMD5(a2);
@@ -95,8 +95,7 @@ public class DigestCredentials extends TokenCredentials {
         } else if ("auth".equals(qop)) {
             digest = CredentialUtil.encryptMD5(ha1, nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
         } else {
-            throw new IllegalArgumentException("Invalid qop: '"
-                    + qop + "'");
+            throw new TechnicalException("Invalid qop: '" + qop + "'");
         }
 
         return digest;

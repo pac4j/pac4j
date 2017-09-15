@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public interface Authorizer<U extends CommonProfile> {
      * @param context the web context
      * @param profiles the user profiles
      * @return if the access is authorized
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    boolean isAuthorized(WebContext context, List<U> profiles) throws HttpAction;
+    boolean isAuthorized(WebContext context, List<U> profiles);
 }

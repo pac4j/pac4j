@@ -11,8 +11,6 @@ import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
@@ -43,7 +41,7 @@ public class YahooAuthenticator implements Authenticator<OpenIdCredentials> {
     }
 
     @Override
-    public void validate(final OpenIdCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final OpenIdCredentials credentials, final WebContext context) {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
         logger.debug("parameterList: {}", parameterList);
@@ -51,7 +49,7 @@ public class YahooAuthenticator implements Authenticator<OpenIdCredentials> {
 
         try {
             // verify the response
-            final VerificationResult verification = this.client.getConsumerManager().verify(this.client.computeFinalCallbackUrl(context), 
+            final VerificationResult verification = this.client.getConsumerManager().verify(this.client.computeFinalCallbackUrl(context),
                     parameterList, discoveryInformation);
 
             // examine the verification result and extract the verified identifier
@@ -74,7 +72,7 @@ public class YahooAuthenticator implements Authenticator<OpenIdCredentials> {
         throw new TechnicalException(message);
     }
 
-    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException, HttpAction {
+    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException {
         final YahooOpenIdProfile profile = PROFILE_DEFINITION.newProfile();
 
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {

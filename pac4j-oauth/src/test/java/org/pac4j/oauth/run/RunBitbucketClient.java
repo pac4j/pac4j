@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  */
 public class RunBitbucketClient extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunBitbucketClient().run();
     }
 

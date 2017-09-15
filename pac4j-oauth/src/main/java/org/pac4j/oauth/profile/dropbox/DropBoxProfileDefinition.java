@@ -2,7 +2,6 @@ package org.pac4j.oauth.profile.dropbox;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -10,12 +9,12 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 /**
  * This class is the DropBox profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
 public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxProfile> {
-    
+
     public static final String REFERRAL_LINK = "referral_link";
     public static final String COUNTRY = "country";
     public static final String SHARED = "shared";
@@ -40,7 +39,7 @@ public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxPr
     }
 
     @Override
-    public DropBoxProfile extractUserProfile(final String body) throws HttpAction {
+    public DropBoxProfile extractUserProfile(final String body) {
         final DropBoxProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

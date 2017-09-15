@@ -17,7 +17,6 @@ import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -109,7 +108,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
     @Override
     @SuppressWarnings("unchecked")
-    public U create(final OidcCredentials credentials, final WebContext context) throws HttpAction {
+    public U create(final OidcCredentials credentials, final WebContext context) {
         init(context);
 
         final AccessToken accessToken = credentials.getAccessToken();

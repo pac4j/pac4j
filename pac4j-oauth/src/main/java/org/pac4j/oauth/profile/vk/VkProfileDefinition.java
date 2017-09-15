@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.vk;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.client.VkClient;
@@ -15,7 +14,7 @@ import java.util.Arrays;
 
 /**
  * This class is the Vk profile definition.
- * 
+ *
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  */
@@ -56,7 +55,7 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile> {
                 .forEach(a -> primary(a, Converters.STRING));
         primary(COMMON_COUNT, Converters.INTEGER);
         primary(RELATION, Converters.INTEGER);
-        Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO, 
+        Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO,
             CAN_WRITE_PRIVATE_MESSAGE})
             .forEach(a -> primary(a, Converters.BOOLEAN));
         primary(BIRTH_DATE, new DateConverter("dd.MM.yyyy"));
@@ -70,7 +69,7 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile> {
     }
 
     @Override
-    public VkProfile extractUserProfile(final String body) throws HttpAction {
+    public VkProfile extractUserProfile(final String body) {
         final VkProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

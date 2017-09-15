@@ -5,8 +5,6 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -40,13 +38,13 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
     }
 
     @Override
-    public void validate(final SAML2Credentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final SAML2Credentials credentials, final WebContext context) {
         init(context);
 
         final SAML2Profile profile = getProfileDefinition().newProfile();
         profile.setId(credentials.getNameId().getValue());
         profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
-        
+
         for (final Attribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 

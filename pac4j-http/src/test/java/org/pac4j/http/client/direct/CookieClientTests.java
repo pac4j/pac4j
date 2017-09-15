@@ -2,9 +2,7 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.Cookie;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -12,7 +10,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
@@ -51,11 +49,11 @@ public final class CookieClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws HttpAction, UnsupportedEncodingException {
+    public void testAuthentication() {
         final CookieClient client = new CookieClient(USERNAME, new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
 
-        final Cookie c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes(HttpConstants.UTF8_ENCODING)));
+        final Cookie c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes(StandardCharsets.UTF_8)));
         context.getRequestCookies().add(c);
         final TokenCredentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);

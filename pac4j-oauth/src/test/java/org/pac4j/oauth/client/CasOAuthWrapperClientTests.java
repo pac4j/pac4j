@@ -9,6 +9,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 public final class CasOAuthWrapperClientTests implements TestsConstants {
 
     @Test
-    public void testParsingAttributesCASServerV4_2AndBefore() throws Exception {
+    public void testParsingAttributesCASServerV4_2AndBefore() throws IOException {
         final JsonFactory jsonFactory = new JsonFactory(new ObjectMapper());
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(KEY, VALUE);
@@ -57,7 +58,7 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
     }
 
     @Test
-    public void testParsingAttributesCASServerV5() throws Exception {
+    public void testParsingAttributesCASServerV5() throws IOException {
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(KEY, VALUE);
         attributes.put(NAME, TOKEN);

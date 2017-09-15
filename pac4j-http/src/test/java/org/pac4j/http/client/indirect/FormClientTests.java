@@ -61,7 +61,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testRedirectionUrl() throws HttpAction {
+    public void testRedirectionUrl() {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
         formClient.redirect(context);
@@ -105,7 +105,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetRightCredentials() throws HttpAction {
+    public void testGetRightCredentials() {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -115,7 +115,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetUserProfile() throws HttpAction {
+    public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
         formClient.setProfileCreator((credentials, context) -> {
             String username = credentials.getUsername();

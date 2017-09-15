@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class RunOkta extends RunClient {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         new RunOkta().run();
     }
 

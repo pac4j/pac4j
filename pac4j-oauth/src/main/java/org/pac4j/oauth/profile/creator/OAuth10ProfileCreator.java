@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.creator;
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.model.OAuthRequest;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
@@ -22,7 +21,7 @@ public class OAuth10ProfileCreator<U extends OAuth10Profile> extends OAuthProfil
     }
 
     @Override
-    protected OAuth1Token getAccessToken(final OAuth10Credentials credentials) throws HttpAction {
+    protected OAuth1Token getAccessToken(final OAuth10Credentials credentials) {
         return credentials.getAccessToken();
     }
 

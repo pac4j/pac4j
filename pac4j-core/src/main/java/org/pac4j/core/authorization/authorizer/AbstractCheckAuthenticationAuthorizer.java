@@ -21,7 +21,7 @@ public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProf
     }
 
     @Override
-    protected boolean handleError(final WebContext context) throws HttpAction {
+    protected boolean handleError(final WebContext context) {
         if (this.redirectionUrl != null) {
             throw HttpAction.redirect(getErrorMessage(), context, this.redirectionUrl);
         } else {

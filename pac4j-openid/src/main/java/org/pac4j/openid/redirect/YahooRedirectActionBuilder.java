@@ -6,7 +6,6 @@ import org.openid4java.message.AuthRequest;
 import org.openid4java.message.MessageException;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.redirect.RedirectAction;
@@ -39,7 +38,7 @@ public class YahooRedirectActionBuilder implements RedirectActionBuilder {
     }
 
     @Override
-    public RedirectAction redirect(final WebContext context) throws HttpAction {
+    public RedirectAction redirect(final WebContext context) {
         try {
             // perform discovery on the user-supplied identifier
             final List discoveries = this.client.getConsumerManager().discover(YAHOO_GENERIC_USER_IDENTIFIER);

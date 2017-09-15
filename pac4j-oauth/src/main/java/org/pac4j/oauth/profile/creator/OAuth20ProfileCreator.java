@@ -2,7 +2,6 @@ package org.pac4j.oauth.profile.creator;
 
 import com.github.scribejava.core.model.*;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -22,7 +21,7 @@ public class OAuth20ProfileCreator<U extends OAuth20Profile>
     }
 
     @Override
-    protected OAuth2AccessToken getAccessToken(final OAuth20Credentials credentials) throws HttpAction {
+    protected OAuth2AccessToken getAccessToken(final OAuth20Credentials credentials) {
         return credentials.getAccessToken();
     }
 

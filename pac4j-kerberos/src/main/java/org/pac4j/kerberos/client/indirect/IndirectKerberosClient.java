@@ -1,10 +1,5 @@
 package org.pac4j.kerberos.client.indirect;
 
-/**
- * @author Vidmantas Zemleris, at Kensu.io
- *
- * @since 2.1.0
- */
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -17,6 +12,11 @@ import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 import org.pac4j.kerberos.profile.KerberosProfile;
 
+/**
+ * @author Vidmantas Zemleris, at Kensu.io
+ *
+ * @since 2.1.0
+ */
 public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, KerberosProfile> {
     public IndirectKerberosClient() {}
 
@@ -37,7 +37,7 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
     }
 
     @Override
-    protected KerberosCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected KerberosCredentials retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 

@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.junit.Test;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public final class CheckProfileTypeAuthorizerTests {
     }
 
     @Test
-    public void testGoodProfile() throws HttpAction {
+    public void testGoodProfile() {
         final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
         final List<CommonProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile1());
@@ -34,7 +33,7 @@ public final class CheckProfileTypeAuthorizerTests {
     }
 
     @Test
-    public void testBadProfileType() throws HttpAction {
+    public void testBadProfileType() {
         final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
         final List<CommonProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile2());

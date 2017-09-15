@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.linkedin2;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.client.LinkedIn2Client;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -16,12 +15,12 @@ import java.util.List;
 
 /**
  * This class is the LinkedIn profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.1
  */
 public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedIn2Profile> {
-    
+
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String MAIDEN_NAME = "maidenName";
@@ -63,7 +62,7 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
     }
 
     @Override
-    public LinkedIn2Profile extractUserProfile(final String body) throws HttpAction {
+    public LinkedIn2Profile extractUserProfile(final String body) {
         LinkedIn2Profile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         profile.setId(JsonHelper.getElement(json, "id"));

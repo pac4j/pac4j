@@ -5,8 +5,6 @@ import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 import javax.security.auth.Subject;
@@ -41,10 +39,9 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     private Subject serviceSubject;
     private boolean holdOnToGSSContext;
     private boolean debug = false;
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException {
+    public KerberosTicketValidation validateTicket(byte[] token) {
         init();
         try {
             return Subject.doAs(this.serviceSubject, new KerberosValidateAction(token));
@@ -185,7 +182,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
         @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, String> options = new HashMap<>();
             options.put("useKeyTab", "true");
             options.put("keyTab", this.keyTabLocation);
             options.put("principal", this.servicePrincipalName);

@@ -14,7 +14,7 @@ import org.pac4j.scribe.builder.api.BitBucketApi;
  */
 public final class RunOAuth10Client extends RunBitbucketClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunOAuth10Client().run();
     }
 
