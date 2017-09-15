@@ -66,16 +66,13 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             }
             LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
                 this.debug);
-            Set<Principal> princ = new HashSet<Principal>(1);
+            Set<Principal> princ = new HashSet<>(1);
             princ.add(new KerberosPrincipal(this.servicePrincipal));
-            Subject sub = new Subject(false, princ, new HashSet<Object>(), new HashSet<Object>());
+            Subject sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
             LoginContext lc = new LoginContext("", sub, null, loginConfig);
             lc.login();
             this.serviceSubject = lc.getSubject();
-        } catch (LoginException e) {
-            throw new TechnicalException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final LoginException | IOException e) {
             throw new TechnicalException(e);
         }
     }

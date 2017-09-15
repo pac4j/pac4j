@@ -62,15 +62,13 @@ public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswor
             connection = HttpUtils.openPostConnection(ticketURL);
             final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
-                StandardCharsets.UTF_8));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
             out.write(payload);
             out.close();
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
-                try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(),
-                    StandardCharsets.UTF_8))) {
+                try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     return new TokenCredentials(in.readLine(), getClass().getSimpleName());
                 }
             }

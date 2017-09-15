@@ -85,5 +85,4 @@ public class KerberosClientTests implements TestsConstants {
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals("garry", profile.getId());
     }
-
 }
