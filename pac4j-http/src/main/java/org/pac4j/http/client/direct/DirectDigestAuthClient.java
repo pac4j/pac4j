@@ -49,7 +49,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    protected DigestCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected DigestCredentials retrieveCredentials(final WebContext context) {
         DigestCredentials credentials = super.retrieveCredentials(context);
         if (credentials == null) {
             String nonce = calculateNonce();

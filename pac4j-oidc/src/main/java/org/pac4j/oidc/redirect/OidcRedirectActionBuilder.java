@@ -5,7 +5,6 @@ import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
@@ -70,7 +69,7 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
     }
 
     @Override
-    public RedirectAction redirect(final WebContext context) throws HttpAction {
+    public RedirectAction redirect(final WebContext context) {
         init(context);
 
         final Map<String, String> params = buildParams();

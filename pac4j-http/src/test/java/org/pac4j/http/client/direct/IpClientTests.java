@@ -2,7 +2,6 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -43,7 +42,7 @@ public final class IpClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws HttpAction {
+    public void testAuthentication() {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.setRemoteAddress(IP);

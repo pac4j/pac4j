@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  */
 public class RunTestshib extends RunClient {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         new RunTestshib().run();
     }
 

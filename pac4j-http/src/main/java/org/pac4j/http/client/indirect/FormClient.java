@@ -72,7 +72,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
@@ -96,8 +96,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
         return credentials;
     }
 
-    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage)
-        throws HttpAction {
+    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage) {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (getAjaxRequestResolver().isAjax(context)) {
             final String msg = "AJAX request detected -> returning 401";

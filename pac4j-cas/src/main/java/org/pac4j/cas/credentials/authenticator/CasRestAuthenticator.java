@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasRestProfile;
@@ -13,7 +14,6 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
@@ -46,7 +46,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
         init(context);
 
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
@@ -65,8 +65,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), 
-                HttpConstants.UTF8_ENCODING));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
             out.write(payload);
             out.close();
 

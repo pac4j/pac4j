@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -24,7 +23,7 @@ import static org.pac4j.core.redirect.RedirectAction.*;
 
 /**
  * Tests the {@link GaeUserServiceClient}.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.9.0
  */
@@ -41,7 +40,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     private MockWebContext context;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         client = new GaeUserServiceClient();
         client.setCallbackUrl(CALLBACK_URL);
         context = MockWebContext.create();
@@ -49,25 +48,25 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         helper.tearDown();
     }
 
     @Test(expected = TechnicalException.class)
-    public void testCallbackMandatory() throws HttpAction {
+    public void testCallbackMandatory() {
         final GaeUserServiceClient localClient = new GaeUserServiceClient();
         localClient.redirect(context);
     }
 
     @Test
-    public void testRedirect() throws HttpAction {
+    public void testRedirect() {
         final RedirectAction redirectAction = client.getRedirectAction(context);
         assertEquals(RedirectType.REDIRECT, redirectAction.getType());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL), redirectAction.getLocation());
     }
 
     @Test
-    public void testGetCredentialsUserProfile() throws HttpAction {
+    public void testGetCredentialsUserProfile() {
         final GaeUserCredentials credentials = client.getCredentials(context);
         final User user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());

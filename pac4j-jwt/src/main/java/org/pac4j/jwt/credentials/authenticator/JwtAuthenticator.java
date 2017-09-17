@@ -120,7 +120,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final TokenCredentials credentials, final WebContext context) {
         init(context);
         final String token = credentials.getToken();
 

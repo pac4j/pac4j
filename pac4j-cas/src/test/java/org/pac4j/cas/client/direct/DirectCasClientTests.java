@@ -48,7 +48,7 @@ public final class DirectCasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoTokenRedirectionExpected() throws HttpAction {
+    public void testNoTokenRedirectionExpected() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final DirectCasClient client = new DirectCasClient(configuration);
@@ -60,7 +60,7 @@ public final class DirectCasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testTicketExistsValidationOccurs() throws HttpAction {
+    public void testTicketExistsValidationOccurs() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setDefaultTicketValidator((ticket, service) -> {

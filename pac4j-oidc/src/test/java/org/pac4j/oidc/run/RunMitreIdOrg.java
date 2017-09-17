@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class RunMitreIdOrg extends RunClient {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         new RunMitreIdOrg().run();
     }
 

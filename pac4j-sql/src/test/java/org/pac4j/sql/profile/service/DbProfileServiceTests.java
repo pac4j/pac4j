@@ -36,19 +36,19 @@ public final class DbProfileServiceTests implements TestsConstants {
     private DataSource ds = DbServer.getInstance();
 
     @Test
-    public void testNullPasswordEncoder() throws HttpAction, CredentialsException {
+    public void testNullPasswordEncoder() {
         final DbProfileService dbProfileService = new DbProfileService(ds, FIRSTNAME);
         TestsHelper.expectException(() -> dbProfileService.validate(null, null), TechnicalException.class, "passwordEncoder cannot be null");
     }
 
     @Test
-    public void testNullDataSource() throws HttpAction, CredentialsException {
+    public void testNullDataSource() {
         final DbProfileService dbProfileService = new DbProfileService(null, FIRSTNAME);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
         TestsHelper.expectException(() -> dbProfileService.validate(null, null), TechnicalException.class, "dataSource cannot be null");
     }
 
-    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction, CredentialsException {
+    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
         final DbProfileService dbProfileService = new DbProfileService(ds, attribute);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
@@ -59,7 +59,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testGoodUsernameAttribute() throws HttpAction, CredentialsException {
+    public void testGoodUsernameAttribute() {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -71,7 +71,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testGoodUsernameNoAttribute() throws HttpAction, CredentialsException {
+    public void testGoodUsernameNoAttribute() {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, "");
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -83,22 +83,22 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testMultipleUsername() throws HttpAction, CredentialsException {
+    public void testMultipleUsername() {
         TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
     }
 
     @Test
-    public void testBadUsername() throws HttpAction, CredentialsException {
+    public void testBadUsername() {
         TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class, "No account found for: michael");
     }
 
     @Test
-    public void testBadPassword() throws HttpAction, CredentialsException {
+    public void testBadPassword() {
         TestsHelper.expectException(() -> login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class, "Bad credentials for: jle");
     }
 
     @Test
-    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+    public void testCreateUpdateFindDelete() {
         final DbProfile profile = new DbProfile();
         profile.setId(DB_ID);
         profile.setLinkedId(DB_LINKED_ID);

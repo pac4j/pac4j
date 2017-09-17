@@ -207,10 +207,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param profiles the current profiles
      * @param authorizers the authorizers
      * @return a forbidden error
-     * @throws HttpAction whether an additional HTTP action is required
      */
     protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles,
-                                   final String authorizers) throws HttpAction {
+                                   final String authorizers) {
         return HttpAction.forbidden("forbidden", context);
     }
 
@@ -230,9 +229,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      *
      * @param context the web context
      * @param currentClients the current clients
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected void saveRequestedUrl(final C context, final List<Client> currentClients) throws HttpAction {
+    protected void saveRequestedUrl(final C context, final List<Client> currentClients) {
         final String requestedUrl = context.getFullRequestURL();
         logger.debug("requestedUrl: {}", requestedUrl);
         context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
@@ -244,9 +242,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param context the web context
      * @param currentClients the current clients
      * @return the performed redirection
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) throws HttpAction {
+    protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
         return currentClient.redirect(context);
     }
@@ -257,9 +254,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param context the web context
      * @param currentClients the current clients
      * @return an unauthorized error
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected HttpAction unauthorized(final C context, final List<Client> currentClients) throws HttpAction {
+    protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
         return HttpAction.unauthorized("unauthorized", context, null, null);
     }
 

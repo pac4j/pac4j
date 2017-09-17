@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 import static org.junit.Assert.*;
@@ -37,7 +38,7 @@ public final class SAML2ClientTests {
     }
 
     @Test
-    public void testSaml2ConfigurationOfKeyStore() throws Exception {
+    public void testSaml2ConfigurationOfKeyStore() throws IOException {
         final Resource rs = new FileSystemResource("testKeystore.jks");
         if (rs.exists() && !rs.getFile().delete()) {
             throw new TechnicalException("File could not be deleted");
@@ -58,7 +59,7 @@ public final class SAML2ClientTests {
         assertNotNull(p.getCredential());
     }
     @Test
-    public void testSaml2ConfigurationOfKeyStoreUsingResource() throws Exception {
+    public void testSaml2ConfigurationOfKeyStoreUsingResource() throws IOException {
         final Resource rs = new FileSystemResource("testKeystore.jks");
         if (rs.exists() && !rs.getFile().delete()) {
             throw new TechnicalException("File could not be deleted");

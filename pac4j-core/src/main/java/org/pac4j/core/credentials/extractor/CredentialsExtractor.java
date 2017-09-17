@@ -3,7 +3,6 @@ package org.pac4j.core.credentials.extractor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 
 /**
  * An extractor gets the {@link Credentials} from a {@link WebContext} and should return <code>null</code> if no credentials are present
@@ -19,8 +18,6 @@ public interface CredentialsExtractor<C extends Credentials> {
      *
      * @param context the current web context
      * @return the credentials
-     * @throws HttpAction requires a specific HTTP action if necessary
-     * @throws CredentialsException the credentials are invalid
      */
-    C extract(WebContext context) throws HttpAction, CredentialsException;
+    C extract(WebContext context);
 }

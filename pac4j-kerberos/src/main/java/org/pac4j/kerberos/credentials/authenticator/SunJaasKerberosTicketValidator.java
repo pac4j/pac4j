@@ -5,8 +5,6 @@ import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 import javax.security.auth.Subject;
@@ -41,10 +39,9 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     private Subject serviceSubject;
     private boolean holdOnToGSSContext;
     private boolean debug = false;
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException {
+    public KerberosTicketValidation validateTicket(byte[] token) {
         init();
         try {
             return Subject.doAs(this.serviceSubject, new KerberosValidateAction(token));
@@ -69,16 +66,13 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             }
             LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
                 this.debug);
-            Set<Principal> princ = new HashSet<Principal>(1);
+            Set<Principal> princ = new HashSet<>(1);
             princ.add(new KerberosPrincipal(this.servicePrincipal));
-            Subject sub = new Subject(false, princ, new HashSet<Object>(), new HashSet<Object>());
+            Subject sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
             LoginContext lc = new LoginContext("", sub, null, loginConfig);
             lc.login();
             this.serviceSubject = lc.getSubject();
-        } catch (LoginException e) {
-            throw new TechnicalException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final LoginException | IOException e) {
             throw new TechnicalException(e);
         }
     }
@@ -185,7 +179,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
         @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, String> options = new HashMap<>();
             options.put("useKeyTab", "true");
             options.put("keyTab", this.keyTabLocation);
             options.put("principal", this.servicePrincipalName);

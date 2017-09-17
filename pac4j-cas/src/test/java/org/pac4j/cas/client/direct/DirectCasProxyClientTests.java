@@ -7,7 +7,6 @@ import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -57,7 +56,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoTicket() throws HttpAction {
+    public void testNoTicket() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS20_PROXY);
@@ -66,7 +65,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
     }
 
     @Test
-    public void testTokenExistsValidationOccurs() throws HttpAction {
+    public void testTokenExistsValidationOccurs() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS30_PROXY);

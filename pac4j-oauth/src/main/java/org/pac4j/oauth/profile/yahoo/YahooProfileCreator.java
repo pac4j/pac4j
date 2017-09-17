@@ -2,7 +2,6 @@ package org.pac4j.oauth.profile.yahoo;
 
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.model.Verb;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -22,7 +21,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
     }
 
     @Override
-    protected YahooProfile retrieveUserProfileFromToken(final OAuth1Token accessToken) throws HttpAction {
+    protected YahooProfile retrieveUserProfileFromToken(final OAuth1Token accessToken) {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         final OAuth10ProfileDefinition<YahooProfile> profileDefinition = (OAuth10ProfileDefinition<YahooProfile>) configuration
             .getProfileDefinition();

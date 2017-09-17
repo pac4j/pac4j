@@ -3,8 +3,6 @@ package org.pac4j.oauth.credentials.extractor;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -22,7 +20,7 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
     }
 
     @Override
-    protected OAuth10Credentials getOAuthCredentials(final WebContext context) throws HttpAction, CredentialsException {
+    protected OAuth10Credentials getOAuthCredentials(final WebContext context) {
         final String tokenParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_TOKEN);
         final String verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {

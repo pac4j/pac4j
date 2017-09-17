@@ -47,7 +47,7 @@ public final class RunOkClient extends RunClient {
      */
     private static final String TEST_PROFILE_PICTURE_URL = "";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunOkClient().run();
     }
 

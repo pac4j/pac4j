@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -42,7 +41,7 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
     }
 
     @Override
-    public CasOAuthWrapperProfile extractUserProfile(final String body) throws HttpAction {
+    public CasOAuthWrapperProfile extractUserProfile(final String body) {
         final CasOAuthWrapperProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

@@ -1,14 +1,13 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
 
 /**
- * The user must be authenticated. This authorizer should never be necessary unless using the 
+ * The user must be authenticated. This authorizer should never be necessary unless using the
  * {@link org.pac4j.core.client.direct.AnonymousClient}.
  *
  * @author Jerome Leleu
@@ -23,12 +22,12 @@ public class IsAuthenticatedAuthorizer<U extends CommonProfile> extends Abstract
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<U> profiles) throws HttpAction {
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
         return isAnyAuthorized(context, profiles);
     }
 
     @Override
-    public boolean isProfileAuthorized(final WebContext context, final U profile) throws HttpAction {
+    public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile != null && !(profile instanceof AnonymousProfile);
     }
 

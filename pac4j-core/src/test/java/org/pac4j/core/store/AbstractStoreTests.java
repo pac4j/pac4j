@@ -28,11 +28,15 @@ public abstract class AbstractStoreTests<S extends Store> implements TestsConsta
     }
 
     @Test
-    public void testSetExpiredGet() throws Exception {
+    public void testSetExpiredGet() {
         final S store = buildStore();
         store.set(KEY, VALUE);
         assertEquals(VALUE, store.get(KEY));
-        Thread.sleep(2000);
+        try {
+            Thread.sleep(2000);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         assertNull(store.get(KEY));
     }
 

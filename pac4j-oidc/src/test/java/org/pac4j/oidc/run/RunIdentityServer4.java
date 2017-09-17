@@ -41,7 +41,7 @@ public class RunIdentityServer4 extends RunClient {
 
     private final static Flow flow = Flow.HYBRID_FLOW;
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         new RunIdentityServer4().run();
     }
 

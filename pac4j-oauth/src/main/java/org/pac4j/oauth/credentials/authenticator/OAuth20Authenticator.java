@@ -1,12 +1,10 @@
 package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 
 import java.io.IOException;
 
@@ -23,7 +21,7 @@ public class OAuth20Authenticator extends OAuthAuthenticator<OAuth20Credentials,
     }
 
     @Override
-    protected void retrieveAccessToken(final OAuthCredentials credentials) throws HttpAction, OAuthCredentialsException {
+    protected void retrieveAccessToken(final OAuthCredentials credentials) {
         OAuth20Credentials oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
         final String code = oAuth20Credentials.getCode();

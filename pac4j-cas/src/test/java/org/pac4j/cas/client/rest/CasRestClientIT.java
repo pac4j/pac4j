@@ -6,10 +6,8 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -17,7 +15,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.util.TestsHelper;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -41,16 +39,16 @@ public final class CasRestClientIT implements TestsConstants {
     }
 
     @Test
-    public void testRestForm() throws HttpAction {
+    public void testRestForm() {
         internalTestRestForm(new CasRestAuthenticator(getConfig()));
     }
 
     @Test
-    public void testRestFormWithCaching() throws HttpAction {
+    public void testRestFormWithCaching() {
         internalTestRestForm(new LocalCachingAuthenticator<>(new CasRestAuthenticator(getConfig()), 100, 100, TimeUnit.SECONDS));
     }
 
-    private void internalTestRestForm(final Authenticator authenticator) throws HttpAction {
+    private void internalTestRestForm(final Authenticator authenticator) {
         final CasRestFormClient client = new CasRestFormClient();
         client.setConfiguration(getConfig());
         client.setAuthenticator(authenticator);
@@ -72,21 +70,21 @@ public final class CasRestClientIT implements TestsConstants {
     }
 
     @Test
-    public void testRestBasic() throws HttpAction, UnsupportedEncodingException {
+    public void testRestBasic() {
         internalTestRestBasic(new CasRestBasicAuthClient(getConfig(), VALUE, NAME), 3);
     }
 
     @Test
-    public void testRestBasicWithCas20TicketValidator() throws HttpAction, UnsupportedEncodingException {
+    public void testRestBasicWithCas20TicketValidator() {
         final CasConfiguration config = getConfig();
         config.setDefaultTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
         internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 0);
     }
 
-    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws HttpAction, UnsupportedEncodingException {
+    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) {
         final MockWebContext context = MockWebContext.create();
         final String token = USER + ":" + USER;
-        context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(HttpConstants.UTF8_ENCODING)));
+        context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final CasRestProfile profile = client.getUserProfile(credentials, context);

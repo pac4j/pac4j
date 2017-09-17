@@ -3,7 +3,6 @@ package org.pac4j.jwt;
 import com.nimbusds.jose.EncryptionMethod;
 import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.jwt.JwtClaims;
@@ -44,7 +43,7 @@ public final class JwtTests implements TestsConstants {
     private static final Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[] { "perm1"}));
 
     @Test
-    public void testGenericJwt() throws HttpAction, CredentialsException {
+    public void testGenericJwt() {
         final String token = "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0..NTvhJXwZ_sN4zYBK.exyLJWkOclCVcffz58CE-3XWWV24aYyGWR5HVrfm4HLQi1xgmwglLlEIiFlOSTOSZ_LeAwl2Z3VFh-5EidocjwGkAPGQA_4_KCLbK8Im7M25ZZvDzCJ1kKN1JrDIIrBWCcuI4Mbw0O_YGb8TfIECPkpeG7wEgBG30sb1kH-F_vg9yjYfB4MiJCSFmY7cRqN9-9O23tz3wYv3b-eJh5ACr2CGSVNj2KcMsOMJ6bbALgz6pzQTIWk_fhcE9QSfaSY7RuZ8cRTV-UTjYgZk1gbd1LskgchS.ijMQmfPlObJv7oaPG8LCEg";        final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
         final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         authenticator.validate(credentials, null);
@@ -52,7 +51,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test(expected = TechnicalException.class)
-    public void testGenerateAuthenticateSub() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticateSub() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
         profile.addAttribute(JwtClaims.SUBJECT, VALUE);
@@ -61,7 +60,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test(expected = CredentialsException.class)
-    public void testPlainJwtWithSignatureConfigurations() throws HttpAction, CredentialsException {
+    public void testPlainJwtWithSignatureConfigurations() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
@@ -69,7 +68,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testPlainJwtWithoutSignatureConfigurations() throws HttpAction, CredentialsException {
+    public void testPlainJwtWithoutSignatureConfigurations() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
@@ -107,7 +106,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testPemJwt() throws Exception {
+    public void testPemJwt() throws NoSuchAlgorithmException {
         final FacebookProfile profile = createProfile();
         final ECSignatureConfiguration signatureConfiguration = buildECSignatureConfiguration();
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(signatureConfiguration);
@@ -118,7 +117,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticate() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticate() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
@@ -126,7 +125,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testDoubleGenerateAuthenticate() throws HttpAction, CredentialsException {
+    public void testDoubleGenerateAuthenticate() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
@@ -167,7 +166,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateDifferentSecrets() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticateDifferentSecrets() {
         final SignatureConfiguration signatureConfiguration = new SecretSignatureConfiguration(MAC_SECRET);
         final EncryptionConfiguration encryptionConfiguration = new SecretEncryptionConfiguration(KEY2);
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(signatureConfiguration, encryptionConfiguration);
@@ -177,7 +176,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateUselessSignatureConfiguration() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticateUselessSignatureConfiguration() {
         final SignatureConfiguration signatureConfiguration = new SecretSignatureConfiguration(KEY2);
         final SignatureConfiguration signatureConfiguration2 = new SecretSignatureConfiguration(MAC_SECRET);
         final EncryptionConfiguration encryptionConfiguration = new SecretEncryptionConfiguration(MAC_SECRET);
@@ -203,7 +202,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateDifferentSignatureConfiguration() throws Exception {
+    public void testGenerateAuthenticateDifferentSignatureConfiguration() throws NoSuchAlgorithmException {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(KEY2));
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
@@ -226,7 +225,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateNotEncrypted() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticateNotEncrypted() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
@@ -234,7 +233,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateNotSigned() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticateNotSigned() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         generator.setEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
@@ -243,7 +242,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateAndEncryptedWithRolesPermissions() throws HttpAction, CredentialsException {
+    public void testGenerateAuthenticateAndEncryptedWithRolesPermissions() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
         profile.addRoles(ROLES);
@@ -254,12 +253,11 @@ public final class JwtTests implements TestsConstants {
         assertEquals(PERMISSIONS, profile2.getPermissions());
     }
 
-    private CommonProfile assertToken(FacebookProfile profile, String token) throws HttpAction, CredentialsException {
+    private CommonProfile assertToken(FacebookProfile profile, String token) {
         return assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET)));
     }
 
-    private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator)
-            throws HttpAction, CredentialsException {
+    private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
         authenticator.validate(credentials, null);
         final CommonProfile profile2 = credentials.getUserProfile();
@@ -282,12 +280,12 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test(expected = CredentialsException.class)
-    public void testAuthenticateFailed() throws HttpAction, CredentialsException {
+    public void testAuthenticateFailed() {
         final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         final TokenCredentials credentials = new TokenCredentials("fakeToken", CLIENT_NAME);
         authenticator.validate(credentials, null);
     }
-    
+
     @Test
     public void testJwtGenerationA256CBC() {
         final JwtGenerator<CommonProfile> g = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET),

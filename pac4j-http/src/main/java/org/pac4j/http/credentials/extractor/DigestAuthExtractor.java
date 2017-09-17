@@ -6,7 +6,6 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -53,7 +52,7 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * @return the Digest credentials
      */
     @Override
-    public DigestCredentials extract(WebContext context) throws HttpAction, CredentialsException {
+    public DigestCredentials extract(WebContext context) {
         final TokenCredentials credentials = this.extractor.extract(context);
 
         if (credentials == null) {

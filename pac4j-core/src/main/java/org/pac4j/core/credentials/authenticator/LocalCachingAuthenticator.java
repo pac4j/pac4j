@@ -2,8 +2,6 @@ package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
@@ -50,7 +48,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     @Override
-    public void validate(final T credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final T credentials, final WebContext context) {
         init(context);
 
         CommonProfile profile = this.store.get(credentials);

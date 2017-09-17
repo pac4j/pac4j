@@ -8,7 +8,6 @@ import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -52,7 +51,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final TokenCredentials credentials, final WebContext context) {
         init(context);
 
         final String ticket = credentials.getToken();
@@ -82,7 +81,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
                 profile.setId(id);
                 getProfileDefinition().convertAndAdd(profile, newAttributes);
             } else {
-                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal, 
+                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal,
                     configuration.getProxyReceptor());
             }
             logger.debug("profile returned by CAS: {}", profile);

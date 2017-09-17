@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -14,7 +13,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -32,7 +33,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testCustomSpEntityIdForRedirectBinding() throws Exception {
+    public void testCustomSpEntityIdForRedirectBinding() {
         final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
 
@@ -45,7 +46,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testForceAuthIsSetForRedirectBinding() throws Exception {
+    public void testForceAuthIsSetForRedirectBinding() {
         final SAML2Client client = getClient();
         client.getConfiguration().setForceAuth(true);
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -54,7 +55,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testSetComparisonTypeWithRedirectBinding() throws Exception {
+    public void testSetComparisonTypeWithRedirectBinding() {
         final SAML2Client client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -63,7 +64,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testNameIdPolicyFormat() throws Exception{
+    public void testNameIdPolicyFormat() {
         final SAML2Client client = getClient();
         client.getConfiguration().setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -75,7 +76,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testAuthnContextClassRef() throws Exception {
+    public void testAuthnContextClassRef() {
         final SAML2Client client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.getConfiguration().setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
@@ -92,7 +93,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testRelayState() throws Exception {
+    public void testRelayState() {
         final SAML2Client client = getClient();
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.getSessionStore().set(context, SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
@@ -110,17 +111,21 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         return SAMLConstants.SAML2_REDIRECT_BINDING_URI;
     }
 
-    private String getInflatedAuthnRequest(final String location) throws Exception {
+    private String getInflatedAuthnRequest(final String location) {
         final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), "UTF-8");
         final Inflater inflater = new Inflater(true);
         final byte[] decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
         final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
         final InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, HttpConstants.UTF8_ENCODING));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         String line;
         final StringBuilder bldr = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            bldr.append(line);
+        try {
+            while ((line = reader.readLine()) != null) {
+                bldr.append(line);
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
         return bldr.toString();
     }

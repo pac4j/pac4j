@@ -3,7 +3,6 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
@@ -25,14 +24,14 @@ public final class IpExtractorTests implements TestsConstants {
     private static final IpExtractor extractor = new IpExtractor(CLIENT_NAME);
 
     @Test
-    public void testRetrieveIpOk() throws HttpAction {
+    public void testRetrieveIpOk() {
         final MockWebContext context = MockWebContext.create().setRemoteAddress(GOOD_IP);
         final TokenCredentials credentials = extractor.extract(context);
         assertEquals(GOOD_IP, credentials.getToken());
     }
 
     @Test
-    public void testRetrieveIpFromHeaderWithProxyIpCheck() throws HttpAction {
+    public void testRetrieveIpFromHeaderWithProxyIpCheck() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
         ipExtractor.setProxyIp(LOCALHOST);
@@ -47,7 +46,7 @@ public final class IpExtractorTests implements TestsConstants {
     }
 
     @Test
-    public void testRetrieveIpFromHeaderUsingConstructor() throws HttpAction {
+    public void testRetrieveIpFromHeaderUsingConstructor() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         // test for varargs
         final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME, "fooBar", HEADER_NAME, "barFoo");
@@ -60,20 +59,20 @@ public final class IpExtractorTests implements TestsConstants {
     }
 
     @Test(expected = TechnicalException.class)
-    public void testSetNullIpHeaderChain() throws HttpAction {
+    public void testSetNullIpHeaderChain() {
         final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
         ipExtractor.setAlternateIpHeaders(null);
     }
 
     @Test
-    public void testNoIp() throws HttpAction {
+    public void testNoIp() {
         final MockWebContext context = MockWebContext.create();
         final TokenCredentials credentials = extractor.extract(context);
         assertNull(credentials);
     }
 
     @Test
-    public void testWrongProxyIp() throws HttpAction {
+    public void testWrongProxyIp() {
         final MockWebContext context = MockWebContext.create();
         final TokenCredentials credentials = extractor.extract(context);
         assertNull(credentials);

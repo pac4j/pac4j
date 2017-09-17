@@ -5,7 +5,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.exception.HttpAction;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -32,7 +31,7 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
     }
 
     @Override
-    public UsernamePasswordCredentials extract(WebContext context) throws HttpAction, CredentialsException {
+    public UsernamePasswordCredentials extract(WebContext context) {
         final TokenCredentials credentials = this.extractor.extract(context);
         if (credentials == null) {
             return null;

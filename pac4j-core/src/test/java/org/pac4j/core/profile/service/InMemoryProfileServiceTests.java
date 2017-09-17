@@ -40,7 +40,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 
     @Before
     public void setUp() {
-        inMemoryProfileService = new InMemoryProfileService<CommonProfile>(x -> new CommonProfile());
+        inMemoryProfileService = new InMemoryProfileService<>(x -> new CommonProfile());
         inMemoryProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         final String password = PASSWORD_ENCODER.encode(PASSWORD);
         // insert sample data
@@ -50,7 +50,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         CommonProfile profile = new CommonProfile();
         profile.build(IDPERSON1, properties1);
         inMemoryProfileService.create(profile, PASSWORD);
-        // second person, 
+        // second person,
         final Map<String, Object> properties2 = new HashMap<>();
         properties2.put(USERNAME, MULTIPLE_USERNAME);
         profile = new CommonProfile();
@@ -65,13 +65,13 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     }
 
     @Test(expected = AccountNotFoundException.class)
-    public void authentFailed() throws HttpAction, CredentialsException {
+    public void authentFailed() {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         inMemoryProfileService.validate(credentials, null);
     }
 
     @Test
-    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
+    public void authentSuccessSingleAttribute() {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         inMemoryProfileService.validate(credentials, null);
         final CommonProfile profile = credentials.getUserProfile();
@@ -82,7 +82,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+    public void testCreateUpdateFindDelete() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(TEST_ID);
         profile.setLinkedId(TEST_LINKED_ID);

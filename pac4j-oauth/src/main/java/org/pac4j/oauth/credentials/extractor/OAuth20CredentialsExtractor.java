@@ -2,8 +2,6 @@ package org.pac4j.oauth.credentials.extractor;
 
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -22,7 +20,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
     }
 
     @Override
-    protected OAuth20Credentials getOAuthCredentials(final WebContext context) throws HttpAction, CredentialsException {
+    protected OAuth20Credentials getOAuthCredentials(final WebContext context) {
         if (configuration.isWithState()) {
 
             final String stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);

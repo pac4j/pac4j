@@ -22,16 +22,15 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
-import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -49,7 +48,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
 
     private final Pac4jSAMLResponse responseAdapter;
     private final boolean forceSignRedirectBindingAuthnRequest;
-    
+
     public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter,
                                            final boolean forceSignRedirectBindingAuthnRequest) {
         this.responseAdapter = responseAdapter;
@@ -61,11 +60,11 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         final MessageContext messageContext = this.getMessageContext();
         final SAMLObject outboundMessage = (SAMLObject)messageContext.getMessage();
         final String endpointURL = this.getEndpointURL(messageContext).toString();
-        
+
         if (!this.forceSignRedirectBindingAuthnRequest) {
             this.removeSignature(outboundMessage);
         }
-        
+
         final String encodedMessage = this.deflateAndBase64Encode(outboundMessage);
         final String redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
 
@@ -128,7 +127,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
             ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
             Deflater deflater = new Deflater(Deflater.DEFLATED, true);
             DeflaterOutputStream deflaterStream = new DeflaterOutputStream(bytesOut, deflater);
-            deflaterStream.write(messageStr.getBytes("UTF-8"));
+            deflaterStream.write(messageStr.getBytes(StandardCharsets.UTF_8));
             deflaterStream.finish();
 
             return Base64Support.encode(bytesOut.toByteArray(), Base64Support.UNCHUNKED);
@@ -254,13 +253,11 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         String b64Signature = null;
         try {
             byte[] rawSignature =
-                    XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes("UTF-8"));
+                    XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes(StandardCharsets.UTF_8));
             b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
             log.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
         } catch (final org.opensaml.security.SecurityException e) {
             throw new MessageEncodingException("Unable to sign URL query string", e);
-        } catch (final UnsupportedEncodingException e) {
-            throw new TechnicalException(e);
         }
 
         return b64Signature;

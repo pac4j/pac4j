@@ -1,7 +1,6 @@
 package org.pac4j.core.redirect;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 
 /**
  * Return a redirection to perfom.
@@ -16,7 +15,6 @@ public interface RedirectActionBuilder {
      *
      * @param context the web context
      * @return the redirect action
-     * @throws HttpAction requires a specific HTTP action if necessary
      */
-    RedirectAction redirect(WebContext context) throws HttpAction;
+    RedirectAction redirect(WebContext context);
 }

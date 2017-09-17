@@ -8,7 +8,6 @@ import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -52,7 +51,7 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
     }
 
     @Override
-    public OidcCredentials extract(final WebContext context) throws HttpAction {
+    public OidcCredentials extract(final WebContext context) {
         init(context);
 
         final Map<String, String> parameters = retrieveParameters(context);

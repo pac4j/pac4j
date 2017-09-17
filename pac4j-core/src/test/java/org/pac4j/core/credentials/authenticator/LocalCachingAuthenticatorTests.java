@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
@@ -52,7 +51,7 @@ public class LocalCachingAuthenticatorTests {
             new UsernamePasswordCredentials("a", "a", this.getClass().getName());
 
     @Test
-    public void testDoubleCalls() throws HttpAction, CredentialsException {
+    public void testDoubleCalls() {
         final OnlyOneCallAuthenticator authenticator = new OnlyOneCallAuthenticator();
         final LocalCachingAuthenticator localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
         localCachingAuthenticator.init(null);
@@ -72,7 +71,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCache() throws HttpAction, CredentialsException {
+    public void testValidateAndCache() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -82,7 +81,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCacheSwitchDelegate() throws HttpAction, CredentialsException {
+    public void testValidateAndCacheSwitchDelegate() {
         final LocalCachingAuthenticator<UsernamePasswordCredentials> authenticator = new
                 LocalCachingAuthenticator<>(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -95,7 +94,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test(expected=CredentialsException.class)
-    public void testValidateAndNoCacheSwitchDelegate() throws Exception {
+    public void testValidateAndNoCacheSwitchDelegate() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.MINUTES);
         authenticator.init(null);
@@ -107,7 +106,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCacheAndRemove() throws HttpAction, CredentialsException {
+    public void testValidateAndCacheAndRemove() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -119,21 +118,25 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndExpire() throws Exception {
+    public void testValidateAndExpire() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 500, TimeUnit.MILLISECONDS);
         authenticator.init(null);
 
         authenticator.validate(this.credentials, null);
         assertTrue(authenticator.isCached(this.credentials));
-        Thread.sleep(600);
+        try {
+            Thread.sleep(600);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         assertFalse(authenticator.isCached(this.credentials));
     }
 
     private static class ThrowingAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
         @Override
-        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws CredentialsException {
+        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
             throw new CredentialsException("fail");
         }
     }

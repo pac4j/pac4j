@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.wordpress;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -12,17 +11,17 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 /**
  * This class is the WordPress profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPressProfile> {
-    
+
     public static final String PRIMARY_BLOG = "primary_blog";
     public static final String AVATAR_URL = "avatar_URL";
     public static final String PROFILE_URL = "profile_URL";
     public static final String LINKS = "links";
-    
+
     public WordPressProfileDefinition() {
         super(x -> new WordPressProfile());
         primary(Pac4jConstants.USERNAME, Converters.STRING);
@@ -38,7 +37,7 @@ public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPre
     }
 
     @Override
-    public WordPressProfile extractUserProfile(final String body) throws HttpAction {
+    public WordPressProfile extractUserProfile(final String body) {
         final WordPressProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

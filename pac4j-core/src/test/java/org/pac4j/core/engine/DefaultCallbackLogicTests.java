@@ -96,7 +96,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDirectClient() throws Exception {
+    public void testDirectClient() {
         request.addParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final MockDirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(directClient));
@@ -104,7 +104,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testCallback() throws Exception {
+    public void testCallback() {
         final String originalSessionId = request.getSession().getId();
         request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
@@ -122,7 +122,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testCallbackWithOriginallyRequestedUrl() throws Exception {
+    public void testCallbackWithOriginallyRequestedUrl() {
         HttpSession session = request.getSession();
         final String originalSessionId = session.getId();
         session.setAttribute(Pac4jConstants.REQUESTED_URL, PAC4J_URL);
@@ -142,7 +142,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testCallbackNoRenew() throws Exception {
+    public void testCallbackNoRenew() {
         final String originalSessionId = request.getSession().getId();
         request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();

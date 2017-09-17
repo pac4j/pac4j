@@ -50,7 +50,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
