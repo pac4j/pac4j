@@ -7,8 +7,6 @@ import org.ldaptive.ConnectionFactory;
 import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.BadCredentialsException;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
@@ -80,14 +78,14 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
 
     @Test(expected = BadCredentialsException.class)
-    public void authentFailed() throws HttpAction, CredentialsException {
+    public void authentFailed() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
     }
 
     @Test
-    public void authentSuccessNoAttribute() throws HttpAction, CredentialsException {
+    public void authentSuccessNoAttribute() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
@@ -102,7 +100,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
+    public void authentSuccessSingleAttribute() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
@@ -118,7 +116,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void authentSuccessMultiAttribute() throws HttpAction, CredentialsException {
+    public void authentSuccessMultiAttribute() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + "," + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
@@ -138,7 +136,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+    public void testCreateUpdateFindDelete() {
         final LdapProfile profile = new LdapProfile();
         profile.setId(LDAP_ID);
         profile.setLinkedId(LDAP_LINKED_ID);

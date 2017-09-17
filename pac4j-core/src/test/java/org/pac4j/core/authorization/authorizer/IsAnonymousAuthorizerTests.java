@@ -33,32 +33,32 @@ public final class IsAnonymousAuthorizerTests implements TestsConstants {
     }
 
     @Test
-    public void testNoProfile() throws HttpAction {
+    public void testNoProfile() {
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testAnonymousProfile() throws HttpAction {
+    public void testAnonymousProfile() {
         profiles.add(new AnonymousProfile());
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testAnonProfileTwoProfiles() throws HttpAction {
+    public void testAnonProfileTwoProfiles() {
         profiles.add(new AnonymousProfile());
         profiles.add(new CommonProfile());
         assertFalse(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testTwoAnonProfiles() throws HttpAction {
+    public void testTwoAnonProfiles() {
         profiles.add(new AnonymousProfile());
         profiles.add(new AnonymousProfile());
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testCommonProfile() throws HttpAction {
+    public void testCommonProfile() {
         profiles.add(new CommonProfile());
         assertFalse(authorizer.isAuthorized(null, profiles));
     }

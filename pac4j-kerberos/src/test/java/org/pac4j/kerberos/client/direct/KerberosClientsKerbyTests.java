@@ -81,7 +81,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     }
 
     @Test
-    public void testDirectNoAuth() throws Exception {
+    public void testDirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
         assertNull(setupDirectKerberosClient().getCredentials(MockWebContext.create()));
     }
@@ -97,7 +97,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     // =====================
 
     @Test
-    public void testDirectIncorrectAuth() throws Exception {
+    public void testDirectIncorrectAuth() {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         final MockWebContext context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
@@ -105,13 +105,13 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     }
 
     @Test
-    public void testIndirectNoAuth() throws Exception {
+    public void testIndirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header
         assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), MockWebContext.create(),"Kerberos Header not found");
     }
 
     @Test
-    public void testIndirectIncorrectAuth() throws Exception {
+    public void testIndirectIncorrectAuth() {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         final MockWebContext context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");

@@ -2,14 +2,13 @@ package org.pac4j.oauth.profile.ok;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.client.OkClient;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -68,10 +67,10 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile> {
         return API_BASE_URL + baseParams + "&access_token=" + accessToken.getAccessToken() + "&sig=" + finalSign;
     }
 
-    protected String getMD5SignAsHexString(final String strForEncoding) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    protected String getMD5SignAsHexString(final String strForEncoding) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         StringBuilder result = new StringBuilder();
-        for (byte aByte : md.digest(strForEncoding.getBytes("UTF-8"))) {
+        for (byte aByte : md.digest(strForEncoding.getBytes(StandardCharsets.UTF_8))) {
             if ((0xff & aByte) < 0x10) {
                 result.append("0").append(Integer.toHexString(0xFF & aByte));
             } else {
@@ -82,7 +81,7 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile> {
     }
 
     @Override
-    public OkProfile extractUserProfile(String body) throws HttpAction {
+    public OkProfile extractUserProfile(String body) {
         final OkProfile profile = newProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {

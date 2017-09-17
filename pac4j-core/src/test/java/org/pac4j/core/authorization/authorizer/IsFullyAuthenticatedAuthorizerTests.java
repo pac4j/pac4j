@@ -29,7 +29,7 @@ public final class IsFullyAuthenticatedAuthorizerTests extends IsAuthenticatedAu
     }
 
     @Test
-    public void testCommonRmeProfile() throws HttpAction {
+    public void testCommonRmeProfile() {
         profile.setRemembered(true);
         profiles.add(profile);
         assertFalse(authorizer.isAuthorized(null, profiles));

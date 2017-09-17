@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -49,21 +48,21 @@ public final class DirectFormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialsMissingUsername() throws HttpAction {
+    public void testGetCredentialsMissingUsername() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)));
     }
 
     @Test
-    public void testGetCredentialsMissingPassword() throws HttpAction {
+    public void testGetCredentialsMissingPassword() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)));
     }
 
     @Test
-    public void testGetBadCredentials() throws HttpAction {
+    public void testGetBadCredentials() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -71,7 +70,7 @@ public final class DirectFormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetGoodCredentials() throws HttpAction {
+    public void testGetGoodCredentials() {
         final DirectFormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -81,7 +80,7 @@ public final class DirectFormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetUserProfile() throws HttpAction {
+    public void testGetUserProfile() {
         final DirectFormClient formClient = getFormClient();
         formClient.setProfileCreator((credentials, context) -> {
             String username = credentials.getUsername();

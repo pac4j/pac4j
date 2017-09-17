@@ -2,7 +2,6 @@ package org.pac4j.oauth.profile.paypal;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -14,18 +13,18 @@ import java.util.Arrays;
 
 /**
  * This class is the PayPal profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.2
  */
 public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProfile> {
-    
+
     public static final String ADDRESS = "address";
     public static final String LANGUAGE = "language";
     public static final String ZONEINFO = "zoneinfo";
     public static final String NAME = "name";
     public static final String GIVEN_NAME = "given_name";
-    
+
     public PayPalProfileDefinition() {
         super(x -> new PayPalProfile());
         Arrays.stream(new String[] {ZONEINFO, NAME, GIVEN_NAME}).forEach(a -> primary(a, Converters.STRING));
@@ -39,7 +38,7 @@ public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProf
     }
 
     @Override
-    public PayPalProfile extractUserProfile(final String body) throws HttpAction {
+    public PayPalProfile extractUserProfile(final String body) {
         final PayPalProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

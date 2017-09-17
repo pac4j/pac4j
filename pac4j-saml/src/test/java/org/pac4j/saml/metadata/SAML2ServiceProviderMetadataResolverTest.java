@@ -11,7 +11,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
   private SAML2ServiceProviderMetadataResolver metadataResolver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     SAML2ClientConfiguration configuration = new SAML2ClientConfiguration();
     configuration.setServiceProviderMetadataResource(new FileSystemResource("target"));
     configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));

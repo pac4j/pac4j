@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class RequireAnyRoleAuthorizer<U extends CommonProfile> extends AbstractR
     public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final String element) throws HttpAction {
+    protected boolean check(final WebContext context, final U profile, final String element) {
         final Set<String> profileRoles = profile.getRoles();
         return profileRoles.contains(element);
     }

@@ -10,7 +10,6 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -81,7 +80,7 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
     }
 
     @Override
-    public void validate(final OidcCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final OidcCredentials credentials, final WebContext context) {
         init(context);
 
         final AuthorizationCode code = credentials.getCode();

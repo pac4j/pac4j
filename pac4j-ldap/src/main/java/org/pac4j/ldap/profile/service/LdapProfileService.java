@@ -162,7 +162,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             connection = connectionFactory.getConnection();
             connection.open();
             final SearchOperation search = new SearchOperation(connection);
-            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value, 
+            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value,
                 names.toArray(new String[names.size()]))).getResult();
             for (final LdapEntry entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
@@ -191,7 +191,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
         init(context);
 
         final String username = credentials.getUsername();
@@ -249,8 +249,8 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator, 
-                "usersDn", usersDn, "idAttribute", getIdAttribute(), "attributes", getAttributes(), 
+        return CommonHelper.toString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator,
+                "usersDn", usersDn, "idAttribute", getIdAttribute(), "attributes", getAttributes(),
                 "profileDefinition", getProfileDefinition());
     }
 }

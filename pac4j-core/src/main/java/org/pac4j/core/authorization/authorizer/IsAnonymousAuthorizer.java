@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 
@@ -22,12 +21,12 @@ public class IsAnonymousAuthorizer<U extends CommonProfile> extends AbstractChec
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<U> profiles) throws HttpAction {
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
         return isAllAuthorized(context, profiles);
     }
 
     @Override
-    public boolean isProfileAuthorized(final WebContext context, final U profile) throws HttpAction {
+    public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile == null || profile instanceof AnonymousProfile;
     }
 

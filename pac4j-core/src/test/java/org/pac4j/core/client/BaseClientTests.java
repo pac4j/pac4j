@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public final class BaseClientTests implements TestsConstants {
 
     @Test
-    public void testDirectClient() throws HttpAction {
+    public void testDirectClient() {
         final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -33,7 +33,7 @@ public final class BaseClientTests implements TestsConstants {
     }
 
     @Test
-    public void testIndirectClientWithImmediate() throws HttpAction {
+    public void testIndirectClientWithImmediate() {
         final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -43,7 +43,7 @@ public final class BaseClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNullCredentials() throws HttpAction {
+    public void testNullCredentials() {
         final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
@@ -72,7 +72,7 @@ public final class BaseClientTests implements TestsConstants {
     }
 
     @Test
-    public void testSaveAlreadyTried() throws HttpAction {
+    public void testSaveAlreadyTried() {
         final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();

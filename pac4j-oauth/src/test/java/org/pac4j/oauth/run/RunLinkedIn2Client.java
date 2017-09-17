@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public final class RunLinkedIn2Client extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunLinkedIn2Client().run();
     }
 

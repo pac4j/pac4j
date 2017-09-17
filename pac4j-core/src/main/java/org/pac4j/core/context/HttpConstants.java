@@ -2,7 +2,7 @@ package org.pac4j.core.context;
 
 /**
  * Some HTTP constants.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -29,7 +29,7 @@ public interface HttpConstants {
     String SCHEME_HTTPS = "https";
 
     int DEFAULT_CONNECT_TIMEOUT = 500;
-    
+
     int DEFAULT_READ_TIMEOUT = 5000;
 
     String LOCATION_HEADER = "Location";
@@ -45,8 +45,6 @@ public interface HttpConstants {
     String AUTHENTICATE_HEADER = "WWW-Authenticate";
 
     String CONTENT_TYPE_HEADER = "Content-Type";
-
-    String UTF8_ENCODING = "UTF-8";
 
     String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 

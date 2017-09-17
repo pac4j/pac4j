@@ -10,7 +10,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static org.junit.Assert.*;
@@ -66,7 +66,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testRedirectionUrl() throws HttpAction {
+    public void testRedirectionUrl() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
         basicAuthClient.redirect(context);
@@ -88,36 +88,35 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialsBadFormatHeader() throws HttpAction {
+    public void testGetCredentialsBadFormatHeader() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = getContextWithAuthorizationHeader("Basic fakeHeader");
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
-    public void testGetCredentialsMissingSemiColon() throws HttpAction, UnsupportedEncodingException {
+    public void testGetCredentialsMissingSemiColon() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = getContextWithAuthorizationHeader(
-                "Basic " + Base64.getEncoder().encodeToString("fake".getBytes(HttpConstants.UTF8_ENCODING)));
+                "Basic " + Base64.getEncoder().encodeToString("fake".getBytes(StandardCharsets.UTF_8)));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
-    public void testGetCredentialsBadCredentials() throws UnsupportedEncodingException {
+    public void testGetCredentialsBadCredentials() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + PASSWORD;
         final MockWebContext context = getContextWithAuthorizationHeader("Basic "
-                + Base64.getEncoder().encodeToString(header.getBytes(HttpConstants.UTF8_ENCODING)));
+                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
-    public void testGetCredentialsGoodCredentials() throws HttpAction, UnsupportedEncodingException {
+    public void testGetCredentialsGoodCredentials() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + USERNAME;
-        final UsernamePasswordCredentials credentials = basicAuthClient.getCredentials(
-                getContextWithAuthorizationHeader(
-                        "Basic " + Base64.getEncoder().encodeToString(header.getBytes(HttpConstants.UTF8_ENCODING))));
+        final UsernamePasswordCredentials credentials= basicAuthClient.getCredentials(getContextWithAuthorizationHeader(
+                "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8))));
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }

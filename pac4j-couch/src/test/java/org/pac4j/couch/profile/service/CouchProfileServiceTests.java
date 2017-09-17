@@ -57,7 +57,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         CouchProfile couchProfile = new CouchProfile();
         couchProfile.build(IDPERSON1, properties1);
         couchProfileService.create(couchProfile, PASSWORD);
-        // second person, 
+        // second person,
         final Map<String, Object> properties2 = new HashMap<>();
         properties2.put(USERNAME, MULTIPLE_USERNAME);
         couchProfile = new CouchProfile();
@@ -84,7 +84,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     }
 
     @Test(expected = AccountNotFoundException.class)
-    public void authentFailed() throws HttpAction, CredentialsException {
+    public void authentFailed() {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
@@ -92,7 +92,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
+    public void authentSuccessSingleAttribute() {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
@@ -108,7 +108,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+    public void testCreateUpdateFindDelete() {
         final CouchProfile profile = new CouchProfile();
         profile.setId(COUCH_ID);
         profile.setLinkedId(COUCH_LINKED_ID);

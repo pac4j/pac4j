@@ -57,6 +57,4 @@ public class KerberosCredentials extends Credentials {
     private String getTicketAsString(byte[] kerberosTicket) {
         return new String(kerberosTicket, StandardCharsets.UTF_8);
     }
-
-
 }

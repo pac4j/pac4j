@@ -23,7 +23,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U> 
+public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U>
         implements ProfileService<U>, Authenticator<UsernamePasswordCredentials> {
 
     public static final String ID = "id";
@@ -246,7 +246,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             }
             final U profile = (U) javaSerializationHelper.unserializeFromBase64(serializedProfile);
             if (profile == null) {
-                throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " + 
+                throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " +
                     "names you want to retrieve");
             }
             final Object id = storageAttributes.get(getIdAttribute());
@@ -271,7 +271,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
         init(context);
 
         assertNotNull("credentials", credentials);

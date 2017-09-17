@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class CheckProfileTypeAuthorizer<U extends CommonProfile> extends Abstrac
     }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final Class<U> element) throws HttpAction {
+    protected boolean check(final WebContext context, final U profile, final Class<U> element) {
         return profile.getClass().isAssignableFrom(element);
     }
 }

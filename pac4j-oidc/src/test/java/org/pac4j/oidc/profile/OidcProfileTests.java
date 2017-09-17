@@ -47,7 +47,7 @@ public final class OidcProfileTests implements TestsConstants {
     }
 
     @Test
-    public void testReadWriteObject() throws Exception {
+    public void testReadWriteObject() {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setIdTokenString(ID_TOKEN);

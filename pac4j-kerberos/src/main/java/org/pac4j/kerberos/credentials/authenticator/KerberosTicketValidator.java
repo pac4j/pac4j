@@ -1,6 +1,5 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
-import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.kerberos.client.direct.DirectKerberosClient;
 
 /**
@@ -21,7 +20,6 @@ public interface KerberosTicketValidator {
      *
      * @param token Kerbeos/SPNEGO ticket
      * @return authenticated kerberos principal
-     * @throws BadCredentialsException if the ticket is not valid
      */
-    KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException;
+    KerberosTicketValidation validateTicket(byte[] token);
 }

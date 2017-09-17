@@ -20,14 +20,14 @@ import org.pac4j.core.util.CommonHelper;
  * <p>This class is the direct client to authenticate users on a CAS server for a web application in a stateless way: when trying to access
  * a protected area, the user will be redirected to the CAS server for login and then back directly to this originally requested url.</p>
  *
- * <p>You should generally use the {@link org.pac4j.cas.client.CasClient} instead (this one is very specific and was designed for OAuth / 
+ * <p>You should generally use the {@link org.pac4j.cas.client.CasClient} instead (this one is very specific and was designed for OAuth /
  * OpenID Connect implementations in the CAS server.</p>
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
  * <p>As no session is meant to be created, this client does not handle CAS logout requests.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be 
+ * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
  * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
  *
@@ -45,7 +45,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected TokenCredentials retrieveCredentials(final WebContext context) {
         init(context);
         try {
             String currentUrl = configuration.computeFinalUrl(context.getFullRequestURL(), context);
@@ -96,7 +96,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     @Override
     protected void defaultAuthenticator(final Authenticator authenticator) {
-        throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is " 
+        throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "
             + "automatically created for each request");
     }
 

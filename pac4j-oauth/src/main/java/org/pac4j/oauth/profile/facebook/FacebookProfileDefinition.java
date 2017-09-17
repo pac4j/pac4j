@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.facebook;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
@@ -17,6 +16,9 @@ import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConv
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -118,7 +120,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
     }
 
     /**
-     * The code in this method is based on this blog post: 
+     * The code in this method is based on this blog post:
      * https://www.sammyk.me/the-single-most-important-way-to-make-your-facebook-app-more-secure
      * and this answer: https://stackoverflow.com/questions/7124735/hmac-sha256-algorithm-for-signature-calculation
      *
@@ -130,19 +132,19 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
     public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final OAuth20Configuration configuration) {
         try {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes("UTF-8"), "HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secret_key);
             String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
-                .getBytes("UTF-8")));
+                .getBytes(StandardCharsets.UTF_8)));
             final String computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return computedUrl;
-        } catch (final Exception e) {
+        } catch (final InvalidKeyException | NoSuchAlgorithmException e) {
             throw new TechnicalException("Unable to compute appsecret_proof", e);
         }
     }
 
     @Override
-    public FacebookProfile extractUserProfile(final String body) throws HttpAction {
+    public FacebookProfile extractUserProfile(final String body) {
         final FacebookProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

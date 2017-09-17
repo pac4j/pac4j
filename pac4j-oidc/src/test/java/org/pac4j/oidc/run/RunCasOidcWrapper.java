@@ -19,7 +19,7 @@ public class RunCasOidcWrapper extends RunClient {
 
     private final static String CLIENT_ID = "testoidc";
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         new RunCasOidcWrapper().run();
     }
 

@@ -92,7 +92,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         return new MongoClient("localhost", PORT);
     }
 
-    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction, CredentialsException{
+    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), attribute);
         authenticator.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
@@ -102,7 +102,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     }
 
     @Test
-    public void testGoodUsernameAttribute() throws HttpAction, CredentialsException {
+    public void testGoodUsernameAttribute() {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -114,7 +114,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     }
 
     @Test
-    public void testGoodUsernameNoAttribute() throws HttpAction, CredentialsException {
+    public void testGoodUsernameNoAttribute() {
         final UsernamePasswordCredentials credentials = login(GOOD_USERNAME, PASSWORD, "");
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -126,22 +126,22 @@ public final class MongoProfileServiceIT implements TestsConstants {
     }
 
     @Test
-    public void testMultipleUsername() throws HttpAction, CredentialsException {
+    public void testMultipleUsername() {
         TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
     }
 
     @Test
-    public void testBadUsername() throws HttpAction, CredentialsException {
+    public void testBadUsername() {
         TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class, "No account found for: michael");
     }
 
     @Test
-    public void testBadPassword() throws HttpAction, CredentialsException {
+    public void testBadPassword() {
         TestsHelper.expectException(() ->login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class, "Bad credentials for: jle");
     }
 
     @Test
-    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+    public void testCreateUpdateFindDelete() {
         final ObjectId objectId = new ObjectId();
         final MongoProfile profile = new MongoProfile();
         profile.setId(MONGO_ID);

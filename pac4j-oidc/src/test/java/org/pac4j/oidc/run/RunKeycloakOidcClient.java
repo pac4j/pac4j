@@ -10,13 +10,13 @@ import org.pac4j.oidc.client.KeycloakOidcClient;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 
 /**
- * Run a manual test for keycloak (http://www.keycloak.org/) 
+ * Run a manual test for keycloak (http://www.keycloak.org/)
  *
  * @author Julio Arrebola
  * @since 2.0.0
  */
 public class RunKeycloakOidcClient extends RunClient {
-    
+
     // Test values
     private static final String CLIENT_ID="test";
     private static final String SECRET_VALUE="secret";
@@ -25,7 +25,7 @@ public class RunKeycloakOidcClient extends RunClient {
     private static final String CALLBACK_VALUE=PAC4J_BASE_URL;
     private static final String LOGIN="user";
     private static final String PASSWORD_VALUE="password";
-    
+
     // Profile values
     private static final String IDENTIFIER="IDENTIFIER";
     private static final String NAME_VALUE="Name";
@@ -35,7 +35,7 @@ public class RunKeycloakOidcClient extends RunClient {
     private static final String EMAIL_VALUE="test@test.com";
     private static final String ISSUER="http://localhost:8080/auth/realms/test";
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         new RunKeycloakOidcClient().run();
     }
 

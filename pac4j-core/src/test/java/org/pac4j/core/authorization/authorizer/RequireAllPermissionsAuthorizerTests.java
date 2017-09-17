@@ -3,7 +3,6 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +42,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsOkDifferentOrder() throws HttpAction {
+    public void testHasAllPermissionsOkDifferentOrder() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -51,7 +50,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsOkDifferentOrderTwoProfiles() throws HttpAction {
+    public void testHasAllPermissionsOkDifferentOrderTwoProfiles() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -60,7 +59,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsOkDifferentOrder2() throws HttpAction {
+    public void testHasAllPermissionsOkDifferentOrder2() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(Arrays.asList(PERMISSION3, PERMISSION1));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -68,7 +67,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsOkDifferentOrder3() throws HttpAction {
+    public void testHasAllPermissionsOkDifferentOrder3() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
         authorizer.setElements(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
@@ -77,7 +76,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsOkDifferentOrder4() throws HttpAction {
+    public void testHasAllPermissionsOkDifferentOrder4() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
         authorizer.setElements(new HashSet<>(Arrays.asList(PERMISSION3, PERMISSION1)));
         profile.addPermission(PERMISSION1);
@@ -86,7 +85,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsOkDifferentOrder5() throws HttpAction {
+    public void testHasAllPermissionsOkDifferentOrder5() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
         authorizer.setElements(Arrays.asList(PERMISSION3, PERMISSION1));
         profile.addPermission(PERMISSION1);
@@ -95,7 +94,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsNull() throws HttpAction {
+    public void testHasAllPermissionsNull() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer((List<String>) null);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -103,7 +102,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsEmpty() throws HttpAction {
+    public void testHasAllPermissionsEmpty() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(new String[]{});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -111,7 +110,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     }
 
     @Test
-    public void testHasAllPermissionsTwoPermissionsFail() throws HttpAction {
+    public void testHasAllPermissionsTwoPermissionsFail() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(new String[]{PERMISSION3, PERMISSION1});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION2);

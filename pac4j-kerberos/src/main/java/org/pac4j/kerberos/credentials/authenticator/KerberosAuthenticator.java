@@ -2,7 +2,6 @@ package org.pac4j.kerberos.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -38,7 +37,7 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
     }
 
     @Override
-    public void validate(KerberosCredentials credentials, WebContext context) throws CredentialsException {
+    public void validate(KerberosCredentials credentials, WebContext context) {
         init(context);
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());

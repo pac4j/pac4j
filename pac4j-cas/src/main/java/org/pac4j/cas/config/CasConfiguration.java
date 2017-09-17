@@ -5,13 +5,14 @@ import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.DefaultCasLogoutHandler;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.http.DefaultUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * CAS configuration.
@@ -31,7 +32,7 @@ public class CasConfiguration extends InitializableWebObject {
 
     public final static String RELAY_STATE_PARAMETER = "RelayState";
 
-    private String encoding = HttpConstants.UTF8_ENCODING;
+    private String encoding = StandardCharsets.UTF_8.name();
 
     private String loginUrl;
 
@@ -333,7 +334,7 @@ public class CasConfiguration extends InitializableWebObject {
         return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, 
+                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance,
                 "postLogoutUrlParameter", this.postLogoutUrlParameter,
                 "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver);
     }

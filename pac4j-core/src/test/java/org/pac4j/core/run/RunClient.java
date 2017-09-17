@@ -1,7 +1,6 @@
 package org.pac4j.core.run;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.*;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -26,7 +26,7 @@ public abstract class RunClient implements TestsConstants {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void run() throws Exception {
+    public void run() {
         final IndirectClient client = getClient();
         final MockWebContext context = MockWebContext.create();
         final String url = client.getRedirectAction(context).getLocation();
@@ -36,7 +36,7 @@ public abstract class RunClient implements TestsConstants {
             logger.warn("You can CANCEL the authentication.");
         }
         logger.warn("Returned url (copy/paste the fragment starting before the question mark of the query string):");
-        final Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
+        final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
         final Credentials credentials = client.getCredentials(context);
@@ -115,7 +115,7 @@ public abstract class RunClient implements TestsConstants {
             final String[] parts = keyValue.split("=");
             if (parts != null && parts.length >= 2) {
                 try {
-                    parameters.put(parts[0], URLDecoder.decode(parts[1], HttpConstants.UTF8_ENCODING));
+                    parameters.put(parts[0], URLDecoder.decode(parts[1], StandardCharsets.UTF_8.name()));
                 } catch (final UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }

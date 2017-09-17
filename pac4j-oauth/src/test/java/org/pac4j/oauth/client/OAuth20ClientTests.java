@@ -2,15 +2,13 @@ package org.pac4j.oauth.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,7 +31,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testState() throws MalformedURLException, HttpAction {
+    public void testState() throws MalformedURLException {
         FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("OK");
@@ -42,7 +40,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testSetState() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
+    public void testSetState() throws MalformedURLException {
         FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("oldstate");
@@ -56,7 +54,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testStateRandom() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
+    public void testStateRandom() throws MalformedURLException {
         OAuth20Client client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
@@ -69,19 +67,19 @@ public final class OAuth20ClientTests implements TestsConstants {
         assertNotEquals(stringMap.get("state"), stringMap2.get("state"));
     }
 
-    public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
-        Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+    public static Map<String, String> splitQuery(URL url) {
+        Map<String, String> query_pairs = new LinkedHashMap<>();
         String query = url.getQuery();
         String[] pairs = query.split("&");
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
-            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            query_pairs.put(CommonHelper.urlEncode(pair.substring(0, idx)), CommonHelper.urlEncode(pair.substring(idx + 1)));
         }
         return query_pairs;
     }
 
     @Test
-    public void testGetRedirectionGithub() throws HttpAction {
+    public void testGetRedirectionGithub() {
         String url = getClient().getRedirectAction(MockWebContext.create()).getLocation();
         assertTrue(url != null && !url.isEmpty());
     }
@@ -135,7 +133,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testDefaultScopeGoogle() throws HttpAction {
+    public void testDefaultScopeGoogle() {
         getGoogleClient().redirect(MockWebContext.create());
     }
 

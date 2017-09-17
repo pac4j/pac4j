@@ -3,7 +3,6 @@ package org.pac4j.http.credentials.authenticator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -41,7 +40,7 @@ public class IpRegexpAuthenticator extends ProfileDefinitionAware<IpProfile> imp
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    public void validate(final TokenCredentials credentials, final WebContext context) {
         init(context);
 
         final String ip = credentials.getToken();

@@ -44,7 +44,7 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> extends Initializabl
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) throws HttpAction {
+    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         init(context);
         final String logoutUrl = configuration.getLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl)) {

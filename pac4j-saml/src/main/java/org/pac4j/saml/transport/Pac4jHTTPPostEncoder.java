@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Pac4j implementation extending directly the {@link AbstractMessageEncoder} as intermediate classes use the J2E HTTP response.
@@ -176,20 +176,16 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
         log.debug("Marshalling and Base64 encoding SAML message");
         Element domMessage = marshallMessage(outboundMessage);
 
-        try {
-            String messageXML = SerializeSupport.nodeToString(domMessage);
-            log.trace("Output XML message: {}", messageXML);
-            String encodedMessage = Base64Support.encode(messageXML.getBytes("UTF-8"), Base64Support.UNCHUNKED);
-            if (outboundMessage instanceof RequestAbstractType) {
-                velocityContext.put("SAMLRequest", encodedMessage);
-            } else if (outboundMessage instanceof StatusResponseType) {
-                velocityContext.put("SAMLResponse", encodedMessage);
-            } else {
-                throw new MessageEncodingException(
-                        "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new MessageEncodingException("Unable to encode message, UTF-8 encoding is not supported");
+        String messageXML = SerializeSupport.nodeToString(domMessage);
+        log.trace("Output XML message: {}", messageXML);
+        String encodedMessage = Base64Support.encode(messageXML.getBytes(StandardCharsets.UTF_8), Base64Support.UNCHUNKED);
+        if (outboundMessage instanceof RequestAbstractType) {
+            velocityContext.put("SAMLRequest", encodedMessage);
+        } else if (outboundMessage instanceof StatusResponseType) {
+            velocityContext.put("SAMLResponse", encodedMessage);
+        } else {
+            throw new MessageEncodingException(
+                    "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
         }
 
         String relayState = SAMLBindingSupport.getRelayState(messageContext);

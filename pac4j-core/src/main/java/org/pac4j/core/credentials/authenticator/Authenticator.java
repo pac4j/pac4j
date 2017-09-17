@@ -3,7 +3,6 @@ package org.pac4j.core.credentials.authenticator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 
 /**
  * An authenticator is responsible for validating {@link Credentials} and should throw a {@link CredentialsException}
@@ -19,8 +18,6 @@ public interface Authenticator<C extends Credentials> {
      *
      * @param credentials the given credentials
      * @param context the web context
-     * @throws HttpAction requires a specific HTTP action if necessary
-     * @throws CredentialsException the credentials are invalid
      */
-    void validate(C credentials, WebContext context) throws HttpAction, CredentialsException;
+    void validate(C credentials, WebContext context);
 }

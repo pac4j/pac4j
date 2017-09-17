@@ -34,12 +34,12 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     protected abstract void clientInit(WebContext context);
 
     @Override
-    public final HttpAction redirect(final WebContext context) throws HttpAction {
+    public final HttpAction redirect(final WebContext context) {
         throw new TechnicalException("direct clients do not support redirections");
     }
 
     @Override
-    public final C getCredentials(final WebContext context) throws HttpAction {
+    public final C getCredentials(final WebContext context) {
         init(context);
         return retrieveCredentials(context);
     }

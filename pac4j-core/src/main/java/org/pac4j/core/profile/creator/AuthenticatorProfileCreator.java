@@ -2,7 +2,6 @@ package org.pac4j.core.profile.creator;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -16,7 +15,7 @@ public class AuthenticatorProfileCreator<C extends Credentials, P extends Common
     public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator<>();
 
     @Override
-    public P create(final C credentials, final WebContext context) throws HttpAction {
+    public P create(final C credentials, final WebContext context) {
         return (P) credentials.getUserProfile();
     }
 }

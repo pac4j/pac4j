@@ -7,7 +7,6 @@ import javax.security.auth.kerberos.KerberosPrincipal;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * Result of ticket validation
  *
@@ -45,8 +44,8 @@ public class KerberosTicketValidation {
     }
 
     public Subject subject() {
-        final Set<KerberosPrincipal> princs = new HashSet<KerberosPrincipal>();
+        final Set<KerberosPrincipal> princs = new HashSet<>();
         princs.add(new KerberosPrincipal(servicePrincipal));
-        return new Subject(false, princs, new HashSet<Object>(), new HashSet<Object>());
+        return new Subject(false, princs, new HashSet<>(), new HashSet<>());
     }
 }

@@ -3,8 +3,6 @@ package org.pac4j.kerberos.credentials.extractor;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 
 import java.nio.charset.StandardCharsets;
@@ -24,7 +22,7 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
     }
 
     @Override
-    public KerberosCredentials extract(WebContext context) throws CredentialsException, HttpAction {
+    public KerberosCredentials extract(final WebContext context) {
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null) {
             return null;
@@ -40,7 +38,5 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
         byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
 
         return new KerberosCredentials(kerberosTicket, clientName);
-
     }
-
 }

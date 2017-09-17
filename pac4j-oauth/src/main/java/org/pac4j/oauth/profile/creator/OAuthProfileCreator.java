@@ -8,7 +8,6 @@ import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -54,7 +53,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     }
 
     @Override
-    public U create(final C credentials, final WebContext context) throws HttpAction {
+    public U create(final C credentials, final WebContext context) {
         try {
             final T token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);
@@ -68,18 +67,16 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      *
      * @param credentials credentials
      * @return the access token
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract T getAccessToken(final C credentials) throws HttpAction;
+    protected abstract T getAccessToken(final C credentials);
 
     /**
      * Retrieve the user profile from the access token.
      *
      * @param accessToken the access token
      * @return the user profile
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected U retrieveUserProfileFromToken(final T accessToken) throws HttpAction {
+    protected U retrieveUserProfileFromToken(final T accessToken) {
         final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         final String body = sendRequestForData(accessToken, profileUrl, profileDefinition.getProfileVerb());

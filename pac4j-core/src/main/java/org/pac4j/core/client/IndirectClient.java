@@ -64,7 +64,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected abstract void clientInit(WebContext context);
 
     @Override
-    public final HttpAction redirect(final WebContext context) throws HttpAction {
+    public final HttpAction redirect(final WebContext context) {
         final RedirectAction action = getRedirectAction(context);
         return action.perform(context);
     }
@@ -77,9 +77,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context context
      * @return the redirection action
-     * @throws HttpAction requires an additional HTTP action
      */
-    public RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
+    public RedirectAction getRedirectAction(final WebContext context) {
         init(context);
         // it's an AJAX request -> unauthorized (with redirection url in header)
         if (ajaxRequestResolver.isAjax(context)) {
@@ -117,10 +116,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context the current web context
      * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
      */
     @Override
-    public final C getCredentials(final WebContext context) throws HttpAction {
+    public final C getCredentials(final WebContext context) {
         init(context);
         final C credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
@@ -133,7 +131,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) throws HttpAction {
+    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         init(context);
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }

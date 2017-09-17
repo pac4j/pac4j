@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 public class SAML2DefaultResponseValidatorTests {
 
     @Test
-    public void testDoesNotWantAssertionsSignedWithNullContext() throws Exception {
+    public void testDoesNotWantAssertionsSignedWithNullContext() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
         assertFalse("Expected wantAssertionsSigned == false", validator.wantsAssertionsSigned(null));
     }
@@ -28,13 +28,13 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test
-    public void testWantsAssertionsSignedWithNullContext() throws Exception {
+    public void testWantsAssertionsSignedWithNullContext() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
         assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(null));
     }
 
     @Test
-    public void testDoesNotWantAssertionsSignedWithNullSPSSODescriptor() throws Exception {
+    public void testDoesNotWantAssertionsSignedWithNullSPSSODescriptor() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
         SAML2MessageContext context = new SAML2MessageContext();
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
@@ -42,7 +42,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test
-    public void testWantsAssertionsSignedWithNullSPSSODescriptor() throws Exception {
+    public void testWantsAssertionsSignedWithNullSPSSODescriptor() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
         SAML2MessageContext context = new SAML2MessageContext();
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
@@ -50,7 +50,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test
-    public void testDoesNotWantAssertionsSignedWithValidSPSSODescriptor() throws Exception {
+    public void testDoesNotWantAssertionsSignedWithValidSPSSODescriptor() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
         SAML2MessageContext context = new SAML2MessageContext();
 
@@ -64,7 +64,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test
-    public void testWantsAssertionsSignedWithValidSPSSODescriptor() throws Exception {
+    public void testWantsAssertionsSignedWithValidSPSSODescriptor() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
         SAML2MessageContext context = new SAML2MessageContext();
 
@@ -78,7 +78,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test(expected = SAMLException.class)
-    public void testAssertionWithoutSignatureThrowsException() throws Exception {
+    public void testAssertionWithoutSignatureThrowsException() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
         SAML2MessageContext context = new SAML2MessageContext();
         SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();
@@ -88,7 +88,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test
-    public void testAssertionWithoutSignatureDoesNotThrowException() throws Exception {
+    public void testAssertionWithoutSignatureDoesNotThrowException() {
         SAML2DefaultResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
         SAML2MessageContext context = new SAML2MessageContext();
         SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();

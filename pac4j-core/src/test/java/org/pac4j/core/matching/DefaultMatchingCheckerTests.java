@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -41,43 +40,43 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     }
 
     @Test
-    public void testNoMatcherName() throws HttpAction {
+    public void testNoMatcherName() {
         assertTrue(checker.matches(null, null, new HashMap<>()));
     }
 
     @Test
-    public void testNoMatchers() throws HttpAction {
+    public void testNoMatchers() {
         TestsHelper.expectException(() -> checker.matches(null, NAME, null), TechnicalException.class, "matchersMap cannot be null");
     }
 
     @Test
-    public void testNoExistingMatcher() throws HttpAction {
+    public void testNoExistingMatcher()  {
         TestsHelper.expectException(() -> checker.matches(null, NAME, new HashMap<>()), TechnicalException.class, "matchersMap['" + NAME + "'] cannot be null");
     }
 
     @Test
-    public void testMatch() throws HttpAction {
+    public void testMatch() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         assertTrue(checker.matches(MockWebContext.create(), NAME, matchers));
     }
 
     @Test
-    public void testMatchCasTrim() throws HttpAction {
+    public void testMatchCasTrim() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         assertTrue(checker.matches(MockWebContext.create(), "  NAmE  ", matchers));
     }
 
     @Test
-    public void testDontMatch() throws HttpAction {
+    public void testDontMatch() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         assertFalse(checker.matches(null, NAME, matchers));
     }
 
     @Test
-    public void testMatchAll() throws HttpAction {
+    public void testMatchAll() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         matchers.put(VALUE, new NullContextMatcher());
@@ -85,7 +84,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     }
 
     @Test
-    public void testDontMatchOneOfThem() throws HttpAction {
+    public void testDontMatchOneOfThem() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         matchers.put(VALUE, new AlwaysFalseMatcher());

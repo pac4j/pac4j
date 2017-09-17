@@ -10,7 +10,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -56,9 +55,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      *
      * @param context the web context
      * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected C retrieveCredentials(final WebContext context) throws HttpAction {
+    protected C retrieveCredentials(final WebContext context) {
         try {
             final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
@@ -81,7 +79,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) throws HttpAction {
+    public final U getUserProfile(final C credentials, final WebContext context) {
         init(context);
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
@@ -106,9 +104,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param credentials the credentials
      * @param context the web context
      * @return the user profile
-     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected final U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
+    protected final U retrieveUserProfile(final C credentials, final WebContext context) {
         final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;

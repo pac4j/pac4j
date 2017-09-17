@@ -85,31 +85,31 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testNullClients() throws Exception {
+    public void testNullClients() {
         config.setClients(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "configClients cannot be null");
     }
 
     @Test
-    public void testNullClientFinder() throws Exception {
+    public void testNullClientFinder() {
         logic.setClientFinder(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "clientFinder cannot be null");
     }
 
     @Test
-    public void testNullAuthorizationChecker() throws Exception {
+    public void testNullAuthorizationChecker() {
         logic.setAuthorizationChecker(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "authorizationChecker cannot be null");
     }
 
     @Test
-    public void testNullMatchingChecker() throws Exception {
+    public void testNullMatchingChecker() {
         logic.setMatchingChecker(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "matchingChecker cannot be null");
     }
 
     @Test
-    public void testNotAuthenticated() throws Exception {
+    public void testNotAuthenticated() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
@@ -117,7 +117,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testNotAuthenticatedButMatcher() throws Exception {
+    public void testNotAuthenticatedButMatcher() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.addMatcher(NAME, context -> false);
@@ -128,7 +128,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testAlreadyAuthenticatedAndAuthorized() throws Exception {
+    public void testAlreadyAuthenticatedAndAuthorized() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(ID);
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
@@ -144,7 +144,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testAlreadyAuthenticatedNotAuthorized() throws Exception {
+    public void testAlreadyAuthenticatedNotAuthorized() {
         final CommonProfile profile = new CommonProfile();
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
@@ -158,7 +158,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthorizerThrowsRequiresHttpAction() throws Exception {
+    public void testAuthorizerThrowsRequiresHttpAction() {
         final CommonProfile profile = new CommonProfile();
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
@@ -173,7 +173,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDoubleDirectClient() throws Exception {
+    public void testDoubleDirectClient() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
@@ -191,7 +191,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDirectClientThrowsRequiresHttpAction() throws Exception {
+    public void testDirectClientThrowsRequiresHttpAction() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
         final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status("bad request", 400, context); }, profile);
@@ -203,7 +203,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDoubleDirectClientSupportingMultiProfile() throws Exception {
+    public void testDoubleDirectClientSupportingMultiProfile() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
@@ -223,7 +223,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDoubleDirectClientChooseDirectClient() throws Exception {
+    public void testDoubleDirectClientChooseDirectClient() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
@@ -258,7 +258,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testRedirectByIndirectClient() throws Exception {
+    public void testRedirectByIndirectClient() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         clients = NAME;
@@ -268,7 +268,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDoubleIndirectClientOneChosen() throws Exception {
+    public void testDoubleIndirectClientOneChosen() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
         final IndirectClient indirectClient2 = new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
@@ -280,7 +280,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testDoubleIndirectClientBadOneChosen() throws Exception {
+    public void testDoubleIndirectClientBadOneChosen() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
         final IndirectClient indirectClient2 = new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  */
 public final class RunStravaClient extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunStravaClient().run();
     }
 

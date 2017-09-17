@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This is {@link CasRestFormClient} able to communicate to
@@ -61,15 +62,13 @@ public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswor
             connection = HttpUtils.openPostConnection(ticketURL);
             final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), 
-                HttpConstants.UTF8_ENCODING));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
             out.write(payload);
             out.close();
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
-                try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), 
-                    HttpConstants.UTF8_ENCODING))) {
+                try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     return new TokenCredentials(in.readLine(), getClass().getSimpleName());
                 }
             }

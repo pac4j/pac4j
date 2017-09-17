@@ -4,8 +4,6 @@ import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.message.ParameterList;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.client.YahooOpenIdClient;
 import org.pac4j.openid.credentials.OpenIdCredentials;
@@ -34,7 +32,7 @@ public class YahooCredentialsExtractor implements CredentialsExtractor<OpenIdCre
     }
 
     @Override
-    public OpenIdCredentials extract(final WebContext context) throws HttpAction, CredentialsException {
+    public OpenIdCredentials extract(final WebContext context) {
         final String mode = context.getRequestParameter(OPENID_MODE);
         // cancelled authentication
         if (CommonHelper.areEquals(mode, CANCEL_MODE)) {

@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 public final class RunCasOAuthWrapperClient extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new RunCasOAuthWrapperClient().run();
     }
 

@@ -9,7 +9,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
@@ -86,7 +86,7 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testRenew() throws HttpAction {
+    public void testRenew() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final CasClient casClient = new CasClient(configuration);
@@ -102,7 +102,7 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGateway() throws HttpAction {
+    public void testGateway() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final CasClient casClient = new CasClient(configuration);
@@ -132,22 +132,18 @@ public final class CasClientTests implements TestsConstants {
     }
 
     private String deflateAndBase64(final String data) {
-        try {
-            final Deflater deflater = new Deflater();
-            deflater.setInput(data.getBytes(UTF8_ENCODING));
-            deflater.finish();
-            final byte[] buffer = new byte[data.length()];
-            final int resultSize = deflater.deflate(buffer);
-            final byte[] output = new byte[resultSize];
-            System.arraycopy(buffer, 0, output, 0, resultSize);
-            return DatatypeConverter.printBase64Binary(output);
-        } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException("Cannot find encoding:" + UTF8_ENCODING, e);
-        }
+        final Deflater deflater = new Deflater();
+        deflater.setInput(data.getBytes(StandardCharsets.UTF_8));
+        deflater.finish();
+        final byte[] buffer = new byte[data.length()];
+        final int resultSize = deflater.deflate(buffer);
+        final byte[] output = new byte[resultSize];
+        System.arraycopy(buffer, 0, output, 0, resultSize);
+        return DatatypeConverter.printBase64Binary(output);
     }
 
     @Test
-    public void testFrontLogout() throws HttpAction {
+    public void testFrontLogout() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final CasClient casClient = new CasClient(configuration);
