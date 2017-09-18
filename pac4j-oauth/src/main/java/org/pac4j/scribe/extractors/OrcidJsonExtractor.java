@@ -4,6 +4,8 @@ import com.github.scribejava.core.extractors.OAuth2AccessTokenJsonExtractor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.scribe.model.OrcidToken;
 
+import java.util.regex.Pattern;
+
 /**
  * This class represents a specific JSON extractor for ORCiD using OAuth protocol version 2. It could be part of the Scribe library.
  *
@@ -12,7 +14,7 @@ import org.pac4j.scribe.model.OrcidToken;
  */
 public class OrcidJsonExtractor extends OAuth2AccessTokenJsonExtractor {
 
-    public static final String ORCID_REGEX = "\"orcid\"\\s*:\\s*\"(\\S*?)\"";
+    public static final Pattern ORCID_REGEX = Pattern.compile("\"orcid\"\\s*:\\s*\"(\\S*?)\"");
 
     protected OrcidJsonExtractor() {
     }

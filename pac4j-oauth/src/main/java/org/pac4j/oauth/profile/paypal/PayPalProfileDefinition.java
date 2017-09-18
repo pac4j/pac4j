@@ -17,7 +17,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.4.2
  */
-public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProfile> {
+public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProfile, OAuth20Configuration> {
 
     public static final String ADDRESS = "address";
     public static final String LANGUAGE = "language";

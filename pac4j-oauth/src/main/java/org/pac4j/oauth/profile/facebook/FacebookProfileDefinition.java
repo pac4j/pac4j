@@ -7,8 +7,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.FacebookClient;
-import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
@@ -28,7 +26,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookProfileDefinition extends OAuth20ProfileDefinition<FacebookProfile> {
+public class FacebookProfileDefinition extends OAuth20ProfileDefinition<FacebookProfile, FacebookConfiguration> {
 
     public static final String NAME = "name";
     public static final String MIDDLE_NAME = "middle_name";
@@ -106,14 +104,13 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
-        final FacebookClient client = (FacebookClient) configuration.getClient();
-        String url = BASE_URL + "?fields=" + client.getFields();
-        if (client.getLimit() > DEFAULT_LIMIT) {
-            url += "&limit=" + client.getLimit();
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final FacebookConfiguration configuration) {
+        String url = BASE_URL + "?fields=" + configuration.getFields();
+        if (configuration.getLimit() > DEFAULT_LIMIT) {
+            url += "&limit=" + configuration.getLimit();
         }
         // possibly include the appsecret_proof parameter
-        if (client.getUseAppSecretProof()) {
+        if (configuration.isUseAppsecretProof()) {
             url = computeAppSecretProof(url, accessToken, configuration);
         }
         return url;
@@ -129,7 +126,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
      * @param configuration the current configuration
      * @return URL with the appsecret_proof parameter added
      */
-    public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final OAuth20Configuration configuration) {
+    public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final FacebookConfiguration configuration) {
         try {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");

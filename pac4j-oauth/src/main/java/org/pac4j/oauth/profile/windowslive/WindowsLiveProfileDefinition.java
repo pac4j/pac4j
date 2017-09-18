@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<WindowsLiveProfile> {
+public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<WindowsLiveProfile, OAuth20Configuration> {
 
     public static final String NAME = "name";
     public static final String LAST_NAME = "last_name";

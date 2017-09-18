@@ -56,7 +56,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testMissingCallbackUrl() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        TestsHelper.initShouldFail(basicAuthClient, "callbackUrl cannot be blank: set it up either on this IndirectClient or the global Config");
+        TestsHelper.initShouldFail(basicAuthClient, "callbackUrl cannot be blank: set it up either on this IndirectClient or on the global Config");
     }
 
     private IndirectBasicAuthClient getBasicAuthClient() {

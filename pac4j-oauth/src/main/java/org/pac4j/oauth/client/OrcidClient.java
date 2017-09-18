@@ -33,7 +33,6 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
         configuration.setApi(new OrcidApi20());
         configuration.setProfileDefinition(new OrcidProfileDefinition());
         configuration.setScope(this.scope);
-        configuration.setHasGrantType(true);
         configuration.setTokenAsHeader(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
             final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
@@ -45,7 +44,6 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
                 return false;
             }
         });
-        setConfiguration(configuration);
 
         super.clientInit(context);
     }

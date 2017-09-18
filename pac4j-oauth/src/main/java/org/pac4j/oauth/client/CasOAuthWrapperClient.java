@@ -12,7 +12,7 @@ import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
  * <p>The url of the OAuth endpoint of the CAS server must be set by using the {@link #setCasOAuthUrl(String)} method.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile}.</p>
  * <p>More information at https://wiki.jasig.org/display/CASUM/OAuth+server+support</p>
- * 
+ *
  * @author Jerome Leleu
  * @since 1.3.0
  */
@@ -32,20 +32,18 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
 
     public CasOAuthWrapperClient() {
     }
-    
+
     public CasOAuthWrapperClient(final String key, final String secret, final String casOAuthUrl) {
         setKey(key);
         setSecret(secret);
         setCasOAuthUrl(casOAuthUrl);
     }
-    
+
     @Override
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
         configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant, this.implicitFlow));
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
-        configuration.setHasGrantType(true);
-        setConfiguration(configuration);
         defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
 
         super.clientInit(context);
@@ -54,7 +52,7 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
     public String getCasOAuthUrl() {
         return this.casOAuthUrl;
     }
-    
+
     public void setCasOAuthUrl(final String casOAuthUrl) {
         CommonHelper.assertNotBlank("casOAuthUrl", casOAuthUrl);
         if (casOAuthUrl.endsWith("/")) {
@@ -63,11 +61,11 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
             this.casOAuthUrl = casOAuthUrl;
         }
     }
-    
+
     public boolean isSpringSecurityCompliant() {
         return this.springSecurityCompliant;
     }
-    
+
     public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
         this.springSecurityCompliant = springSecurityCompliant;
     }

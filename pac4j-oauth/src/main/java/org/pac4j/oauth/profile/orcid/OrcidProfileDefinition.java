@@ -14,7 +14,7 @@ import org.pac4j.scribe.model.OrcidToken;
  * @author Jens Tinglev
  * @since 1.6.0
  */
-public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfile> {
+public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfile, OAuth20Configuration> {
 
     public static final String ORCID = "path";
     public static final String FIRST_NAME = "given-names";

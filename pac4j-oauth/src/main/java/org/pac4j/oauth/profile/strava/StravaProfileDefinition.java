@@ -18,7 +18,7 @@ import java.util.List;
  * @since 1.7.0
  * @author Adrian Papusoi
  */
-public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProfile> {
+public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProfile, OAuth20Configuration> {
 
     public static final String ID = "id";
     public static final String RESOURCE_STATE = "resource_state";

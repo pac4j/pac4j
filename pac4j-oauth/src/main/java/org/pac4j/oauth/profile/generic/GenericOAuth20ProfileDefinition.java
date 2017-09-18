@@ -20,7 +20,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  *
  * @author Julio Arrebola
  */
-public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profile> {
+public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profile, OAuth20Configuration> {
 
 
     private final Map<String,String> profileAttributes = new HashMap<>();
@@ -42,17 +42,17 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
         }
     }
 
-    public void setProfileUrl(String profileUrl) {
+    public void setProfileUrl(final String profileUrl) {
         this.profileUrl = profileUrl;
     }
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
         return profileUrl;
     }
 
     @Override
-    public OAuth20Profile extractUserProfile(String body) {
+    public OAuth20Profile extractUserProfile(final String body) {
         final OAuth20Profile profile = new OAuth20Profile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {

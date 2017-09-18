@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
-import org.pac4j.oauth.client.VkClient;
-import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
@@ -18,7 +16,7 @@ import java.util.Arrays;
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  */
-public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile> {
+public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkConfiguration> {
 
     public static final String LAST_NAME = "last_name";
     public static final String SEX = "sex";
@@ -63,9 +61,8 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile> {
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
-        final VkClient client = (VkClient) configuration.getClient();
-        return BASE_URL + "?fields=" + client.getFields();
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final VkConfiguration configuration) {
+        return BASE_URL + "?fields=" + configuration.getFields();
     }
 
     @Override

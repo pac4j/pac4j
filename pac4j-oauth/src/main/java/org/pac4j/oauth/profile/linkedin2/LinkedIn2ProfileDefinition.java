@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.client.LinkedIn2Client;
-import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
@@ -19,7 +17,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedIn2Profile> {
+public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedIn2Profile, LinkedIn2Configuration> {
 
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
@@ -56,9 +54,8 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
-        final LinkedIn2Client client = (LinkedIn2Client) configuration.getClient();
-        return "https://api.linkedin.com/v1/people/~:(" + client.getFields() + ")?format=json";
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final LinkedIn2Configuration configuration) {
+        return "https://api.linkedin.com/v1/people/~:(" + configuration.getFields() + ")?format=json";
     }
 
     @Override

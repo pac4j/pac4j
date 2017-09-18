@@ -29,8 +29,6 @@ public class WindowsLiveClient extends OAuth20Client<WindowsLiveProfile> {
         configuration.setApi(new WindowsLiveApi20());
         configuration.setProfileDefinition(new WindowsLiveProfileDefinition());
         configuration.setScope("wl.basic");
-        configuration.setHasGrantType(true);
-        setConfiguration(configuration);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction
             .redirect("https://account.microsoft.com/auth/complete-signout"));
 

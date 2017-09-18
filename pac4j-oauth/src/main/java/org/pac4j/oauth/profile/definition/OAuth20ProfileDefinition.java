@@ -12,8 +12,7 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuth20ProfileDefinition<P extends OAuth20Profile>
-    extends OAuthProfileDefinition<P, OAuth2AccessToken, OAuth20Configuration> {
+public abstract class OAuth20ProfileDefinition<P extends OAuth20Profile, C extends OAuth20Configuration> extends OAuthProfileDefinition<P, OAuth2AccessToken, C> {
 
     public OAuth20ProfileDefinition() {
         super();

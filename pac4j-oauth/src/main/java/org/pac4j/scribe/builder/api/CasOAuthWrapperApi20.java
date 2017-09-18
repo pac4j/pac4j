@@ -12,14 +12,14 @@ import java.util.Map;
 
 /**
  * This class represents the OAuth API implementation for the CAS OAuth wrapper.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.3.0
  */
 public class CasOAuthWrapperApi20 extends DefaultApi20 {
-    
+
     private final String casServerUrl;
-    
+
     private final boolean springSecurityCompliant;
 
     private final boolean implicitFlow;
@@ -29,7 +29,7 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
         this.springSecurityCompliant = springSecurityCompliant;
         this.implicitFlow = implicitFlow;
     }
-    
+
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         if (this.springSecurityCompliant) {
@@ -38,12 +38,12 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
             return OAuth2AccessTokenExtractor.instance();
         }
     }
-    
+
     @Override
     public String getAccessTokenEndpoint() {
         return this.casServerUrl + "/accessToken?";
     }
-    
+
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
         if (implicitFlow) {
@@ -54,11 +54,12 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
                     config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
+
     @Override
     protected String getAuthorizationBaseUrl() {
         return this.casServerUrl + "/authorize";
-    }    
-    
+    }
+
     @Override
     public Verb getAccessTokenVerb() {
         if (this.springSecurityCompliant) {
@@ -66,5 +67,9 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
         } else {
             return Verb.POST;
         }
+    }
+
+    public String getCasServerUrl() {
+        return casServerUrl;
     }
 }

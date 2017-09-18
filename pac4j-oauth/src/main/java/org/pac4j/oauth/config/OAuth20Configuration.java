@@ -2,7 +2,6 @@ package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import org.pac4j.oauth.client.OAuth20Client;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20Configuration extends OAuthConfiguration<OAuth20Client, OAuth20Service, OAuth2AccessToken> {
+public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAuth2AccessToken> {
 
     public static final String OAUTH_CODE = "code";
 
@@ -29,7 +28,7 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Client, OAut
     private String stateData;
 
     public String getStateSessionAttributeName() {
-        return getClient().getName() + STATE_SESSION_PARAMETER;
+        return getClientName() + STATE_SESSION_PARAMETER;
     }
 
     public Map<String, String> getCustomParams() {

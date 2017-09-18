@@ -46,7 +46,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
         if (codeParameter != null) {
             final String code = OAuthEncoder.decode(codeParameter);
             logger.debug("code: {}", code);
-            return new OAuth20Credentials(code, this.configuration.getClient().getName());
+            return new OAuth20Credentials(code, this.configuration.getClientName());
         } else {
             final String message = "No credential found";
             throw new OAuthCredentialsException(message);

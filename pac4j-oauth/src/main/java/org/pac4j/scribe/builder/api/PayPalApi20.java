@@ -3,7 +3,6 @@ package org.pac4j.scribe.builder.api;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.utils.OAuthEncoder;
-import com.github.scribejava.core.utils.Preconditions;
 import java.util.Map;
 import org.pac4j.core.util.CommonHelper;
 
@@ -21,8 +20,8 @@ public class PayPalApi20 extends DefaultApi20 {
 
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
-        Preconditions.checkValidUrl(config.getCallback(),
-                                    "Must provide a valid url as callback. PayPal does not support OOB");
+        CommonHelper.assertNotBlank("config.getCallback()", config.getCallback(), "Must provide a valid url as callback. PayPal does not support OOB");
+
         final String nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
         return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
                              (config.getScope()!=null)?OAuthEncoder.encode(config.getScope()):"", nonce);
@@ -30,11 +29,10 @@ public class PayPalApi20 extends DefaultApi20 {
     @Override
     protected String getAuthorizationBaseUrl() {
         return "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize";
-    }  
-    
+    }
+
     @Override
     public String getAccessTokenEndpoint() {
         return "https://api.paypal.com/v1/identity/openidconnect/tokenservice";
     }
-
 }

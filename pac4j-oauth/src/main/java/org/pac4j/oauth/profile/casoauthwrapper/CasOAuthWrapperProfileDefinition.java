@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
 import java.util.Iterator;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<CasOAuthWrapperProfile> {
+public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<CasOAuthWrapperProfile, OAuth20Configuration> {
 
     public static final String IS_FROM_NEW_LOGIN = "isFromNewLogin";
     public static final String AUTHENTICATION_DATE = "authenticationDate";
@@ -37,7 +37,7 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
 
     @Override
     public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
-        return ((CasOAuthWrapperClient) configuration.getClient()).getCasOAuthUrl() + "/profile";
+        return ((CasOAuthWrapperApi20) configuration.getApi()).getCasServerUrl() + "/profile";
     }
 
     @Override

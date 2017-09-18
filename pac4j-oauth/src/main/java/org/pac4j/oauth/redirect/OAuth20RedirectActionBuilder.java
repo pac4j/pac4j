@@ -50,7 +50,7 @@ public class OAuth20RedirectActionBuilder extends InitializableWebObject impleme
                 service = this.configuration.buildService(context, state);
             } else {
 
-                service = this.configuration.getService();
+                service = this.configuration.buildService(context, null);
             }
             final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
             logger.debug("authorizationUrl: {}", authorizationUrl);
