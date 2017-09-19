@@ -53,9 +53,9 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkC
                 "application_key=" + configuration.getPublicKey() +
                         "&format=json" +
                         "&method=users.getCurrentUser";
-        String finalSign;
+        final String finalSign;
         try {
-            String preSign = getMD5SignAsHexString(accessToken.getAccessToken() + configuration.getSecret());
+            final String preSign = getMD5SignAsHexString(accessToken.getAccessToken() + configuration.getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());

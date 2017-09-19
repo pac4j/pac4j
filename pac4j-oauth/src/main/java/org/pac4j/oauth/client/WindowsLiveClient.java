@@ -1,10 +1,10 @@
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.apis.LiveApi;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfileDefinition;
-import org.pac4j.scribe.builder.api.WindowsLiveApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Windows Live (SkyDrive, Hotmail and Messenger).</p>
@@ -26,7 +26,7 @@ public class WindowsLiveClient extends OAuth20Client<WindowsLiveProfile> {
 
     @Override
     protected void clientInit(final WebContext context) {
-        configuration.setApi(new WindowsLiveApi20());
+        configuration.setApi(LiveApi.instance());
         configuration.setProfileDefinition(new WindowsLiveProfileDefinition());
         configuration.setScope("wl.basic");
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction

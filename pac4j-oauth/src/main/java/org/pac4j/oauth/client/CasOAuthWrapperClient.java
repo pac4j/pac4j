@@ -42,8 +42,13 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
     @Override
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant, this.implicitFlow));
+        configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant));
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
+        if (this.implicitFlow) {
+            configuration.setResponseType("token");
+        } else {
+            configuration.setResponseType("code");
+        }
         defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
 
         super.clientInit(context);

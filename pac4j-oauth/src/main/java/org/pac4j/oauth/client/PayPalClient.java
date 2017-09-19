@@ -22,22 +22,21 @@ public class PayPalClient extends OAuth20Client<PayPalProfile> {
 
     public final static String DEFAULT_SCOPE = "openid profile email address";
 
-    protected String scope = DEFAULT_SCOPE;
-
     public PayPalClient() {
+        setScope(DEFAULT_SCOPE);
     }
 
     public PayPalClient(final String key, final String secret) {
+        setScope(DEFAULT_SCOPE);
         setKey(key);
         setSecret(secret);
     }
 
     @Override
     protected void clientInit(final WebContext context) {
-        CommonHelper.assertNotBlank("scope", this.scope);
+        CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
-        configuration.setScope(this.scope);
         configuration.setTokenAsHeader(true);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.paypal.com/myaccount/logout"));
 
@@ -45,10 +44,10 @@ public class PayPalClient extends OAuth20Client<PayPalProfile> {
     }
 
     public String getScope() {
-        return this.scope;
+        return getConfiguration().getScope();
     }
 
     public void setScope(final String scope) {
-        this.scope = scope;
+        getConfiguration().setScope(scope);
     }
 }

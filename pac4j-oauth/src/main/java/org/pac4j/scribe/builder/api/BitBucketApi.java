@@ -5,12 +5,12 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 
 /**
  * This class represents the OAuth API implementation for Bitbucket.
- * 
+ *
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
 public class BitBucketApi extends DefaultApi10a {
-  
+
     private static final String OAUTH_ENDPOINT = "https://bitbucket.org/api/1.0/oauth/";
 
     @Override
@@ -19,7 +19,7 @@ public class BitBucketApi extends DefaultApi10a {
     }
 
     @Override
-    public String getAuthorizationUrl(OAuth1RequestToken requestToken) {
+    public String getAuthorizationUrl(final OAuth1RequestToken requestToken) {
         return OAUTH_ENDPOINT + "authenticate?oauth_token=" + requestToken.getToken();
     }
 

@@ -26,9 +26,8 @@ public class OrcidApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(OAuthConfig oAuthConfig, Map<String, String> additionalParams) {
-        // #show_login skips showing the registration form, which is only
-        // cluttersome.
+    public String getAuthorizationUrl(final OAuthConfig oAuthConfig, final Map<String, String> additionalParams) {
+        // #show_login skips showing the registration form, which is only cluttersome
         return String.format(AUTH_URL + "?client_id=%s&scope=%s&response_type=%s&redirect_uri=%s#show_login",
             oAuthConfig.getApiKey(), (oAuthConfig.getScope()!=null)?OAuthEncoder.encode(oAuthConfig.getScope()):"",
             "code", OAuthEncoder.encode(oAuthConfig.getCallback()));
@@ -36,8 +35,8 @@ public class OrcidApi20 extends DefaultApi20 {
     @Override
     protected String getAuthorizationBaseUrl() {
         return AUTH_URL;
-    }  
-    
+    }
+
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         return OrcidJsonExtractor.instance();

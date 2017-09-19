@@ -18,14 +18,14 @@ import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
  */
 public class GitHubClient extends OAuth20Client<GitHubProfile> {
 
-    public final static String DEFAULT_SCOPE = "user";
-
-    protected String scope = DEFAULT_SCOPE;
+    public static final String DEFAULT_SCOPE = "user";
 
     public GitHubClient() {
+        setScope(DEFAULT_SCOPE);
     }
 
     public GitHubClient(final String key, final String secret) {
+        setScope(DEFAULT_SCOPE);
         setKey(key);
         setSecret(secret);
     }
@@ -34,17 +34,16 @@ public class GitHubClient extends OAuth20Client<GitHubProfile> {
     protected void clientInit(final WebContext context) {
         configuration.setApi(GitHubApi.instance());
         configuration.setProfileDefinition(new GitHubProfileDefinition());
-        configuration.setScope(this.scope);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://github.com/logout"));
 
         super.clientInit(context);
     }
 
     public String getScope() {
-        return this.scope;
+        return getConfiguration().getScope();
     }
 
     public void setScope(final String scope) {
-        this.scope = scope;
+        getConfiguration().setScope(scope);
     }
 }

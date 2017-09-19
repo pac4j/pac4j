@@ -69,7 +69,7 @@ public final class RunFacebookClient extends RunClient {
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertTrue(CommonHelper.isNotBlank(profile.getThirdPartyId()));
-        assertEquals(-5, profile.getTimezone().intValue());
+        assertEquals(8, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getAbout());
         assertEquals("03/10/1979", new SimpleDateFormat("MM/dd/yyyy").format(profile.getBirthday()));

@@ -11,7 +11,8 @@ import org.pac4j.scribe.builder.api.StravaApi20;
  * <p>Use the key as the client_id and secret as the client_secret, both provided by Strava at:
  * <a href="https://www.strava.com/settings/api">https://www.strava.com/settings/api</a> </p>
  * <p>Set approvalPrompt to "force" if you want to force the authorization dialog to always display on Strava,
- * otherwise let it to "auto" (default value). </p>
+ * otherwise let it to "auto" (default value).</p>
+ * <p>The scope is a comma delimited string of ‘view_private’ and/or ‘write’, leave blank for read-only permissions.</p>
  * <p>More info at: <a href="http://strava.github.io/api/">http://strava.github.io/api/</a></p>
  *
  * @author Adrian Papusoi
@@ -19,10 +20,6 @@ import org.pac4j.scribe.builder.api.StravaApi20;
  */
 public class StravaClient extends OAuth20Client<StravaProfile> {
 
-    /**
-     * comma delimited string of ‘view_private’ and/or ‘write’, leave blank for read-only permissions.
-     */
-    protected String scope = null;
     /**
      * approvalPrompt is by default "auto".   <br>
      * If "force", then the authorization dialog is always displayed by Strava.
@@ -41,7 +38,6 @@ public class StravaClient extends OAuth20Client<StravaProfile> {
     protected void clientInit(final WebContext context) {
         configuration.setApi(new StravaApi20(approvalPrompt));
         configuration.setProfileDefinition(new StravaProfileDefinition());
-        configuration.setScope(this.scope);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.strava.com/session"));
 
         super.clientInit(context);
@@ -56,10 +52,10 @@ public class StravaClient extends OAuth20Client<StravaProfile> {
     }
 
     public String getScope() {
-        return scope;
+        return getConfiguration().getScope();
     }
 
     public void setScope(final String scope) {
-        this.scope = scope;
+        getConfiguration().setScope(scope);
     }
 }

@@ -48,7 +48,7 @@ public final class StravaApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
+    public String getAuthorizationUrl(final OAuthConfig config, final Map<String, String> additionalParams) {
         CommonHelper.assertNotBlank("config.getCallback()", config.getCallback(), "Must provide a valid callback url.");
 
         // Append scope if present
