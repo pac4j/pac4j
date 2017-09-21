@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.VkontakteApi;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.vk.VkConfiguration;
 import org.pac4j.oauth.profile.vk.VkProfile;
 import org.pac4j.oauth.profile.vk.VkProfileDefinition;
@@ -31,11 +30,11 @@ public class VkClient extends OAuth20Client<VkProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         configuration.setApi(VkontakteApi.instance());
         configuration.setProfileDefinition(new VkProfileDefinition());
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     @Override

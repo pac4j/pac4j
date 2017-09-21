@@ -1,7 +1,6 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -40,7 +39,7 @@ public class ParameterClient extends DirectClient<TokenCredentials, CommonProfil
 
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
 
         defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));

@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
@@ -22,7 +21,7 @@ public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAut
     protected OAuth10Configuration configuration = new OAuth10Configuration();
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultRedirectActionBuilder(new OAuth10RedirectActionBuilder(configuration));
         defaultCredentialsExtractor(new OAuth10CredentialsExtractor(configuration));
         defaultAuthenticator(new OAuth10Authenticator(configuration));

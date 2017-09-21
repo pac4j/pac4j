@@ -1,7 +1,6 @@
 package org.pac4j.core.client.direct;
 
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.AnonymousCredentials;
 import org.pac4j.core.profile.AnonymousProfile;
 
@@ -20,7 +19,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials, An
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultCredentialsExtractor(ctx -> AnonymousCredentials.INSTANCE);
         defaultAuthenticator((cred, ctx )-> {
             cred.setUserProfile(AnonymousProfile.INSTANCE);

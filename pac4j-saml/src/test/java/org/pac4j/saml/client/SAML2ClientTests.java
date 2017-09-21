@@ -83,7 +83,7 @@ public final class SAML2ClientTests {
     private void internalTestIdpMetadataParsing(final Resource resource) {
         final SAML2Client client = getClient();
         client.getConfiguration().setIdentityProviderMetadataResource(resource);
-        client.init(null);
+        client.init();
 
         client.getIdentityProviderMetadataResolver().resolve();
         final String id = client.getIdentityProviderMetadataResolver().getEntityId();

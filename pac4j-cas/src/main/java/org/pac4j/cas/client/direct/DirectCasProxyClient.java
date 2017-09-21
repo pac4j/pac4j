@@ -6,7 +6,6 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.profile.CommonProfile;
@@ -19,7 +18,7 @@ import org.pac4j.core.util.CommonHelper;
  *
  * <p>As no session is meant to be created, this client does not handle CAS logout requests.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be 
+ * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
  * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
  *
@@ -40,14 +39,14 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertNotBlank("serviceUrl", this.serviceUrl);
         // must be a CAS proxy protocol
         final CasProtocol protocol = configuration.getProtocol();
-        CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY, 
+        CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY,
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
-        configuration.init(context);
+        configuration.init();
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         defaultAuthenticator(new CasAuthenticator(configuration, this.serviceUrl));

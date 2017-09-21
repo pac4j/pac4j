@@ -5,7 +5,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
@@ -55,14 +54,14 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotBlank("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotBlank("usersCollection", this.usersCollection);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new MongoProfile()));
 
-        super.internalInit(context);
+        super.internalInit();
     }
 
     @Override

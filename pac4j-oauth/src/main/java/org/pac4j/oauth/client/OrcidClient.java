@@ -1,6 +1,5 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
 import org.pac4j.oauth.profile.orcid.OrcidProfileDefinition;
@@ -29,7 +28,7 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         configuration.setApi(new OrcidApi20());
         configuration.setProfileDefinition(new OrcidProfileDefinition());
         configuration.setTokenAsHeader(true);
@@ -44,7 +43,7 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
             }
         });
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public String getScope() {

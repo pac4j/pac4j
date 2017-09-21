@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.LinkedInApi20;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -32,7 +31,7 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
         CommonHelper.assertNotBlank("fields", getConfiguration().getFields());
         configuration.setApi(LinkedInApi20.instance());
@@ -52,7 +51,7 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
         });
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     @Override

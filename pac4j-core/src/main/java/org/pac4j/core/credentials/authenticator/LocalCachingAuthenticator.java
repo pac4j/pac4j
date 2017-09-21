@@ -6,7 +6,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @author Misagh Moayyed
  * @since 1.8
  */
-public class LocalCachingAuthenticator<T extends Credentials> extends InitializableWebObject implements Authenticator<T> {
+public class LocalCachingAuthenticator<T extends Credentials> extends InitializableObject implements Authenticator<T> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -49,7 +49,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     @Override
     public void validate(final T credentials, final WebContext context) {
-        init(context);
+        init();
 
         CommonProfile profile = this.store.get(credentials);
         if (profile == null) {
@@ -65,13 +65,13 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         if (this.store == null) {
             this.store = new GuavaStore<>(cacheSize, timeout, timeUnit);
         }
 
-        if (delegate instanceof InitializableWebObject) {
-            ((InitializableWebObject) delegate).init(context);
+        if (delegate instanceof InitializableObject) {
+            ((InitializableObject) delegate).init();
         }
     }
 

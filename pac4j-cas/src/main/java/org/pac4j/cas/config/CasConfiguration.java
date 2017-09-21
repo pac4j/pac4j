@@ -10,7 +10,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.http.DefaultUrlResolver;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasConfiguration extends InitializableWebObject {
+public class CasConfiguration extends InitializableObject {
 
     public static final String TICKET_PARAMETER = "ticket";
 
@@ -79,18 +79,18 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl) && CommonHelper.isBlank(this.restUrl)) {
             throw new TechnicalException("loginUrl, prefixUrl and restUrl cannot be all blank");
         }
         CommonHelper.assertNotNull("urlResolver", this.urlResolver);
 
-        initializeClientConfiguration(context);
+        initializeClientConfiguration();
 
         initializeLogoutHandler();
     }
 
-    protected void initializeClientConfiguration(final WebContext context) {
+    protected void initializeClientConfiguration() {
         if (this.prefixUrl != null && !this.prefixUrl.endsWith("/")) {
             this.prefixUrl += "/";
         }

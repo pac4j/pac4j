@@ -17,8 +17,8 @@ import org.pac4j.core.util.CommonHelper;
 public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
 
     @Override
-    protected final void internalInit(final WebContext context) {
-        clientInit(context);
+    protected final void internalInit() {
+        clientInit();
 
         // ensures components have been properly initialized
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
@@ -28,10 +28,8 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
 
     /**
      * Initialize the client.
-     *
-     * @param context the web context
      */
-    protected abstract void clientInit(WebContext context);
+    protected abstract void clientInit();
 
     @Override
     public final HttpAction redirect(final WebContext context) {
@@ -40,7 +38,7 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
 
     @Override
     public final C getCredentials(final WebContext context) {
-        init(context);
+        init();
         return retrieveCredentials(context);
     }
 

@@ -1,6 +1,5 @@
 package org.pac4j.oidc.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
@@ -29,12 +28,12 @@ public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         final OidcProfileCreator<KeycloakOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
         profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 
-        super.clientInit(context);
+        super.clientInit();
     }
 }

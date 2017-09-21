@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -22,7 +21,7 @@ public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAut
     protected OAuth20Configuration configuration = new OAuth20Configuration();
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration));
         defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration));
         defaultAuthenticator(new OAuth20Authenticator(configuration));

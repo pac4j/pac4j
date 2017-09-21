@@ -50,7 +50,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testHasDefaultProfileCreator() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
-        basicAuthClient.init(null);
+        basicAuthClient.init();
     }
 
     @Test

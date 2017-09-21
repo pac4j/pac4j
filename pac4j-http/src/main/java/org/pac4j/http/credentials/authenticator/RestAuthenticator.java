@@ -46,7 +46,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("url", url);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new RestProfile()));
         if (mapper == null) {
@@ -59,7 +59,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
