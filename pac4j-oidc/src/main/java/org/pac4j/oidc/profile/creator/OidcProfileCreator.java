@@ -57,9 +57,9 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         assertNotNull("configuration", configuration);
-        configuration.init(context);
+        configuration.init();
 
         // check algorithms
         final List<JWSAlgorithm> metadataAlgorithms = configuration.getProviderMetadata().getIDTokenJWSAlgs();
@@ -109,7 +109,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
     @Override
     @SuppressWarnings("unchecked")
     public U create(final OidcCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         final AccessToken accessToken = credentials.getAccessToken();
 

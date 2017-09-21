@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.OdnoklassnikiApi;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.ok.OkConfiguration;
 import org.pac4j.oauth.profile.ok.OkProfileDefinition;
@@ -30,12 +29,12 @@ public final class OkClient extends OAuth20Client<OkProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("publicKey", getConfiguration().getPublicKey());
         configuration.setApi(OdnoklassnikiApi.instance());
         configuration.setProfileDefinition(new OkProfileDefinition());
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public String getPublicKey() {

@@ -36,7 +36,7 @@ public final class HeaderClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final HeaderClient client = new HeaderClient(HEADER_NAME, new SimpleTestTokenAuthenticator());
-        client.init(null);
+        client.init();
     }
 
     @Test

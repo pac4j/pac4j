@@ -39,13 +39,13 @@ public final class CookieClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
-        cookieClient.init(null);
+        cookieClient.init();
     }
 
     @Test(expected=Exception.class)
     public void testMissingCookieName() {
         final CookieClient cookieClient = new CookieClient(null, new SimpleTestTokenAuthenticator());
-        cookieClient.init(null);
+        cookieClient.init();
     }
 
     @Test

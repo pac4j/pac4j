@@ -5,7 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject
+abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableObject
     implements Authenticator<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -29,14 +29,14 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public void validate(final C credentials, final WebContext context) {
-        init(context);
+        init();
 
         try {
             retrieveAccessToken(context, credentials);

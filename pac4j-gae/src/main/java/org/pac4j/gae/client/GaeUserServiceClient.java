@@ -3,7 +3,6 @@ package org.pac4j.gae.client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
@@ -15,7 +14,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 /**
  * <p>This class is the OpenID client to authenticate users with UserService on App Engine</p>
- * 
+ *
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
@@ -28,7 +27,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
     protected String authDomain = null;
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         service = UserServiceFactory.getUserService();
         CommonHelper.assertNotNull("service", this.service);
         defaultRedirectActionBuilder(ctx -> {

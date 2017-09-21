@@ -41,7 +41,7 @@ public final class ParameterClientTests implements TestsConstants {
     public void testHasDefaultProfileCreator() {
         final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
         client.setParameterName(PARAMETER_NAME);
-        client.init(null);
+        client.init();
     }
 
     @Test

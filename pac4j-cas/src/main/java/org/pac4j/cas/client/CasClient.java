@@ -14,16 +14,16 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * <p>This class is the client to authenticate users on a CAS server for a web application in a stateful way: when trying to access a 
- * protected area, the user will be redirected to the CAS server for login and then back to the application (on the callback endpoint) and 
+ * <p>This class is the client to authenticate users on a CAS server for a web application in a stateful way: when trying to access a
+ * protected area, the user will be redirected to the CAS server for login and then back to the application (on the callback endpoint) and
  * finally to the originally requested url.</p>
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
- * <p>By default, the {@link CasLogoutHandler} will be a {@link org.pac4j.cas.logout.DefaultCasLogoutHandler}. Use <code>null</code> to 
+ * <p>By default, the {@link CasLogoutHandler} will be a {@link org.pac4j.cas.logout.DefaultCasLogoutHandler}. Use <code>null</code> to
  * disable logout support.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be 
+ * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
  * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
  *
@@ -41,15 +41,15 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setUrlResolver(this.getUrlResolver());
-        configuration.init(context);
+        configuration.init();
 
         defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, callbackUrl));
         defaultCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
         defaultAuthenticator(new CasAuthenticator(configuration, callbackUrl));
-        defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout", 
+        defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout",
             configuration.getPostLogoutUrlParameter()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }

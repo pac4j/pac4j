@@ -44,7 +44,7 @@ public final class FormClientTests implements TestsConstants {
     public void testHasDefaultProfileCreator() {
         final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         formClient.setCallbackUrl(CALLBACK_URL);
-        formClient.init(null);
+        formClient.init();
     }
 
     @Test

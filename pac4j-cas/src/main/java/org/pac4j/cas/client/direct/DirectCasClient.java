@@ -46,7 +46,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     @Override
     protected TokenCredentials retrieveCredentials(final WebContext context) {
-        init(context);
+        init();
         try {
             String currentUrl = configuration.computeFinalUrl(context.getFullRequestURL(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
@@ -64,7 +64,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
             currentUrl = CommonHelper.substringBefore(currentUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             currentUrl = CommonHelper.substringBefore(currentUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
             final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, currentUrl);
-            casAuthenticator.init(context);
+            casAuthenticator.init();
             casAuthenticator.validate(credentials, context);
 
             return credentials;
@@ -75,10 +75,10 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
-        configuration.init(context);
+        configuration.init();
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         // only a fake one for the initialization as we will build a new one with the current url for each request

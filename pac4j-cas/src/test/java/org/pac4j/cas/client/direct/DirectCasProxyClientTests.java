@@ -28,14 +28,14 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS20_PROXY);
         final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
-        client.init(MockWebContext.create());
+        client.init();
     }
 
     @Test
     public void testInitMissingConfiguration() {
         final DirectCasProxyClient client = new DirectCasProxyClient();
         client.setServiceUrl(CALLBACK_URL);
-        TestsHelper.expectException(() -> client.init(MockWebContext.create()), TechnicalException.class, "configuration cannot be null");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "configuration cannot be null");
     }
 
     @Test
@@ -44,7 +44,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         configuration.setLoginUrl(LOGIN_URL);
         final DirectCasProxyClient client = new DirectCasProxyClient();
         client.setConfiguration(configuration);
-        TestsHelper.expectException(() -> client.init(MockWebContext.create()), TechnicalException.class, "serviceUrl cannot be blank");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "serviceUrl cannot be blank");
     }
 
     @Test
@@ -52,7 +52,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
-        TestsHelper.expectException(() -> client.init(MockWebContext.create()), TechnicalException.class, "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
     }
 
     @Test

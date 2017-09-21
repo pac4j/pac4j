@@ -5,7 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject
+abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableObject
     implements CredentialsExtractor<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,14 +30,14 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public C extract(final WebContext context) {
-        init(context);
+        init();
 
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled

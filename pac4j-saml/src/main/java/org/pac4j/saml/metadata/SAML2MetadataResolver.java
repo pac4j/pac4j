@@ -13,8 +13,6 @@ public interface SAML2MetadataResolver {
 
     String getEntityId();
 
-    String getMetadataPath();
-
     String getMetadata();
 
     XMLObject getEntityDescriptorElement();

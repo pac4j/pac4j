@@ -4,7 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.profile.KerberosProfile;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class KerberosAuthenticator extends InitializableWebObject implements Authenticator<KerberosCredentials> {
+public class KerberosAuthenticator extends InitializableObject implements Authenticator<KerberosCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -38,7 +38,7 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
 
     @Override
     public void validate(KerberosCredentials credentials, WebContext context) {
-        init(context);
+        init();
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
@@ -53,7 +53,7 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
     }
 
     @Override
-    protected void internalInit(WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("ticketValidator", this.ticketValidator);
     }
 

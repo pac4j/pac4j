@@ -60,7 +60,7 @@ public class KerberosClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final DirectKerberosClient kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
-        kerberosClient.init(null);
+        kerberosClient.init();
     }
 
     @Test

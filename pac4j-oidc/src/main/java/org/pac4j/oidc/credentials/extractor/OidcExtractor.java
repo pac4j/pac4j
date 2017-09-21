@@ -10,7 +10,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcExtractor extends InitializableWebObject implements CredentialsExtractor<OidcCredentials> {
+public class OidcExtractor extends InitializableObject implements CredentialsExtractor<OidcCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcExtractor.class);
 
@@ -43,21 +43,22 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
 
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public OidcCredentials extract(final WebContext context) {
-        init(context);
+        init();
 
+        final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(configuration.getCallbackUrl(), context);
         final Map<String, String> parameters = retrieveParameters(context);
         AuthenticationResponse response;
         try {
-            response = AuthenticationResponseParser.parse(new URI(configuration.getCallbackUrl()), parameters);
+            response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
         } catch (final URISyntaxException | ParseException e) {
             throw new TechnicalException(e);
         }

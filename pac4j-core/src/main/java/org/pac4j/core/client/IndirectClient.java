@@ -39,13 +39,13 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     private LogoutActionBuilder<U> logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
     @Override
-    protected final void internalInit(final WebContext context) {
+    protected final void internalInit() {
         // check configuration
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
         CommonHelper.assertNotNull("urlResolver", this.urlResolver);
         CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
 
-        clientInit(context);
+        clientInit();
 
         // ensures components have been properly initialized
         CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
@@ -57,10 +57,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     /**
      * Initialize the client.
-     *
-     * @param context the web context
      */
-    protected abstract void clientInit(WebContext context);
+    protected abstract void clientInit();
 
     @Override
     public final HttpAction redirect(final WebContext context) {
@@ -78,7 +76,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @return the redirection action
      */
     public RedirectAction getRedirectAction(final WebContext context) {
-        init(context);
+        init();
         // it's an AJAX request -> unauthorized (with redirection url in header)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
@@ -118,7 +116,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      */
     @Override
     public final C getCredentials(final WebContext context) {
-        init(context);
+        init();
         final C credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
         if (credentials == null) {
@@ -131,7 +129,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     @Override
     public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        init(context);
+        init();
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
 

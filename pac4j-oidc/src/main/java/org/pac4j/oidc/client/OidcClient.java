@@ -1,7 +1,6 @@
 package org.pac4j.oidc.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -41,10 +40,11 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.setCallbackUrl(computeFinalCallbackUrl(context));
-        configuration.init(context);
+        configuration.setCallbackUrl(getCallbackUrl());
+        configuration.setCallbackUrlResolver(getUrlResolver());
+        configuration.init();
 
         defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
         defaultCredentialsExtractor(new OidcExtractor(configuration, getName()));

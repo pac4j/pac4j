@@ -3,7 +3,6 @@ package org.pac4j.cas.client.rest;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.util.CommonHelper;
 
@@ -29,11 +28,11 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init(context);
+        configuration.init();
 
         defaultCredentialsExtractor(new BasicAuthExtractor(this.headerName, this.prefixHeader, getName()));
         defaultAuthenticator(new CasRestAuthenticator(this.configuration));

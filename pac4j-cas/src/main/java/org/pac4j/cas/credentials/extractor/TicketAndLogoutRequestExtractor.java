@@ -11,7 +11,7 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ import java.util.zip.Inflater;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements CredentialsExtractor<TokenCredentials> {
+public class TicketAndLogoutRequestExtractor extends InitializableObject implements CredentialsExtractor<TokenCredentials> {
 
     private final static int DECOMPRESSION_FACTOR = 10;
 
@@ -42,16 +42,16 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
 
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public TokenCredentials extract(final WebContext context) {
-        init(context);
+        init();
 
         final CasLogoutHandler logoutHandler = configuration.getLogoutHandler();
 
