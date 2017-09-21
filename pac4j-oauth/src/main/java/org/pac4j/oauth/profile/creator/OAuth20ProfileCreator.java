@@ -1,6 +1,7 @@
 package org.pac4j.oauth.profile.creator;
 
 import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -13,8 +14,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20ProfileCreator<U extends OAuth20Profile>
-    extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken> {
+public class OAuth20ProfileCreator<U extends OAuth20Profile> extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken> {
 
     public OAuth20ProfileCreator(final OAuth20Configuration configuration) {
         super(configuration);
@@ -35,8 +35,8 @@ public class OAuth20ProfileCreator<U extends OAuth20Profile>
     }
 
     @Override
-    protected void signRequest(final OAuth2AccessToken accessToken, final OAuthRequest request) {
-        this.configuration.getService().signRequest(accessToken, request);
+    protected void signRequest(final OAuthService<OAuth2AccessToken> service, final OAuth2AccessToken accessToken, final OAuthRequest request) {
+        service.signRequest(accessToken, request);
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken.getAccessToken());
         }

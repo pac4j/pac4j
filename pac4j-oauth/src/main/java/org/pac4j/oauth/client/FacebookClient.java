@@ -4,6 +4,7 @@ import com.github.scribejava.apis.FacebookApi;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
+import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
 import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
@@ -20,7 +21,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.</p>
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
- * <p>An extended access token can be requested by setting <code>true</code> on the {@link #setRequiresExtendedToken(boolean)} method.</p>
+ * <p>An extended access token can be requested by setting <code>true</code> on the {@link FacebookConfiguration#setRequiresExtendedToken(boolean)} method.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.facebook.FacebookProfile}.</p>
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
@@ -31,37 +32,21 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  */
 public class FacebookClient extends OAuth20Client<FacebookProfile> {
 
-    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id," 
-        + "timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,"
-        + "favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
-
-    protected String fields = DEFAULT_FIELDS;
-
-    public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,"
-        + "user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
-
-    protected String scope = DEFAULT_SCOPE;
-
-    protected int limit = FacebookProfileDefinition.DEFAULT_LIMIT;
-
-    protected boolean requiresExtendedToken = false;
-
-    protected boolean useAppsecretProof = false;
-
     public FacebookClient() {
+        configuration = new FacebookConfiguration();
     }
 
     public FacebookClient(final String key, final String secret) {
+        configuration = new FacebookConfiguration();
         setKey(key);
         setSecret(secret);
     }
 
     @Override
     protected void clientInit(final WebContext context) {
-        CommonHelper.assertNotBlank("fields", this.fields);
+        CommonHelper.assertNotBlank("fields", getConfiguration().getFields());
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
-        configuration.setScope(scope);
         configuration.setHasBeenCancelledFactory(ctx -> {
             final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
             final String errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
@@ -73,10 +58,14 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
             }
         });
         configuration.setWithState(true);
-        setConfiguration(configuration);
         defaultProfileCreator(new FacebookProfileCreator(configuration));
 
         super.clientInit(context);
+    }
+
+    @Override
+    public FacebookConfiguration getConfiguration() {
+        return (FacebookConfiguration) configuration;
     }
 
     public void setStateData(final String stateData) {
@@ -87,43 +76,27 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         return configuration.getStateData();
     }
 
-    public void setUseAppSecretProof(final boolean useSecret) {
-        this.useAppsecretProof = useSecret;
-    }
-
-    public boolean getUseAppSecretProof() {
-        return this.useAppsecretProof;
-    }
-
     public String getScope() {
-        return this.scope;
+        return getConfiguration().getScope();
     }
 
     public void setScope(final String scope) {
-        this.scope = scope;
+        getConfiguration().setScope(scope);
     }
 
     public String getFields() {
-        return this.fields;
+        return getConfiguration().getFields();
     }
 
     public void setFields(final String fields) {
-        this.fields = fields;
+        getConfiguration().setFields(fields);
     }
 
     public int getLimit() {
-        return this.limit;
+        return getConfiguration().getLimit();
     }
 
     public void setLimit(final int limit) {
-        this.limit = limit;
-    }
-
-    public boolean isRequiresExtendedToken() {
-        return this.requiresExtendedToken;
-    }
-
-    public void setRequiresExtendedToken(final boolean requiresExtendedToken) {
-        this.requiresExtendedToken = requiresExtendedToken;
+        getConfiguration().setLimit(limit);
     }
 }

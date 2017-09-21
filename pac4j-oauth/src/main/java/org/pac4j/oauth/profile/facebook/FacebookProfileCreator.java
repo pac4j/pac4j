@@ -3,14 +3,16 @@ package org.pac4j.oauth.profile.facebook;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.oauth.OAuthService;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A specific Facebook profile creator.
@@ -29,29 +31,31 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
     }
 
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) {
-        final OAuth20ProfileDefinition<FacebookProfile> profileDefinition = (OAuth20ProfileDefinition<FacebookProfile>) configuration
-            .getProfileDefinition();
-        final FacebookClient client = (FacebookClient) configuration.getClient();
+    protected FacebookProfile retrieveUserProfileFromToken(final WebContext context, final OAuth2AccessToken accessToken) {
+        final OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration> profileDefinition = (OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration>) configuration.getProfileDefinition();
+        final FacebookConfiguration facebookConfiguration = (FacebookConfiguration) configuration;
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        String body = sendRequestForData(accessToken, profileUrl, Verb.GET);
+        final OAuthService<OAuth2AccessToken> service = this.configuration.buildService(context, null);
+        String body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
         final FacebookProfile profile = profileDefinition.extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
-        if (profile != null && client.isRequiresExtendedToken()) {
+        if (profile != null && facebookConfiguration.isRequiresExtendedToken()) {
             String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, configuration.getKey());
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, configuration.getSecret());
             url = addExchangeToken(url, accessToken);
             final OAuthRequest request = createOAuthRequest(url, Verb.GET);
             final long t0 = System.currentTimeMillis();
-            final Response response = request.send();
-            final int code = response.getCode();
+            final Response response;
+            final int code;
             try {
+                response = service.execute(request);
                 body = response.getBody();
-            } catch (IOException ex) {
-                throw new HttpCommunicationException("Error getting body:" + ex.getMessage());
+                code = response.getCode();
+            } catch (final IOException | InterruptedException | ExecutionException e) {
+                throw new HttpCommunicationException("Error getting body:" + e.getMessage());
             }
             final long t1 = System.currentTimeMillis();
             logger.debug("Request took: " + (t1 - t0) + " ms for: " + url);
@@ -83,10 +87,10 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
      */
     protected String addExchangeToken(final String url, final OAuth2AccessToken accessToken) {
         final FacebookProfileDefinition profileDefinition = (FacebookProfileDefinition) configuration.getProfileDefinition();
-        final FacebookClient client = (FacebookClient) configuration.getClient();
+        final FacebookConfiguration facebookConfiguration = (FacebookConfiguration) configuration;
         String computedUrl = url;
-        if (client.getUseAppSecretProof()) {
-            computedUrl = profileDefinition.computeAppSecretProof(computedUrl, accessToken, configuration);
+        if (facebookConfiguration.isUseAppsecretProof()) {
+            computedUrl = profileDefinition.computeAppSecretProof(computedUrl, accessToken, facebookConfiguration);
         }
         return CommonHelper.addParameter(computedUrl, EXCHANGE_TOKEN_PARAMETER, accessToken.getAccessToken());
     }

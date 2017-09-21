@@ -27,16 +27,18 @@ public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAut
         defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration));
         defaultAuthenticator(new OAuth20Authenticator(configuration));
         defaultProfileCreator(new OAuth20ProfileCreator<>(configuration));
+
+        configuration.setClientName(this.getName());
+        configuration.setCallbackUrl(this.getCallbackUrl());
+        configuration.setUrlResolver(this.getUrlResolver());
     }
 
     public OAuth20Configuration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(final OAuth20Configuration configuration) {
-        CommonHelper.assertNotNull("configuration", configuration);
+    public void setConfiguraton(final OAuth20Configuration configuration) {
         this.configuration = configuration;
-        this.configuration.setClient(this);
     }
 
     public String getKey() {

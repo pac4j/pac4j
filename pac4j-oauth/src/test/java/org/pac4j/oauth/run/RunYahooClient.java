@@ -35,7 +35,7 @@ public final class RunYahooClient extends RunClient {
 
     @Override
     protected String getPassword() {
-        return "testpwdscribeup";
+        return "B1ourouf";
     }
 
     @Override
@@ -58,7 +58,7 @@ public final class RunYahooClient extends RunClient {
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@yahoo.fr", "Test", "ScribeUP", "Test ScribeUP", "Test",
                 Gender.MALE, Locale.FRANCE,
-                "/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",
+                "https://s.yimg.com/wm/modern/images/default_user_profile_pic_192.png",
                 "http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", "Chatou, Ile-de-France");
         assertEquals("my profile", profile.getAboutMe());
         final List<YahooAddress> addresses = profile.getAddresses();
@@ -75,7 +75,7 @@ public final class RunYahooClient extends RunClient {
         assertEquals(1976, profile.getBirthYear().intValue());
         assertEquals("03/10", new SimpleDateFormat("MM/dd").format(profile.getBirthdate()));
         assertEquals("2012-02-06T12:46:43Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getCreated()));
-        assertEquals(40, profile.getDisplayAge().intValue());
+        assertEquals(41, profile.getDisplayAge().intValue());
         final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
         final YahooDisclosure disclosure = disclosures.get(0);
@@ -91,10 +91,10 @@ public final class RunYahooClient extends RunClient {
         assertEquals("HOME", email.getType());
         assertEquals(Gender.MALE, profile.getGender());
         final YahooImage image = profile.getImage();
-        assertTrue(image.getImageUrl().contains("/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png"));
-        assertEquals(150, image.getWidth().intValue());
-        assertEquals(225, image.getHeight().intValue());
-        assertEquals("150x225", image.getSize());
+        assertEquals("https://s.yimg.com/wm/modern/images/default_user_profile_pic_192.png", image.getImageUrl());
+        assertEquals(192, image.getWidth().intValue());
+        assertEquals(192, image.getHeight().intValue());
+        assertEquals("192x192", image.getSize());
         final List<YahooInterest> interests = profile.getInterests();
         assertEquals(11, interests.size());
         final YahooInterest interest = interests.get(0);
@@ -103,7 +103,7 @@ public final class RunYahooClient extends RunClient {
         assertTrue(profile.getIsConnected());
         assertEquals("2012-02-06T12:46:36Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getMemberSince()));
         assertEquals("Europe/Paris", profile.getTimeZone());
-        assertEquals("2016-01-16T17:31:06Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getUpdated()));
+        assertEquals("2017-09-19T03:20:28Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getUpdated()));
         assertEquals("https://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
         assertNotNull(profile.getAccessSecret());
         assertEquals("A", profile.getAgeCategory());

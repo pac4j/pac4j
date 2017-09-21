@@ -16,7 +16,7 @@ import java.util.Arrays;
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<FoursquareProfile> {
+public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<FoursquareProfile, OAuth20Configuration> {
 
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";

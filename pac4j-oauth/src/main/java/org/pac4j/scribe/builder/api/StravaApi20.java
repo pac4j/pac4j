@@ -4,7 +4,8 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
-import com.github.scribejava.core.utils.Preconditions;
+import org.pac4j.core.util.CommonHelper;
+
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ public final class StravaApi20 extends DefaultApi20 {
     /**
      * Strava authorization URL
      */
-    private static final String AUTHORIZE_URL = "https://www.strava.com/oauth/authorize?approval_prompt=%s&response_type=code" 
+    private static final String AUTHORIZE_URL = "https://www.strava.com/oauth/authorize?approval_prompt=%s&response_type=code"
         + "&client_id=%s&redirect_uri=%s";
 
     private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";
@@ -47,8 +48,8 @@ public final class StravaApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
-        Preconditions.checkValidUrl(config.getCallback(), "Must provide a valid callback url.");
+    public String getAuthorizationUrl(final OAuthConfig config, final Map<String, String> additionalParams) {
+        CommonHelper.assertNotBlank("config.getCallback()", config.getCallback(), "Must provide a valid callback url.");
 
         // Append scope if present
         if (config.getScope() != null) {
@@ -58,9 +59,9 @@ public final class StravaApi20 extends DefaultApi20 {
             return String.format(AUTHORIZE_URL, this.approvalPrompt, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
-    
+
     @Override
     protected String getAuthorizationBaseUrl() {
         return "https://www.strava.com/oauth/authorize";
-    }  
+    }
 }

@@ -1,13 +1,12 @@
 package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.model.OAuthConfig;
-import com.github.scribejava.core.model.SignatureType;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
-import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
@@ -20,17 +19,17 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService<?>, T extends Token> extends InitializableWebObject {
+public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> extends InitializableWebObject {
 
     public static final String OAUTH_TOKEN = "oauth_token";
 
     public static final String RESPONSE_TYPE_CODE = "code";
 
-    private C client;
-
     private String key;
 
     private String secret;
+
+    private String clientName;
 
     private boolean tokenAsHeader;
 
@@ -40,28 +39,26 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
 
     private BaseApi<S> api;
 
-    private boolean hasGrantType;
-
     private Function<WebContext, Boolean> hasBeenCancelledFactory = ctx -> false;
 
     private OAuthProfileDefinition profileDefinition;
 
-    protected S service;
+    private HttpClientConfig httpClientConfig;
 
-    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+    private String callbackUrl;
 
-    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
+    private UrlResolver urlResolver;
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("client", this.client);
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
+        CommonHelper.assertNotBlank("clientName", this.clientName);
         CommonHelper.assertNotNull("api", api);
         CommonHelper.assertNotNull("hasBeenCancelledFactory", hasBeenCancelledFactory);
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
-
-        this.service = buildService(context, null);
+        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
     }
 
     /**
@@ -72,28 +69,13 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
      * @return the OAuth service
      */
     public S buildService(final WebContext context, final String state) {
-        return getApi().createService(buildOAuthConfig(context, state));
-    }
 
-    protected OAuthConfig buildOAuthConfig(final WebContext context, final String state) {
+        final String finalCallbackUrl = this.getUrlResolver().compute(this.getCallbackUrl(), context);
 
-        final String finalCallbackUrl = this.client.getUrlResolver().compute(this.client.getCallbackUrl(), context);
+        final OAuthConfig oAuthConfig = new OAuthConfig(this.key, this.secret, finalCallbackUrl, this.scope,
+            null, state, this.responseType, null, this.httpClientConfig, null);
 
-        return new OAuthConfig(this.key, this.secret, finalCallbackUrl, SignatureType.Header, this.scope,
-                null, state, this.responseType, null, this.connectTimeout, this.readTimeout,
-                null, null);
-    }
-
-    public S getService() {
-        return this.service;
-    }
-
-    public C getClient() {
-        return client;
-    }
-
-    public void setClient(final C client) {
-        this.client = client;
+        return getApi().createService(oAuthConfig);
     }
 
     public String getKey() {
@@ -120,22 +102,6 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
         this.tokenAsHeader = tokenAsHeader;
     }
 
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(final int readTimeout) {
-        this.readTimeout = readTimeout;
-    }
-
     public String getResponseType() {
         return responseType;
     }
@@ -160,14 +126,6 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
         this.api = api;
     }
 
-    public boolean isHasGrantType() {
-        return hasGrantType;
-    }
-
-    public void setHasGrantType(final boolean hasGrantType) {
-        this.hasGrantType = hasGrantType;
-    }
-
     public Function<WebContext, Boolean> getHasBeenCancelledFactory() {
         return hasBeenCancelledFactory;
     }
@@ -184,11 +142,43 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
         this.profileDefinition = profileDefinition;
     }
 
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(final String clientName) {
+        this.clientName = clientName;
+    }
+
+    public HttpClientConfig getHttpClientConfig() {
+        return httpClientConfig;
+    }
+
+    public void setHttpClientConfig(final HttpClientConfig httpClientConfig) {
+        this.httpClientConfig = httpClientConfig;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public void setCallbackUrl(final String callbackUrl) {
+        this.callbackUrl = callbackUrl;
+    }
+
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
+    }
+
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
-                "connectTimeout", connectTimeout, "readTimeout", readTimeout, "responseType", responseType,
-                "scope", scope, "api", api, "hasGrantType", hasGrantType, "service", service,
-                "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition);
+        return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "clientName", clientName,
+            "tokenAsHeader", tokenAsHeader, "responseType", responseType, "scope", scope, "api", api,
+                "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition,
+            "httpClientConfig", httpClientConfig, "callbackUrl", callbackUrl, "urlResolver", urlResolver);
     }
 }

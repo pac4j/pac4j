@@ -14,43 +14,40 @@ import org.pac4j.scribe.builder.api.PayPalApi20;
  * {@link #setScope(String)} method.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.paypal.PayPalProfile}.</p>
  * <p>More information at https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/</p>
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.2
  */
 public class PayPalClient extends OAuth20Client<PayPalProfile> {
-    
+
     public final static String DEFAULT_SCOPE = "openid profile email address";
-    
-    protected String scope = DEFAULT_SCOPE;
-    
+
     public PayPalClient() {
+        setScope(DEFAULT_SCOPE);
     }
-    
+
     public PayPalClient(final String key, final String secret) {
+        setScope(DEFAULT_SCOPE);
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
     protected void clientInit(final WebContext context) {
-        CommonHelper.assertNotBlank("scope", this.scope);
+        CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
-        configuration.setScope(this.scope);
-        configuration.setHasGrantType(true);
         configuration.setTokenAsHeader(true);
-        setConfiguration(configuration);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.paypal.com/myaccount/logout"));
 
         super.clientInit(context);
     }
 
     public String getScope() {
-        return this.scope;
+        return getConfiguration().getScope();
     }
-    
+
     public void setScope(final String scope) {
-        this.scope = scope;
+        getConfiguration().setScope(scope);
     }
 }

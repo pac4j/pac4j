@@ -15,7 +15,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPressProfile> {
+public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPressProfile, OAuth20Configuration> {
 
     public static final String PRIMARY_BLOG = "primary_blog";
     public static final String AVATAR_URL = "avatar_URL";
