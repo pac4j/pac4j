@@ -13,7 +13,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxProfile> {
+public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxProfile, OAuth20Configuration> {
 
     public static final String REFERRAL_LINK = "referral_link";
     public static final String COUNTRY = "country";

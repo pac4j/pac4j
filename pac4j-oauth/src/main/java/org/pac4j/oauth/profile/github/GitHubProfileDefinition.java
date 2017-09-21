@@ -16,7 +16,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProfile> {
+public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProfile, OAuth20Configuration> {
 
     public static final String TYPE = "type";
     public static final String BLOG = "blog";

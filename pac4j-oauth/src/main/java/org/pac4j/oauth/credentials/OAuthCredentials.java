@@ -4,8 +4,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * This class represents an OAuth credentials for OAuth 1.0 &amp; 2.0 : a request token, a token and a verifier.
- * 
+ * This class represents an OAuth credentials for OAuth 1.0 and 2.0: a request token, a token and a verifier.
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */

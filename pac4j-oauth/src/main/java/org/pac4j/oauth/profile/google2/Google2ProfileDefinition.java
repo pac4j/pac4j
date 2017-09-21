@@ -18,7 +18,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Profile> {
+public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Profile, OAuth20Configuration> {
 
     public static final String DISPLAY_NAME = "displayName";
     public static final String GIVEN_NAME = "name.givenName";

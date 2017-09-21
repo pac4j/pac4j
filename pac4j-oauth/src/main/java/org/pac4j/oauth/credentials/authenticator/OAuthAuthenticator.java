@@ -39,7 +39,7 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
         init(context);
 
         try {
-            retrieveAccessToken(credentials);
+            retrieveAccessToken(context, credentials);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
@@ -48,9 +48,10 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
     /**
      * Retrieve the access token from OAuth credentials.
      *
+     * @param context the web context
      * @param credentials credentials
      */
-    protected abstract void retrieveAccessToken(OAuthCredentials credentials);
+    protected abstract void retrieveAccessToken(WebContext context, OAuthCredentials credentials);
 
     @Override
     public String toString() {

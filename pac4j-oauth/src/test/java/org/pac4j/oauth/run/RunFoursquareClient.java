@@ -55,7 +55,7 @@ public class RunFoursquareClient extends RunClient {
                 null,
                 Gender.UNSPECIFIED,
                 null,
-                "https://irs0.4sqi.net/img/user/original/blank_boy.png",
+                "https://igx.4sqi.net/img/user/original/blank_boy.png",
                 "https://foursquare.com/user/81827700", "");
     }
 }

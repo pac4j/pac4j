@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link CasProxyReceptor} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -20,7 +20,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
     public void testMissingCallbackUrl() {
         final CasProxyReceptor client = new CasProxyReceptor();
         TestsHelper.initShouldFail(client,
-                "callbackUrl cannot be blank: set it up either on this IndirectClient or the global Config");
+                "callbackUrl cannot be blank: set it up either on this IndirectClient or on the global Config");
     }
 
     @Test

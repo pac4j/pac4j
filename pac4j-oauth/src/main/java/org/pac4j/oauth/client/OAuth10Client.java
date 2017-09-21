@@ -27,6 +27,10 @@ public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAut
         defaultCredentialsExtractor(new OAuth10CredentialsExtractor(configuration));
         defaultAuthenticator(new OAuth10Authenticator(configuration));
         defaultProfileCreator(new OAuth10ProfileCreator<>(configuration));
+
+        configuration.setClientName(this.getName());
+        configuration.setCallbackUrl(this.getCallbackUrl());
+        configuration.setUrlResolver(this.getUrlResolver());
     }
 
     public OAuth10Configuration getConfiguration() {
@@ -34,9 +38,7 @@ public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAut
     }
 
     public void setConfiguration(final OAuth10Configuration configuration) {
-        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
-        this.configuration.setClient(this);
     }
 
     public String getKey() {

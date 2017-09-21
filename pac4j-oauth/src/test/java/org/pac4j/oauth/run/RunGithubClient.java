@@ -55,7 +55,7 @@ public class RunGithubClient extends RunClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "Test", "testscribeup",
-                Gender.UNSPECIFIED, null, "https://avatars1.githubusercontent.com/u/1412558?",
+                Gender.UNSPECIFIED, null, "https://avatars2.githubusercontent.com/u/1412558?",
                 "https://github.com/testscribeup", "Paris");
         assertEquals("User", profile.getType());
         assertEquals("ScribeUp", profile.getBlog());

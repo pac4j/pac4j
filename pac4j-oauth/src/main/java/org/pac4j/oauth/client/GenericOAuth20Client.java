@@ -41,8 +41,6 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         configuration.setCustomParams(customParams);
 
-        setConfiguration(configuration);
-
         GenericOAuth20ProfileDefinition profileDefinition = new GenericOAuth20ProfileDefinition();
         profileDefinition.setFirstNodePath(profilePath);
         profileDefinition.setProfileVerb(profileVerb);

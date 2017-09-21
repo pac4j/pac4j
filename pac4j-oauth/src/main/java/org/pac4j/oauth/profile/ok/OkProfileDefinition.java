@@ -3,8 +3,6 @@ package org.pac4j.oauth.profile.ok;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.client.OkClient;
-import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
@@ -19,7 +17,7 @@ import java.util.Arrays;
  * @author imayka (imayka[at]ymail[dot]com)
  * @since 1.8
  */
-public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile> {
+public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkConfiguration> {
 
     public static final String UID = "uid";
     public static final String BIRTHDAY = "birthday";
@@ -50,15 +48,14 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile> {
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
-        final OkClient client = (OkClient) configuration.getClient();
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OkConfiguration configuration) {
         String baseParams =
-                "application_key=" + client.getPublicKey() +
+                "application_key=" + configuration.getPublicKey() +
                         "&format=json" +
                         "&method=users.getCurrentUser";
-        String finalSign;
+        final String finalSign;
         try {
-            String preSign = getMD5SignAsHexString(accessToken.getAccessToken() + configuration.getSecret());
+            final String preSign = getMD5SignAsHexString(accessToken.getAccessToken() + configuration.getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());

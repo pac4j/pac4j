@@ -2,6 +2,7 @@ package org.pac4j.oauth.redirect;
 
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * OAuth 1.0 redirect action builder.
@@ -43,16 +45,17 @@ public class OAuth10RedirectActionBuilder extends InitializableWebObject impleme
 
         try {
 
+            final OAuth10aService service = this.configuration.buildService(context, null);
             final OAuth1RequestToken requestToken;
             try {
-                requestToken = this.configuration.getService().getRequestToken();
-            } catch (IOException ex) {
-                throw new HttpCommunicationException("Error getting token: " + ex.getMessage());
+                requestToken = service.getRequestToken();
+            } catch (final IOException | InterruptedException | ExecutionException e) {
+                throw new HttpCommunicationException("Error getting token: " + e.getMessage());
             }
             logger.debug("requestToken: {}", requestToken);
             // save requestToken in user session
             context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(), requestToken);
-            final String authorizationUrl = this.configuration.getService().getAuthorizationUrl(requestToken);
+            final String authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return RedirectAction.redirect(authorizationUrl);
 

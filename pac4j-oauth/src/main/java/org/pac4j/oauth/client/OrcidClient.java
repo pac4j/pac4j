@@ -18,12 +18,12 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
 
     protected static final String DEFAULT_SCOPE = "/orcid-profile/read-limited";
 
-    protected String scope = DEFAULT_SCOPE;
-
     public OrcidClient() {
+        setScope(DEFAULT_SCOPE);
     }
 
     public OrcidClient(final String key, final String secret) {
+        setScope(DEFAULT_SCOPE);
         setKey(key);
         setSecret(secret);
     }
@@ -32,8 +32,6 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
     protected void clientInit(final WebContext context) {
         configuration.setApi(new OrcidApi20());
         configuration.setProfileDefinition(new OrcidProfileDefinition());
-        configuration.setScope(this.scope);
-        configuration.setHasGrantType(true);
         configuration.setTokenAsHeader(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
             final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
@@ -45,16 +43,15 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
                 return false;
             }
         });
-        setConfiguration(configuration);
 
         super.clientInit(context);
     }
 
     public String getScope() {
-        return this.scope;
+        return getConfiguration().getScope();
     }
 
     public void setScope(final String scope) {
-        this.scope = scope;
+        getConfiguration().setScope(scope);
     }
 }
