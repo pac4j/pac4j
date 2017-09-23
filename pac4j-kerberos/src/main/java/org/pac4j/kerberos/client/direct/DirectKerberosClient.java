@@ -1,8 +1,6 @@
 package org.pac4j.kerberos.client.direct;
 
-
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
@@ -32,7 +30,7 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials, Kerb
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultCredentialsExtractor(new KerberosExtractor(getName()));
     }
 }

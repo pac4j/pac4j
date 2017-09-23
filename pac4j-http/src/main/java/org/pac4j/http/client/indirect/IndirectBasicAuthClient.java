@@ -42,7 +42,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("realmName", this.realmName);
 
         defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));

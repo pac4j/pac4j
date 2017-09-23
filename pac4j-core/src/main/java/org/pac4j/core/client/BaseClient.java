@@ -14,15 +14,15 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
  * <ul>
- * <li>The initialization process is handled by the {@link InitializableWebObject} inheritance, the {@link #internalInit(WebContext)}
- * must be implemented in sub-classes. The {@link #init(WebContext)} method must be called implicitly by the main methods of
+ * <li>The initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()}
+ * must be implemented in sub-classes. The {@link #init()} method must be called implicitly by the main methods of
  * the {@link Client} interface, so that no explicit call is required to initialize the client</li>
  * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableWebObject implements Client<C, U> {
+public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements Client<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -80,7 +80,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     @Override
     public final U getUserProfile(final C credentials, final WebContext context) {
-        init(context);
+        init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;

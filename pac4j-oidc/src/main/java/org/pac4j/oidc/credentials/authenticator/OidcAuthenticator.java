@@ -12,7 +12,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcAuthenticator extends InitializableWebObject implements Authenticator<OidcCredentials> {
+public class OidcAuthenticator extends InitializableObject implements Authenticator<OidcCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcAuthenticator.class);
 
@@ -44,10 +44,10 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
 
-        configuration.init(context);
+        configuration.init();
 
         // check authentication methods
         final List<ClientAuthenticationMethod> metadataMethods = configuration.getProviderMetadata().getTokenEndpointAuthMethods();
@@ -81,15 +81,16 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
 
     @Override
     public void validate(final OidcCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         final AuthorizationCode code = credentials.getCode();
         // if we have a code
         if (code != null) {
             try {
+                final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(configuration.getCallbackUrl(), context);
                 // Token request
                 final TokenRequest request = new TokenRequest(configuration.getProviderMetadata().getTokenEndpointURI(),
-                        this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(configuration.getCallbackUrl())));
+                        this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(computedCallbackUrl)));
                 HTTPRequest tokenHttpRequest = request.toHTTPRequest();
                 tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
                 tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());

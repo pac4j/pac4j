@@ -10,7 +10,6 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
@@ -62,12 +61,12 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("couchDbConnector", this.couchDbConnector);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new CouchProfile()));
 
-        super.internalInit(context);
+        super.internalInit();
     }
 
     @Override

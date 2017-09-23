@@ -7,7 +7,6 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
@@ -442,10 +441,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
      *
      * @param clientName
      *            Name of the client. The configuration can use the value or not.
-     * @param context
-     *            Web context to transport additional information to the configuration.
      */
-    protected void init(final String clientName, final WebContext context) {
+    protected void init(final String clientName) {
         init();
     }
 

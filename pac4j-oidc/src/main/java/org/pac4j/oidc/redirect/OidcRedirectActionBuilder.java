@@ -8,7 +8,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcRedirectActionBuilder extends InitializableWebObject implements RedirectActionBuilder {
+public class OidcRedirectActionBuilder extends InitializableObject implements RedirectActionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcRedirectActionBuilder.class);
 
@@ -35,10 +35,10 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
 
-        configuration.init(context);
+        configuration.init();
 
         this.authParams = new HashMap<>();
         // add scope
@@ -61,7 +61,7 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
         if (CommonHelper.isNotBlank(responseMode)) {
             this.authParams.put(OidcConfiguration.RESPONSE_MODE, responseMode);
         }
-        this.authParams.put(OidcConfiguration.REDIRECT_URI, configuration.getCallbackUrl());
+
         // add custom values
         this.authParams.putAll(configuration.getCustomParams());
         // client id
@@ -70,9 +70,11 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
 
     @Override
     public RedirectAction redirect(final WebContext context) {
-        init(context);
+        init();
 
         final Map<String, String> params = buildParams();
+        final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(configuration.getCallbackUrl(), context);
+        params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
         addStateAndNonceParameters(context, params);
 

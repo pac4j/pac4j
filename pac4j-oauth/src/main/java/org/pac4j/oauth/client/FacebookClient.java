@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.FacebookApi;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
@@ -43,7 +42,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("fields", getConfiguration().getFields());
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
@@ -60,7 +59,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         configuration.setWithState(true);
         defaultProfileCreator(new FacebookProfileCreator(configuration));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     @Override

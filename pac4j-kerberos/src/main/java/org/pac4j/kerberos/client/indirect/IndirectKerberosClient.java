@@ -31,7 +31,7 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new KerberosExtractor(getName()));
     }

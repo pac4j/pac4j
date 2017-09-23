@@ -1,6 +1,5 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
@@ -33,14 +32,14 @@ public class PayPalClient extends OAuth20Client<PayPalProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
         configuration.setTokenAsHeader(true);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.paypal.com/myaccount/logout"));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public String getScope() {

@@ -1,6 +1,5 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
@@ -35,7 +34,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultRedirectActionBuilder(ctx -> redirectAction);
         defaultCredentialsExtractor(ctx -> returnCredentials.get());
         defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));

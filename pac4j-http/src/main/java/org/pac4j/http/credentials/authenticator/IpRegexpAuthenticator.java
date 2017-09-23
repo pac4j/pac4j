@@ -34,14 +34,14 @@ public class IpRegexpAuthenticator extends ProfileDefinitionAware<IpProfile> imp
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("pattern", pattern);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new IpProfile()));
     }
 
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         final String ip = credentials.getToken();
 

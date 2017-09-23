@@ -17,7 +17,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CasRestAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
+public class CasRestAuthenticator extends InitializableObject implements Authenticator<UsernamePasswordCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(CasRestAuthenticator.class);
 
@@ -40,14 +40,14 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");

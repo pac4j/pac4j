@@ -29,13 +29,13 @@ public final class DirectCasClientTests implements TestsConstants {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final DirectCasClient client = new DirectCasClient(configuration);
-        client.init(MockWebContext.create());
+        client.init();
     }
 
     @Test
     public void testInitMissingConfiguration() {
         final DirectCasClient client = new DirectCasClient();
-        TestsHelper.expectException(() -> client.init(MockWebContext.create()), TechnicalException.class, "configuration cannot be null");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "configuration cannot be null");
     }
 
     @Test
@@ -44,7 +44,7 @@ public final class DirectCasClientTests implements TestsConstants {
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setGateway(true);
         final DirectCasClient client = new DirectCasClient(configuration);
-        TestsHelper.expectException(() -> client.init(MockWebContext.create()), TechnicalException.class, "the DirectCasClient can not support gateway to avoid infinite loops");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "the DirectCasClient can not support gateway to avoid infinite loops");
     }
 
     @Test

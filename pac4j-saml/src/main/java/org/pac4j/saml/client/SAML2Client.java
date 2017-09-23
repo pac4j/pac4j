@@ -87,18 +87,18 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
-        this.configuration.init(getName(), context);
+        this.configuration.init(getName());
 
         initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
         final MetadataResolver metadataManager = initChainingMetadataResolver(
                 initIdentityProviderMetadataResolver(),
-                initServiceProviderMetadataResolver(context));
+                initServiceProviderMetadataResolver(null));
         initSAMLContextProvider(metadataManager);
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLResponseValidator();

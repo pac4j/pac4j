@@ -38,7 +38,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator());
-        digestAuthClient.init(null);
+        digestAuthClient.init();
     }
 
     @Test

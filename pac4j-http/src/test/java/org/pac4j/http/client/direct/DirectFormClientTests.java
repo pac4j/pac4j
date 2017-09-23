@@ -40,7 +40,7 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final DirectFormClient formClient = new DirectFormClient(new LocalCachingAuthenticator<>(new SimpleTestUsernamePasswordAuthenticator(), 10, 10, TimeUnit.DAYS));
-        formClient.init(null);
+        formClient.init();
     }
 
     private DirectFormClient getFormClient() {

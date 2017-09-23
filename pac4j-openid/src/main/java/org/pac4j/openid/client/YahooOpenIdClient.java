@@ -2,7 +2,6 @@ package org.pac4j.openid.client;
 
 import org.openid4java.consumer.ConsumerManager;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.openid.credentials.OpenIdCredentials;
 import org.pac4j.openid.credentials.authenticator.YahooAuthenticator;
 import org.pac4j.openid.credentials.extractor.YahooCredentialsExtractor;
@@ -24,7 +23,7 @@ public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials, YahooOp
     private ConsumerManager consumerManager;
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         this.consumerManager = new ConsumerManager();
         defaultRedirectActionBuilder(new YahooRedirectActionBuilder(this));
         defaultCredentialsExtractor(new YahooCredentialsExtractor(this));
@@ -33,7 +32,7 @@ public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials, YahooOp
 
     /**
      * Return the name of the attribute storing in session the discovery information.
-     * 
+     *
      * @return the name of the attribute storing in session the discovery information
      */
     public String getDiscoveryInformationSessionAttributeName() {

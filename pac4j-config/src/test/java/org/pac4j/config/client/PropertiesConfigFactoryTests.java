@@ -144,7 +144,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
 
             final GoogleOidcClient googleOidcClient = (GoogleOidcClient) clients.findClient("GoogleOidcClient.1");
-            googleOidcClient.init(MockWebContext.create());
+            googleOidcClient.init();
             assertEquals(ID, googleOidcClient.getConfiguration().getClientId());
             assertEquals(SECRET, googleOidcClient.getConfiguration().getSecret());
             assertEquals("https://accounts.google.com/.well-known/openid-configuration", googleOidcClient.getConfiguration().getDiscoveryURI());

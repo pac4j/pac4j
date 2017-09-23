@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.crypto;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
@@ -13,7 +12,7 @@ import org.pac4j.saml.exceptions.SAMLException;
 
 /**
  * Provider returning well configured {@link SignatureTrustEngine} instances.
- * 
+ *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
