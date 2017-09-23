@@ -47,7 +47,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected String[] attributeNames;
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         assertNotNull("profileDefinition", getProfileDefinition());
         assertNotBlank("usernameAttribute", this.usernameAttribute);
         assertNotBlank("passwordAttribute", this.passwordAttribute);
@@ -70,7 +70,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public void create(final U profile, final String password) {
-        init(null);
+        init();
 
         assertNotNull("profile", profile);
         assertNotBlank(PASSWORD, password);
@@ -83,7 +83,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public void update(final U profile, final String password) {
-        init(null);
+        init();
 
         assertNotNull("profile", profile);
         assertNotBlank(ID, profile.getId());
@@ -95,7 +95,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public void remove(final U profile) {
-        init(null);
+        init();
 
         assertNotNull("profile", profile);
 
@@ -104,7 +104,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public void removeById(final String id) {
-        init(null);
+        init();
 
         assertNotBlank(ID, id);
 
@@ -169,7 +169,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public U findById(final String id) {
-        init(null);
+        init();
 
         assertNotBlank(getIdAttribute(), id);
 
@@ -179,7 +179,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public U findByLinkedId(final String linkedId) {
-        init(null);
+        init();
 
         assertNotBlank(LINKEDID, linkedId);
 
@@ -272,7 +272,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         assertNotNull("credentials", credentials);
         final String username = credentials.getUsername();

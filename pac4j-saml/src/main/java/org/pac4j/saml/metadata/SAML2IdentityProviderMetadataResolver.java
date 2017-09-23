@@ -51,7 +51,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     @Override
     public  final MetadataResolver resolve() {
- 
+
         // No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
         // idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
         // Usage of locks will adversly impact performance.
@@ -113,11 +113,6 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
             return ((EntityDescriptor) md).getEntityID();
         }
         throw new SAMLException("No idp entityId found");
-    }
-
-    @Override
-    public String getMetadataPath() {
-        return idpMetadataResource.getFilename();
     }
 
     @Override

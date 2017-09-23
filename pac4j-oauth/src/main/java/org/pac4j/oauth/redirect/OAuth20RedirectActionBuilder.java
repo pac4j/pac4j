@@ -7,7 +7,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20RedirectActionBuilder extends InitializableWebObject implements RedirectActionBuilder {
+public class OAuth20RedirectActionBuilder extends InitializableObject implements RedirectActionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth20RedirectActionBuilder.class);
 
@@ -29,14 +29,14 @@ public class OAuth20RedirectActionBuilder extends InitializableWebObject impleme
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public RedirectAction redirect(final WebContext context) {
-        init(context);
+        init();
 
         try {
 

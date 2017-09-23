@@ -1,6 +1,5 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfileDefinition;
@@ -25,11 +24,11 @@ public class BitbucketClient extends OAuth10Client<BitbucketProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         configuration.setApi(new BitBucketApi());
         configuration.setProfileDefinition(new BitbucketProfileDefinition());
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://bitbucket.org/account/signout/"));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 }

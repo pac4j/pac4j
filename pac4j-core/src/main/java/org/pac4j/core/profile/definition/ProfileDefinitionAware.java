@@ -2,7 +2,7 @@ package org.pac4j.core.profile.definition;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 
 /**
  * For classes that can set the profile definition.
@@ -10,7 +10,7 @@ import org.pac4j.core.util.InitializableWebObject;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class ProfileDefinitionAware<P extends CommonProfile> extends InitializableWebObject {
+public abstract class ProfileDefinitionAware<P extends CommonProfile> extends InitializableObject {
 
     private ProfileDefinition<P> profileDefinition;
 

@@ -1,7 +1,6 @@
 package org.pac4j.core.util;
 
 import org.junit.Assert;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 
 /**
@@ -14,10 +13,6 @@ public final class TestsHelper {
 
     public static void initShouldFail(final InitializableObject obj, final String message) {
         expectException(() -> obj.init(), TechnicalException.class, message);
-    }
-
-    public static void initShouldFail(final InitializableWebObject obj, final String message) {
-        expectException(() -> obj.init(MockWebContext.create()), TechnicalException.class, message);
     }
 
     public static Exception expectException(final Executable executable) {

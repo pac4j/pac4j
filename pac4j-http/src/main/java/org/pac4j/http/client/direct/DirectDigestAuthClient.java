@@ -39,7 +39,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultCredentialsExtractor(new DigestAuthExtractor(getName()));
     }
 

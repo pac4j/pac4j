@@ -76,7 +76,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
 
         if (signatureConfigurations.isEmpty()) {
@@ -121,7 +121,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) {
-        init(context);
+        init();
         final String token = credentials.getToken();
 
         try {

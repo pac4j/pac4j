@@ -6,7 +6,7 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CasRedirectActionBuilder extends InitializableWebObject implements RedirectActionBuilder {
+public class CasRedirectActionBuilder extends InitializableObject implements RedirectActionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(CasRedirectActionBuilder.class);
 
@@ -29,15 +29,16 @@ public class CasRedirectActionBuilder extends InitializableWebObject implements 
         this.callbackUrl = callbackUrl;
     }
 
-    protected void internalInit(final WebContext context) {
+    @Override
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public RedirectAction redirect(final WebContext context) {
-        init(context);
+        init();
 
         final String computeLoginUrl = configuration.computeFinalLoginUrl(context);
         final String computedCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);

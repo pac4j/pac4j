@@ -58,14 +58,14 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
         CommonHelper.assertNotNull("connectionFactory", connectionFactory);
         CommonHelper.assertNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotBlank("usersDn", usersDn);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new LdapProfile()));
 
-        super.internalInit(context);
+        super.internalInit();
     }
 
     @Override
@@ -192,7 +192,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         final String username = credentials.getUsername();
         CommonHelper.assertNotBlank(Pac4jConstants.USERNAME, username);

@@ -4,7 +4,6 @@ import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuth10aService;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
@@ -32,7 +31,7 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
@@ -45,7 +44,7 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
         });
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://twitter.com/logout"));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     protected BaseApi<OAuth10aService> getApi() {

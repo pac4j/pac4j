@@ -1,7 +1,6 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -26,7 +25,7 @@ public class CookieClient extends DirectClient<TokenCredentials, CommonProfile> 
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
         defaultCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));

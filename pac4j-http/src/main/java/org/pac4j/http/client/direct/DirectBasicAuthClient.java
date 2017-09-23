@@ -1,7 +1,6 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
@@ -29,7 +28,7 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
     }
 }

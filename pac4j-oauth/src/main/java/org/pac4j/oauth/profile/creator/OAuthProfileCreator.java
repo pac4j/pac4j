@@ -14,7 +14,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
  * @since 2.0.0
  */
 abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration, T extends Token>
-    extends InitializableWebObject implements ProfileCreator<C, U> {
+    extends InitializableObject implements ProfileCreator<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -49,9 +49,9 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override

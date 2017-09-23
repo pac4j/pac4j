@@ -2,7 +2,6 @@ package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -42,7 +41,7 @@ public class DirectFormClient extends DirectClient<UsernamePasswordCredentials, 
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("usernameParameter", usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
 

@@ -12,7 +12,7 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.http.AjaxRequestResolver;
 import org.pac4j.core.http.DefaultAjaxRequestResolver;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
 
@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OidcLogoutActionBuilder<U extends OidcProfile> extends InitializableWebObject implements LogoutActionBuilder<U> {
+public class OidcLogoutActionBuilder<U extends OidcProfile> extends InitializableObject implements LogoutActionBuilder<U> {
 
     private OidcConfiguration configuration;
 
@@ -38,14 +38,14 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> extends Initializabl
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init(context);
+        configuration.init();
     }
 
     @Override
     public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        init(context);
+        init();
         final String logoutUrl = configuration.getLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl)) {
             try {

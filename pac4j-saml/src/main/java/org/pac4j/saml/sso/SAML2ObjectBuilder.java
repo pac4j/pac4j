@@ -5,6 +5,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
  * Builds an authentication request for the idp.
+ *
  * @author Misagh Moayyed
  * @since 1.7
  */

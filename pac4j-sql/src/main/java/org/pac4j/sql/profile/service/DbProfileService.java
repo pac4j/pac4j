@@ -1,6 +1,5 @@
 package org.pac4j.sql.profile.service;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
@@ -51,13 +50,13 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new DbProfile()));
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         this.dbi = new DBI(this.dataSource);
 
-        super.internalInit(context);
+        super.internalInit();
     }
 
     @Override

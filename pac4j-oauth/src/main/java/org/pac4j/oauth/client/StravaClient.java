@@ -1,6 +1,5 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.strava.StravaProfileDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
@@ -35,12 +34,12 @@ public class StravaClient extends OAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         configuration.setApi(new StravaApi20(approvalPrompt));
         configuration.setProfileDefinition(new StravaProfileDefinition());
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.strava.com/session"));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public String getApprovalPrompt() {

@@ -41,18 +41,18 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
 
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init(context);
+        configuration.init();
 
         defaultProfileDefinition(new CasProfileDefinition());
     }
 
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) {
-        init(context);
+        init();
 
         final String ticket = credentials.getToken();
         try {

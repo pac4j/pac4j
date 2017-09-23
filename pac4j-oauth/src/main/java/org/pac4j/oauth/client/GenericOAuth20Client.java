@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.github.scribejava.core.model.Verb;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 import org.pac4j.scribe.builder.api.GenericApi20;
@@ -32,7 +31,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
 
         LOG.info("InternalInit");
 
@@ -54,7 +53,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         configuration.setProfileDefinition(profileDefinition);
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public void setAuthUrl(final String authUrl) {

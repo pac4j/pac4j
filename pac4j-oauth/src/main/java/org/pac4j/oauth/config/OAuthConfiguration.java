@@ -8,7 +8,7 @@ import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> extends InitializableWebObject {
+public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> extends InitializableObject {
 
     public static final String OAUTH_TOKEN = "oauth_token";
 
@@ -50,7 +50,7 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
     private UrlResolver urlResolver;
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("clientName", this.clientName);

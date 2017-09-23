@@ -1,6 +1,5 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
@@ -40,7 +39,7 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
         configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant));
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
@@ -51,7 +50,7 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
         }
         defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public String getCasOAuthUrl() {

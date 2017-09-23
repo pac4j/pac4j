@@ -1,6 +1,5 @@
 package org.pac4j.core.profile.service;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
@@ -34,10 +33,10 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         defaultProfileDefinition(new CommonProfileDefinition<U>(profileFactory));
-        super.internalInit(context);
+        super.internalInit();
     }
 
     @Override

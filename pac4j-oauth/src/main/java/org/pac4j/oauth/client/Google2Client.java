@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.GoogleApi20;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.logout.GoogleLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -41,7 +40,7 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
     }
 
     @Override
-    protected void clientInit(final WebContext context) {
+    protected void clientInit() {
         CommonHelper.assertNotNull("scope", this.scope);
         final String scopeValue;
         if (this.scope == Google2Scope.EMAIL) {
@@ -65,7 +64,7 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
         });
         defaultLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
-        super.clientInit(context);
+        super.clientInit();
     }
 
     public Google2Scope getScope() {
