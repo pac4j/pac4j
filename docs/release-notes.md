@@ -8,7 +8,8 @@ title: Release notes&#58;
 - Handle AJAX requests in the OpenID Connect logout
 - All session interactions are done via the `SessionStore` (retrieved from the `WebContext`)
 - All exceptions (especially `HttpAction`) are unchecked
-- Upgrade to Scribe v4
+- Upgraded to Scribe v4
+- Added "multi-tenancy" capabilities: you can dynamically define multiple callback URLs for the same client, except for SAML for which you need as many `SAML2Client` as the number of different callback URLs you want
 
 **v2.2.0**:
 
