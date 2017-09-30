@@ -71,4 +71,6 @@ public interface Pac4jConstants {
 
     /** Whether a central logout must be performed */
     String CENTRAL_LOGOUT = "centralLogout";
+
+    String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
 }

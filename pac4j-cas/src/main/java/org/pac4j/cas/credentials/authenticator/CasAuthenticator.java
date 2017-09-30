@@ -9,6 +9,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -31,17 +32,21 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     private CasConfiguration configuration;
 
+    private CallbackUrlResolver callbackUrlResolver;
+
     private String callbackUrl;
 
     public CasAuthenticator() {}
 
-    public CasAuthenticator(final CasConfiguration configuration, final String callbackUrl) {
+    public CasAuthenticator(final CasConfiguration configuration, final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
         this.configuration = configuration;
+        this.callbackUrlResolver = callbackUrlResolver;
         this.callbackUrl = callbackUrl;
     }
 
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
 
         CommonHelper.assertNotNull("configuration", configuration);
@@ -56,7 +61,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
         final String ticket = credentials.getToken();
         try {
-            final String finalCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);
+            final String finalCallbackUrl = callbackUrlResolver.compute(callbackUrl, credentials.getClientName(), context);
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);
@@ -97,7 +102,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
         return configuration;
     }
 
-    public void setConfiguration(CasConfiguration configuration) {
+    public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -105,7 +110,15 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
         return callbackUrl;
     }
 
-    public void setCallbackUrl(String callbackUrl) {
+    public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
+    }
+
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
+    }
+
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 }

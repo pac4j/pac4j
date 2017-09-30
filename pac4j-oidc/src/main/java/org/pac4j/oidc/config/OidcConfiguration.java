@@ -9,7 +9,6 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -74,8 +73,6 @@ public class OidcConfiguration extends InitializableObject {
 
     private OIDCProviderMetadata providerMetadata;
 
-    private String callbackUrl;
-
     private String responseType;
 
     private String responseMode;
@@ -85,8 +82,6 @@ public class OidcConfiguration extends InitializableObject {
     private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
-
-    private UrlResolver callbackUrlResolver;
 
     @Override
     protected void internalInit() {
@@ -242,14 +237,6 @@ public class OidcConfiguration extends InitializableObject {
         this.resourceRetriever = resourceRetriever;
     }
 
-    public String getCallbackUrl() {
-        return callbackUrl;
-    }
-
-    public void setCallbackUrl(final String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
     public String getResponseType() {
         return responseType;
     }
@@ -277,21 +264,13 @@ public class OidcConfiguration extends InitializableObject {
         this.logoutUrl = logoutUrl;
     }
 
-    public UrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final UrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
-    }
-
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientId", clientId, "secret", "[protected]", "discoveryURI", discoveryURI,
-                "scope", scope, "customParams", customParams, "clientAuthenticationMethod", clientAuthenticationMethod,
-                "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxClockSkew", maxClockSkew,
-                "connectTimeout", connectTimeout, "readTimeout", readTimeout,
-                "resourceRetriever", resourceRetriever, "callbackUrl", callbackUrl, "responseType", responseType,
-                "responseMode", responseMode, "logoutUrl", logoutUrl, "callbackUrlResolver", callbackUrlResolver);
+        return CommonHelper.toString(this.getClass(), "clientId", clientId, "secret", "[protected]",
+            "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
+            "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
+            "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxClockSkew", maxClockSkew,
+            "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
+            "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
     }
 }

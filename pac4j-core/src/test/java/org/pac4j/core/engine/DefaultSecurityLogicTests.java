@@ -10,7 +10,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
@@ -232,7 +232,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final DirectClient directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
-        context.addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
         multiProfile = true;
         call();
         assertEquals(-1, context.getResponseStatus());
@@ -252,7 +252,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final DirectClient directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME;
-        context.addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
         multiProfile = true;
         TestsHelper.expectException(() -> call(), TechnicalException.class, "Client not allowed: " + VALUE);
     }
@@ -273,7 +273,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final IndirectClient indirectClient2 = new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME + "," + VALUE;
-        context.addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
         call();
         assertEquals(302, context.getResponseStatus());
         assertEquals(PAC4J_BASE_URL, context.getResponseLocation());
@@ -285,7 +285,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final IndirectClient indirectClient2 = new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME;
-        context.addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "Client not allowed: " + VALUE);
     }
 }

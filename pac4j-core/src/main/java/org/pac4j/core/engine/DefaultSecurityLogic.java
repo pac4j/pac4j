@@ -8,14 +8,14 @@ import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.client.finder.ClientFinder;
-import org.pac4j.core.client.finder.DefaultClientFinder;
+import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.DefaultMatchingChecker;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
@@ -50,7 +50,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    private ClientFinder clientFinder = new DefaultClientFinder();
+    private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 
     private AuthorizationChecker authorizationChecker = new DefaultAuthorizationChecker();
 

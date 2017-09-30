@@ -11,6 +11,7 @@ import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -35,17 +36,24 @@ public class OidcAuthenticator extends InitializableObject implements Authentica
 
     private OidcConfiguration configuration;
 
+    private String callbackUrl;
+
+    private CallbackUrlResolver callbackUrlResolver;
+
     protected ClientAuthentication clientAuthentication;
 
     public OidcAuthenticator() { }
 
-    public OidcAuthenticator(final OidcConfiguration configuration) {
+    public OidcAuthenticator(final OidcConfiguration configuration, final String callbackUrl, final CallbackUrlResolver callbackUrlResolver) {
         this.configuration = configuration;
+        this.callbackUrl = callbackUrl;
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
+        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
 
         configuration.init();
 
@@ -87,7 +95,7 @@ public class OidcAuthenticator extends InitializableObject implements Authentica
         // if we have a code
         if (code != null) {
             try {
-                final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(configuration.getCallbackUrl(), context);
+                final String computedCallbackUrl = callbackUrlResolver.compute(callbackUrl, credentials.getClientName(), context);
                 // Token request
                 final TokenRequest request = new TokenRequest(configuration.getProviderMetadata().getTokenEndpointURI(),
                         this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(computedCallbackUrl)));
@@ -122,7 +130,7 @@ public class OidcAuthenticator extends InitializableObject implements Authentica
         return configuration;
     }
 
-    public void setConfiguration(OidcConfiguration configuration) {
+    public void setConfiguration(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -132,6 +140,7 @@ public class OidcAuthenticator extends InitializableObject implements Authentica
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clientAuthentication", clientAuthentication);
+        return CommonHelper.toString(this.getClass(), "configuration", configuration, "callbackUrl", callbackUrl,
+            "callbackUrlResolver", callbackUrlResolver, "clientAuthentication", clientAuthentication);
     }
 }

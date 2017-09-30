@@ -29,7 +29,7 @@ public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAut
 
         configuration.setClientName(this.getName());
         configuration.setCallbackUrl(this.getCallbackUrl());
-        configuration.setUrlResolver(this.getUrlResolver());
+        configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
     }
 
     public OAuth10Configuration getConfiguration() {
@@ -59,7 +59,7 @@ public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAut
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", getCallbackUrl(),
-                "urlResolver", getUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
+                "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", this.configuration);
     }

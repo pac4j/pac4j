@@ -9,6 +9,7 @@ import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -35,17 +36,26 @@ public class OidcExtractor extends InitializableObject implements CredentialsExt
 
     private String clientName;
 
+    private String callbackUrl;
+
+    private CallbackUrlResolver callbackUrlResolver;
+
     public OidcExtractor() {}
 
-    public OidcExtractor(final OidcConfiguration configuration, final String clientName) {
+    public OidcExtractor(final OidcConfiguration configuration, final String clientName,
+                         final String callbackUrl, final CallbackUrlResolver callbackUrlResolver) {
         this.configuration = configuration;
         this.clientName = clientName;
+        this.callbackUrl = callbackUrl;
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
+        CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
+        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
 
         configuration.init();
     }
@@ -54,7 +64,7 @@ public class OidcExtractor extends InitializableObject implements CredentialsExt
     public OidcCredentials extract(final WebContext context) {
         init();
 
-        final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(configuration.getCallbackUrl(), context);
+        final String computedCallbackUrl = callbackUrlResolver.compute(callbackUrl, clientName, context);
         final Map<String, String> parameters = retrieveParameters(context);
         AuthenticationResponse response;
         try {
@@ -112,6 +122,7 @@ public class OidcExtractor extends InitializableObject implements CredentialsExt
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clientName", clientName);
+        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clientName", clientName,
+            "callbackUrl", callbackUrl, "callbackUrlResolver", callbackUrlResolver);
     }
 }

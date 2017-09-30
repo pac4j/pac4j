@@ -6,7 +6,7 @@ import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.http.UrlResolver;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
@@ -47,7 +47,7 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
 
     private String callbackUrl;
 
-    private UrlResolver urlResolver;
+    private CallbackUrlResolver callbackUrlResolver;
 
     @Override
     protected void internalInit() {
@@ -58,7 +58,7 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
         CommonHelper.assertNotNull("hasBeenCancelledFactory", hasBeenCancelledFactory);
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
+        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
     }
 
     /**
@@ -70,7 +70,7 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
      */
     public S buildService(final WebContext context, final String state) {
 
-        final String finalCallbackUrl = this.getUrlResolver().compute(this.getCallbackUrl(), context);
+        final String finalCallbackUrl = this.callbackUrlResolver.compute(this.getCallbackUrl(), clientName, context);
 
         final OAuthConfig oAuthConfig = new OAuthConfig(this.key, this.secret, finalCallbackUrl, this.scope,
             null, state, this.responseType, null, this.httpClientConfig, null);
@@ -166,12 +166,12 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
         this.callbackUrl = callbackUrl;
     }
 
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
     }
 
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     @Override
@@ -179,6 +179,6 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
         return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "clientName", clientName,
             "tokenAsHeader", tokenAsHeader, "responseType", responseType, "scope", scope, "api", api,
                 "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition,
-            "httpClientConfig", httpClientConfig, "callbackUrl", callbackUrl, "urlResolver", urlResolver);
+            "httpClientConfig", httpClientConfig, "callbackUrl", callbackUrl, "callbackUrlResolver", callbackUrlResolver);
     }
 }

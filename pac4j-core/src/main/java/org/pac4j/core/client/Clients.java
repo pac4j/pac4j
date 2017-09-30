@@ -3,44 +3,33 @@ package org.pac4j.core.client;
 import java.util.*;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.UrlResolver;
-import org.pac4j.core.http.DefaultAjaxRequestResolver;
-import org.pac4j.core.http.DefaultUrlResolver;
+import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
 /**
- * <p>This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
- * callback url.</p>
- * <p>The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the
- * clients group if empty and a specific parameter added to define the client targeted. It is implicitly called by the
- * "finders" methods and doesn't need to be called explicitly.</p>
- * <p>The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called
- * to find the right client according to the input context or type. The {@link #findAllClients()} method returns all the
- * clients.</p>
- * 
+ * <p>This class is made to group multiple clients, generally on one callback url.</p>
+ *
+ * <p>The {@link #init()} method is used to initialize the clients with the general values: the callback URL, the AJAX resolver,
+ * the callback URL resolver and the authorization generators.</p>
+ *
  * @author Jerome Leleu
  * @since 1.3.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "unchecked" })
 public class Clients extends InitializableObject {
-
-    public final static String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
-
-    private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
 
     private List<Client> clients;
 
-    private String callbackUrl = null;
+    private Map<String, Client> _clients;
 
-    private Client defaultClient;
+    private String callbackUrl;
 
-    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+    private AjaxRequestResolver ajaxRequestResolver;
 
-    private UrlResolver urlResolver = new DefaultUrlResolver();
+    private CallbackUrlResolver callbackUrlResolver;
 
     private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
@@ -74,22 +63,19 @@ public class Clients extends InitializableObject {
         setClients(Collections.singletonList(client));
     }
 
-    /**
-     * Initialize all clients by computing callback urls if necessary.
-     */
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("clients", getClients());
-        final HashSet<String> names = new HashSet<>();
+        _clients = new HashMap<>();
         for (final Client client : getClients()) {
             final String name = client.getName();
-            final String lowerName = name.toLowerCase();
-            if (names.contains(lowerName)) {
+            final String lowerTrimmedName = name.toLowerCase().trim();
+            if (_clients.containsKey(lowerTrimmedName)) {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
-            names.add(lowerName);
+            _clients.put(lowerTrimmedName, client);
             if (client instanceof IndirectClient) {
-                updateCallbackUrlOfIndirectClient((IndirectClient) client);
+                updateIndirectClient((IndirectClient) client);
             }
             final BaseClient baseClient = (BaseClient) client;
             if (!authorizationGenerators.isEmpty()) {
@@ -98,52 +84,22 @@ public class Clients extends InitializableObject {
         }
     }
 
-    
-    /**
-     * Sets a client's Callback URL, if not already set. If requested, the "client_name" parameter will also be a part of the URL.
-     * 
-     * @param indirectClient A client.
-     */
-    protected void updateCallbackUrlOfIndirectClient(final IndirectClient indirectClient) {
-        String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-        // no callback url defined for the client but a group callback one -> set it with the group callback url
-        if (CommonHelper.isNotBlank(this.callbackUrl) && indirectClientCallbackUrl == null) {
-            indirectClient.setCallbackUrl(this.callbackUrl);
-            indirectClientCallbackUrl = this.callbackUrl;
-        }
-        // if the "client_name" parameter is not already part of the client callback url, 
-        // add it unless the client has indicated to not include it.
-        if (indirectClient.isIncludeClientNameInCallbackUrl() && indirectClientCallbackUrl != null && 
-            !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
-            indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, 
-                indirectClient.getName()));
-        }
-        final AjaxRequestResolver clientAjaxRequestResolver = indirectClient.getAjaxRequestResolver();
-        if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || 
-            clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
-            indirectClient.setAjaxRequestResolver(ajaxRequestResolver);
-        }
-        final UrlResolver clientUrlResolver = indirectClient.getUrlResolver();
-        if (urlResolver != null && (clientUrlResolver == null || clientUrlResolver instanceof DefaultUrlResolver)) {
-            indirectClient.setUrlResolver(this.urlResolver);
-        }
-    }
 
-    
     /**
-     * Return the right client according to the web context.
-     * 
-     * @param context web context
-     * @return the right client
+     * Setup the indirect client.
+     *
+     * @param client the indirect client
      */
-    public Client findClient(final WebContext context) {
-        init();
-        final String name = context.getRequestParameter(this.clientNameParameter);
-        if (name == null && defaultClient != null) {
-            return defaultClient;
+    protected void updateIndirectClient(final IndirectClient client) {
+        if (this.callbackUrl != null && client.getCallbackUrl() ==  null) {
+            client.setCallbackUrl(this.callbackUrl);
         }
-        CommonHelper.assertNotBlank("name", name);
-        return findClient(name);
+        if (this.callbackUrlResolver != null && client.getCallbackUrlResolver() == null) {
+            client.setCallbackUrlResolver(this.callbackUrlResolver);
+        }
+        if (this.ajaxRequestResolver != null && client.getAjaxRequestResolver() == null) {
+            client.setAjaxRequestResolver(this.ajaxRequestResolver);
+        }
     }
 
     /**
@@ -153,11 +109,12 @@ public class Clients extends InitializableObject {
      * @return the right client
      */
     public Client findClient(final String name) {
+        CommonHelper.assertNotBlank("name", name);
         init();
-        for (final Client client : getClients()) {
-            if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
-                return client;
-            }
+        final String lowerTrimmedName = name.toLowerCase().trim();
+        final Client client = _clients.get(lowerTrimmedName);
+        if (client != null) {
+            return client;
         }
         final String message = "No client found for name: " + name;
         throw new TechnicalException(message);
@@ -172,6 +129,7 @@ public class Clients extends InitializableObject {
      */
     @SuppressWarnings("unchecked")
     public <C extends Client> C findClient(final Class<C> clazz) {
+        CommonHelper.assertNotNull("clazz", clazz);
         init();
         if (clazz != null) {
             for (final Client client : getClients()) {
@@ -194,14 +152,6 @@ public class Clients extends InitializableObject {
         return getClients();
     }
 
-    public String getClientNameParameter() {
-        return this.clientNameParameter;
-    }
-
-    public void setClientNameParameter(final String clientNameParameter) {
-        this.clientNameParameter = clientNameParameter;
-    }
-
     public String getCallbackUrl() {
         return this.callbackUrl;
     }
@@ -222,22 +172,6 @@ public class Clients extends InitializableObject {
         return this.clients;
     }
 
-    /**
-     * Set the default client (can be <code>null</code>). If not <code>null</code>, it must exist in the list of clients.
-     *
-     * @param defaultClient the default client to define
-     */
-    public void setDefaultClient(final Client defaultClient) {
-        if (defaultClient != null && (this.clients == null || !this.clients.contains(defaultClient))) {
-            throw new TechnicalException("The default client must be defined in the list of clients");
-        }
-        this.defaultClient = defaultClient;
-    }
-
-    public Client getDefaultClient() {
-        return defaultClient;
-    }
-
     public AjaxRequestResolver getAjaxRequestResolver() {
         return ajaxRequestResolver;
     }
@@ -246,12 +180,12 @@ public class Clients extends InitializableObject {
         this.ajaxRequestResolver = ajaxRequestResolver;
     }
 
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
     }
 
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     public List<AuthorizationGenerator> getAuthorizationGenerators() {
@@ -279,9 +213,8 @@ public class Clients extends InitializableObject {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
-                this.clientNameParameter, "clients", getClients(), "defaultClient", defaultClient, 
-                "ajaxRequestResolver", ajaxRequestResolver,
-                "urlResolver", urlResolver, "authorizationGenerators", authorizationGenerators);
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clients", getClients(),
+                "ajaxRequestResolver", ajaxRequestResolver, "callbackUrlResolver", callbackUrlResolver,
+                "authorizationGenerators", authorizationGenerators);
     }
 }

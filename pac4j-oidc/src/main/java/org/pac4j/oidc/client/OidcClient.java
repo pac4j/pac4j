@@ -42,13 +42,11 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     @Override
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.setCallbackUrl(getCallbackUrl());
-        configuration.setCallbackUrlResolver(getUrlResolver());
         configuration.init();
 
-        defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
-        defaultCredentialsExtractor(new OidcExtractor(configuration, getName()));
-        defaultAuthenticator(new OidcAuthenticator(configuration));
+        defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration, getName(), getCallbackUrl(), getCallbackUrlResolver()));
+        defaultCredentialsExtractor(new OidcExtractor(configuration, getName(), getCallbackUrl(), getCallbackUrlResolver()));
+        defaultAuthenticator(new OidcAuthenticator(configuration, getCallbackUrl(), getCallbackUrlResolver()));
         defaultProfileCreator(new OidcProfileCreator<>(configuration));
         defaultLogoutActionBuilder(new OidcLogoutActionBuilder<U>(configuration));
     }
@@ -56,7 +54,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "urlResolver", this.urlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
                 "logoutActionBuilder", getLogoutActionBuilder(), "configuration", configuration);

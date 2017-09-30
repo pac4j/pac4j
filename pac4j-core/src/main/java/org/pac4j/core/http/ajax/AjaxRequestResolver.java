@@ -1,4 +1,4 @@
-package org.pac4j.core.http;
+package org.pac4j.core.http.ajax;
 
 import org.pac4j.core.context.WebContext;
 

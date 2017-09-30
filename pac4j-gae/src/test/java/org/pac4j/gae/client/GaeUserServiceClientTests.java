@@ -6,6 +6,7 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -62,7 +63,8 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     public void testRedirect() {
         final RedirectAction redirectAction = client.getRedirectAction(context);
         assertEquals(RedirectType.REDIRECT, redirectAction.getType());
-        assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL), redirectAction.getLocation());
+        assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
+            Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), redirectAction.getLocation());
     }
 
     @Test

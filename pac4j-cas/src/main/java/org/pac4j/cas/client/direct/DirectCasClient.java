@@ -13,6 +13,8 @@ import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -38,6 +40,8 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     private CasConfiguration configuration;
 
+    private CallbackUrlResolver callbackUrlResolver = new NoParameterCallbackUrlResolver();
+
     public DirectCasClient() { }
 
     public DirectCasClient(final CasConfiguration casConfiguration) {
@@ -48,22 +52,22 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     protected TokenCredentials retrieveCredentials(final WebContext context) {
         init();
         try {
-            String currentUrl = configuration.computeFinalUrl(context.getFullRequestURL(), context);
+            String callbackUrl = callbackUrlResolver.compute(context.getFullRequestURL(), getName(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
             final TokenCredentials credentials = getCredentialsExtractor().extract(context);
             if (credentials == null) {
                 // redirect to the login page
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
-                        currentUrl, configuration.isRenew(), false);
+                        callbackUrl, configuration.isRenew(), false);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
                 throw HttpAction.redirect("no ticket -> force redirect to login page", context, redirectionUrl);
             }
 
             // clean url from ticket parameter
-            currentUrl = CommonHelper.substringBefore(currentUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
-            currentUrl = CommonHelper.substringBefore(currentUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, currentUrl);
+            callbackUrl = CommonHelper.substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
+            callbackUrl = CommonHelper.substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
+            final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
             casAuthenticator.validate(credentials, context);
 
@@ -76,13 +80,15 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     @Override
     protected void clientInit() {
+        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
+
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
         configuration.init();
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.defaultAuthenticator(new CasAuthenticator(configuration, "fake"));
+        super.defaultAuthenticator(new CasAuthenticator(configuration, callbackUrlResolver, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -98,6 +104,14 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     protected void defaultAuthenticator(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "
             + "automatically created for each request");
+    }
+
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
+    }
+
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     @Override

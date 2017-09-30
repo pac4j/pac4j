@@ -3,6 +3,7 @@ package org.pac4j.oidc.redirect;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -28,15 +29,30 @@ public class OidcRedirectActionBuilder extends InitializableObject implements Re
 
     protected OidcConfiguration configuration;
 
+    private String clientName;
+
+    private String callbackUrl;
+
+    private CallbackUrlResolver callbackUrlResolver;
+
     private Map<String, String> authParams;
 
-    public OidcRedirectActionBuilder(final OidcConfiguration configuration) {
+    public OidcRedirectActionBuilder() {}
+
+    public OidcRedirectActionBuilder(final OidcConfiguration configuration, final String clientName,
+                                     final String callbackUrl, final CallbackUrlResolver callbackUrlResolver) {
         this.configuration = configuration;
+        this.clientName = clientName;
+        this.callbackUrl = callbackUrl;
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("configuration", configuration);
+        CommonHelper.assertNotBlank("clientName", clientName);
+        CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
+        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
 
         configuration.init();
 
@@ -73,7 +89,7 @@ public class OidcRedirectActionBuilder extends InitializableObject implements Re
         init();
 
         final Map<String, String> params = buildParams();
-        final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(configuration.getCallbackUrl(), context);
+        final String computedCallbackUrl = callbackUrlResolver.compute(callbackUrl, clientName, context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
         addStateAndNonceParameters(context, params);
@@ -120,8 +136,17 @@ public class OidcRedirectActionBuilder extends InitializableObject implements Re
         this.configuration = configuration;
     }
 
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
+    }
+
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
+    }
+
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration);
+        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clientName", clientName,
+            "callbackUrl", callbackUrl, "callbackUrlResolver", callbackUrlResolver);
     }
 }
