@@ -30,11 +30,11 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
-    private CasConfiguration configuration;
+    protected CasConfiguration configuration;
 
-    private CallbackUrlResolver callbackUrlResolver;
+    protected CallbackUrlResolver callbackUrlResolver;
 
-    private String callbackUrl;
+    protected String callbackUrl;
 
     public CasAuthenticator() {}
 
@@ -48,9 +48,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
     protected void internalInit() {
         CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
-
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init();
 
         defaultProfileDefinition(new CasProfileDefinition());
     }
@@ -96,29 +94,5 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             String message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);
         }
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final CasConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public String getCallbackUrl() {
-        return callbackUrl;
-    }
-
-    public void setCallbackUrl(final String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
     }
 }

@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.yahoo;
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
@@ -18,8 +19,8 @@ import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
  */
 public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
 
-    public YahooProfileCreator(final OAuth10Configuration configuration) {
-        super(configuration);
+    public YahooProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
+        super(configuration, client);
     }
 
     @Override
@@ -27,7 +28,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         final OAuth10ProfileDefinition<YahooProfile> profileDefinition = (OAuth10ProfileDefinition<YahooProfile>) configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);
-        final OAuthService<OAuth1AccessToken> service = configuration.buildService(context, null);
+        final OAuthService<OAuth1AccessToken> service = configuration.buildService(context, client, null);
         String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);

@@ -2,6 +2,7 @@ package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1RequestToken;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -20,8 +21,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class OAuth10Authenticator extends OAuthAuthenticator<OAuth10Credentials, OAuth10Configuration> {
 
-    public OAuth10Authenticator(final OAuth10Configuration configuration) {
-        super(configuration);
+    public OAuth10Authenticator(final OAuth10Configuration configuration, final IndirectClient client) {
+        super(configuration, client);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator<OAuth10Credentials,
         }
         final OAuth1AccessToken accessToken;
         try {
-            accessToken = this.configuration.buildService(context, null).getAccessToken(tokenRequest, verifier);
+            accessToken = this.configuration.buildService(context, client, null).getAccessToken(tokenRequest, verifier);
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }

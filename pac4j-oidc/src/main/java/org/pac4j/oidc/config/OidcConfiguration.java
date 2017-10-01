@@ -112,6 +112,12 @@ public class OidcConfiguration extends InitializableObject {
         return this.providerMetadata;
     }
 
+    public OIDCProviderMetadata findProviderMetadata() {
+        init();
+
+        return this.providerMetadata;
+    }
+
     public void setProviderMetadata(final OIDCProviderMetadata providerMetadata) {
         this.providerMetadata = providerMetadata;
     }
@@ -175,7 +181,7 @@ public class OidcConfiguration extends InitializableObject {
         this.clientAuthenticationMethod = clientAuthenticationMethod;
     }
 
-    public void setClientAuthenticationMethodAsString(String auth) {
+    public void setClientAuthenticationMethodAsString(final String auth) {
         this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
     }
 
@@ -223,10 +229,10 @@ public class OidcConfiguration extends InitializableObject {
         return resourceRetriever;
     }
 
-    public void defaultResourceRetriever(final ResourceRetriever resourceRetriever) {
-        if (this.resourceRetriever == null) {
-            this.resourceRetriever = resourceRetriever;
-        }
+    public ResourceRetriever findResourceRetriever() {
+        init();
+
+        return resourceRetriever;
     }
 
     public void setDiscoveryURI(final String discoveryURI) {

@@ -28,13 +28,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class CasProxyReceptor extends IndirectClient<TokenCredentials, CommonProfile> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
-
-    private Store<String, String> store = new GuavaStore<>(1000, 1, TimeUnit.MINUTES);
-
     public static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";
 
     public static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
+
+    private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
+
+    private Store<String, String> store = new GuavaStore<>(1000, 1, TimeUnit.MINUTES);
 
     @Override
     protected void clientInit() {

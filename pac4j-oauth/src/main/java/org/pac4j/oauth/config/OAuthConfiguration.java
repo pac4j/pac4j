@@ -5,8 +5,8 @@ import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
@@ -29,8 +29,6 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
 
     private String secret;
 
-    private String clientName;
-
     private boolean tokenAsHeader;
 
     private String responseType = RESPONSE_TYPE_CODE;
@@ -45,32 +43,27 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
 
     private HttpClientConfig httpClientConfig;
 
-    private String callbackUrl;
-
-    private CallbackUrlResolver callbackUrlResolver;
-
     @Override
     protected void internalInit() {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
-        CommonHelper.assertNotBlank("clientName", this.clientName);
         CommonHelper.assertNotNull("api", api);
         CommonHelper.assertNotNull("hasBeenCancelledFactory", hasBeenCancelledFactory);
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
     }
 
     /**
      * Build an OAuth service from the web context and with a state.
      *
      * @param context the web context
+     * @param client the client
      * @param state a given state
      * @return the OAuth service
      */
-    public S buildService(final WebContext context, final String state) {
+    public S buildService(final WebContext context, final IndirectClient client, final String state) {
+        init();
 
-        final String finalCallbackUrl = this.callbackUrlResolver.compute(this.getCallbackUrl(), clientName, context);
+        final String finalCallbackUrl = client.getCallbackUrlResolver().compute(client.getCallbackUrl(), client.getName(), context);
 
         final OAuthConfig oAuthConfig = new OAuthConfig(this.key, this.secret, finalCallbackUrl, this.scope,
             null, state, this.responseType, null, this.httpClientConfig, null);
@@ -142,14 +135,6 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
         this.profileDefinition = profileDefinition;
     }
 
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(final String clientName) {
-        this.clientName = clientName;
-    }
-
     public HttpClientConfig getHttpClientConfig() {
         return httpClientConfig;
     }
@@ -158,27 +143,10 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
         this.httpClientConfig = httpClientConfig;
     }
 
-    public String getCallbackUrl() {
-        return callbackUrl;
-    }
-
-    public void setCallbackUrl(final String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
-    }
-
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "clientName", clientName,
-            "tokenAsHeader", tokenAsHeader, "responseType", responseType, "scope", scope, "api", api,
-                "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition,
-            "httpClientConfig", httpClientConfig, "callbackUrl", callbackUrl, "callbackUrlResolver", callbackUrlResolver);
+        return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
+            "responseType", responseType, "scope", scope, "api", api, "hasBeenCancelledFactory", hasBeenCancelledFactory,
+            "profileDefinition", profileDefinition, "httpClientConfig", httpClientConfig);
     }
 }

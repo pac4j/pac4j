@@ -22,14 +22,10 @@ public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAut
 
     @Override
     protected void clientInit() {
-        defaultRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration));
-        defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration));
-        defaultAuthenticator(new OAuth20Authenticator(configuration));
-        defaultProfileCreator(new OAuth20ProfileCreator<>(configuration));
-
-        configuration.setClientName(this.getName());
-        configuration.setCallbackUrl(this.getCallbackUrl());
-        configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
+        defaultRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration, this));
+        defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration, this));
+        defaultAuthenticator(new OAuth20Authenticator(configuration, this));
+        defaultProfileCreator(new OAuth20ProfileCreator<>(configuration, this));
     }
 
     public OAuth20Configuration getConfiguration() {

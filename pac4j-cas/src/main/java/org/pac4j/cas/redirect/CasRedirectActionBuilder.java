@@ -1,13 +1,12 @@
 package org.pac4j.cas.redirect;
 
 import org.jasig.cas.client.util.CommonUtils;
+import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,41 +16,25 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CasRedirectActionBuilder extends InitializableObject implements RedirectActionBuilder {
+public class CasRedirectActionBuilder implements RedirectActionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(CasRedirectActionBuilder.class);
 
-    protected final CasConfiguration configuration;
+    protected CasConfiguration configuration;
 
-    private final CallbackUrlResolver callbackUrlResolver;
+    protected CasClient client;
 
-    private final String clientName;
-
-    private final String callbackUrl;
-
-    public CasRedirectActionBuilder(final CasConfiguration configuration, final CallbackUrlResolver callbackUrlResolver,
-                                    final String clientName, final String callbackUrl) {
-        this.configuration = configuration;
-        this.callbackUrlResolver = callbackUrlResolver;
-        this.clientName = clientName;
-        this.callbackUrl = callbackUrl;
-    }
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
-        CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
-        CommonHelper.assertNotBlank("clientName", clientName);
+    public CasRedirectActionBuilder(final CasConfiguration configuration, final CasClient client) {
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init();
+        CommonHelper.assertNotNull("client", client);
+        this.configuration = configuration;
+        this.client = client;
     }
 
     @Override
     public RedirectAction redirect(final WebContext context) {
-        init();
-
         final String computeLoginUrl = configuration.computeFinalLoginUrl(context);
-        final String computedCallbackUrl = callbackUrlResolver.compute(callbackUrl, clientName, context);
+        final String computedCallbackUrl = client.getCallbackUrlResolver().compute(client.getCallbackUrl(), client.getName(), context);
         final String redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, CasConfiguration.SERVICE_PARAMETER,
                 computedCallbackUrl, configuration.isRenew(), configuration.isGateway());
         logger.debug("redirectionUrl: {}", redirectionUrl);

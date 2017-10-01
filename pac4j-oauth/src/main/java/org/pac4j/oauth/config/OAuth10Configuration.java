@@ -18,9 +18,10 @@ public class OAuth10Configuration extends OAuthConfiguration<OAuth10aService, OA
     /**
      * Return the name of the attribute storing in session the request token.
      *
+     * @param clientName the client name
      * @return the name of the attribute storing in session the request token
      */
-    public String getRequestTokenSessionAttributeName() {
-        return getClientName() + "#" + REQUEST_TOKEN;
+    public String getRequestTokenSessionAttributeName(final String clientName) {
+        return clientName + "#" + REQUEST_TOKEN;
     }
 }

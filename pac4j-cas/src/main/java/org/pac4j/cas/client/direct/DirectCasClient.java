@@ -49,6 +49,18 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
+    protected void clientInit() {
+        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
+        CommonHelper.assertNotNull("configuration", this.configuration);
+        CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
+
+        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
+        // only a fake one for the initialization as we will build a new one with the current url for each request
+        super.defaultAuthenticator(new CasAuthenticator(configuration, callbackUrlResolver, "fake"));
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
+    }
+
+    @Override
     protected TokenCredentials retrieveCredentials(final WebContext context) {
         init();
         try {
@@ -79,17 +91,9 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
-
-        CommonHelper.assertNotNull("configuration", this.configuration);
-        CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
-        configuration.init();
-
-        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
-        // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.defaultAuthenticator(new CasAuthenticator(configuration, callbackUrlResolver, "fake"));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
+    protected void defaultAuthenticator(final Authenticator authenticator) {
+        throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "
+            + "automatically created for each request");
     }
 
     public CasConfiguration getConfiguration() {
@@ -98,12 +102,6 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
-    }
-
-    @Override
-    protected void defaultAuthenticator(final Authenticator authenticator) {
-        throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "
-            + "automatically created for each request");
     }
 
     public CallbackUrlResolver getCallbackUrlResolver() {
@@ -116,6 +114,8 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", this.configuration);
+        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration);
     }
 }

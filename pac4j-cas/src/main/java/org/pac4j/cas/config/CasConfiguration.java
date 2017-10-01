@@ -62,7 +62,7 @@ public class CasConfiguration extends InitializableObject {
 
     private String postLogoutUrlParameter = SERVICE_PARAMETER;
 
-    public CasConfiguration() { }
+    public CasConfiguration() {}
 
     public CasConfiguration(final String loginUrl) {
         this.loginUrl = loginUrl;
@@ -204,6 +204,8 @@ public class CasConfiguration extends InitializableObject {
     }
 
     public String computeFinalLoginUrl(final WebContext context) {
+        init();
+
         return urlResolver.compute(this.loginUrl, context);
     }
 
@@ -220,6 +222,8 @@ public class CasConfiguration extends InitializableObject {
     }
 
     public String computeFinalPrefixUrl(final WebContext context) {
+        init();
+
         return urlResolver.compute(this.prefixUrl, context);
     }
 
@@ -279,6 +283,12 @@ public class CasConfiguration extends InitializableObject {
         return logoutHandler;
     }
 
+    public CasLogoutHandler findLogoutHandler() {
+        init();
+
+        return logoutHandler;
+    }
+
     public void setLogoutHandler(final CasLogoutHandler logoutHandler) {
         this.logoutHandler = logoutHandler;
     }
@@ -316,6 +326,8 @@ public class CasConfiguration extends InitializableObject {
     }
 
     public String computeFinalRestUrl(final WebContext context) {
+        init();
+
         return urlResolver.compute(this.restUrl, context);
     }
 

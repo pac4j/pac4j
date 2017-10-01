@@ -17,7 +17,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
-import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,28 +26,19 @@ import org.slf4j.LoggerFactory;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CasRestAuthenticator extends InitializableObject implements Authenticator<UsernamePasswordCredentials> {
+public class CasRestAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(CasRestAuthenticator.class);
 
-    private CasConfiguration configuration;
-
-    public CasRestAuthenticator() {}
+    protected CasConfiguration configuration;
 
     public CasRestAuthenticator(final CasConfiguration configuration) {
+        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
     @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init();
-    }
-
-    @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
-        init();
-
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");
         }
@@ -84,13 +74,5 @@ public class CasRestAuthenticator extends InitializableObject implements Authent
         } finally {
             HttpUtils.closeConnection(connection);
         }
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final CasConfiguration configuration) {
-        this.configuration = configuration;
     }
 }

@@ -12,7 +12,6 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
 
@@ -25,27 +24,19 @@ import java.net.URISyntaxException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OidcLogoutActionBuilder<U extends OidcProfile> extends InitializableObject implements LogoutActionBuilder<U> {
+public class OidcLogoutActionBuilder<U extends OidcProfile> implements LogoutActionBuilder<U> {
 
-    private OidcConfiguration configuration;
+    protected OidcConfiguration configuration;
 
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
-    public OidcLogoutActionBuilder() {}
-
     public OidcLogoutActionBuilder(final OidcConfiguration configuration) {
+        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
     @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init();
-    }
-
-    @Override
     public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        init();
         final String logoutUrl = configuration.getLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl)) {
             try {
@@ -74,19 +65,12 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> extends Initializabl
         return null;
     }
 
-    public void setConfiguration(OidcConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public OidcConfiguration getConfiguration() {
-        return this.configuration;
-    }
-
     public AjaxRequestResolver getAjaxRequestResolver() {
         return ajaxRequestResolver;
     }
 
     public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
+        CommonHelper.assertNotNull("ajaxRequestResolver", ajaxRequestResolver);
         this.ajaxRequestResolver = ajaxRequestResolver;
     }
 }

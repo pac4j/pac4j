@@ -44,9 +44,8 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setUrlResolver(this.getCallbackUrlResolver().getUrlResolver());
-        configuration.init();
 
-        defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, getCallbackUrlResolver(), getName(), callbackUrl));
+        defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, this));
         defaultCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
         defaultAuthenticator(new CasAuthenticator(configuration, getCallbackUrlResolver(), callbackUrl));
         defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout",
@@ -56,10 +55,7 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
 
     @Override
     public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
-        final CasLogoutHandler casLogoutHandler = configuration.getLogoutHandler();
-        if (casLogoutHandler != null) {
-            casLogoutHandler.renewSession(oldSessionId, context);
-        }
+        configuration.findLogoutHandler().renewSession(oldSessionId, context);
     }
 
     public CasConfiguration getConfiguration() {
@@ -73,9 +69,10 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
-                "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-                "logoutActionBuilder", getLogoutActionBuilder(), "configuration", this.configuration);
+            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+            "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
+            "configuration", this.configuration);
     }
 }
