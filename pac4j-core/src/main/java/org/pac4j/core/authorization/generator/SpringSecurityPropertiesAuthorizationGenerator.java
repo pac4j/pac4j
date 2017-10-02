@@ -13,7 +13,7 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class SpringSecurityPropertiesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
+public class SpringSecurityPropertiesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
 
     public final static String DISABLED = "disabled";
     public final static String ENABLED = "enabled";
