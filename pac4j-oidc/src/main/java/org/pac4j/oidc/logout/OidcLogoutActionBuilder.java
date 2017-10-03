@@ -51,9 +51,9 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> implements LogoutAct
                 }
 
                 if (ajaxRequestResolver.isAjax(context)) {
-                  context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
-                  context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
-                  throw HttpAction.status("AJAX request -> 403", 403, context);
+                    context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
+                    context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
+                    throw HttpAction.status("AJAX request -> 403", 403, context);
                 }
 
                 return RedirectAction.redirect(logoutRequest.toURI().toString());

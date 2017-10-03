@@ -15,7 +15,8 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20ProfileCreator<U extends OAuth20Profile> extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken> {
+public class OAuth20ProfileCreator<U extends OAuth20Profile>
+    extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken> {
 
     public OAuth20ProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
@@ -36,7 +37,8 @@ public class OAuth20ProfileCreator<U extends OAuth20Profile> extends OAuthProfil
     }
 
     @Override
-    protected void signRequest(final OAuthService<OAuth2AccessToken> service, final OAuth2AccessToken accessToken, final OAuthRequest request) {
+    protected void signRequest(final OAuthService<OAuth2AccessToken> service, final OAuth2AccessToken accessToken,
+                               final OAuthRequest request) {
         service.signRequest(accessToken, request);
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken.getAccessToken());

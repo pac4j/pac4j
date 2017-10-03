@@ -74,7 +74,8 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
         // logic
         final List<Client> foundClients = clientFinder.find(clients, context, null);
-        assertTrue(foundClients != null && foundClients.size() == 1, "one and only one indirect client must be retrieved from the callback");
+        assertTrue(foundClients != null && foundClients.size() == 1,
+            "one and only one indirect client must be retrieved from the callback");
         final Client client = foundClients.get(0);
         logger.debug("client: {}", client);
         assertNotNull("client", client);

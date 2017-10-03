@@ -24,7 +24,8 @@ public class DefaultUrlResolver implements UrlResolver {
     public String compute(final String url, WebContext context) {
         if (this.completeRelativeUrl) {
 
-            final boolean relativeUrl = url != null && !url.startsWith(HttpConstants.SCHEME_HTTP) && !url.startsWith(HttpConstants.SCHEME_HTTPS);
+            final boolean relativeUrl = url != null
+                && !url.startsWith(HttpConstants.SCHEME_HTTP) && !url.startsWith(HttpConstants.SCHEME_HTTPS);
 
             if (context != null && relativeUrl) {
                 final StringBuilder sb = new StringBuilder();

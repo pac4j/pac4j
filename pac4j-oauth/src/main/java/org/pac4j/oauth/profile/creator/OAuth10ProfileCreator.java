@@ -14,7 +14,8 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10ProfileCreator<U extends OAuth10Profile> extends OAuthProfileCreator<OAuth10Credentials, U, OAuth10Configuration, OAuth1AccessToken> {
+public class OAuth10ProfileCreator<U extends OAuth10Profile>
+    extends OAuthProfileCreator<OAuth10Credentials, U, OAuth10Configuration, OAuth1AccessToken> {
 
     public OAuth10ProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);

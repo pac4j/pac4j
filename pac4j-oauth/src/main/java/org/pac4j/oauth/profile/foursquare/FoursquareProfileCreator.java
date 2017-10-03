@@ -21,7 +21,8 @@ public class FoursquareProfileCreator extends OAuth20ProfileCreator<FoursquarePr
     }
 
     @Override
-    protected void signRequest(final OAuthService<OAuth2AccessToken> service, final OAuth2AccessToken accessToken, final OAuthRequest request) {
+    protected void signRequest(final OAuthService<OAuth2AccessToken> service, final OAuth2AccessToken accessToken,
+                               final OAuthRequest request) {
         request.addQuerystringParameter(OAuthConfiguration.OAUTH_TOKEN, accessToken.getAccessToken());
     }
 }

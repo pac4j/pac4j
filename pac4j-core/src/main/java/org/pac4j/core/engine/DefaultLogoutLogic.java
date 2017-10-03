@@ -134,16 +134,16 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
                             targetUrl = null;
                         }
                         try {
-                          final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
-                          logger.debug("Logout action: {}", logoutAction);
-                          if (logoutAction != null) {
-                              action = logoutAction.perform(context);
-                              break;
-                          }
+                            final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
+                            logger.debug("Logout action: {}", logoutAction);
+                            if (logoutAction != null) {
+                                action = logoutAction.perform(context);
+                                break;
+                            }
                         } catch (final HttpAction e) {
-                          logger.debug("extra HTTP action required in logout: {}", e.getCode());
-                          action = e;
-                          break;
+                            logger.debug("extra HTTP action required in logout: {}", e.getCode());
+                            action = e;
+                            break;
                         }
                     }
                 }
