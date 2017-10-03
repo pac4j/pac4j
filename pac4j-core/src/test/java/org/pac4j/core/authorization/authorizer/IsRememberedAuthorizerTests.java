@@ -30,7 +30,8 @@ public final class IsRememberedAuthorizerTests extends IsAuthenticatedAuthorizer
     public void testAnonymousProfileRedirectionUrl() {
         profiles.add(new AnonymousProfile());
         ((IsRememberedAuthorizer) authorizer).setRedirectionUrl(PAC4J_URL);
-        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class, "user should be remembered");
+        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
+            "user should be remembered");
     }
 
     @Test

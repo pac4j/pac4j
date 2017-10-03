@@ -26,7 +26,8 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null);
-        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test

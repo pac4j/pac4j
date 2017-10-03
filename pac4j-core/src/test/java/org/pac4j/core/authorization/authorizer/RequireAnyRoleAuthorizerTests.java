@@ -82,7 +82,7 @@ public final class RequireAnyRoleAuthorizerTests {
 
     @Test
     public void testHasAnyRoleOneRoleFail() {
-        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] { ROLE1 });
+        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] {ROLE1});
         profile.addRole(ROLE2);
         assertFalse(authorizer.isAuthorized(context, profiles));
     }
@@ -110,7 +110,7 @@ public final class RequireAnyRoleAuthorizerTests {
 
     @Test
     public void testHasAnyRoleProfileTwoRolesFail() {
-        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] { ROLE2 });
+        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] {ROLE2});
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
         assertFalse(authorizer.isAuthorized(context, profiles));

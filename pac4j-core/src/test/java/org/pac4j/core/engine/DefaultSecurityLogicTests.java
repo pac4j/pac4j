@@ -185,7 +185,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        final LinkedHashMap<String, CommonProfile> profiles = (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+        final LinkedHashMap<String, CommonProfile> profiles =
+            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile));
     }
@@ -194,7 +195,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testDirectClientThrowsRequiresHttpAction() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
-        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status("bad request", 400, context); }, profile);
+        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status("bad request", 400, context); },
+            profile);
         config.setClients(new Clients(CALLBACK_URL, directClient));
         clients = NAME;
         call();
@@ -216,7 +218,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        final LinkedHashMap<String, CommonProfile> profiles = (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+        final LinkedHashMap<String, CommonProfile> profiles =
+            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         assertEquals(2, profiles.size());
         assertTrue(profiles.containsValue(profile));
         assertTrue(profiles.containsValue(profile2));
@@ -237,7 +240,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        final LinkedHashMap<String, CommonProfile> profiles = (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+        final LinkedHashMap<String, CommonProfile> profiles =
+            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile2));
     }
@@ -259,7 +263,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testRedirectByIndirectClient() {
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+        final IndirectClient indirectClient =
+            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         clients = NAME;
         call();
@@ -269,8 +274,10 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDoubleIndirectClientOneChosen() {
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
-        final IndirectClient indirectClient2 = new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
+        final IndirectClient indirectClient =
+            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+        final IndirectClient indirectClient2 =
+            new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME + "," + VALUE;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
@@ -281,8 +288,10 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDoubleIndirectClientBadOneChosen() {
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
-        final IndirectClient indirectClient2 = new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
+        final IndirectClient indirectClient =
+            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+        final IndirectClient indirectClient2 =
+            new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);

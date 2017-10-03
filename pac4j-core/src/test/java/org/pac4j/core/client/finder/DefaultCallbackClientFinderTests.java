@@ -26,7 +26,8 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final IndirectClient cas = new MockIndirectClient("cas");
         final Clients clients = new Clients(CALLBACK_URL, facebook, basicAuth, cas);
         clients.init();
-        final MockWebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "facebook   ");
+        final MockWebContext context = MockWebContext.create()
+            .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "facebook   ");
         final ClientFinder finder = new DefaultCallbackClientFinder();
         final List<Client> result = finder.find(clients, context, null);
         assertEquals(1, result.size());
@@ -52,7 +53,8 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final DirectClient basicAuth = new MockDirectClient("BasicAuth");
         final Clients clients = new Clients(CALLBACK_URL, basicAuth);
         clients.init();
-        final MockWebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "basicauth");
+        final MockWebContext context = MockWebContext.create()
+            .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "basicauth");
         final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
         finder.setDefaultClient(facebook);
         final List<Client> result = finder.find(clients, context, null);

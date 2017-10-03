@@ -50,7 +50,7 @@ public final class CommonProfileTests implements TestsConstants {
         assertEquals(1, userProfile.getAuthenticationAttributes().size());
         assertEquals(VALUE, userProfile.getAuthenticationAttributes().get(KEY));
     }
-    
+
     @Test
     public void testAddAttributes() {
         final Map<String, Object> attributes = new HashMap<>();
@@ -61,7 +61,7 @@ public final class CommonProfileTests implements TestsConstants {
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
-    
+
     @Test
     public void testAddAuthenticationAttributes() {
         final Map<String, Object> attributes = new HashMap<>();
@@ -72,7 +72,7 @@ public final class CommonProfileTests implements TestsConstants {
         assertEquals(1, userProfile.getAuthenticationAttributes().size());
         assertEquals(VALUE, userProfile.getAuthenticationAttributes().get(KEY));
     }
-    
+
     @Test
     public void testUnsafeAddAttribute() {
         final CommonProfile userProfile = new CommonProfile();
@@ -154,7 +154,7 @@ public final class CommonProfileTests implements TestsConstants {
     @Test
     public void testNullPermissions() {
         final CommonProfile profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.addPermissions((Set<String>) null), TechnicalException.class, "permissions cannot be null");
+        TestsHelper.expectException(() -> profile.addPermissions(null), TechnicalException.class, "permissions cannot be null");
     }
 
     @Test

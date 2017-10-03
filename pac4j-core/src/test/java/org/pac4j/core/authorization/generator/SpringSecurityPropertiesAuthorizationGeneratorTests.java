@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests {@link SpringSecurityPropertiesAuthorizationGenerator}.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.8.1
  */
@@ -78,7 +78,8 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
 
     @Test
     public void testTwoRolesEnabled() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
+        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR
+            + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
         assertEquals(2, roles.size());
         assertTrue(roles.contains(ROLE));
         assertTrue(roles.contains(ROLE2));
@@ -86,7 +87,8 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
 
     @Test
     public void testTwoRolesDisabled() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
+        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR
+            + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
         assertEquals(0, roles.size());
     }
 }

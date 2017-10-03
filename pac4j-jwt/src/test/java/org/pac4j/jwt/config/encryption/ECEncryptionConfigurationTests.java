@@ -52,8 +52,10 @@ public final class ECEncryptionConfigurationTests implements TestsConstants {
 
     @Test
     public void testUnsupportedAlgorithm() {
-        final ECEncryptionConfiguration config = new ECEncryptionConfiguration(buildKeyPair(), JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128CBC_HS256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only Elliptic-curve algorithms are supported with the appropriate encryption method");
+        final ECEncryptionConfiguration config =
+            new ECEncryptionConfiguration(buildKeyPair(), JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128CBC_HS256);
+        TestsHelper.expectException(config::init, TechnicalException.class,
+            "Only Elliptic-curve algorithms are supported with the appropriate encryption method");
     }
 
     @Test

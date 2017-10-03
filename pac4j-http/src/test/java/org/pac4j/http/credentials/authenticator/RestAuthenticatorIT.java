@@ -27,7 +27,8 @@ public final class RestAuthenticatorIT implements TestsConstants {
     @BeforeClass
     public static void setUp() {
         final WebServer webServer = new WebServer(PORT)
-            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json", "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }"))
+            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json",
+                "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }"))
             .defineResponse("notfound", new ServerResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found"))
             .defineResponse("pe", new ServerResponse(NanoHTTPD.Response.Status.OK, "plain/text", "bad"));
         webServer.start();
@@ -58,7 +59,9 @@ public final class RestAuthenticatorIT implements TestsConstants {
     public void testParsingError() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create()), TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting ('true', 'false' or 'null')\n at [Source: bad; line: 1, column: 7]");
+        TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create()), TechnicalException.class,
+            "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting ('true', 'false' or 'null')\n"
+            + " at [Source: bad; line: 1, column: 7]");
     }
 
     @Test

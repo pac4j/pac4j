@@ -27,12 +27,11 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     @Test
     public void testCustomSpEntityIdForPostBinding() {
         final SAML2Client client = getClient();
-        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
+        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final RedirectAction action = client.getRedirectAction(context);
         assertTrue(getDecodedAuthnRequest(action.getContent())
-                .contains(
-                        "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+            .contains("<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>"));
     }
 
     @Test

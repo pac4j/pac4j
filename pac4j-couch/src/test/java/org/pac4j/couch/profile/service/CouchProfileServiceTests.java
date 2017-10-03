@@ -171,6 +171,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     }
 
     private List<Map<String, Object>> getData(final CouchProfileService couchProfileService, final String id) {
-        return couchProfileService.read(Arrays.asList(COUCH_ID_FIELD, "username", "linkedid", "password", "serializedprofile"), COUCH_ID_FIELD, id);
+        return couchProfileService.read(Arrays.asList(COUCH_ID_FIELD, "username", "linkedid", "password",
+            "serializedprofile"), COUCH_ID_FIELD, id);
     }
 }

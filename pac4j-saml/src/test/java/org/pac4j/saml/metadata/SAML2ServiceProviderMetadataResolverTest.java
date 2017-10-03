@@ -8,18 +8,18 @@ import org.springframework.core.io.FileSystemResource;
 
 public class SAML2ServiceProviderMetadataResolverTest {
 
-  private SAML2ServiceProviderMetadataResolver metadataResolver;
+    private SAML2ServiceProviderMetadataResolver metadataResolver;
 
-  @Before
-  public void setUp() {
-    SAML2ClientConfiguration configuration = new SAML2ClientConfiguration();
-    configuration.setServiceProviderMetadataResource(new FileSystemResource("target"));
-    configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
-    metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration, "http://localhost", null);
-  }
+    @Before
+    public void setUp() {
+        SAML2ClientConfiguration configuration = new SAML2ClientConfiguration();
+        configuration.setServiceProviderMetadataResource(new FileSystemResource("target"));
+        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
+        metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration, "http://localhost", null);
+    }
 
-  @Test(expected = TechnicalException.class)
-  public void resolveShouldThrowExceptionIfCredentialsProviderIsNullAndAuthnRequestSignedIsTrue() {
-    metadataResolver.resolve();
-  }
+    @Test(expected = TechnicalException.class)
+    public void resolveShouldThrowExceptionIfCredentialsProviderIsNullAndAuthnRequestSignedIsTrue() {
+        metadataResolver.resolve();
+    }
 }
