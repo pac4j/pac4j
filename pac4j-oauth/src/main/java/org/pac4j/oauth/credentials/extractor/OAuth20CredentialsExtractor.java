@@ -1,6 +1,7 @@
 package org.pac4j.oauth.credentials.extractor;
 
 import com.github.scribejava.core.utils.OAuthEncoder;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -15,8 +16,8 @@ import org.pac4j.oauth.exception.OAuthCredentialsException;
  */
 public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth20Credentials, OAuth20Configuration> {
 
-    public OAuth20CredentialsExtractor(final OAuth20Configuration configuration) {
-        super(configuration);
+    public OAuth20CredentialsExtractor(final OAuth20Configuration configuration, final IndirectClient client) {
+        super(configuration, client);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
             final String stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 
             if (CommonHelper.isNotBlank(stateParameter)) {
-                final String stateSessionAttributeName = this.configuration.getStateSessionAttributeName();
+                final String stateSessionAttributeName = this.configuration.getStateSessionAttributeName(client.getName());
                 final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName);
                 // clean from session after retrieving it
                 context.getSessionStore().set(context, stateSessionAttributeName, null);
@@ -46,7 +47,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
         if (codeParameter != null) {
             final String code = OAuthEncoder.decode(codeParameter);
             logger.debug("code: {}", code);
-            return new OAuth20Credentials(code, this.configuration.getClientName());
+            return new OAuth20Credentials(code, this.client.getName());
         } else {
             final String message = "No credential found";
             throw new OAuthCredentialsException(message);

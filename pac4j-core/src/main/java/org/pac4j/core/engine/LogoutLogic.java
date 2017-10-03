@@ -2,7 +2,7 @@ package org.pac4j.core.engine;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 
 /**
  * Logout logic for the application and the identity provider.

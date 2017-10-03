@@ -20,7 +20,8 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.</p>
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
- * <p>An extended access token can be requested by setting <code>true</code> on the {@link FacebookConfiguration#setRequiresExtendedToken(boolean)} method.</p>
+ * <p>An extended access token can be requested by setting <code>true</code> on the
+ * {@link FacebookConfiguration#setRequiresExtendedToken(boolean)} method.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.facebook.FacebookProfile}.</p>
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
@@ -57,7 +58,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
             }
         });
         configuration.setWithState(true);
-        defaultProfileCreator(new FacebookProfileCreator(configuration));
+        defaultProfileCreator(new FacebookProfileCreator(configuration, this));
 
         super.clientInit();
     }

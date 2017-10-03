@@ -1,19 +1,30 @@
-package org.pac4j.core.http;
+package org.pac4j.core.http.url;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests the {@link RelativeUrlResolver}.
+ * Tests the {@link DefaultUrlResolver}.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class RelativeUrlResolverTests {
+public final class DefaultUrlResolverTests implements TestsConstants {
 
-    private final UrlResolver resolver = new RelativeUrlResolver();
+    private final UrlResolver resolver = new DefaultUrlResolver(true);
+
+    @Test
+    public void testComputePassthrough() {
+        final MockWebContext context = MockWebContext.create();
+        context.setServerName("pac4j.com");
+
+        final String result = new DefaultUrlResolver().compute(PATH, context);
+
+        assertEquals(PATH, result);
+    }
 
     @Test
     public void testCompute_whenHostIsNotPresent() {
@@ -57,7 +68,7 @@ public final class RelativeUrlResolverTests {
 
         assertEquals("https://localhost/cas/login", result);
     }
-    
+
     @Test
     public void testCompute_whenServerIsNotUsingDefaultHttpsPort() {
         final MockWebContext context = MockWebContext.create();

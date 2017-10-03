@@ -8,13 +8,13 @@ import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
  * @since 2.0.0
  */
 abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration, T extends Token>
-    extends InitializableObject implements ProfileCreator<C, U> {
+    implements ProfileCreator<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -42,16 +42,15 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected final O configuration;
+    protected O configuration;
 
-    protected OAuthProfileCreator(final O configuration) {
+    protected IndirectClient client;
+
+    protected OAuthProfileCreator(final O configuration, final IndirectClient client) {
+        CommonHelper.assertNotNull("client", client);
+        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
-    }
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init();
+        this.client = client;
     }
 
     @Override
@@ -82,7 +81,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     protected U retrieveUserProfileFromToken(final WebContext context, final T accessToken) {
         final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final OAuthService<T> service = this.configuration.buildService(context, null);
+        final OAuthService<T> service = this.configuration.buildService(context, client, null);
         final String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {
@@ -152,9 +151,4 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @param accessToken the access token
      */
     protected abstract void addAccessTokenToProfile(final U profile, final T accessToken);
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", this.configuration);
-    }
 }

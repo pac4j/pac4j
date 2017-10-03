@@ -1,4 +1,4 @@
-package org.pac4j.core.http;
+package org.pac4j.core.http.adapter;
 
 import org.pac4j.core.context.J2EContext;
 

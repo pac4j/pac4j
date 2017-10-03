@@ -11,7 +11,6 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,36 +23,26 @@ import java.util.zip.Inflater;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketAndLogoutRequestExtractor extends InitializableObject implements CredentialsExtractor<TokenCredentials> {
+public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final static int DECOMPRESSION_FACTOR = 10;
 
     private final static Logger logger = LoggerFactory.getLogger(TicketAndLogoutRequestExtractor.class);
 
-    private CasConfiguration configuration;
+    protected CasConfiguration configuration;
 
-    private String clientName;
-
-    public TicketAndLogoutRequestExtractor() {}
+    protected String clientName;
 
     public TicketAndLogoutRequestExtractor(final CasConfiguration configuration, final String clientName) {
+        CommonHelper.assertNotNull("configuration", configuration);
+        CommonHelper.assertNotBlank("clientName", clientName);
         this.configuration = configuration;
         this.clientName = clientName;
     }
 
     @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("configuration", configuration);
-        CommonHelper.assertNotBlank("clientName", clientName);
-
-        configuration.init();
-    }
-
-    @Override
     public TokenCredentials extract(final WebContext context) {
-        init();
-
-        final CasLogoutHandler logoutHandler = configuration.getLogoutHandler();
+        final CasLogoutHandler logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
@@ -154,21 +143,5 @@ public class TicketAndLogoutRequestExtractor extends InitializableObject impleme
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
             throw HttpAction.redirect("Force redirect to CAS server for front channel logout", context, redirectUrl);
         }
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final CasConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(final String clientName) {
-        this.clientName = clientName;
     }
 }

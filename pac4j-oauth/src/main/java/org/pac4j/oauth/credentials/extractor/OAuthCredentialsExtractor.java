@@ -1,11 +1,11 @@
 package org.pac4j.oauth.credentials.extractor;
 
 import com.github.scribejava.core.exceptions.OAuthException;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -18,27 +18,23 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableObject
-    implements CredentialsExtractor<C> {
+abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> implements CredentialsExtractor<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final O configuration;
+    protected O configuration;
 
-    protected OAuthCredentialsExtractor(final O configuration) {
+    protected IndirectClient client;
+
+    protected OAuthCredentialsExtractor(final O configuration, final IndirectClient client) {
+        CommonHelper.assertNotNull("client", client);
+        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
-    }
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init();
+        this.client = client;
     }
 
     @Override
     public C extract(final WebContext context) {
-        init();
-
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {
@@ -74,9 +70,4 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
      * @return the OAuth credentials
      */
     protected abstract C getOAuthCredentials(final WebContext context);
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", this.configuration);
-    }
 }

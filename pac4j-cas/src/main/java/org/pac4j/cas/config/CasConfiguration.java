@@ -7,8 +7,8 @@ import org.pac4j.cas.logout.DefaultCasLogoutHandler;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.UrlResolver;
-import org.pac4j.core.http.DefaultUrlResolver;
+import org.pac4j.core.http.url.DefaultUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -58,11 +58,11 @@ public class CasConfiguration extends InitializableObject {
 
     private CasProxyReceptor proxyReceptor;
 
-    private UrlResolver urlResolver = new DefaultUrlResolver();
+    private UrlResolver urlResolver;
 
     private String postLogoutUrlParameter = SERVICE_PARAMETER;
 
-    public CasConfiguration() { }
+    public CasConfiguration() {}
 
     public CasConfiguration(final String loginUrl) {
         this.loginUrl = loginUrl;
@@ -83,7 +83,9 @@ public class CasConfiguration extends InitializableObject {
         if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl) && CommonHelper.isBlank(this.restUrl)) {
             throw new TechnicalException("loginUrl, prefixUrl and restUrl cannot be all blank");
         }
-        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
+        if (urlResolver == null) {
+            urlResolver = new DefaultUrlResolver();
+        }
 
         initializeClientConfiguration();
 
@@ -202,6 +204,8 @@ public class CasConfiguration extends InitializableObject {
     }
 
     public String computeFinalLoginUrl(final WebContext context) {
+        init();
+
         return urlResolver.compute(this.loginUrl, context);
     }
 
@@ -218,6 +222,8 @@ public class CasConfiguration extends InitializableObject {
     }
 
     public String computeFinalPrefixUrl(final WebContext context) {
+        init();
+
         return urlResolver.compute(this.prefixUrl, context);
     }
 
@@ -277,6 +283,12 @@ public class CasConfiguration extends InitializableObject {
         return logoutHandler;
     }
 
+    public CasLogoutHandler findLogoutHandler() {
+        init();
+
+        return logoutHandler;
+    }
+
     public void setLogoutHandler(final CasLogoutHandler logoutHandler) {
         this.logoutHandler = logoutHandler;
     }
@@ -297,10 +309,6 @@ public class CasConfiguration extends InitializableObject {
         this.proxyReceptor = proxyReceptor;
     }
 
-    public String computeFinalUrl(final String url, final WebContext context) {
-        return urlResolver.compute(url, context);
-    }
-
     public String getPostLogoutUrlParameter() {
         return postLogoutUrlParameter;
     }
@@ -318,6 +326,8 @@ public class CasConfiguration extends InitializableObject {
     }
 
     public String computeFinalRestUrl(final WebContext context) {
+        init();
+
         return urlResolver.compute(this.restUrl, context);
     }
 
@@ -334,8 +344,7 @@ public class CasConfiguration extends InitializableObject {
         return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance,
-                "postLogoutUrlParameter", this.postLogoutUrlParameter,
-                "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver);
+                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
+                this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver);
     }
 }

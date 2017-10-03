@@ -46,10 +46,13 @@ public class J2EContext implements WebContext {
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
         CommonHelper.assertNotNull("request", request);
         CommonHelper.assertNotNull("response", response);
-        CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.request = request;
         this.response = response;
-        this.sessionStore = sessionStore;
+        if (sessionStore == null) {
+            this.sessionStore = new J2ESessionStore();
+        } else {
+            this.sessionStore = sessionStore;
+        }
     }
 
     @Override
