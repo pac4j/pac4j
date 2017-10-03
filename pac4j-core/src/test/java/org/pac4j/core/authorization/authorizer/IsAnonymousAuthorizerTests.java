@@ -67,6 +67,7 @@ public final class IsAnonymousAuthorizerTests implements TestsConstants {
     public void testCommonProfileRedirectionUrl() {
         profiles.add(new CommonProfile());
         authorizer.setRedirectionUrl(PAC4J_URL);
-        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class, "user should be anonymous");
+        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
+            "user should be anonymous");
     }
 }

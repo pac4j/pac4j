@@ -56,9 +56,11 @@ public final class InternalAttributeHandlerTests implements TestsConstants {
         assertAttribute(handler, BOOL, InternalAttributeHandler.PREFIX_BOOLEAN + BOOL);
         assertAttribute(handler, INT, InternalAttributeHandler.PREFIX_INT + INT);
         assertAttribute(handler, LONG, InternalAttributeHandler.PREFIX_LONG + LONG);
-        assertAttribute(handler, DATE, InternalAttributeHandler.PREFIX_DATE + new SimpleDateFormat(Converters.DATE_TZ_GENERAL_FORMAT).format(DATE));
+        assertAttribute(handler, DATE, InternalAttributeHandler.PREFIX_DATE
+            + new SimpleDateFormat(Converters.DATE_TZ_GENERAL_FORMAT).format(DATE));
         assertAttribute(handler, URL, InternalAttributeHandler.PREFIX_URI + URL.toString());
-        assertAttribute(handler, COLOR, InternalAttributeHandler.PREFIX_SB64 + "rO0ABXNyABxvcmcucGFjNGouY29yZS5wcm9maWxlLkNvbG9y/5w8lvR27osCAANJAARibHVlSQAFZ3JlZW5JAANyZWR4cAAAAAEAAAABAAAAAQ==");
+        assertAttribute(handler, COLOR, InternalAttributeHandler.PREFIX_SB64
+            + "rO0ABXNyABxvcmcucGFjNGouY29yZS5wcm9maWxlLkNvbG9y/5w8lvR27osCAANJAARibHVlSQAFZ3JlZW5JAANyZWR4cAAAAAEAAAABAAAAAQ==");
     }
 
     private void assertAttribute(final InternalAttributeHandler handler, final Object given, final Object transformed) {

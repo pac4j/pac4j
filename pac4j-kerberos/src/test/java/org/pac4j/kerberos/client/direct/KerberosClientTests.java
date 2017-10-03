@@ -80,7 +80,8 @@ public class KerberosClientTests implements TestsConstants {
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
         final KerberosCredentials credentials = client.getCredentials(context);
-        assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8), new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
+        assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
+            new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals("garry", profile.getId());

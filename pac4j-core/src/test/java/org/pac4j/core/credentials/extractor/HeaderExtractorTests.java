@@ -42,6 +42,7 @@ public final class HeaderExtractorTests implements TestsConstants {
     @Test
     public void testBadPrefix() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
-        TestsHelper.expectException(() -> extractor.extract(context), CredentialsException.class, "Wrong prefix for header: " + GOOD_HEADER);
+        TestsHelper.expectException(() -> extractor.extract(context), CredentialsException.class,
+            "Wrong prefix for header: " + GOOD_HEADER);
     }
 }

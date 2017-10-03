@@ -51,7 +51,8 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testNoExistingMatcher()  {
-        TestsHelper.expectException(() -> checker.matches(null, NAME, new HashMap<>()), TechnicalException.class, "matchersMap['" + NAME + "'] cannot be null");
+        TestsHelper.expectException(() -> checker.matches(null, NAME, new HashMap<>()), TechnicalException.class,
+            "matchersMap['" + NAME + "'] cannot be null");
     }
 
     @Test

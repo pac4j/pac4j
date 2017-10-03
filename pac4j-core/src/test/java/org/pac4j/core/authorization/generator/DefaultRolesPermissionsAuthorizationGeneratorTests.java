@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests {@link DefaultRolesPermissionsAuthorizationGenerator}.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.8.0
  */
@@ -25,7 +25,8 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     @Test
     public void testNullArrays() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator = new DefaultRolesPermissionsAuthorizationGenerator<CommonProfile>((String[]) null, null);
+        final DefaultRolesPermissionsAuthorizationGenerator generator =
+            new DefaultRolesPermissionsAuthorizationGenerator<>((String[]) null, null);
         checkEmptyProfile(generator);
     }
 
@@ -38,13 +39,15 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     @Test
     public void testNullLists() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator = new DefaultRolesPermissionsAuthorizationGenerator<CommonProfile>((List<String>) null, null);
+        final DefaultRolesPermissionsAuthorizationGenerator generator =
+            new DefaultRolesPermissionsAuthorizationGenerator<>((List<String>) null, null);
         checkEmptyProfile(generator);
     }
 
     @Test
     public void testDefaultValuesArrays() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator = new DefaultRolesPermissionsAuthorizationGenerator<CommonProfile>(DEFAULT_ROLES_ARRAY, DEFAULT_PERMISSIONS_ARRAY);
+        final DefaultRolesPermissionsAuthorizationGenerator generator =
+            new DefaultRolesPermissionsAuthorizationGenerator<>(DEFAULT_ROLES_ARRAY, DEFAULT_PERMISSIONS_ARRAY);
         checkProfile(generator);
     }
 
@@ -61,7 +64,8 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     @Test
     public void testDefaultValuesLists() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator = new DefaultRolesPermissionsAuthorizationGenerator<CommonProfile>(DEFAULT_ROLES_LIST, DEFAULT_PERMISSIONS_LIST);
+        final DefaultRolesPermissionsAuthorizationGenerator generator =
+            new DefaultRolesPermissionsAuthorizationGenerator<>(DEFAULT_ROLES_LIST, DEFAULT_PERMISSIONS_LIST);
         checkProfile(generator);
     }
 }

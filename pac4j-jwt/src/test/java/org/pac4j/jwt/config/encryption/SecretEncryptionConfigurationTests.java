@@ -47,8 +47,10 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
 
     @Test
     public void testUnsupportedAlgorithm() {
-        final SecretEncryptionConfiguration config = new SecretEncryptionConfiguration(SECRET, JWEAlgorithm.ECDH_ES, EncryptionMethod.A128CBC_HS256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only the direct and AES algorithms are supported with the appropriate encryption method");
+        final SecretEncryptionConfiguration config = new SecretEncryptionConfiguration(SECRET, JWEAlgorithm.ECDH_ES,
+            EncryptionMethod.A128CBC_HS256);
+        TestsHelper.expectException(config::init, TechnicalException.class,
+            "Only the direct and AES algorithms are supported with the appropriate encryption method");
     }
 
     @Test

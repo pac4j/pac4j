@@ -52,8 +52,10 @@ public final class RSAEncryptionConfigurationTests implements TestsConstants {
 
     @Test
     public void testUnsupportedAlgorithm() {
-        final RSAEncryptionConfiguration config = new RSAEncryptionConfiguration(buildKeyPair(), JWEAlgorithm.ECDH_ES, EncryptionMethod.A128CBC_HS256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only RSA algorithms are supported with the appropriate encryption method");
+        final RSAEncryptionConfiguration config =
+            new RSAEncryptionConfiguration(buildKeyPair(), JWEAlgorithm.ECDH_ES, EncryptionMethod.A128CBC_HS256);
+        TestsHelper.expectException(config::init, TechnicalException.class,
+            "Only RSA algorithms are supported with the appropriate encryption method");
     }
 
     @Test

@@ -27,7 +27,8 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectFormClient formClient = new DirectFormClient(null);
-        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test
@@ -39,7 +40,8 @@ public final class DirectFormClientTests implements TestsConstants {
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final DirectFormClient formClient = new DirectFormClient(new LocalCachingAuthenticator<>(new SimpleTestUsernamePasswordAuthenticator(), 10, 10, TimeUnit.DAYS));
+        final DirectFormClient formClient
+            = new DirectFormClient(new LocalCachingAuthenticator<>(new SimpleTestUsernamePasswordAuthenticator(), 10, 10, TimeUnit.DAYS));
         formClient.init();
     }
 

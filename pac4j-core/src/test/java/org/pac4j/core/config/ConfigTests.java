@@ -43,7 +43,8 @@ public final class ConfigTests implements TestsConstants {
 
     @Test
     public void testConstructor() {
-        final MockIndirectClient client = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client =
+            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Config config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));

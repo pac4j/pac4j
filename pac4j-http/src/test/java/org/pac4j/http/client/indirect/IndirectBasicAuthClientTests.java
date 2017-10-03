@@ -28,7 +28,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testMissingUsernamePasswordAuthenticator() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test
@@ -57,7 +58,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testMissingCallbackUrl() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        TestsHelper.initShouldFail(basicAuthClient, "callbackUrl cannot be blank: set it up either on this IndirectClient or on the global Config");
+        TestsHelper.initShouldFail(basicAuthClient,
+            "callbackUrl cannot be blank: set it up either on this IndirectClient or on the global Config");
     }
 
     private IndirectBasicAuthClient getBasicAuthClient() {
@@ -71,7 +73,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
         basicAuthClient.redirect(context);
-        assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(), context.getResponseLocation());
+        assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
+            context.getResponseLocation());
     }
 
     @Test

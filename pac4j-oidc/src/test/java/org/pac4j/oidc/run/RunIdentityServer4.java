@@ -67,7 +67,8 @@ public class RunIdentityServer4 extends RunClient {
             configuration.setResponseMode("form_post");
             configuration.setUseNonce(true);
             logger.warn("For the implicit flow, copy / paste the form body parameters after a ? as the returned url");
-        } else if (flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) { // this flow can not be used in fact (as data ae passed as anchor parameters, only on client side)
+        } else if (flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) {
+            // this flow can not be used in fact (as data ae passed as anchor parameters, only on client side)
             // AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials,
             configuration.setResponseType("id_token");
             configuration.setUseNonce(true);

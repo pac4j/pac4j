@@ -85,7 +85,8 @@ public final class MongoProfileServiceIT implements TestsConstants {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setPasswordAttribute(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class, "passwordAttribute cannot be blank");
+        TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class,
+            "passwordAttribute cannot be blank");
     }
 
     private MongoClient getClient() {
@@ -127,17 +128,20 @@ public final class MongoProfileServiceIT implements TestsConstants {
 
     @Test
     public void testMultipleUsername() {
-        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
+        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class,
+            "Too many accounts found for: misagh");
     }
 
     @Test
     public void testBadUsername() {
-        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class, "No account found for: michael");
+        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class,
+            "No account found for: michael");
     }
 
     @Test
     public void testBadPassword() {
-        TestsHelper.expectException(() ->login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class, "Bad credentials for: jle");
+        TestsHelper.expectException(() ->login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class,
+            "Bad credentials for: jle");
     }
 
     @Test
