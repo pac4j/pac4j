@@ -32,7 +32,6 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
         CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init();
 
         defaultCredentialsExtractor(new BasicAuthExtractor(this.headerName, this.prefixHeader, getName()));
         defaultAuthenticator(new CasRestAuthenticator(this.configuration));
@@ -56,8 +55,9 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "headerName", this.headerName,
-                "prefixHeader", this.prefixHeader, "configuration", configuration, "extractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
+        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
+            "headerName", this.headerName, "prefixHeader", this.prefixHeader);
     }
 }

@@ -27,8 +27,14 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
     private String stateData;
 
-    public String getStateSessionAttributeName() {
-        return getClientName() + STATE_SESSION_PARAMETER;
+    /**
+     * Return the name of the attribute storing the state in session.
+     *
+     * @param clientName the client name
+     * @return the name of the attribute storing the state in session
+     */
+    public String getStateSessionAttributeName(final String clientName) {
+        return clientName + STATE_SESSION_PARAMETER;
     }
 
     public Map<String, String> getCustomParams() {

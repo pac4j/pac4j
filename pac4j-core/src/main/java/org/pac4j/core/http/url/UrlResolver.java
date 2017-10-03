@@ -1,9 +1,9 @@
-package org.pac4j.core.http;
+package org.pac4j.core.http.url;
 
 import org.pac4j.core.context.WebContext;
 
 /**
- * How to compute an url.
+ * How to compute an URL.
  *
  * @author Jerome Leleu
  * @since 1.8.1

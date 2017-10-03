@@ -42,8 +42,7 @@ Config config = new Config(clients);
 
 In that case, you can define for **all** clients:
 
-- a [`CallbackUrlResolver`](clients.html#the-callback-url): `clients.setCallbackUrlResolver(callbackUrlResolver);`
-- a [default client](clients.html#the-callback-url): `clients.setDefaultClient(facebookClient);`
+- a callback URL and a [`CallbackUrlResolver`](clients.html#the-callback-url): `clients.setCallbackUrl(callbackUrl);` and `clients.setCallbackUrlResolver(callbackUrlResolver);`
 - an [`AjaxRequestResolver`](clients.html#ajax-requests): `clients.setAjaxRequestResolver(ajaxRequestResolver);`
 - an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions): `clients.addAuthorizationGenerator(authorizationGenerator);`
 

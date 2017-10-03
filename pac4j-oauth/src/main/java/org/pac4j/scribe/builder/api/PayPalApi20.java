@@ -20,7 +20,8 @@ public class PayPalApi20 extends DefaultApi20 {
 
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
-        CommonHelper.assertNotBlank("config.getCallback()", config.getCallback(), "Must provide a valid url as callback. PayPal does not support OOB");
+        CommonHelper.assertNotBlank("config.getCallback()", config.getCallback(),
+            "Must provide a valid url as callback. PayPal does not support OOB");
 
         final String nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
         return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),

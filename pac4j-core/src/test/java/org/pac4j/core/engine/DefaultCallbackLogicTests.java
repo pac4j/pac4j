@@ -6,12 +6,14 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.client.MockIndirectClient;
+import org.pac4j.core.client.finder.ClientFinder;
+import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -33,7 +35,7 @@ import static org.junit.Assert.assertTrue;
  */
 public final class DefaultCallbackLogicTests implements TestsConstants {
 
-    private CallbackLogic<Object, J2EContext> logic;
+    private DefaultCallbackLogic<Object, J2EContext> logic;
 
     protected MockHttpServletRequest request;
 
@@ -49,6 +51,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     private Boolean renewSession;
 
+    private ClientFinder clientFinder;
+
     @Before
     public void setUp() {
         logic = new DefaultCallbackLogic<>();
@@ -59,10 +63,12 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         httpActionAdapter = (code, ctx) -> null;
         defaultUrl = null;
         renewSession = null;
+        clientFinder = new DefaultCallbackClientFinder();
     }
 
     private void call() {
         logic.perform(context, config, httpActionAdapter, defaultUrl, null, renewSession);
+        logic.setClientFinder(clientFinder);
     }
 
     @Test
@@ -96,20 +102,27 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     @Test
+    public void testNullClientFinder() {
+        clientFinder = null;
+        TestsHelper.expectException(() -> call(), TechnicalException.class, "clients cannot be null");
+    }
+
+    @Test
     public void testDirectClient() {
-        request.addParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        request.addParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final MockDirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(directClient));
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "only indirect clients are allowed on the callback url");
+        TestsHelper.expectException(() -> call(), TechnicalException.class, "one and only one indirect client must be retrieved from the callback");
     }
 
     @Test
     public void testCallback() {
         final String originalSessionId = request.getSession().getId();
-        request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
+        config.getClients().init();
         call();
         final HttpSession session = request.getSession();
         final String newSessionId = session.getId();
@@ -126,10 +139,11 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         HttpSession session = request.getSession();
         final String originalSessionId = session.getId();
         session.setAttribute(Pac4jConstants.REQUESTED_URL, PAC4J_URL);
-        request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
+        config.getClients().init();
         call();
         session = request.getSession();
         final String newSessionId = session.getId();
@@ -144,11 +158,12 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testCallbackNoRenew() {
         final String originalSessionId = request.getSession().getId();
-        request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
+        config.getClients().init();
         call();
         final HttpSession session = request.getSession();
         final String newSessionId = session.getId();

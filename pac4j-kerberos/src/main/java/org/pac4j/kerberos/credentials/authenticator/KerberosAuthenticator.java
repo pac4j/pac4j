@@ -4,7 +4,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.profile.KerberosProfile;
 import org.slf4j.Logger;
@@ -17,14 +16,11 @@ import org.slf4j.LoggerFactory;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class KerberosAuthenticator extends InitializableObject implements Authenticator<KerberosCredentials> {
+public class KerberosAuthenticator implements Authenticator<KerberosCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private KerberosTicketValidator ticketValidator;
-
-    public KerberosAuthenticator() {
-    }
+    protected KerberosTicketValidator ticketValidator;
 
     /**
      * Initializes the authenticator that will validate Kerberos tickets.
@@ -33,12 +29,12 @@ public class KerberosAuthenticator extends InitializableObject implements Authen
      * @since 2.1.0
      */
     public KerberosAuthenticator(KerberosTicketValidator ticketValidator) {
+        CommonHelper.assertNotNull("ticketValidator", ticketValidator);
         this.ticketValidator = ticketValidator;
     }
 
     @Override
     public void validate(KerberosCredentials credentials, WebContext context) {
-        init();
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
@@ -51,18 +47,4 @@ public class KerberosAuthenticator extends InitializableObject implements Authen
         profile.gssContext = ticketValidation.getGssContext();
         credentials.setUserProfile(profile);
     }
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("ticketValidator", this.ticketValidator);
-    }
-
-    public KerberosTicketValidator getTicketValidator() {
-        return ticketValidator;
-    }
-
-    public void setTicketValidator(KerberosTicketValidator ticketValidator) {
-        this.ticketValidator = ticketValidator;
-    }
-
 }

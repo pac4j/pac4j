@@ -8,7 +8,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.ProfileManagerFactoryAware;
@@ -134,16 +134,16 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
                             targetUrl = null;
                         }
                         try {
-                          final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
-                          logger.debug("Logout action: {}", logoutAction);
-                          if (logoutAction != null) {
-                              action = logoutAction.perform(context);
-                              break;
-                          }
+                            final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
+                            logger.debug("Logout action: {}", logoutAction);
+                            if (logoutAction != null) {
+                                action = logoutAction.perform(context);
+                                break;
+                            }
                         } catch (final HttpAction e) {
-                          logger.debug("extra HTTP action required in logout: {}", e.getCode());
-                          action = e;
-                          break;
+                            logger.debug("extra HTTP action required in logout: {}", e.getCode());
+                            action = e;
+                            break;
                         }
                     }
                 }

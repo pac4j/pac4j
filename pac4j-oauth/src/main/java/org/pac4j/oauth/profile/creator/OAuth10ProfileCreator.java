@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.creator;
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuthService;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
@@ -13,10 +14,11 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10ProfileCreator<U extends OAuth10Profile> extends OAuthProfileCreator<OAuth10Credentials, U, OAuth10Configuration, OAuth1AccessToken> {
+public class OAuth10ProfileCreator<U extends OAuth10Profile>
+    extends OAuthProfileCreator<OAuth10Credentials, U, OAuth10Configuration, OAuth1AccessToken> {
 
-    public OAuth10ProfileCreator(final OAuth10Configuration configuration) {
-        super(configuration);
+    public OAuth10ProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
+        super(configuration, client);
     }
 
     @Override

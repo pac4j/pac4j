@@ -2,7 +2,7 @@ package org.pac4j.core.engine;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 
 /**
  * Security logic to protect an url.
@@ -26,7 +26,7 @@ public interface SecurityLogic<R, C extends WebContext> {
      * @param parameters additional parameters
      * @return the resulting action of the security
      */
-    R perform(C context, Config config, SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, 
+    R perform(C context, Config config, SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
               HttpActionAdapter<R, C> httpActionAdapter,
               String clients, String authorizers, String matchers, Boolean multiProfile, Object... parameters);
 }

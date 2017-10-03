@@ -9,6 +9,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -29,23 +30,25 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
-    private CasConfiguration configuration;
+    protected CasConfiguration configuration;
 
-    private String callbackUrl;
+    protected CallbackUrlResolver callbackUrlResolver;
+
+    protected String callbackUrl;
 
     public CasAuthenticator() {}
 
-    public CasAuthenticator(final CasConfiguration configuration, final String callbackUrl) {
+    public CasAuthenticator(final CasConfiguration configuration, final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
         this.configuration = configuration;
+        this.callbackUrlResolver = callbackUrlResolver;
         this.callbackUrl = callbackUrl;
     }
 
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
-
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.init();
 
         defaultProfileDefinition(new CasProfileDefinition());
     }
@@ -56,7 +59,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
         final String ticket = credentials.getToken();
         try {
-            final String finalCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);
+            final String finalCallbackUrl = callbackUrlResolver.compute(callbackUrl, credentials.getClientName(), context);
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);
@@ -91,21 +94,5 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             String message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);
         }
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(CasConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public String getCallbackUrl() {
-        return callbackUrl;
-    }
-
-    public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
     }
 }

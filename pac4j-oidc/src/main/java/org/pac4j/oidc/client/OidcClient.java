@@ -42,13 +42,11 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     @Override
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.setCallbackUrl(getCallbackUrl());
-        configuration.setCallbackUrlResolver(getUrlResolver());
         configuration.init();
 
-        defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
-        defaultCredentialsExtractor(new OidcExtractor(configuration, getName()));
-        defaultAuthenticator(new OidcAuthenticator(configuration));
+        defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration, this));
+        defaultCredentialsExtractor(new OidcExtractor(configuration, this));
+        defaultAuthenticator(new OidcAuthenticator(configuration, this));
         defaultProfileCreator(new OidcProfileCreator<>(configuration));
         defaultLogoutActionBuilder(new OidcLogoutActionBuilder<U>(configuration));
     }
@@ -56,9 +54,10 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "urlResolver", this.urlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-                "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-                "logoutActionBuilder", getLogoutActionBuilder(), "configuration", configuration);
+            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+            "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
+            "configuration", configuration);
     }
 }

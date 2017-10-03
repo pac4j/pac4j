@@ -7,8 +7,8 @@ import org.pac4j.core.profile.CommonProfile;
 
 /**
  * Default {@link AuthorizationGenerator} implementation for a {@link CasClient} which is able
- * to retrieve the isRemembered status from the CAS response and put it in the profile. 
- * 
+ * to retrieve the isRemembered status from the CAS response and put it in the profile.
+ *
  * @author Michael Remond
  * @since 1.5.1
  *
@@ -19,7 +19,7 @@ public class DefaultCasAuthorizationGenerator<U extends CommonProfile> implement
     public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
 
     // default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
-    private String rememberMeAttributeName = DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME;
+    protected String rememberMeAttributeName = DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME;
 
     public DefaultCasAuthorizationGenerator() {
     }

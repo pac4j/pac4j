@@ -22,12 +22,12 @@ Each client has a name which is by default the class name (like `FacebookClient`
 
 Understand the main features:
 
-- [Direct vs indirect clients](#1-direct-vs-indirect-clients)
-- [Compute roles and permissions](#2-compute-roles-and-permissions)
-- [The callback URL](#3-the-callback-url)
-- [Profile definition](#4-profile-definition)
-- [AJAX requests](#5-ajax-requests)
-- [The `Client` methods](#6-the-client-methods)
+- [Direct vs indirect clients](#direct-vs-indirect-clients)
+- [Compute roles and permissions](#compute-roles-and-permissions)
+- [The callback URL](#the-callback-url)
+- [Profile definition](#profile-definition)
+- [AJAX requests](#ajax-requests)
+- [The `Client` methods](#the-client-methods)
 
 
 ---
@@ -77,9 +77,9 @@ In fact, the `AuthorizationGenerator` component can be used to do more than just
 
 For an indirect client, you must define the callback URL which will be used in the login process: after a successful login, the identity provider will redirect the user back to the application on the callback URL.
 
-On this callback URL, the "callback filter" must be installed to finish the login process.
+On this callback URL, the "callback filter" must be defined to finish the login process.
 
-As the callback URL can be shared between multiple clients, an additionnal parameter: `client_name` (by default) which value is the client name, is used to distinguish between the different clients.
+As the callback URL can be shared between multiple clients, the callback URL can hold the information of the client (to be able to distinguish between the different clients), as a query parameter or as a path parameter.
 
 **Example:**
 
@@ -93,7 +93,11 @@ In that case, the callback URL of the `FacebookClient` is `http://localhost:8080
 
 This is the callback URL you must define on the identity provider side.
 
-Though, some identity providers do not allow to define callback URL with query string which may cause an error during the login process. To handle that, you need to prevent the addition of the `client_name` parameter and make the client as the default one.
+This happens because the default [`CallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/CallbackUrlResolver.java) of the clients is the [`QueryParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/QueryParameterCallbackUrlResolver.java).
+
+You can change the `client_name` parameter using the `setClientNameParameter` method of the `QueryParameterCallbackUrlResolver`.
+
+But you can also use the [`PathParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/PathParameterCallbackUrlResolver.java), which adds the client name as a path parameter.
 
 **Example:**
 
@@ -103,18 +107,28 @@ configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
 configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
 configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration");
 AzureAdClient azureAdClient = new AzureAdClient(configuration);
-client.setIncludeClientNameInCallbackUrl(false);
+client.setCallbackUrlResolver(new PathParameterCallbackUrlResolver());
 Clients clients = new Clients("http://localhost:8080/callback", azureAdClient);
-clients.setDefaultClient(azureAdClient);
 Config config = new Config(clients);
 ```
 
-In that case, the callback URL of the `AzureAdClient` is `http://localhost:8080/callback`.
+In that case, the callback URL will be `http://localhost:8080/callback/AzureAdClient` for the `AzureAdClient`.
 
-In fact, the callback URL is expected to be an absolute URL and is passed "as is" (by the `DefaultUrlResolver`). Though, you can provide your own [`UrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/UrlResolver.java) to compute the appropriate callback URL in a specific way (example: `client.setUrlResolver(myUrlResolver);`).
+You may even use the [`NoParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/NoParameterCallbackUrlResolver.java) which left the callback URL untouched.
+In that case, no parameter will be added to the callback URL and no client will be retrieved on the callback endpoint. You will be forced to define a "default client".
 
-The other existing implementation you can use, is the [`RelativeUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/RelativeUrlResolver.java) which turns any relative callback URL into an absolute one by adding the scheme, server name and port before the relative callback URL.
+**Example:**
 
+```java
+final DefaultCallbackClientFinder defaultCallbackClientFinder = (DefaultCallbackClientFinder) defaultCallbackLogic.getClientFinder();
+defaultCallbackClientFinder.setDefaultClient(facebookClient);
+```
+
+The `CallbackUrlResolver` relies on a [`UrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/UrlResolver.java) to complement the URL according to the current web context.
+The `UrlResolver` can be retrieved via the `getUrlResolver()` method of the `CallbackUrlResolver`
+
+You can use the [`DefaultUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/DefaultUrlResolver.java) and handle relative URLs by using: `defaultUrlResolver.setCompleteRelativeUrl(true)`.
+Or provide your own `UrlResolver` using the `setUrlResolver` method.
 
 ---
 

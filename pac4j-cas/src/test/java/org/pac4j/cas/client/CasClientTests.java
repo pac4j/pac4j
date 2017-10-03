@@ -3,8 +3,11 @@ package org.pac4j.cas.client;
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -36,7 +39,7 @@ public final class CasClientTests implements TestsConstants {
     public void testMissingCasUrls() {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(casClient, "loginUrl, prefixUrl and restUrl cannot be all blank");
+        TestsHelper.initShouldFail(casClient.getConfiguration(), "loginUrl, prefixUrl and restUrl cannot be all blank");
     }
 
     @Test
@@ -46,7 +49,7 @@ public final class CasClientTests implements TestsConstants {
         configuration.setPrefixUrl(PREFIX_URL_WITHOUT_SLASH);
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
-        casClient.init();
+        configuration.init();
         assertEquals(PREFIX_URL, configuration.getPrefixUrl());
     }
 
@@ -57,7 +60,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         assertEquals(null, configuration.getPrefixUrl());
-        casClient.init();
+        configuration.init();
         assertEquals(PREFIX_URL, configuration.getPrefixUrl());
     }
 
@@ -68,7 +71,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         assertEquals(null, configuration.getLoginUrl());
-        casClient.init();
+        configuration.init();
         assertEquals(LOGIN_URL, configuration.getLoginUrl());
     }
 
@@ -79,7 +82,22 @@ public final class CasClientTests implements TestsConstants {
         configuration.setLoginUrl(CAS + LOGIN);
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CASBACK);
-        casClient.setUrlResolver((callbackUrl, context) -> HOST + callbackUrl);
+        casClient.setCallbackUrlResolver(new CallbackUrlResolver() {
+            @Override
+            public String compute(final String url, final String clientName, final WebContext context) {
+                return null;
+            }
+
+            @Override
+            public boolean matches(final String clientName, final WebContext context) {
+                return false;
+            }
+
+            @Override
+            public UrlResolver getUrlResolver() {
+                return (url, context) -> HOST + url;
+            }
+        });
         casClient.init();
         assertEquals(HOST + CAS + LOGIN, configuration.computeFinalLoginUrl(null));
         assertEquals(HOST + CAS + "/", configuration.computeFinalPrefixUrl(null));
@@ -192,7 +210,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
     	casClient.setCallbackUrl(CALLBACK_URL);
     	assertEquals(null, configuration.getPrefixUrl());
-    	casClient.init();
+        configuration.init();
     	assertEquals(testCasPrefixUrl, configuration.getPrefixUrl());
     }
 }

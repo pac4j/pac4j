@@ -12,23 +12,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Find the right clients based on regular parameters.
+ * Find the right clients based on the query parameter for the {@link org.pac4j.core.engine.SecurityLogic}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultClientFinder implements ClientFinder {
+public class DefaultSecurityClientFinder implements ClientFinder {
+
+    private String clientNameParameter = Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER;
 
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
         final List<Client> result = new ArrayList<>();
 
         if (CommonHelper.isNotBlank(clientNames)) {
             final List<String> names = Arrays.asList(clientNames.split(Pac4jConstants.ELEMENT_SEPRATOR));
-            // if a client_name parameter is provided on the request, get the client and check if it is allowed
-            final String clientNameOnRequest = context.getRequestParameter(clients.getClientNameParameter());
+            // if a "client_name" parameter is provided on the request, get the client
+            // and check if it is allowed (defined in the list of the clients)
+            final String clientNameOnRequest = context.getRequestParameter(clientNameParameter);
             if (clientNameOnRequest != null) {
                 // from the request
-                final Client client = clients.findClient(context);
+                final Client client = clients.findClient(clientNameOnRequest);
                 final String nameFound = client.getName();
                 // if allowed -> return it
                 boolean found = false;
@@ -52,5 +55,13 @@ public class DefaultClientFinder implements ClientFinder {
             }
         }
         return result;
+    }
+
+    public String getClientNameParameter() {
+        return clientNameParameter;
+    }
+
+    public void setClientNameParameter(final String clientNameParameter) {
+        this.clientNameParameter = clientNameParameter;
     }
 }

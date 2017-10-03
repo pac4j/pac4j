@@ -5,12 +5,11 @@ import java.util.List;
 
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
-import org.pac4j.core.client.direct.AnonymousClient;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.UrlResolver;
+import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
@@ -20,7 +19,7 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link Clients} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.3.0
  */
@@ -37,53 +36,38 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testMissingClient() {
-        final Clients clientsGroup = new Clients();
-        clientsGroup.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(clientsGroup, "clients cannot be null");
+        final Clients clients = new Clients();
+        clients.setCallbackUrl(CALLBACK_URL);
+        TestsHelper.initShouldFail(clients, "clients cannot be null");
     }
 
     @Test
-    public void testNoCallbackUrl() {
+    public void testNoValuesSet() {
         MockIndirectClient facebookClient = newFacebookClient();
-        final Clients clientsGroup = new Clients(facebookClient);
-        clientsGroup.init();
+        final Clients clients = new Clients(facebookClient);
+        clients.init();
         assertNull(facebookClient.getCallbackUrl());
+        assertNull(facebookClient.getCallbackUrlResolver());
+        assertNull(facebookClient.getAjaxRequestResolver());
+        assertEquals(0, facebookClient.getAuthorizationGenerators().size());
     }
 
     @Test
-    public void testTwoClients() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final MockIndirectClient yahooClient = newYahooClient();
-        final List<Client> clients = new ArrayList<>();
-        clients.add(facebookClient);
-        clients.add(yahooClient);
-        final Clients clientsGroup = new Clients();
-        clientsGroup.setClientNameParameter(TYPE);
-        clientsGroup.setClients(clients);
-        clientsGroup.setCallbackUrl(CALLBACK_URL);
-        assertNull(facebookClient.getCallbackUrl());
-        assertNull(yahooClient.getCallbackUrl());
-        clientsGroup.init();
-        assertEquals(CALLBACK_URL + "?" + TYPE + "=" + facebookClient.getName(), facebookClient.getCallbackUrl());
-        assertEquals(CALLBACK_URL + "?" + TYPE + "=" + yahooClient.getName(), yahooClient.getCallbackUrl());
-        assertEquals(yahooClient,
-                clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, yahooClient.getName())));
-        assertEquals(yahooClient, clientsGroup.findClient(yahooClient.getName()));
-    }
-
-    @Test
-    public void testDoubleInit() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final Clients clientsGroup = new Clients();
-        clientsGroup.setCallbackUrl(CALLBACK_URL);
-        clientsGroup.setClients(facebookClient);
-        clientsGroup.init();
-        final Clients clientsGroup2 = new Clients();
-        clientsGroup2.setCallbackUrl(CALLBACK_URL);
-        clientsGroup2.setClients(facebookClient);
-        clientsGroup2.init();
-        assertEquals(CALLBACK_URL + "?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=" + facebookClient.getName(),
-                facebookClient.getCallbackUrl());
+    public void testValuesSet() {
+        MockIndirectClient facebookClient = newFacebookClient();
+        final Clients clients = new Clients(facebookClient);
+        final AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+        final CallbackUrlResolver callbackUrlResolver = new QueryParameterCallbackUrlResolver();
+        final AuthorizationGenerator authorizationGenerator = (context, profile) -> profile;
+        clients.setCallbackUrl(CALLBACK_URL);
+        clients.setAjaxRequestResolver(ajaxRequestResolver);
+        clients.setCallbackUrlResolver(callbackUrlResolver);
+        clients.addAuthorizationGenerator(authorizationGenerator);
+        clients.init();
+        assertEquals(CALLBACK_URL, facebookClient.getCallbackUrl());
+        assertEquals(callbackUrlResolver, facebookClient.getCallbackUrlResolver());
+        assertEquals(ajaxRequestResolver, facebookClient.getAjaxRequestResolver());
+        assertEquals(authorizationGenerator, facebookClient.getAuthorizationGenerators().get(0));
     }
 
     @Test
@@ -99,34 +83,6 @@ public final class ClientsTests implements TestsConstants {
         final List<Client> clients2 = clientsGroup.findAllClients();
         assertEquals(2, clients2.size());
         assertTrue(clients2.containsAll(clients));
-    }
-
-    @Test
-    public void testClientWithCallbackUrl() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        facebookClient.setCallbackUrl(LOGIN_URL);
-        final MockIndirectClient yahooClient = newYahooClient();
-        final Clients group = new Clients(CALLBACK_URL, facebookClient, yahooClient);
-        group.setClientNameParameter(KEY);
-        group.init();
-        assertEquals(LOGIN_URL + "?" + group.getClientNameParameter() + "=" + facebookClient.getName(),
-                facebookClient.getCallbackUrl());
-        assertEquals(CALLBACK_URL + "?" + group.getClientNameParameter() + "=" + yahooClient.getName(),
-                yahooClient.getCallbackUrl());
-    }
-
-    @Test
-    public void testClientWithCallbackUrlWithoutIncludingClientName() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        facebookClient.setCallbackUrl(LOGIN_URL);
-        facebookClient.setIncludeClientNameInCallbackUrl(false);
-        final MockIndirectClient yahooClient = newYahooClient();
-        yahooClient.setIncludeClientNameInCallbackUrl(false);
-        final Clients group = new Clients(CALLBACK_URL, facebookClient, yahooClient);
-        group.setClientNameParameter(KEY);
-        group.init();
-        assertEquals(LOGIN_URL, facebookClient.getCallbackUrl());
-        assertEquals(CALLBACK_URL, yahooClient.getCallbackUrl());
     }
 
     @Test
@@ -190,46 +146,5 @@ public final class ClientsTests implements TestsConstants {
         final MockIndirectClient yahooClient = newYahooClient();
         final Clients clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient(" FacebookClient          "));
-    }
-
-    @Test
-    public void testDefineAjaxCallbackResolverAuthGenerator() {
-        final AjaxRequestResolver ajaxRequestResolver = ctx -> false;
-        final UrlResolver urlResolver = (url, ctx) -> url;
-        final AuthorizationGenerator authorizationGenerator = (ctx, profile) -> profile;
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final Clients clients = new Clients(CALLBACK_URL, facebookClient);
-        clients.setAjaxRequestResolver(ajaxRequestResolver);
-        clients.setUrlResolver(urlResolver);
-        clients.addAuthorizationGenerator(authorizationGenerator);
-        clients.init();
-        assertEquals(ajaxRequestResolver, facebookClient.getAjaxRequestResolver());
-        assertEquals(urlResolver, facebookClient.getUrlResolver());
-        assertEquals(authorizationGenerator, facebookClient.getAuthorizationGenerators().get(0));
-    }
-
-    @Test
-    public void testDefaultClientNullClients() {
-        final Clients clients = new Clients();
-        TestsHelper.expectException(() -> clients.setDefaultClient(new AnonymousClient()), TechnicalException.class, "The default client must be defined in the list of clients");
-    }
-
-    @Test
-    public void testNullClientNullClients() {
-        final Clients clients = new Clients();
-        clients.setDefaultClient(null);
-    }
-
-    @Test
-    public void testDefaultClientOneDifferentClient() {
-        final Clients clients = new Clients(new MockDirectClient(null, (Credentials) null, null));
-        TestsHelper.expectException(() -> clients.setDefaultClient(new AnonymousClient()), TechnicalException.class, "The default client must be defined in the list of clients");
-    }
-
-    @Test
-    public void testDefaultClientAlreadyInClients() {
-        final AnonymousClient client = new AnonymousClient();
-        final Clients clients = new Clients(client);
-        clients.setDefaultClient(client);
     }
 }

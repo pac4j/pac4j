@@ -4,14 +4,15 @@ import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.finder.ClientFinder;
+import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.ProfileManagerFactoryAware;
@@ -33,6 +34,8 @@ import static org.pac4j.core.util.CommonHelper.*;
 public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> implements CallbackLogic<R, C> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
+    private ClientFinder clientFinder = new DefaultCallbackClientFinder();
 
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
@@ -61,6 +64,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
         }
 
         // checks
+        assertNotNull("clientFinder", clientFinder);
         assertNotNull("context", context);
         assertNotNull("config", config);
         assertNotNull("httpActionAdapter", httpActionAdapter);
@@ -69,10 +73,12 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
         assertNotNull("clients", clients);
 
         // logic
-        final Client client = clients.findClient(context);
+        final List<Client> foundClients = clientFinder.find(clients, context, null);
+        assertTrue(foundClients != null && foundClients.size() == 1,
+            "one and only one indirect client must be retrieved from the callback");
+        final Client client = foundClients.get(0);
         logger.debug("client: {}", client);
         assertNotNull("client", client);
-        assertTrue(client instanceof IndirectClient, "only indirect clients are allowed on the callback url");
 
         HttpAction action;
         try {
@@ -136,5 +142,13 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
         }
         logger.debug("redirectUrl: {}", redirectUrl);
         return HttpAction.redirect("redirect", context, redirectUrl);
+    }
+
+    public ClientFinder getClientFinder() {
+        return clientFinder;
+    }
+
+    public void setClientFinder(final ClientFinder clientFinder) {
+        this.clientFinder = clientFinder;
     }
 }

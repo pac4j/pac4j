@@ -46,11 +46,9 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
-    private OidcConfiguration configuration;
+    protected OidcConfiguration configuration;
 
     protected IDTokenValidator idTokenValidator;
-
-    public OidcProfileCreator() {}
 
     public OidcProfileCreator(final OidcConfiguration configuration) {
         this.configuration = configuration;
@@ -59,10 +57,9 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
     @Override
     protected void internalInit() {
         assertNotNull("configuration", configuration);
-        configuration.init();
 
         // check algorithms
-        final List<JWSAlgorithm> metadataAlgorithms = configuration.getProviderMetadata().getIDTokenJWSAlgs();
+        final List<JWSAlgorithm> metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
             "There must at least one JWS algorithm supported on the OpenID Connect provider side");
         JWSAlgorithm jwsAlgorithm;
@@ -81,7 +78,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
         final Secret _secret = new Secret(configuration.getSecret());
         // Init IDTokenVerifier
         if (jwsAlgorithm == null) {
-            this.idTokenValidator = new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), _clientID);
+            this.idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
         } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
             JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
             this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
@@ -95,15 +92,15 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
-            return new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
-                    configuration.getProviderMetadata().getJWKSetURI().toURL(), configuration.getResourceRetriever());
+            return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
+                    configuration.findProviderMetadata().getJWKSetURI().toURL(), configuration.findResourceRetriever());
         } catch (final MalformedURLException e) {
             throw new TechnicalException(e);
         }
     }
 
     protected IDTokenValidator createHMACTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID, final Secret secret) {
-        return new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
+        return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
     }
 
     @Override
@@ -140,8 +137,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
             profile.setId(claimsSet.getSubject());
 
             // User Info request
-            if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(),
+            if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
+                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
                     (BearerAccessToken) accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
@@ -181,22 +178,5 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new TechnicalException(e);
         }
-    }
-
-    public OidcConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final OidcConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public IDTokenValidator getIdTokenValidator() {
-        return idTokenValidator;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration);
     }
 }

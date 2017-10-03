@@ -2,12 +2,12 @@ package org.pac4j.oauth.redirect;
 
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,26 +18,23 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20RedirectActionBuilder extends InitializableObject implements RedirectActionBuilder {
+public class OAuth20RedirectActionBuilder implements RedirectActionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth20RedirectActionBuilder.class);
 
-    protected final OAuth20Configuration configuration;
+    protected OAuth20Configuration configuration;
 
-    public OAuth20RedirectActionBuilder(final OAuth20Configuration configuration) {
+    protected IndirectClient client;
+
+    public OAuth20RedirectActionBuilder(final OAuth20Configuration configuration, final IndirectClient client) {
+        CommonHelper.assertNotNull("client", client);
+        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
-    }
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("configuration", this.configuration);
-        configuration.init();
+        this.client = client;
     }
 
     @Override
     public RedirectAction redirect(final WebContext context) {
-        init();
-
         try {
 
             final OAuth20Service service;
@@ -45,12 +42,12 @@ public class OAuth20RedirectActionBuilder extends InitializableObject implements
             if (this.configuration.isWithState()) {
                 final String state = getStateParameter();
                 logger.debug("save sessionState: {}", state);
-                context.getSessionStore().set(context, this.configuration.getStateSessionAttributeName(), state);
+                context.getSessionStore().set(context, this.configuration.getStateSessionAttributeName(client.getName()), state);
 
-                service = this.configuration.buildService(context, state);
+                service = this.configuration.buildService(context, client, state);
             } else {
 
-                service = this.configuration.buildService(context, null);
+                service = this.configuration.buildService(context, client, null);
             }
             final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
             logger.debug("authorizationUrl: {}", authorizationUrl);
@@ -70,10 +67,5 @@ public class OAuth20RedirectActionBuilder extends InitializableObject implements
             stateParameter = CommonHelper.randomString(10);
         }
         return stateParameter;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", this.configuration);
     }
 }

@@ -98,7 +98,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         initSignatureSigningParametersProvider();
         final MetadataResolver metadataManager = initChainingMetadataResolver(
                 initIdentityProviderMetadataResolver(),
-                initServiceProviderMetadataResolver(null));
+                initServiceProviderMetadataResolver());
         initSAMLContextProvider(metadataManager);
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLResponseValidator();
@@ -145,9 +145,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.configuration.getSamlMessageStorageFactory());
     }
 
-    protected MetadataResolver initServiceProviderMetadataResolver(final WebContext context) {
+    protected MetadataResolver initServiceProviderMetadataResolver() {
         this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration,
-            computeFinalCallbackUrl(context),
+            computeFinalCallbackUrl(null),
             this.credentialProvider);
         return this.spMetadataResolver.resolve();
     }

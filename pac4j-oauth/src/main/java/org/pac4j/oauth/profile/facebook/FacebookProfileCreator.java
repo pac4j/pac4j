@@ -4,6 +4,7 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuthService;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
@@ -26,16 +27,17 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
 
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
 
-    public FacebookProfileCreator(final OAuth20Configuration configuration) {
-        super(configuration);
+    public FacebookProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
+        super(configuration, client);
     }
 
     @Override
     protected FacebookProfile retrieveUserProfileFromToken(final WebContext context, final OAuth2AccessToken accessToken) {
-        final OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration> profileDefinition = (OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration>) configuration.getProfileDefinition();
+        final OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration> profileDefinition =
+            (OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration>) configuration.getProfileDefinition();
         final FacebookConfiguration facebookConfiguration = (FacebookConfiguration) configuration;
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final OAuthService<OAuth2AccessToken> service = this.configuration.buildService(context, null);
+        final OAuthService<OAuth2AccessToken> service = this.configuration.buildService(context, client, null);
         String body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);

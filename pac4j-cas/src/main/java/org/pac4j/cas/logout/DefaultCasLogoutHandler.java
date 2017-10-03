@@ -27,8 +27,7 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     private boolean destroySession;
 
-    public DefaultCasLogoutHandler() {
-    }
+    public DefaultCasLogoutHandler() {}
 
     public DefaultCasLogoutHandler(final Store<String, Object> store) {
         this.store = store;
