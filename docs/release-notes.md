@@ -10,6 +10,7 @@ title: Release notes&#58;
 - All exceptions (especially `HttpAction`) are unchecked
 - Upgraded to Scribe v4
 - Added "multi-tenancy" capabilities: you can dynamically define multiple callback URLs for the same client, except for SAML for which you need as many `SAML2Client` as the number of different callback URLs you want
+- The `CallbackUrlResolver` computes the callback URL (using a query parameter or a path parameter to define the client), based on the `UrlResolver` which computes a URL
 
 **v2.2.0**:
 
