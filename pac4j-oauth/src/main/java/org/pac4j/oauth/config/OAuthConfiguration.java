@@ -63,7 +63,7 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
     public S buildService(final WebContext context, final IndirectClient client, final String state) {
         init();
 
-        final String finalCallbackUrl = client.getCallbackUrlResolver().compute(client.getCallbackUrl(), client.getName(), context);
+        final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
         final OAuthConfig oAuthConfig = new OAuthConfig(this.key, this.secret, finalCallbackUrl, this.scope,
             null, state, this.responseType, null, this.httpClientConfig, null);
