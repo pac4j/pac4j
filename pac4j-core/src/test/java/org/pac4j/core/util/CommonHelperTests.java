@@ -147,13 +147,13 @@ public final class CommonHelperTests {
         assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(VALUE, null));
         assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(NAME, VALUE));
     }
-    
+
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_null() {
         String var = null;
         CommonHelper.assertNotBlank("var", var);
     }
-  
+
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_empty() {
         String var = " ";
@@ -212,13 +212,13 @@ public final class CommonHelperTests {
     public void testIsEmpty() {
         assertTrue(CommonHelper.isEmpty(null));
         assertTrue(CommonHelper.isEmpty(new ArrayList<>()));
-        assertFalse(CommonHelper.isEmpty(Arrays.asList(new String[] { VALUE })));
+        assertFalse(CommonHelper.isEmpty(Arrays.asList(new String[] {VALUE})));
     }
 
     @Test
     public void testIsNotEmpty() {
         assertFalse(CommonHelper.isNotEmpty(null));
         assertFalse(CommonHelper.isNotEmpty(new ArrayList<>()));
-        assertTrue(CommonHelper.isNotEmpty(Arrays.asList(new String[] { VALUE })));
+        assertTrue(CommonHelper.isNotEmpty(Arrays.asList(new String[] {VALUE})));
     }
 }

@@ -27,26 +27,30 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     @Test
     public void testParameterOk() {
-        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testParameterOkNewName() {
-        final WebContext context = MockWebContext.create().addRequestParameter(NAME, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final WebContext context = MockWebContext.create().addRequestParameter(NAME, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         authorizer.setParameterName(NAME);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testHeaderOk() {
-        final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testHeaderOkNewName() {
-        final WebContext context = MockWebContext.create().addRequestHeader(NAME, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final WebContext context = MockWebContext.create().addRequestHeader(NAME, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         authorizer.setHeaderName(NAME);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }

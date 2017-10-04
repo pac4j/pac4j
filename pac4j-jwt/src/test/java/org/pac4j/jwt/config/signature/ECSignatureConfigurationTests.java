@@ -64,12 +64,14 @@ public final class ECSignatureConfigurationTests implements TestsConstants {
     @Test
     public void testBadAlgorithm() {
         final ECSignatureConfiguration config = new ECSignatureConfiguration(buildKeyPair(), JWSAlgorithm.HS256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only the ES256, ES384 and ES512 algorithms are supported for elliptic curve signature");
+        TestsHelper.expectException(config::init, TechnicalException.class,
+            "Only the ES256, ES384 and ES512 algorithms are supported for elliptic curve signature");
     }
 
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
-        final String json = new ECKey.Builder(ECKey.Curve.P_256, (ECPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
+        final String json = new ECKey.Builder(ECKey.Curve.P_256,
+            (ECPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
         JWKHelper.buildECKeyPairFromJwk(json);
     }
 

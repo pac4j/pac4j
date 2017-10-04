@@ -22,7 +22,8 @@ public final class HeaderClientTests implements TestsConstants {
     @Test
     public void testMissingTokendAuthenticator() {
         final HeaderClient client = new HeaderClient(VALUE, null);
-        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test

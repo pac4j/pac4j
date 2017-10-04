@@ -29,8 +29,9 @@ public final class DbServer implements TestsConstants {
         final DBI dbi = new DBI(ds);
         final Handle h = dbi.open();
         final String password = PASSWORD_ENCODER.encode(PASSWORD);
-        h.execute("create table users (" + AbstractProfileService.ID + " int primary key, " + Pac4jConstants.USERNAME +  " varchar(100), " + Pac4jConstants.PASSWORD + " varchar(300), "
-                + FIRSTNAME + " varchar(100), " + AbstractProfileService.LINKEDID + " varchar(100), " + AbstractProfileService.SERIALIZED_PROFILE + " varchar(6000))");
+        h.execute("create table users (" + AbstractProfileService.ID + " int primary key, " + Pac4jConstants.USERNAME +  " varchar(100), "
+            + Pac4jConstants.PASSWORD + " varchar(300), " + FIRSTNAME + " varchar(100), " + AbstractProfileService.LINKEDID
+            + " varchar(100), " + AbstractProfileService.SERIALIZED_PROFILE + " varchar(6000))");
         h.execute("insert into users values(1, '" + GOOD_USERNAME + "', '" + password + "', '" + FIRSTNAME_VALUE + "', '', '')");
         h.execute("insert into users values(2, '" + MULTIPLE_USERNAME + "', '" + password + "', '', '', '')");
         h.execute("insert into users values(3, '" + MULTIPLE_USERNAME + "', '" + password + "', '', '', '')");

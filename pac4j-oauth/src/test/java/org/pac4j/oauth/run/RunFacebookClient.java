@@ -47,7 +47,11 @@ public final class RunFacebookClient extends RunClient {
         facebookClient.setSecret("c352c9668493d3f9ac3f0fa71f04c187");
         facebookClient.setCallbackUrl(PAC4J_URL);
         facebookClient
-                .setScope("email,user_about_me,user_actions.books,user_actions.fitness,user_actions.music,user_actions.news,user_actions.video,user_birthday,user_education_history,user_events,user_friends,user_games_activity,user_hometown,user_likes,user_location,user_managed_groups,user_photos,user_posts,user_relationship_details,user_relationships,user_religion_politics,user_status,user_tagged_places,user_videos,user_website,user_work_history");
+                .setScope("email,user_about_me,user_actions.books,user_actions.fitness,user_actions.music,user_actions.news,"
+                    + "user_actions.video,user_birthday,user_education_history,user_events,user_friends,user_games_activity,"
+                    + "user_hometown,user_likes,user_location,user_managed_groups,user_photos,user_posts,user_relationship_details,"
+                    + "user_relationships,user_religion_politics,user_status,user_tagged_places,user_videos,user_website,"
+                    + "user_work_history");
         facebookClient.setFields(FacebookConfiguration.DEFAULT_FIELDS
                 + ",friends,movies,music,books,likes,albums,events,groups,music.listens,picture");
         facebookClient.setLimit(100);

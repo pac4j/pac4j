@@ -26,14 +26,16 @@ public final class CookieClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final CookieClient cookieClient = new CookieClient("testcookie", null);
-        TestsHelper.expectException(() -> cookieClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> cookieClient.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
         cookieClient.setProfileCreator(null);
-        TestsHelper.expectException(() -> cookieClient.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME), MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> cookieClient.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME), MockWebContext.create()),
+            TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test

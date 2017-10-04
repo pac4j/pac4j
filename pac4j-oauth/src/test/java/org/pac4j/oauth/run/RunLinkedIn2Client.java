@@ -89,7 +89,8 @@ public final class RunLinkedIn2Client extends RunClient {
         final LinkedIn2Company company = position.getCompany();
         assertEquals("PAC4J", company.getName());
         assertNull(company.getIndustry());
-        assertEquals("https://www.linkedin.com/profile/view?id=AAoAAAn67mMBxVIxeJXn2T6XBvOFEAMLv7RiJQQ&authType=name&authToken=_IWF&trk=api*a167383*s175634*",
+        assertEquals("https://www.linkedin.com/profile/view?id=AAoAAAn67mMBxVIxeJXn2T6XBvOFEAMLv7RiJQQ"
+                + "&authType=name&authToken=_IWF&trk=api*a167383*s175634*",
                 profile.getSiteStandardProfileRequest());
         assertEquals("AAoAAAn67mMBxVIxeJXn2T6XBvOFEAMLv7RiJQQ", profile.getOAuth10Id());
         assertEquals(16, profile.getAttributes().size());

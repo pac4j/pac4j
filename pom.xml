@@ -267,6 +267,7 @@
                         </goals>
                         <configuration>
                             <failOnViolation>true</failOnViolation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         </configuration>
                     </execution>
                 </executions>

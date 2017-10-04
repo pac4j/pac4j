@@ -28,7 +28,8 @@ public final class FormClientTests implements TestsConstants {
     public void testMissingUsernamePasswordAuthenticator() {
         final FormClient formClient = new FormClient(LOGIN_URL, null);
         formClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test
@@ -72,7 +73,8 @@ public final class FormClientTests implements TestsConstants {
     public void testGetCredentialsMissingUsername() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)),
+        TestsHelper.expectException(() ->
+                formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)),
                 HttpAction.class, "Username and password cannot be blank -> return to the form with error");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
@@ -84,7 +86,8 @@ public final class FormClientTests implements TestsConstants {
     public void testGetCredentialsMissingPassword() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
+        TestsHelper.expectException(() ->
+                formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
                 HttpAction.class, "Username and password cannot be blank -> return to the form with error");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="

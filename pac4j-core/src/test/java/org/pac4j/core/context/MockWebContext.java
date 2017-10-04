@@ -163,7 +163,7 @@ public final class MockWebContext implements WebContext {
         final Map<String, String[]> map = new HashMap<>();
         for (final Map.Entry<String, String> entry : this.parameters.entrySet()) {
             final String value = entry.getValue();
-            final String[] values = new String[] { value };
+            final String[] values = new String[] {value};
             map.put(entry.getKey(), values);
         }
         return map;

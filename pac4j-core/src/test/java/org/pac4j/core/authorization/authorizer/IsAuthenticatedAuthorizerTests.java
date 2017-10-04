@@ -73,6 +73,7 @@ public class IsAuthenticatedAuthorizerTests implements TestsConstants {
     public void testAnonymousProfileRedirectionUrl() {
         profiles.add(new AnonymousProfile());
         ((IsAuthenticatedAuthorizer) authorizer).setRedirectionUrl(PAC4J_URL);
-        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class, "user should be authenticated");
+        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
+            "user should be authenticated");
     }
 }

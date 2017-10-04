@@ -52,7 +52,8 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
-        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class,
+            "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
     }
 
     @Test
