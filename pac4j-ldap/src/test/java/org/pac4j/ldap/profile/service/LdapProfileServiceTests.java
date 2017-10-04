@@ -86,7 +86,8 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void authentSuccessNoAttribute() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
+        final LdapProfileService ldapProfileService =
+            new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
@@ -101,7 +102,8 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void authentSuccessSingleAttribute() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
+        final LdapProfileService ldapProfileService =
+            new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
@@ -117,7 +119,8 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void authentSuccessMultiAttribute() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + "," + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + ","
+            + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
@@ -190,6 +193,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
     private List<Map<String, Object>> getData(final LdapProfileService ldapProfileService, final String id) {
-        return ldapProfileService.read(Arrays.asList(LdapServer.CN, LdapServer.SN, "id", "username", "linkedid", "password", "serializedprofile"), LdapServer.CN, id);
+        return ldapProfileService.read(Arrays.asList(LdapServer.CN, LdapServer.SN, "id", "username", "linkedid", "password",
+            "serializedprofile"), LdapServer.CN, id);
     }
 }

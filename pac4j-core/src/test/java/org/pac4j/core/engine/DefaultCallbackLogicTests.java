@@ -112,7 +112,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         request.addParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final MockDirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(directClient));
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "one and only one indirect client must be retrieved from the callback");
+        TestsHelper.expectException(() -> call(), TechnicalException.class,
+            "one and only one indirect client must be retrieved from the callback");
     }
 
     @Test
@@ -126,7 +127,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         call();
         final HttpSession session = request.getSession();
         final String newSessionId = session.getId();
-        final LinkedHashMap<String, CommonProfile> profiles = (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
+        final LinkedHashMap<String, CommonProfile> profiles =
+            (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
@@ -147,7 +149,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         call();
         session = request.getSession();
         final String newSessionId = session.getId();
-        final LinkedHashMap<String, CommonProfile> profiles = (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
+        final LinkedHashMap<String, CommonProfile> profiles =
+            (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
@@ -167,7 +170,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         call();
         final HttpSession session = request.getSession();
         final String newSessionId = session.getId();
-        final LinkedHashMap<String, CommonProfile> profiles = (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
+        final LinkedHashMap<String, CommonProfile> profiles =
+            (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertEquals(newSessionId, originalSessionId);

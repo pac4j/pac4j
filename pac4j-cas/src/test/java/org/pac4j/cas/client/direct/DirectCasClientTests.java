@@ -44,7 +44,8 @@ public final class DirectCasClientTests implements TestsConstants {
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setGateway(true);
         final DirectCasClient client = new DirectCasClient(configuration);
-        TestsHelper.expectException(() -> client.init(), TechnicalException.class, "the DirectCasClient can not support gateway to avoid infinite loops");
+        TestsHelper.expectException(() -> client.init(), TechnicalException.class,
+            "the DirectCasClient can not support gateway to avoid infinite loops");
     }
 
     @Test
@@ -56,7 +57,8 @@ public final class DirectCasClientTests implements TestsConstants {
         context.setFullRequestURL(CALLBACK_URL);
         final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context));
         assertEquals(302, action.getCode());
-        assertEquals(addParameter(LOGIN_URL, CasConfiguration.SERVICE_PARAMETER, CALLBACK_URL), context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+        assertEquals(addParameter(LOGIN_URL, CasConfiguration.SERVICE_PARAMETER, CALLBACK_URL),
+            context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
     }
 
     @Test

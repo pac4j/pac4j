@@ -43,7 +43,8 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
     @Test
     public void testBadAlgorithm() {
         final SecretSignatureConfiguration config = new SecretSignatureConfiguration(MAC_SECRET, JWSAlgorithm.ES256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only the HS256, HS384 and HS512 algorithms are supported for HMac signature");
+        TestsHelper.expectException(config::init, TechnicalException.class,
+            "Only the HS256, HS384 and HS512 algorithms are supported for HMac signature");
     }
 
     @Test

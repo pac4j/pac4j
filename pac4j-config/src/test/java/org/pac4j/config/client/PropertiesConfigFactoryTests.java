@@ -138,7 +138,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
             final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
             assertNotNull(oidcClient);
-            assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
+            assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(),
+                oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
 
             final CasClient casClient1 = (CasClient) clients.findClient("CasClient.1");
             assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
@@ -147,9 +148,10 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             googleOidcClient.init();
             assertEquals(ID, googleOidcClient.getConfiguration().getClientId());
             assertEquals(SECRET, googleOidcClient.getConfiguration().getSecret());
-            assertEquals("https://accounts.google.com/.well-known/openid-configuration", googleOidcClient.getConfiguration().getDiscoveryURI());
-            assertEquals(CALLBACK_URL + "?client_name=GoogleOidcClient.1",
-                googleOidcClient.getCallbackUrlResolver().compute(googleOidcClient.getCallbackUrl(), googleOidcClient.getName(), MockWebContext.create()));
+            assertEquals("https://accounts.google.com/.well-known/openid-configuration",
+                googleOidcClient.getConfiguration().getDiscoveryURI());
+            assertEquals(CALLBACK_URL + "?client_name=GoogleOidcClient.1", googleOidcClient.getCallbackUrlResolver()
+                .compute(googleOidcClient.getCallbackUrl(), googleOidcClient.getName(), MockWebContext.create()));
 
             final FormClient formClient = (FormClient) clients.findClient("FormClient");
             assertEquals(LOGIN_URL, formClient.getLoginUrl());
@@ -163,11 +165,13 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             ldapAuthenticator.validate(ldapCredentials, MockWebContext.create());
             assertNotNull(ldapCredentials.getUserProfile());
 
-            final IndirectBasicAuthClient indirectBasicAuthClient = (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.2");
+            final IndirectBasicAuthClient indirectBasicAuthClient =
+                (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.2");
             assertEquals("authentication required", indirectBasicAuthClient.getRealmName());
             assertTrue(indirectBasicAuthClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
 
-            final IndirectBasicAuthClient indirectBasicAuthClient2 = (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.5");
+            final IndirectBasicAuthClient indirectBasicAuthClient2 =
+                (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.5");
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
             final DbProfileService dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);

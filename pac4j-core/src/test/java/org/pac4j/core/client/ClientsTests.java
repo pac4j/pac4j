@@ -110,16 +110,20 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void rejectSameName() {
-        final MockIndirectClient client1 = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
-        final MockIndirectClient client2 = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client1 =
+            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client2 =
+            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: name");
     }
 
     @Test
     public void rejectSameNameDifferentCase() {
-        final MockIndirectClient client1 = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
-        final MockIndirectClient client2 = new MockIndirectClient(NAME.toUpperCase(), RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client1 =
+            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client2 =
+            new MockIndirectClient(NAME.toUpperCase(), RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: NAME");
     }

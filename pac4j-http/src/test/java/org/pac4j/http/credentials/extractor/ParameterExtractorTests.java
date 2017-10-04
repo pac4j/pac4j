@@ -26,27 +26,31 @@ public final class ParameterExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveGetParameterOk() {
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.GET.name()).addRequestParameter(GOOD_PARAMETER, VALUE);
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.GET.name())
+            .addRequestParameter(GOOD_PARAMETER, VALUE);
         final TokenCredentials credentials = getExtractor.extract(context);
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testRetrievePostParameterOk() {
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name()).addRequestParameter(GOOD_PARAMETER, VALUE);
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name())
+            .addRequestParameter(GOOD_PARAMETER, VALUE);
         final TokenCredentials credentials = postExtractor.extract(context);
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testRetrievePostParameterNotSupported() {
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name()).addRequestParameter(GOOD_PARAMETER, VALUE);
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name())
+            .addRequestParameter(GOOD_PARAMETER, VALUE);
         TestsHelper.expectException(() -> getExtractor.extract(context), CredentialsException.class, "POST requests not supported");
     }
 
     @Test
     public void testRetrieveGetParameterNotSupported() {
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.GET.name()).addRequestParameter(GOOD_PARAMETER, VALUE);
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.GET.name())
+            .addRequestParameter(GOOD_PARAMETER, VALUE);
         TestsHelper.expectException(() -> postExtractor.extract(context), CredentialsException.class, "GET requests not supported");
     }
 

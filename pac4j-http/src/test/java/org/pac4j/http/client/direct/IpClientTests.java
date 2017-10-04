@@ -24,7 +24,8 @@ public final class IpClientTests implements TestsConstants {
     @Test
     public void testMissingTokendAuthenticator() {
         final IpClient client = new IpClient(null);
-        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test

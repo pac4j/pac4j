@@ -61,7 +61,8 @@ public final class RunTwitterClient extends RunClient {
                 Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_normal.png",
                 "http://t.co/fNjYqp7wZ8", "New York");
         assertFalse(profile.getContributorsEnabled());
-        assertEquals("Fri Feb 10 12:10:24 +0100 2012", new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).format(profile.getCreatedAt()));
+        assertEquals("Fri Feb 10 12:10:24 +0100 2012",
+            new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).format(profile.getCreatedAt()));
         assertTrue(profile.getDefaultProfile());
         assertTrue(profile.getDefaultProfileImage());
         assertEquals("biographie", profile.getDescription());

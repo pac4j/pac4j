@@ -41,6 +41,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     @Test
     public void testValidateBadIP() {
         final TokenCredentials credentials = new TokenCredentials(BAD_IP, CLIENT_NAME);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, null), CredentialsException.class, "Unauthorized IP address: " + BAD_IP);
+        TestsHelper.expectException(() -> authenticator.validate(credentials, null), CredentialsException.class,
+            "Unauthorized IP address: " + BAD_IP);
     }
 }

@@ -64,7 +64,8 @@ public final class RSASignatureConfigurationTests implements TestsConstants {
     @Test
     public void testBadAlgorithm() {
         final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair(), JWSAlgorithm.HS256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only the RS256, RS384, RS512, PS256, PS384 and PS512 algorithms are supported for RSA signature");
+        TestsHelper.expectException(config::init, TechnicalException.class,
+            "Only the RS256, RS384, RS512, PS256, PS384 and PS512 algorithms are supported for RSA signature");
     }
 
     @Test

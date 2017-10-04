@@ -33,7 +33,10 @@ public final class CasClientTests implements TestsConstants {
     private static final String LOGIN = "/login";
     private static final String PREFIX_URL = "http://myserver/";
     private static final String PREFIX_URL_WITHOUT_SLASH = "http://myserver";
-    private static final String LOGOUT_MESSAGE = "\"<samlp:LogoutRequest xmlns:samlp=\\\"urn:oasis:names:tc:SAML:2.0:protocol\\\" ID=\\\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\\\" Version=\\\"2.0\\\" IssueInstant=\\\"2012-12-19T15:30:55Z\\\"><saml:NameID xmlns:saml=\\\"urn:oasis:names:tc:SAML:2.0:assertion\\\">@NOT_USED@</saml:NameID><samlp:SessionIndex>\" + TICKET + \"</samlp:SessionIndex></samlp:LogoutRequest>\";";
+    private static final String LOGOUT_MESSAGE = "\"<samlp:LogoutRequest xmlns:samlp=\\\"urn:oasis:names:tc:SAML:2.0:protocol\\\""
+        + "ID=\\\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\\\" Version=\\\"2.0\\\" IssueInstant=\\\"2012-12-19T15:30:55Z\\\">"
+        + "<saml:NameID xmlns:saml=\\\"urn:oasis:names:tc:SAML:2.0:assertion\\\">@NOT_USED@</saml:NameID><samlp:SessionIndex>\""
+        + TICKET + "\"</samlp:SessionIndex></samlp:LogoutRequest>\";";
 
     @Test
     public void testMissingCasUrls() {
@@ -158,9 +161,11 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init();
-        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
+        final MockWebContext context = MockWebContext.create()
+            .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod(HTTP_METHOD.POST.name());
-        TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class, "back logout request: no credential returned");
+        TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class,
+            "back logout request: no credential returned");
         assertEquals(200, context.getResponseStatus());
     }
 
@@ -182,7 +187,8 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init();
-        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
+        final MockWebContext context = MockWebContext.create()
+                .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod(HTTP_METHOD.GET.name());
         assertNull(casClient.getCredentials(context));
     }
@@ -194,7 +200,8 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init();
-        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
+        final MockWebContext context = MockWebContext.create()
+                .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HTTP_METHOD.GET.name());
         final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
         assertEquals(TEMP_REDIRECT, action.getCode());
@@ -203,14 +210,14 @@ public final class CasClientTests implements TestsConstants {
 
     @Test
     public void testInitUrlWithLoginString() {
-    	final String testCasLoginUrl = "https://login.foo.bar/login/login";
-    	final String testCasPrefixUrl = "https://login.foo.bar/login/";
+        final String testCasLoginUrl = "https://login.foo.bar/login/login";
+        final String testCasPrefixUrl = "https://login.foo.bar/login/";
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(testCasLoginUrl);
         final CasClient casClient = new CasClient(configuration);
-    	casClient.setCallbackUrl(CALLBACK_URL);
-    	assertEquals(null, configuration.getPrefixUrl());
+        casClient.setCallbackUrl(CALLBACK_URL);
+        assertEquals(null, configuration.getPrefixUrl());
         configuration.init();
-    	assertEquals(testCasPrefixUrl, configuration.getPrefixUrl());
+        assertEquals(testCasPrefixUrl, configuration.getPrefixUrl());
     }
 }

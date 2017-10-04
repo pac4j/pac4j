@@ -27,7 +27,8 @@ public final class ParameterClientTests implements TestsConstants {
     @Test
     public void testMissingTokenAuthenticator() {
         final ParameterClient client = new ParameterClient(PARAMETER_NAME, null);
-        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class,
+            "authenticator cannot be null");
     }
 
     @Test
