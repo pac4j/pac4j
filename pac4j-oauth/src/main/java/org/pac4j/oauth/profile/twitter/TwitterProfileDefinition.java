@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.twitter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth1Token;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -13,12 +14,12 @@ import java.util.Locale;
 
 /**
  * This class is the Twitter profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterProfile> {
-    
+
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";
     public static final String DEFAULT_PROFILE = "default_profile";
@@ -54,7 +55,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
     public static final String URL = "url";
     public static final String UTC_OFFSET = "utc_offset";
     public static final String VERIFIED = "verified";
-    
+
     public TwitterProfileDefinition() {
         super(x -> new TwitterProfile());
         Arrays.stream(new String[] {DESCRIPTION, NAME, SCREEN_NAME, TIME_ZONE})
@@ -83,7 +84,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
         final TwitterProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }

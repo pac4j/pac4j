@@ -18,6 +18,7 @@ import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
@@ -134,7 +135,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
             // Check ID Token
             final IDTokenClaimsSet claimsSet = this.idTokenValidator.validate(idToken, nonce);
             assertNotNull("claimsSet", claimsSet);
-            profile.setId(claimsSet.getSubject());
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, claimsSet.getSubject()));
 
             // User Info request
             if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {

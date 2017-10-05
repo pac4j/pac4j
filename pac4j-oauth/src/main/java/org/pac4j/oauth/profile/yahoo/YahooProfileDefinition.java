@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.yahoo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth1Token;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -15,12 +16,12 @@ import java.util.List;
 
 /**
  * This class is the Yahoo profile definition.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfile> {
-    
+
     public static final String ABOUT_ME = "aboutMe";
     public static final String AGE_CATEGORY = "ageCategory";
     public static final String ADDRESSES = "addresses";
@@ -42,7 +43,7 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
     public static final String TIME_ZONE = "timeZone";
     public static final String UPDATED = "updated";
     public static final String URI = "uri";
-    
+
     public YahooProfileDefinition() {
         super(x -> new YahooProfile());
         Arrays.stream(new String[] {ABOUT_ME, FAMILY_NAME, GIVEN_NAME, NICKNAME, TIME_ZONE, URI, AGE_CATEGORY})
@@ -75,7 +76,7 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
         if (json != null) {
             json = json.get("profile");
             if (json != null) {
-                profile.setId(JsonHelper.getElement(json, "guid"));
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "guid")));
                 for (final String attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
                 }

@@ -8,7 +8,6 @@ import org.pac4j.core.util.TestsHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -130,7 +129,7 @@ public final class CommonProfileTests implements TestsConstants {
     @Test
     public void testNullId() {
         final CommonProfile profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.setId(null), TechnicalException.class, "id cannot be null");
+        TestsHelper.expectException(() -> profile.setId(null), TechnicalException.class, "id cannot be blank");
     }
 
     @Test
@@ -142,7 +141,7 @@ public final class CommonProfileTests implements TestsConstants {
     @Test
     public void testNullRoles() {
         final CommonProfile profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.addRoles((Set<String>) null), TechnicalException.class, "roles cannot be null");
+        TestsHelper.expectException(() -> profile.addRoles(null), TechnicalException.class, "roles cannot be null");
     }
 
     @Test

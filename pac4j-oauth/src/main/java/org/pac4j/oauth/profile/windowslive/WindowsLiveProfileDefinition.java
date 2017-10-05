@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.windowslive;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -39,7 +40,7 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
         final WindowsLiveProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
