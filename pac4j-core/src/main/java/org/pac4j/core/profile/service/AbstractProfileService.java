@@ -6,6 +6,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.slf4j.Logger;
@@ -229,7 +230,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             }
             final Object retrievedUsername = storageAttributes.get(getUsernameAttribute());
             if (retrievedUsername != null) {
-                profile.setId(retrievedUsername);
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, retrievedUsername));
             } else {
                 profile.setId(username);
             }
@@ -251,7 +252,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             }
             final Object id = storageAttributes.get(getIdAttribute());
             if (isBlank(profile.getId()) && id != null) {
-                profile.setId(id);
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
             }
             if (isBlank(profile.getLinkedId()) && isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);

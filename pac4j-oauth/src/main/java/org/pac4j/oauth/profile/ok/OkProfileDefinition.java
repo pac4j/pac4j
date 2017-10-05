@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.ok;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
@@ -82,7 +83,7 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkC
         final OkProfile profile = newProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
-            profile.setId(JsonHelper.getElement(userNode, OkProfileDefinition.UID));
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, OkProfileDefinition.UID)));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(userNode, attribute));
             }
