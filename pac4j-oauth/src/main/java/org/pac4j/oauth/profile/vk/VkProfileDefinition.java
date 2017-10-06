@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.vk;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -72,7 +73,7 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkC
         if (json != null) {
             ArrayNode array = (ArrayNode) json.get("response");
             JsonNode userNode = array.get(0);
-            profile.setId(JsonHelper.getElement(userNode, "uid"));
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, "uid")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(userNode, attribute));
             }

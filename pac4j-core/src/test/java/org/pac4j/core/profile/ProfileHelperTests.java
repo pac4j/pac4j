@@ -29,4 +29,19 @@ public final class ProfileHelperTests implements TestsConstants {
         final CommonProfile profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
         assertNotNull(profile2);
     }
+
+    @Test
+    public void testSanitizeNullIdentifier() {
+        assertNull(ProfileHelper.sanitizeIdentifier(new CommonProfile(), null));
+    }
+
+    @Test
+    public void testSanitizeNullProfile() {
+        assertEquals("123", ProfileHelper.sanitizeIdentifier(null, 123));
+    }
+
+    @Test
+    public void testSanitize() {
+        assertEquals("yes", ProfileHelper.sanitizeIdentifier(new CommonProfile(), "org.pac4j.core.profile.CommonProfile#yes"));
+    }
 }

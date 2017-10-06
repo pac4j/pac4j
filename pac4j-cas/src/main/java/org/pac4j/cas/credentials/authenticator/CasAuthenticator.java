@@ -36,8 +36,6 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     protected String callbackUrl;
 
-    public CasAuthenticator() {}
-
     public CasAuthenticator(final CasConfiguration configuration, final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
         this.configuration = configuration;
         this.callbackUrlResolver = callbackUrlResolver;
@@ -81,7 +79,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             // in case of CAS proxy, don't restore the profile, just build a CAS one
             if (configuration.getProxyReceptor() != null) {
                 profile = getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
-                profile.setId(id);
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
                 getProfileDefinition().convertAndAdd(profile, newAttributes);
             } else {
                 profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal,

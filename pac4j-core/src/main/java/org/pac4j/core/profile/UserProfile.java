@@ -46,7 +46,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @param attributes user attributes
      */
     public void build(final Object id, final Map<String, Object> attributes) {
-        setId(id);
+        setId(ProfileHelper.sanitizeIdentifier(this, id));
         addAttributes(attributes);
     }
 
@@ -137,20 +137,13 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Set the identifier and convert it if necessary.
+     * Set the identifier.
      *
      * @param id user identifier
      */
-    public void setId(final Object id) {
-        CommonHelper.assertNotNull("id", id);
-
-        String sId = id.toString();
-        final String type = this.getClass().getName() + SEPARATOR;
-        if (sId.startsWith(type)) {
-            sId = sId.substring(type.length());
-        }
-        logger.debug("identifier: {}", sId);
-        this.id = sId;
+    public void setId(final String id) {
+        CommonHelper.assertNotBlank("id", id);
+        this.id = id;
     }
 
     /**

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is an helper for profiles.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
@@ -29,7 +29,7 @@ public final class ProfileHelper {
 
     /**
      * Indicate if the user identifier matches this kind of profile.
-     * 
+     *
      * @param id user identifier
      * @param clazz profile class
      * @return if the user identifier matches this kind of profile
@@ -50,7 +50,7 @@ public final class ProfileHelper {
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, 
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
         final String typedId, final Map<String, Object> attributes, final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
@@ -71,7 +71,7 @@ public final class ProfileHelper {
             profile = profileDefinition.newProfile(parameters);
             profileDefinition.convertAndAdd(profile, attributes);
         }
-        profile.setId(typedId);
+        profile.setId(ProfileHelper.sanitizeIdentifier(profile, typedId));
         return profile;
     }
 
@@ -85,7 +85,7 @@ public final class ProfileHelper {
         try {
             final Constructor<? extends CommonProfile> constructor = getConstructor(completeName);
             return constructor.newInstance();
-        } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException 
+        } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException
                  | InstantiationException e) {
             throw new TechnicalException(e);
         }
@@ -157,6 +157,27 @@ public final class ProfileHelper {
             listProfiles.add(entry.getValue());
         }
         return Collections.unmodifiableList(listProfiles);
+    }
+
+    /**
+     * Sanitize into a string identifier.
+     *
+     * @param profile the user profile
+     * @param id the identifier object
+     * @return the sanitized identifier
+     */
+    public static String sanitizeIdentifier(final UserProfile profile, final Object id) {
+        if (id != null) {
+            String sId = id.toString();
+            if (profile != null) {
+                final String type = profile.getClass().getName() + UserProfile.SEPARATOR;
+                if (sId.startsWith(type)) {
+                    sId = sId.substring(type.length());
+                }
+            }
+            return sId;
+        }
+        return null;
     }
 
     public static InternalAttributeHandler getInternalAttributeHandler() {
