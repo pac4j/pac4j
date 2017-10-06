@@ -49,17 +49,6 @@ public class HttpAction extends TechnicalException {
     }
 
     /**
-     * Build an HTTP Ok without any content.
-     *
-     * @param message message
-     * @param context context
-     * @return an HTTP ok
-     */
-    public static HttpAction ok(final String message, final WebContext context) {
-        return ok(message, context, "");
-    }
-
-    /**
      * Build an HTTP Ok.
      *
      * @param message message
@@ -67,10 +56,23 @@ public class HttpAction extends TechnicalException {
      * @param content content
      * @return an HTTP ok
      */
-    public static HttpAction ok(final String message, final WebContext context, String content) {
+    public static HttpAction ok(final String message, final WebContext context, final String content) {
         context.setResponseStatus(HttpConstants.OK);
         context.writeResponseContent(content);
         return new HttpAction(message, HttpConstants.OK);
+    }
+
+    /**
+     * Build an HTTP No content.
+     *
+     * @param message message
+     * @param context context
+     * @return an HTTP No content
+     */
+    public static HttpAction noContent(final String message, final WebContext context) {
+        context.setResponseStatus(HttpConstants.NO_CONTENT);
+        context.writeResponseContent("");
+        return new HttpAction(message, HttpConstants.NO_CONTENT);
     }
 
     /**
