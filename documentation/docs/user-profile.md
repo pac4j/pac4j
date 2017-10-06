@@ -32,9 +32,13 @@ profile.getId() // 00001
 profile.getTypedId() // org.pac4j.oauth.profile.facebook.FacebookProfile#00001
 ```
 
+As the identifier must be a `String`, you may use the `ProfileHelper.sanitizeIdentifier` method to convert other Java types and remove the "typed" part of the identifier.
+
+
 ## 2) Attributes
 
 User profiles have attributes, populated from the data retrieved from the identity provider (after conversion).
+
 
 ## 3) Authentication-related attributes
 

@@ -6,6 +6,7 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
@@ -87,7 +88,7 @@ public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswor
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket.getToken(), serviceURL);
             final AttributePrincipal principal = assertion.getPrincipal();
             final CasProfile casProfile = new CasProfile();
-            casProfile.setId(principal.getName());
+            casProfile.setId(ProfileHelper.sanitizeIdentifier(casProfile, principal.getName()));
             casProfile.addAttributes(principal.getAttributes());
             return casProfile;
         } catch (final TicketValidationException e) {

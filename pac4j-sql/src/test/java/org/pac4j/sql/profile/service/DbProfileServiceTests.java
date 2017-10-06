@@ -104,7 +104,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     @Test
     public void testCreateUpdateFindDelete() {
         final DbProfile profile = new DbProfile();
-        profile.setId(DB_ID);
+        profile.setId("" + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
         final DbProfileService dbProfileService = new DbProfileService(ds);
