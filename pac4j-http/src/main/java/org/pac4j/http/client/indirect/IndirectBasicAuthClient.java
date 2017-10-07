@@ -1,6 +1,7 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -54,6 +55,9 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
+        // set the www-authenticate in case of error
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+
         final UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials
@@ -61,13 +65,13 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
             logger.debug("credentials : {}", credentials);
 
             if (credentials == null) {
-                throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
+                throw HttpAction.unauthorized("Requires authentication", context);
             }
 
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
+            throw HttpAction.unauthorized("Requires authentication", context);
         }
 
         return credentials;
@@ -83,8 +87,11 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
-                "realmName", this.realmName, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
-                "profileCreator", getProfileCreator());
+        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+            "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
+            "realmName", this.realmName);
     }
 }

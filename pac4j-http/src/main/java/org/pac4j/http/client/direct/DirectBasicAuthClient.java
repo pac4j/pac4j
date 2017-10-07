@@ -1,11 +1,14 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP basic auth.</p>
@@ -15,7 +18,10 @@ import org.pac4j.core.profile.creator.ProfileCreator;
  */
 public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredentials, CommonProfile> {
 
-    public DirectBasicAuthClient() {}
+    private String realmName = "authentication required";
+
+    public DirectBasicAuthClient() {
+    }
 
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         defaultAuthenticator(usernamePasswordAuthenticator);
@@ -29,6 +35,31 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
 
     @Override
     protected void clientInit() {
+        CommonHelper.assertNotBlank("realmName", this.realmName);
+
         defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
+    }
+
+    @Override
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
+        // set the www-authenticate in case of error
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+
+        return super.retrieveCredentials(context);
+    }
+
+    public String getRealmName() {
+        return realmName;
+    }
+
+    public void setRealmName(final String realmName) {
+        this.realmName = realmName;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "authorizationGenerators", getAuthorizationGenerators(), "realmName", this.realmName);
     }
 }
