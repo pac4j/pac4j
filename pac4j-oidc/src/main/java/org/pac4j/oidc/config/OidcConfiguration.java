@@ -87,7 +87,10 @@ public class OidcConfiguration extends InitializableObject {
     protected void internalInit() {
         // checks
         CommonHelper.assertNotBlank("clientId", getClientId());
-        CommonHelper.assertNotBlank("secret", getSecret());
+        // except for the implicit flow, the secret is mandatory
+        if (!"id_token".equals(responseType) && !"id_token token".equals(responseType)) {
+            CommonHelper.assertNotBlank("secret", getSecret());
+        }
         if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {
             throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
         }
