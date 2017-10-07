@@ -242,4 +242,9 @@ public class J2EContext implements WebContext {
             throw new TechnicalException(e);
         }
     }
+
+    @Override
+    public String getProtocol() {
+        return request.getProtocol();
+    }
 }
