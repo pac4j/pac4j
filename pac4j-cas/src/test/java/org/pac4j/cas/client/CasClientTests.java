@@ -166,7 +166,7 @@ public final class CasClientTests implements TestsConstants {
             .setRequestMethod(HTTP_METHOD.POST.name());
         TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class,
             "back logout request: no credential returned");
-        assertEquals(200, context.getResponseStatus());
+        assertEquals(204, context.getResponseStatus());
     }
 
     private String deflateAndBase64(final String data) {

@@ -12,6 +12,8 @@ public interface HttpConstants {
 
     int CREATED = 201;
 
+    int NO_CONTENT = 204;
+
     int UNAUTHORIZED = 401;
 
     int FORBIDDEN = 403;
