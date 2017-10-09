@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -54,6 +56,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     private List<SignatureConfiguration> signatureConfigurations = new ArrayList<>();
 
+    private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
+
     public JwtAuthenticator() {}
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
@@ -77,6 +81,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotBlank("realmName", this.realmName);
+
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
 
         if (signatureConfigurations.isEmpty()) {
@@ -123,6 +129,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     public void validate(final TokenCredentials credentials, final WebContext context) {
         init();
         final String token = credentials.getToken();
+
+        if (context != null) {
+            // set the www-authenticate in case of error
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Bearer realm=\"" + realmName + "\"");
+        }
 
         try {
             // Parse the token
@@ -280,9 +291,17 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
+    public String getRealmName() {
+        return realmName;
+    }
+
+    public void setRealmName(final String realmName) {
+        this.realmName = realmName;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations,
-            "encryptionConfigurations", encryptionConfigurations);
+            "encryptionConfigurations", encryptionConfigurations, "realmName", this.realmName);
     }
 }

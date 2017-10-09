@@ -1,6 +1,7 @@
 package org.pac4j.kerberos.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -41,18 +42,21 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
+        // set the www-authenticate in case of error
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
+
         final KerberosCredentials credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("kerberos credentials : {}", credentials);
             if (credentials == null) {
-                throw HttpAction.unauthorizedNegotiate("Kerberos Header not found", context);
+                throw HttpAction.unauthorized("Kerberos Header not found", context);
             }
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw HttpAction.unauthorizedNegotiate("Kerberos auth failed", context);
+            throw HttpAction.unauthorized("Kerberos auth failed", context);
         }
 
         return credentials;
