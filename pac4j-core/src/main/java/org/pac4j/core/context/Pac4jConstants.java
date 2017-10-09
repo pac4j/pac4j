@@ -73,4 +73,6 @@ public interface Pac4jConstants {
     String CENTRAL_LOGOUT = "centralLogout";
 
     String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
+
+    String DEFAULT_REALM_NAME = "authentication required";
 }

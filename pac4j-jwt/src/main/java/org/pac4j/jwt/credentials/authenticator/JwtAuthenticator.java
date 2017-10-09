@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -55,7 +56,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     private List<SignatureConfiguration> signatureConfigurations = new ArrayList<>();
 
-    private String realmName = "authentication required";
+    private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
     public JwtAuthenticator() {}
 
