@@ -172,4 +172,13 @@ public interface WebContext {
     default String getRequestContent() {
         throw new TechnicalException("Operation not supported");
     }
+
+    /**
+     * Get the protocol version.
+     *
+     * @return the protocol version
+     */
+    default String getProtocol() {
+        return "HTTP/1.0";
+    }
 }
