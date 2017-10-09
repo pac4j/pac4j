@@ -1,5 +1,6 @@
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -84,14 +85,18 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             logger.info("AJAX request detected -> returning 401");
             RedirectAction action = redirectActionBuilder.redirect(context);
             cleanRequestedUrl(context);
-            throw HttpAction.unauthorized("AJAX request -> 401", context, null, action.getLocation());
+            final String url = action.getLocation();
+            if (CommonHelper.isNotBlank(url)) {
+                context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+            }
+            throw HttpAction.unauthorized("AJAX request -> 401", context);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null, null);
+            throw HttpAction.unauthorized("authentication already tried -> forbidden", context);
         }
 
         return redirectActionBuilder.redirect(context);

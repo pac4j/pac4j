@@ -256,7 +256,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @return an unauthorized error
      */
     protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
-        return HttpAction.unauthorized("unauthorized", context, null, null);
+        return HttpAction.unauthorized("unauthorized", context);
     }
 
     public ClientFinder getClientFinder() {
