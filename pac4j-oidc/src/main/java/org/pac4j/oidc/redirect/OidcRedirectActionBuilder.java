@@ -48,12 +48,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
             this.authParams.put(OidcConfiguration.SCOPE, "openid profile email");
         }
         // add response type
-        final String responseType = configuration.getResponseType();
-        if (CommonHelper.isNotBlank(responseType)) {
-            this.authParams.put(OidcConfiguration.RESPONSE_TYPE, responseType);
-        } else {
-            this.authParams.put(OidcConfiguration.RESPONSE_TYPE, "code");
-        }
+        this.authParams.put(OidcConfiguration.RESPONSE_TYPE, configuration.getResponseType());
         // add response mode?
         final String responseMode = configuration.getResponseMode();
         if (CommonHelper.isNotBlank(responseMode)) {
