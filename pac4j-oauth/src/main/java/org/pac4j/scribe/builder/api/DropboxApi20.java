@@ -16,8 +16,8 @@ public class DropboxApi20 extends DefaultApi20 {
 
     public final static DropboxApi20 INSTANCE  = new DropboxApi20();
 
-    private static final String AUTH_URL = "https://www.dropbox.com/1/oauth2/authorize";
-    private static final String TOKEN_URL = "https://www.dropbox.com/1/oauth2/token";
+    private static final String AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
+    private static final String TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 
     @Override
     public String getAccessTokenEndpoint() {
@@ -31,8 +31,8 @@ public class DropboxApi20 extends DefaultApi20 {
     @Override
     protected String getAuthorizationBaseUrl() {
         return AUTH_URL;
-    }  
-    
+    }
+
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.POST;

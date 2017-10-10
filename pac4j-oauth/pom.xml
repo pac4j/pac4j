@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>pac4j-oauth</artifactId>
+    <version>2.1.0-USING-DROPBOX-API-V2</version>
     <packaging>jar</packaging>
     <name>pac4j for OAuth protocol</name>
 
@@ -20,6 +21,7 @@
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
+            <version>2.1.0</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -43,6 +45,7 @@
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
+            <version>2.1.0</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
