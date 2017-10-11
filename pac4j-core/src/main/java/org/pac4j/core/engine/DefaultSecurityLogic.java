@@ -16,7 +16,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.matching.DefaultMatchingChecker;
+import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
@@ -54,7 +54,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     private AuthorizationChecker authorizationChecker = new DefaultAuthorizationChecker();
 
-    private MatchingChecker matchingChecker = new DefaultMatchingChecker();
+    private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
     private boolean saveProfileInSession;
 
