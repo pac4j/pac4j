@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.WritableResource;
 
-import javax.annotation.Nullable;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -45,21 +44,19 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final boolean forceSpMetadataGeneration;
     private boolean authnRequestSigned;
     private boolean wantsAssertionsSigned;
+    private String binding;
 
-    public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration,
-                                                final String callbackUrl,
+    public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
         this(configuration.getServiceProviderMetadataResource(), callbackUrl,
                 configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider,
-                configuration.isAuthnRequestSigned(), configuration.getWantsAssertionsSigned());
+                configuration.isAuthnRequestSigned(), configuration.getWantsAssertionsSigned(), configuration.getDestinationBindingType());
     }
 
-    private SAML2ServiceProviderMetadataResolver(final WritableResource spMetadataResource,
-                                                 final String callbackUrl,
-                                                 @Nullable final String spEntityId,
-                                                 final boolean forceSpMetadataGeneration,
-                                                 final CredentialProvider credentialProvider,
-                                                 boolean authnRequestSigned, boolean wantsAssertionsSigned) {
+    private SAML2ServiceProviderMetadataResolver(final WritableResource spMetadataResource, final String callbackUrl,
+                                                 final String spEntityId, final boolean forceSpMetadataGeneration,
+                                                 final CredentialProvider credentialProvider, final boolean authnRequestSigned,
+                                                 final boolean wantsAssertionsSigned, final String binding) {
         this.authnRequestSigned = authnRequestSigned;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
         this.spMetadataResource = spMetadataResource;
@@ -67,6 +64,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         this.credentialProvider = credentialProvider;
         this.callbackUrl = callbackUrl;
         this.forceSpMetadataGeneration = forceSpMetadataGeneration;
+        this.binding = binding;
 
         // If the spEntityId is blank, use the callback url
         try {
@@ -92,7 +90,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
 
         try {
-            final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
+            final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator(binding);
             metadataGenerator.setWantAssertionSigned(this.wantsAssertionsSigned);
             metadataGenerator.setAuthnRequestSigned(this.authnRequestSigned);
 

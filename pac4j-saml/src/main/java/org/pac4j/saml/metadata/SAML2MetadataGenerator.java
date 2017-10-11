@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
@@ -61,6 +60,12 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected int defaultACSIndex = 0;
 
     protected String requestInitiatorLocation = null;
+
+    protected String binding;
+
+    public SAML2MetadataGenerator(final String binding) {
+        this.binding = binding;
+    }
 
     @Override
     public final MetadataResolver buildMetadataResolver() throws Exception {
@@ -194,9 +199,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
         int index = 0;
-        spDescriptor.getAssertionConsumerServices().add(
-                getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++,
-                        this.defaultACSIndex == index));
+        spDescriptor.getAssertionConsumerServices().add(getAssertionConsumerService(binding, index++, this.defaultACSIndex == index));
 
         if (credentialProvider != null) {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING,
