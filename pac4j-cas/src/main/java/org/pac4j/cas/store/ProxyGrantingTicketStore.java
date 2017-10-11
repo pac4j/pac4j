@@ -39,6 +39,6 @@ public class ProxyGrantingTicketStore implements ProxyGrantingTicketStorage {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "store", store);
+        return CommonHelper.toNiceString(this.getClass(), "store", store);
     }
 }

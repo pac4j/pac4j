@@ -14,15 +14,11 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.DefaultMatchingChecker;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.ProfileManagerFactoryAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -46,9 +42,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> implements SecurityLogic<R, C> {
-
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements SecurityLogic<R, C> {
 
     private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 
@@ -66,28 +60,28 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
         logger.debug("=== SECURITY ===");
 
-        // default value
-        final boolean multiProfile;
-        if (inputMultiProfile == null) {
-            multiProfile = false;
-        } else {
-            multiProfile = inputMultiProfile;
-        }
-
-        // checks
-        assertNotNull("context", context);
-        assertNotNull("config", config);
-        assertNotNull("httpActionAdapter", httpActionAdapter);
-        assertNotNull("clientFinder", clientFinder);
-        assertNotNull("authorizationChecker", authorizationChecker);
-        assertNotNull("matchingChecker", matchingChecker);
-        final Clients configClients = config.getClients();
-        assertNotNull("configClients", configClients);
-
-        // logic
         HttpAction action;
         try {
 
+            // default value
+            final boolean multiProfile;
+            if (inputMultiProfile == null) {
+                multiProfile = false;
+            } else {
+                multiProfile = inputMultiProfile;
+            }
+
+            // checks
+            assertNotNull("context", context);
+            assertNotNull("config", config);
+            assertNotNull("httpActionAdapter", httpActionAdapter);
+            assertNotNull("clientFinder", clientFinder);
+            assertNotNull("authorizationChecker", authorizationChecker);
+            assertNotNull("matchingChecker", matchingChecker);
+            final Clients configClients = config.getClients();
+            assertNotNull("configClients", configClients);
+
+            // logic
             logger.debug("url: {}", context.getFullRequestURL());
             logger.debug("matchers: {}", matchers);
             if (matchingChecker.matches(context, matchers, config.getMatchers())) {
@@ -159,13 +153,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
                 return securityGrantedAccessAdapter.adapt(context, parameters);
             }
 
-        } catch (final HttpAction e) {
-            logger.debug("extra HTTP action required in security: {}", e.getCode());
-            action = e;
-        } catch (final TechnicalException e) {
-            throw e;
-        } catch (final Throwable e) {
-            throw new TechnicalException(e);
+        } catch (final RuntimeException e) {
+            return handleException(e, httpActionAdapter, context);
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
@@ -289,6 +278,12 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     public void setSaveProfileInSession(final boolean saveProfileInSession) {
         this.saveProfileInSession = saveProfileInSession;
+    }
+
+    @Override
+    public String toString() {
+        return toNiceString(this.getClass(), "clientFinder", clientFinder, "authorizationChecker", authorizationChecker,
+            "matchingChecker", matchingChecker, "saveProfileInSession", saveProfileInSession, "errorUrl", getErrorUrl());
     }
 }
 

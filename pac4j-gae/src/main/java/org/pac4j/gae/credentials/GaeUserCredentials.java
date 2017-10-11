@@ -47,6 +47,6 @@ public class GaeUserCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "user", this.user);
+        return CommonHelper.toNiceString(this.getClass(), "user", this.user);
     }
 }

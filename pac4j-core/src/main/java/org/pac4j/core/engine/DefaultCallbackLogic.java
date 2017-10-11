@@ -15,9 +15,6 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.ProfileManagerFactoryAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -31,9 +28,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> implements CallbackLogic<R, C> {
-
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements CallbackLogic<R, C> {
 
     private ClientFinder clientFinder = new DefaultCallbackClientFinder();
 
@@ -43,45 +38,46 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
         logger.debug("=== CALLBACK ===");
 
-        // default values
-        final String defaultUrl;
-        if (inputDefaultUrl == null) {
-            defaultUrl = Pac4jConstants.DEFAULT_URL_VALUE;
-        } else {
-            defaultUrl = inputDefaultUrl;
-        }
-        final boolean multiProfile;
-        if (inputMultiProfile == null) {
-            multiProfile = false;
-        } else {
-            multiProfile = inputMultiProfile;
-        }
-        final boolean renewSession;
-        if (inputRenewSession == null) {
-            renewSession = true;
-        } else {
-            renewSession = inputRenewSession;
-        }
-
-        // checks
-        assertNotNull("clientFinder", clientFinder);
-        assertNotNull("context", context);
-        assertNotNull("config", config);
-        assertNotNull("httpActionAdapter", httpActionAdapter);
-        assertNotBlank(Pac4jConstants.DEFAULT_URL, defaultUrl);
-        final Clients clients = config.getClients();
-        assertNotNull("clients", clients);
-
-        // logic
-        final List<Client> foundClients = clientFinder.find(clients, context, null);
-        assertTrue(foundClients != null && foundClients.size() == 1,
-            "one and only one indirect client must be retrieved from the callback");
-        final Client client = foundClients.get(0);
-        logger.debug("client: {}", client);
-        assertNotNull("client", client);
-
         HttpAction action;
         try {
+
+            // default values
+            final String defaultUrl;
+            if (inputDefaultUrl == null) {
+                defaultUrl = Pac4jConstants.DEFAULT_URL_VALUE;
+            } else {
+                defaultUrl = inputDefaultUrl;
+            }
+            final boolean multiProfile;
+            if (inputMultiProfile == null) {
+                multiProfile = false;
+            } else {
+                multiProfile = inputMultiProfile;
+            }
+            final boolean renewSession;
+            if (inputRenewSession == null) {
+                renewSession = true;
+            } else {
+                renewSession = inputRenewSession;
+            }
+
+            // checks
+            assertNotNull("clientFinder", clientFinder);
+            assertNotNull("context", context);
+            assertNotNull("config", config);
+            assertNotNull("httpActionAdapter", httpActionAdapter);
+            assertNotBlank(Pac4jConstants.DEFAULT_URL, defaultUrl);
+            final Clients clients = config.getClients();
+            assertNotNull("clients", clients);
+
+            // logic
+            final List<Client> foundClients = clientFinder.find(clients, context, null);
+            assertTrue(foundClients != null && foundClients.size() == 1,
+                "one and only one indirect client must be retrieved from the callback");
+            final Client client = foundClients.get(0);
+            logger.debug("client: {}", client);
+            assertNotNull("client", client);
+
             final Credentials credentials = client.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
@@ -90,9 +86,8 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
             saveUserProfile(context, config, profile, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
 
-        } catch (final HttpAction e) {
-            logger.debug("extra HTTP action required in callback: {}", e.getCode());
-            action = e;
+        } catch (final RuntimeException e) {
+            return handleException(e, httpActionAdapter, context);
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
@@ -150,5 +145,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
     public void setClientFinder(final ClientFinder clientFinder) {
         this.clientFinder = clientFinder;
+    }
+
+    @Override
+    public String toString() {
+        return toNiceString(this.getClass(), "clientFinder", clientFinder, "errorUrl", getErrorUrl());
     }
 }

@@ -60,7 +60,7 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
+        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
             "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
             "profileCreator", getProfileCreator());
     }

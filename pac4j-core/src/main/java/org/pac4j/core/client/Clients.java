@@ -213,7 +213,7 @@ public class Clients extends InitializableObject {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clients", getClients(),
+        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "clients", getClients(),
                 "ajaxRequestResolver", ajaxRequestResolver, "callbackUrlResolver", callbackUrlResolver,
                 "authorizationGenerators", authorizationGenerators);
     }

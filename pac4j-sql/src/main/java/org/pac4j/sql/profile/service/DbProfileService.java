@@ -180,7 +180,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
+        return CommonHelper.toNiceString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
                 "attributes", getAttributes(), "profileDefinition", getProfileDefinition(), "usersTable", usersTable,
                 "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }

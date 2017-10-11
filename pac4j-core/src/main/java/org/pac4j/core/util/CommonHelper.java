@@ -196,13 +196,13 @@ public final class CommonHelper {
     }
 
     /**
-     * Build a normalized "toString" text for an object.
+     * Build a "nice toString" for an object.
      *
      * @param clazz class
      * @param args  arguments
-     * @return a normalized "toString" text
+     * @return a "nice toString" text
      */
-    public static String toString(final Class<?> clazz, final Object... args) {
+    public static String toNiceString(final Class<?> clazz, final Object... args) {
         final StringBuilder sb = new StringBuilder();
         sb.append("#");
         sb.append(clazz.getSimpleName());

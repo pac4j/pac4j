@@ -40,6 +40,6 @@ public class TokenCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "token", this.token, "clientName", getClientName());
+        return CommonHelper.toNiceString(this.getClass(), "token", this.token, "clientName", getClientName());
     }
 }

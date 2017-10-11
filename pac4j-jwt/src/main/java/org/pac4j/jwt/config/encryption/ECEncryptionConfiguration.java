@@ -99,6 +99,6 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "keys", "[protected]", "algorithm", algorithm, "method", method);
+        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm, "method", method);
     }
 }

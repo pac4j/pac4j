@@ -5,7 +5,7 @@ import org.pac4j.core.util.CommonHelper;
 
 /**
  * This class represents a username and a password credentials
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -51,7 +51,7 @@ public class UsernamePasswordCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), Pac4jConstants.USERNAME, this.username,
+        return CommonHelper.toNiceString(this.getClass(), Pac4jConstants.USERNAME, this.username,
                 Pac4jConstants.PASSWORD, "[PROTECTED]", "clientName", getClientName());
     }
 }

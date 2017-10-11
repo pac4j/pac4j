@@ -83,7 +83,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
+        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
                 "realmName", this.realmName, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }

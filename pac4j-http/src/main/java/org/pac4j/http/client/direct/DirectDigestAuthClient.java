@@ -79,7 +79,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "realm", this.realm, "extractor", getCredentialsExtractor(),
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "realm", this.realm, "extractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

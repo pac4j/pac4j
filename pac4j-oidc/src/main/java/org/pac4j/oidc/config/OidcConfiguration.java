@@ -272,7 +272,7 @@ public class OidcConfiguration extends InitializableObject {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientId", clientId, "secret", "[protected]",
+        return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
             "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
             "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
             "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxClockSkew", maxClockSkew,

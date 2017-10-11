@@ -23,7 +23,7 @@ public class JavaSerializationHelper {
 
     public JavaSerializationHelper() {
         trustedPackages = new ArrayList<>();
-        trustedPackages.addAll(Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", 
+        trustedPackages.addAll(Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.",
             "org.joda.", "net.minidev.json.", "org.bson.types."));
     }
 
@@ -93,7 +93,7 @@ public class JavaSerializationHelper {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "trustedPackages", this.trustedPackages);
+        return CommonHelper.toNiceString(this.getClass(), "trustedPackages", this.trustedPackages);
     }
 
     /**

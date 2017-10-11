@@ -50,6 +50,6 @@ public class HttpMethodMatcher implements Matcher {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "methods", this.methods);
+        return CommonHelper.toNiceString(this.getClass(), "methods", this.methods);
     }
 }

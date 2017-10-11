@@ -53,7 +53,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
             "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),

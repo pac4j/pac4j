@@ -145,7 +145,7 @@ public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> exte
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
+        return CommonHelper.toNiceString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
             "responseType", responseType, "scope", scope, "api", api, "hasBeenCancelledFactory", hasBeenCancelledFactory,
             "profileDefinition", profileDefinition, "httpClientConfig", httpClientConfig);
     }

@@ -56,7 +56,7 @@ public class OAuth20Credentials extends OAuthCredentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(),
+        return CommonHelper.toNiceString(this.getClass(),
                 "code", code,
                 "accessToken", accessToken,
                 "clientName", getClientName());

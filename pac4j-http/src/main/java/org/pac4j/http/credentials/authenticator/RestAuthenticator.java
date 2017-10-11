@@ -140,6 +140,6 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "url", url, "mapper", mapper);
+        return CommonHelper.toNiceString(this.getClass(), "url", url, "mapper", mapper);
     }
 }

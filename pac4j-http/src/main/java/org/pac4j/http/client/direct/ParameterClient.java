@@ -71,7 +71,7 @@ public class ParameterClient extends DirectClient<TokenCredentials, CommonProfil
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "parameterName", this.parameterName,
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "parameterName", this.parameterName,
                 "supportGetRequest", this.supportGetRequest, "supportPostRequest", this.supportPostRequest,
                 "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }

@@ -282,7 +282,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations,
+        return CommonHelper.toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
             "encryptionConfigurations", encryptionConfigurations);
     }
 }

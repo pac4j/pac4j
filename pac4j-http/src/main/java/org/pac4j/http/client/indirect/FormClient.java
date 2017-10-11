@@ -147,7 +147,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
+        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
                 "redirectActionBuilder", getRedirectActionBuilder(), "extractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());

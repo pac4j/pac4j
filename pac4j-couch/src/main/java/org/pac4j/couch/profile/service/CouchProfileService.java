@@ -174,7 +174,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
+        return CommonHelper.toNiceString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
                 "attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
                 "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }

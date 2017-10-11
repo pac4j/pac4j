@@ -70,7 +70,7 @@ public class OAuth10Credentials extends OAuthCredentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(),
+        return CommonHelper.toNiceString(this.getClass(),
                 "requestToken", requestToken,
                 "token", token,
                 "verifier'", verifier,
