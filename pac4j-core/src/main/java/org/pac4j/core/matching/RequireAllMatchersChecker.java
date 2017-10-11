@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Default way to check the matching.
+ * Check that all matchers are satisfied.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class DefaultMatchingChecker implements MatchingChecker {
+public class RequireAllMatchersChecker implements MatchingChecker {
 
     @Override
     public boolean matches(final WebContext context, final String matcherNames, final Map<String, Matcher> matchersMap) {
