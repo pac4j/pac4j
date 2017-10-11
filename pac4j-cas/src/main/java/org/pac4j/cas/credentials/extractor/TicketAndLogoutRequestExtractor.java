@@ -64,7 +64,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             }
             final String message = "back logout request: no credential returned";
             logger.debug(message);
-            throw HttpAction.ok(message, context, "");
+            throw HttpAction.noContent(message, context);
 
         } else if (isFrontLogoutRequest(context)) {
             final String logoutMessage = uncompressLogoutMessage(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));

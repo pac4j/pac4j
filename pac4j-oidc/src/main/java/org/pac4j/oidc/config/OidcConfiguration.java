@@ -14,8 +14,7 @@ import org.pac4j.core.util.InitializableObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * OpenID Connect configuration.
@@ -32,6 +31,11 @@ public class OidcConfiguration extends InitializableObject {
     public static final String CLIENT_ID = "client_id";
     public static final String STATE = "state";
     public static final String NONCE = "nonce";
+
+    public static final List<String> AUTHORIZATION_CODE_FLOWS = Collections.unmodifiableList(Arrays.asList("code"));
+    public static final List<String> IMPLICIT_FLOWS = Collections.unmodifiableList(Arrays.asList("id_token", "id_token token"));
+    public static final List<String> HYBRID_CODE_FLOWS =
+        Collections.unmodifiableList(Arrays.asList("code id_token", "code token", "code id_token token"));
 
     /* state attribute name in session */
     public static final String STATE_SESSION_ATTRIBUTE = "oidcStateAttribute";
@@ -73,7 +77,7 @@ public class OidcConfiguration extends InitializableObject {
 
     private OIDCProviderMetadata providerMetadata;
 
-    private String responseType;
+    private String responseType = AUTHORIZATION_CODE_FLOWS.get(0);
 
     private String responseMode;
 
@@ -87,7 +91,14 @@ public class OidcConfiguration extends InitializableObject {
     protected void internalInit() {
         // checks
         CommonHelper.assertNotBlank("clientId", getClientId());
-        CommonHelper.assertNotBlank("secret", getSecret());
+        if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
+            && !HYBRID_CODE_FLOWS.contains(responseType)) {
+            throw new TechnicalException("Unsupported responseType: " + responseType);
+        }
+        // except for the implicit flow, the secret is mandatory
+        if (!IMPLICIT_FLOWS.contains(responseType)) {
+            CommonHelper.assertNotBlank("secret", getSecret());
+        }
         if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {
             throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
         }

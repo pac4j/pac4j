@@ -1,6 +1,7 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
@@ -53,7 +54,9 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
         DigestCredentials credentials = super.retrieveCredentials(context);
         if (credentials == null) {
             String nonce = calculateNonce();
-            HttpAction.unauthorizedDigest("Digest required", context, realm, "auth", nonce);
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
+                + nonce + "\"");
+            throw HttpAction.unauthorized("Digest required", context);
         }
         return credentials;
     }

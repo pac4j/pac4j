@@ -1,6 +1,8 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -8,9 +10,10 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth. It was previously named: <code>BasicAuthClient</code>.</p>
@@ -23,7 +26,7 @@ import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
  */
 public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCredentials, CommonProfile> {
 
-    private String realmName = "authentication required";
+    private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
     public IndirectBasicAuthClient() {}
 
@@ -43,7 +46,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     protected void clientInit() {
-        CommonHelper.assertNotBlank("realmName", this.realmName);
+        assertNotBlank("realmName", this.realmName);
 
         defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
@@ -51,8 +54,11 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
-        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        assertNotNull("authenticator", getAuthenticator());
+
+        // set the www-authenticate in case of error
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
 
         final UsernamePasswordCredentials credentials;
         try {
@@ -61,13 +67,13 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
             logger.debug("credentials : {}", credentials);
 
             if (credentials == null) {
-                throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
+                throw HttpAction.unauthorized("Requires authentication", context);
             }
 
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
+            throw HttpAction.unauthorized("Requires authentication", context);
         }
 
         return credentials;
@@ -83,8 +89,11 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
-                "realmName", this.realmName, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
-                "profileCreator", getProfileCreator());
+        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+            "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
+            "realmName", this.realmName);
     }
 }

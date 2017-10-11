@@ -94,7 +94,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             if (redirectUrl != null) {
                 action = HttpAction.redirect("redirect", context, redirectUrl);
             } else {
-                action = HttpAction.ok("ok", context);
+                action = HttpAction.noContent("ok, no content", context);
             }
 
             // local logout if requested or multiple profiles

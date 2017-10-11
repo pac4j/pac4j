@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -18,7 +20,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
@@ -39,6 +40,8 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 
+import static org.pac4j.core.util.CommonHelper.*;
+
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
  * for the {@link AuthenticatorProfileCreator}.
@@ -53,6 +56,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     private List<EncryptionConfiguration> encryptionConfigurations = new ArrayList<>();
 
     private List<SignatureConfiguration> signatureConfigurations = new ArrayList<>();
+
+    private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
     public JwtAuthenticator() {}
 
@@ -77,6 +82,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     protected void internalInit() {
+        assertNotBlank("realmName", this.realmName);
+
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
 
         if (signatureConfigurations.isEmpty()) {
@@ -123,6 +130,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     public void validate(final TokenCredentials credentials, final WebContext context) {
         init();
         final String token = credentials.getToken();
+
+        if (context != null) {
+            // set the www-authenticate in case of error
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Bearer realm=\"" + realmName + "\"");
+        }
 
         try {
             // Parse the token
@@ -253,12 +265,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     public void addSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
-        CommonHelper.assertNotNull("signatureConfiguration", signatureConfiguration);
+        assertNotNull("signatureConfiguration", signatureConfiguration);
         signatureConfigurations.add(signatureConfiguration);
     }
 
     public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
-        CommonHelper.assertNotNull("signatureConfigurations", signatureConfigurations);
+        assertNotNull("signatureConfigurations", signatureConfigurations);
         this.signatureConfigurations = signatureConfigurations;
     }
 
@@ -271,18 +283,26 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     public void addEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
-        CommonHelper.assertNotNull("encryptionConfiguration", encryptionConfiguration);
+        assertNotNull("encryptionConfiguration", encryptionConfiguration);
         encryptionConfigurations.add(encryptionConfiguration);
     }
 
     public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
-        CommonHelper.assertNotNull("encryptionConfigurations", encryptionConfigurations);
+        assertNotNull("encryptionConfigurations", encryptionConfigurations);
         this.encryptionConfigurations = encryptionConfigurations;
+    }
+
+    public String getRealmName() {
+        return realmName;
+    }
+
+    public void setRealmName(final String realmName) {
+        this.realmName = realmName;
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
-            "encryptionConfigurations", encryptionConfigurations);
+        return toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
+            "encryptionConfigurations", encryptionConfigurations, "realmName", this.realmName);
     }
 }

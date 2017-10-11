@@ -49,17 +49,6 @@ public class HttpAction extends TechnicalException {
     }
 
     /**
-     * Build an HTTP Ok without any content.
-     *
-     * @param message message
-     * @param context context
-     * @return an HTTP ok
-     */
-    public static HttpAction ok(final String message, final WebContext context) {
-        return ok(message, context, "");
-    }
-
-    /**
      * Build an HTTP Ok.
      *
      * @param message message
@@ -67,22 +56,23 @@ public class HttpAction extends TechnicalException {
      * @param content content
      * @return an HTTP ok
      */
-    public static HttpAction ok(final String message, final WebContext context, String content) {
+    public static HttpAction ok(final String message, final WebContext context, final String content) {
         context.setResponseStatus(HttpConstants.OK);
         context.writeResponseContent(content);
         return new HttpAction(message, HttpConstants.OK);
     }
 
     /**
-     * Build a basic auth popup credentials.
+     * Build an HTTP No content.
      *
      * @param message message
      * @param context context
-     * @param realmName realm name
-     * @return a basic auth popup credentials
+     * @return an HTTP No content
      */
-    public static HttpAction unauthorized(final String message, final WebContext context, final String realmName) {
-        return unauthorized(message, context, realmName, null);
+    public static HttpAction noContent(final String message, final WebContext context) {
+        context.setResponseStatus(HttpConstants.NO_CONTENT);
+        context.writeResponseContent("");
+        return new HttpAction(message, HttpConstants.NO_CONTENT);
     }
 
     /**
@@ -90,50 +80,9 @@ public class HttpAction extends TechnicalException {
      *
      * @param message message
      * @param context context
-     * @param realmName realm name
-     * @param url url
      * @return a basic auth popup credentials
      */
-    public static HttpAction unauthorized(final String message, final WebContext context, final String realmName, final String url) {
-        if (CommonHelper.isNotBlank(realmName)) {
-            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
-        }
-        if (CommonHelper.isNotBlank(url)) {
-            context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
-        }
-        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-        return new HttpAction(message, HttpConstants.UNAUTHORIZED);
-    }
-
-    /**
-     * Build a digest auth popup credentials.
-     *
-     * @param message message
-     * @param context context
-     * @param realmName realm name
-     * @param qop qop
-     * @param nonce nonce
-     * @return a digest auth popup credentials
-     */
-    public static HttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop,
-                                                final String nonce) {
-        if (CommonHelper.isNotBlank(realmName)) {
-            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\""
-                + qop + "\", nonce=\"" + nonce + "\"");
-        }
-        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-        return new HttpAction(message, HttpConstants.UNAUTHORIZED);
-    }
-
-    /**
-     * Build a response requesting to provide credentials via Kerberos/SPNEGO Negotiate mechanism.
-     *
-     * @param message message
-     * @param context context
-     * @return 401 Unauthorized with "WWW-Authenticate: Negotiate"
-     */
-    public static HttpAction unauthorizedNegotiate(final String message, final WebContext context) {
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
+    public static HttpAction unauthorized(final String message, final WebContext context) {
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new HttpAction(message, HttpConstants.UNAUTHORIZED);
     }
