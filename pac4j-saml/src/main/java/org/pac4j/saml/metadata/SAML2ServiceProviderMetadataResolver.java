@@ -48,23 +48,14 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
-        this(configuration.getServiceProviderMetadataResource(), callbackUrl,
-                configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider,
-                configuration.isAuthnRequestSigned(), configuration.getWantsAssertionsSigned(), configuration.getDestinationBindingType());
-    }
-
-    private SAML2ServiceProviderMetadataResolver(final WritableResource spMetadataResource, final String callbackUrl,
-                                                 final String spEntityId, final boolean forceSpMetadataGeneration,
-                                                 final CredentialProvider credentialProvider, final boolean authnRequestSigned,
-                                                 final boolean wantsAssertionsSigned, final String binding) {
-        this.authnRequestSigned = authnRequestSigned;
-        this.wantsAssertionsSigned = wantsAssertionsSigned;
-        this.spMetadataResource = spMetadataResource;
-        this.spEntityId = spEntityId;
+        this.authnRequestSigned = configuration.isAuthnRequestSigned();
+        this.wantsAssertionsSigned = configuration.getWantsAssertionsSigned();
+        this.spMetadataResource = configuration.getServiceProviderMetadataResource();
+        this.spEntityId = configuration.getServiceProviderEntityId();
         this.credentialProvider = credentialProvider;
         this.callbackUrl = callbackUrl;
-        this.forceSpMetadataGeneration = forceSpMetadataGeneration;
-        this.binding = binding;
+        this.forceSpMetadataGeneration = configuration.isForceServiceProviderMetadataGeneration();
+        this.binding = configuration.getDestinationBindingType();
 
         // If the spEntityId is blank, use the callback url
         try {
