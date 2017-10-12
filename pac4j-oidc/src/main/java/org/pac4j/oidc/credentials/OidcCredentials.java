@@ -10,7 +10,7 @@ import org.pac4j.core.util.CommonHelper;
 
 /**
  * Credentials containing the authorization code sent by the OpenID Connect server.
- * 
+ *
  * @author Michael Remond
  * @author Jerome Leleu
  * @since 1.7.0
@@ -76,7 +76,7 @@ public class OidcCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "code", this.code, "clientName", getClientName(), "accessToken", accessToken,
+        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "clientName", getClientName(), "accessToken", accessToken,
                 "refreshToken", refreshToken, "idToken", idToken);
     }
 }

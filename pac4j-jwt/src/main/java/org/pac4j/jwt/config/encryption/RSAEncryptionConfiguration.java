@@ -89,6 +89,6 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "keys", "[protected]", "algorithm", algorithm, "method", method);
+        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm, "method", method);
     }
 }

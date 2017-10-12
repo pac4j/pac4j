@@ -75,6 +75,6 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "store", this.store);
+        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "store", this.store);
     }
 }

@@ -158,7 +158,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "mongoClient", mongoClient, "usersCollection", usersCollection,
+        return CommonHelper.toNiceString(this.getClass(), "mongoClient", mongoClient, "usersCollection", usersCollection,
                 "passwordEncoder", getPasswordEncoder(), "usersDatabase", usersDatabase, "attributes", getAttributes(),
                 "profileDefinition", getProfileDefinition(), "idAttribute", getIdAttribute(),
                 "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());

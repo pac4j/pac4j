@@ -109,6 +109,6 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "secret", "[protected]", "algorithm", algorithm);
+        return CommonHelper.toNiceString(this.getClass(), "secret", "[protected]", "algorithm", algorithm);
     }
 }

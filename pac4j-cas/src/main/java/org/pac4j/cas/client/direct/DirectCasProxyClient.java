@@ -83,7 +83,7 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
             "callbackUrlResolver", callbackUrlResolver, "serviceUrl", serviceUrl);

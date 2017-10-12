@@ -126,6 +126,6 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "delegate", this.delegate, "store", this.store);
+        return CommonHelper.toNiceString(this.getClass(), "delegate", this.delegate, "store", this.store);
     }
 }

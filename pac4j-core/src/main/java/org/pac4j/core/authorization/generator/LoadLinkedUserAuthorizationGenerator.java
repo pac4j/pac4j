@@ -13,7 +13,7 @@ import org.pac4j.core.util.InitializableObject;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> extends InitializableObject 
+public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> extends InitializableObject
         implements AuthorizationGenerator<U> {
 
     private ProfileService<U> profileService;
@@ -67,7 +67,7 @@ public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> exten
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "profileService", profileService, 
+        return CommonHelper.toNiceString(this.getClass(), "profileService", profileService,
             "failIfLinkedUserNotFound", failIfLinkedUserNotFound);
     }
 }

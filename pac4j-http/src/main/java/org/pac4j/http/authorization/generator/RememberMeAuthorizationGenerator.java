@@ -53,7 +53,7 @@ public class RememberMeAuthorizationGenerator<U extends CommonProfile> implement
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "rememberMeParameterName", rememberMeParameterName,
+        return CommonHelper.toNiceString(this.getClass(), "rememberMeParameterName", rememberMeParameterName,
             "rememberMeValue", rememberMeValue);
     }
 }

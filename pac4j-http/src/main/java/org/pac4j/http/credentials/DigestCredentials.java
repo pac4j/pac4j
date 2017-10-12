@@ -139,7 +139,7 @@ public class DigestCredentials extends TokenCredentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
+        return CommonHelper.toNiceString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
                 "clientName", getClientName());
     }
 }

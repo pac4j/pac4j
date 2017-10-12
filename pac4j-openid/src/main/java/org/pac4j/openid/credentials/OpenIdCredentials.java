@@ -8,30 +8,30 @@ import org.pac4j.core.util.CommonHelper;
 /**
  * This class represents an OpenID credentials with the discovery information, the list of parameters returned by the provider and the
  * client type.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public class OpenIdCredentials extends Credentials {
-    
+
     private static final long serialVersionUID = -5934736541999523245L;
-    
+
     private ParameterList parameterList;
-    
+
     private DiscoveryInformation discoveryInformation;
-    
+
     public OpenIdCredentials(final DiscoveryInformation discoveryInformation, final ParameterList parameterList,
                              final String clientName) {
         this.discoveryInformation = discoveryInformation;
         this.parameterList = parameterList;
         setClientName(clientName);
-        
+
     }
-    
+
     public DiscoveryInformation getDiscoveryInformation() {
         return this.discoveryInformation;
     }
-    
+
     public ParameterList getParameterList() {
         return this.parameterList;
     }
@@ -59,7 +59,7 @@ public class OpenIdCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "discoveryInformation", this.discoveryInformation,
+        return CommonHelper.toNiceString(this.getClass(), "discoveryInformation", this.discoveryInformation,
                                      "parameterList", this.parameterList, "clientName", getClientName());
     }
 }

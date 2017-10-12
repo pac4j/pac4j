@@ -101,6 +101,6 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "keys", "[protected]", "algorithm", algorithm);
+        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm);
     }
 }

@@ -20,7 +20,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
@@ -40,6 +39,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -81,7 +82,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotBlank("realmName", this.realmName);
+        assertNotBlank("realmName", this.realmName);
 
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
 
@@ -264,12 +265,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     public void addSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
-        CommonHelper.assertNotNull("signatureConfiguration", signatureConfiguration);
+        assertNotNull("signatureConfiguration", signatureConfiguration);
         signatureConfigurations.add(signatureConfiguration);
     }
 
     public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
-        CommonHelper.assertNotNull("signatureConfigurations", signatureConfigurations);
+        assertNotNull("signatureConfigurations", signatureConfigurations);
         this.signatureConfigurations = signatureConfigurations;
     }
 
@@ -282,12 +283,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     public void addEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
-        CommonHelper.assertNotNull("encryptionConfiguration", encryptionConfiguration);
+        assertNotNull("encryptionConfiguration", encryptionConfiguration);
         encryptionConfigurations.add(encryptionConfiguration);
     }
 
     public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
-        CommonHelper.assertNotNull("encryptionConfigurations", encryptionConfigurations);
+        assertNotNull("encryptionConfigurations", encryptionConfigurations);
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
@@ -301,7 +302,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations,
+        return toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
             "encryptionConfigurations", encryptionConfigurations, "realmName", this.realmName);
     }
 }

@@ -108,7 +108,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientName", this.clientName,
+        return CommonHelper.toNiceString(this.getClass(), "clientName", this.clientName,
             "alternateIpHeaders", Arrays.asList(this.alternateIpHeaders));
     }
 }

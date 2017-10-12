@@ -23,6 +23,6 @@ public abstract class OAuthCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientName", getClientName());
+        return CommonHelper.toNiceString(this.getClass(), "clientName", getClientName());
     }
 }
