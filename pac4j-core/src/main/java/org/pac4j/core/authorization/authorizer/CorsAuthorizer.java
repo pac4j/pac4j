@@ -109,7 +109,7 @@ public class CorsAuthorizer implements Authorizer<CommonProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "allowOrigin", allowOrigin, "exposeHeaders", exposeHeaders, "maxAge", maxAge,
+        return CommonHelper.toNiceString(this.getClass(), "allowOrigin", allowOrigin, "exposeHeaders", exposeHeaders, "maxAge", maxAge,
                 "allowCredentials", allowCredentials, "allowMethods", allowMethods, "allowHeaders", allowHeaders);
     }
 }

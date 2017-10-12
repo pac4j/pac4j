@@ -16,7 +16,6 @@ public interface SecurityGrantedAccessAdapter<R, C extends WebContext> {
      * @param context the web context
      * @param parameters additional parameters
      * @return an adapted result
-     * @throws Throwable any exception / error
      */
-    R adapt(C context, Object... parameters) throws Throwable;
+    R adapt(C context, Object... parameters);
 }

@@ -75,7 +75,7 @@ public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> 
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "headerName", this.headerName,
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "headerName", this.headerName,
                 "prefixHeader", this.prefixHeader, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }

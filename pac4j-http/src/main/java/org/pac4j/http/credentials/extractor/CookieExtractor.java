@@ -38,7 +38,7 @@ public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "cookieName", this.cookieName,
+        return CommonHelper.toNiceString(this.getClass(), "cookieName", this.cookieName,
                 "clientName", this.clientName);
     }
 }

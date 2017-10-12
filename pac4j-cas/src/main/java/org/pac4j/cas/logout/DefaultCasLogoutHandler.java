@@ -150,6 +150,6 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "store", store, "destroySession", destroySession);
+        return CommonHelper.toNiceString(this.getClass(), "store", store, "destroySession", destroySession);
     }
 }

@@ -57,6 +57,6 @@ public class HeaderMatcher implements Matcher {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "headerName", this.headerName, "expectedValue", this.expectedValue);
+        return CommonHelper.toNiceString(this.getClass(), "headerName", this.headerName, "expectedValue", this.expectedValue);
     }
 }

@@ -99,6 +99,6 @@ public class RedirectAction {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "type", type, "location", location, "content", content);
+        return CommonHelper.toNiceString(this.getClass(), "type", type, "location", location, "content", content);
     }
 }

@@ -87,6 +87,6 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "size", size, "timeout", timeout, "timeUnit", timeUnit);
+        return CommonHelper.toNiceString(this.getClass(), "size", size, "timeout", timeout, "timeUnit", timeUnit);
     }
 }

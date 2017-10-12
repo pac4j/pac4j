@@ -54,7 +54,7 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "parameterName", parameterName, "clientName", clientName,
+        return CommonHelper.toNiceString(this.getClass(), "parameterName", parameterName, "clientName", clientName,
                 "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
     }
 }

@@ -33,7 +33,7 @@ public class KerberosCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "token", this.kerberosTicket, "clientName", getClientName());
+        return CommonHelper.toNiceString(this.getClass(), "token", this.kerberosTicket, "clientName", getClientName());
     }
 
     @Override

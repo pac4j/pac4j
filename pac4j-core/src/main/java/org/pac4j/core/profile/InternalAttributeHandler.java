@@ -127,6 +127,6 @@ public class InternalAttributeHandler {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "serializationHelper", serializationHelper, "stringify", stringify);
+        return CommonHelper.toNiceString(this.getClass(), "serializationHelper", serializationHelper, "stringify", stringify);
     }
 }

@@ -108,19 +108,19 @@ public final class CommonHelperTests {
     }
 
     @Test
-    public void testToStringNoParameter() {
-        assertEquals("#" + CLASS_NAME + "# |", CommonHelper.toString(CLAZZ));
+    public void testToNiceStringNoParameter() {
+        assertEquals("#" + CLASS_NAME + "# |", CommonHelper.toNiceString(CLAZZ));
     }
 
     @Test
-    public void testToStringWithParameter() {
-        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " |", CommonHelper.toString(CLAZZ, NAME, VALUE));
+    public void testToNiceStringWithParameter() {
+        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " |", CommonHelper.toNiceString(CLAZZ, NAME, VALUE));
     }
 
     @Test
-    public void testToStringWithParameters() {
+    public void testToNiceStringWithParameters() {
         assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " | " + NAME + ": " + VALUE + " |",
-                CommonHelper.toString(CLAZZ, NAME, VALUE, NAME, VALUE));
+                CommonHelper.toNiceString(CLAZZ, NAME, VALUE, NAME, VALUE));
     }
 
     @Test

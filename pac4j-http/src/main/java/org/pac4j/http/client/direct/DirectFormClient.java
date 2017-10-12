@@ -66,7 +66,7 @@ public class DirectFormClient extends DirectClient<UsernamePasswordCredentials, 
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
                 "passwordParameter", this.passwordParameter, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }

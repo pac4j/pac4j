@@ -57,6 +57,6 @@ public class DefaultCallbackClientFinder implements ClientFinder {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "defaultClient", defaultClient);
+        return CommonHelper.toNiceString(this.getClass(), "defaultClient", defaultClient);
     }
 }

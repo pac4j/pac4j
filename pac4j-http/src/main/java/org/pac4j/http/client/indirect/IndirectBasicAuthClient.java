@@ -10,9 +10,10 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth. It was previously named: <code>BasicAuthClient</code>.</p>
@@ -45,7 +46,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     protected void clientInit() {
-        CommonHelper.assertNotBlank("realmName", this.realmName);
+        assertNotBlank("realmName", this.realmName);
 
         defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
@@ -53,8 +54,8 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
-        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        assertNotNull("authenticator", getAuthenticator());
 
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
@@ -88,7 +89,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
             "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),

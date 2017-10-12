@@ -95,6 +95,6 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "extractor", extractor, "clientName", clientName);
+        return CommonHelper.toNiceString(this.getClass(), "extractor", extractor, "clientName", clientName);
     }
 }

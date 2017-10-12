@@ -365,7 +365,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
+        return CommonHelper.toNiceString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
                 this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered,
                 "clientName", this.clientName, "linkedId", this.linkedId);
     }

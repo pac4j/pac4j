@@ -110,6 +110,6 @@ public class HttpAction extends TechnicalException {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(HttpAction.class, "code", this.code);
+        return CommonHelper.toNiceString(HttpAction.class, "code", this.code);
     }
 }

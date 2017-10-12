@@ -9,7 +9,8 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.util.CommonHelper;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP basic auth.</p>
@@ -36,7 +37,7 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
 
     @Override
     protected void clientInit() {
-        CommonHelper.assertNotBlank("realmName", this.realmName);
+        assertNotBlank("realmName", this.realmName);
 
         defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
     }
@@ -59,7 +60,7 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "realmName", this.realmName);
     }

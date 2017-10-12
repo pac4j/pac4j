@@ -249,7 +249,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator,
+        return CommonHelper.toNiceString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator,
                 "usersDn", usersDn, "idAttribute", getIdAttribute(), "attributes", getAttributes(),
                 "profileDefinition", getProfileDefinition());
     }

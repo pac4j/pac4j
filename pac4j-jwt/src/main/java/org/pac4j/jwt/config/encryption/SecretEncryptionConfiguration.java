@@ -122,6 +122,6 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "secret", "[protected]", "algorithm", algorithm, "method", method);
+        return CommonHelper.toNiceString(this.getClass(), "secret", "[protected]", "algorithm", algorithm, "method", method);
     }
 }
