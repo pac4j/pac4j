@@ -14,14 +14,14 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- * Tests {@link DefaultMatchingChecker}.
+ * Tests {@link RequireAllMatchersChecker}.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class DefaultMatchingCheckerTests implements TestsConstants {
+public final class RequireAllMatchersCheckerTests implements TestsConstants {
 
-    private final static MatchingChecker checker = new DefaultMatchingChecker();
+    private final static MatchingChecker checker = new RequireAllMatchersChecker();
 
     private static class NullContextMatcher implements Matcher {
 
