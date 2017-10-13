@@ -4,6 +4,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Locale;
 
 /**
@@ -109,5 +110,9 @@ public class CommonProfile extends UserProfile {
      */
     public String getLocation() {
         return (String) getAttribute(CommonProfileDefinition.LOCATION);
+    }
+
+    public Principal asPrincipal() {
+        return new Pac4JPrincipal(this);
     }
 }
