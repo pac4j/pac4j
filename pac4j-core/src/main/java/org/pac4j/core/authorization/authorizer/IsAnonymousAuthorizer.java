@@ -29,9 +29,4 @@ public class IsAnonymousAuthorizer<U extends CommonProfile> extends AbstractChec
     public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile == null || profile instanceof AnonymousProfile;
     }
-
-    @Override
-    protected String getErrorMessage() {
-        return "user should be anonymous";
-    }
 }

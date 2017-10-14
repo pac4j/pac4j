@@ -166,7 +166,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, prof) -> { throw HttpAction.status("bad request", 400, context); } );
+        config.addAuthorizer(NAME, (context, prof) -> { throw HttpAction.status(400, context); } );
         call();
         assertEquals(400, context.getResponseStatus());
         assertEquals(0, nbCall);
@@ -195,7 +195,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testDirectClientThrowsRequiresHttpAction() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
-        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status("bad request", 400, context); },
+        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status(400, context); },
             profile);
         config.setClients(new Clients(CALLBACK_URL, directClient));
         clients = NAME;

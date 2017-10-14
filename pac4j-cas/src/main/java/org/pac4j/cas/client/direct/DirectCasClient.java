@@ -73,7 +73,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                         callbackUrl, configuration.isRenew(), false);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
-                throw HttpAction.redirect("no ticket -> force redirect to login page", context, redirectionUrl);
+                throw HttpAction.redirect(context, redirectionUrl);
             }
 
             // clean url from ticket parameter

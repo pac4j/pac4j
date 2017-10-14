@@ -136,7 +136,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             redirectUrl = requestedUrl;
         }
         logger.debug("redirectUrl: {}", redirectUrl);
-        return HttpAction.redirect("redirect", context, redirectUrl);
+        return HttpAction.redirect(context, redirectUrl);
     }
 
     public ClientFinder getClientFinder() {

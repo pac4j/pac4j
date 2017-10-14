@@ -89,14 +89,14 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
-            throw HttpAction.unauthorized("AJAX request -> 401", context);
+            throw HttpAction.unauthorized(context);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw HttpAction.unauthorized("authentication already tried -> forbidden", context);
+            throw HttpAction.unauthorized(context);
         }
 
         return redirectActionBuilder.redirect(context);
