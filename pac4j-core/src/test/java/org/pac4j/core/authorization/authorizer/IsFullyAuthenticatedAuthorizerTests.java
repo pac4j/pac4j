@@ -26,7 +26,7 @@ public final class IsFullyAuthenticatedAuthorizerTests extends IsAuthenticatedAu
         profiles.add(new AnonymousProfile());
         ((IsFullyAuthenticatedAuthorizer) authorizer).setRedirectionUrl(PAC4J_URL);
         TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
-            "user should be fully authenticated");
+            "Perfoming a 302 HTTP action");
     }
 
     @Test

@@ -199,7 +199,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles,
                                    final String authorizers) {
-        return HttpAction.forbidden("forbidden", context);
+        return HttpAction.forbidden(context);
     }
 
     /**
@@ -245,7 +245,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @return an unauthorized error
      */
     protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
-        return HttpAction.unauthorized("unauthorized", context);
+        return HttpAction.unauthorized(context);
     }
 
     public ClientFinder getClientFinder() {

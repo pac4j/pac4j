@@ -51,12 +51,12 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("kerberos credentials : {}", credentials);
             if (credentials == null) {
-                throw HttpAction.unauthorized("Kerberos Header not found", context);
+                throw HttpAction.unauthorized(context);
             }
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw HttpAction.unauthorized("Kerberos auth failed", context);
+            throw HttpAction.unauthorized(context);
         }
 
         return credentials;

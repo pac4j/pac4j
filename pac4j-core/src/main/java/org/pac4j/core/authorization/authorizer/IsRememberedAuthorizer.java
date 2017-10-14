@@ -29,9 +29,4 @@ public class IsRememberedAuthorizer<U extends CommonProfile> extends AbstractChe
     public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile != null && !(profile instanceof AnonymousProfile) && profile.isRemembered();
     }
-
-    @Override
-    protected String getErrorMessage() {
-        return "user should be remembered";
-    }
 }

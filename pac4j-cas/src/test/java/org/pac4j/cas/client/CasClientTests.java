@@ -165,7 +165,7 @@ public final class CasClientTests implements TestsConstants {
             .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod(HTTP_METHOD.POST.name());
         TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class,
-            "back logout request: no credential returned");
+            "Perfoming a 204 HTTP action");
         assertEquals(204, context.getResponseStatus());
     }
 
@@ -205,7 +205,6 @@ public final class CasClientTests implements TestsConstants {
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HTTP_METHOD.GET.name());
         final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
         assertEquals(TEMP_REDIRECT, action.getCode());
-        assertEquals("Force redirect to CAS server for front channel logout", action.getMessage());
     }
 
     @Test

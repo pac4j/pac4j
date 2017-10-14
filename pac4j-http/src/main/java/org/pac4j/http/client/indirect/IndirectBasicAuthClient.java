@@ -67,13 +67,13 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
             logger.debug("credentials : {}", credentials);
 
             if (credentials == null) {
-                throw HttpAction.unauthorized("Requires authentication", context);
+                throw HttpAction.unauthorized(context);
             }
 
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw HttpAction.unauthorized("Requires authentication", context);
+            throw HttpAction.unauthorized(context);
         }
 
         return credentials;

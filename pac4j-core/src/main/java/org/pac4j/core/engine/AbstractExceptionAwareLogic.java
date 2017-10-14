@@ -42,7 +42,7 @@ public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> exten
             return httpActionAdapter.adapt(action.getCode(), context);
         } else {
             if (CommonHelper.isNotBlank(errorUrl)) {
-                final HttpAction action = HttpAction.redirect("handle exception by redirecting to the error URL", context, errorUrl);
+                final HttpAction action = HttpAction.redirect(context, errorUrl);
                 return httpActionAdapter.adapt(action.getCode(), context);
             } else {
                 throw e;

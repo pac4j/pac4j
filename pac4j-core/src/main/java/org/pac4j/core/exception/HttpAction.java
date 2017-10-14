@@ -16,87 +16,81 @@ public class HttpAction extends TechnicalException {
 
     protected int code;
 
-    private HttpAction(final String message, final int code) {
-        super(message);
+    private HttpAction(final int code) {
+        super("Perfoming a " + code + " HTTP action");
         this.code = code;
     }
 
     /**
-     * Build a response with message and status.
+     * Build a response with status.
      *
-     * @param message message
      * @param status the HTTP status
      * @param context context
      * @return an HTTP response
      */
-    public static HttpAction status(final String message, final int status, final WebContext context) {
+    public static HttpAction status(final int status, final WebContext context) {
         context.setResponseStatus(status);
-        return new HttpAction(message, status);
+        return new HttpAction(status);
     }
 
     /**
      * Build a redirection.
      *
-     * @param message message
      * @param context context
      * @param url url
      * @return an HTTP redirection
      */
-    public static HttpAction redirect(final String message, final WebContext context, final String url) {
+    public static HttpAction redirect(final WebContext context, final String url) {
         context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
         context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
-        return new HttpAction(message, HttpConstants.TEMP_REDIRECT);
+        return new HttpAction(HttpConstants.TEMP_REDIRECT);
     }
 
     /**
      * Build an HTTP Ok.
      *
-     * @param message message
      * @param context context
      * @param content content
      * @return an HTTP ok
      */
-    public static HttpAction ok(final String message, final WebContext context, final String content) {
+    public static HttpAction ok(final WebContext context, final String content) {
         context.setResponseStatus(HttpConstants.OK);
         context.writeResponseContent(content);
-        return new HttpAction(message, HttpConstants.OK);
+        return new HttpAction(HttpConstants.OK);
     }
 
     /**
      * Build an HTTP No content.
      *
-     * @param message message
      * @param context context
      * @return an HTTP No content
      */
-    public static HttpAction noContent(final String message, final WebContext context) {
+    public static HttpAction noContent(final WebContext context) {
         context.setResponseStatus(HttpConstants.NO_CONTENT);
         context.writeResponseContent("");
-        return new HttpAction(message, HttpConstants.NO_CONTENT);
+        return new HttpAction(HttpConstants.NO_CONTENT);
     }
 
     /**
      * Build a basic auth popup credentials.
      *
-     * @param message message
      * @param context context
      * @return a basic auth popup credentials
      */
-    public static HttpAction unauthorized(final String message, final WebContext context) {
+    public static HttpAction unauthorized(final WebContext context) {
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-        return new HttpAction(message, HttpConstants.UNAUTHORIZED);
+        return new HttpAction(HttpConstants.UNAUTHORIZED);
     }
 
     /**
      * Build a forbidden response.
      *
-     * @param message message
      * @param context context
      * @return a forbidden response
      */
-    public static HttpAction forbidden(final String message, final WebContext context) {
+    public static HttpAction forbidden(final WebContext context) {
         context.setResponseStatus(HttpConstants.FORBIDDEN);
-        return new HttpAction(message, HttpConstants.FORBIDDEN);
+        return new HttpAction(HttpConstants.FORBIDDEN);
     }
 
     /**

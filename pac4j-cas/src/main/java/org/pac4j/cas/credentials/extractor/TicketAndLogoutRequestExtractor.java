@@ -62,9 +62,8 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             if (CommonUtils.isNotBlank(ticket) && logoutHandler != null) {
                 logoutHandler.destroySessionBack(context, ticket);
             }
-            final String message = "back logout request: no credential returned";
-            logger.debug(message);
-            throw HttpAction.noContent(message, context);
+            logger.debug("back logout request: no credential returned");
+            throw HttpAction.noContent(context);
 
         } else if (isFrontLogoutRequest(context)) {
             final String logoutMessage = uncompressLogoutMessage(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
@@ -141,7 +140,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             buffer.append(CommonUtils.urlEncode(relayStateValue));
             final String redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
-            throw HttpAction.redirect("Force redirect to CAS server for front channel logout", context, redirectUrl);
+            throw HttpAction.redirect(context, redirectUrl);
         }
     }
 }
