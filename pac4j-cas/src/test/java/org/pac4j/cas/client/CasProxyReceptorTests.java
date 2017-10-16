@@ -41,7 +41,6 @@ public final class CasProxyReceptorTests implements TestsConstants {
         } catch (final HttpAction e) {
             assertEquals(200, context.getResponseStatus());
             assertEquals("", context.getResponseContent());
-            assertEquals("Missing proxyGrantingTicket or proxyGrantingTicketIou", e.getMessage());
         }
     }
 
@@ -52,7 +51,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> client.getCredentials(context
                 .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)), HttpAction.class,
-                "Missing proxyGrantingTicket or proxyGrantingTicketIou");
+                "Perfoming a 200 HTTP action");
         assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
     }
@@ -65,7 +64,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
         TestsHelper.expectException(() -> client.getCredentials(context), HttpAction.class,
-            "No credential for CAS proxy receptor -> returns ok");
+            "Perfoming a 200 HTTP action");
         assertEquals(200, context.getResponseStatus());
         assertTrue(context.getResponseContent().length() > 0);
     }

@@ -2,7 +2,6 @@ package org.pac4j.cas.client;
 
 import java.util.concurrent.TimeUnit;
 
-import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
@@ -10,9 +9,11 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
-import org.pac4j.core.util.CommonHelper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the CAS proxy receptor.</p>
@@ -38,7 +39,7 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
 
     @Override
     protected void clientInit() {
-        CommonHelper.assertNotNull("store", this.store);
+        assertNotNull("store", this.store);
 
         defaultRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         defaultCredentialsExtractor(ctx -> {
@@ -48,9 +49,9 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
             final String proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
-            if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-                final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
-                throw HttpAction.ok(message, ctx, "");
+            if (isBlank(proxyGrantingTicket) || isBlank(proxyGrantingTicketIou)) {
+                logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
+                throw HttpAction.ok(ctx, "");
             }
 
             this.store.set(proxyGrantingTicketIou, proxyGrantingTicket);
@@ -58,9 +59,8 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
             ctx.writeResponseContent("<?xml version=\"1.0\"?>");
             ctx.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
 
-            final String message = "No credential for CAS proxy receptor -> returns ok";
-            logger.debug(message);
-            throw HttpAction.ok(message, ctx, "");
+            logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
+            throw HttpAction.ok(ctx, "");
         });
         defaultAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }
@@ -75,6 +75,6 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "store", this.store);
+        return toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "store", this.store);
     }
 }

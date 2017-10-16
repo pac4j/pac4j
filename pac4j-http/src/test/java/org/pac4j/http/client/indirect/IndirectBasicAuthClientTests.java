@@ -135,7 +135,6 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",
                     context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires authentication", e.getMessage());
         }
     }
 

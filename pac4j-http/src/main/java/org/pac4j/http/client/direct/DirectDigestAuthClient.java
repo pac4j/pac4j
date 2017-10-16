@@ -56,7 +56,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
             String nonce = calculateNonce();
             context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
                 + nonce + "\"");
-            throw HttpAction.unauthorized("Digest required", context);
+            throw HttpAction.unauthorized(context);
         }
         return credentials;
     }
