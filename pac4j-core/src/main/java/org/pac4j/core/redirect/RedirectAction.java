@@ -79,9 +79,9 @@ public class RedirectAction {
      */
     public HttpAction perform(final WebContext context) {
         if (type == RedirectAction.RedirectType.REDIRECT) {
-            return HttpAction.redirect("redirection via 302", context, location);
+            return HttpAction.redirect(context, location);
         } else {
-            return HttpAction.ok("redirection via 200", context, content);
+            return HttpAction.ok(context, content);
         }
     }
 

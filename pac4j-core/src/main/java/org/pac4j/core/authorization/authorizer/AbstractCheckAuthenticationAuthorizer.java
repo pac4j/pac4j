@@ -23,24 +23,17 @@ public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProf
     @Override
     protected boolean handleError(final WebContext context) {
         if (this.redirectionUrl != null) {
-            throw HttpAction.redirect(getErrorMessage(), context, this.redirectionUrl);
+            throw HttpAction.redirect(context, this.redirectionUrl);
         } else {
             return false;
         }
     }
 
-    /**
-     * Return the error message.
-     *
-     * @return the error message.
-     */
-    protected abstract String getErrorMessage();
-
     public String getRedirectionUrl() {
         return redirectionUrl;
     }
 
-    public void setRedirectionUrl(String redirectionUrl) {
+    public void setRedirectionUrl(final String redirectionUrl) {
         this.redirectionUrl = redirectionUrl;
     }
 }

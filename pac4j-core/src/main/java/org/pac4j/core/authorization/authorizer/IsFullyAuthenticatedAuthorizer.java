@@ -29,9 +29,4 @@ public class IsFullyAuthenticatedAuthorizer<U extends CommonProfile> extends Abs
     public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile != null && !(profile instanceof AnonymousProfile) && !profile.isRemembered();
     }
-
-    @Override
-    protected String getErrorMessage() {
-        return "user should be fully authenticated";
-    }
 }

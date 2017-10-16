@@ -75,7 +75,7 @@ public final class FormClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() ->
                 formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)),
-                HttpAction.class, "Username and password cannot be blank -> return to the form with error");
+                HttpAction.class, "Perfoming a 302 HTTP action");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
                 + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
@@ -88,7 +88,7 @@ public final class FormClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() ->
                 formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
-                HttpAction.class, "Username and password cannot be blank -> return to the form with error");
+                HttpAction.class, "Perfoming a 302 HTTP action");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
                + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
@@ -100,7 +100,7 @@ public final class FormClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
                 .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
-                HttpAction.class, "Credentials validation fails -> return to the form with error");
+                HttpAction.class, "Perfoming a 302 HTTP action");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
                 + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
