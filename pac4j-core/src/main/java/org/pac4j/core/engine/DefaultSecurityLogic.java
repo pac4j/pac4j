@@ -12,6 +12,7 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStoreStrategy;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
@@ -50,7 +51,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
-    private boolean saveProfileInSession;
+    private SessionStoreStrategy webServicesSessionStoreStrategy = new SessionStoreStrategy(false, false);
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -161,8 +162,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     /**
-     * Load the profiles from the web context if no clients are defined or if the first client is an indirect one
-     * or the {@link AnonymousClient}.
+     * Whether we need to load the profiles from the web session, depending on the defined clients
+     * and the {@link #webServicesSessionStoreStrategy}.
      *
      * @param context the web context
      * @param currentClients the current clients
@@ -170,11 +171,11 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected boolean loadProfilesFromSession(final C context, final List<Client> currentClients) {
         return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient ||
-            currentClients.get(0) instanceof AnonymousClient;
+            currentClients.get(0) instanceof AnonymousClient || webServicesSessionStoreStrategy.mustReadFromSession();
     }
 
     /**
-     * Whether we need to save the profile in session after the authentication of direct client(s). <code>false</code>
+     * Whether we need to save the profile in session after the authentication of direct clients. <code>false</code>
      * by default as direct clients profiles are not meant to be saved in the web session.
      *
      * @param context the web context
@@ -185,7 +186,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient,
                                            final CommonProfile profile) {
-        return this.saveProfileInSession;
+        return this.webServicesSessionStoreStrategy.mustSaveIntoSession();
     }
 
     /**
@@ -272,18 +273,20 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.matchingChecker = matchingChecker;
     }
 
-    public boolean isSaveProfileInSession() {
-        return saveProfileInSession;
+    public SessionStoreStrategy getWebServicesSessionStoreStrategy() {
+        return this.webServicesSessionStoreStrategy;
     }
 
-    public void setSaveProfileInSession(final boolean saveProfileInSession) {
-        this.saveProfileInSession = saveProfileInSession;
+    public void setWebServicesSessionStoreStrategy(final SessionStoreStrategy webServicesSessionStoreStrategy) {
+        assertNotNull("webServicesSessionStoreStrategy", webServicesSessionStoreStrategy);
+        this.webServicesSessionStoreStrategy = webServicesSessionStoreStrategy;
     }
 
     @Override
     public String toString() {
-        return toNiceString(this.getClass(), "clientFinder", clientFinder, "authorizationChecker", authorizationChecker,
-            "matchingChecker", matchingChecker, "saveProfileInSession", saveProfileInSession, "errorUrl", getErrorUrl());
+        return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
+            "matchingChecker", this.matchingChecker, "webServicesSessionStoreStrategy", this.webServicesSessionStoreStrategy,
+            "errorUrl", getErrorUrl());
     }
 }
 
