@@ -37,7 +37,7 @@ public final class FormClientTests implements TestsConstants {
         final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         formClient.setCallbackUrl(CALLBACK_URL);
         formClient.setProfileCreator(null);
-        TestsHelper.expectException(() -> formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, CLIENT_NAME),
+        TestsHelper.expectException(() -> formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
@@ -128,8 +128,7 @@ public final class FormClientTests implements TestsConstants {
             return profile;
         });
         final MockWebContext context = MockWebContext.create();
-        final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
-                formClient.getName()), context);
+        final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME), context);
         assertEquals(USERNAME, profile.getId());
         assertEquals(CommonProfile.class.getName() + CommonProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));

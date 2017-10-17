@@ -30,7 +30,7 @@ public final class HeaderClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final HeaderClient client = new HeaderClient(NAME, new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
-        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME),
+        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 

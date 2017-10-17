@@ -32,7 +32,7 @@ public final class IpClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
-        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME),
+        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 

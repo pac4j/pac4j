@@ -37,7 +37,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
     @Test
     public void testProfileOk() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create());
         final RestProfile profile = (RestProfile) credentials.getUserProfile();
         assertNotNull(profile);
@@ -49,7 +49,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
     @Test
     public void testNotFound() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create());
         final RestProfile profile = (RestProfile) credentials.getUserProfile();
         assertNull(profile);
@@ -58,7 +58,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
     @Test
     public void testParsingError() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create()), TechnicalException.class,
             "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting ('true', 'false' or 'null')\n"
             + " at [Source: bad; line: 1, column: 7]");
@@ -67,7 +67,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
     @Test
     public void testHttps() {
         final RestAuthenticator authenticator = new RestAuthenticator("https://www.google.com");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create());
     }
 }

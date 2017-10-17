@@ -23,7 +23,7 @@ public final class HeaderExtractorTests implements TestsConstants {
     private final static String GOOD_PREFIX = "goodPrefix ";
     private final static String BAD_PREFIX = "badPrefix ";
 
-    private final static HeaderExtractor extractor = new HeaderExtractor(GOOD_HEADER, GOOD_PREFIX, CLIENT_NAME);
+    private final static HeaderExtractor extractor = new HeaderExtractor(GOOD_HEADER, GOOD_PREFIX);
 
     @Test
     public void testRetrieveHeaderOk() {

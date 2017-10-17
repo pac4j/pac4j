@@ -16,12 +16,9 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String prefixHeader;
 
-    private final String clientName;
-
-    public HeaderExtractor(final String headerName, final String prefixHeader, final String clientName) {
+    public HeaderExtractor(final String headerName, final String prefixHeader) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
-        this.clientName = clientName;
     }
 
     @Override
@@ -36,6 +33,6 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         }
 
         final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
-        return new TokenCredentials(headerWithoutPrefix, clientName);
+        return new TokenCredentials(headerWithoutPrefix);
     }
 }

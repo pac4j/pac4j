@@ -80,7 +80,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     @Test(expected = BadCredentialsException.class)
     public void authentFailed() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null);
     }
 
@@ -89,7 +89,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final LdapProfileService ldapProfileService =
             new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -105,7 +105,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final LdapProfileService ldapProfileService =
             new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -122,7 +122,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + ","
             + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD);
         ldapProfileService.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -151,7 +151,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         // create
         ldapProfileService.create(profile, LDAP_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS);
         ldapProfileService.validate(credentials, null);
         final CommonProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
@@ -182,7 +182,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(LDAP_USER2, result2.get(LdapServer.SN));
         // check credentials
-        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2);
         ldapProfileService.validate(credentials2, null);
         final CommonProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);

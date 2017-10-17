@@ -113,7 +113,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
      * @return the corresponding user profile
      */
     public CommonProfile validateToken(final String token) {
-        final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
+        final TokenCredentials credentials = new TokenCredentials(token);
         try {
             validate(credentials, null);
         } catch (final HttpAction e) {

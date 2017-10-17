@@ -9,7 +9,7 @@ import org.pac4j.core.credentials.Credentials;
 
 /**
  * Credentials containing the nameId of the SAML subject and all of its attributes.
- * 
+ *
  * @author Michael Remond
  * @since 1.5.0
  */
@@ -22,28 +22,27 @@ public class SAML2Credentials extends Credentials {
     private String sessionIndex;
 
     private List<Attribute> attributes;
-    
+
     private Conditions conditions;
-    
+
     private String issuerId;
-    
+
     private List<String> authnContexts;
 
     public SAML2Credentials(final NameID nameId, final String issuerId, final List<Attribute> attributes, final Conditions conditions,
-                            final String clientName, final String sessionIndex, final List<String> authnContexts) {
+                            final String sessionIndex, final List<String> authnContexts) {
         this.nameId = nameId;
         this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;
         this.attributes = attributes;
         this.conditions = conditions;
         this.authnContexts = authnContexts;
-        setClientName(clientName);
     }
 
     public final NameID getNameId() {
         return this.nameId;
     }
-    
+
     public final String getSessionIndex() {
         return this.sessionIndex;
     }
@@ -51,7 +50,7 @@ public class SAML2Credentials extends Credentials {
     public final List<Attribute> getAttributes() {
         return this.attributes;
     }
-    
+
     public Conditions getConditions() {
         return this.conditions;
     }

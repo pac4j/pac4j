@@ -15,12 +15,9 @@ public class FormExtractor implements CredentialsExtractor<UsernamePasswordCrede
 
     private final String passwordParameter;
 
-    private final String clientName;
-
-    public FormExtractor(final String usernameParameter, final String passwordParameter, final String clientName) {
+    public FormExtractor(final String usernameParameter, final String passwordParameter) {
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
-        this.clientName = clientName;
     }
 
     @Override
@@ -31,7 +28,7 @@ public class FormExtractor implements CredentialsExtractor<UsernamePasswordCrede
             return null;
         }
 
-        return new UsernamePasswordCredentials(username, password, clientName);
+        return new UsernamePasswordCredentials(username, password);
     }
 
     public String getUsernameParameter() {

@@ -32,7 +32,7 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
             final String token = OAuthEncoder.decode(tokenParameter);
             final String verifier = OAuthEncoder.decode(verifierParameter);
             logger.debug("token: {} / verifier: {}", token, verifier);
-            return new OAuth10Credentials(tokenSession, token, verifier, client.getName());
+            return new OAuth10Credentials(tokenSession, token, verifier);
         } else {
             final String message = "No credential found";
             throw new OAuthCredentialsException(message);

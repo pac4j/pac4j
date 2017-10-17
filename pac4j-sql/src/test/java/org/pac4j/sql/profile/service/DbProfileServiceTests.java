@@ -53,7 +53,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         final DbProfileService dbProfileService = new DbProfileService(ds, attribute);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         dbProfileService.validate(credentials, null);
 
         return credentials;
@@ -112,7 +112,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         // create
         dbProfileService.create(profile, DB_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
         dbProfileService.validate(credentials, null);
         final CommonProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);

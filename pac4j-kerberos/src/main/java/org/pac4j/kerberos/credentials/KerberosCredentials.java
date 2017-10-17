@@ -18,9 +18,8 @@ public class KerberosCredentials extends Credentials {
      */
     private static final long serialVersionUID = -4264156105410684508L;
 
-    public KerberosCredentials(byte[] kerberosTicket, String clientName) {
+    public KerberosCredentials(byte[] kerberosTicket) {
         this.kerberosTicket = kerberosTicket.clone();
-        this.setClientName(clientName);
     }
 
     public byte[] getKerberosTicket() {
@@ -33,7 +32,7 @@ public class KerberosCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "token", this.kerberosTicket, "clientName", getClientName());
+        return CommonHelper.toNiceString(this.getClass(), "token", this.kerberosTicket);
     }
 
     @Override

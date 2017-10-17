@@ -42,7 +42,7 @@ public class ParameterClient extends DirectClient<TokenCredentials, CommonProfil
     protected void clientInit() {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
 
-        defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
+        defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest));
     }
 
     public String getParameterName() {

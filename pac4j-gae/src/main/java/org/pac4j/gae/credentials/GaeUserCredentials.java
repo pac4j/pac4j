@@ -17,10 +17,6 @@ public class GaeUserCredentials extends Credentials {
 
     private User user;
 
-    public GaeUserCredentials() {
-        setClientName("GaeUserClient");
-    }
-
     public void setUser(User user) {
         this.user = user;
     }

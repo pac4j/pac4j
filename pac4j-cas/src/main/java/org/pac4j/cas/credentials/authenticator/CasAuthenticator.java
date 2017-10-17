@@ -32,12 +32,16 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     protected CasConfiguration configuration;
 
+    protected String clientName;
+
     protected CallbackUrlResolver callbackUrlResolver;
 
     protected String callbackUrl;
 
-    public CasAuthenticator(final CasConfiguration configuration, final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
+    public CasAuthenticator(final CasConfiguration configuration, final String clientName, final CallbackUrlResolver callbackUrlResolver,
+                            final String callbackUrl) {
         this.configuration = configuration;
+        this.clientName = clientName;
         this.callbackUrlResolver = callbackUrlResolver;
         this.callbackUrl = callbackUrl;
     }
@@ -45,6 +49,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
+        CommonHelper.assertNotBlank("clientName", clientName);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
         CommonHelper.assertNotNull("configuration", configuration);
 
@@ -57,7 +62,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
         final String ticket = credentials.getToken();
         try {
-            final String finalCallbackUrl = callbackUrlResolver.compute(callbackUrl, credentials.getClientName(), context);
+            final String finalCallbackUrl = callbackUrlResolver.compute(callbackUrl, clientName, context);
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);

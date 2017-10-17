@@ -39,7 +39,7 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
     protected void clientInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
+        defaultCredentialsExtractor(new BasicAuthExtractor());
     }
 
     @Override

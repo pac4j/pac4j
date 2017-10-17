@@ -33,7 +33,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testMissingProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
-        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, CLIENT_NAME),
+        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
