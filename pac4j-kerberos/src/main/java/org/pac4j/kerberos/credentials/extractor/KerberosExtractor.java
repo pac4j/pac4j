@@ -15,11 +15,6 @@ import java.util.Base64;
  * @since 2.1.0
  */
 public class KerberosExtractor implements CredentialsExtractor<KerberosCredentials> {
-    private final String clientName;
-
-    public KerberosExtractor(final String clientName) {
-        this.clientName = clientName;
-    }
 
     @Override
     public KerberosCredentials extract(final WebContext context) {
@@ -37,6 +32,6 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
         byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
         byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
 
-        return new KerberosCredentials(kerberosTicket, clientName);
+        return new KerberosCredentials(kerberosTicket);
     }
 }

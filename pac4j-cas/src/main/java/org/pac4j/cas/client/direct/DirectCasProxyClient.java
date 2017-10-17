@@ -52,8 +52,8 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
         CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY,
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
 
-        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
-        defaultAuthenticator(new CasAuthenticator(configuration, callbackUrlResolver, this.serviceUrl));
+        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
+        defaultAuthenticator(new CasAuthenticator(configuration, getName(), callbackUrlResolver, this.serviceUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 

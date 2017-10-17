@@ -49,7 +49,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
         assertNotBlank("realmName", this.realmName);
 
         defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
-        defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
+        defaultCredentialsExtractor(new BasicAuthExtractor());
     }
 
     @Override

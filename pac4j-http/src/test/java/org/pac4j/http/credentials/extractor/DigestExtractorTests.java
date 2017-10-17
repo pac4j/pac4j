@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNull;
  */
 public class DigestExtractorTests implements TestsConstants {
 
-    private final static DigestAuthExtractor digestExtractor = new DigestAuthExtractor(CLIENT_NAME);
+    private final static DigestAuthExtractor digestExtractor = new DigestAuthExtractor();
 
     @Test
     public void testRetrieveDigestHeaderComponents() {

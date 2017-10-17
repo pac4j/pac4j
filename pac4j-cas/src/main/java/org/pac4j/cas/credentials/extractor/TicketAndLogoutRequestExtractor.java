@@ -31,13 +31,9 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
 
     protected CasConfiguration configuration;
 
-    protected String clientName;
-
-    public TicketAndLogoutRequestExtractor(final CasConfiguration configuration, final String clientName) {
+    public TicketAndLogoutRequestExtractor(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
-        CommonHelper.assertNotBlank("clientName", clientName);
         this.configuration = configuration;
-        this.clientName = clientName;
     }
 
     @Override
@@ -50,7 +46,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             if (logoutHandler != null) {
                 logoutHandler.recordSession(context, ticket);
             }
-            final TokenCredentials casCredentials = new TokenCredentials(ticket, clientName);
+            final TokenCredentials casCredentials = new TokenCredentials(ticket);
             logger.debug("casCredentials: {}", casCredentials);
             return casCredentials;
 

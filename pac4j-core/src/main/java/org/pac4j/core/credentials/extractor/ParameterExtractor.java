@@ -17,22 +17,19 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
 
     private final String parameterName;
 
-    private final String clientName;
-
     private boolean supportGetRequest;
 
     private boolean supportPostRequest;
 
-    public ParameterExtractor(final String parameterName, final String clientName) {
-        this(parameterName, false, true, clientName);
+    public ParameterExtractor(final String parameterName) {
+        this(parameterName, false, true);
     }
 
     public ParameterExtractor(final String parameterName, final boolean supportGetRequest,
-                              final boolean supportPostRequest, final String clientName) {
+                              final boolean supportPostRequest) {
         this.parameterName = parameterName;
         this.supportGetRequest = supportGetRequest;
         this.supportPostRequest = supportPostRequest;
-        this.clientName = clientName;
     }
 
     @Override
@@ -49,12 +46,12 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
             return null;
         }
 
-        return new TokenCredentials(value, clientName);
+        return new TokenCredentials(value);
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "parameterName", parameterName, "clientName", clientName,
+        return CommonHelper.toNiceString(this.getClass(), "parameterName", parameterName,
                 "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
     }
 }

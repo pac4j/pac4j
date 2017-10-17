@@ -71,7 +71,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
                     + "Session expired or possible threat of cross-site request forgery");
         }
 
-        final OidcCredentials credentials = new OidcCredentials(client.getName());
+        final OidcCredentials credentials = new OidcCredentials();
         // get authorization code
         final AuthorizationCode code = successResponse.getAuthorizationCode();
         if (code != null) {

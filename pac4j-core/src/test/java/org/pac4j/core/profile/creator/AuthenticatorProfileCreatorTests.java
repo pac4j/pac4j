@@ -18,13 +18,13 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnNoProfile() {
-        assertNull(AuthenticatorProfileCreator.INSTANCE.create(new TokenCredentials(TOKEN, CLIENT_NAME), null));
+        assertNull(AuthenticatorProfileCreator.INSTANCE.create(new TokenCredentials(TOKEN), null));
     }
 
     @Test
     public void testReturnProfile() {
         final CommonProfile profile = new CommonProfile();
-        final Credentials credentials = new TokenCredentials(TOKEN, CLIENT_NAME);
+        final Credentials credentials = new TokenCredentials(TOKEN);
         credentials.setUserProfile(profile);
         final CommonProfile profile2 = AuthenticatorProfileCreator.INSTANCE.create(credentials, null);
         assertEquals(profile, profile2);

@@ -13,6 +13,7 @@ title: Release notes&#58;
 - The `CallbackUrlResolver` computes the callback URL (using a query parameter or a path parameter to define the client), based on the `UrlResolver` which computes a URL
 - You can define an error (page) URL at the logics' level to handle unexpected exceptions
 - The SAML Keystore alias can be defined via a property
+- The client name is not set at the credential's level
 
 **v2.2.0**:
 

@@ -54,9 +54,9 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
 
-        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
+        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.defaultAuthenticator(new CasAuthenticator(configuration, callbackUrlResolver, "fake"));
+        super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), callbackUrlResolver, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -79,7 +79,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
             // clean url from ticket parameter
             callbackUrl = CommonHelper.substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             callbackUrl = CommonHelper.substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, callbackUrlResolver, callbackUrl);
+            final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, getName(), callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
             casAuthenticator.validate(credentials, context);
 

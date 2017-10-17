@@ -34,7 +34,7 @@ public final class ParameterClientTests implements TestsConstants {
     @Test
     public void testMissingProfileCreator() {
         final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator(), null);
-        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME),
+        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 

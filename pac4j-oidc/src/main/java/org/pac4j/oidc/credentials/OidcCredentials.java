@@ -24,10 +24,6 @@ public class OidcCredentials extends Credentials {
     private RefreshToken refreshToken;
     private JWT idToken;
 
-    public OidcCredentials(final String clientName) {
-        this.setClientName(clientName);
-    }
-
     public AuthorizationCode getCode() {
         return code;
     }
@@ -76,7 +72,7 @@ public class OidcCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "clientName", getClientName(), "accessToken", accessToken,
+        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "accessToken", accessToken,
                 "refreshToken", refreshToken, "idToken", idToken);
     }
 }

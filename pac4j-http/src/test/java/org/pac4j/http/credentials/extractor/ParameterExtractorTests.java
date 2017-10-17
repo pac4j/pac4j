@@ -21,8 +21,8 @@ public final class ParameterExtractorTests implements TestsConstants {
 
     private final static String GOOD_PARAMETER = "goodParameter";
 
-    private final static ParameterExtractor getExtractor = new ParameterExtractor(GOOD_PARAMETER, true, false, CLIENT_NAME);
-    private final static ParameterExtractor postExtractor = new ParameterExtractor(GOOD_PARAMETER, false, true, CLIENT_NAME);
+    private final static ParameterExtractor getExtractor = new ParameterExtractor(GOOD_PARAMETER, true, false);
+    private final static ParameterExtractor postExtractor = new ParameterExtractor(GOOD_PARAMETER, false, true);
 
     @Test
     public void testRetrieveGetParameterOk() {

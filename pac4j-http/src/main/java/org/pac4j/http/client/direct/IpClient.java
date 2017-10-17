@@ -28,6 +28,6 @@ public class IpClient extends DirectClient<TokenCredentials, CommonProfile> {
 
     @Override
     protected void clientInit() {
-        defaultCredentialsExtractor(new IpExtractor(getName()));
+        defaultCredentialsExtractor(new IpExtractor());
     }
 }

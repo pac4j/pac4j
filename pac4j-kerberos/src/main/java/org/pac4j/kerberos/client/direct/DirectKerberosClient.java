@@ -31,6 +31,6 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials, Kerb
 
     @Override
     protected void clientInit() {
-        defaultCredentialsExtractor(new KerberosExtractor(getName()));
+        defaultCredentialsExtractor(new KerberosExtractor());
     }
 }

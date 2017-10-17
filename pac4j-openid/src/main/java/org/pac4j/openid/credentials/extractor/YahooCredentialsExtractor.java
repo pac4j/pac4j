@@ -48,7 +48,7 @@ public class YahooCredentialsExtractor implements CredentialsExtractor<OpenIdCre
                 .getSessionStore().get(context, this.client.getDiscoveryInformationSessionAttributeName());
 
         // create credentials
-        final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList, this.client.getName());
+        final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList);
         logger.debug("credentials: {}", credentials);
         return credentials;
     }

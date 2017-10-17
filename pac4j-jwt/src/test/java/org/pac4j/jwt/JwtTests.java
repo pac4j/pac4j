@@ -48,7 +48,7 @@ public final class JwtTests implements TestsConstants {
             + "3XWWV24aYyGWR5HVrfm4HLQi1xgmwglLlEIiFlOSTOSZ_LeAwl2Z3VFh-5EidocjwGkAPGQA_4_KCLbK8Im7M25ZZvDzCJ1kKN1JrDIIrBWCcuI4Mbw0O"
             + "_YGb8TfIECPkpeG7wEgBG30sb1kH-F_vg9yjYfB4MiJCSFmY7cRqN9-9O23tz3wYv3b-eJh5ACr2CGSVNj2KcMsOMJ6bbALgz6pzQTIWk_"
             + "fhcE9QSfaSY7RuZ8cRTV-UTjYgZk1gbd1LskgchS.ijMQmfPlObJv7oaPG8LCEg";
-        final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
+        final TokenCredentials credentials = new TokenCredentials(token);
         final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
         authenticator.validate(credentials, null);
@@ -139,7 +139,7 @@ public final class JwtTests implements TestsConstants {
         final String token = generator.generate(profile);
         final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
-        final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
+        final TokenCredentials credentials = new TokenCredentials(token);
         authenticator.validate(credentials, null);
         final FacebookProfile profile2 = (FacebookProfile) credentials.getUserProfile();
         generator.generate(profile2);
@@ -270,7 +270,7 @@ public final class JwtTests implements TestsConstants {
     }
 
     private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
-        final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
+        final TokenCredentials credentials = new TokenCredentials(token);
         authenticator.validate(credentials, null);
         final CommonProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
@@ -295,7 +295,7 @@ public final class JwtTests implements TestsConstants {
     public void testAuthenticateFailed() {
         final JwtAuthenticator authenticator =
             new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
-        final TokenCredentials credentials = new TokenCredentials("fakeToken", CLIENT_NAME);
+        final TokenCredentials credentials = new TokenCredentials("fakeToken");
         authenticator.validate(credentials, null);
     }
 
