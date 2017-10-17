@@ -70,3 +70,9 @@ p {
 #home #authent, #home #authoriz {
     line-height: 1.4;
 }
+#home #supporters {
+    margin-top: 50px;
+}
+#home #supporters img {
+    border: 0;
+}
