@@ -27,13 +27,16 @@ public class Saml2ClientBuilder extends AbstractBuilder {
             final String privateKeyPassword = getProperty(SAML_PRIVATE_KEY_PASSWORD, i);
             final String keystorePath = getProperty(SAML_KEYSTORE_PATH, i);
             final String identityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH, i);
-            final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME, i);
-            final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID, i);
-            final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH, i);
-            final String destinationBindingType = getProperty(SAML_DESTINATION_BINDING_TYPE, i);
 
             if (isNotBlank(keystorePassword) && isNotBlank(privateKeyPassword)
                     && isNotBlank(keystorePath) && isNotBlank(identityProviderMetadataPath)) {
+
+                final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME, i);
+                final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID, i);
+                final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH, i);
+                final String destinationBindingType = getProperty(SAML_DESTINATION_BINDING_TYPE, i);
+                final String keystoreAlias = getProperty(SAML_KEYSTORE_ALIAS, i);
+
                 final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(keystorePath, keystorePassword,
                         privateKeyPassword, identityProviderMetadataPath);
                 if (isNotBlank(maximumAuthenticationLifetime)) {
@@ -47,6 +50,9 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                 }
                 if (isNotBlank(destinationBindingType)) {
                     cfg.setDestinationBindingType(destinationBindingType);
+                }
+                if (isNotBlank(keystoreAlias)) {
+                    cfg.setKeystoreAlias(keystoreAlias);
                 }
                 final SAML2Client saml2Client = new SAML2Client(cfg);
                 saml2Client.setName(concat(saml2Client.getName(), i));
