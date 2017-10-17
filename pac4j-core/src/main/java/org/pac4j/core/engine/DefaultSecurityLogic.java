@@ -12,7 +12,7 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStoreStrategy;
+import org.pac4j.core.context.session.ProfileStorageStrategy;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
@@ -51,7 +51,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
-    private SessionStoreStrategy webServicesSessionStoreStrategy = new SessionStoreStrategy(false, false);
+    private ProfileStorageStrategy webServicesProfileStorageStrategy = ProfileStorageStrategy.NEVER_USE_THE_SESSION;
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -163,7 +163,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     /**
      * Whether we need to load the profiles from the web session, depending on the defined clients
-     * and the {@link #webServicesSessionStoreStrategy}.
+     * and the {@link #webServicesProfileStorageStrategy}.
      *
      * @param context the web context
      * @param currentClients the current clients
@@ -171,7 +171,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected boolean loadProfilesFromSession(final C context, final List<Client> currentClients) {
         return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient ||
-            currentClients.get(0) instanceof AnonymousClient || webServicesSessionStoreStrategy.mustReadFromSession();
+            currentClients.get(0) instanceof AnonymousClient || webServicesProfileStorageStrategy.mustReadFromSession();
     }
 
     /**
@@ -186,7 +186,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient,
                                            final CommonProfile profile) {
-        return this.webServicesSessionStoreStrategy.mustSaveIntoSession();
+        return this.webServicesProfileStorageStrategy.mustSaveIntoSession();
     }
 
     /**
@@ -273,19 +273,19 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.matchingChecker = matchingChecker;
     }
 
-    public SessionStoreStrategy getWebServicesSessionStoreStrategy() {
-        return this.webServicesSessionStoreStrategy;
+    public ProfileStorageStrategy getWebServicesProfileStorageStrategy() {
+        return this.webServicesProfileStorageStrategy;
     }
 
-    public void setWebServicesSessionStoreStrategy(final SessionStoreStrategy webServicesSessionStoreStrategy) {
-        assertNotNull("webServicesSessionStoreStrategy", webServicesSessionStoreStrategy);
-        this.webServicesSessionStoreStrategy = webServicesSessionStoreStrategy;
+    public void setWebServicesProfileStorageStrategy(final ProfileStorageStrategy webServicesProfileStorageStrategy) {
+        assertNotNull("webServicesProfileStorageStrategy", webServicesProfileStorageStrategy);
+        this.webServicesProfileStorageStrategy = webServicesProfileStorageStrategy;
     }
 
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
-            "matchingChecker", this.matchingChecker, "webServicesSessionStoreStrategy", this.webServicesSessionStoreStrategy,
+            "matchingChecker", this.matchingChecker, "webServicesProfileStorageStrategy", this.webServicesProfileStorageStrategy,
             "errorUrl", getErrorUrl());
     }
 }
