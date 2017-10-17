@@ -66,13 +66,13 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 
     @Test(expected = AccountNotFoundException.class)
     public void authentFailed() {
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
         inMemoryProfileService.validate(credentials, null);
     }
 
     @Test
     public void authentSuccessSingleAttribute() {
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         inMemoryProfileService.validate(credentials, null);
         final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -90,7 +90,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         // create
         inMemoryProfileService.create(profile, TEST_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS);
         inMemoryProfileService.validate(credentials, null);
         final CommonProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
@@ -121,7 +121,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
-        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2);
         inMemoryProfileService.validate(credentials2, null);
         final CommonProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);

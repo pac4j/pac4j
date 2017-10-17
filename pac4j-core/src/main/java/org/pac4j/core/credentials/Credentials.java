@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * This class represents the base credentials.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -14,17 +14,7 @@ public abstract class Credentials implements Serializable {
 
     private static final long serialVersionUID = 4864923514027378583L;
 
-    private String clientName;
-
     private CommonProfile userProfile = null;
-
-    public String getClientName() {
-        return this.clientName;
-    }
-
-    public void setClientName(final String clientName) {
-        this.clientName = clientName;
-    }
 
     public CommonProfile getUserProfile() {
         return userProfile;

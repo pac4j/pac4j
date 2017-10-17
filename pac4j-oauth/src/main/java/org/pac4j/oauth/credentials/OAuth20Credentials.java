@@ -19,10 +19,8 @@ public class OAuth20Credentials extends OAuthCredentials {
      * For OAuth2 Authorization Code Flow.
      *
      * @param code       the authorization code
-     * @param clientName the client name.
      */
-    public OAuth20Credentials(String code, String clientName) {
-        super(clientName);
+    public OAuth20Credentials(String code) {
         this.code = code;
     }
 
@@ -58,7 +56,6 @@ public class OAuth20Credentials extends OAuthCredentials {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(),
                 "code", code,
-                "accessToken", accessToken,
-                "clientName", getClientName());
+                "accessToken", accessToken);
     }
 }

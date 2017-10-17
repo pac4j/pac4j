@@ -161,7 +161,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertEquals(PAC4J_BASE_URL, formClient2.getLoginUrl());
             assertTrue(formClient2.getAuthenticator() instanceof LdapProfileService);
             final LdapProfileService ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
-            final UsernamePasswordCredentials ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+            final UsernamePasswordCredentials ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             ldapAuthenticator.validate(ldapCredentials, MockWebContext.create());
             assertNotNull(ldapCredentials.getUserProfile());
 
@@ -175,7 +175,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
             final DbProfileService dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
-            final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+            final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             dbAuthenticator.validate(dbCredentials, MockWebContext.create());
             assertNotNull(dbCredentials.getUserProfile());
 

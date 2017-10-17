@@ -33,7 +33,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, HTTP_METHOD.POST.name(),
-                CLIENT_NAME, null, null, null, null, null, null, null), MockWebContext.create()), TechnicalException.class,
+                null, null, null, null, null, null, null), MockWebContext.create()), TechnicalException.class,
                 "profileCreator cannot be null");
     }
 

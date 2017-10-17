@@ -23,15 +23,12 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
 
     private final HeaderExtractor extractor;
 
-    private final String clientName;
-
-    public DigestAuthExtractor(final String clientName) {
-        this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.DIGEST_HEADER_PREFIX, clientName);
+    public DigestAuthExtractor() {
+        this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.DIGEST_HEADER_PREFIX);
     }
 
-    public DigestAuthExtractor(final String headerName, final String prefixHeader, final String clientName) {
-        this.extractor = new HeaderExtractor(headerName, prefixHeader, clientName);
-        this.clientName = clientName;
+    public DigestAuthExtractor(final String headerName, final String prefixHeader) {
+        this.extractor = new HeaderExtractor(headerName, prefixHeader);
     }
 
     /**
@@ -75,7 +72,7 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
         String qop = valueMap.get("qop");
         String method = context.getRequestMethod();
 
-        return new DigestCredentials(response, method, clientName, username, realm, nonce, uri, cnonce, nc, qop);
+        return new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop);
     }
 
     private Map<String, String> parseTokenValue(String token) {
@@ -95,6 +92,6 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "extractor", extractor, "clientName", clientName);
+        return CommonHelper.toNiceString(this.getClass(), "extractor", extractor);
     }
 }

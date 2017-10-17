@@ -41,7 +41,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
 
     @Override
     protected void clientInit() {
-        defaultCredentialsExtractor(new DigestAuthExtractor(getName()));
+        defaultCredentialsExtractor(new DigestAuthExtractor());
     }
 
     /** Per RFC 2617

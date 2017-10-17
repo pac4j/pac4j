@@ -14,9 +14,8 @@ public class TokenCredentials extends Credentials {
 
     private String token;
 
-    public TokenCredentials(String token, final String clientName) {
+    public TokenCredentials(String token) {
         this.token = token;
-        setClientName(clientName);
     }
 
     public String getToken() {
@@ -40,6 +39,6 @@ public class TokenCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "token", this.token, "clientName", getClientName());
+        return CommonHelper.toNiceString(this.getClass(), "token", this.token);
     }
 }

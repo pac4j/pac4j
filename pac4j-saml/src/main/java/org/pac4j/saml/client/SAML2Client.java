@@ -108,8 +108,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         defaultCredentialsExtractor(ctx -> {
             final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
             final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            // The profile handler sets a hard-coded client name, we need the real one.
-            credentials.setClientName(getName());
             return credentials;
         });
         defaultAuthenticator(new SAML2Authenticator());

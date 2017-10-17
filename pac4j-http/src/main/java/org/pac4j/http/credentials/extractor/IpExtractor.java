@@ -21,18 +21,13 @@ import java.util.List;
  */
 public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
-    private final String clientName;
-
     private List<String> alternateIpHeaders = Collections.emptyList();
 
     private String proxyIp = "";
 
-    public IpExtractor(final String clientName) {
-        this.clientName = clientName;
-    }
+    public IpExtractor() {}
 
-    public IpExtractor(final String clientName, String... alternateIpHeaders) {
-        this.clientName = clientName;
+    public IpExtractor(String... alternateIpHeaders) {
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
@@ -57,7 +52,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
             return null;
         }
 
-        return new TokenCredentials(ip, clientName);
+        return new TokenCredentials(ip);
     }
 
     private String ipFromHeaders(WebContext context) {
@@ -108,7 +103,6 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "clientName", this.clientName,
-            "alternateIpHeaders", Arrays.asList(this.alternateIpHeaders));
+        return CommonHelper.toNiceString(this.getClass(), "alternateIpHeaders", Arrays.asList(this.alternateIpHeaders));
     }
 }
