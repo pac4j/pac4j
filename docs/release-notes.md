@@ -12,6 +12,7 @@ title: Release notes&#58;
 - Added "multi-tenancy" capabilities: you can dynamically define multiple callback URLs for the same client, except for SAML for which you need as many `SAML2Client` as the number of different callback URLs you want
 - The `CallbackUrlResolver` computes the callback URL (using a query parameter or a path parameter to define the client), based on the `UrlResolver` which computes a URL
 - You can define an error (page) URL at the logics' level to handle unexpected exceptions
+- The SAML Keystore alias can be defined via a property
 
 **v2.2.0**:
 

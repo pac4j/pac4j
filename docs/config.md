@@ -95,7 +95,7 @@ Here are the properties you can use to define the clients (, password encoders a
 | `rest.url` | To define a `RestAuthenticator` based on the provided properties and named `rest` or `rest.N` |
 | `anonymous` | To define the `AnonymousClient`, the value is ignored |
 | `directBasicAuth.authenticator` | To define a `DirectBasicAuthClient` based on the provided properties |
-| `saml.keystorePassword`, `saml.privateKeyPassword`, `saml.keystorePath`, `saml.identityProviderMetadataPath`, `saml.maximumAuthenticationLifetime`, `saml.serviceProviderEntityId`, `saml.serviceProviderMetadataPath`, `saml.destinationBindingType` | To define a `SAML2Client` based on the provided properties |
+| `saml.keystorePassword`, `saml.privateKeyPassword`, `saml.keystorePath`, `saml.identityProviderMetadataPath`, `saml.maximumAuthenticationLifetime`, `saml.serviceProviderEntityId`, `saml.serviceProviderMetadataPath`, `saml.destinationBindingType`, `saml.keystoreAlias` | To define a `SAML2Client` based on the provided properties |
 | `cas.loginUrl`, `cas.protocol` | To define a `CasClient` based on the provided properties |
 | `oidc.type` (`google` or `azure`), `oidc.id`, `oidc.secret`, `oidc.scope`, `oidc.discoveryUri`, `oidc.useNonce`, `oidc.preferredJwsAlgorithm`, `oidc.maxClockSkew`, `oidc.clientAuthenticationMethod`, `oidc.customParamKey1`, `oidc.customParamValue1`, `oidc.customParamKey2`,`oidc.customParamValue2` | To define an OpenID connect client based on the provided properties |
 | `formClient.authenticator`, `formClient.loginUrl`, `formClient.usernameParameter` `formClient.passwordParameter` | To define a `FormClient` based on the provided properties |
