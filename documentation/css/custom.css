@@ -76,3 +76,7 @@ p {
 #home #supporters img {
     border: 0;
 }
+.alert {
+    border-radius: 0;
+    box-shadow: 2px 2px 2px #888888;
+}
