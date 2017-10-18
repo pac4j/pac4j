@@ -39,4 +39,21 @@ public class SAML2Profile extends CommonProfile {
     public List<String> getAuthnContexts() {
         return (List<String>) getAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT);
     }
+
+    public String getSamlNameIdFormat() {
+        return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_FORMAT);
+    }
+
+    public String getSamlNameIdNameQualifier() {
+        return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_NAME_QUALIFIER);
+    }
+
+    public String getSamlNameIdSpNameQualifier() {
+        return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_NAME_QUALIFIER);
+    }
+
+    public String getSamlNameIdSpProviderId() {
+        return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_PROVIDED_ID);
+    }
+
 }
