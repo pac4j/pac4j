@@ -3,6 +3,7 @@ package org.pac4j.saml.credentials.authenticator;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -32,6 +33,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
     public static final String SESSION_INDEX = "sessionindex";
     public static final String ISSUER_ID = "issuerId";
     public static final String AUTHN_CONTEXT = "authnContext";
+    public static final String SAML_NAME_ID_FORMAT = "samlNameIdFormat";
+    public static final String SAML_NAME_ID_NAME_QUALIFIER = "samlNameIdNameQualifier";
+    public static final String SAML_NAME_ID_SP_NAME_QUALIFIER = "samlNameIdSpNameQualifier";
+    public static final String SAML_NAME_ID_SP_PROVIDED_ID = "samlNameIdSpProvidedId";
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,9 +49,14 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         init(context);
 
         final SAML2Profile profile = getProfileDefinition().newProfile();
-        profile.setId(credentials.getNameId().getValue());
+        final NameID nameId = credentials.getNameId();
+        profile.setId(nameId.getValue());
         profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
-        
+        profile.addAuthenticationAttribute(SAML_NAME_ID_FORMAT, nameId.getFormat());
+        profile.addAuthenticationAttribute(SAML_NAME_ID_NAME_QUALIFIER, nameId.getNameQualifier());
+        profile.addAuthenticationAttribute(SAML_NAME_ID_SP_NAME_QUALIFIER, nameId.getSPNameQualifier());
+        profile.addAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID, nameId.getSPProvidedID());
+
         for (final Attribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
