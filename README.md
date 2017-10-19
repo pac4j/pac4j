@@ -60,4 +60,6 @@ If you have any question, please use the [pac4j mailing lists](http://www.pac4j.
 
 ## Supporters
 
-This project is supported by ![](http://www.pac4j.org/img/auth0_logo.svg) [Auth0](https://auth0.com) 
+This project is supported by [Auth0](https://auth0.com) ![Auth0](http://www.pac4j.org/img/auth0_logo.svg)
+
+###### If you want to easily add secure authentication to Java apps, feel free to checkout Auth0's Java SDK and free plan at [auth0.com/overview](https://auth0.com/overview)
