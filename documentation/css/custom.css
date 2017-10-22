@@ -1,6 +1,9 @@
 body {
 	padding-bottom: 60px;
     font-family: 'Droid Sans', sans-serif;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
 .navbar {
 	margin-bottom: 40px;
@@ -35,6 +38,9 @@ hr {
 code {
 	color: inherit !important;
 }
+a {
+    color: #039be5;
+}
 #content a:hover {
 	text-decoration: none !important;
 }
@@ -60,6 +66,9 @@ p {
 .nav-link {
 	padding-right: 30px;
 }
+#home {
+    margin-top: 50px;
+}
 #home #engine {
     margin-bottom: 40px;
 }
@@ -71,7 +80,8 @@ p {
     line-height: 1.4;
 }
 #home #supporters {
-    margin-top: 50px;
+    margin-top: 70px;
+    margin-bottom: 50px;
 }
 #home #supporters img {
     border: 0;
@@ -79,4 +89,7 @@ p {
 .alert {
     border-radius: 0;
     box-shadow: 2px 2px 2px #888888;
+}
+main {
+    flex: 1 0 auto;
 }

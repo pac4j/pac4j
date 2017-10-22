@@ -20,3 +20,5 @@ title: Mailing lists
 - To receive the security alerts, please subscribe to the [pac4j-security](https://groups.google.com/forum/?fromgroups#!forum/pac4j-security) Google group
 
 - To privately report any security issue, send an email to <a href="mailto:security&#64;pac4j.org">security&#64;pac4j.org</a>.
+
+<div style="margin-bottom: 50px;"></div>
