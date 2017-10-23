@@ -71,7 +71,8 @@ p {
     line-height: 1.4;
 }
 #home #supporters {
-    margin-top: 50px;
+    margin-top: 70px;
+    font-size: 20px !important;
 }
 #home #supporters img {
     border: 0;
