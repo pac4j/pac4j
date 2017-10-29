@@ -46,7 +46,7 @@ public class ProfileManager<U extends CommonProfile> {
      */
     public Optional<U> get(final boolean readFromSession) {
         final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
-        return ProfileHelper.flatIntoOneProfile(allProfiles);
+        return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
     /**
