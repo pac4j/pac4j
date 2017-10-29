@@ -368,7 +368,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.3</version>
+				<version>3.0.5</version>
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->
@@ -389,7 +389,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.6</version>
+				<version>3.8</version>
 				<configuration>
 					<includeTests>true</includeTests>
 					<printFailingErrors>true</printFailingErrors>
