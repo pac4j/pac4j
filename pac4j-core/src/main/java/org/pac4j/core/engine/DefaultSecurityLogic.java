@@ -20,7 +20,7 @@ import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
-import java.util.List;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -131,7 +131,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                     logger.debug("authorizers: {}", authorizers);
                     if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers())) {
                         logger.debug("authenticated and authorized -> grant access");
-                        return securityGrantedAccessAdapter.adapt(context, parameters);
+                        return securityGrantedAccessAdapter.adapt(context, profiles, parameters);
                     } else {
                         logger.debug("forbidden");
                         action = forbidden(context, currentClients, profiles, authorizers);
@@ -150,7 +150,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             } else {
 
                 logger.debug("no matching for this request -> grant access");
-                return securityGrantedAccessAdapter.adapt(context, parameters);
+                return securityGrantedAccessAdapter.adapt(context, Arrays.asList(), parameters);
             }
 
         } catch (final Exception e) {
