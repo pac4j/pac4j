@@ -62,6 +62,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected String requestInitiatorLocation = null;
 
     protected String binding;
+    
+    protected String nameIdPolicyFormat = null;
 
     public SAML2MetadataGenerator(final String binding) {
         this.binding = binding;
@@ -217,18 +219,26 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
                 .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
         final Collection<NameIDFormat> formats = new LinkedList<NameIDFormat>();
-        final NameIDFormat transientNameID = builder.buildObject();
-        transientNameID.setFormat(NameIDType.TRANSIENT);
-        formats.add(transientNameID);
-        final NameIDFormat persistentNameID = builder.buildObject();
-        persistentNameID.setFormat(NameIDType.PERSISTENT);
-        formats.add(persistentNameID);
-        final NameIDFormat emailNameID = builder.buildObject();
-        emailNameID.setFormat(NameIDType.EMAIL);
-        formats.add(emailNameID);
-        final NameIDFormat unspecNameID = builder.buildObject();
-        unspecNameID.setFormat(NameIDType.UNSPECIFIED);
-        formats.add(unspecNameID);
+        
+        if (this.nameIdPolicyFormat != null) {
+            final NameIDFormat nameID = builder.buildObject();
+            nameID.setFormat(this.nameIdPolicyFormat);
+            formats.add(nameID);
+        }
+        else {        
+            final NameIDFormat transientNameID = builder.buildObject();
+            transientNameID.setFormat(NameIDType.TRANSIENT);
+            formats.add(transientNameID);
+            final NameIDFormat persistentNameID = builder.buildObject();
+            persistentNameID.setFormat(NameIDType.PERSISTENT);
+            formats.add(persistentNameID);
+            final NameIDFormat emailNameID = builder.buildObject();
+            emailNameID.setFormat(NameIDType.EMAIL);
+            formats.add(emailNameID);
+            final NameIDFormat unspecNameID = builder.buildObject();
+            unspecNameID.setFormat(NameIDType.UNSPECIFIED);
+            formats.add(unspecNameID);
+        }
         return formats;
     }
 
@@ -315,5 +325,13 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public final void setRequestInitiatorLocation(final String requestInitiatorLocation) {
         this.requestInitiatorLocation = requestInitiatorLocation;
+    }
+    
+    public String getNameIdPolicyFormat() {
+        return this.nameIdPolicyFormat;
+    }
+    
+    public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
+        this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 }
