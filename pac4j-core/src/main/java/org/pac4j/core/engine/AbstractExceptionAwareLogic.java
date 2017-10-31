@@ -33,9 +33,9 @@ public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> exten
      * @param context the web context
      * @return the final HTTP result
      */
-    protected R handleException(final RuntimeException e, final HttpActionAdapter<R, C> httpActionAdapter, final C context) {
+    protected R handleException(final Exception e, final HttpActionAdapter<R, C> httpActionAdapter, final C context) {
         if (httpActionAdapter == null || context == null) {
-            throw e;
+            throw runtimeException(e);
         } else if (e instanceof HttpAction) {
             final HttpAction action = (HttpAction) e;
             logger.debug("extra HTTP action required in security: {}", action.getCode());
@@ -45,8 +45,22 @@ public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> exten
                 final HttpAction action = HttpAction.redirect(context, errorUrl);
                 return httpActionAdapter.adapt(action.getCode(), context);
             } else {
-                throw e;
+                throw runtimeException(e);
             }
+        }
+    }
+
+    /**
+     * Wrap an Exception into a RuntimeException.
+     *
+     * @param exception the original exception
+     * @return the RuntimeException
+     */
+    protected RuntimeException runtimeException(final Exception exception) {
+        if (exception instanceof RuntimeException) {
+            throw (RuntimeException) exception;
+        } else {
+            throw new RuntimeException(exception);
         }
     }
 
