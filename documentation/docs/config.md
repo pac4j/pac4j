@@ -53,7 +53,7 @@ The `pac4j-config` module gathers all the *pac4j* facilities to define this `Con
 Currently, there is only one component which allows you to build the clients from a set of properties: the [`PropertiesConfigFactory`](https://github.com/pac4j/pac4j/blob/master/pac4j-config/src/main/java/org/pac4j/config/client/PropertiesConfigFactory.java).
 It is used by Dropwizard, CAS and Knox.
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that dependencies must be explicitly declared when necessary (the <code>pac4j-saml</code> module if you want to use SAML, the <code>pac4j-oauth</code> module if you want to use OAuth...)</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that dependencies must be explicitly declared when necessary (the <code>pac4j-saml</code> module if you want to use SAML, the <code>pac4j-oauth</code> module if you want to use OAuth...)</div>
 
 **Example (YAML dropwizard configuration file):**
 

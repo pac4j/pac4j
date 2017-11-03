@@ -153,7 +153,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 return securityGrantedAccessAdapter.adapt(context, parameters);
             }
 
-        } catch (final RuntimeException e) {
+        } catch (final Exception e) {
             return handleException(e, httpActionAdapter, context);
         }
 

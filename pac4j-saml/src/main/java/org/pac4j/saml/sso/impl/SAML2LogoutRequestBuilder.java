@@ -80,6 +80,10 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
                 .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
             final NameID nameId = nameIdBuilder.buildObject();
             nameId.setValue(samlP.getId());
+            nameId.setFormat(samlP.getSamlNameIdFormat());
+            nameId.setNameQualifier(samlP.getSamlNameIdNameQualifier());
+            nameId.setSPNameQualifier(samlP.getSamlNameIdSpNameQualifier());
+            nameId.setSPProvidedID(samlP.getSamlNameIdSpProviderId());
             request.setNameID(nameId);
             // session index added
             final String sessIdx = (String) samlP.getAttribute("sessionindex");

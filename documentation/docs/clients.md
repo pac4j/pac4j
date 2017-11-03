@@ -44,7 +44,7 @@ Clients are of two kinds: direct for web services authentication and indirect fo
 | Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback filter") |
 | Are the credentials mandatory? | Generally, no. If no credentials are provided, the direct client will be ignored (by the "security filter") | Generally, yes. Credentials are expected on the callback endpoint |
 | What are the protected URLs? | The URLs of the web service are protected by the "security filter" | The URLs of the web application are protected by the "security filter", but the callback URL is not protected as it is used during the login process when the user is still anonymous |
-{:.table-striped}
+{:.striped}
 
 ---
 
@@ -166,8 +166,6 @@ The `Client` interface has the following methods:
 | `C getCredentials(WebContext context) throws HttpAction` | It extracts the credentials from the HTTP request and validates them.<br />The extraction of the credentials are done by a [`CredentialsExtractor`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java) while the credentials validation is ensured by an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) |
 | `U getUserProfile(C credentials, WebContext context) throws HttpAction` | It builds the authenticated user profile.<br />The creation of the authenticated user profile is performed by a [`ProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java) |
 | `RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl)` | It returns the redirect action to call the identity provider logout.<br />The logout redirect aciton computation is done by a [`LogoutActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/LogoutActionBuilder.java) |
-{:.table-striped}
-
-<br />
+{:.striped}
 
 Clients are generally populated with default sub-components: `RedirectActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder` and `Authenticator`, except for HTTP clients where the `Authenticator` must be defined. Sub-components can of course be changed for various [customizations](customizations.html).

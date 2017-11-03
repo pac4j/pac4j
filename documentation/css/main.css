@@ -52,8 +52,8 @@ hr {
     margin-top: 40px;
     margin-bottom: 40px;
 }
-code {
-    color: inherit !important;
+code[class="highlighter-rouge"] {
+    background-color: #f7f7f7;
 }
 img, table, th, td, .highlight {
     border:1px solid #BBBBBB;
@@ -89,6 +89,7 @@ p {
 }
 #home #supporters {
     margin-top: 70px;
+    font-size: 20px !important;
 }
 #home #supporters img {
     border: 0;
@@ -119,4 +120,11 @@ p {
 }
 .title h1 {
     margin-top: 10px;
+}
+li {
+    list-style-type: disc !important;
+    margin-left: 30px;
+}
+.warning {
+    color: #fb4d3d;
 }
