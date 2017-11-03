@@ -6,13 +6,13 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.ProfileStorageStrategy;
+import org.pac4j.core.engine.strategy.DefaultProfileStorageStrategy;
+import org.pac4j.core.engine.strategy.ProfileStorageStrategy;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
@@ -51,7 +51,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
-    private ProfileStorageStrategy webServicesProfileStorageStrategy = ProfileStorageStrategy.NEVER_USE_THE_SESSION;
+    private ProfileStorageStrategy profileStorageStrategy = new DefaultProfileStorageStrategy();
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -79,6 +79,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
+            assertNotNull("profileStorageStrategy", profileStorageStrategy);
             final Clients configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
@@ -91,7 +92,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 final List<Client> currentClients = clientFinder.find(configClients, context, clients);
                 logger.debug("currentClients: {}", currentClients);
 
-                final boolean loadProfilesFromSession = loadProfilesFromSession(context, currentClients);
+                final boolean loadProfilesFromSession = profileStorageStrategy.mustLoadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
                 final ProfileManager manager = getProfileManager(context, config);
                 List<CommonProfile> profiles = manager.getAll(loadProfilesFromSession);
@@ -110,8 +111,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                             final CommonProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
                             if (profile != null) {
-                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClient)
-                                    currentClient, profile);
+                                final boolean saveProfileInSession = profileStorageStrategy.mustSaveProfileInSession(context,
+                                    currentClients, (DirectClient) currentClient, profile);
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                 manager.save(saveProfileInSession, profile, multiProfile);
                                 updated = true;
@@ -159,34 +160,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
-    }
-
-    /**
-     * Whether we need to load the profiles from the web session, depending on the defined clients
-     * and the {@link #webServicesProfileStorageStrategy}.
-     *
-     * @param context the web context
-     * @param currentClients the current clients
-     * @return whether the profiles must be loaded from the web session
-     */
-    protected boolean loadProfilesFromSession(final C context, final List<Client> currentClients) {
-        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient ||
-            currentClients.get(0) instanceof AnonymousClient || webServicesProfileStorageStrategy.mustReadFromSession();
-    }
-
-    /**
-     * Whether we need to save the profile in session after the authentication of direct clients. <code>false</code>
-     * by default as direct clients profiles are not meant to be saved in the web session.
-     *
-     * @param context the web context
-     * @param currentClients the current clients
-     * @param directClient the direct clients
-     * @param profile the retrieved profile after login
-     * @return whether we need to save the profile in session
-     */
-    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient,
-                                           final CommonProfile profile) {
-        return this.webServicesProfileStorageStrategy.mustSaveIntoSession();
     }
 
     /**
@@ -273,20 +246,18 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.matchingChecker = matchingChecker;
     }
 
-    public ProfileStorageStrategy getWebServicesProfileStorageStrategy() {
-        return this.webServicesProfileStorageStrategy;
+    public ProfileStorageStrategy getProfileStorageStrategy() {
+        return profileStorageStrategy;
     }
 
-    public void setWebServicesProfileStorageStrategy(final ProfileStorageStrategy webServicesProfileStorageStrategy) {
-        assertNotNull("webServicesProfileStorageStrategy", webServicesProfileStorageStrategy);
-        this.webServicesProfileStorageStrategy = webServicesProfileStorageStrategy;
+    public void setProfileStorageStrategy(final ProfileStorageStrategy profileStorageStrategy) {
+        this.profileStorageStrategy = profileStorageStrategy;
     }
 
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
-            "matchingChecker", this.matchingChecker, "webServicesProfileStorageStrategy", this.webServicesProfileStorageStrategy,
+            "matchingChecker", this.matchingChecker, "profileStorageStrategy", this.profileStorageStrategy,
             "errorUrl", getErrorUrl());
     }
 }
-
