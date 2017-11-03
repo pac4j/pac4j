@@ -84,7 +84,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     public void testNullPassword() {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setPasswordAttribute(null);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class,
             "passwordAttribute cannot be blank");
     }
@@ -96,7 +96,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), attribute);
         authenticator.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         authenticator.validate(credentials, null);
 
         return credentials;
@@ -157,7 +157,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         // create
         mongoProfileService.create(profile, MONGO_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
         mongoProfileService.validate(credentials, null);
         final CommonProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);

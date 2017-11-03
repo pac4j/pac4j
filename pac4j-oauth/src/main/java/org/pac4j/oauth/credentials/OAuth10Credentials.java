@@ -20,8 +20,7 @@ public class OAuth10Credentials extends OAuthCredentials {
 
     private OAuth1AccessToken accessToken;
 
-    public OAuth10Credentials(OAuth1RequestToken requestToken, String token, String verifier, String clientName) {
-        super(clientName);
+    public OAuth10Credentials(OAuth1RequestToken requestToken, String token, String verifier) {
         this.requestToken = requestToken;
         this.token = token;
         this.verifier = verifier;
@@ -74,7 +73,6 @@ public class OAuth10Credentials extends OAuthCredentials {
                 "requestToken", requestToken,
                 "token", token,
                 "verifier'", verifier,
-                "clientName", getClientName(),
                 "accessToken", accessToken);
     }
 }

@@ -23,6 +23,7 @@ import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.sql.profile.service.DbProfileService;
 import org.pac4j.sql.test.tools.DbServer;
 
@@ -55,6 +56,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(SAML_KEYSTORE_PATH, PATH);
         properties.put(SAML_IDENTITY_PROVIDER_METADATA_PATH, PATH);
         properties.put(SAML_DESTINATION_BINDING_TYPE, SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+        properties.put(SAML_KEYSTORE_ALIAS, VALUE);
         properties.put(OIDC_ID, ID);
         properties.put(OIDC_SECRET, SECRET);
         properties.put(OIDC_DISCOVERY_URI, CALLBACK_URL);
@@ -134,7 +136,9 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
             final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
             assertNotNull(saml2client);
-            assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2client.getConfiguration().getDestinationBindingType());
+            final SAML2ClientConfiguration saml2Config = saml2client.getConfiguration();
+            assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2Config.getDestinationBindingType());
+            assertEquals(VALUE, saml2Config.getKeyStoreAlias());
 
             final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
             assertNotNull(oidcClient);
@@ -161,7 +165,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertEquals(PAC4J_BASE_URL, formClient2.getLoginUrl());
             assertTrue(formClient2.getAuthenticator() instanceof LdapProfileService);
             final LdapProfileService ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
-            final UsernamePasswordCredentials ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+            final UsernamePasswordCredentials ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             ldapAuthenticator.validate(ldapCredentials, MockWebContext.create());
             assertNotNull(ldapCredentials.getUserProfile());
 
@@ -175,7 +179,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
             final DbProfileService dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
-            final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+            final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             dbAuthenticator.validate(dbCredentials, MockWebContext.create());
             assertNotNull(dbCredentials.getUserProfile());
 

@@ -54,7 +54,7 @@ public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> 
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-        defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
+        defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader));
     }
 
     public String getHeaderName() {

@@ -32,7 +32,6 @@ public class DigestCredentials extends TokenCredentials {
      *
      * @param token the token
      * @param httpMethod the HTTP method
-     * @param clientName the client name
      * @param username the user name
      * @param realm the realm
      * @param nonce nonce
@@ -41,10 +40,10 @@ public class DigestCredentials extends TokenCredentials {
      * @param nc nc
      * @param qop qop
      */
-    public DigestCredentials(final String token, final String httpMethod, final String clientName, final String username,
-                             final String realm, final String nonce, final String uri, final String cnonce, final String nc,
+    public DigestCredentials(final String token, final String httpMethod, final String username, final String realm,
+                             final String nonce, final String uri, final String cnonce, final String nc,
                              final String qop) {
-        super(token, clientName);
+        super(token);
 
         this.username = username;
         this.realm = realm;
@@ -139,7 +138,6 @@ public class DigestCredentials extends TokenCredentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
-                "clientName", getClientName());
+        return CommonHelper.toNiceString(this.getClass(), "username", this.username, "response", "[PROTECTED]");
     }
 }

@@ -17,10 +17,9 @@ public class UsernamePasswordCredentials extends Credentials {
 
     private String password;
 
-    public UsernamePasswordCredentials(final String username, final String password, final String clientName) {
+    public UsernamePasswordCredentials(final String username, final String password) {
         this.username = username;
         this.password = password;
-        setClientName(clientName);
     }
 
     public String getUsername() {
@@ -52,6 +51,6 @@ public class UsernamePasswordCredentials extends Credentials {
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), Pac4jConstants.USERNAME, this.username,
-                Pac4jConstants.PASSWORD, "[PROTECTED]", "clientName", getClientName());
+                Pac4jConstants.PASSWORD, "[PROTECTED]");
     }
 }

@@ -34,7 +34,7 @@ public final class CookieClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
         cookieClient.setProfileCreator(null);
-        TestsHelper.expectException(() -> cookieClient.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME), MockWebContext.create()),
+        TestsHelper.expectException(() -> cookieClient.getUserProfile(new TokenCredentials(TOKEN), MockWebContext.create()),
             TechnicalException.class, "profileCreator cannot be null");
     }
 

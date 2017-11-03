@@ -19,15 +19,12 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
 
     private final HeaderExtractor extractor;
 
-    private final String clientName;
-
-    public BasicAuthExtractor(final String clientName) {
-        this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX, clientName);
+    public BasicAuthExtractor() {
+        this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX);
     }
 
-    public BasicAuthExtractor(final String headerName, final String prefixHeader, final String clientName) {
-        this.extractor = new HeaderExtractor(headerName, prefixHeader, clientName);
-        this.clientName = clientName;
+    public BasicAuthExtractor(final String headerName, final String prefixHeader) {
+        this.extractor = new HeaderExtractor(headerName, prefixHeader);
     }
 
     @Override
@@ -51,6 +48,6 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
             throw new CredentialsException("Bad format of the basic auth header");
         }
         return new UsernamePasswordCredentials(token.substring(0, delim),
-                token.substring(delim + 1), clientName);
+                token.substring(delim + 1));
     }
 }

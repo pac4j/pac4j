@@ -47,17 +47,16 @@ public class LocalCachingAuthenticatorTests {
 
     private final Authenticator delegate = new SimpleUPAuthenticator();
 
-    private final UsernamePasswordCredentials credentials =
-            new UsernamePasswordCredentials("a", "a", this.getClass().getName());
+    private final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("a", "a");
 
     @Test
     public void testDoubleCalls() {
         final OnlyOneCallAuthenticator authenticator = new OnlyOneCallAuthenticator();
         final LocalCachingAuthenticator localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
         localCachingAuthenticator.init();
-        final Credentials credentials1 = new UsernamePasswordCredentials("a", "a", this.getClass().getName());
+        final Credentials credentials1 = new UsernamePasswordCredentials("a", "a");
         localCachingAuthenticator.validate(credentials1, null);
-        final Credentials credentials2 = new UsernamePasswordCredentials("a", "a", this.getClass().getName());
+        final Credentials credentials2 = new UsernamePasswordCredentials("a", "a");
         localCachingAuthenticator.validate(credentials2, null);
     }
 

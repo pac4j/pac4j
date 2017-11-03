@@ -37,7 +37,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         basicAuthClient.setProfileCreator(null);
-        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, CLIENT_NAME),
+        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 

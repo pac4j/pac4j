@@ -19,10 +19,9 @@ public final class OAuthCredentialsTests implements TestsConstants {
 
     @Test
     public void testOAuth10Credentials() {
-        final OAuth10Credentials credentials = new OAuth10Credentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
+        final OAuth10Credentials credentials = new OAuth10Credentials(REQUEST_TOKEN, TOKEN, VERIFIER);
         assertEquals(TOKEN, credentials.getToken());
         assertEquals(VERIFIER, credentials.getVerifier());
-        assertEquals(TYPE, credentials.getClientName());
         final OAuth1RequestToken requestToken = credentials.getRequestToken();
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getTokenSecret());
@@ -33,6 +32,5 @@ public final class OAuthCredentialsTests implements TestsConstants {
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());
-        assertEquals(credentials.getClientName(), credentials2.getClientName());
     }
 }

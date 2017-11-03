@@ -31,3 +31,4 @@ documentation/_site/
 .pmd
 .pmdruleset.xml
 pac4j-saml/testKeystore.jks
+.factorypath

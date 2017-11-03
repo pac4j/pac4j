@@ -18,11 +18,8 @@ public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String cookieName;
 
-    private final String clientName;
-
-    public CookieExtractor(final String cookieName, final String clientName) {
+    public CookieExtractor(final String cookieName) {
         this.cookieName = cookieName;
-        this.clientName = clientName;
     }
 
     @Override
@@ -30,7 +27,7 @@ public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
         final Collection<Cookie> col = context.getRequestCookies();
         for (final Cookie c : col) {
             if (c.getName().equals(this.cookieName)) {
-                return new TokenCredentials(c.getValue(), clientName);
+                return new TokenCredentials(c.getValue());
             }
         }
         return null;
@@ -38,7 +35,6 @@ public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "cookieName", this.cookieName,
-                "clientName", this.clientName);
+        return CommonHelper.toNiceString(this.getClass(), "cookieName", this.cookieName);
     }
 }

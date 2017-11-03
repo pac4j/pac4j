@@ -68,7 +68,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
             final String finalLoginUrl = getCallbackUrlResolver().getUrlResolver().compute(this.loginUrl, ctx);
             return RedirectAction.redirect(finalLoginUrl);
         });
-        defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
+        defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
 
     @Override

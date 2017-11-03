@@ -87,7 +87,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     public void authentFailed() {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
         couchProfileService.validate(credentials, null);
     }
 
@@ -95,7 +95,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     public void authentSuccessSingleAttribute() {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         couchProfileService.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -118,7 +118,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         // create
         couchProfileService.create(profile, COUCH_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS);
         couchProfileService.validate(credentials, null);
         final CommonProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
@@ -149,7 +149,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(COUCH_USER2, result2.get(USERNAME));
         // check credentials
-        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2);
         couchProfileService.validate(credentials2, null);
         CommonProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
