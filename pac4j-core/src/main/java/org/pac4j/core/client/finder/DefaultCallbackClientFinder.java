@@ -30,7 +30,7 @@ public class DefaultCallbackClientFinder implements ClientFinder {
 
         final List<Client> result = new ArrayList<>();
 
-        for (final Client client : clients.getClients()) {
+        for (final Client client : clients.findAllClients()) {
             if (client instanceof IndirectClient) {
                 final IndirectClient indirectClient = (IndirectClient) client;
                 indirectClient.init();
