@@ -44,12 +44,14 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final boolean forceSpMetadataGeneration;
     private boolean authnRequestSigned;
     private boolean wantsAssertionsSigned;
+    private final String nameIdPolicyFormat;
     private String binding;
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
         this.authnRequestSigned = configuration.isAuthnRequestSigned();
         this.wantsAssertionsSigned = configuration.getWantsAssertionsSigned();
+        this.nameIdPolicyFormat = configuration.getNameIdPolicyFormat();
         this.spMetadataResource = configuration.getServiceProviderMetadataResource();
         this.spEntityId = configuration.getServiceProviderEntityId();
         this.credentialProvider = credentialProvider;
@@ -84,6 +86,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator(binding);
             metadataGenerator.setWantAssertionSigned(this.wantsAssertionsSigned);
             metadataGenerator.setAuthnRequestSigned(this.authnRequestSigned);
+            metadataGenerator.setNameIdPolicyFormat(this.nameIdPolicyFormat);
 
             if (this.authnRequestSigned) {
                 metadataGenerator.setCredentialProvider(this.credentialProvider);
