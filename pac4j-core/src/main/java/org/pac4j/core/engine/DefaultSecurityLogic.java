@@ -11,8 +11,8 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.engine.strategy.DefaultProfileStorageStrategy;
-import org.pac4j.core.engine.strategy.ProfileStorageStrategy;
+import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
+import org.pac4j.core.engine.decision.ProfileStorageDecision;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
@@ -51,7 +51,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
-    private ProfileStorageStrategy profileStorageStrategy = new DefaultProfileStorageStrategy();
+    private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -79,7 +79,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
-            assertNotNull("profileStorageStrategy", profileStorageStrategy);
+            assertNotNull("profileStorageDecision", profileStorageDecision);
             final Clients configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
@@ -92,7 +92,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 final List<Client> currentClients = clientFinder.find(configClients, context, clients);
                 logger.debug("currentClients: {}", currentClients);
 
-                final boolean loadProfilesFromSession = profileStorageStrategy.mustLoadProfilesFromSession(context, currentClients);
+                final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
                 final ProfileManager manager = getProfileManager(context, config);
                 List<CommonProfile> profiles = manager.getAll(loadProfilesFromSession);
@@ -111,7 +111,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                             final CommonProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
                             if (profile != null) {
-                                final boolean saveProfileInSession = profileStorageStrategy.mustSaveProfileInSession(context,
+                                final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
                                     currentClients, (DirectClient) currentClient, profile);
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                 manager.save(saveProfileInSession, profile, multiProfile);
@@ -246,18 +246,18 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.matchingChecker = matchingChecker;
     }
 
-    public ProfileStorageStrategy getProfileStorageStrategy() {
-        return profileStorageStrategy;
+    public ProfileStorageDecision getProfileStorageDecision() {
+        return profileStorageDecision;
     }
 
-    public void setProfileStorageStrategy(final ProfileStorageStrategy profileStorageStrategy) {
-        this.profileStorageStrategy = profileStorageStrategy;
+    public void setProfileStorageDecision(final ProfileStorageDecision profileStorageDecision) {
+        this.profileStorageDecision = profileStorageDecision;
     }
 
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
-            "matchingChecker", this.matchingChecker, "profileStorageStrategy", this.profileStorageStrategy,
+            "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
             "errorUrl", getErrorUrl());
     }
 }

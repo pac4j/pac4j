@@ -1,4 +1,4 @@
-package org.pac4j.core.engine.strategy;
+package org.pac4j.core.engine.decision;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.DirectClient;
@@ -12,12 +12,12 @@ import java.util.List;
 import static org.pac4j.core.util.CommonHelper.isEmpty;
 
 /**
- * Default strategy where the indirect clients are handled separately from the direct clients.
+ * Default decision class where the indirect clients are handled separately from the direct clients.
  *
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class DefaultProfileStorageStrategy<C extends WebContext> implements ProfileStorageStrategy<C> {
+public class DefaultProfileStorageDecision<C extends WebContext> implements ProfileStorageDecision<C> {
 
     /**
      * Load the profiles from the web session if no clients are defined or if the first client is an indirect one

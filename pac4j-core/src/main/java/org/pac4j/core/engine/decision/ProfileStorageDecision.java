@@ -1,4 +1,4 @@
-package org.pac4j.core.engine.strategy;
+package org.pac4j.core.engine.decision;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.DirectClient;
@@ -8,12 +8,12 @@ import org.pac4j.core.profile.CommonProfile;
 import java.util.List;
 
 /**
- * Defines the strategy related to load/save the profile(s) from/into the session store.
+ * Defines the decisions related to load/save the profile(s) from/into the session store.
  *
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public interface ProfileStorageStrategy<C extends WebContext> {
+public interface ProfileStorageDecision<C extends WebContext> {
 
     /**
      * Whether we must load the profiles from the web session.
