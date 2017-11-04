@@ -53,7 +53,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         logic = new DefaultSecurityLogic();
         context = MockWebContext.create();
         config = new Config();
-        securityGrantedAccessAdapter = (context, parameters) -> { nbCall++; return null; };
+        securityGrantedAccessAdapter = (context, profiles, parameters) -> { nbCall++; return null; };
         httpActionAdapter = (code, ctx) -> null;
         clients = null;
         authorizers = null;
