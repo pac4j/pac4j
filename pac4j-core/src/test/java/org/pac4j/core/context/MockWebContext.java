@@ -48,8 +48,6 @@ public final class MockWebContext implements WebContext {
 
     protected int responseStatus = -1;
 
-    protected String responseContentType;
-
     protected final Map<String, String> responseHeaders = new HashMap<>();
 
     protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
@@ -270,9 +268,7 @@ public final class MockWebContext implements WebContext {
     }
 
     @Override
-    public void setResponseContentType(final String content) {
-        this.responseContentType = content;
-    }
+    public void setResponseContentType(final String content) {}
 
     @Override
     public void addResponseCookie(Cookie cookie) {

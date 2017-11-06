@@ -122,41 +122,25 @@ public final class ProfileHelper {
     }
 
     /**
-     * Flat the linked hashmap of profiles into a single optional profile.
+     * Flat the list of profiles into a single optional profile.
      *
-     * @param profiles the linked hashmap of profiles
+     * @param profiles the list of profiles
      * @param <U> the kind of profile
      * @return the (optional) profile
      */
-    public static <U extends CommonProfile> Optional<U> flatIntoOneProfile(final LinkedHashMap<String, U> profiles) {
-        if (profiles.size() == 0) {
-            return Optional.empty();
-        } else {
-            U profile = null;
-            final Iterator<U> profilesList = profiles.values().iterator();
-            while (profilesList.hasNext()) {
-                final U nextProfile = profilesList.next();
-                if (profile == null || profile instanceof AnonymousProfile) {
-                    profile = nextProfile;
-                }
-            }
-            return Optional.of(profile);
-        }
+    public static <U extends CommonProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
+        return profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
     }
 
     /**
-     * Flat the linked hashmap of profiles into a list of profiles.
+     * Flat the map of profiles into a list of profiles.
      *
-     * @param profiles the linked hashmap of profiles
+     * @param profiles the map of profiles
      * @param <U> the kind of profile
      * @return the list of profiles
      */
-    public static <U extends CommonProfile> List<U> flatIntoAProfileList(final LinkedHashMap<String, U> profiles) {
-        final List<U> listProfiles = new ArrayList<>();
-        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
-            listProfiles.add(entry.getValue());
-        }
-        return Collections.unmodifiableList(listProfiles);
+    public static <U extends CommonProfile> List<U> flatIntoAProfileList(final Map<String, U> profiles) {
+        return Collections.unmodifiableList(new ArrayList<>(profiles.values()));
     }
 
     /**
