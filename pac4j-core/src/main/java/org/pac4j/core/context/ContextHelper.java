@@ -3,6 +3,7 @@ package org.pac4j.core.context;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A helper for the web context.
@@ -19,15 +20,15 @@ public final class ContextHelper implements HttpConstants {
      * @param name the name of the cookie
      * @return the cookie
      */
-    public static Cookie getCookie(final Collection<Cookie> cookies, final String name) {
+    public static Optional<Cookie> getCookie(final Collection<Cookie> cookies, final String name) {
         if (cookies != null) {
             for (final Cookie cookie : cookies) {
                 if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
-                    return cookie;
+                    return Optional.of(cookie);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -37,7 +38,7 @@ public final class ContextHelper implements HttpConstants {
      * @param name the name of the cookie
      * @return the cookie
      */
-    public static Cookie getCookie(final WebContext context, final String name) {
+    public static Optional<Cookie> getCookie(final WebContext context, final String name) {
         return getCookie(context.getRequestCookies(), name);
     }
 
