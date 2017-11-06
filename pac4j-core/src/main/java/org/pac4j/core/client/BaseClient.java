@@ -1,9 +1,5 @@
 package org.pac4j.core.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -17,6 +13,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
@@ -56,11 +57,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param context the web context
      * @return the credentials
      */
-    protected C retrieveCredentials(final WebContext context) {
+    protected Optional<C> retrieveCredentials(final WebContext context) {
         try {
             final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
-                return null;
+                return Optional.empty();
             }
             final long t0 = System.currentTimeMillis();
             try {
@@ -69,21 +70,21 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
                 final long t1 = System.currentTimeMillis();
                 logger.debug("Credentials validation took: {} ms", t1 - t0);
             }
-            return credentials;
+            return Optional.of(credentials);
         } catch (CredentialsException e) {
             logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve or validate credentials", e);
 
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) {
+    public final Optional<U> getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
-            return null;
+            return Optional.empty();
         }
 
         U profile = retrieveUserProfile(credentials, context);
@@ -95,7 +96,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
                 }
             }
         }
-        return profile;
+        return Optional.of(profile);
     }
 
     /**

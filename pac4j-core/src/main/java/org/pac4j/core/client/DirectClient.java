@@ -8,6 +8,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
+
 /**
  * Direct client: credentials are passed and authentication occurs for every HTTP request.
  *
@@ -37,13 +39,13 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     }
 
     @Override
-    public final C getCredentials(final WebContext context) {
+    public final Optional<C> getCredentials(final WebContext context) {
         init();
         return retrieveCredentials(context);
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        return null;
+    public final Optional<RedirectAction> getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        return Optional.empty();
     }
 }

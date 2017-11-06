@@ -6,6 +6,8 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 
+import java.util.Optional;
+
 /**
  * <p>This interface is the core class of the library. It represents an authentication mechanism to validate user's credentials and
  * retrieve his user profile.</p>
@@ -47,7 +49,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param context the current web context
      * @return the credentials
      */
-    C getCredentials(WebContext context);
+    Optional<C> getCredentials(WebContext context);
 
     /**
      * Get the user profile based on the provided credentials.
@@ -56,7 +58,14 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param context web context
      * @return the user profile
      */
-    U getUserProfile(C credentials, WebContext context);
+    Optional<U> getUserProfile(C credentials, WebContext context);
+
+    default Optional<U> getUserProfile(Optional<C> credentials, WebContext context) {
+        if(credentials.isPresent()) {
+            return this.getUserProfile(credentials.get(), context);
+        }
+        return Optional.empty();
+    }
 
     /**
      * <p>Return the logout action (indirect clients).</p>
@@ -66,5 +75,5 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param targetUrl the target url after logout
      * @return the redirection
      */
-    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl);
+    Optional<RedirectAction> getLogoutAction(WebContext context, U currentProfile, String targetUrl);
 }

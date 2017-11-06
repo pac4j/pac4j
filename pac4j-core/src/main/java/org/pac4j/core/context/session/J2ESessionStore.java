@@ -59,7 +59,7 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
         if (trackableSession != null) {
             return new J2EProvidedSessionStore((HttpSession) trackableSession);
         } else {
-            return null;
+            return (SessionStore<J2EContext>) SessionStore.EMPTY;
         }
     }
 

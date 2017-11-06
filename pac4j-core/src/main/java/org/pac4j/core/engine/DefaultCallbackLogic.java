@@ -3,7 +3,6 @@ package org.pac4j.core.engine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
-
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
@@ -17,6 +16,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -78,10 +78,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             logger.debug("client: {}", client);
             assertNotNull("client", client);
 
-            final Credentials credentials = client.getCredentials(context);
+            final Optional<Credentials> credentials = client.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final CommonProfile profile = client.getUserProfile(credentials, context);
+            final Optional<CommonProfile> profile = client.getUserProfile(credentials, context);
             logger.debug("profile: {}", profile);
             saveUserProfile(context, config, profile, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
@@ -101,6 +101,13 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             if (renewSession) {
                 renewSession(context, config);
             }
+        }
+    }
+
+    protected void saveUserProfile(final C context, final Config config, final Optional<CommonProfile> profile,
+                                   final boolean multiProfile, final boolean renewSession) {
+        if(profile.isPresent()) {
+            this.saveUserProfile(context, config, profile.get(), multiProfile, renewSession);
         }
     }
 

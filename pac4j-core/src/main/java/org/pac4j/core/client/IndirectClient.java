@@ -16,6 +16,8 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
+
 /**
  * Indirect client: the requested protected URL is saved, the user is redirected to the identity provider for login and
  * back to the application after the sucessful authentication and finally to the originally requested URL.
@@ -122,11 +124,11 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @return the credentials
      */
     @Override
-    public final C getCredentials(final WebContext context) {
+    public final Optional<C> getCredentials(final WebContext context) {
         init();
-        final C credentials = retrieveCredentials(context);
+        final Optional<C> credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
-        if (credentials == null) {
+        if (!credentials.isPresent()) {
             context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         } else {
             cleanAttemptedAuthentication(context);
@@ -135,9 +137,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public final Optional<RedirectAction> getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         init();
-        return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
+        return Optional.of(logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl));
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {

@@ -2,6 +2,7 @@ package org.pac4j.core.context.session;
 
 import org.pac4j.core.context.WebContext;
 
+
 /**
  * To store data in session.
  *
@@ -10,31 +11,39 @@ import org.pac4j.core.context.WebContext;
  */
 public interface SessionStore<C extends WebContext> {
 
+    SessionStore<? extends WebContext> EMPTY = new SessionStore<WebContext>() {};
+
     /**
      * Get or create the session identifier and initialize the session with it if necessary.
      *
      * @param context the web context
      * @return the session identifier
      */
-    String getOrCreateSessionId(C context);
+    default String getOrCreateSessionId(C context) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 
     /**
      * Get the object from its key in store.
      *
      * @param context the web context
-     * @param key the key of the object
+     * @param key     the key of the object
      * @return the object in store
      */
-    Object get(C context, String key);
+    default Object get(C context, String key) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 
     /**
      * Save an object in the store by its key.
      *
      * @param context the web context
-     * @param key the key of the object
-     * @param value the value to save in store
+     * @param key     the key of the object
+     * @param value   the value to save in store
      */
-    void set(C context, String key, Object value);
+    default void set(C context, String key, Object value) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 
     /**
      * Destroy the web session.
@@ -42,7 +51,9 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return whether the session has been destroyed
      */
-    boolean destroySession(C context);
+    default boolean destroySession(C context) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 
     /**
      * Get the native session as a trackable object.
@@ -50,16 +61,20 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return the trackable object or <code>null</code> if this is not supported
      */
-    Object getTrackableSession(C context);
+    default Object getTrackableSession(C context) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 
     /**
      * Build a new session store from a trackable session.
      *
-     * @param context the web context
+     * @param context          the web context
      * @param trackableSession the trackable session
      * @return the new session store or <code>null</code> if this is not supported
      */
-    SessionStore<C> buildFromTrackableSession(C context, Object trackableSession);
+    default SessionStore<C> buildFromTrackableSession(C context, Object trackableSession) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 
     /**
      * Renew the native session by copying all data to a new one.
@@ -67,5 +82,7 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return whether the session store has renewed the session
      */
-    boolean renewSession(C context);
+    default boolean renewSession(C context) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 }
