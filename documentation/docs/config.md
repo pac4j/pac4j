@@ -109,7 +109,7 @@ Here are the properties you can use to define the clients (, password encoders a
 | `linkedin.id`, `linkedin.secret`, `linkedin.fields`, `linkedin.scope` | To define a `LinkedIn2Client` based on the provided properties |
 | `foursquare.id`, `foursquare.secret` | To define a `FoursquareClient` based on the provided properties |
 | `google.id`, `google.secret`, `google.scope` | To define a `Google2Client` based on the provided properties |
-{:.table-striped}
+{:.striped}
 
 <p />
 

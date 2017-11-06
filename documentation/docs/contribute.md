@@ -1,6 +1,6 @@
 ---
 layout: ddoc
-title: Contribute
+title: How to contribute
 ---
 
 ## 1) New feature/bug fix

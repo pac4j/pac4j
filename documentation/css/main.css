@@ -121,7 +121,7 @@ p {
 .title h1 {
     margin-top: 10px;
 }
-li {
+main li {
     list-style-type: disc !important;
     margin-left: 30px;
 }
