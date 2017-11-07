@@ -87,16 +87,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return Optional.empty();
         }
 
-        U profile = retrieveUserProfile(credentials, context);
-        if (profile != null) {
-            profile.setClientName(getName());
+        Optional<U> profile = retrieveUserProfile(credentials, context);
+        if (profile.isPresent()) {
+            profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (AuthorizationGenerator<U> authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile);
+                    profile = authorizationGenerator.generate(context, profile.get());
                 }
             }
         }
-        return Optional.of(profile);
+        return profile;
     }
 
     /**
@@ -106,8 +106,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param context the web context
      * @return the user profile
      */
-    protected final U retrieveUserProfile(final C credentials, final WebContext context) {
-        final U profile = this.profileCreator.create(credentials, context);
+    protected final Optional<U> retrieveUserProfile(final C credentials, final WebContext context) {
+        final Optional<U> profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }
