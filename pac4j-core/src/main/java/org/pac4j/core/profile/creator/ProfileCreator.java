@@ -4,6 +4,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.util.Optional;
+
 /**
  * This interface is responsible to create a {@link CommonProfile} from a {@link Credentials}.
  * Return <code>null</code> if no profile can be found / created.
@@ -20,5 +22,5 @@ public interface ProfileCreator<C extends Credentials, U extends CommonProfile> 
      * @param context the web context
      * @return the created profile
      */
-    U create(C credentials, WebContext context);
+    Optional<U> create(C credentials, WebContext context);
 }

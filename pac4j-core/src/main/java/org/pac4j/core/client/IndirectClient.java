@@ -139,7 +139,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     @Override
     public final Optional<RedirectAction> getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         init();
-        return Optional.of(logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl));
+        return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {

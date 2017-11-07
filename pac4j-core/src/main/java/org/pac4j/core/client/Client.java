@@ -60,11 +60,10 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      */
     Optional<U> getUserProfile(C credentials, WebContext context);
 
-    default Optional<U> getUserProfile(Optional<C> credentials, WebContext context) {
-        if(credentials.isPresent()) {
-            return this.getUserProfile(credentials.get(), context);
-        }
-        return Optional.empty();
+    default Optional<U> getUserProfile(Optional<C> credentialsOpt, WebContext context) {
+        return credentialsOpt.flatMap(
+            credentials -> this.getUserProfile(credentials, context)
+        );
     }
 
     /**

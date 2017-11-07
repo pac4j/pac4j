@@ -22,11 +22,9 @@ public final class ContextHelper implements HttpConstants {
      */
     public static Optional<Cookie> getCookie(final Collection<Cookie> cookies, final String name) {
         if (cookies != null) {
-            for (final Cookie cookie : cookies) {
-                if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
-                    return Optional.of(cookie);
-                }
-            }
+            return cookies.stream().filter(
+                cookie -> cookie != null && CommonHelper.areEquals(name, cookie.getName())
+            ).findFirst();
         }
         return Optional.empty();
     }
