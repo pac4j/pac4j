@@ -13,7 +13,7 @@ title: CAS
 
 It supports all CAS protocol versions (v1.0, v2.0 and v3.0).
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> The CAS server can also act as a SAML IdP, as an OpenID Connect provider or as an OpenID provider. In that case, you must not use the CAS support, but the appropriate SAML, OpenID Connect or OpenID supports.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The CAS server can also act as a SAML IdP, as an OpenID Connect provider or as an OpenID provider. In that case, you must not use the CAS support, but the appropriate SAML, OpenID Connect or OpenID supports.</div>
 
 ## 0) Dependency
 
@@ -76,7 +76,7 @@ You can also set various parameters:
 | `setTicketValidator(TicketValidator)` |  Define a specific `TicketValidator` |
 | `setCallbackUrlResolver(CallbackUrlResolver)` |  Define a specific `CallbackUrlResolver` (by default, the `CallbackUrlResolver` of the `CasClient` is used) |
 | `setDefaultTicketValidator(TicketValidator)` | Define the default `TicketValidator` to use |
-{:.table-striped}
+{:.striped}
 
 
 ### b) CAS configuration

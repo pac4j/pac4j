@@ -8,7 +8,7 @@ title: Authorizers&#58;
 * either on the authenticated user profile: has the user the appropriate role?
 * or on the web context: can you call this resource in an iframe?
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that this concept of <code>Authorizer</code> has a broader meaning than generally in the security field.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that this concept of <code>Authorizer</code> has a broader meaning than generally in the security field.</div>
 
 Generally, authorizers are defined in the [security configuration](config.html) of the application.
 

@@ -80,7 +80,7 @@ The `CommonProfile` has the following methods:
 | `getPictureUrl()` | `URI` | The `picture_url` attribute |
 | `getProfileUrl()` | `URI` | The `profile_url` attribute |
 | `getLocation()` | `String` | The `location` attribute |
-
+{:.striped}
 
 ## 8) Profile definition
 
