@@ -29,7 +29,7 @@ It can be defined for HTTP clients which deal with `TokenCredentials`.
 
 It supports plain text, signed and/or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception.
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that for security reasons, plain text JWT tokens will be accepted ONLY if no signature configuration is defined. If one or more signature configurations are defined, the JWT tokens are expected to be signed accordingly.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that for security reasons, plain text JWT tokens will be accepted ONLY if no signature configuration is defined. If one or more signature configurations are defined, the JWT tokens are expected to be signed accordingly.</div>
 
 ### &#9656; Signature
 
