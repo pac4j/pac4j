@@ -142,12 +142,14 @@ public class CasConfiguration extends InitializableObject {
         final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
         saml11TicketValidator.setTolerance(getTimeTolerance());
         saml11TicketValidator.setEncoding(this.encoding);
+        saml11TicketValidator.setRenew(this.renew);
         return saml11TicketValidator;
     }
 
     protected TicketValidator buildCas30ProxyTicketValidator(final WebContext context) {
         final Cas30ProxyTicketValidator cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas30ProxyTicketValidator.setEncoding(this.encoding);
+        cas30ProxyTicketValidator.setRenew(this.renew);
         cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
         cas30ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
         if (this.proxyReceptor != null) {
@@ -160,6 +162,7 @@ public class CasConfiguration extends InitializableObject {
     protected TicketValidator buildCas30TicketValidator(final WebContext context) {
         final Cas30ServiceTicketValidator cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas30ServiceTicketValidator.setEncoding(this.encoding);
+        cas30ServiceTicketValidator.setRenew(this.renew);
         if (this.proxyReceptor != null) {
             cas30ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas30ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
@@ -170,6 +173,7 @@ public class CasConfiguration extends InitializableObject {
     protected TicketValidator buildCas20ProxyTicketValidator(final WebContext context) {
         final Cas20ProxyTicketValidator cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas20ProxyTicketValidator.setEncoding(this.encoding);
+        cas20ProxyTicketValidator.setRenew(this.renew);
         cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
         cas20ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
         if (this.proxyReceptor != null) {
@@ -182,6 +186,7 @@ public class CasConfiguration extends InitializableObject {
     protected TicketValidator buildCas20TicketValidator(final WebContext context) {
         final Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas20ServiceTicketValidator.setEncoding(this.encoding);
+        cas20ServiceTicketValidator.setRenew(this.renew);
         if (this.proxyReceptor != null) {
             cas20ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas20ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
@@ -192,6 +197,7 @@ public class CasConfiguration extends InitializableObject {
     protected TicketValidator buildCas10TicketValidator(final WebContext context) {
         final Cas10TicketValidator cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
         cas10TicketValidator.setEncoding(this.encoding);
+        cas10TicketValidator.setRenew(this.renew);
         return cas10TicketValidator;
     }
 
