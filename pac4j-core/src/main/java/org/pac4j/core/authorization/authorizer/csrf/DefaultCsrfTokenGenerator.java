@@ -27,6 +27,6 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
     }
 
     protected String getTokenFromSession(final WebContext context) {
-        return (String) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
+        return (String) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN).get();
     }
 }

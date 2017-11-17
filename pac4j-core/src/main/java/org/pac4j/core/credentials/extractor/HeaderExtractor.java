@@ -4,6 +4,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 
+import java.util.Optional;
+
 /**
  * To extract header value.
  *
@@ -22,10 +24,10 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
+    public Optional<TokenCredentials> extract(WebContext context) {
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
-            return null;
+            return Optional.empty();
         }
 
         if  (!header.startsWith(this.prefixHeader)) {
@@ -33,6 +35,6 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         }
 
         final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
-        return new TokenCredentials(headerWithoutPrefix);
+        return Optional.of(new TokenCredentials(headerWithoutPrefix));
     }
 }

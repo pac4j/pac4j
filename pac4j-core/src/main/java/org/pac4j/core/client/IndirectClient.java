@@ -66,9 +66,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected abstract void clientInit();
 
     @Override
-    public final HttpAction redirect(final WebContext context) {
+    public final Optional<HttpAction> redirect(final WebContext context) {
         final RedirectAction action = getRedirectAction(context);
-        return action.perform(context);
+        return Optional.of(action.perform(context));
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             throw HttpAction.unauthorized(context);
         }
         // authentication has already been tried -> unauthorized
-        final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX).get();
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);

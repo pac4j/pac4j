@@ -78,7 +78,7 @@ public class ProfileManager<U extends CommonProfile> {
             }
         }
         if (readFromSession) {
-            final Object sessionAttribute = this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES);
+            final Object sessionAttribute = this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES).get();
             if  (sessionAttribute instanceof LinkedHashMap) {
                 profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
             }

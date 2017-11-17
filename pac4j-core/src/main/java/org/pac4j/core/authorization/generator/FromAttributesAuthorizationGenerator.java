@@ -3,14 +3,11 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * <p>Generate the authorization information by inspecting attributes.</p>
- * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)}) 
+ * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)})
  * are defined in the constructor. It's the same for the attributes containing the permissions.</p>
  *
  * @author Jerome Leleu
@@ -48,10 +45,10 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public Optional<U> generate(final WebContext context, final U profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
-        return profile;
+        return Optional.of(profile);
     }
 
     private void generateAuth(final U profile, final Iterable<String> attributes, final boolean isRole) {

@@ -43,12 +43,12 @@ public class SpringSecurityPropertiesAuthorizationGenerator<U extends CommonProf
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public Optional<U> generate(final WebContext context, final U profile) {
         final String id = profile.getId();
         final List<String> roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {
             profile.addRoles(roles);
         }
-        return profile;
+        return Optional.of(profile);
     }
 }
