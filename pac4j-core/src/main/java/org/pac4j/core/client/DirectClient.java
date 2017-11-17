@@ -2,7 +2,6 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.redirect.RedirectAction;
@@ -34,8 +33,8 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     protected abstract void clientInit();
 
     @Override
-    public final HttpAction redirect(final WebContext context) {
-        throw new TechnicalException("direct clients do not support redirections");
+    public final Optional<HttpAction> redirect(final WebContext context) {
+        return Optional.empty();
     }
 
     @Override

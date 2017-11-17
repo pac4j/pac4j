@@ -14,10 +14,11 @@ import org.pac4j.core.exception.CredentialsException;
 public interface Authenticator<C extends Credentials> {
 
     /**
-     * Validate the credentials. It should throw a {@link CredentialsException} in case of failure.
+     * Validate the credentials. It must throw a {@link CredentialsException} in case of failure.
+     * As the exception is the validation mecanism, the absent of it indicates valid credentials.
      *
      * @param credentials the given credentials
      * @param context the web context
      */
-    void validate(C credentials, WebContext context);
+    void validate(C credentials, WebContext context) throws  CredentialsException;
 }

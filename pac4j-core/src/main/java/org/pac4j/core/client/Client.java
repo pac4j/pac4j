@@ -40,7 +40,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param context the current web context
      * @return the performed redirection
      */
-    HttpAction redirect(WebContext context);
+    Optional<HttpAction> redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
@@ -54,21 +54,16 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
     /**
      * Get the user profile based on the provided credentials.
      *
-     * @param credentials credentials
-     * @param context web context
+     * @param credentials credentials.
+     * @param context web context.
      * @return the user profile
      */
     Optional<U> getUserProfile(C credentials, WebContext context);
 
-    default Optional<U> getUserProfile(Optional<C> credentialsOpt, WebContext context) {
-        return credentialsOpt.flatMap(
-            credentials -> this.getUserProfile(credentials, context)
-        );
-    }
-
     /**
      * <p>Return the logout action (indirect clients).</p>
      *
+     * @see {@link IndirectClient }
      * @param context the current web context
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
