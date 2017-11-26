@@ -36,4 +36,14 @@ public class AzureAdProfile extends OidcProfile {
     public String getIpaddr() {
         return (String) getAttribute(AzureAdProfileDefinition.IPADDR);
     }
+
+    public String getUpn() {
+        return (String) getAttribute(AzureAdProfileDefinition.UPN);
+    }
+
+    @Override
+    public String getUsername() {
+        return (String) getAttribute(AzureAdProfileDefinition.UPN);
+    }
+
 }
