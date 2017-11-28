@@ -2,7 +2,7 @@ package org.pac4j.oidc.client;
 
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
-import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.AzureAdOidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
@@ -27,11 +27,11 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  * @author Emond Papegaaij
  * @since 1.8.3
  */
-public class AzureAdClient extends OidcClient<AzureAdProfile> {
+public class AzureAdClient extends OidcClient<AzureAdProfile,AzureAdOidcConfiguration> {
 
     public AzureAdClient() {}
 
-    public AzureAdClient(final OidcConfiguration configuration) {
+    public AzureAdClient(final AzureAdOidcConfiguration configuration) {
         super(configuration);
     }
 

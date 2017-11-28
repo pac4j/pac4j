@@ -13,6 +13,28 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
     /** AzureAd tenant **/
     private String tenant;
 
+    public AzureAdOidcConfiguration() {
+    }
+
+    public AzureAdOidcConfiguration(OidcConfiguration oidcConfiguration) {
+        this.setProviderMetadata(oidcConfiguration.getProviderMetadata());
+        this.setClientId(oidcConfiguration.getClientId());
+        this.setSecret(oidcConfiguration.getSecret());
+        this.setScope(oidcConfiguration.getScope());
+        this.setCustomParams(oidcConfiguration.getCustomParams());
+        this.setClientAuthenticationMethod(oidcConfiguration.getClientAuthenticationMethod());
+        this.setUseNonce(oidcConfiguration.isUseNonce());
+        this.setPreferredJwsAlgorithm(oidcConfiguration.getPreferredJwsAlgorithm());
+        this.setMaxClockSkew(oidcConfiguration.getMaxClockSkew());
+        this.setConnectTimeout(oidcConfiguration.getConnectTimeout());
+        this.setReadTimeout(oidcConfiguration.getReadTimeout());
+        this.setDiscoveryURI(oidcConfiguration.getDiscoveryURI());
+        this.setResourceRetriever(oidcConfiguration.getResourceRetriever());
+        this.setResponseType(oidcConfiguration.getResponseType());
+        this.setResponseMode(oidcConfiguration.getResponseMode());
+        this.setLogoutUrl(oidcConfiguration.getLogoutUrl());
+    }
+
     @Override
     protected void internalInit() {
         // checks

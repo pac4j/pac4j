@@ -13,6 +13,16 @@ public class AzureAdProfile extends OidcProfile {
 
     private static final long serialVersionUID = -8659029290353954198L;
 
+    private String tenant = null;
+
+    public String getTenant() {
+        return this.tenant;
+    }
+
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
+    }
+
     public String getIdp() {
         return (String) getAttribute(AzureAdProfileDefinition.IDP);
     }

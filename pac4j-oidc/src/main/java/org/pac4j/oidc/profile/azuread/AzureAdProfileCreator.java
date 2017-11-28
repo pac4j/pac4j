@@ -3,8 +3,10 @@ package org.pac4j.oidc.profile.azuread;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.oidc.client.azuread.AzureAdIdTokenValidator;
-import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.AzureAdOidcConfiguration;
+import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 
 /**
@@ -13,10 +15,17 @@ import org.pac4j.oidc.profile.creator.OidcProfileCreator;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile> {
+public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile,AzureAdOidcConfiguration> {
 
-    public AzureAdProfileCreator(final OidcConfiguration configuration) {
+    public AzureAdProfileCreator(final AzureAdOidcConfiguration configuration) {
         super(configuration);
+    }
+
+    @Override
+    public AzureAdProfile create(final OidcCredentials credentials, final WebContext context) {
+        AzureAdProfile profile = super.create(credentials, context);
+        profile.setTenant(configuration.getTenant());
+        return profile;
     }
 
     @Override

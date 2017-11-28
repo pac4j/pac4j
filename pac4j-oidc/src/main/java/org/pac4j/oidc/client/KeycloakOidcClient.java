@@ -1,7 +1,7 @@
 package org.pac4j.oidc.client;
 
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
@@ -18,19 +18,20 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
  * @author Julio Arrebola
  * @since 2.0.0
  */
-public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile> {
+public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile,KeycloakOidcConfiguration> {
 
     public KeycloakOidcClient() {
     }
 
-    public KeycloakOidcClient(final OidcConfiguration configuration) {
+    public KeycloakOidcClient(final KeycloakOidcConfiguration configuration) {
         super(configuration);
     }
 
     @Override
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", getConfiguration());
-        final OidcProfileCreator<KeycloakOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
+        final OidcProfileCreator<KeycloakOidcProfile,KeycloakOidcConfiguration> profileCreator =
+            new OidcProfileCreator<>(getConfiguration());
         profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 

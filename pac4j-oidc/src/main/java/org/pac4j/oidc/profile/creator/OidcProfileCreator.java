@@ -43,15 +43,16 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinitionAware<U> implements ProfileCreator<OidcCredentials, U> {
+public class OidcProfileCreator<U extends OidcProfile,V extends OidcConfiguration> extends ProfileDefinitionAware<U>
+    implements ProfileCreator<OidcCredentials, U> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
-    protected OidcConfiguration configuration;
+    protected V configuration;
 
     protected IDTokenValidator idTokenValidator;
 
-    public OidcProfileCreator(final OidcConfiguration configuration) {
+    public OidcProfileCreator(final V configuration) {
         this.configuration = configuration;
     }
 
