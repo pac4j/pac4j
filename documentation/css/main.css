@@ -55,7 +55,7 @@ hr {
 code[class="highlighter-rouge"] {
     background-color: #f7f7f7;
 }
-img, table, th, td, .highlight {
+img, table, th, td, pre[class="highlight"] {
     border:1px solid #BBBBBB;
 }
 th {
