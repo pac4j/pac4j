@@ -71,7 +71,7 @@ p {
     text-align: center;
     width: 100%;
 }
-.highlight {
+pre[class="highlight"] {
     padding: 10px 10px 10px 10px
 }
 #home {
