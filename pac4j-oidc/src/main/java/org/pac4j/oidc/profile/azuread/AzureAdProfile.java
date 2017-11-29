@@ -78,14 +78,9 @@ public class AzureAdProfile extends OidcProfile {
             connection = HttpUtils.openPostConnection(new URL("https://login.microsoftonline.com/"+config.getTenant()+"/oauth2/token"),
                 headers);
 
-            final String payload = HttpUtils.encodeQueryParam("client_id",config.getClientId())
-                + "&" + HttpUtils.encodeQueryParam("client_secret",config.getSecret())
-                + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")
-                + "&" + HttpUtils.encodeQueryParam("refresh_token",getRefreshToken().getValue())
-                + "&" +HttpUtils.encodeQueryParam("resource",config.getClientId());
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
                 StandardCharsets.UTF_8));
-            out.write(payload);
+            out.write(config.makeOauth2TokenRequest(getRefreshToken().getValue()));
             out.close();
 
             final int responseCode = connection.getResponseCode();

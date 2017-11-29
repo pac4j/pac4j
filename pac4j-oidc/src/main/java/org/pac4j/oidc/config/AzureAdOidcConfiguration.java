@@ -1,6 +1,7 @@
 package org.pac4j.oidc.config;
 
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 
 /**
  * AzureAd OpenID Connect configuration.
@@ -54,6 +55,16 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
 
     public void setTenant(String tenant) {
         this.tenant = tenant;
+    }
+
+    public String makeOauth2TokenRequest(String refreshToken) {
+        final String payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
+            + "&" + HttpUtils.encodeQueryParam("client_secret",this.getSecret())
+            + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")
+            + "&" + HttpUtils.encodeQueryParam("refresh_token",refreshToken)
+            + "&" + HttpUtils.encodeQueryParam("resource",this.getClientId());
+
+        return payload;
     }
 
 }
