@@ -24,7 +24,7 @@ public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile,Azu
     @Override
     public AzureAdProfile create(final OidcCredentials credentials, final WebContext context) {
         AzureAdProfile profile = super.create(credentials, context);
-        profile.setTenant(configuration.getTenant());
+        profile.setConfiguration(configuration);
         return profile;
     }
 
