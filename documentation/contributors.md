@@ -10,3 +10,5 @@ title: <i class="fa fa-file-code-o" aria-hidden="true"></i> For <i>pac4j</i> con
 ## 3) [Tests strategy](docs/tests-strategy.html)
 
 ## 4) [Release process](docs/release-process.html)
+
+## 5) [The Team](docs/the-team.html)
