@@ -25,6 +25,10 @@ nav {
     margin-bottom: 50px;
 }
 
+nav a {
+    background-color: #1565c0;
+}
+
 h1 {
     font-size: 26px;
     margin-top: 25px;
@@ -127,4 +131,12 @@ main li {
 }
 .warning {
     color: #fb4d3d;
+}
+.bio div {
+    float: left;
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
+.clear {
+    clear: both;
 }
