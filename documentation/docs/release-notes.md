@@ -14,6 +14,7 @@ title: Release notes&#58;
 - You can define an error (page) URL at the logics' level to handle unexpected exceptions
 - The SAML Keystore alias can be defined via a property
 - The client name is not set at the credential's level
+- The username of the `AzureAdProfile` is the UPN
 
 **v2.2.0**:
 
