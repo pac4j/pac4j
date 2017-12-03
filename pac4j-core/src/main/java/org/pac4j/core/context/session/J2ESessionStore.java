@@ -32,7 +32,7 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
 
     @Override
     public Optional get(final J2EContext context, final String key) {
-        return Optional.of(getHttpSession(context).getAttribute(key));
+        return Optional.ofNullable(getHttpSession(context).getAttribute(key));
     }
 
     @Override
@@ -52,12 +52,12 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
 
     @Override
     public Optional getTrackableSession(final J2EContext context) {
-        return Optional.of(getHttpSession(context));
+        return Optional.ofNullable(getHttpSession(context));
     }
 
     @Override
-    public Optional<SessionStore<J2EContext>> buildFromTrackableSession(final J2EContext context, final Object trackableSession) {
-        return trackableSession == null ? Optional.empty() : Optional.of(new J2EProvidedSessionStore((HttpSession) trackableSession));
+    public SessionStore<J2EContext> buildFromTrackableSession(final J2EContext context, final Object trackableSession) {
+        return new J2EProvidedSessionStore((HttpSession) trackableSession);
     }
 
     @Override

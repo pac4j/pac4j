@@ -62,7 +62,7 @@ public interface SessionStore<C extends WebContext> {
      * @param trackableSession the trackable session
      * @return the new session store
      */
-    Optional<SessionStore<C>> buildFromTrackableSession(C context, Object trackableSession);
+    SessionStore<C> buildFromTrackableSession(C context, Object trackableSession);
 
     /**
      * Renew the native session by copying all data to a new one.

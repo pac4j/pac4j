@@ -25,16 +25,16 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public Optional<TokenCredentials> extract(WebContext context) {
-        final String header = context.getRequestHeader(this.headerName);
-        if (header == null) {
+        final Optional<String> header = context.getRequestHeader(this.headerName);
+        if (!header.isPresent()) {
             return Optional.empty();
         }
 
-        if  (!header.startsWith(this.prefixHeader)) {
+        if  (!header.get().startsWith(this.prefixHeader)) {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 
-        final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+        final String headerWithoutPrefix = header.get().substring(this.prefixHeader.length());
         return Optional.of(new TokenCredentials(headerWithoutPrefix));
     }
 }

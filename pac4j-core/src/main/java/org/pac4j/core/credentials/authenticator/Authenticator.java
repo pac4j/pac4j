@@ -15,7 +15,7 @@ public interface Authenticator<C extends Credentials> {
 
     /**
      * Validate the credentials. It must throw a {@link CredentialsException} in case of failure.
-     * As the exception is the validation mecanism, the absent of it indicates valid credentials.
+     * As the exception is the validation mecanism, the absence of it indicates valid credentials.
      *
      * @param credentials the given credentials
      * @param context the web context

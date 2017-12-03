@@ -14,7 +14,10 @@ import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
@@ -38,7 +41,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String name = this.getClass().getSimpleName();
+    private String name;
 
     // As the most common access would be through iteration then random, LinkedList is more efficient
     private List<AuthorizationGenerator<U>> authorizationGenerators = new LinkedList<>();
@@ -49,6 +52,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
+    public BaseClient() {
+        this.setName(null);
+    }
+
     /**
      * Retrieve the credentials.
      *
@@ -58,13 +65,15 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected Optional<C> retrieveCredentials(final WebContext context) {
         try {
             final Optional<C> credentials = this.credentialsExtractor.extract(context);
-            final long t0 = System.currentTimeMillis();
-            try {
-                credentials.ifPresent(c -> this.authenticator.validate(c, context));
-            } finally {
-                final long t1 = System.currentTimeMillis();
-                logger.debug("Credentials validation took: {} ms", t1 - t0);
-            }
+            credentials.ifPresent(c -> {
+                final long t0 = System.currentTimeMillis();
+                try {
+                    this.authenticator.validate(c, context);
+                } finally {
+                    final long t1 = System.currentTimeMillis();
+                    logger.debug("Credentials validation took: {} ms", t1 - t0);
+                }
+            });
             return credentials;
         } catch (CredentialsException e) {
             logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
@@ -86,7 +95,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (AuthorizationGenerator<U> authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile.get());
+                    profile = Optional.of(
+                        authorizationGenerator.generate(context, profile.get())
+                    );
                 }
             }
         }
@@ -106,17 +117,17 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return profile;
     }
 
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
     public void setName(final String name) {
         if (CommonHelper.isBlank(this.name)) {
             this.name = this.getClass().getSimpleName();
         } else {
             this.name = name;
         }
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     /**
@@ -156,6 +167,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return credentialsExtractor;
     }
 
+    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+        this.credentialsExtractor = credentialsExtractor;
+    }
+
     protected void defaultCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
         if (this.credentialsExtractor == null) {
             this.credentialsExtractor = credentialsExtractor;
@@ -164,6 +179,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     public Authenticator<C> getAuthenticator() {
         return authenticator;
+    }
+
+    public void setAuthenticator(final Authenticator<C> authenticator) {
+        this.authenticator = authenticator;
     }
 
     protected void defaultAuthenticator(final Authenticator<C> authenticator) {
@@ -176,22 +195,14 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return profileCreator;
     }
 
+    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+        this.profileCreator = profileCreator;
+    }
+
     protected void defaultProfileCreator(final ProfileCreator<C, U> profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
-    }
-
-    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
-        this.credentialsExtractor = credentialsExtractor;
-    }
-
-    public void setAuthenticator(final Authenticator<C> authenticator) {
-        this.authenticator = authenticator;
-    }
-
-    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
-        this.profileCreator = profileCreator;
     }
 
     @Override

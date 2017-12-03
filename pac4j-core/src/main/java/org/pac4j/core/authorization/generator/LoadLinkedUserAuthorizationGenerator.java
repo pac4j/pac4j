@@ -7,8 +7,6 @@ import org.pac4j.core.profile.service.ProfileService;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
-import java.util.Optional;
-
 /**
  * Load a linked account and replace the original account.
  *
@@ -34,19 +32,19 @@ public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> exten
     }
 
     @Override
-    public Optional<U> generate(final WebContext context, final U profile) {
+    public U generate(final WebContext context, final U profile) {
         init();
 
         final U linkedProfile = profileService.findByLinkedId(profile.getId());
 
         if (linkedProfile != null) {
-            return Optional.of(linkedProfile);
+            return linkedProfile;
         } else {
             if (failIfLinkedUserNotFound) {
                 throw new TechnicalException("No linked account found for: " + profile);
             } else {
                 // fallback to the original account
-                return Optional.ofNullable(profile);
+                return profile;
             }
         }
     }
