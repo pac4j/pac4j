@@ -6,9 +6,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
-import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
@@ -94,12 +94,16 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             throw HttpAction.unauthorized(context);
         }
         // authentication has already been tried -> unauthorized
-        final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX).get();
-        if (CommonHelper.isNotBlank(attemptedAuth)) {
-            cleanAttemptedAuthentication(context);
-            cleanRequestedUrl(context);
-            throw HttpAction.unauthorized(context);
-        }
+        context
+            .getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX)
+            .ifPresent(
+                attemptedAuth -> {
+                    if (CommonHelper.isNotBlank((String) attemptedAuth)) {
+                        cleanAttemptedAuthentication(context);
+                        cleanRequestedUrl(context);
+                        throw HttpAction.unauthorized(context);
+                    }
+                });
 
         return redirectActionBuilder.redirect(context);
     }
@@ -146,11 +150,13 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return callbackUrlResolver.compute(callbackUrl, this.getName(), context);
     }
 
+    public String getCallbackUrl() {
+        return this.callbackUrl;
+    }
+
     public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
-
-    public String getCallbackUrl() { return this.callbackUrl; }
 
     public CallbackUrlResolver getCallbackUrlResolver() {
         return callbackUrlResolver;
@@ -172,6 +178,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return redirectActionBuilder;
     }
 
+    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+        this.redirectActionBuilder = redirectActionBuilder;
+    }
+
     protected void defaultRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
         if (this.redirectActionBuilder == null) {
             this.redirectActionBuilder = redirectActionBuilder;
@@ -182,26 +192,22 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return logoutActionBuilder;
     }
 
+    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+        this.logoutActionBuilder = logoutActionBuilder;
+    }
+
     protected void defaultLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;
         }
     }
 
-    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
-        this.redirectActionBuilder = redirectActionBuilder;
-    }
-
-    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
-        this.logoutActionBuilder = logoutActionBuilder;
-    }
-
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
-                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-                "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
+            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
+            "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
     }
 }

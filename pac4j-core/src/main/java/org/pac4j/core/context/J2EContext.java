@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This implementation uses the J2E {@link HttpServletRequest} and {@link HttpServletResponse}.
@@ -61,13 +62,13 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public String getRequestParameter(final String name) {
-        return this.request.getParameter(name);
+    public Optional<String> getRequestParameter(final String name) {
+        return Optional.ofNullable(this.request.getParameter(name));
     }
 
     @Override
-    public Object getRequestAttribute(final String name) {
-        return this.request.getAttribute(name);
+    public Optional getRequestAttribute(final String name) {
+        return Optional.ofNullable(this.request.getAttribute(name));
     }
 
     @Override
@@ -81,8 +82,8 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public String getRequestHeader(final String name) {
-        return this.request.getHeader(name);
+    public Optional<String> getRequestHeader(final String name) {
+        return Optional.ofNullable(this.request.getHeader(name));
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.util.Optional;
 
 /**
  * This interface is responsible to create a {@link CommonProfile} from a {@link Credentials}.
- * Return <code>null</code> if no profile can be found / created.
  *
  * @author Jerome Leleu
  * @since 1.7.0

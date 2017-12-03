@@ -81,7 +81,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             final Optional<Credentials> credentials = client.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final Optional<CommonProfile> profile = credentials.flatMap( c -> client.getUserProfile(c, context));
+            final Optional<CommonProfile> profile = credentials.flatMap(c -> client.getUserProfile(c, context));
             logger.debug("profile: {}", profile);
             saveUserProfile(context, config, profile, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
@@ -106,7 +106,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
 
     protected void saveUserProfile(final C context, final Config config, final Optional<CommonProfile> profile,
                                    final boolean multiProfile, final boolean renewSession) {
-        if(profile.isPresent()) {
+        if (profile.isPresent()) {
             this.saveUserProfile(context, config, profile.get(), multiProfile, renewSession);
         }
     }
@@ -136,12 +136,12 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final String requestedUrl = (String) context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL).get();
-        String redirectUrl = defaultUrl;
-        if (isNotBlank(requestedUrl)) {
+        final Optional<String> requestedUrlOpt = context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
+        String redirectUrl = requestedUrlOpt.filter(url -> isNotBlank(url)).orElse(defaultUrl);
+        if (!defaultUrl.equals(redirectUrl)) {
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
-            redirectUrl = requestedUrl;
         }
+
         logger.debug("redirectUrl: {}", redirectUrl);
         return HttpAction.redirect(context, redirectUrl);
     }

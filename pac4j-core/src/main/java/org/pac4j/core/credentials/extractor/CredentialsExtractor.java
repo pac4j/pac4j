@@ -7,8 +7,7 @@ import org.pac4j.core.exception.CredentialsException;
 import java.util.Optional;
 
 /**
- * An extractor gets the {@link Credentials} from a {@link WebContext} and should return <code>null</code> if no credentials are present
- * or should throw a {@link CredentialsException} if it cannot get it.
+ * An extractor gets the {@link Credentials} from a {@link WebContext} and should throw a {@link CredentialsException} if it cannot get it.
  *
  * @author Jerome Leleu
  * @since 1.8.0

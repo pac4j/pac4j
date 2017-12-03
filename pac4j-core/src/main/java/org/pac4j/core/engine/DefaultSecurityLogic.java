@@ -210,7 +210,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
-        return (HttpAction) currentClient.redirect(context).get();
+        return (HttpAction) currentClient.redirect(context).orElseGet(() -> {
+            throw new Error("Could not get HttpAction to redirect to!");
+        });
     }
 
     /**

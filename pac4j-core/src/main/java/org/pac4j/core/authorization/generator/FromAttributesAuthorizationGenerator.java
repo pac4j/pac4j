@@ -45,10 +45,10 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
     }
 
     @Override
-    public Optional<U> generate(final WebContext context, final U profile) {
+    public U generate(final WebContext context, final U profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
-        return Optional.of(profile);
+        return profile;
     }
 
     private void generateAuth(final U profile, final Iterable<String> attributes, final boolean isRole) {

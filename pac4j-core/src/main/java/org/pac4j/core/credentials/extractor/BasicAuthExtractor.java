@@ -2,9 +2,9 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.exception.CredentialsException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -31,7 +31,7 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
     @Override
     public Optional<UsernamePasswordCredentials> extract(WebContext context) {
         final Optional<TokenCredentials> credentials = this.extractor.extract(context);
-        return credentials.flatMap( c -> {
+        return credentials.map(c -> {
             final byte[] decoded = Base64.getDecoder().decode(c.getToken());
 
             String token;
@@ -45,11 +45,9 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
             if (delim < 0) {
                 throw new CredentialsException("Bad format of the basic auth header");
             }
-            return Optional.of(
-                new UsernamePasswordCredentials(
-                    token.substring(0, delim),
-                    token.substring(delim + 1)
-                )
+            return new UsernamePasswordCredentials(
+                token.substring(0, delim),
+                token.substring(delim + 1)
             );
         });
     }

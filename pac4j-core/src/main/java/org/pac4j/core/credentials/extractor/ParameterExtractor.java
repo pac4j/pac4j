@@ -1,13 +1,13 @@
 package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
 
-import static org.pac4j.core.context.HttpConstants.*;
+import static org.pac4j.core.context.HttpConstants.HTTP_METHOD;
 
 /**
  * To extract a parameter value.
@@ -44,12 +44,13 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
         }
 
         return Optional.ofNullable(context.getRequestParameter(this.parameterName))
-            .map((v) -> new TokenCredentials(v));
+            .map(Optional::get)
+            .map(TokenCredentials::new);
     }
 
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "parameterName", parameterName,
-                "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
+            "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
     }
 }

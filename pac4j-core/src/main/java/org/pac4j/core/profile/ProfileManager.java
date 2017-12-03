@@ -9,7 +9,9 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * This class is a generic way to manage the current user profile(s), i.e. the one(s) of the current authenticated user.
@@ -19,11 +21,9 @@ import java.util.*;
  */
 public class ProfileManager<U extends CommonProfile> {
 
-    private final Authorizer<U> IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer<U>();
-
     protected final WebContext context;
-
     protected final SessionStore sessionStore;
+    private final Authorizer<U> IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer<U>();
 
     public ProfileManager(final WebContext context) {
         CommonHelper.assertNotNull("context", context);
@@ -68,23 +68,27 @@ public class ProfileManager<U extends CommonProfile> {
      */
     protected LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
-        final Object request = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
-        if (request != null) {
-            if  (request instanceof LinkedHashMap) {
-                profiles.putAll((LinkedHashMap<String, U>) request);
-            }
-            if (request instanceof CommonProfile) {
-                profiles.put(retrieveClientName((U) request), (U) request);
-            }
-        }
+        this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
+            .ifPresent(request -> {
+                if (request instanceof LinkedHashMap) {
+                    profiles.putAll((LinkedHashMap<String, U>) request);
+                }
+                if (request instanceof CommonProfile) {
+                    profiles.put(retrieveClientName((U) request), (U) request);
+                }
+            });
         if (readFromSession) {
-            final Object sessionAttribute = this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES).get();
-            if  (sessionAttribute instanceof LinkedHashMap) {
-                profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
-            }
-            if (sessionAttribute instanceof CommonProfile) {
-                profiles.put(retrieveClientName((U) sessionAttribute), (U) sessionAttribute);
-            }
+            this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES)
+                .ifPresent(
+                    sessionAttribute -> {
+                        if (sessionAttribute instanceof LinkedHashMap) {
+                            profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
+                        }
+                        if (sessionAttribute instanceof CommonProfile) {
+                            profiles.put(retrieveClientName((U) sessionAttribute), (U) sessionAttribute);
+                        }
+                    }
+                );
         }
         return profiles;
     }
@@ -105,8 +109,8 @@ public class ProfileManager<U extends CommonProfile> {
      * Save the given user profile (replace the current one if multi profiles are not supported, add it otherwise).
      *
      * @param saveInSession if the user profile must be saved in session
-     * @param profile a given user profile
-     * @param multiProfile whether multiple profiles are supported
+     * @param profile       a given user profile
+     * @param multiProfile  whether multiple profiles are supported
      */
     public void save(final boolean saveInSession, final U profile, final boolean multiProfile) {
         final LinkedHashMap<String, U> profiles;
