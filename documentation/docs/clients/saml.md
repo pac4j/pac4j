@@ -142,10 +142,10 @@ By default, assertions must be signed, but this may be disabled using:
 cfg.setWantsAssertionsSigned(false);
 ```
 
-You may also force XML-signing of the authentication requests when using the redirect binding:
+You may also want to enable signing of the authentication requests using:
 
 ```java
-cfg.setForceServiceProviderMetadataGeneration(true);
+cfg.setAuthnRequestSigned(true);
 ```
 
 The final result will be determined based on the IdP metadata and the configuration above. 

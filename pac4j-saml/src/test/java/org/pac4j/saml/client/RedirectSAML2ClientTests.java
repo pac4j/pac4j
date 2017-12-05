@@ -71,8 +71,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         final RedirectAction action = client.getRedirectAction(context);
         final String loc = action.getLocation();
         assertTrue(getInflatedAuthnRequest(loc).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" " +
-                "Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\" " +
-                "xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"/></saml2p:AuthnRequest>"));
+                "Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
     }
 
     @Test
@@ -83,8 +82,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final RedirectAction action = client.getRedirectAction(context);
 
-        final String checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\" " +
-                "xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"><saml2:AuthnContextClassRef " +
+        final String checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef " +
                 "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">" +
                 "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>" +
                 "</saml2p:RequestedAuthnContext>";

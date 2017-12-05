@@ -118,7 +118,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getDestinationBindingType(),
-                        this.configuration.isForceSignRedirectBindingAuthnRequest()),
+                        this.configuration.isAuthnRequestSigned()),
                 new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
 
@@ -128,7 +128,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.signatureTrustEngineProvider,
                 this.decrypter,
                 this.configuration.getMaximumAuthenticationLifetime(),
-                this.configuration.getWantsAssertionsSigned());
+                this.configuration.isWantsAssertionsSigned());
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {

@@ -40,7 +40,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.client.getSignatureTrustEngineProvider());
         this.logoutProfileHandler = new SAML2LogoutProfileHandler(
                 new SAML2LogoutMessageSender(this.client.getSignatureSigningParametersProvider(),
-                        cfg.getDestinationBindingType(), false, cfg.isForceSignRedirectBindingAuthnRequest()),
+                        cfg.getDestinationBindingType(), false, cfg.isAuthnRequestSigned()),
                 new SAML2WebSSOMessageReceiver(this.logoutResponseValidator));
     }
 

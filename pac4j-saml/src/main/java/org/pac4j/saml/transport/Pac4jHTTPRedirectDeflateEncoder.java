@@ -47,12 +47,12 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
     private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
-    private final boolean forceSignRedirectBindingAuthnRequest;
+    private final boolean isAuthnRequestSigned;
 
     public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter,
-                                           final boolean forceSignRedirectBindingAuthnRequest) {
+                                           final boolean isAuthnRequestSigned) {
         this.responseAdapter = responseAdapter;
-        this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
+        this.isAuthnRequestSigned = isAuthnRequestSigned;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         final SAMLObject outboundMessage = (SAMLObject)messageContext.getMessage();
         final String endpointURL = this.getEndpointURL(messageContext).toString();
 
-        if (!this.forceSignRedirectBindingAuthnRequest) {
+        if (!this.isAuthnRequestSigned) {
             this.removeSignature(outboundMessage);
         }
 
