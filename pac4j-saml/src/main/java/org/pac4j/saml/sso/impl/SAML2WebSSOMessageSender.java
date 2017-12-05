@@ -35,14 +35,14 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
     private final String destinationBindingType;
-    private final boolean forceSignRedirectBindingAuthnRequest;
-    
+    private final boolean isAuthnRequestSigned;
+
     public SAML2WebSSOMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
                                     final String destinationBindingType,
-                                    final boolean forceSignRedirectBindingAuthnRequest) {
+                                    final boolean isAuthnRequestSigned) {
         this.signatureSigningParametersProvider = signatureSigningParametersProvider;
         this.destinationBindingType = destinationBindingType;
-        this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
+        this.isAuthnRequestSigned = isAuthnRequestSigned;
     }
 
     @Override
@@ -79,10 +79,10 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         if (relayState != null) {
             outboundContext.getSAMLBindingContext().setRelayState(relayState.toString());
         }
-        
+
         try {
             invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, outboundContext);
-            
+
             encoder.setMessageContext(outboundContext);
             encoder.initialize();
             encoder.prepareContext();
@@ -148,7 +148,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         }
 
         if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            return new Pac4jHTTPRedirectDeflateEncoder(adapter, forceSignRedirectBindingAuthnRequest);
+            return new Pac4jHTTPRedirectDeflateEncoder(adapter, isAuthnRequestSigned);
         }
 
         throw new UnsupportedOperationException("Binding type - "
