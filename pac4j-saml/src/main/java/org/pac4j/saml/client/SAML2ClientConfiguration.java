@@ -65,8 +65,6 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private boolean forceAuth = false;
     private boolean passive = false;
 
-    private boolean forceSignRedirectBindingAuthnRequest;
-
     private String comparisonType = null;
 
     private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
@@ -81,7 +79,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
-    private boolean authnRequestSigned = true;
+    private boolean authnRequestSigned;
 
     private Collection<String> blackListedSignatureSigningAlgorithms;
     private List<String> signatureAlgorithms;
@@ -408,7 +406,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
     }
 
-    public boolean getWantsAssertionsSigned() {
+    public boolean isWantsAssertionsSigned() {
         return this.wantsAssertionsSigned;
     }
 
@@ -416,16 +414,12 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
-    public boolean isForceSignRedirectBindingAuthnRequest() {
-        return forceSignRedirectBindingAuthnRequest;
-    }
-
-    public void setForceSignRedirectBindingAuthnRequest(final boolean forceSignRedirectBindingAuthnRequest) {
-        this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
-    }
-
     public boolean isAuthnRequestSigned() {
         return authnRequestSigned;
+    }
+
+    public void setAuthnRequestSigned(final boolean authnRequestSigned) {
+        this.authnRequestSigned = authnRequestSigned;
     }
 
     public int getAttributeConsumingServiceIndex() {

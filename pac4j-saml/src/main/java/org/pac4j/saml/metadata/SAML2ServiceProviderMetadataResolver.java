@@ -50,7 +50,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
         this.authnRequestSigned = configuration.isAuthnRequestSigned();
-        this.wantsAssertionsSigned = configuration.getWantsAssertionsSigned();
+        this.wantsAssertionsSigned = configuration.isWantsAssertionsSigned();
         this.nameIdPolicyFormat = configuration.getNameIdPolicyFormat();
         this.spMetadataResource = configuration.getServiceProviderMetadataResource();
         this.spEntityId = configuration.getServiceProviderEntityId();
