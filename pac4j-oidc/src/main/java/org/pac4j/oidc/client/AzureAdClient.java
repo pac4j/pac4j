@@ -1,8 +1,22 @@
 package org.pac4j.oidc.client;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
-import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.AzureAdOidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
@@ -27,12 +41,16 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  * @author Emond Papegaaij
  * @since 1.8.3
  */
-public class AzureAdClient extends OidcClient<AzureAdProfile> {
+public class AzureAdClient extends OidcClient<AzureAdProfile,AzureAdOidcConfiguration> {
+
+    private ObjectMapper objectMapper;
+    private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
 
     public AzureAdClient() {}
 
-    public AzureAdClient(final OidcConfiguration configuration) {
+    public AzureAdClient(final AzureAdOidcConfiguration configuration) {
         super(configuration);
+        objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -42,5 +60,36 @@ public class AzureAdClient extends OidcClient<AzureAdProfile> {
         defaultProfileCreator(new AzureAdProfileCreator(getConfiguration()));
 
         super.clientInit();
+    }
+
+    public String getAccessTokenFromRefreshToken(AzureAdProfile azureAdProfile) {
+        CommonHelper.assertTrue(CommonHelper.isNotBlank(getConfiguration().getTenant()),
+            "Tenant must be defined. Update your config.");
+        HttpURLConnection connection = null;
+        try {
+            final Map<String, String> headers = new HashMap<>();
+            headers.put( HttpConstants.CONTENT_TYPE_HEADER, HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE);
+            headers.put( HttpConstants.ACCEPT_HEADER, HttpConstants.APPLICATION_JSON);
+
+            connection = HttpUtils.openPostConnection(new URL("https://login.microsoftonline.com/"+getConfiguration().getTenant()+
+                "/oauth2/token"), headers);
+
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
+                StandardCharsets.UTF_8));
+            out.write(getConfiguration().makeOauth2TokenRequest(azureAdProfile.getRefreshToken().getValue()));
+            out.close();
+
+            final int responseCode = connection.getResponseCode();
+            if (responseCode != 200) {
+                throw new TechnicalException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
+            }
+            String body = HttpUtils.readBody(connection);
+            final Map<String, Object> res = objectMapper.readValue(body, typeRef);
+            return (String)res.get("access_token");
+        } catch (final IOException e) {
+            throw new TechnicalException(e);
+        } finally {
+            HttpUtils.closeConnection(connection);
+        }
     }
 }

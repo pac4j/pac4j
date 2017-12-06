@@ -14,7 +14,7 @@ import org.pac4j.oidc.profile.google.GoogleOidcProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
+public class GoogleOidcClient extends OidcClient<GoogleOidcProfile,OidcConfiguration> {
 
     public GoogleOidcClient() {
     }
