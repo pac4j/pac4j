@@ -6,6 +6,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.oidc.client.AzureAdClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
+import org.pac4j.oidc.config.AzureAdOidcConfiguration;
 import org.pac4j.oidc.config.OidcConfiguration;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class OidcClientBuilder extends AbstractBuilder {
                 final String type = getProperty(OIDC_TYPE, i);
                 final OidcClient oidcClient;
                 if (OIDC_AZURE_TYPE.equalsIgnoreCase(type)) {
-                    oidcClient = new AzureAdClient(configuration);
+                    oidcClient = new AzureAdClient(new AzureAdOidcConfiguration(configuration));
                 } else if (OIDC_GOOGLE_TYPE.equalsIgnoreCase(type)) {
                     oidcClient = new GoogleOidcClient(configuration);
                 } else {

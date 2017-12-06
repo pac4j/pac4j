@@ -44,6 +44,12 @@ public interface HttpConstants {
 
     String DIGEST_HEADER_PREFIX = "Digest ";
 
+    String ACCEPT_HEADER = "Accept";
+
+    String APPLICATION_FORM_ENCODED_HEADER_VALUE = "application/x-www-form-urlencoded";
+
+    String APPLICATION_JSON = "application/json";
+
     String AUTHENTICATE_HEADER = "WWW-Authenticate";
 
     String CONTENT_TYPE_HEADER = "Content-Type";
