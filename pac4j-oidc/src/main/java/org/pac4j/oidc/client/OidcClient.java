@@ -21,21 +21,21 @@ import org.pac4j.oidc.redirect.OidcRedirectActionBuilder;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCredentials, U> {
+public class OidcClient<U extends OidcProfile,V extends OidcConfiguration> extends IndirectClient<OidcCredentials, U> {
 
-    private OidcConfiguration configuration = new OidcConfiguration();
+    private V configuration = null;
 
     public OidcClient() { }
 
-    public OidcClient(final OidcConfiguration configuration) {
+    public OidcClient(final V configuration) {
         setConfiguration(configuration);
     }
 
-    public OidcConfiguration getConfiguration() {
+    public V getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(final OidcConfiguration configuration) {
+    public void setConfiguration(final V configuration) {
         this.configuration = configuration;
     }
 
