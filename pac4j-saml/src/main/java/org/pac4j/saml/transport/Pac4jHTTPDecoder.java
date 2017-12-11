@@ -3,9 +3,6 @@ package org.pac4j.saml.transport;
 import com.google.common.base.Strings;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.logic.Constraint;
@@ -149,16 +146,11 @@ public class Pac4jHTTPDecoder extends AbstractMessageDecoder<SAMLObject> {
     protected XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
         try {
             XMLObject message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
-            TransformerFactory.newInstance().newTransformer().
-                transform(new DOMSource(message.getDOM()), new StreamResult(System.out));
-
             return message;
         } catch (XMLParserException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
         } catch (UnmarshallingException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
