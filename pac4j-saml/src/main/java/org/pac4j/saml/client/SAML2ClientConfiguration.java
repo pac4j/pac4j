@@ -88,7 +88,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
-    private boolean wantsAssertionsSigned = true;
+    private boolean wantsAssertionsSigned = false; // See section 2.4.4 of Metadata for the OASIS Security Assertion Markup Language (SAML) V2.0
 
     private String keyStoreAlias;
 

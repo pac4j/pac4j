@@ -1,6 +1,8 @@
 package org.pac4j.saml.transport;
 
 import com.google.common.base.Strings;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.logic.Constraint;
@@ -34,15 +36,15 @@ import java.io.UnsupportedEncodingException;
  * @author Misagh Moayyed
  * @since 1.8
  */
-public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
-    private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostDecoder.class);
+public class Pac4jHTTPDecoder extends AbstractMessageDecoder<SAMLObject> {
+    private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPDecoder.class);
 
     /** Parser pool used to deserialize the message. */
     private ParserPool parserPool;
 
     private final WebContext context;
 
-    public Pac4jHTTPPostDecoder(final WebContext context) {
+    public Pac4jHTTPDecoder(final WebContext context) {
         this.context = context;
         if (this.context == null) {
             throw new TechnicalException("Context cannot be null");
@@ -52,20 +54,23 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
     @Override
     protected void doDecode() throws MessageDecodingException {
         final MessageContext messageContext = new MessageContext();
-
-        if(!HttpConstants.HTTP_METHOD.POST.name().equalsIgnoreCase(this.context.getRequestMethod())) {
-            throw new MessageDecodingException("This message decoder only supports the HTTP POST method");
-        } else {
-            final String relayState = this.context.getRequestParameter("RelayState");
-            logger.debug("Decoded SAML relay state of: {}", relayState);
-            SAMLBindingSupport.setRelayState(messageContext, relayState);
-            final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
-            final SAMLObject inboundMessage = (SAMLObject)this.unmarshallMessage(base64DecodedMessage);
-            messageContext.setMessage(inboundMessage);
-            logger.debug("Decoded SAML message");
-            this.populateBindingContext(messageContext);
-            this.setMessageContext(messageContext);
-        }
+        final String relayState = this.context.getRequestParameter("RelayState");
+        logger.debug("Decoded SAML relay state of: {}", relayState);
+        SAMLBindingSupport.setRelayState(messageContext, relayState);
+        final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
+        final SAMLObject inboundMessage =
+            (SAMLObject)this.unmarshallMessage
+                (
+                    HttpConstants.HTTP_METHOD.POST.name()
+                        .equalsIgnoreCase(this.context.getRequestMethod()) ?
+                        base64DecodedMessage :
+                        new InflaterInputStream(base64DecodedMessage, new Inflater(true))
+                );
+        // TODO: verify signature of SAMLResponse
+        messageContext.setMessage(inboundMessage);
+        logger.debug("Decoded SAML message");
+        this.populateBindingContext(messageContext);
+        this.setMessageContext(messageContext);
     }
 
     protected InputStream getBase64DecodedMessage()
@@ -77,7 +82,7 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         }
 
         if(Strings.isNullOrEmpty(encodedMessage)) {
-            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. " 
+            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. "
                 + "Invalid request for SAML 2 HTTP POST binding.");
         } else {
             logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);

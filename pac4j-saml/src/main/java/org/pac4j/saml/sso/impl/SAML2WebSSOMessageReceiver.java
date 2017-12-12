@@ -11,7 +11,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageReceiver;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
-import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
+import org.pac4j.saml.transport.Pac4jHTTPDecoder;
 import org.pac4j.saml.util.Configuration;
 
 /**
@@ -33,7 +33,7 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
-        final Pac4jHTTPPostDecoder decoder = new Pac4jHTTPPostDecoder(context.getWebContext());
+        final Pac4jHTTPDecoder decoder = new Pac4jHTTPDecoder(context.getWebContext());
         try {
             decoder.setParserPool(Configuration.getParserPool());
             decoder.initialize();
