@@ -62,7 +62,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected String requestInitiatorLocation = null;
 
     protected String binding;
-    
+
     protected String nameIdPolicyFormat = null;
 
     public SAML2MetadataGenerator(final String binding) {
@@ -201,7 +201,9 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
         int index = 0;
-        spDescriptor.getAssertionConsumerServices().add(getAssertionConsumerService(binding, index++, this.defaultACSIndex == index));
+        // Fix the POST binding for the response instead of using the binding of the request
+        spDescriptor.getAssertionConsumerServices()
+            .add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
 
         if (credentialProvider != null) {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING,
@@ -219,13 +221,13 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
                 .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
         final Collection<NameIDFormat> formats = new LinkedList<NameIDFormat>();
-        
+
         if (this.nameIdPolicyFormat != null) {
             final NameIDFormat nameID = builder.buildObject();
             nameID.setFormat(this.nameIdPolicyFormat);
             formats.add(nameID);
         }
-        else {        
+        else {
             final NameIDFormat transientNameID = builder.buildObject();
             transientNameID.setFormat(NameIDType.TRANSIENT);
             formats.add(transientNameID);
@@ -326,11 +328,11 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public final void setRequestInitiatorLocation(final String requestInitiatorLocation) {
         this.requestInitiatorLocation = requestInitiatorLocation;
     }
-    
+
     public String getNameIdPolicyFormat() {
         return this.nameIdPolicyFormat;
     }
-    
+
     public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
