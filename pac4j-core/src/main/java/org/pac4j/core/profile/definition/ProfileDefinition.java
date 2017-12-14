@@ -22,6 +22,8 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected String profileId = null;
+
     private final List<String> primaries = new ArrayList<>();
 
     private final List<String> secondaries = new ArrayList<>();
@@ -123,5 +125,9 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
 
     protected Map<String, AttributeConverter<? extends Object>> getConverters() {
         return converters;
+    }
+
+    public void setProfileId(final String profileId) {
+        this.profileId = profileId;
     }
 }

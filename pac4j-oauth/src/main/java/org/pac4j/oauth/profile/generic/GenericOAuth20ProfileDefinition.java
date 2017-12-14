@@ -5,6 +5,8 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Verb;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.StringConverter;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -56,6 +58,8 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
         final OAuth20Profile profile = new OAuth20Profile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
+            if (profileId != null)
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, profileId)));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
