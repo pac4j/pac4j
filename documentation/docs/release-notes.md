@@ -16,7 +16,7 @@ title: Release notes&#58;
 - The client name is not set at the credential's level
 - The username of the `AzureAdProfile` is the UPN
 
-**v2.2.0**:
+**v2.2.1**:
 
 - Improve SAML support: fix generated binding, handle AttributeConsumingServiceIndex in authentication request, add capability to add authentication-related attributes to the user profile with specific attributes added to the profile...
 
