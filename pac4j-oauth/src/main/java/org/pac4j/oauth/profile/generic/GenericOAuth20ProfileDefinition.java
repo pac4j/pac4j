@@ -58,8 +58,9 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
         final OAuth20Profile profile = new OAuth20Profile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
-            if (profileId != null)
+            if (profileId != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, profileId)));
+            }
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
