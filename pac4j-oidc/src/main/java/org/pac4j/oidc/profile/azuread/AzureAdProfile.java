@@ -1,5 +1,13 @@
 package org.pac4j.oidc.profile.azuread;
 
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.profile.OidcProfile;
 
 /**
@@ -46,4 +54,23 @@ public class AzureAdProfile extends OidcProfile {
         return (String) getAttribute(AzureAdProfileDefinition.UPN);
     }
 
+    @Override
+    public boolean isExpired() {
+        try {
+            JWT jwt = this.getIdToken();
+            JWTClaimsSet claims = jwt.getJWTClaimsSet();
+            Date expiresOn = claims.getExpirationTime();
+
+            Calendar now = Calendar.getInstance();
+            now.add( Calendar.MINUTE, 5 );
+
+            if (expiresOn.before(now.getTime())) {
+                return true;
+            }
+        } catch (ParseException e) {
+            throw new TechnicalException(e);
+        }
+
+        return false;
+    }
 }
