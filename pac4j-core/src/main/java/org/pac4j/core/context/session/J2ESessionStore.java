@@ -56,8 +56,8 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
     }
 
     @Override
-    public SessionStore<J2EContext> buildFromTrackableSession(final J2EContext context, final Object trackableSession) {
-        return new J2EProvidedSessionStore((HttpSession) trackableSession);
+    public Optional<SessionStore<J2EContext>> buildFromTrackableSession(final J2EContext context, final Object trackableSession) {
+        return trackableSession != null ? Optional.of(new J2EProvidedSessionStore((HttpSession) trackableSession)) : Optional.empty();
     }
 
     @Override
