@@ -66,9 +66,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected abstract void clientInit();
 
     @Override
-    public final Optional<HttpAction> redirect(final WebContext context) {
+    public final HttpAction redirect(final WebContext context) {
         final RedirectAction action = getRedirectAction(context);
-        return Optional.of(action.perform(context));
+        return action.perform(context);
     }
 
     /**

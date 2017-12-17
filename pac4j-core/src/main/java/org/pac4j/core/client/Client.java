@@ -40,7 +40,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param context the current web context
      * @return the performed redirection
      */
-    Optional<HttpAction> redirect(WebContext context);
+    HttpAction redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
