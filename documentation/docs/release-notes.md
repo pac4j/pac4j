@@ -15,6 +15,7 @@ title: Release notes&#58;
 - The SAML Keystore alias can be defined via a property
 - The client name is not set at the credential's level
 - The username of the `AzureAdProfile` is the UPN
+- The issue time is generated for a new JWT
 
 **v2.2.1**:
 
