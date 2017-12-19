@@ -87,13 +87,18 @@ public class ProfileManager<U extends CommonProfile> {
             }
         }
 
+        removeExpiredProfiles(profiles);
+
+        return profiles;
+    }
+
+    private void removeExpiredProfiles(LinkedHashMap<String, U> profiles) {
         for (Iterator<Map.Entry<String, U>> profileIterator = profiles.entrySet().iterator(); profileIterator.hasNext();) {
             Map.Entry<String, U> entry = profileIterator.next();
             if (entry.getValue().isExpired()) {
                 profileIterator.remove();
             }
         }
-        return profiles;
     }
 
     /**
