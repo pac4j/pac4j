@@ -200,7 +200,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
         int index = 0;
-        spDescriptor.getAssertionConsumerServices().add(getAssertionConsumerService(binding, index++, this.defaultACSIndex == index));
+        // Fix the POST binding for the response instead of using the binding of the request
+        spDescriptor.getAssertionConsumerServices().add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
 
         if (credentialProvider != null) {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING,
