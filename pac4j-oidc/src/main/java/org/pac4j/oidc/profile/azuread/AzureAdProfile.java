@@ -21,6 +21,16 @@ public class AzureAdProfile extends OidcProfile {
 
     private static final long serialVersionUID = -8659029290353954198L;
 
+    private int idTokenExpireAdvance;
+
+    public AzureAdProfile() {
+        this.idTokenExpireAdvance = 10;
+    }
+
+    public AzureAdProfile(int idTokenExpireAdvance) {
+        this.idTokenExpireAdvance = idTokenExpireAdvance;
+    }
+
     public String getIdp() {
         return (String) getAttribute(AzureAdProfileDefinition.IDP);
     }
@@ -62,7 +72,7 @@ public class AzureAdProfile extends OidcProfile {
             Date expiresOn = claims.getExpirationTime();
 
             Calendar now = Calendar.getInstance();
-            now.add( Calendar.MINUTE, 5 );
+            now.add( Calendar.SECOND, idTokenExpireAdvance );
 
             if (expiresOn.before(now.getTime())) {
                 return true;
