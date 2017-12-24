@@ -60,6 +60,8 @@ public interface HttpConstants {
 
     String AJAX_HEADER_NAME = "X-Requested-With";
 
+    String FACES_PARTIAL_AJAX_PARAMETER = "javax.faces.partial.ajax";
+
     enum HTTP_METHOD { GET, POST, HEAD, TRACE, PUT, DELETE, OPTIONS, PATCH }
 
     String ACCESS_CONTROL_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";

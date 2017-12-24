@@ -17,4 +17,6 @@ public interface AjaxRequestResolver {
      * @return whether it is an AJAX request
      */
     boolean isAjax(WebContext context);
+
+    boolean isFacesPartialAjax(WebContext context);
 }
