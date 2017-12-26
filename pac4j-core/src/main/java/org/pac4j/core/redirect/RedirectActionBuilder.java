@@ -10,6 +10,8 @@ import org.pac4j.core.context.WebContext;
  */
 public interface RedirectActionBuilder {
 
+    String redirectLocation(WebContext context);
+
     /**
      * Return a redirect action for the web context.
      *

@@ -82,6 +82,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         init();
         if(ajaxRequestResolver.isFacesPartialAjax(context)) {
             logger.info("Faces Partial AJAX request detected");
+            String redirectLocation = redirectActionBuilder.redirectLocation(context);
+            return RedirectAction.redirectFacesPartialAjax(redirectLocation);
         // it's an AJAX request -> unauthorized (with redirection url in header)
         } else if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");

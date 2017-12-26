@@ -39,6 +39,18 @@ public class RedirectAction {
         return action;
     }
 
+    public static RedirectAction redirectFacesPartialAjax(final String location) {
+        // & is not valid inside of xml
+        String escapedLocation = location.replaceAll("&", "&amp;");
+        RedirectAction action = new RedirectAction();
+        action.type = RedirectType.SUCCESS;
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
+        buffer.append("<partial-response><redirect url=\"" + escapedLocation + "\"></redirect></partial-response>");
+        action.content = buffer.toString();
+        return action;
+    }
+
     public static RedirectAction success(final String content) {
         RedirectAction action = new RedirectAction();
         action.type = RedirectType.SUCCESS;
