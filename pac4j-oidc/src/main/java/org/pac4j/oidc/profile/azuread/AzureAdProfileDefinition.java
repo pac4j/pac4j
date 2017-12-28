@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class AzureAdProfileDefinition extends OidcProfileDefinition {
+public class AzureAdProfileDefinition extends OidcProfileDefinition<AzureAdProfile> {
 
     public static final String IDP = "idp";
     public static final String OID = "oid";
@@ -21,9 +21,9 @@ public class AzureAdProfileDefinition extends OidcProfileDefinition {
     public static final String IPADDR = "ipaddr";
     public static final String UPN = "upn";
 
-    public AzureAdProfileDefinition() {
+    public AzureAdProfileDefinition(int idTokenExpireAdvance) {
         super();
         Arrays.stream(new String[] {IDP, OID, TID, VER, UNQIUE_NAME, IPADDR, UPN}).forEach(a -> primary(a, Converters.STRING));
-        setProfileFactory(x -> new AzureAdProfile());
+        setProfileFactory(x -> new AzureAdProfile(idTokenExpireAdvance));
     }
 }
