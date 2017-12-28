@@ -80,6 +80,8 @@ The `CommonProfile` has the following methods:
 | `getPictureUrl()` | `URI` | The `picture_url` attribute |
 | `getProfileUrl()` | `URI` | The `profile_url` attribute |
 | `getLocation()` | `String` | The `location` attribute |
+| `asPrincipal()` | `Principal` | An object containing the name of the current authenticated user |
+| `isExpired()` | `boolean` | false if the current profile is expired |
 {:.striped}
 
 ## 8) Profile definition
