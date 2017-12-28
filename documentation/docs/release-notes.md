@@ -16,6 +16,8 @@ title: Release notes&#58;
 - The client name is not set at the credential's level
 - The username of the `AzureAdProfile` is the UPN
 - The issue time is generated for a new JWT
+- The user profile can be expired (currently handled for AzureAD)
+
 
 **v2.2.1**:
 
