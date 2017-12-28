@@ -24,7 +24,6 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  */
 public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profile, OAuth20Configuration> {
 
-
     private final Map<String,String> profileAttributes = new HashMap<>();
 
     String profileUrl = null;
@@ -58,8 +57,8 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
         final OAuth20Profile profile = new OAuth20Profile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
-            if (profileId != null) {
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, profileId)));
+            if (getProfileId() != null) {
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, getProfileId())));
             }
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));

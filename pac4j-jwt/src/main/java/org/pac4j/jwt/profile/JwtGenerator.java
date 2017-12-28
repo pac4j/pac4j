@@ -11,6 +11,7 @@ import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -104,7 +105,8 @@ public class JwtGenerator<U extends CommonProfile> {
     protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
         // claims builder with subject and issue time
         final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-                .subject(profile.getTypedId());
+                .subject(profile.getTypedId())
+                .issueTime(new Date());
 
         // add attributes
         final Map<String, Object> attributes = profile.getAttributes();
