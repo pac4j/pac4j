@@ -115,4 +115,8 @@ public class CommonProfile extends UserProfile {
     public Principal asPrincipal() {
         return new Pac4JPrincipal(this);
     }
+
+    public boolean isExpired() {
+        return false;
+    }
 }
