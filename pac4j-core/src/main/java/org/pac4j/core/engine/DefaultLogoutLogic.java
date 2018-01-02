@@ -13,8 +13,9 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.redirect.RedirectAction;
 
-import java.util.regex.Pattern;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -85,11 +86,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             final List<CommonProfile> profiles = manager.getAll(true);
 
             // compute redirection URL
-            final String url = context.getRequestParameter(Pac4jConstants.URL);
-            String redirectUrl = defaultUrl;
-            if (url != null && Pattern.matches(logoutUrlPattern, url)) {
-                redirectUrl = url;
-            }
+            final Optional<String> urlOpt = context.getRequestParameter(Pac4jConstants.URL);
+            String redirectUrl = urlOpt
+                .filter(url -> Pattern.matches(logoutUrlPattern, url))
+                .orElse(defaultUrl);
             logger.debug("redirectUrl: {}", redirectUrl);
             if (redirectUrl != null) {
                 action = HttpAction.redirect(context, redirectUrl);
@@ -130,10 +130,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                             } else {
                                 targetUrl = null;
                             }
-                            final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
+                            final Optional<RedirectAction> logoutAction = client.getLogoutAction(context, profile, targetUrl);
                             logger.debug("Logout action: {}", logoutAction);
-                            if (logoutAction != null) {
-                                action = logoutAction.perform(context);
+                            if (logoutAction.isPresent()) {
+                                action = logoutAction.get().perform(context);
                                 break;
                             }
                         }

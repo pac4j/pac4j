@@ -4,6 +4,8 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.util.Optional;
+
 /**
  * No {@link RedirectAction} for logout.
  *
@@ -15,7 +17,7 @@ public class NoLogoutActionBuilder<U extends CommonProfile> implements LogoutAct
     public static final NoLogoutActionBuilder INSTANCE = new NoLogoutActionBuilder<>();
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        return null;
+    public Optional<RedirectAction> getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        return Optional.empty();
     }
 }

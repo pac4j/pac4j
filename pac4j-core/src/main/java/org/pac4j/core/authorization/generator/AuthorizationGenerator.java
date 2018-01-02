@@ -5,7 +5,7 @@ import org.pac4j.core.profile.CommonProfile;
 
 /**
  * Generate the authorization roles and permissions for this user profile.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.5.0
  */
