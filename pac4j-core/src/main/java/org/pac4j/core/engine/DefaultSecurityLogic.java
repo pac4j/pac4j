@@ -11,25 +11,23 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
 import org.pac4j.core.engine.decision.ProfileStorageDecision;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.matching.RequireAllMatchersChecker;
+import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>Default security logic:</p>
- * <p>
+ *
  * <p>If the HTTP request matches the <code>matchers</code> configuration (or no <code>matchers</code> are defined),
  * the security is applied. Otherwise, the user is automatically granted access.</p>
  *
@@ -108,15 +106,15 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                         if (currentClient instanceof DirectClient) {
                             logger.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final Optional<Credentials> credentials = currentClient.getCredentials(context);
+                            final Credentials credentials = currentClient.getCredentials(context);
                             logger.debug("credentials: {}", credentials);
-                            final Optional<CommonProfile> profile = credentials.flatMap(c -> currentClient.getUserProfile(c, context));
+                            final CommonProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
-                            if (profile.isPresent()) {
+                            if (profile != null) {
                                 final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
-                                    currentClients, (DirectClient) currentClient, profile.get());
+                                    currentClients, (DirectClient) currentClient, profile);
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                manager.save(saveProfileInSession, profile.get(), multiProfile);
+                                manager.save(saveProfileInSession, profile, multiProfile);
                                 updated = true;
                                 if (!multiProfile) {
                                     break;

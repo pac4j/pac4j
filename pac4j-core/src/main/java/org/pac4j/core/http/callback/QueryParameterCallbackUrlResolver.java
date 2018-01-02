@@ -25,9 +25,8 @@ public class QueryParameterCallbackUrlResolver extends AbstractCallbackUrlResolv
 
     @Override
     public boolean matches(final String clientName, final WebContext context) {
-        return context.getRequestParameter(this.clientNameParameter)
-            .filter(name -> CommonHelper.areEqualsIgnoreCaseAndTrim(name, clientName))
-            .isPresent();
+        final String name = context.getRequestParameter(this.clientNameParameter);
+        return CommonHelper.areEqualsIgnoreCaseAndTrim(name, clientName);
     }
 
     public String getClientNameParameter() {
