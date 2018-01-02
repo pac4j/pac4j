@@ -42,9 +42,8 @@ public class KerberosAuthenticator implements Authenticator<KerberosCredentials>
         String subject = ticketValidation.username();
         logger.debug("Succesfully validated " + subject);
 
-        KerberosProfile profile = new KerberosProfile();
+        KerberosProfile profile = new KerberosProfile(ticketValidation.getGssContext());
         profile.setId(subject);
-        profile.gssContext = ticketValidation.getGssContext();
         credentials.setUserProfile(profile);
     }
 }
