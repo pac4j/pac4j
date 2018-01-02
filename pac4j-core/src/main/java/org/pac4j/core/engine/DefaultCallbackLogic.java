@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
@@ -16,7 +17,6 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -78,10 +78,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             logger.debug("client: {}", client);
             assertNotNull("client", client);
 
-            final Optional<Credentials> credentials = client.getCredentials(context);
+            final Credentials credentials = client.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final Optional<CommonProfile> profile = credentials.flatMap(c -> client.getUserProfile(c, context));
+            final CommonProfile profile = client.getUserProfile(credentials, context);
             logger.debug("profile: {}", profile);
             saveUserProfile(context, config, profile, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
@@ -101,13 +101,6 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             if (renewSession) {
                 renewSession(context, config);
             }
-        }
-    }
-
-    protected void saveUserProfile(final C context, final Config config, final Optional<CommonProfile> profile,
-                                   final boolean multiProfile, final boolean renewSession) {
-        if (profile.isPresent()) {
-            this.saveUserProfile(context, config, profile.get(), multiProfile, renewSession);
         }
     }
 
@@ -136,12 +129,12 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final Optional<String> requestedUrlOpt = context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
-        String redirectUrl = requestedUrlOpt.filter(url -> isNotBlank(url)).orElse(defaultUrl);
-        if (!defaultUrl.equals(redirectUrl)) {
+        final String requestedUrl = (String) context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
+        String redirectUrl = defaultUrl;
+        if (isNotBlank(requestedUrl)) {
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
+            redirectUrl = requestedUrl;
         }
-
         logger.debug("redirectUrl: {}", redirectUrl);
         return HttpAction.redirect(context, redirectUrl);
     }

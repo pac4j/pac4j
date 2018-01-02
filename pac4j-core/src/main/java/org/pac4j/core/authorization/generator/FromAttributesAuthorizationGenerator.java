@@ -3,11 +3,14 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.StringTokenizer;
 
 /**
  * <p>Generate the authorization information by inspecting attributes.</p>
- * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)})
+ * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)}) 
  * are defined in the constructor. It's the same for the attributes containing the permissions.</p>
  *
  * @author Jerome Leleu

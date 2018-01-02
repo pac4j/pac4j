@@ -3,7 +3,6 @@ package org.pac4j.core.matching;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -31,9 +30,9 @@ public class HeaderMatcher implements Matcher {
     public boolean matches(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", headerName);
 
-        final Optional<String> headerValue = context.getRequestHeader(this.headerName);
-        final boolean headerNull = expectedValue == null && !headerValue.isPresent();
-        final boolean headerMatches = headerValue != null && pattern != null && pattern.matcher(headerValue.orElse(null)).matches();
+        final String headerValue = context.getRequestHeader(this.headerName);
+        final boolean headerNull = expectedValue == null && headerValue == null;
+        final boolean headerMatches = headerValue != null && pattern != null && pattern.matcher(headerValue).matches();
         return headerNull || headerMatches;
     }
 

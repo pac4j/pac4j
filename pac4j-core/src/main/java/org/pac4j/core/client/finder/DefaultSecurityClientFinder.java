@@ -10,7 +10,6 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Find the right clients based on the query parameter for the {@link org.pac4j.core.engine.SecurityLogic}.
@@ -29,10 +28,10 @@ public class DefaultSecurityClientFinder implements ClientFinder {
             final List<String> names = Arrays.asList(clientNames.split(Pac4jConstants.ELEMENT_SEPRATOR));
             // if a "client_name" parameter is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
-            final Optional<String> clientNameOnRequest = context.getRequestParameter(clientNameParameter);
-            if (clientNameOnRequest.isPresent()) {
+            final String clientNameOnRequest = context.getRequestParameter(clientNameParameter);
+            if (clientNameOnRequest != null) {
                 // from the request
-                final Client client = clients.findClient(clientNameOnRequest.get());
+                final Client client = clients.findClient(clientNameOnRequest);
                 final String nameFound = client.getName();
                 // if allowed -> return it
                 boolean found = false;

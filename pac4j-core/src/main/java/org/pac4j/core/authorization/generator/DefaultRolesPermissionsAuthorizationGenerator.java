@@ -18,7 +18,7 @@ public class DefaultRolesPermissionsAuthorizationGenerator<U extends CommonProfi
 
     private final Collection<String> defaultPermissions;
 
-    public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles,
+    public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles, 
         final Collection<String> defaultPermissions) {
         this.defaultRoles = defaultRoles;
         this.defaultPermissions = defaultPermissions;
