@@ -11,13 +11,4 @@ public final class StringConverter extends AbstractAttributeConverter<String> {
     public StringConverter() {
         super(String.class);
     }
-
-    @Override
-    protected String internalConvert(final Object attribute) {
-        if (null != attribute) {
-            return attribute.toString();
-        } else {
-            return null;
-        }
-    }
 }
