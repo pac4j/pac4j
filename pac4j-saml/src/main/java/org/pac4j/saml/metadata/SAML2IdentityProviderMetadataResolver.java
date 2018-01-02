@@ -3,7 +3,6 @@ package org.pac4j.saml.metadata;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
@@ -50,7 +49,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     @Override
-    public  final MetadataResolver resolve() {
+    public final MetadataResolver resolve() {
 
         // No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
         // idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
@@ -117,9 +116,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     @Override
     public String getMetadata() {
-        if (getEntityDescriptorElement() != null
-                && getEntityDescriptorElement().getDOM() != null) {
-            return SerializeSupport.nodeToString(getEntityDescriptorElement().getDOM());
+        if (getEntityDescriptorElement() != null) {
+            return Configuration.serializeSamlObject(getEntityDescriptorElement()).toString();
         }
         throw new TechnicalException("Metadata cannot be retrieved because entity descriptor is null");
     }

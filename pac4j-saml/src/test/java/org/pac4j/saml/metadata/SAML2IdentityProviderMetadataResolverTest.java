@@ -31,7 +31,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     }
 
     @Test
-    public void resolveMetadataDocumentAsString() throws Exception {
+    public void resolveMetadataDocumentAsString() {
         final String metadata = metadataResolver.getMetadata();
         assertNotNull(metadata);
     }
