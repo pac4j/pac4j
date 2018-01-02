@@ -257,10 +257,10 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @param <T> The type of the authentication attribute
      * @return the named attribute
      */
-    public <T> T getAuthenticationAttribute(final String name, final Class<T> clazz)
+    public <T> Optional<T> getAuthenticationAttribute(final String name, final Class<T> clazz)
     {
         final Object attribute = getAuthenticationAttribute(name);
-        return getAttributeByType(name, clazz, attribute);
+        return Optional.ofNullable(getAttributeByType(name, clazz, attribute));
     }
 
     private <T> T getAttributeByType(String name, Class<T> clazz, Object attribute) {

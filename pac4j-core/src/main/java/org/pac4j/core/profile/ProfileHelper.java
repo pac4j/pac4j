@@ -1,15 +1,15 @@
 package org.pac4j.core.profile;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class is an helper for profiles.
@@ -50,10 +50,10 @@ public final class ProfileHelper {
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
+    public static Optional<CommonProfile> restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
         final String typedId, final Map<String, Object> attributes, final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
-            return null;
+            return Optional.empty();
         }
 
         logger.info("Building user profile based on typedId: {}", typedId);
@@ -64,7 +64,7 @@ public final class ProfileHelper {
                 profile = buildUserProfileByClassCompleteName(className);
             } catch (final TechnicalException e) {
                 logger.error("Cannot build instance for class name: {}", className, e);
-                return null;
+                return Optional.empty();
             }
             profile.addAttributes(attributes);
         } else {
@@ -72,7 +72,7 @@ public final class ProfileHelper {
             profileDefinition.convertAndAdd(profile, attributes);
         }
         profile.setId(ProfileHelper.sanitizeIdentifier(profile, typedId));
-        return profile;
+        return Optional.of(profile);
     }
 
     /**
