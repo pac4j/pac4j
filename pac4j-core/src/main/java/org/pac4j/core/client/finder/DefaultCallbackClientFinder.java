@@ -34,7 +34,7 @@ public class DefaultCallbackClientFinder implements ClientFinder {
         }
 
         // fallback: we didn't find any client on the URL and have a default client
-        if (result.size() == 0 && CommonHelper.isNotBlank(clientNames)) {
+        if (result.isEmpty() && CommonHelper.isNotBlank(clientNames)) {
             result.add(clients.findClient(clientNames));
         }
 
