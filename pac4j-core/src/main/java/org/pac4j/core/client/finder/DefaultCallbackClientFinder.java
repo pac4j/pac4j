@@ -7,7 +7,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,13 +17,7 @@ import java.util.List;
  */
 public class DefaultCallbackClientFinder implements ClientFinder {
 
-    private IndirectClient defaultClient;
-
     public DefaultCallbackClientFinder() {}
-
-    public DefaultCallbackClientFinder(final IndirectClient defaultClient) {
-        this.defaultClient = defaultClient;
-    }
 
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
 
@@ -40,23 +33,11 @@ public class DefaultCallbackClientFinder implements ClientFinder {
             }
         }
 
-        if (result.size() == 0 && defaultClient != null) {
-            return Arrays.asList(defaultClient);
-        } else {
-            return result;
+        // fallback: we didn't find any client on the URL and have a default client
+        if (result.isEmpty() && CommonHelper.isNotBlank(clientNames)) {
+            result.add(clients.findClient(clientNames));
         }
-    }
 
-    public IndirectClient getDefaultClient() {
-        return defaultClient;
-    }
-
-    public void setDefaultClient(final IndirectClient defaultClient) {
-        this.defaultClient = defaultClient;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "defaultClient", defaultClient);
+        return result;
     }
 }

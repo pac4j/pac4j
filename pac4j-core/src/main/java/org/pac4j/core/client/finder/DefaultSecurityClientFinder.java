@@ -24,8 +24,14 @@ public class DefaultSecurityClientFinder implements ClientFinder {
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
         final List<Client> result = new ArrayList<>();
 
-        if (CommonHelper.isNotBlank(clientNames)) {
-            final List<String> names = Arrays.asList(clientNames.split(Pac4jConstants.ELEMENT_SEPRATOR));
+        String securityClientNames = clientNames;
+        // we don't have defined clients to secure the URL, use the general default security ones from the Clients if they exist
+        if (CommonHelper.isBlank(clientNames)) {
+            securityClientNames = clients.getDefaultSecurityClients();
+        }
+
+        if (CommonHelper.isNotBlank(securityClientNames)) {
+            final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPRATOR));
             // if a "client_name" parameter is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
             final String clientNameOnRequest = context.getRequestParameter(clientNameParameter);
