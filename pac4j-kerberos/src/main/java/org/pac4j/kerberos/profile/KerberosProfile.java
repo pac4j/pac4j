@@ -12,5 +12,18 @@ import org.pac4j.core.profile.CommonProfile;
 public class KerberosProfile extends CommonProfile {
 
     private static final long serialVersionUID = -1388563485891552197L;
-    public GSSContext gssContext = null;
+    private GSSContext gssContext = null;
+
+    public KerberosProfile() {
+    }
+
+    public KerberosProfile(final GSSContext gssContext) {
+        this.gssContext = gssContext;
+    }
+
+    public GSSContext getGssContext() {
+        return gssContext;
+    }
+
+
 }
