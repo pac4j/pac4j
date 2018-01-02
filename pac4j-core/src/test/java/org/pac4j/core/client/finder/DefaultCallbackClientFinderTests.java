@@ -48,16 +48,41 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
     }
 
     @Test
-    public void testDefaultClient() {
+    public void testDefaultClientDirectClientInURL() {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         final DirectClient basicAuth = new MockDirectClient("BasicAuth");
-        final Clients clients = new Clients(CALLBACK_URL, basicAuth);
+        final Clients clients = new Clients(CALLBACK_URL, basicAuth, facebook);
         clients.init();
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "basicauth");
         final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
-        finder.setDefaultClient(facebook);
-        final List<Client> result = finder.find(clients, context, null);
+        final List<Client> result = finder.find(clients, context, "Facebook");
+        assertEquals(1, result.size());
+        assertEquals(facebook, result.get(0));
+    }
+
+    @Test
+    public void testDefaultClientIndirectClientInURL() {
+        final IndirectClient facebook = new MockIndirectClient("Facebook");
+        final IndirectClient twitter = new MockIndirectClient("Twitter");
+        final Clients clients = new Clients(CALLBACK_URL, twitter, facebook);
+        clients.init();
+        final MockWebContext context = MockWebContext.create()
+            .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "Twitter");
+        final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
+        final List<Client> result = finder.find(clients, context, "Twitter");
+        assertEquals(1, result.size());
+        assertEquals(twitter, result.get(0));
+    }
+
+    @Test
+    public void testDefaultClientNoIndirectClientInURL() {
+        final IndirectClient facebook = new MockIndirectClient("Facebook");
+        final IndirectClient twitter = new MockIndirectClient("Twitter");
+        final Clients clients = new Clients(CALLBACK_URL, twitter, facebook);
+        clients.init();
+        final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
+        final List<Client> result = finder.find(clients, MockWebContext.create(), "Facebook");
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
     }

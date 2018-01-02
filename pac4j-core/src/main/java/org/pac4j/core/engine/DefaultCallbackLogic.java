@@ -34,7 +34,8 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
 
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
-                     final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
+                     final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession,
+                     final String client) {
 
         logger.debug("=== CALLBACK ===");
 
@@ -71,17 +72,17 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             assertNotNull("clients", clients);
 
             // logic
-            final List<Client> foundClients = clientFinder.find(clients, context, null);
+            final List<Client> foundClients = clientFinder.find(clients, context, client);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "one and only one indirect client must be retrieved from the callback");
-            final Client client = foundClients.get(0);
-            logger.debug("client: {}", client);
-            assertNotNull("client", client);
+            final Client foundClient = foundClients.get(0);
+            logger.debug("foundClient: {}", foundClient);
+            assertNotNull("foundClient", foundClient);
 
-            final Credentials credentials = client.getCredentials(context);
+            final Credentials credentials = foundClient.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final CommonProfile profile = client.getUserProfile(credentials, context);
+            final CommonProfile profile = foundClient.getUserProfile(credentials, context);
             logger.debug("profile: {}", profile);
             saveUserProfile(context, config, profile, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
