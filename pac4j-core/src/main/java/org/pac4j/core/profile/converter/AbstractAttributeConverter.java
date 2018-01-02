@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * This abstract attribute converter handles some common behaviors for simple type converters.
- * 
+ *
  * @author Jerome Leleu
  * @since 2.0.0
  */
@@ -47,5 +47,9 @@ public abstract class AbstractAttributeConverter<T extends Object> implements At
 
     protected T defaultValue() {
         return null;
+    }
+
+    public Boolean accept(final String typeName){
+        return clazz.getSimpleName().equals(typeName);
     }
 }
