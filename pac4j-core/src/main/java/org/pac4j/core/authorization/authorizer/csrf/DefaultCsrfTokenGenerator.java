@@ -3,8 +3,6 @@ package org.pac4j.core.authorization.authorizer.csrf;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 
-import java.util.Optional;
-
 /**
  * Default CSRF token generator.
  *
@@ -29,6 +27,6 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
     }
 
     protected String getTokenFromSession(final WebContext context) {
-        return ((Optional<String>) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN)).orElse(null);
+        return (String) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
     }
 }

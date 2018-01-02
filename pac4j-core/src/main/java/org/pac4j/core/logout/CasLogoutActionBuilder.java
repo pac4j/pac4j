@@ -6,8 +6,6 @@ import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -33,9 +31,9 @@ public class CasLogoutActionBuilder<U extends CommonProfile> implements LogoutAc
     }
 
     @Override
-    public Optional<RedirectAction> getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         if (isBlank(serverLogoutUrl)) {
-            return Optional.empty();
+            return null;
         }
 
         String redirectUrl = serverLogoutUrl;
@@ -43,7 +41,7 @@ public class CasLogoutActionBuilder<U extends CommonProfile> implements LogoutAc
             redirectUrl = addParameter(redirectUrl, postLogoutUrlParameter, targetUrl);
         }
         logger.debug("redirectUrl: {}", redirectUrl);
-        return Optional.of(RedirectAction.redirect(redirectUrl));
+        return RedirectAction.redirect(redirectUrl);
     }
 
     @Override

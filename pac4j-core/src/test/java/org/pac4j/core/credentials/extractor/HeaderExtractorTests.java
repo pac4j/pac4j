@@ -28,14 +28,15 @@ public final class HeaderExtractorTests implements TestsConstants {
     @Test
     public void testRetrieveHeaderOk() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
-        final TokenCredentials credentials = extractor.extract(context).get();
+        final TokenCredentials credentials = extractor.extract(context);
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testBadHeader() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
-        assertFalse(extractor.extract(context).isPresent());
+        final TokenCredentials credentials = extractor.extract(context);
+        assertNull(credentials);
     }
 
     @Test
