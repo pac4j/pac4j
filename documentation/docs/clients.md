@@ -115,13 +115,12 @@ Config config = new Config(clients);
 In that case, the callback URL will be `http://localhost:8080/callback/AzureAdClient` for the `AzureAdClient`.
 
 You may even use the [`NoParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/NoParameterCallbackUrlResolver.java) which left the callback URL untouched.
-In that case, no parameter will be added to the callback URL and no client will be retrieved on the callback endpoint. You will be forced to define a "default client".
+In that case, no parameter will be added to the callback URL and no client will be retrieved on the callback endpoint. You will be forced to define a "default client" at the `CallbackLogic` level.
 
 **Example:**
 
 ```java
-final DefaultCallbackClientFinder defaultCallbackClientFinder = (DefaultCallbackClientFinder) defaultCallbackLogic.getClientFinder();
-defaultCallbackClientFinder.setDefaultClient(facebookClient);
+defaultCallbackLogic.setClient("FacebookClient");
 ```
 
 The `CallbackUrlResolver` relies on a [`UrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/UrlResolver.java) to complement the URL according to the current web context.

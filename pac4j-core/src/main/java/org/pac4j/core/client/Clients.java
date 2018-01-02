@@ -33,6 +33,8 @@ public class Clients extends InitializableObject {
 
     private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
+    private String defaultSecurityClients;
+
     public Clients() {
     }
 
@@ -211,10 +213,18 @@ public class Clients extends InitializableObject {
         this.authorizationGenerators.add(authorizationGenerator);
     }
 
+    public String getDefaultSecurityClients() {
+        return defaultSecurityClients;
+    }
+
+    public void setDefaultSecurityClients(final String defaultSecurityClients) {
+        this.defaultSecurityClients = defaultSecurityClients;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "clients", getClients(),
                 "ajaxRequestResolver", ajaxRequestResolver, "callbackUrlResolver", callbackUrlResolver,
-                "authorizationGenerators", authorizationGenerators);
+                "authorizationGenerators", authorizationGenerators, "defaultSecurityClients", defaultSecurityClients);
     }
 }
