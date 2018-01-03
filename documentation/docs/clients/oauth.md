@@ -60,7 +60,10 @@ For example, the type specified by the following expression:
 `String|name`    
 Do not specify the type with the following expression:    
 `name`    
-Currently supported types are:`Integer`,`Boolean`,`Color`,`Gender`,`Locale`,`Long`,`URI`,`String(Not specified by default)`   
+Currently supported types are:`Integer`,`Boolean`,`Color`,`Gender`,`Locale`,`Long`,`URI`,`String(Not specified by default)`    
+    
+**Note**: If the profile contains non-character type fields, and you have not specified the type, it will be lost, so you must specify a type for any non-character profile field.
+
 ```java
 GenericOAuth20Client client = new GenericOAuth20Client();
 Map map = new HashMap();
