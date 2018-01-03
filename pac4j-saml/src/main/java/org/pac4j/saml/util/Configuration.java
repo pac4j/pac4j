@@ -6,19 +6,30 @@ import net.shibboleth.utilities.java.support.xml.ParserPool;
 import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.config.InitializationException;
 import org.opensaml.core.config.InitializationService;
+import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Marshaller;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * OpenSAML configuration bean to bootstrap the parser pool.
+ *
  * @author Misagh Moayyed
  * @since 1.7
  */
@@ -27,7 +38,8 @@ public final class Configuration {
 
     private static BasicParserPool parserPool;
 
-    private Configuration() {}
+    private Configuration() {
+    }
 
     static {
         logger.info("Bootstrapping OpenSAML configuration via Pac4j...");
@@ -70,7 +82,7 @@ public final class Configuration {
         }
 
         XMLObjectProviderRegistry registry;
-        synchronized(ConfigurationService.class) {
+        synchronized (ConfigurationService.class) {
             registry = ConfigurationService.get(XMLObjectProviderRegistry.class);
             if (registry == null) {
                 registry = new XMLObjectProviderRegistry();
@@ -81,7 +93,7 @@ public final class Configuration {
         registry.setParserPool(parserPool);
     }
 
-    public static ParserPool getParserPool () {
+    public static ParserPool getParserPool() {
         return parserPool;
     }
 
@@ -95,5 +107,26 @@ public final class Configuration {
 
     public static UnmarshallerFactory getUnmarshallerFactory() {
         return XMLObjectProviderRegistrySupport.getUnmarshallerFactory();
+    }
+
+    public static StringWriter serializeSamlObject(final XMLObject samlObject) {
+        final StringWriter writer = new StringWriter();
+        try {
+            final Marshaller marshaller = getMarshallerFactory().getMarshaller(samlObject.getElementQName());
+            if (marshaller != null) {
+                final Element element = marshaller.marshall(samlObject);
+                final DOMSource domSource = new DOMSource(element);
+
+                final StreamResult result = new StreamResult(writer);
+                final TransformerFactory tf = TransformerFactory.newInstance();
+                final Transformer transformer = tf.newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                transformer.transform(domSource, result);
+            }
+        } catch (final Exception e) {
+            throw new SAMLException(e.getMessage(), e);
+        }
+        return writer;
     }
 }
