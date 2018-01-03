@@ -8,6 +8,8 @@ import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in Facebook.</p>
  * <p>By default, the following <i>scope</i> is requested to Facebook: user_likes, user_about_me, user_birthday, user_education_history,
@@ -48,10 +50,10 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
+            final Optional<String> error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            final Optional<String> errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
             // user has denied permissions
-            if ("access_denied".equals(error) && "user_denied".equals(errorReason)) {
+            if ("access_denied".equals(error.orElse(null)) && "user_denied".equals(errorReason.orElse(null))) {
                 return true;
             } else {
                 return false;

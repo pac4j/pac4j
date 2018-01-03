@@ -7,6 +7,8 @@ import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfileCreator;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfileDefinition;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in Foursquare.
  * It returns a {@link org.pac4j.oauth.profile.foursquare.FoursquareProfile}.</p>
@@ -31,7 +33,7 @@ public class FoursquareClient extends OAuth20Client<FoursquareProfile>{
         configuration.setProfileDefinition(new FoursquareProfileDefinition());
         configuration.setScope("user");
         defaultProfileCreator(new FoursquareProfileCreator(configuration, this));
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.foursquare.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(RedirectAction.redirect("https://www.foursquare.com/logout")));
 
         super.clientInit();
     }

@@ -12,6 +12,8 @@ import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * OAuth credentials extractor.
  *
@@ -34,12 +36,12 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
     }
 
     @Override
-    public C extract(final WebContext context) {
+    public Optional<C> extract(final WebContext context) {
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {
             logger.debug("authentication has been cancelled by user");
-            return null;
+            return Optional.empty();
         }
         // check errors
         try {
@@ -47,16 +49,16 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
             final OAuthCredentialsException oauthCredentialsException =
                 new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
-                final String value = context.getRequestParameter(key);
-                if (value != null) {
+                final Optional<String> value = context.getRequestParameter(key);
+                if (value.isPresent()) {
                     errorFound = true;
-                    oauthCredentialsException.setErrorMessage(key, value);
+                    oauthCredentialsException.setErrorMessage(key, value.get());
                 }
             }
             if (errorFound) {
                 throw oauthCredentialsException;
             } else {
-                return getOAuthCredentials(context);
+                return Optional.ofNullable(getOAuthCredentials(context));
             }
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

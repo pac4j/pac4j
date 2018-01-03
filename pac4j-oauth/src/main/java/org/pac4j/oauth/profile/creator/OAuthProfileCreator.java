@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -54,10 +55,10 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     }
 
     @Override
-    public U create(final C credentials, final WebContext context) {
+    public Optional<U> create(final C credentials, final WebContext context) {
         try {
             final T token = getAccessToken(credentials);
-            return retrieveUserProfileFromToken(context, token);
+            return Optional.ofNullable(retrieveUserProfileFromToken(context, token));
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
