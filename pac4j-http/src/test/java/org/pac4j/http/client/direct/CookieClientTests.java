@@ -57,8 +57,9 @@ public final class CookieClientTests implements TestsConstants {
 
         final Cookie c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes(StandardCharsets.UTF_8)));
         context.getRequestCookies().add(c);
-        final TokenCredentials credentials = client.getCredentials(context);
-        final CommonProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = client.getCredentials(context).flatMap(
+            credentials -> client.getUserProfile(credentials, context)
+        ).get();
         assertEquals(c.getValue(), profile.getId());
     }
 }

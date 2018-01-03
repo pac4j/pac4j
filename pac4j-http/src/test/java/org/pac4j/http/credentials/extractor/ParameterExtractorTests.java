@@ -8,6 +8,8 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 import static org.pac4j.core.context.HttpConstants.*;
 
@@ -28,16 +30,16 @@ public final class ParameterExtractorTests implements TestsConstants {
     public void testRetrieveGetParameterOk() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.GET.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final TokenCredentials credentials = getExtractor.extract(context);
-        assertEquals(VALUE, credentials.getToken());
+        final Optional<TokenCredentials> credentials = getExtractor.extract(context);
+        assertEquals(VALUE, credentials.get().getToken());
     }
 
     @Test
     public void testRetrievePostParameterOk() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final TokenCredentials credentials = postExtractor.extract(context);
-        assertEquals(VALUE, credentials.getToken());
+        final Optional<TokenCredentials> credentials = postExtractor.extract(context);
+        assertEquals(VALUE, credentials.get().getToken());
     }
 
     @Test
@@ -57,14 +59,14 @@ public final class ParameterExtractorTests implements TestsConstants {
     @Test
     public void testRetrieveNoGetParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.GET.name());
-        final TokenCredentials credentials = getExtractor.extract(context);
-        assertNull(credentials);
+        final Optional<TokenCredentials> credentials = getExtractor.extract(context);
+        assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testRetrieveNoPostParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
-        final TokenCredentials credentials = postExtractor.extract(context);
-        assertNull(credentials);
+        final Optional<TokenCredentials> credentials = postExtractor.extract(context);
+        assertFalse(credentials.isPresent());
     }
 }

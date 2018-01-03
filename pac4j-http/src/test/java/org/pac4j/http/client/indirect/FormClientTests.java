@@ -14,6 +14,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 /**
@@ -112,7 +114,7 @@ public final class FormClientTests implements TestsConstants {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
+                .addRequestParameter(formClient.getPasswordParameter(), USERNAME)).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }
@@ -125,10 +127,10 @@ public final class FormClientTests implements TestsConstants {
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);
-            return profile;
+            return Optional.of(profile);
         });
         final MockWebContext context = MockWebContext.create();
-        final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME), context);
+        final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME), context).get();
         assertEquals(USERNAME, profile.getId());
         assertEquals(CommonProfile.class.getName() + CommonProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));

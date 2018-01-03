@@ -2,14 +2,14 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the {@link IpClient} class.
@@ -33,7 +33,7 @@ public final class IpClientTests implements TestsConstants {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
         TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
-                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+            MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -47,8 +47,9 @@ public final class IpClientTests implements TestsConstants {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.setRemoteAddress(IP);
-        final TokenCredentials credentials = client.getCredentials(context);
-        final CommonProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = client.getCredentials(context).flatMap(
+            credentials -> client.getUserProfile(credentials, context)
+        ).get();
         assertEquals(IP, profile.getId());
     }
 }

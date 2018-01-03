@@ -11,6 +11,7 @@ import org.pac4j.http.credentials.DigestCredentials;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 /**
@@ -39,40 +40,39 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * uri is the request uri
      * response is the client response
      * nonce is a server-specified data string which should be uniquely generated
-     *   each time a 401 response is made
+     * each time a 401 response is made
      * cnonce is the client nonce
      * nc is the nonce count
      * If in the Authorization header it is not specified a username and response, we throw CredentialsException because
      * the client uses an username and a password to authenticate. response is just a MD5 encoded value
      * based on user provided password and RFC 2617 digest authentication encoding rules
+     *
      * @param context the current web context
      * @return the Digest credentials
      */
     @Override
-    public DigestCredentials extract(WebContext context) {
-        final TokenCredentials credentials = this.extractor.extract(context);
+    public Optional<DigestCredentials> extract(WebContext context) {
+        final Optional<TokenCredentials> credentialsOpt = this.extractor.extract(context);
 
-        if (credentials == null) {
-            return null;
-        }
+        return credentialsOpt.map(credentials -> {
+            String token = credentials.getToken();
+            Map<String, String> valueMap = parseTokenValue(token);
+            String username = valueMap.get("username");
+            String response = valueMap.get("response");
 
-        String token = credentials.getToken();
-        Map<String, String> valueMap = parseTokenValue(token);
-        String username = valueMap.get("username");
-        String response = valueMap.get("response");
+            if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
+                throw new CredentialsException("Bad format of the digest auth header");
+            }
+            String realm = valueMap.get("realm");
+            String nonce = valueMap.get("nonce");
+            String uri = valueMap.get("uri");
+            String cnonce = valueMap.get("cnonce");
+            String nc = valueMap.get("nc");
+            String qop = valueMap.get("qop");
+            String method = context.getRequestMethod();
 
-        if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
-            throw new CredentialsException("Bad format of the digest auth header");
-        }
-        String realm = valueMap.get("realm");
-        String nonce = valueMap.get("nonce");
-        String uri = valueMap.get("uri");
-        String cnonce = valueMap.get("cnonce");
-        String nc = valueMap.get("nc");
-        String qop = valueMap.get("qop");
-        String method = context.getRequestMethod();
-
-        return new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop);
+            return new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop);
+        });
     }
 
     private Map<String, String> parseTokenValue(String token) {
