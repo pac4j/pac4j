@@ -9,9 +9,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * This class is a generic way to manage the current user profile(s), i.e. the one(s) of the current authenticated user.
