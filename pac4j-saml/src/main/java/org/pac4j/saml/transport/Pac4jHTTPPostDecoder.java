@@ -56,7 +56,7 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         if(!HttpConstants.HTTP_METHOD.POST.name().equalsIgnoreCase(this.context.getRequestMethod())) {
             throw new MessageDecodingException("This message decoder only supports the HTTP POST method");
         } else {
-            final String relayState = this.context.getRequestParameter("RelayState");
+            final String relayState = this.context.getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext, relayState);
             final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
@@ -71,9 +71,9 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
     protected InputStream getBase64DecodedMessage()
             throws MessageDecodingException {
         logger.debug("Getting Base64 encoded message from context, ignoring the given request");
-        String encodedMessage = this.context.getRequestParameter("SAMLRequest");
+        String encodedMessage = this.context.getRequestParameter("SAMLRequest").orElse(null);
         if(Strings.isNullOrEmpty(encodedMessage)) {
-            encodedMessage = this.context.getRequestParameter("SAMLResponse");
+            encodedMessage = this.context.getRequestParameter("SAMLResponse").orElse(null);
         }
 
         if(Strings.isNullOrEmpty(encodedMessage)) {

@@ -2,7 +2,6 @@ package org.pac4j.saml.client;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
-
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -16,13 +15,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
-import org.pac4j.saml.crypto.CredentialProvider;
-import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
-import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
-import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
-import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
+import org.pac4j.saml.crypto.*;
 import org.pac4j.saml.logout.SAML2LogoutActionBuilder;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
@@ -39,6 +32,7 @@ import org.pac4j.saml.util.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
@@ -53,26 +47,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
-    protected CredentialProvider credentialProvider;
-
-    protected SAMLContextProvider contextProvider;
-
-    protected SignatureSigningParametersProvider signatureSigningParametersProvider;
-
-    protected SAML2ProfileHandler<AuthnRequest> profileHandler;
-
-    protected SAML2ResponseValidator responseValidator;
-
-    protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
-
-    protected SAML2MetadataResolver idpMetadataResolver;
-
-    protected SAML2MetadataResolver spMetadataResolver;
-
-    protected Decrypter decrypter;
-
-    protected SAML2ClientConfiguration configuration;
-
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
         CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
@@ -80,7 +54,19 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
     }
 
-    public SAML2Client() { }
+    protected CredentialProvider credentialProvider;
+    protected SAMLContextProvider contextProvider;
+    protected SignatureSigningParametersProvider signatureSigningParametersProvider;
+    protected SAML2ProfileHandler<AuthnRequest> profileHandler;
+    protected SAML2ResponseValidator responseValidator;
+    protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
+    protected SAML2MetadataResolver idpMetadataResolver;
+    protected SAML2MetadataResolver spMetadataResolver;
+    protected Decrypter decrypter;
+    protected SAML2ClientConfiguration configuration;
+
+    public SAML2Client() {
+    }
 
     public SAML2Client(final SAML2ClientConfiguration configuration) {
         this.configuration = configuration;
@@ -97,8 +83,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         initDecrypter();
         initSignatureSigningParametersProvider();
         final MetadataResolver metadataManager = initChainingMetadataResolver(
-                initIdentityProviderMetadataResolver(),
-                initServiceProviderMetadataResolver());
+            initIdentityProviderMetadataResolver(),
+            initServiceProviderMetadataResolver());
         initSAMLContextProvider(metadataManager);
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLResponseValidator();
@@ -108,7 +94,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         defaultCredentialsExtractor(ctx -> {
             final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
             final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            return credentials;
+            return Optional.of(credentials);
         });
         defaultAuthenticator(new SAML2Authenticator());
         defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));
@@ -116,19 +102,19 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected void initSAMLProfileHandler() {
         this.profileHandler = new SAML2WebSSOProfileHandler(
-                new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
-                        this.configuration.getDestinationBindingType(),
-                        this.configuration.isAuthnRequestSigned()),
-                new SAML2WebSSOMessageReceiver(this.responseValidator));
+            new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
+                this.configuration.getDestinationBindingType(),
+                this.configuration.isAuthnRequestSigned()),
+            new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
 
     protected void initSAMLResponseValidator() {
         // Build the SAML response validator
         this.responseValidator = new SAML2DefaultResponseValidator(
-                this.signatureTrustEngineProvider,
-                this.decrypter,
-                this.configuration.getMaximumAuthenticationLifetime(),
-                this.configuration.isWantsAssertionsSigned());
+            this.signatureTrustEngineProvider,
+            this.decrypter,
+            this.configuration.getMaximumAuthenticationLifetime(),
+            this.configuration.isWantsAssertionsSigned());
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
@@ -139,8 +125,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
         // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(metadataManager,
-                this.idpMetadataResolver, this.spMetadataResolver,
-                this.configuration.getSamlMessageStorageFactory());
+            this.idpMetadataResolver, this.spMetadataResolver,
+            this.configuration.getSamlMessageStorageFactory());
     }
 
     protected MetadataResolver initServiceProviderMetadataResolver() {
@@ -165,11 +151,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected void initSignatureSigningParametersProvider() {
         this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(
-                this.credentialProvider, this.configuration);
+            this.credentialProvider, this.configuration);
     }
 
     protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
-                                                                          final MetadataResolver spMetadataProvider) {
+                                                                    final MetadataResolver spMetadataProvider) {
         final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
         metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
         try {
@@ -187,7 +173,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     public String getStateParameter(final WebContext webContext) {
-        final String relayState = (String) webContext.getSessionStore().get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
+        Optional optAttr = webContext.getSessionStore().get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
+        final String relayState = optAttr.isPresent() ? (String) optAttr.get() : null;
         // clean from session after retrieving it
         webContext.getSessionStore().set(webContext, SAML_RELAY_STATE_ATTRIBUTE, "");
         return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
@@ -213,12 +200,12 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return this.spMetadataResolver.getEntityId();
     }
 
-    public void setConfiguration(final SAML2ClientConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
     public final SAML2ClientConfiguration getConfiguration() {
         return this.configuration;
+    }
+
+    public void setConfiguration(final SAML2ClientConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     public SAMLContextProvider getContextProvider() {

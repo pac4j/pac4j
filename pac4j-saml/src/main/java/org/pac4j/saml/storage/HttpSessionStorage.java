@@ -121,10 +121,10 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     @SuppressWarnings("unchecked")
     private Hashtable<String, XMLObject> initializeSession() {
         Hashtable<String, XMLObject> messages = (Hashtable<String, XMLObject>)
-                context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                context.getSessionStore().get(context, SAML_STORAGE_KEY).orElse(null);
         if (messages == null) {
             synchronized (context) {
-                messages = (Hashtable<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                messages = (Hashtable<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY).orElse(null);
                 if (messages == null) {
                     messages = new Hashtable<>();
                     updateSession(messages);
