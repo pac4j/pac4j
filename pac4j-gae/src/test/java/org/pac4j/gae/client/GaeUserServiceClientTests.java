@@ -69,11 +69,11 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final GaeUserCredentials credentials = client.getCredentials(context);
+        final GaeUserCredentials credentials = client.getCredentials(context).get();
         final User user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals("", user.getAuthDomain());
-        final GaeUserServiceProfile profile = client.getUserProfile(credentials, context);
+        final GaeUserServiceProfile profile = client.getUserProfile(credentials, context).get();
         logger.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
         assertEquals(GaeUserServiceProfile.class.getName() + CommonProfile.SEPARATOR + EMAIL, profile.getTypedId());
