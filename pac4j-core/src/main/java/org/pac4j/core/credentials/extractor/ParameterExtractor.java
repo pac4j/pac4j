@@ -43,8 +43,7 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
             throw new CredentialsException("POST requests not supported");
         }
 
-        return Optional.ofNullable(context.getRequestParameter(this.parameterName))
-            .map(Optional::get)
+        return context.getRequestParameter(this.parameterName)
             .map(TokenCredentials::new);
     }
 
