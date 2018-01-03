@@ -13,6 +13,8 @@ import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 import org.pac4j.kerberos.profile.KerberosProfile;
 
+import java.util.Optional;
+
 /**
  * @author Vidmantas Zemleris, at Kensu.io
  *
@@ -38,23 +40,23 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
     }
 
     @Override
-    protected KerberosCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<KerberosCredentials> retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
 
-        final KerberosCredentials credentials;
+        final Optional<KerberosCredentials> credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("kerberos credentials : {}", credentials);
-            if (credentials == null) {
+            if (!credentials.isPresent()) {
                 throw HttpAction.unauthorized(context);
             }
             // validate credentials
-            getAuthenticator().validate(credentials, context);
+            getAuthenticator().validate(credentials.get(), context);
         } catch (final CredentialsException e) {
             throw HttpAction.unauthorized(context);
         }

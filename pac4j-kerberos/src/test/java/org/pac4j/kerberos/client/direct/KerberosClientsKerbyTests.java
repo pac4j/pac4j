@@ -20,18 +20,18 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
 /**
  * This tests both Direct and Indirect Kerberos clients.
  * Both clients behave the same except then when credentials are invalid or not specified.
  * - .getCredentials() in direct client
- *   * returns NULL
+ * * returns NULL
  * - .getCredentials() in indirect client raises an exception:
- *   * raises a HttpAction "401 Authenticate: Negotiate"
- *
+ * * raises a HttpAction "401 Authenticate: Negotiate"
+ * <p>
  * This is a test with real kerberos ticket validation:
  * - spins up a mini/lightweight Kerberos server (using Apache Kerby)
  * - generates the keytabs for service and client
@@ -42,16 +42,13 @@ import static org.junit.Assert.*;
  * @since 2.1.0
  */
 public class KerberosClientsKerbyTests implements TestsConstants {
-    private static SimpleKdcServer kerbyServer;
-
     static String clientPrincipal = "clientPrincipal@MYREALM.LT";
     static String clientPassword = "clientPrincipal";
-
     static String servicePrincipal = "HTTP/lala.mydomain.de@MYREALM.LT"; // i.e. HTTP/full-qualified-domain-name@DOMAIN
     static String serviceName = "HTTP@lala.mydomain.de";
-
     static String serviceKeyTabFileName = "/tmp/testServiceKeyTabFile";
     static File serviceKeytabFile = new File(serviceKeyTabFileName);
+    private static SimpleKdcServer kerbyServer;
 
     @BeforeClass
     public static void beforeAll() throws KrbException, IOException {
@@ -83,7 +80,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
-        assertNull(setupDirectKerberosClient().getCredentials(MockWebContext.create()));
+        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create()).isPresent());
     }
 
     @Test
@@ -101,13 +98,13 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         final MockWebContext context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertNull(setupDirectKerberosClient().getCredentials(context));
+        assertFalse(setupDirectKerberosClient().getCredentials(context).isPresent());
     }
 
     @Test
     public void testIndirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header
-        assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), MockWebContext.create(),"Perfoming a 401 HTTP action");
+        assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), MockWebContext.create(), "Perfoming a 401 HTTP action");
     }
 
     @Test
@@ -147,13 +144,13 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
         // mock web request
         final MockWebContext context = mockWebRequestContext(spnegoWebTicket);
-        final KerberosCredentials credentials = client.getCredentials(context);
-        assertNotNull(credentials);
+        final Optional<KerberosCredentials> credentials = client.getCredentials(context);
+        assertTrue(credentials.isPresent());
         System.out.println(credentials);
 
-        final KerberosProfile profile = client.getUserProfile(credentials, context);
-        assertNotNull(profile);
-        assertEquals(clientPrincipal, profile.getId());
+        final Optional<KerberosProfile> profile = client.getUserProfile(credentials.get(), context);
+        assertTrue(profile.isPresent());
+        assertEquals(clientPrincipal, profile.get().getId());
     }
 
     private DirectKerberosClient setupDirectKerberosClient() {
