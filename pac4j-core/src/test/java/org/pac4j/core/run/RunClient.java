@@ -3,7 +3,8 @@ package org.pac4j.core.run;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.profile.*;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.Gender;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.slf4j.Logger;
@@ -39,8 +40,9 @@ public abstract class RunClient implements TestsConstants {
         final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final Credentials credentials = client.getCredentials(context);
-        final CommonProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getCredentials(context).map(credentials ->
+            client.getUserProfile((Credentials) credentials, context)
+        ).orElse(null);
         logger.debug("userProfile: {}", profile);
         if (profile != null || !canCancel()) {
             verifyProfile(profile);

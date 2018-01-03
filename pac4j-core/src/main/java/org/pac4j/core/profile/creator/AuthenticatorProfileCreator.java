@@ -18,6 +18,6 @@ public class AuthenticatorProfileCreator<C extends Credentials, P extends Common
 
     @Override
     public Optional<P> create(final C credentials, final WebContext context) {
-        return Optional.of((P) credentials.getUserProfile());
+        return Optional.ofNullable((P) credentials.getUserProfile());
     }
 }

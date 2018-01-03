@@ -33,7 +33,7 @@ public class HeaderMatcher implements Matcher {
 
         final Optional<String> headerValue = context.getRequestHeader(this.headerName);
         final boolean headerNull = expectedValue == null && !headerValue.isPresent();
-        final boolean headerMatches = headerValue != null && pattern != null && pattern.matcher(headerValue.orElse(null)).matches();
+        final boolean headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
         return headerNull || headerMatches;
     }
 

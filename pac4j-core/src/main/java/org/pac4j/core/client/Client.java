@@ -63,7 +63,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
     /**
      * <p>Return the logout action (indirect clients).</p>
      *
-     * @see {@link IndirectClient }
+     * @see IndirectClient
      * @param context the current web context
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout

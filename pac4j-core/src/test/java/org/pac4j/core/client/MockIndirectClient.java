@@ -4,6 +4,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 
+import java.util.Optional;
+
 /**
  * Mock an indirect client.
  *
@@ -38,7 +40,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
     @Override
     protected void clientInit() {
         defaultRedirectActionBuilder(ctx -> redirectAction);
-        defaultCredentialsExtractor(ctx -> returnCredentials.get());
+        defaultCredentialsExtractor(ctx -> Optional.ofNullable(returnCredentials.get()));
         defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
         defaultLogoutActionBuilder(getLogoutActionBuilder());
     }
