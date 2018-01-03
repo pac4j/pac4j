@@ -27,7 +27,8 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     private boolean destroySession;
 
-    public DefaultCasLogoutHandler() {}
+    public DefaultCasLogoutHandler() {
+    }
 
     public DefaultCasLogoutHandler(final Store<String, Object> store) {
         this.store = store;
@@ -106,7 +107,8 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final SessionStore<C> newSessionStore = sessionStore.buildFromTrackableSession(context, trackableSession);
+                final SessionStore<C> newSessionStore = (SessionStore<C>) sessionStore.buildFromTrackableSession(context, trackableSession)
+                    .orElse(null);
                 if (newSessionStore != null) {
                     logger.debug("newSesionStore: {}", newSessionStore);
                     final String sessionId = newSessionStore.getOrCreateSessionId(context);

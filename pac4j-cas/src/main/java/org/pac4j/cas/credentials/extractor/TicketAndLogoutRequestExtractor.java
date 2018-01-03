@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.Optional;
 import java.util.zip.Inflater;
 
 /**
@@ -37,21 +38,21 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
     }
 
     @Override
-    public TokenCredentials extract(final WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         final CasLogoutHandler logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
-            final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
+            final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER).orElse(null);
             if (logoutHandler != null) {
                 logoutHandler.recordSession(context, ticket);
             }
             final TokenCredentials casCredentials = new TokenCredentials(ticket);
             logger.debug("casCredentials: {}", casCredentials);
-            return casCredentials;
+            return Optional.of(casCredentials);
 
         } else if (isBackLogoutRequest(context)) {
-            final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER);
+            final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).orElse(null);
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
@@ -62,7 +63,9 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             throw HttpAction.noContent(context);
 
         } else if (isFrontLogoutRequest(context)) {
-            final String logoutMessage = uncompressLogoutMessage(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
+            final String logoutMessage = uncompressLogoutMessage(
+                context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).orElse(null)
+            );
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
@@ -73,28 +76,28 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             computeRedirectionToServerIfNecessary(context);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     protected boolean isTokenRequest(final WebContext context) {
         return ContextHelper.isGet(context)
-                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.TICKET_PARAMETER));
+                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.TICKET_PARAMETER).orElse(null));
     }
 
     protected boolean isBackLogoutRequest(final WebContext context) {
         return ContextHelper.isPost(context)
                 && !isMultipartRequest(context)
-                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
+                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).orElse(null));
     }
 
     private boolean isMultipartRequest(final WebContext context) {
-        final String contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
+        final String contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER).orElse(null);
         return contentType != null && contentType.toLowerCase().startsWith("multipart");
     }
 
     private boolean isFrontLogoutRequest(final WebContext context) {
         return ContextHelper.isGet(context)
-                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
+                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).orElse(null));
     }
 
     private String uncompressLogoutMessage(final String originalMessage) {
@@ -122,7 +125,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
     }
 
     private void computeRedirectionToServerIfNecessary(final WebContext context) {
-        final String relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
+        final String relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER).orElse(null);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (CommonUtils.isNotBlank(relayStateValue)) {
             final StringBuilder buffer = new StringBuilder();

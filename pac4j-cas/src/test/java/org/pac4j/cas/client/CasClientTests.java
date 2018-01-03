@@ -13,6 +13,7 @@ import org.pac4j.core.util.TestsHelper;
 
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
@@ -150,8 +151,8 @@ public final class CasClientTests implements TestsConstants {
         configuration.setGateway(true);
         casClient.redirect(context);
         assertTrue(context.getResponseLocation().indexOf("gateway=true") >= 0);
-        final TokenCredentials credentials = casClient.getCredentials(context);
-        assertNull(credentials);
+        final Optional<TokenCredentials> credentials = casClient.getCredentials(context);
+        assertFalse(credentials.isPresent());
     }
 
     @Test
@@ -190,7 +191,7 @@ public final class CasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod(HTTP_METHOD.GET.name());
-        assertNull(casClient.getCredentials(context));
+        assertFalse(casClient.getCredentials(context).isPresent());
     }
 
     @Test
