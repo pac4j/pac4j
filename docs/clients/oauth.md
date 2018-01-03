@@ -53,6 +53,31 @@ client.setConfiguration(config);
 client.setCallbackUrl(PAC4J_BASE_URL);
 ```
 
+**Example to simulate the `GenericOAuth20Client`:**
+
+We can set the appropriate converter per profile attribute.    
+For example, the type specified by the following expression:    
+`String|name`    
+Do not specify the type with the following expression:    
+`name`    
+Currently supported types are:`Integer`,`Boolean`,`Color`,`Gender`,`Locale`,`Long`,`URI`,`String(Not specified by default)`    
+    
+**Note**: If the profile contains non-character type fields, and you have not specified the type, it will be lost, so you must specify a type for any non-character profile field.
+
+```java
+GenericOAuth20Client client = new GenericOAuth20Client();
+Map map = new HashMap();
+map.put(AGE, "Integer|age");
+map.put(IS_ADMIN, "Boolean|is_admin");
+map.put(BG_COLOR, "Color|bg_color");
+map.put(GENDER, "Gender|gender");
+map.put(BIRTHDAY, "Locale|birthday");
+map.put(ID, "Long|id");
+map.put(BLOG, "URI|blog");
+map.put("name", "name");  //default String
+client.setProfileAttrs(map);
+```
+
 ### b) Specific clients
 
 By default, many clients are available to login with many identity providers:
