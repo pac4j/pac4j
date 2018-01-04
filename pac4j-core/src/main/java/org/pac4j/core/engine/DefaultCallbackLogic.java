@@ -36,7 +36,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
-                     final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
+                     final String inputDefaultUrl, final Boolean inputSaveInSession, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
 
         logger.debug("=== CALLBACK ===");
 
@@ -46,6 +46,12 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
             defaultUrl = Pac4jConstants.DEFAULT_URL_VALUE;
         } else {
             defaultUrl = inputDefaultUrl;
+        }
+        final boolean saveInSession;
+        if (inputSaveInSession == null) {
+            saveInSession = true;
+        } else {
+            saveInSession = inputSaveInSession;
         }
         final boolean multiProfile;
         if (inputMultiProfile == null) {
@@ -81,7 +87,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
             final CommonProfile profile = client.getUserProfile(credentials, context);
             logger.debug("profile: {}", profile);
-            saveUserProfile(context, config, profile, multiProfile, renewSession);
+            saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
 
         } catch (final HttpAction e) {
@@ -93,10 +99,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
     }
 
     protected void saveUserProfile(final C context, final Config config, final CommonProfile profile,
-                                   final boolean multiProfile, final boolean renewSession) {
+                                   final boolean saveInSession, final boolean multiProfile, final boolean renewSession) {
         final ProfileManager manager = getProfileManager(context, config);
         if (profile != null) {
-            manager.save(true, profile, multiProfile);
+            manager.save(saveInSession, profile, multiProfile);
             if (renewSession) {
                 renewSession(context, config);
             }
