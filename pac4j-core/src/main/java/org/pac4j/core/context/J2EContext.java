@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -82,7 +83,16 @@ public class J2EContext implements WebContext {
 
     @Override
     public String getRequestHeader(final String name) {
-        return this.request.getHeader(name);
+        final Enumeration<String> names = request.getHeaderNames();
+        if (names != null) {
+            while (names.hasMoreElements()) {
+                final String headerName = names.nextElement();
+                if (headerName != null && headerName.equalsIgnoreCase(name)) {
+                    return this.request.getHeader(headerName);
+                }
+            }
+        }
+        return null;
     }
 
     @Override
