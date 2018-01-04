@@ -3,7 +3,8 @@ package org.pac4j.core.run;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.profile.*;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.Gender;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.slf4j.Logger;
@@ -39,18 +40,24 @@ public abstract class RunClient implements TestsConstants {
         final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final Credentials credentials = client.getCredentials(context);
-        final CommonProfile profile = client.getUserProfile(credentials, context);
-        logger.debug("userProfile: {}", profile);
-        if (profile != null || !canCancel()) {
-            verifyProfile(profile);
+        client.getCredentials(context).map(credentials ->
+            client.getUserProfile((Credentials) credentials, context)
+        ).ifPresent(
+            p -> {
+                CommonProfile profile = (CommonProfile) p;
+                logger.debug("userProfile: {}", profile);
+                if (!canCancel()) {
+                    verifyProfile(profile);
 
-            logger.warn("## Java serialization");
-            final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
-            byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
-            final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
-            verifyProfile(profile2);
-        }
+                    logger.warn("## Java serialization");
+                    final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+                    byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
+                    final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
+                    verifyProfile(profile2);
+                }
+            }
+        );
+
         logger.warn("################");
         logger.warn("Test successful!");
     }

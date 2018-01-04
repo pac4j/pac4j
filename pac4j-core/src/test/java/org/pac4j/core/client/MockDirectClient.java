@@ -3,6 +3,8 @@ package org.pac4j.core.client;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.util.Optional;
+
 /**
  * Mock a direct client.
  *
@@ -31,7 +33,7 @@ public final class MockDirectClient extends DirectClient<Credentials, CommonProf
 
     @Override
     protected void clientInit() {
-        defaultCredentialsExtractor(ctx -> returnCredentials.get());
+        defaultCredentialsExtractor(ctx -> Optional.ofNullable(returnCredentials.get()));
         defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
     }
 }

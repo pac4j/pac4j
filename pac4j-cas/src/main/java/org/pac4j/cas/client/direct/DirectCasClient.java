@@ -18,17 +18,19 @@ import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the direct client to authenticate users on a CAS server for a web application in a stateless way: when trying to access
  * a protected area, the user will be redirected to the CAS server for login and then back directly to this originally requested url.</p>
- *
+ * <p>
  * <p>You should generally use the {@link org.pac4j.cas.client.CasClient} instead (this one is very specific and was designed for OAuth /
  * OpenID Connect implementations in the CAS server.</p>
- *
+ * <p>
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
- *
+ * <p>
  * <p>As no session is meant to be created, this client does not handle CAS logout requests.</p>
- *
+ * <p>
  * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
  * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
@@ -42,7 +44,8 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     private CallbackUrlResolver callbackUrlResolver = new NoParameterCallbackUrlResolver();
 
-    public DirectCasClient() { }
+    public DirectCasClient() {
+    }
 
     public DirectCasClient(final CasConfiguration casConfiguration) {
         this.configuration = casConfiguration;
@@ -61,17 +64,17 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    protected TokenCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<TokenCredentials> retrieveCredentials(final WebContext context) {
         init();
         try {
             String callbackUrl = callbackUrlResolver.compute(context.getFullRequestURL(), getName(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
-            final TokenCredentials credentials = getCredentialsExtractor().extract(context);
-            if (credentials == null) {
+            final Optional<TokenCredentials> credentials = getCredentialsExtractor().extract(context);
+            if (!credentials.isPresent()) {
                 // redirect to the login page
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
-                        callbackUrl, configuration.isRenew(), false);
+                    callbackUrl, configuration.isRenew(), false);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
                 throw HttpAction.redirect(context, redirectionUrl);
             }
@@ -81,12 +84,12 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
             callbackUrl = CommonHelper.substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
             final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, getName(), callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
-            casAuthenticator.validate(credentials, context);
+            casAuthenticator.validate(credentials.get(), context);
 
             return credentials;
         } catch (CredentialsException e) {
             logger.error("Failed to retrieve or validate CAS credentials", e);
-            return null;
+            return Optional.empty();
         }
     }
 

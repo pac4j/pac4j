@@ -5,8 +5,10 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
@@ -38,18 +40,18 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
         configuration.setProfileDefinition(new LinkedIn2ProfileDefinition());
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
+            final Optional<String> error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            final Optional<String> errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
             // user has denied permissions
-            if ("access_denied".equals(error)
-                    && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
-                    .equals(errorDescription))) {
-                return true;
-            } else {
-                return false;
-            }
+            return error.map(e -> "access_denied".equals(e)).orElse(false)
+                &&
+                errorDescription.map(
+                    e -> "the+user+denied+your+request".equals(e) || "the user denied your request".equals(e)
+                ).orElse(false);
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectAction.redirect("https://www.linkedin.com/uas/logout"))
+        );
 
         super.clientInit();
     }

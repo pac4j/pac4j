@@ -4,15 +4,15 @@ import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
-import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.profile.CasProfile;
+import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.nio.charset.StandardCharsets;
@@ -57,8 +57,8 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestParameter(client.getUsernameParameter(), USER);
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
-        final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final CasRestProfile profile = client.getUserProfile(credentials, context);
+        final UsernamePasswordCredentials credentials = client.getCredentials(context).get();
+        final CasRestProfile profile = client.getUserProfile(credentials, context).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -86,8 +86,8 @@ public final class CasRestClientIT implements TestsConstants {
         final String token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
-        final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final CasRestProfile profile = client.getUserProfile(credentials, context);
+        final UsernamePasswordCredentials credentials = client.getCredentials(context).get();
+        final CasRestProfile profile = client.getUserProfile(credentials, context).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -99,7 +99,7 @@ public final class CasRestClientIT implements TestsConstants {
         client.destroyTicketGrantingTicket(profile, context);
 
         TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile, context), TechnicalException.class,
-                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | "
-                    + "isRemembered: false | clientName: CasRestBasicAuthClient | linkedId: null |` failed: (404) Not Found");
+            "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | "
+                + "isRemembered: false | clientName: CasRestBasicAuthClient | linkedId: null |` failed: (404) Not Found");
     }
 }

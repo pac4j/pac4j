@@ -11,17 +11,19 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
 import org.pac4j.core.engine.decision.ProfileStorageDecision;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.matching.MatchingChecker;
+import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -106,15 +108,15 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                         if (currentClient instanceof DirectClient) {
                             logger.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final Credentials credentials = currentClient.getCredentials(context);
+                            final Optional<Credentials> credentials = currentClient.getCredentials(context);
                             logger.debug("credentials: {}", credentials);
-                            final CommonProfile profile = currentClient.getUserProfile(credentials, context);
+                            final Optional<CommonProfile> profile = credentials.flatMap(c -> currentClient.getUserProfile(c, context));
                             logger.debug("profile: {}", profile);
-                            if (profile != null) {
+                            if (profile.isPresent()) {
                                 final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
-                                    currentClients, (DirectClient) currentClient, profile);
+                                    currentClients, (DirectClient) currentClient, profile.get());
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                manager.save(saveProfileInSession, profile, multiProfile);
+                                manager.save(saveProfileInSession, profile.get(), multiProfile);
                                 updated = true;
                                 if (!multiProfile) {
                                     break;

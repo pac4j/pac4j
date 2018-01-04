@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -94,7 +95,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
             return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
-                    configuration.findProviderMetadata().getJWKSetURI().toURL(), configuration.findResourceRetriever());
+                configuration.findProviderMetadata().getJWKSetURI().toURL(), configuration.findResourceRetriever());
         } catch (final MalformedURLException e) {
             throw new TechnicalException(e);
         }
@@ -106,7 +107,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
     @Override
     @SuppressWarnings("unchecked")
-    public U create(final OidcCredentials credentials, final WebContext context) {
+    public Optional<U> create(final OidcCredentials credentials, final WebContext context) {
         init();
 
         final AccessToken accessToken = credentials.getAccessToken();
@@ -128,7 +129,9 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
             // check idToken
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
+                nonce = (Nonce) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE)
+                    .map(s -> new Nonce((String) s))
+                    .get();
             } else {
                 nonce = null;
             }
@@ -146,12 +149,12 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
                 userInfoHttpRequest.setReadTimeout(configuration.getReadTimeout());
                 final HTTPResponse httpResponse = userInfoHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
-                        httpResponse.getContent());
+                    httpResponse.getContent());
 
                 final UserInfoResponse userInfoResponse = UserInfoResponse.parse(httpResponse);
                 if (userInfoResponse instanceof UserInfoErrorResponse) {
                     logger.error("Bad User Info response, error={}",
-                            ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+                        ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
                     final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     final JWTClaimsSet userInfoClaimsSet;
@@ -174,7 +177,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
                 }
             }
 
-            return profile;
+            return Optional.of(profile);
 
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new TechnicalException(e);

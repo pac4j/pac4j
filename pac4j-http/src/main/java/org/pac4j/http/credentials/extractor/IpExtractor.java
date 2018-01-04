@@ -8,6 +8,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * To extract a remote IP address.
@@ -25,13 +26,14 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private String proxyIp = "";
 
-    public IpExtractor() {}
+    public IpExtractor() {
+    }
 
     public IpExtractor(String... alternateIpHeaders) {
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
-    public TokenCredentials extract(WebContext context) {
+    public Optional<TokenCredentials> extract(WebContext context) {
         final String ip;
         if (alternateIpHeaders.isEmpty()) {
             ip = context.getRemoteAddr();
@@ -49,18 +51,18 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
         }
 
         if (ip == null) {
-            return null;
+            return Optional.empty();
         }
 
-        return new TokenCredentials(ip);
+        return Optional.of(new TokenCredentials(ip));
     }
 
     private String ipFromHeaders(WebContext context) {
-        String ip;
+        Optional<String> ip;
         for (String header : alternateIpHeaders) {
             ip = context.getRequestHeader(header);
-            if (ip != null && !ip.isEmpty()) {
-                return ip;
+            if (ip.isPresent() && !ip.get().isEmpty()) {
+                return ip.get();
             }
         }
         return null;
@@ -76,7 +78,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     /**
      * @param proxyIp Set the IP to verify the proxy request source.
-     *               Setting {@code null} or {@code ""} (empty string) disabled the proxy IP check.
+     *                Setting {@code null} or {@code ""} (empty string) disabled the proxy IP check.
      * @since 2.1.0
      */
     public void setProxyIp(String proxyIp) {

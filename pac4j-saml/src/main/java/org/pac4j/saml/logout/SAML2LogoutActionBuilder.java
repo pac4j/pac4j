@@ -16,6 +16,8 @@ import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.sso.impl.*;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
+import java.util.Optional;
+
 /**
  * Logout action builder for SAML 2.
  *
@@ -45,7 +47,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public Optional<RedirectAction> getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         final SAML2MessageContext samlContext = this.client.getContextProvider().buildContext(context);
         final String relayState = this.client.getStateParameter(context);
 
@@ -55,9 +57,9 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
         if (this.client.getConfiguration().getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
             final String content = adapter.getOutgoingContent();
-            return RedirectAction.success(content);
+            return Optional.ofNullable(RedirectAction.success(content));
         }
         final String location = adapter.getRedirectUrl();
-        return RedirectAction.redirect(location);
+        return Optional.ofNullable(RedirectAction.redirect(location));
     }
 }

@@ -10,7 +10,8 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This class tests the {@link BaseClient} class.
@@ -29,8 +30,8 @@ public final class BaseClientTests implements TestsConstants {
         client.redirect(context);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
-        final Credentials credentials = client.getCredentials(context);
-        assertNull(credentials);
+        boolean hasCredentials = client.getCredentials(context).isPresent();
+        assertFalse(hasCredentials);
     }
 
     @Test
@@ -50,7 +51,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
-        assertNull(client.getUserProfile(null, context));
+        assertFalse(client.getUserProfile(null, context).isPresent());
     }
 
     @Test
@@ -59,7 +60,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()
-                                        .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
+            .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
         final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.redirect(context));
         assertEquals(401, e.getCode());
         assertEquals(401, context.getResponseStatus());
@@ -84,7 +85,9 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
-        assertEquals("true", context.getSessionStore().get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
+        assertEquals(
+            "true", context.getSessionStore().get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get()
+        );
     }
 
     @Test

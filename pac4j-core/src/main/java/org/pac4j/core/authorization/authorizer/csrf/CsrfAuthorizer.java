@@ -7,6 +7,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Authorizer that checks CSRF tokens.
@@ -39,10 +40,15 @@ public class CsrfAuthorizer implements Authorizer<CommonProfile> {
     public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) {
         final boolean checkRequest = !onlyCheckPostRequest || ContextHelper.isPost(context);
         if (checkRequest) {
-            final String parameterToken = context.getRequestParameter(parameterName);
-            final String headerToken = context.getRequestHeader(headerName);
-            final String sessionToken = (String) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
-            return sessionToken != null && (sessionToken.equals(parameterToken) || sessionToken.equals(headerToken));
+            final Optional<String> parameterToken = context.getRequestParameter(parameterName);
+            final Optional<String> headerToken = context.getRequestHeader(headerName);
+            final Optional<String> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
+            return sessionToken.map(
+                sessionTokenValue ->
+                    parameterToken.map( pt -> sessionToken.equals(pt)).orElse(false)
+                        || headerToken.map( ht -> sessionToken.equals(ht)).orElse(false)
+
+            ).orElse(false);
         } else {
             return true;
         }

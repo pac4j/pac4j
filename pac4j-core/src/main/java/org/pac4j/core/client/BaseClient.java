@@ -1,9 +1,5 @@
 package org.pac4j.core.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -17,6 +13,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
@@ -42,7 +43,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private String name;
 
-    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
+    // As the most common access would be through iteration then random, LinkedList is more efficient
+    private List<AuthorizationGenerator<U>> authorizationGenerators = new LinkedList<>();
 
     private CredentialsExtractor<C> credentialsExtractor;
 
@@ -50,48 +52,52 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
+    public BaseClient() {
+        this.setName(null);
+    }
+
     /**
      * Retrieve the credentials.
      *
      * @param context the web context
      * @return the credentials
      */
-    protected C retrieveCredentials(final WebContext context) {
+    protected Optional<C> retrieveCredentials(final WebContext context) {
         try {
-            final C credentials = this.credentialsExtractor.extract(context);
-            if (credentials == null) {
-                return null;
-            }
-            final long t0 = System.currentTimeMillis();
-            try {
-                this.authenticator.validate(credentials, context);
-            } finally {
-                final long t1 = System.currentTimeMillis();
-                logger.debug("Credentials validation took: {} ms", t1 - t0);
-            }
+            final Optional<C> credentials = this.credentialsExtractor.extract(context);
+            credentials.ifPresent(c -> {
+                final long t0 = System.currentTimeMillis();
+                try {
+                    this.authenticator.validate(c, context);
+                } finally {
+                    final long t1 = System.currentTimeMillis();
+                    logger.debug("Credentials validation took: {} ms", t1 - t0);
+                }
+            });
             return credentials;
         } catch (CredentialsException e) {
             logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve or validate credentials", e);
 
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) {
+    public final Optional<U> getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
-            return null;
+            return Optional.empty();
         }
-
-        U profile = retrieveUserProfile(credentials, context);
-        if (profile != null) {
-            profile.setClientName(getName());
+        Optional<U> profile = retrieveUserProfile(credentials, context);
+        if (profile.isPresent()) {
+            profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (AuthorizationGenerator<U> authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile);
+                    profile = Optional.of(
+                        authorizationGenerator.generate(context, profile.get())
+                    );
                 }
             }
         }
@@ -102,34 +108,36 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * Retrieve a user userprofile.
      *
      * @param credentials the credentials
-     * @param context the web context
+     * @param context     the web context
      * @return the user profile
      */
-    protected final U retrieveUserProfile(final C credentials, final WebContext context) {
-        final U profile = this.profileCreator.create(credentials, context);
+    protected final Optional<U> retrieveUserProfile(final C credentials, final WebContext context) {
+        final Optional<U> profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     @Override
     public String getName() {
-        if (CommonHelper.isBlank(this.name)) {
-            return this.getClass().getSimpleName();
-        }
         return this.name;
+    }
+
+    public void setName(final String name) {
+        if (CommonHelper.isBlank(this.name)) {
+            this.name = this.getClass().getSimpleName();
+        } else {
+            this.name = name;
+        }
     }
 
     /**
      * Notify of the web session renewal.
      *
      * @param oldSessionId the old session identifier
-     * @param context the web context
+     * @param context      the web context
      */
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) { }
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
+    }
 
     public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
         return this.authorizationGenerators;
@@ -143,15 +151,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public void setAuthorizationGenerators(final AuthorizationGenerator<U>... authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = Arrays.asList(authorizationGenerators);
-    }
-
-    /**
-     * Add an authorization generator.
-     *
-     * @param authorizationGenerator an authorizations generator
-     */
-    public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
-        addAuthorizationGenerator(authorizationGenerator);
     }
 
     public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
@@ -168,6 +167,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return credentialsExtractor;
     }
 
+    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+        this.credentialsExtractor = credentialsExtractor;
+    }
+
     protected void defaultCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
         if (this.credentialsExtractor == null) {
             this.credentialsExtractor = credentialsExtractor;
@@ -176,6 +179,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     public Authenticator<C> getAuthenticator() {
         return authenticator;
+    }
+
+    public void setAuthenticator(final Authenticator<C> authenticator) {
+        this.authenticator = authenticator;
     }
 
     protected void defaultAuthenticator(final Authenticator<C> authenticator) {
@@ -188,28 +195,20 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return profileCreator;
     }
 
+    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+        this.profileCreator = profileCreator;
+    }
+
     protected void defaultProfileCreator(final ProfileCreator<C, U> profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
     }
 
-    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
-        this.credentialsExtractor = credentialsExtractor;
-    }
-
-    public void setAuthenticator(final Authenticator<C> authenticator) {
-        this.authenticator = authenticator;
-    }
-
-    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
-        this.profileCreator = profileCreator;
-    }
-
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator,
-                "authorizationGenerators", authorizationGenerators);
+            "authenticator", this.authenticator, "profileCreator", this.profileCreator,
+            "authorizationGenerators", authorizationGenerators);
     }
 }

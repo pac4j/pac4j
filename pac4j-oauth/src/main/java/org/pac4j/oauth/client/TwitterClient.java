@@ -9,6 +9,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in Twitter.</p>
  * <p>You can define if a screen should always been displayed for authorization confirmation by using the
@@ -23,7 +25,8 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
 
     private boolean alwaysConfirmAuthorization = false;
 
-    public TwitterClient() {}
+    public TwitterClient() {
+    }
 
     public TwitterClient(final String key, final String secret) {
         setKey(key);
@@ -35,14 +38,10 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String denied = ctx.getRequestParameter("denied");
-            if (CommonHelper.isNotBlank(denied)) {
-                return true;
-            } else {
-                return false;
-            }
+            final Optional<String> denied = ctx.getRequestParameter("denied");
+            return denied.map(d -> CommonHelper.isNotBlank(d)).orElse(false);
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://twitter.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(RedirectAction.redirect("https://twitter.com/logout")));
 
         super.clientInit();
     }

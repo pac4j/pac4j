@@ -7,6 +7,7 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Extracts a cookie value from the request context.
@@ -23,14 +24,14 @@ public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(final WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         final Collection<Cookie> col = context.getRequestCookies();
         for (final Cookie c : col) {
             if (c.getName().equals(this.cookieName)) {
-                return new TokenCredentials(c.getValue());
+                return Optional.of(new TokenCredentials(c.getValue()));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

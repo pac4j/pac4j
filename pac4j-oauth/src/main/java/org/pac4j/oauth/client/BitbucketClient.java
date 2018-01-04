@@ -5,6 +5,8 @@ import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfileDefinition;
 import org.pac4j.scribe.builder.api.BitBucketApi;
 
+import java.util.Optional;
+
 /**
  * This class is the OAuth client to authenticate users in Bitbucket.
  *
@@ -27,7 +29,9 @@ public class BitbucketClient extends OAuth10Client<BitbucketProfile> {
     protected void clientInit() {
         configuration.setApi(new BitBucketApi());
         configuration.setProfileDefinition(new BitbucketProfileDefinition());
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://bitbucket.org/account/signout/"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectAction.redirect("https://bitbucket.org/account/signout/"))
+        );
 
         super.clientInit();
     }

@@ -5,6 +5,8 @@ import org.pac4j.oauth.profile.orcid.OrcidProfile;
 import org.pac4j.oauth.profile.orcid.OrcidProfileDefinition;
 import org.pac4j.scribe.builder.api.OrcidApi20;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in ORCiD.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.</p>
@@ -33,14 +35,11 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
         configuration.setProfileDefinition(new OrcidProfileDefinition());
         configuration.setTokenAsHeader(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
+            final Optional<String> error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            final Optional<String> errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
             // user has denied permissions
-            if ("access_denied".equals(error) && "User denied access".equals(errorDescription)) {
-                return true;
-            } else {
-                return false;
-            }
+            return error.map(e -> "access_denied".equals(e)).orElse(false)
+                && errorDescription.map(e -> "User denied access".equals(e)).orElse(false);
         });
 
         super.clientInit();

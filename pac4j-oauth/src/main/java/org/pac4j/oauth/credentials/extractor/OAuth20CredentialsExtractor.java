@@ -8,6 +8,8 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 
+import java.util.Optional;
+
 /**
  * OAuth 2.0 credentials extractor.
  *
@@ -24,11 +26,11 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
     protected OAuth20Credentials getOAuthCredentials(final WebContext context) {
         if (configuration.isWithState()) {
 
-            final String stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
+            final Optional<String> stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 
-            if (CommonHelper.isNotBlank(stateParameter)) {
+            if (CommonHelper.isNotBlank(stateParameter.orElse(null))) {
                 final String stateSessionAttributeName = this.configuration.getStateSessionAttributeName(client.getName());
-                final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName);
+                final Optional<String> sessionState = context.getSessionStore().get(context, stateSessionAttributeName);
                 // clean from session after retrieving it
                 context.getSessionStore().set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
@@ -43,14 +45,15 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
         }
 
-        final String codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
-        if (codeParameter != null) {
-            final String code = OAuthEncoder.decode(codeParameter);
-            logger.debug("code: {}", code);
-            return new OAuth20Credentials(code);
-        } else {
-            final String message = "No credential found";
-            throw new OAuthCredentialsException(message);
-        }
+        return context.getRequestParameter(OAuth20Configuration.OAUTH_CODE)
+            .map(
+                codeParameter -> {
+                    final String code = OAuthEncoder.decode(codeParameter);
+                    logger.debug("code: {}", code);
+                    return new OAuth20Credentials(code);
+                }
+            ).orElseThrow(
+                () -> new OAuthCredentialsException("No credential found")
+            );
     }
 }

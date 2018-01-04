@@ -5,6 +5,8 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in GitHub.</p>
  * <p>The <i>scope</i> can be defined to require specific permissions from the user by using the {@link #setScope(String)} method.
@@ -33,7 +35,7 @@ public class GitHubClient extends OAuth20Client<GitHubProfile> {
     protected void clientInit() {
         configuration.setApi(GitHubApi.instance());
         configuration.setProfileDefinition(new GitHubProfileDefinition());
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://github.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(RedirectAction.redirect("https://github.com/logout")));
 
         super.clientInit();
     }

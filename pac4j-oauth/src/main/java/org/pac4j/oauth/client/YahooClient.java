@@ -6,6 +6,8 @@ import org.pac4j.oauth.profile.yahoo.YahooProfile;
 import org.pac4j.oauth.profile.yahoo.YahooProfileCreator;
 import org.pac4j.oauth.profile.yahoo.YahooProfileDefinition;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in Yahoo.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.yahoo.YahooProfile}.</p>
@@ -29,7 +31,9 @@ public class YahooClient extends OAuth10Client<YahooProfile> {
         configuration.setApi(YahooApi.instance());
         configuration.setProfileDefinition(new YahooProfileDefinition());
         defaultProfileCreator(new YahooProfileCreator(configuration, this));
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("http://login.yahoo.com/config/login?logout=1"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(
+            RedirectAction.redirect("http://login.yahoo.com/config/login?logout=1")
+        ));
 
         super.clientInit();
     }

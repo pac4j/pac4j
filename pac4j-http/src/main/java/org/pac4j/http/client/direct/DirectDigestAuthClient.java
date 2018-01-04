@@ -14,6 +14,7 @@ import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP digest auth.</p>
@@ -34,7 +35,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
     }
 
     public DirectDigestAuthClient(final Authenticator digestAuthenticator,
-                                 final ProfileCreator profileCreator) {
+                                  final ProfileCreator profileCreator) {
         defaultAuthenticator(digestAuthenticator);
         defaultProfileCreator(profileCreator);
     }
@@ -44,15 +45,16 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
         defaultCredentialsExtractor(new DigestAuthExtractor());
     }
 
-    /** Per RFC 2617
+    /**
+     * Per RFC 2617
      * If a server receives a request for an access-protected object, and an
      * acceptable Authorization header is not sent, the server responds with
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    protected DigestCredentials retrieveCredentials(final WebContext context) {
-        DigestCredentials credentials = super.retrieveCredentials(context);
-        if (credentials == null) {
+    protected Optional<DigestCredentials> retrieveCredentials(final WebContext context) {
+        Optional<DigestCredentials> credentials = super.retrieveCredentials(context);
+        if (!credentials.isPresent()) {
             String nonce = calculateNonce();
             context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
                 + nonce + "\"");
@@ -83,6 +85,6 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials, Comm
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "realm", this.realm, "extractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }
