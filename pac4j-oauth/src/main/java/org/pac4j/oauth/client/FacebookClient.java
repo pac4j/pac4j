@@ -4,9 +4,9 @@ import com.github.scribejava.apis.FacebookApi;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
+import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
-import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import java.util.Optional;
 
@@ -53,11 +53,8 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
             final Optional<String> error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
             final Optional<String> errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
             // user has denied permissions
-            if ("access_denied".equals(error.orElse(null)) && "user_denied".equals(errorReason.orElse(null))) {
-                return true;
-            } else {
-                return false;
-            }
+            return error.map(e -> "access_denied".equals(e)).orElse(false)
+                && errorReason.map(e -> "user_denied".equals(e)).orElse(false);
         });
         configuration.setWithState(true);
         defaultProfileCreator(new FacebookProfileCreator(configuration, this));
@@ -70,12 +67,12 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         return (FacebookConfiguration) configuration;
     }
 
-    public void setStateData(final String stateData) {
-        configuration.setStateData(stateData);
-    }
-
     public String getStateData() {
         return configuration.getStateData();
+    }
+
+    public void setStateData(final String stateData) {
+        configuration.setStateData(stateData);
     }
 
     public String getScope() {

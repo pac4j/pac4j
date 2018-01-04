@@ -20,5 +20,5 @@ public interface Authenticator<C extends Credentials> {
      * @param credentials the given credentials
      * @param context the web context
      */
-    void validate(C credentials, WebContext context) throws  CredentialsException;
+    void validate(C credentials, WebContext context);
 }

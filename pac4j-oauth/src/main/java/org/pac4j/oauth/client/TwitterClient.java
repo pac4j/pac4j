@@ -25,7 +25,8 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
 
     private boolean alwaysConfirmAuthorization = false;
 
-    public TwitterClient() {}
+    public TwitterClient() {
+    }
 
     public TwitterClient(final String key, final String secret) {
         setKey(key);
@@ -38,11 +39,7 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
         configuration.setProfileDefinition(new TwitterProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
             final Optional<String> denied = ctx.getRequestParameter("denied");
-            if (CommonHelper.isNotBlank(denied.orElse(null))) {
-                return true;
-            } else {
-                return false;
-            }
+            return denied.map(d -> CommonHelper.isNotBlank(d)).orElse(false);
         });
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(RedirectAction.redirect("https://twitter.com/logout")));
 

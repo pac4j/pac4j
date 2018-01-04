@@ -43,7 +43,7 @@ public interface WebContext {
      * @param name the name of the attribute
      * @return the attribute
      */
-    Optional getRequestAttribute(String name);
+    Optional<Object> getRequestAttribute(String name);
 
     /**
      * Save a request attribute.

@@ -45,14 +45,15 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
         }
 
-        final Optional<String> codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
-        if (codeParameter.isPresent()) {
-            final String code = OAuthEncoder.decode(codeParameter.get());
-            logger.debug("code: {}", code);
-            return new OAuth20Credentials(code);
-        } else {
-            final String message = "No credential found";
-            throw new OAuthCredentialsException(message);
-        }
+        return context.getRequestParameter(OAuth20Configuration.OAUTH_CODE)
+            .map(
+                codeParameter -> {
+                    final String code = OAuthEncoder.decode(codeParameter);
+                    logger.debug("code: {}", code);
+                    return new OAuth20Credentials(code);
+                }
+            ).orElseThrow(
+                () -> new OAuthCredentialsException("No credential found")
+            );
     }
 }

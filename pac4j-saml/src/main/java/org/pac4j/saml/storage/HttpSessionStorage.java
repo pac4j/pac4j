@@ -7,12 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Hashtable;
+import java.util.Optional;
 
 /**
  * Class implements storage of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
  * can't be serialized (which could lead to problems during failover), the messages are transformed into SAMLObject
  * which internally marshalls the content into XML during serialization.
- *
+ * <p>
  * Messages are populated to a Hashtable and stored inside HttpSession. The Hashtable is lazily initialized
  * during first attempt to create or retrieve a message.
  *
@@ -21,24 +22,21 @@ import java.util.Hashtable;
 public class HttpSessionStorage implements SAMLMessageStorage {
 
     /**
+     * Session key for storage of the hashtable.
+     */
+    private static final String SAML_STORAGE_KEY = "_springSamlStorageKey";
+    /**
      * Class logger.
      */
     protected final Logger log = LoggerFactory.getLogger(getClass());
-
     /**
      * The web context to storage data.
      */
     private final WebContext context;
-
     /**
      * Internal storage for messages, corresponding to the object in session.
      */
     private Hashtable<String, XMLObject> internalMessages;
-
-    /**
-     * Session key for storage of the hashtable.
-     */
-    private static final String SAML_STORAGE_KEY = "_springSamlStorageKey";
 
     /**
      * Creates the storage object. The session is manipulated only once caller tries to store
@@ -72,10 +70,10 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     /**
      * Returns previously stored message with the given ID or null, if there is no message
      * stored.
-     * <p>
+     *
      * Message is stored in String format and must be unmarshalled into XMLObject. Call to this
      * method may thus be expensive.
-     * <p>
+     *
      * Messages are automatically cleared upon successful reception, as we presume that there
      * are never multiple ongoing SAML exchanges for the same session. This saves memory used by
      * the session.
@@ -115,23 +113,31 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     /**
      * Call to the method tries to load internalMessages hashtable object from the session, if the object doesn't exist
      * it will be created and stored.
-     * <p>
+     * 
      * Method synchronizes on session object to prevent two threads from overwriting each others hashtable.
      */
     @SuppressWarnings("unchecked")
     private Hashtable<String, XMLObject> initializeSession() {
-        Hashtable<String, XMLObject> messages = (Hashtable<String, XMLObject>)
-                context.getSessionStore().get(context, SAML_STORAGE_KEY).orElse(null);
-        if (messages == null) {
-            synchronized (context) {
-                messages = (Hashtable<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY).orElse(null);
-                if (messages == null) {
-                    messages = new Hashtable<>();
-                    updateSession(messages);
+        return getMessagesFromSession().orElseGet(
+            () -> {
+                synchronized (context) {
+                    return getMessagesFromSession().orElseGet(
+                        () -> {
+                            Hashtable<String, XMLObject> messagesHashtable = new Hashtable<>();
+                            updateSession(messagesHashtable);
+                            return messagesHashtable;
+                        }
+                    );
                 }
             }
-        }
-        return messages;
+        );
+    }
+
+    /**
+     * @return internalMessages hastable from context
+     */
+    private Optional<Hashtable<String, XMLObject>> getMessagesFromSession() {
+        return context.getSessionStore().get(context, SAML_STORAGE_KEY);
     }
 
     /**

@@ -67,7 +67,7 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public Optional getRequestAttribute(final String name) {
+    public Optional<Object> getRequestAttribute(final String name) {
         return Optional.ofNullable(this.request.getAttribute(name));
     }
 

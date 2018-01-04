@@ -14,13 +14,12 @@ import java.util.regex.Pattern;
  */
 public class HeaderMatcher implements Matcher {
 
+    protected Pattern pattern;
     private String headerName;
-
     private String expectedValue;
 
-    protected Pattern pattern;
-
-    public HeaderMatcher() {}
+    public HeaderMatcher() {
+    }
 
     public HeaderMatcher(final String headerName, final String expectedValue) {
         setHeaderName(headerName);
@@ -33,7 +32,9 @@ public class HeaderMatcher implements Matcher {
 
         final Optional<String> headerValue = context.getRequestHeader(this.headerName);
         final boolean headerNull = expectedValue == null && !headerValue.isPresent();
-        final boolean headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
+        final boolean headerMatches = headerValue.flatMap(
+            hv -> Optional.ofNullable(pattern).map(p -> p.matcher(hv).matches())
+        ).orElse(false);
         return headerNull || headerMatches;
     }
 

@@ -14,6 +14,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -137,8 +138,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final Optional<String> requestedUrlOpt = context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
-        String redirectUrl = requestedUrlOpt.filter(url -> isNotBlank(url)).orElse(defaultUrl);
+        String redirectUrl = (String) context.getSessionStore()
+            .get(context, Pac4jConstants.REQUESTED_URL)
+            .filter(url -> CommonHelper.isNotBlank((String) url))
+            .orElse(defaultUrl);
         if (!defaultUrl.equals(redirectUrl)) {
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
         }

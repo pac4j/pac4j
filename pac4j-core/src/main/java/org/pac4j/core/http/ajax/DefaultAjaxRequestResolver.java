@@ -14,11 +14,15 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
     @Override
     public boolean isAjax(final WebContext context) {
-        final boolean xmlHttpRequest = AJAX_HEADER_VALUE.equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
-        final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString()
-            .equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
-        final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString()
-            .equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
+        final boolean xmlHttpRequest = context.getRequestHeader(AJAX_HEADER_NAME)
+            .map(h -> AJAX_HEADER_VALUE.equalsIgnoreCase(h))
+            .orElse(false);
+        final boolean hasDynamicAjaxParameter = context.getRequestHeader(IS_AJAX_REQUEST)
+            .map(dap -> Boolean.TRUE.toString().equalsIgnoreCase(dap))
+            .orElse(false);
+        final boolean hasDynamicAjaxHeader = context.getRequestParameter(IS_AJAX_REQUEST)
+            .map(h -> Boolean.TRUE.toString().equalsIgnoreCase(h))
+            .orElse(false);
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
 }

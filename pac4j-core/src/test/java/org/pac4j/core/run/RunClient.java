@@ -40,19 +40,24 @@ public abstract class RunClient implements TestsConstants {
         final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final CommonProfile profile = (CommonProfile) client.getCredentials(context).map(credentials ->
+        client.getCredentials(context).map(credentials ->
             client.getUserProfile((Credentials) credentials, context)
-        ).orElse(null);
-        logger.debug("userProfile: {}", profile);
-        if (profile != null || !canCancel()) {
-            verifyProfile(profile);
+        ).ifPresent(
+            p -> {
+                CommonProfile profile = (CommonProfile) p;
+                logger.debug("userProfile: {}", profile);
+                if (!canCancel()) {
+                    verifyProfile(profile);
 
-            logger.warn("## Java serialization");
-            final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
-            byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
-            final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
-            verifyProfile(profile2);
-        }
+                    logger.warn("## Java serialization");
+                    final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+                    byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
+                    final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
+                    verifyProfile(profile2);
+                }
+            }
+        );
+
         logger.warn("################");
         logger.warn("Test successful!");
     }

@@ -26,12 +26,9 @@ public class FormExtractor implements CredentialsExtractor<UsernamePasswordCrede
     public Optional<UsernamePasswordCredentials> extract(WebContext context) {
         final Optional<String> username = context.getRequestParameter(this.usernameParameter);
         final Optional<String> password = context.getRequestParameter(this.passwordParameter);
-        if (username.isPresent() && password.isPresent()) {
-            return Optional.of(
-                new UsernamePasswordCredentials(username.get(), password.get())
-            );
-        }
-        return Optional.empty();
+        return username.map(
+            un -> password.isPresent() ? new UsernamePasswordCredentials(un, password.get()) : null
+        );
     }
 
     public String getUsernameParameter() {

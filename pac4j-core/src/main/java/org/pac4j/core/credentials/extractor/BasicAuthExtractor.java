@@ -30,8 +30,7 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
 
     @Override
     public Optional<UsernamePasswordCredentials> extract(WebContext context) {
-        final Optional<TokenCredentials> credentials = this.extractor.extract(context);
-        return credentials.map(c -> {
+        return this.extractor.extract(context).map(c -> {
             final byte[] decoded = Base64.getDecoder().decode(c.getToken());
 
             String token;

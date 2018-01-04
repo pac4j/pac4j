@@ -38,11 +38,8 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
             final Optional<String> error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
             final Optional<String> errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
             // user has denied permissions
-            if ("access_denied".equals(error.orElse(null)) && "User denied access".equals(errorDescription.orElse(null))) {
-                return true;
-            } else {
-                return false;
-            }
+            return error.map(e -> "access_denied".equals(e)).orElse(false)
+                && errorDescription.map(e -> "User denied access".equals(e)).orElse(false);
         });
 
         super.clientInit();

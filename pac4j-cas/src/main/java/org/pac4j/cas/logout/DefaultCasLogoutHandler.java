@@ -11,6 +11,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -107,9 +108,9 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final SessionStore<C> newSessionStore = (SessionStore<C>) sessionStore.buildFromTrackableSession(context, trackableSession)
-                    .orElse(null);
-                if (newSessionStore != null) {
+                final Optional<SessionStore<C>> newSessionStoreOpt = sessionStore.buildFromTrackableSession(context, trackableSession);
+                if (newSessionStoreOpt.isPresent()) {
+                    SessionStore<C> newSessionStore = newSessionStoreOpt.get();
                     logger.debug("newSesionStore: {}", newSessionStore);
                     final String sessionId = newSessionStore.getOrCreateSessionId(context);
                     logger.debug("remove sessionId: {}", sessionId);

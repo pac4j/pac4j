@@ -40,10 +40,15 @@ public class CsrfAuthorizer implements Authorizer<CommonProfile> {
     public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) {
         final boolean checkRequest = !onlyCheckPostRequest || ContextHelper.isPost(context);
         if (checkRequest) {
-            final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
-            final String headerToken = context.getRequestHeader(headerName).orElse(null);
+            final Optional<String> parameterToken = context.getRequestParameter(parameterName);
+            final Optional<String> headerToken = context.getRequestHeader(headerName);
             final Optional<String> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
-            return sessionToken.isPresent() && (sessionToken.get().equals(parameterToken) || sessionToken.get().equals(headerToken));
+            return sessionToken.map(
+                sessionTokenValue ->
+                    parameterToken.map( pt -> sessionToken.equals(pt)).orElse(false)
+                        || headerToken.map( ht -> sessionToken.equals(ht)).orElse(false)
+
+            ).orElse(false);
         } else {
             return true;
         }

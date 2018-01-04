@@ -1,8 +1,8 @@
 package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.CredentialsException;
 
 import java.util.Optional;
 
@@ -25,16 +25,15 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public Optional<TokenCredentials> extract(WebContext context) {
-        final Optional<String> header = context.getRequestHeader(this.headerName);
-        if (!header.isPresent()) {
-            return Optional.empty();
-        }
+        return context.getRequestHeader(this.headerName).map(
+            header -> {
+                if (!header.startsWith(this.prefixHeader)) {
+                    throw new CredentialsException("Wrong prefix for header: " + this.headerName);
+                }
 
-        if  (!header.get().startsWith(this.prefixHeader)) {
-            throw new CredentialsException("Wrong prefix for header: " + this.headerName);
-        }
-
-        final String headerWithoutPrefix = header.get().substring(this.prefixHeader.length());
-        return Optional.of(new TokenCredentials(headerWithoutPrefix));
+                final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+                return new TokenCredentials(headerWithoutPrefix);
+            }
+        );
     }
 }

@@ -7,6 +7,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * This class gathers all the utilities methods.
@@ -27,6 +28,16 @@ public final class CommonHelper {
             return false;
         }
         return s.trim().length() > 0;
+    }
+
+    /**
+     * Return if the Optional has a value and the String is not blank.
+     *
+     * @param s optional to test string
+     * @return if the String is not blank
+     */
+    public static boolean isNotBlank(final Optional<String> s) {
+        return s.isPresent() && s.get().trim().length() > 0;
     }
 
     /**

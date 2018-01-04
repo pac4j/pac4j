@@ -5,8 +5,8 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 
 import java.util.Optional;
 
@@ -43,13 +43,11 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
             final Optional<String> error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
             final Optional<String> errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
             // user has denied permissions
-            if ("access_denied".equals(error.orElse(null))
-                    && ("the+user+denied+your+request".equals(errorDescription.orElse(null)) || "the user denied your request"
-                    .equals(errorDescription))) {
-                return true;
-            } else {
-                return false;
-            }
+            return error.map(e -> "access_denied".equals(e)).orElse(false)
+                &&
+                errorDescription.map(
+                    e -> "the+user+denied+your+request".equals(e) || "the user denied your request".equals(e)
+                ).orElse(false);
         });
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
             Optional.of(RedirectAction.redirect("https://www.linkedin.com/uas/logout"))
