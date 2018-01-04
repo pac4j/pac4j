@@ -30,6 +30,7 @@ public class OidcConfiguration extends InitializableObject {
     public static final String REDIRECT_URI = "redirect_uri";
     public static final String CLIENT_ID = "client_id";
     public static final String STATE = "state";
+    public static final String MAX_AGE = "max_age";
     public static final String NONCE = "nonce";
 
     public static final List<String> AUTHORIZATION_CODE_FLOWS = Collections.unmodifiableList(Arrays.asList("code"));
@@ -69,6 +70,9 @@ public class OidcConfiguration extends InitializableObject {
 
     /* Preferred JWS algorithm */
     private JWSAlgorithm preferredJwsAlgorithm;
+
+    /* max_age seconds since the last time the End-User was actively authenticated by the OP */
+    private Integer maxAge;
 
     /* max clock skew in seconds */
     private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
@@ -212,6 +216,14 @@ public class OidcConfiguration extends InitializableObject {
         this.preferredJwsAlgorithm = preferredJwsAlgorithm;
     }
 
+    public Integer getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(final Integer maxAge) {
+        this.maxAge = maxAge;
+    }
+
     public int getMaxClockSkew() {
         return maxClockSkew;
     }
@@ -286,7 +298,7 @@ public class OidcConfiguration extends InitializableObject {
         return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
             "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
             "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
-            "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxClockSkew", maxClockSkew,
+            "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
     }
