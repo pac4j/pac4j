@@ -69,6 +69,10 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
 
         addStateAndNonceParameters(context, params);
 
+        if (configuration.getMaxAge() != null) {
+            params.put(OidcConfiguration.MAX_AGE, configuration.getMaxAge().toString());
+        }
+
         final String location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
