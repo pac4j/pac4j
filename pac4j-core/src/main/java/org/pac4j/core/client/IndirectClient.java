@@ -3,6 +3,7 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -103,11 +104,17 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     private void cleanRequestedUrl(final WebContext context) {
-        context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
+        SessionStore<WebContext> sessionStore = context.getSessionStore();
+        if (sessionStore.get(context, Pac4jConstants.REQUESTED_URL) != null) {
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
+        }
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
-        context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+        SessionStore<WebContext> sessionStore = context.getSessionStore();
+        if (sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX) != null) {
+            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+        }
     }
 
     /**
