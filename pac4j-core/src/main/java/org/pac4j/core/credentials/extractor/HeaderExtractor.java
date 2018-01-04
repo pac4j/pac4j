@@ -36,7 +36,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 
-        final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+        final String headerWithoutPrefix = header.substring(this.prefixHeader.length()).trim();
         return new TokenCredentials(headerWithoutPrefix, clientName);
     }
 }
