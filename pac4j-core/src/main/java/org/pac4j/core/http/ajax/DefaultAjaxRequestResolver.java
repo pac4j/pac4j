@@ -3,6 +3,7 @@ package org.pac4j.core.http.ajax;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * Default way to compute if a HTTP request is an AJAX one.
@@ -18,5 +19,10 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST));
         final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
+    }
+
+    @Override
+    public boolean isFacesPartialAjax(final WebContext context) {
+        return CommonHelper.isNotBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER));
     }
 }

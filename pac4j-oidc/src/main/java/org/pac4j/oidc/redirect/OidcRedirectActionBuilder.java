@@ -61,8 +61,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         this.authParams.put(OidcConfiguration.CLIENT_ID, configuration.getClientId());
     }
 
-    @Override
-    public RedirectAction redirect(final WebContext context) {
+    public String redirectLocation(final WebContext context) {
         final Map<String, String> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
@@ -75,6 +74,13 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
 
         final String location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
+
+        return location;
+    }
+
+    @Override
+    public RedirectAction redirect(final WebContext context) {
+        final String location = redirectLocation(context);
 
         return RedirectAction.redirect(location);
     }
