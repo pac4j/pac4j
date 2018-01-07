@@ -3,6 +3,9 @@ package org.pac4j.core.http.ajax;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * Default way to compute if a HTTP request is an AJAX one.
@@ -18,5 +21,23 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST));
         final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
+    }
+
+    @Override
+    public RedirectAction buildAjaxResponse(final String url,final WebContext context) {
+        if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
+            if (CommonHelper.isNotBlank(url)) {
+                context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+            }
+            throw HttpAction.unauthorized(context);
+        }
+
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
+        buffer.append("<partial-response>");
+        buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");
+        buffer.append("</partial-response>");
+
+        return RedirectAction.success(buffer.toString());
     }
 }
