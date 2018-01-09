@@ -149,9 +149,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
                 } else {
                     if (startAuthentication(context, currentClients)) {
                         logger.debug("Starting authentication");
-                        if (!ajaxRequestResolver.isAjax(context)) {
-                            saveRequestedUrl(context, currentClients);
-                        }
+                        saveRequestedUrl(context, currentClients);
                         action = redirectToIdentityProvider(context, currentClients);
                     } else {
                         logger.debug("unauthorized");
@@ -239,9 +237,11 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected void saveRequestedUrl(final C context, final List<Client> currentClients) throws HttpAction {
-        final String requestedUrl = context.getFullRequestURL();
-        logger.debug("requestedUrl: {}", requestedUrl);
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, requestedUrl);
+        if (!ajaxRequestResolver.isAjax(context)) {
+            final String requestedUrl = context.getFullRequestURL();
+            logger.debug("requestedUrl: {}", requestedUrl);
+            context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, requestedUrl);
+        }
     }
 
     /**
