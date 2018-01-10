@@ -1,6 +1,7 @@
 package org.pac4j.core.http.ajax;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * Compute if a HTTP request is an AJAX one.
@@ -17,4 +18,6 @@ public interface AjaxRequestResolver {
      * @return whether it is an AJAX request
      */
     boolean isAjax(WebContext context);
+
+    RedirectAction buildAjaxResponse(final String url,final WebContext context);
 }
