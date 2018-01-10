@@ -20,7 +20,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private String clientName;
 
-    private Boolean trimValue;
+    private boolean trimValue = false;
 
     public String getHeaderName() {
         return headerName;
@@ -80,7 +80,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
         String headerWithoutPrefix = header.substring(this.prefixHeader.length()).trim();
 
-        if (trimValue != null && trimValue) {
+        if (trimValue) {
             headerWithoutPrefix = headerWithoutPrefix.trim();
         }
         return new TokenCredentials(headerWithoutPrefix, clientName);
