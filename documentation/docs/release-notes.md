@@ -18,6 +18,7 @@ title: Release notes&#58;
 - The issue time is generated for a new JWT
 - The user profile can be expired (currently handled for AzureAD)
 - In the `J2EContext`, header names are checked in a case-insensitive way
+- Supports the `javax.faces.partial.ajax` parameter for AJAX requests
 
 
 **v2.2.1**:

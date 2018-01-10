@@ -79,12 +79,12 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      */
     public RedirectAction getRedirectAction(final WebContext context) {
         init();
-        // it's an AJAX request -> unauthorized (with redirection url in header)
+        // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning the appropriate action");
             RedirectAction action = redirectActionBuilder.redirect(context);
             cleanRequestedUrl(context);
-            return ajaxRequestResolver.buildAjaxResponse(action.getLocation(),context);
+            return ajaxRequestResolver.buildAjaxResponse(action.getLocation(), context);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
