@@ -19,5 +19,12 @@ public interface AjaxRequestResolver {
      */
     boolean isAjax(WebContext context);
 
-    RedirectAction buildAjaxResponse(final String url,final WebContext context);
+    /**
+     * Build an AJAX reponse.
+     *
+     * @param url the redirection URL if it was not an AJAX request
+     * @param context the web context
+     * @return the AJAX response
+     */
+    RedirectAction buildAjaxResponse(String url, WebContext context);
 }
