@@ -163,4 +163,23 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         assertEquals(1, result.size());
         assertEquals(client2, result.get(0));
     }
+
+    @Test
+    public void testOneClientAsDefault() {
+        final MockIndirectClient client1 =
+            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final Clients clients = new Clients(client1);
+        final List<Client> result = finder.find(clients, MockWebContext.create(), null);
+        assertEquals(1, result.size());
+        assertEquals(client1, result.get(0));
+    }
+
+    @Test
+    public void testBlankClientRequested() {
+        final MockIndirectClient client1 =
+            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final Clients clients = new Clients(client1);
+        final List<Client> result = finder.find(clients, MockWebContext.create(), "");
+        assertEquals(0, result.size());
+    }
 }
