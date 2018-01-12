@@ -19,6 +19,7 @@ title: Release notes&#58;
 - The user profile can be expired (currently handled for AzureAD)
 - In the `J2EContext`, header names are checked in a case-insensitive way
 - Supports the `javax.faces.partial.ajax` parameter for AJAX requests
+- If only one client is defined in the configuration, it is used as a fallback on the security and callback endpoints
 
 
 **v2.2.1**:
