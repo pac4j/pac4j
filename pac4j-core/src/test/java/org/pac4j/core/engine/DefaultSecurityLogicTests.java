@@ -112,6 +112,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testNotAuthenticated() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
+        clients = "";
         call();
         assertEquals(401, context.getResponseStatus());
     }
