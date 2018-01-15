@@ -78,7 +78,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 
-        String headerWithoutPrefix = header.substring(this.prefixHeader.length()).trim();
+        String headerWithoutPrefix = header.substring(this.prefixHeader.length());
 
         if (trimValue) {
             headerWithoutPrefix = headerWithoutPrefix.trim();
