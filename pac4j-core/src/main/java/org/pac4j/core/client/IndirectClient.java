@@ -1,6 +1,5 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -81,16 +80,12 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      */
     public RedirectAction getRedirectAction(final WebContext context) {
         init();
-        // it's an AJAX request -> unauthorized (with redirection url in header)
+        // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
-            logger.info("AJAX request detected -> returning 401");
+            logger.info("AJAX request detected -> returning the appropriate action");
             RedirectAction action = redirectActionBuilder.redirect(context);
             cleanRequestedUrl(context);
-            final String url = action.getLocation();
-            if (CommonHelper.isNotBlank(url)) {
-                context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
-            }
-            throw HttpAction.unauthorized(context);
+            return ajaxRequestResolver.buildAjaxResponse(action.getLocation(), context);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);

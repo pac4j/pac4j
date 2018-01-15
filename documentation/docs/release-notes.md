@@ -17,6 +17,9 @@ title: Release notes&#58;
 - The username of the `AzureAdProfile` is the UPN
 - The issue time is generated for a new JWT
 - The user profile can be expired (currently handled for AzureAD)
+- In the `J2EContext`, header names are checked in a case-insensitive way
+- Supports the `javax.faces.partial.ajax` parameter for AJAX requests
+- If only one client is defined in the configuration, it is used as a fallback on the security and callback endpoints
 
 
 **v2.2.1**:
@@ -30,7 +33,7 @@ title: Release notes&#58;
 - The password encoders and LDAP/SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
 - Supports CouchDB for authentication and user management
 - REST API `Authenticator`
-- In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error 
+- In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
 - Allow passive authentication for SAML
 
 **v2.0.0**:

@@ -26,8 +26,14 @@ public class DefaultSecurityClientFinder implements ClientFinder {
 
         String securityClientNames = clientNames;
         // we don't have defined clients to secure the URL, use the general default security ones from the Clients if they exist
-        if (CommonHelper.isBlank(clientNames)) {
+        // we check the nullity and not the blankness to allow the blank string to mean no client
+        // so no clients parameter -> use the default security ones; clients=blank string -> no clients defined
+        if (clientNames == null) {
             securityClientNames = clients.getDefaultSecurityClients();
+            // still no clients defined and we only have one client, use it
+            if (securityClientNames == null && clients.findAllClients().size() == 1) {
+                securityClientNames = clients.getClients().get(0).getName();
+            }
         }
 
         if (CommonHelper.isNotBlank(securityClientNames)) {

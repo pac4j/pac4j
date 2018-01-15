@@ -86,4 +86,15 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
     }
+
+    @Test
+    public void testOneIndirectClientNoIndirectClientInURL() {
+        final IndirectClient facebook = new MockIndirectClient("Facebook");
+        final Clients clients = new Clients(CALLBACK_URL, facebook);
+        clients.init();
+        final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
+        final List<Client> result = finder.find(clients, MockWebContext.create(), null);
+        assertEquals(1, result.size());
+        assertEquals(facebook, result.get(0));
+    }
 }
