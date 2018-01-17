@@ -22,7 +22,7 @@ public class DropBoxProfileCreator extends OAuth20ProfileCreator<DropBoxProfile>
 
     @Override
     protected void signRequest(OAuthService<OAuth2AccessToken> service, OAuth2AccessToken accessToken, OAuthRequest request) {
+        request.addHeader(HttpConstants.CONTENT_TYPE_HEADER, HttpConstants.APPLICATION_JSON);
         request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken.getAccessToken());
     }
-
 }
