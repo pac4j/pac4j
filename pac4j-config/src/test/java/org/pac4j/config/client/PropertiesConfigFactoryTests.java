@@ -155,7 +155,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertEquals("https://accounts.google.com/.well-known/openid-configuration",
                 googleOidcClient.getConfiguration().getDiscoveryURI());
             assertEquals(CALLBACK_URL + "?client_name=GoogleOidcClient.1", googleOidcClient.getCallbackUrlResolver()
-                .compute(googleOidcClient.getCallbackUrl(), googleOidcClient.getName(), MockWebContext.create()));
+                .compute(googleOidcClient.getUrlResolver(), googleOidcClient.getCallbackUrl(),
+                    googleOidcClient.getName(), MockWebContext.create()));
 
             final FormClient formClient = (FormClient) clients.findClient("FormClient");
             assertEquals(LOGIN_URL, formClient.getLoginUrl());

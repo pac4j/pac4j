@@ -2,6 +2,7 @@ package org.pac4j.core.http.callback;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
@@ -18,7 +19,7 @@ public final class PathParameterCallbackUrlResolverTests implements TestsConstan
 
     @Test
     public void testCompute() {
-        final String url = resolver.compute(CALLBACK_URL, CLIENT_NAME, MockWebContext.create());
+        final String url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, CLIENT_NAME, MockWebContext.create());
         assertEquals(CALLBACK_URL + "/" + CLIENT_NAME, url);
     }
 

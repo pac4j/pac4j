@@ -124,7 +124,7 @@ defaultCallbackLogic.setClient("FacebookClient");
 ```
 
 The `CallbackUrlResolver` relies on a [`UrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/UrlResolver.java) to complement the URL according to the current web context.
-The `UrlResolver` can be retrieved via the `getUrlResolver()` method of the `CallbackUrlResolver`
+The `UrlResolver` can be retrieved via the `getUrlResolver()` method of the client.
 
 You can use the [`DefaultUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/DefaultUrlResolver.java) and handle relative URLs by using: `defaultUrlResolver.setCompleteRelativeUrl(true)`.
 Or provide your own `UrlResolver` using the `setUrlResolver` method.

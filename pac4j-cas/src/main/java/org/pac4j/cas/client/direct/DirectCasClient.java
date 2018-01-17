@@ -15,6 +15,8 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
+import org.pac4j.core.http.url.DefaultUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -40,6 +42,8 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     private CasConfiguration configuration;
 
+    private UrlResolver urlResolver = new DefaultUrlResolver();
+
     private CallbackUrlResolver callbackUrlResolver = new NoParameterCallbackUrlResolver();
 
     public DirectCasClient() { }
@@ -50,13 +54,14 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
 
     @Override
     protected void clientInit() {
+        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
         CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), callbackUrlResolver, "fake"));
+        super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -64,7 +69,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     protected TokenCredentials retrieveCredentials(final WebContext context) {
         init();
         try {
-            String callbackUrl = callbackUrlResolver.compute(context.getFullRequestURL(), getName(), context);
+            String callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
             final TokenCredentials credentials = getCredentialsExtractor().extract(context);
@@ -79,7 +84,8 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
             // clean url from ticket parameter
             callbackUrl = CommonHelper.substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             callbackUrl = CommonHelper.substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, getName(), callbackUrlResolver, callbackUrl);
+            final CasAuthenticator casAuthenticator =
+                new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
             casAuthenticator.validate(credentials, context);
 
@@ -104,6 +110,14 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
         this.configuration = configuration;
     }
 
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
+    }
+
     public CallbackUrlResolver getCallbackUrlResolver() {
         return callbackUrlResolver;
     }
@@ -116,6 +130,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration);
+            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration, "urlResolver", this.urlResolver,
+            "callbackUrlResolver", this.callbackUrlResolver);
     }
 }
