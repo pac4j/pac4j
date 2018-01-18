@@ -6,6 +6,7 @@ import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -13,7 +14,7 @@ import org.pac4j.core.util.InitializableObject;
  * <p>This class is made to group multiple clients, generally on one callback url.</p>
  *
  * <p>The {@link #init()} method is used to initialize the clients with the general values: the callback URL, the AJAX resolver,
- * the callback URL resolver and the authorization generators.</p>
+ * the URL resolver, the callback URL resolver and the authorization generators.</p>
  *
  * @author Jerome Leleu
  * @since 1.3.0
@@ -28,6 +29,8 @@ public class Clients extends InitializableObject {
     private String callbackUrl;
 
     private AjaxRequestResolver ajaxRequestResolver;
+
+    private UrlResolver urlResolver;
 
     private CallbackUrlResolver callbackUrlResolver;
 
@@ -95,6 +98,9 @@ public class Clients extends InitializableObject {
     protected void updateIndirectClient(final IndirectClient client) {
         if (this.callbackUrl != null && client.getCallbackUrl() ==  null) {
             client.setCallbackUrl(this.callbackUrl);
+        }
+        if (this.urlResolver != null && client.getUrlResolver() == null) {
+            client.setUrlResolver(this.urlResolver);
         }
         if (this.callbackUrlResolver != null && client.getCallbackUrlResolver() == null) {
             client.setCallbackUrlResolver(this.callbackUrlResolver);
@@ -221,10 +227,19 @@ public class Clients extends InitializableObject {
         this.defaultSecurityClients = defaultSecurityClients;
     }
 
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "clients", getClients(),
                 "ajaxRequestResolver", ajaxRequestResolver, "callbackUrlResolver", callbackUrlResolver,
-                "authorizationGenerators", authorizationGenerators, "defaultSecurityClients", defaultSecurityClients);
+                "authorizationGenerators", authorizationGenerators, "defaultSecurityClients", defaultSecurityClients,
+                "urlResolver", this.urlResolver);
     }
 }
