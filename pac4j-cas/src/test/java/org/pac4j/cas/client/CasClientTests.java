@@ -85,20 +85,16 @@ public final class CasClientTests implements TestsConstants {
         configuration.setLoginUrl(CAS + LOGIN);
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CASBACK);
+        casClient.setUrlResolver((url, context) -> HOST + url);
         casClient.setCallbackUrlResolver(new CallbackUrlResolver() {
             @Override
-            public String compute(final String url, final String clientName, final WebContext context) {
+            public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
                 return null;
             }
 
             @Override
             public boolean matches(final String clientName, final WebContext context) {
                 return false;
-            }
-
-            @Override
-            public UrlResolver getUrlResolver() {
-                return (url, context) -> HOST + url;
             }
         });
         casClient.init();
