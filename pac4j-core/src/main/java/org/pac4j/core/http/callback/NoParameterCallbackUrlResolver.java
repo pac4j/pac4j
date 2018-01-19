@@ -1,6 +1,7 @@
 package org.pac4j.core.http.callback;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.http.url.UrlResolver;
 
 /**
  * No name is added to the callback URL to be able to distinguish the client, so it doesn't match.
@@ -8,11 +9,11 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class NoParameterCallbackUrlResolver extends AbstractCallbackUrlResolver {
+public class NoParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
-    public String compute(final String url, final String clientName, final WebContext context) {
-        return getUrlResolver().compute(url, context);
+    public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
+        return urlResolver.compute(url, context);
     }
 
     @Override
