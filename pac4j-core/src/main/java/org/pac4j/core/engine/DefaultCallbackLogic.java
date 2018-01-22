@@ -25,7 +25,8 @@ import static org.pac4j.core.util.CommonHelper.*;
 /**
  * <p>Default callback logic:</p>
  * <p>The credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in
- * the web session. Finally, the user is redirected back to the originally requested url (or to the <code>defaultUrl</code>).</p>
+ * the web session (depending on the saveInSession attribut, default is true). Finally, the user is redirected back to the originally requested
+ * url (or to the <code>defaultUrl</code>).</p>
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -34,9 +35,19 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
+    private boolean saveInSession = true;
+
+    public Boolean getSaveInSession() {
+        return saveInSession;
+    }
+
+    public void setSaveInSession(Boolean saveInSession) {
+        this.saveInSession = saveInSession;
+    }
+
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
-                     final String inputDefaultUrl, final Boolean inputSaveInSession, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
+                     final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
 
         logger.debug("=== CALLBACK ===");
 
@@ -47,12 +58,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
         } else {
             defaultUrl = inputDefaultUrl;
         }
-        final boolean saveInSession;
-        if (inputSaveInSession == null) {
-            saveInSession = true;
-        } else {
-            saveInSession = inputSaveInSession;
-        }
+
         final boolean multiProfile;
         if (inputMultiProfile == null) {
             multiProfile = false;

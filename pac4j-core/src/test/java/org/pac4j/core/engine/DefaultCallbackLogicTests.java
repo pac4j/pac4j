@@ -62,7 +62,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, null, null, renewSession);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, null, renewSession);
     }
 
     @Test
