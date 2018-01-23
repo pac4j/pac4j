@@ -12,6 +12,10 @@
     <packaging>jar</packaging>
     <name>pac4j configuration</name>
 
+    <properties>
+        <hikaricp.version>2.7.6</hikaricp.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -50,7 +54,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>2.6.1</version>
+            <version>${hikaricp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
