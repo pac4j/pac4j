@@ -3,7 +3,7 @@ package org.pac4j.oauth.profile.facebook;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.*;
-import com.github.scribejava.core.oauth.OAuthService;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -37,7 +37,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
             (OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration>) configuration.getProfileDefinition();
         final FacebookConfiguration facebookConfiguration = (FacebookConfiguration) configuration;
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final OAuthService<OAuth2AccessToken> service = this.configuration.buildService(context, client, null);
+        final OAuth20Service service = this.configuration.buildService(context, client, null);
         String body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);

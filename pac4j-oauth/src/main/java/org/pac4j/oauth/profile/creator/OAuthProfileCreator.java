@@ -30,8 +30,8 @@ import java.util.concurrent.ExecutionException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration, T extends Token>
-    implements ProfileCreator<C, U> {
+abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration<S, T>,
+    T extends Token, S extends OAuthService> implements ProfileCreator<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -81,7 +81,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     protected U retrieveUserProfileFromToken(final WebContext context, final T accessToken) {
         final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final OAuthService<T> service = this.configuration.buildService(context, client, null);
+        final S service = this.configuration.buildService(context, client, null);
         final String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {
@@ -101,7 +101,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @param verb        method used to request data
      * @return the user data response
      */
-    protected String sendRequestForData(final OAuthService<T> service, final T accessToken, final String dataUrl, Verb verb) {
+    protected String sendRequestForData(final S service, final T accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final OAuthRequest request = createOAuthRequest(dataUrl, verb);
@@ -131,7 +131,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @param token the token
      * @param request the request
      */
-    protected abstract void signRequest(OAuthService<T> service, T token, OAuthRequest request);
+    protected abstract void signRequest(S service, T token, OAuthRequest request);
 
     /**
      * Create an OAuth request.
