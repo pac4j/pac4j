@@ -2,6 +2,7 @@ package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -70,7 +71,7 @@ public final class ECSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
-        final String json = new ECKey.Builder(ECKey.Curve.P_256,
+        final String json = new ECKey.Builder(Curve.P_256,
             (ECPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
         JWKHelper.buildECKeyPairFromJwk(json);
     }
