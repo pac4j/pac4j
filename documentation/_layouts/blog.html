@@ -1,40 +1,25 @@
 {% include header.html %}
 
-    <nav class="navbar navbar-light bg-faded">
+<li><a href="/index.html">HOME</a></li>
+<li><a href="/gettingstarted.html">GETTING STARTED</a></li>
+<li><a href="/implementations.html">IMPLEMENTATIONS</a></li>
+<li><a href="/docs/alldocs.html">DOCUMENTATION</a></li>
+<li><a href="/contributors.html">CONTRIBUTE</a></li>
+<li class="active"><a href="/blog.html">BLOG</a></li>
+<li><a href="/mailing-lists.html">NEED HELP?</a></li>
+</ul>
+</div>
+</div>
+</nav>
 
-      <div class="container">
+<main>
+    <div class="container">
 
-        <ul class="nav navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/index.html">HOME</a>
-          </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/gettingstarted.html">GETTING STARTED</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="/implementations.html">IMPLEMENTATIONS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/docs/alldocs.html">DOCUMENTATION</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/contributors.html">CONTRIBUTORS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/mailing-lists.html">NEED HELP?</a>
-          </li>
-        </ul>
+        <a href="/blog.html"><i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i></a>
+        <h1 style="margin-top: 0; margin-bottom: 40px" class="text-center">{{ page.title }}</h1>
 
-      </div>
-    </nav>
+        {{ content }}
 
-    <div id="content" class="container">
-
-      <h1 class="text-center">{{ page.title }}</h1>
-      <div><i>{{ page.author }} - {{ page.date }}</i></div><br />
-
-		  {{ content }}
-
-	</div>
+        <div class="text-right"><i>{{ page.author }} - {{ page.date }}</i></div><br />
 
 {% include footer.html %}
