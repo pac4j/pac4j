@@ -13,7 +13,7 @@
     <name>pac4j for LDAP</name>
 
     <properties>
-        <ldaptive.version>1.2.1</ldaptive.version>
+        <ldaptive.version>1.2.3</ldaptive.version>
     </properties>
 
     <dependencies>
@@ -96,7 +96,6 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>jar</goal>
                             <goal>test-jar</goal>
                         </goals>
                     </execution>

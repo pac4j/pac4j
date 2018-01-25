@@ -10,6 +10,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -34,20 +35,24 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     protected String clientName;
 
+    protected UrlResolver urlResolver;
+
     protected CallbackUrlResolver callbackUrlResolver;
 
     protected String callbackUrl;
 
-    public CasAuthenticator(final CasConfiguration configuration, final String clientName, final CallbackUrlResolver callbackUrlResolver,
-                            final String callbackUrl) {
+    public CasAuthenticator(final CasConfiguration configuration, final String clientName, final UrlResolver urlResolver,
+                            final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
         this.configuration = configuration;
         this.clientName = clientName;
+        this.urlResolver = urlResolver;
         this.callbackUrlResolver = callbackUrlResolver;
         this.callbackUrl = callbackUrl;
     }
 
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("urlResolver", urlResolver);
         CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
         CommonHelper.assertNotBlank("clientName", clientName);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
@@ -62,7 +67,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
         final String ticket = credentials.getToken();
         try {
-            final String finalCallbackUrl = callbackUrlResolver.compute(callbackUrl, clientName, context);
+            final String finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, context);
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);

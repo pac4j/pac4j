@@ -479,7 +479,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
             final PrivateKey signingKey = kp.getPrivate();
             final X509Certificate certificate = cert.generate(signingKey, "BC");
 
-            ks.setKeyEntry(this.keyStoreAlias, signingKey, password, new Certificate[]{certificate});
+            final char[] keyPassword = this.privateKeyPassword.toCharArray();
+            ks.setKeyEntry(this.keyStoreAlias, signingKey, keyPassword, new Certificate[]{certificate});
 
             try (final FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {
                 ks.store(fos, password);

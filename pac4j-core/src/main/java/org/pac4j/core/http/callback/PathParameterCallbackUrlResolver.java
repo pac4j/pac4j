@@ -1,6 +1,7 @@
 package org.pac4j.core.http.callback;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -9,11 +10,11 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class PathParameterCallbackUrlResolver extends AbstractCallbackUrlResolver {
+public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
-    public String compute(final String url, final String clientName, final WebContext context) {
-        String newUrl = getUrlResolver().compute(url, context);
+    public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
+        String newUrl = urlResolver.compute(url, context);
         if (newUrl != null) {
             if (!newUrl.endsWith("/")) {
                 newUrl += "/";
