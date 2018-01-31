@@ -22,12 +22,12 @@ Each client has a name which is by default the class name (like `FacebookClient`
 
 Understand the main features:
 
-- [Direct vs indirect clients](#direct-vs-indirect-clients)
-- [Compute roles and permissions](#compute-roles-and-permissions)
-- [The callback URL](#the-callback-url)
-- [Profile definition](#profile-definition)
-- [AJAX requests](#ajax-requests)
-- [The `Client` methods](#the-client-methods)
+- [Direct vs indirect clients](#1-direct-vs-indirect-clients)
+- [Compute roles and permissions](#2-compute-roles-and-permissions)
+- [The callback URL](#3-the-callback-url)
+- [Profile definition](#4-profile-definition)
+- [AJAX requests](#5-ajax-requests)
+- [The `Client` methods](#6-the-client-methods)
 
 
 ---
@@ -135,7 +135,7 @@ Or provide your own `UrlResolver` using the `setUrlResolver` method.
 
 Most clients rely on the `Authenticator` and `ProfileCreator` components to validate credentials and create the user profile.
 
-At the end of the login process, the returned user profile is created by the (internal) `Authenticator` or `ProfileCreator`, which holds a [profile definition](user-profile.html#profile-definition).
+At the end of the login process, the returned user profile is created by the (internal) `Authenticator` or `ProfileCreator`, which holds a [profile definition](user-profile.html#8-profile-definition).
 
 This profile definition can be overridden using the `setProfileDefinition` method.
 
