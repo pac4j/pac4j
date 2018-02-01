@@ -140,7 +140,7 @@ public final class ProfileHelper {
      * @return the list of profiles
      */
     public static <U extends CommonProfile> List<U> flatIntoAProfileList(final Map<String, U> profiles) {
-        return Collections.unmodifiableList(new ArrayList<>(profiles.values()));
+        return new ArrayList<>(profiles.values());
     }
 
     /**

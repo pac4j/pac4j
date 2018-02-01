@@ -183,14 +183,14 @@ public abstract class UserProfile implements Serializable, Externalizable {
         return getImmutableAttributeMap(this.authenticationAttributes);
     }
 
-    private Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
+    private static Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
             final String key = entries.getKey();
             final Object value = ProfileHelper.getInternalAttributeHandler().restore(attributeMap.get(key));
             newAttributes.put(key, value);
         }
-        return Collections.unmodifiableMap(newAttributes);
+        return newAttributes;
     }
 
     /**
@@ -342,7 +342,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the user roles.
      */
     public Set<String> getRoles() {
-        return Collections.unmodifiableSet(this.roles);
+        return new LinkedHashSet<>(this.roles);
     }
 
     /**
@@ -351,7 +351,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the user permissions.
      */
     public Set<String> getPermissions() {
-        return Collections.unmodifiableSet(this.permissions);
+        return new LinkedHashSet<>(this.permissions);
     }
 
     /**
