@@ -47,13 +47,13 @@ public final class RunDropboxClient extends RunClient {
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
-        assertEquals("75206624", profile.getId());
-        assertEquals(DropBoxProfile.class.getName() + CommonProfile.SEPARATOR + "75206624", profile.getTypedId());
+        assertEquals("dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU", profile.getId());
+        assertEquals(DropBoxProfile.class.getName() + CommonProfile.SEPARATOR + "dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile, getLogin(), null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
+        assertCommonProfile(userProfile, getLogin(), "Test", "ScribeUP", "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
                 null, "https://db.tt/T0YkdWpF", null);
         assertEquals(true, profile.getEmailVerified());
-        assertEquals(10, profile.getAttributes().size());
+        assertEquals(9, profile.getAttributes().size());
     }
 }
