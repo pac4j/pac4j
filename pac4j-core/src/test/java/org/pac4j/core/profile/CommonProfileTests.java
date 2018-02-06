@@ -77,9 +77,8 @@ public final class CommonProfileTests implements TestsConstants {
         final CommonProfile userProfile = new CommonProfile();
         try {
             userProfile.getAttributes().put(KEY, VALUE);
-            fail();
         } catch (final UnsupportedOperationException e) {
-            assertNull(e.getMessage());
+            fail();
         }
     }
     @Test
@@ -87,9 +86,8 @@ public final class CommonProfileTests implements TestsConstants {
         final CommonProfile userProfile = new CommonProfile();
         try {
             userProfile.getAuthenticationAttributes().put(KEY, VALUE);
-            fail();
         } catch (final UnsupportedOperationException e) {
-            assertNull(e.getMessage());
+            fail();
         }
     }
 

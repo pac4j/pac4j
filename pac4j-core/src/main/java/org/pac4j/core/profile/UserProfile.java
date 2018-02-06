@@ -171,7 +171,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
-        return getImmutableAttributeMap(this.attributes);
+        return getAttributeMap(this.attributes);
     }
 
     /**
@@ -180,10 +180,10 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the immutable authentication attributes
      */
     public Map<String, Object> getAuthenticationAttributes() {
-        return getImmutableAttributeMap(this.authenticationAttributes);
+        return getAttributeMap(this.authenticationAttributes);
     }
 
-    private static Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
+    private static Map<String, Object> getAttributeMap(Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
             final String key = entries.getKey();
