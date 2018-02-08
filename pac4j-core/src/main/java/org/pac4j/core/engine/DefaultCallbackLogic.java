@@ -93,7 +93,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
             final CommonProfile profile = client.getUserProfile(credentials, context);
             logger.debug("profile: {}", profile);
-            saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
+            saveUserProfile(context, config, profile, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
 
         } catch (final HttpAction e) {
@@ -105,10 +105,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
     }
 
     protected void saveUserProfile(final C context, final Config config, final CommonProfile profile,
-                                   final boolean saveInSession, final boolean multiProfile, final boolean renewSession) {
+                                   final boolean multiProfile, final boolean renewSession) {
         final ProfileManager manager = getProfileManager(context, config);
         if (profile != null) {
-            manager.save(saveInSession, profile, multiProfile);
+            manager.save(this.saveInSession, profile, multiProfile);
             if (renewSession) {
                 renewSession(context, config);
             }
