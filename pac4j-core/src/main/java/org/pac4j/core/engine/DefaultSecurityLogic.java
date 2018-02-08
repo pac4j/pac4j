@@ -15,8 +15,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.matching.DefaultMatchingChecker;
 import org.pac4j.core.matching.MatchingChecker;
@@ -58,9 +56,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
-    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
-
     private boolean saveProfileInSession;
+
+    private boolean saveRequestURLInSession = true;
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -237,7 +235,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected void saveRequestedUrl(final C context, final List<Client> currentClients) throws HttpAction {
-        if (!ajaxRequestResolver.isAjax(context)) {
+        if (this.saveRequestURLInSession) {
             final String requestedUrl = context.getFullRequestURL();
             logger.debug("requestedUrl: {}", requestedUrl);
             context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, requestedUrl);
@@ -299,6 +297,14 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     public void setSaveProfileInSession(final boolean saveProfileInSession) {
         this.saveProfileInSession = saveProfileInSession;
+    }
+
+    public boolean isSaveRequestURLInSession() {
+        return saveRequestURLInSession;
+    }
+
+    public void setSaveRequestURLInSession(boolean saveRequestURLInSession) {
+        this.saveRequestURLInSession = saveRequestURLInSession;
     }
 }
 
