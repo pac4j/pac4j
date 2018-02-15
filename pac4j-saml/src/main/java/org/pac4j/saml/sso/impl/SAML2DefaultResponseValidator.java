@@ -575,7 +575,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     protected final void validateAssertionConditions(final Conditions conditions, final SAML2MessageContext context) {
 
         if (conditions == null) {
-            throw new SAMLException("Assertion conditions cannot be null");
+            return;
         }
 
         if (conditions.getNotBefore() != null && conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {

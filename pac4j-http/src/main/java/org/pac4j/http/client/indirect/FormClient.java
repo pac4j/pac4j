@@ -65,7 +65,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
 
         defaultRedirectActionBuilder(ctx -> {
-            final String finalLoginUrl = getCallbackUrlResolver().getUrlResolver().compute(this.loginUrl, ctx);
+            final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
             return RedirectAction.redirect(finalLoginUrl);
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));

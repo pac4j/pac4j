@@ -75,6 +75,10 @@ p {
     text-align: center;
     width: 100%;
 }
+.text-right {
+    text-align: right;
+    width: 100%;
+}
 pre[class="highlight"] {
     padding: 10px 10px 10px 10px
 }
@@ -115,8 +119,13 @@ pre[class="highlight"] {
     color: #ffffff;
 }
 .alert-contrib {
-    background-color: #eac435;
-    border-color: #d9b424;
+     background-color: #eac435;
+     border-color: #d9b424;
+     color: #ffffff;
+}
+.alert-blog {
+    background-color: #3aadff;
+    border-color: #299cee;
     color: #ffffff;
 }
 .title {

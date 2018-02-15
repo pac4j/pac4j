@@ -9,6 +9,8 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
+import org.pac4j.core.http.url.DefaultUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
@@ -29,6 +31,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     protected String callbackUrl;
 
+    protected UrlResolver urlResolver;
+
     protected CallbackUrlResolver callbackUrlResolver;
 
     private AjaxRequestResolver ajaxRequestResolver;
@@ -41,6 +45,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected final void internalInit() {
         // check configuration
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
+        if (this.urlResolver == null) {
+            this.urlResolver = new DefaultUrlResolver();
+        }
         if (this.callbackUrlResolver == null) {
             this.callbackUrlResolver = new QueryParameterCallbackUrlResolver();
         }
@@ -143,7 +150,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {
-        return callbackUrlResolver.compute(callbackUrl, this.getName(), context);
+        return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
     }
 
     public void setCallbackUrl(final String callbackUrl) {
@@ -151,6 +158,14 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     public String getCallbackUrl() { return this.callbackUrl; }
+
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
+    }
 
     public CallbackUrlResolver getCallbackUrlResolver() {
         return callbackUrlResolver;
@@ -199,9 +214,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
-                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+                "urlResolver", this.urlResolver, "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver",
+                this.ajaxRequestResolver, "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor",
+                getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
                 "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
     }
 }

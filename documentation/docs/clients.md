@@ -22,12 +22,12 @@ Each client has a name which is by default the class name (like `FacebookClient`
 
 Understand the main features:
 
-- [Direct vs indirect clients](#direct-vs-indirect-clients)
-- [Compute roles and permissions](#compute-roles-and-permissions)
-- [The callback URL](#the-callback-url)
-- [Profile definition](#profile-definition)
-- [AJAX requests](#ajax-requests)
-- [The `Client` methods](#the-client-methods)
+- [Direct vs indirect clients](#1-direct-vs-indirect-clients)
+- [Compute roles and permissions](#2-compute-roles-and-permissions)
+- [The callback URL](#3-the-callback-url)
+- [Profile definition](#4-profile-definition)
+- [AJAX requests](#5-ajax-requests)
+- [The `Client` methods](#6-the-client-methods)
 
 
 ---
@@ -124,7 +124,7 @@ defaultCallbackLogic.setClient("FacebookClient");
 ```
 
 The `CallbackUrlResolver` relies on a [`UrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/UrlResolver.java) to complement the URL according to the current web context.
-The `UrlResolver` can be retrieved via the `getUrlResolver()` method of the `CallbackUrlResolver`
+The `UrlResolver` can be retrieved via the `getUrlResolver()` method of the client.
 
 You can use the [`DefaultUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/url/DefaultUrlResolver.java) and handle relative URLs by using: `defaultUrlResolver.setCompleteRelativeUrl(true)`.
 Or provide your own `UrlResolver` using the `setUrlResolver` method.
@@ -135,7 +135,7 @@ Or provide your own `UrlResolver` using the `setUrlResolver` method.
 
 Most clients rely on the `Authenticator` and `ProfileCreator` components to validate credentials and create the user profile.
 
-At the end of the login process, the returned user profile is created by the (internal) `Authenticator` or `ProfileCreator`, which holds a [profile definition](user-profile.html#profile-definition).
+At the end of the login process, the returned user profile is created by the (internal) `Authenticator` or `ProfileCreator`, which holds a [profile definition](user-profile.html#8-profile-definition).
 
 This profile definition can be overridden using the `setProfileDefinition` method.
 
@@ -148,9 +148,9 @@ For an indirect client, if the user tries to access a protected URL, he will be 
 
 Though, if the incoming HTTP request is an AJAX one, no redirection will be performed and a 401 error page will be returned.
 
-The HTTP request is considered to be an AJAX one if the value of the `X-Requested-With` header is `XMLHttpRequest` or if the `is_ajax_request` parameter or header is `true`. This is the behaviour of the [`DefaultAjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/DefaultAjaxRequestResolver.java).
+The HTTP request is considered to be an AJAX one if the value of the `X-Requested-With` header is `XMLHttpRequest` or if the `is_ajax_request` parameter or header is `true`. This is the behaviour of the [`DefaultAjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/ajax/DefaultAjaxRequestResolver.java).
 
-But you can provide your own [`AjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/AjaxRequestResolver.java) with: `client.setAjaxRequestResolver(myAjaxRequestResolver);`.
+But you can provide your own [`AjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/ajax/AjaxRequestResolver.java) with: `client.setAjaxRequestResolver(myAjaxRequestResolver);`.
 
 
 ---

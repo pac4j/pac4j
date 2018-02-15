@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuthConfiguration<S extends OAuthService<T>, T extends Token> extends InitializableObject {
+public class OAuthConfiguration<S extends OAuthService, T extends Token> extends InitializableObject {
 
     public static final String OAUTH_TOKEN = "oauth_token";
 

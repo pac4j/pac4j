@@ -32,6 +32,9 @@ public interface Pac4jConstants {
     /* The default url parameter */
     String DEFAULT_URL = "defaultUrl";
 
+    /* The default client */
+    String DEFAULT_CLIENT = "defaultClient";
+
     /* The default url, the root path */
     String DEFAULT_URL_VALUE = "/";
 

@@ -171,7 +171,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
-        return getImmutableAttributeMap(this.attributes);
+        return getAttributeMap(this.attributes);
     }
 
     /**
@@ -180,17 +180,17 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the immutable authentication attributes
      */
     public Map<String, Object> getAuthenticationAttributes() {
-        return getImmutableAttributeMap(this.authenticationAttributes);
+        return getAttributeMap(this.authenticationAttributes);
     }
 
-    private Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
+    private static Map<String, Object> getAttributeMap(Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
             final String key = entries.getKey();
             final Object value = ProfileHelper.getInternalAttributeHandler().restore(attributeMap.get(key));
             newAttributes.put(key, value);
         }
-        return Collections.unmodifiableMap(newAttributes);
+        return newAttributes;
     }
 
     /**
@@ -342,7 +342,12 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the user roles.
      */
     public Set<String> getRoles() {
-        return Collections.unmodifiableSet(this.roles);
+        return new LinkedHashSet<>(this.roles);
+    }
+
+    public void setRoles(Set<String> roles) {
+        CommonHelper.assertNotNull("roles", roles);
+        this.roles = roles;
     }
 
     /**
@@ -351,7 +356,12 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the user permissions.
      */
     public Set<String> getPermissions() {
-        return Collections.unmodifiableSet(this.permissions);
+        return new LinkedHashSet<>(this.permissions);
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        CommonHelper.assertNotNull("permissions", permissions);
+        this.permissions = permissions;
     }
 
     /**

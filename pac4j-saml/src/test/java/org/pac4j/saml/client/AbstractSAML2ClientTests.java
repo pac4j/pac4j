@@ -36,7 +36,6 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setSamlMessageStorageFactory(new HttpSessionStorageFactory());
         final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
-
         return saml2Client;
     }
 

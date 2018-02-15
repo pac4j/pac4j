@@ -10,6 +10,8 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
+import org.pac4j.core.http.url.DefaultUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -31,6 +33,8 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
 
     private CasConfiguration configuration;
 
+    private UrlResolver urlResolver = new DefaultUrlResolver();
+
     private CallbackUrlResolver callbackUrlResolver = new NoParameterCallbackUrlResolver();
 
     private String serviceUrl;
@@ -44,6 +48,7 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
 
     @Override
     protected void clientInit() {
+        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
         CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
         CommonHelper.assertNotBlank("serviceUrl", this.serviceUrl);
         CommonHelper.assertNotNull("configuration", this.configuration);
@@ -53,7 +58,7 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
-        defaultAuthenticator(new CasAuthenticator(configuration, getName(), callbackUrlResolver, this.serviceUrl));
+        defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, this.serviceUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -73,6 +78,14 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
         this.serviceUrl = serviceUrl;
     }
 
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
+    }
+
     public CallbackUrlResolver getCallbackUrlResolver() {
         return callbackUrlResolver;
     }
@@ -86,6 +99,6 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
-            "callbackUrlResolver", callbackUrlResolver, "serviceUrl", serviceUrl);
+            "callbackUrlResolver", callbackUrlResolver, "serviceUrl", serviceUrl, "urlResolver", this.urlResolver);
     }
 }
