@@ -345,6 +345,11 @@ public abstract class UserProfile implements Serializable, Externalizable {
         return new LinkedHashSet<>(this.roles);
     }
 
+    public void setRoles(Set<String> roles) {
+        CommonHelper.assertNotNull("roles", roles);
+        this.roles = roles;
+    }
+
     /**
      * Get the permissions of the user.
      *
@@ -352,6 +357,11 @@ public abstract class UserProfile implements Serializable, Externalizable {
      */
     public Set<String> getPermissions() {
         return new LinkedHashSet<>(this.permissions);
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        CommonHelper.assertNotNull("permissions", permissions);
+        this.permissions = permissions;
     }
 
     /**
