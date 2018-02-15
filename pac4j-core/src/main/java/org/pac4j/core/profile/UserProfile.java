@@ -345,7 +345,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         return new LinkedHashSet<>(this.roles);
     }
 
-    protected void setRoles(Set<String> roles) {
+    public void setRoles(Set<String> roles) {
         CommonHelper.assertNotNull("roles", roles);
         this.roles = roles;
     }
@@ -359,7 +359,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         return new LinkedHashSet<>(this.permissions);
     }
 
-    protected void setPermissions(Set<String> permissions) {
+    public void setPermissions(Set<String> permissions) {
         CommonHelper.assertNotNull("permissions", permissions);
         this.permissions = permissions;
     }
