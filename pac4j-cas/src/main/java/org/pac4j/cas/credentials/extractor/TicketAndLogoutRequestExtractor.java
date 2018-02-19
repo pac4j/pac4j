@@ -1,5 +1,6 @@
 package org.pac4j.cas.credentials.extractor;
 
+import java.util.Base64;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.logout.CasLogoutHandler;
@@ -14,7 +15,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.zip.Inflater;
 
 /**
@@ -98,7 +98,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
     }
 
     private String uncompressLogoutMessage(final String originalMessage) {
-        final byte[] binaryMessage = DatatypeConverter.parseBase64Binary(originalMessage);
+        final byte[] binaryMessage = Base64.getMimeDecoder().decode(originalMessage);
 
         Inflater decompresser = null;
         try {
