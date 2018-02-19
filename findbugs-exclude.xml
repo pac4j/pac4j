@@ -8,6 +8,10 @@
         <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
     </Match>
     <Match>
+        <Class name="~.*DefaultCallbackLogicTests"/>
+        <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" />
+    </Match>
+    <Match>
         <Class name="~.*DefaultLogoutLogic"/>
         <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
     </Match>
@@ -19,5 +23,5 @@
         <Class name="~.*SAML2ClientConfiguration"/>
         <Bug code="REC" />
     </Match>
-    
+
 </FindBugsFilter>
