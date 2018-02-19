@@ -3,10 +3,10 @@ package org.pac4j.core.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class JavaSerializationHelper {
      * @return the base64 string of the serialized object
      */
     public String serializeToBase64(final Serializable o) {
-        return DatatypeConverter.printBase64Binary(serializeToBytes(o));
+        return Base64.getEncoder().encodeToString(serializeToBytes(o));
     }
 
     /**
@@ -63,7 +63,7 @@ public class JavaSerializationHelper {
      * @return the unserialized Java object
      */
     public Serializable unserializeFromBase64(final String base64) {
-        return unserializeFromBytes(DatatypeConverter.parseBase64Binary(base64));
+        return unserializeFromBytes(Base64.getDecoder().decode(base64));
     }
 
     /**
