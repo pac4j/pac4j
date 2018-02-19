@@ -31,7 +31,10 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final RedirectAction action = client.getRedirectAction(context);
         assertTrue(getDecodedAuthnRequest(action.getContent())
-            .contains("<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>"));
+                .contains("<saml2:Issuer "
+                        + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
+                        + "NameQualifier=\"http://localhost:8080/cb\" "
+                        + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>"));
     }
 
     @Test
