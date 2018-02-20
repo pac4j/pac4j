@@ -134,6 +134,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
         final Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
+        issuer.setFormat(Issuer.ENTITY);
+        issuer.setNameQualifier(spEntityId);
         return issuer;
     }
 
