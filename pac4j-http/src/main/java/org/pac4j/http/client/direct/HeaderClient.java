@@ -52,10 +52,12 @@ public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> 
 
     @Override
     protected void clientInit(final WebContext context) {
-        CommonHelper.assertNotBlank("headerName", this.headerName);
-        CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
+        if (getCredentialsExtractor() == null) {
+            CommonHelper.assertNotBlank("headerName", this.headerName);
+            CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-        defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
+            defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
+        }
     }
 
     public String getHeaderName() {

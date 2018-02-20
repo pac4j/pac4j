@@ -24,5 +24,5 @@ public interface CallbackLogic<R, C extends WebContext> {
      * @return the resulting action of the callback
      */
     R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter,
-                     String defaultUrl, Boolean multiProfile, Boolean renewSession);
+            String defaultUrl, Boolean multiProfile, Boolean renewSession);
 }

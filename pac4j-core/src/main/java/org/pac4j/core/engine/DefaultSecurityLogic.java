@@ -31,7 +31,7 @@ import static org.pac4j.core.util.CommonHelper.*;
 /**
  * <p>Default security logic:</p>
  *
- * <p>If the HTTP request matches the <code>matchers</code> configuration (or no <code>matchers</code> are defined), 
+ * <p>If the HTTP request matches the <code>matchers</code> configuration (or no <code>matchers</code> are defined),
  * the security is applied. Otherwise, the user is automatically granted access.</p>
  *
  * <p>First, if the user is not authenticated (no profile) and if some clients have been defined in the <code>clients</code> parameter,
@@ -58,10 +58,12 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     private boolean saveProfileInSession;
 
+    private boolean saveRequestURLInSession = true;
+
     @Override
-    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, 
+    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
                      final HttpActionAdapter<R, C> httpActionAdapter,
-                     final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, 
+                     final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile,
                      final Object... parameters) {
 
         logger.debug("=== SECURITY ===");
@@ -115,7 +117,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
                             final CommonProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
                             if (profile != null) {
-                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClient) 
+                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClient)
                                     currentClient, profile);
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                 manager.save(saveProfileInSession, profile, multiProfile);
@@ -172,7 +174,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
     }
 
     /**
-     * Load the profiles from the web context if no clients are defined or if the first client is an indirect one 
+     * Load the profiles from the web context if no clients are defined or if the first client is an indirect one
      * or the {@link AnonymousClient}.
      *
      * @param context the web context
@@ -180,12 +182,12 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @return whether the profiles must be loaded from the web session
      */
     protected boolean loadProfilesFromSession(final C context, final List<Client> currentClients) {
-        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient || 
+        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient ||
             currentClients.get(0) instanceof AnonymousClient;
     }
 
     /**
-     * Whether we need to save the profile in session after the authentication of direct client(s). <code>false</code> 
+     * Whether we need to save the profile in session after the authentication of direct client(s). <code>false</code>
      * by default as direct clients profiles are not meant to be saved in the web session.
      *
      * @param context the web context
@@ -194,7 +196,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param profile the retrieved profile after login
      * @return whether we need to save the profile in session
      */
-    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, 
+    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient,
                                            final CommonProfile profile) {
         return this.saveProfileInSession;
     }
@@ -209,7 +211,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @return a forbidden error
      * @throws HttpAction whether an additional HTTP action is required
      */
-    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, 
+    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles,
                                    final String authorizers) throws HttpAction {
         return HttpAction.forbidden("forbidden", context);
     }
@@ -233,9 +235,11 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected void saveRequestedUrl(final C context, final List<Client> currentClients) throws HttpAction {
-        final String requestedUrl = context.getFullRequestURL();
-        logger.debug("requestedUrl: {}", requestedUrl);
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, requestedUrl);
+        if (this.saveRequestURLInSession) {
+            final String requestedUrl = context.getFullRequestURL();
+            logger.debug("requestedUrl: {}", requestedUrl);
+            context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, requestedUrl);
+        }
     }
 
     /**
@@ -293,6 +297,14 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
     public void setSaveProfileInSession(final boolean saveProfileInSession) {
         this.saveProfileInSession = saveProfileInSession;
+    }
+
+    public boolean isSaveRequestURLInSession() {
+        return saveRequestURLInSession;
+    }
+
+    public void setSaveRequestURLInSession(boolean saveRequestURLInSession) {
+        this.saveRequestURLInSession = saveRequestURLInSession;
     }
 }
 

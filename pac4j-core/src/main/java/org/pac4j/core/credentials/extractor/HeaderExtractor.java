@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * To extract header value.
@@ -13,11 +14,49 @@ import org.pac4j.core.exception.HttpAction;
  */
 public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
-    private final String headerName;
+    private String headerName;
 
-    private final String prefixHeader;
+    private String prefixHeader;
 
-    private final String clientName;
+    private String clientName;
+
+    private boolean trimValue = false;
+
+    public String getHeaderName() {
+        return headerName;
+    }
+
+    public void setHeaderName(String headerName) {
+        this.headerName = headerName;
+    }
+
+    public String getPrefixHeader() {
+        return prefixHeader;
+    }
+
+    public void setPrefixHeader(String prefixHeader) {
+        this.prefixHeader = prefixHeader;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public Boolean getTrimValue() {
+        return trimValue;
+    }
+
+    public void setTrimValue(Boolean trimValue) {
+        this.trimValue = trimValue;
+    }
+
+    public HeaderExtractor() {
+        // empty constructor as needed to be instanciated by beanutils
+    }
 
     public HeaderExtractor(final String headerName, final String prefixHeader, final String clientName) {
         this.headerName = headerName;
@@ -27,6 +66,9 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public TokenCredentials extract(WebContext context) throws HttpAction, CredentialsException {
+        CommonHelper.assertNotBlank("headerName", this.headerName);
+        CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
+
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
             return null;
@@ -36,7 +78,11 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 
-        final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+        String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+
+        if (trimValue) {
+            headerWithoutPrefix = headerWithoutPrefix.trim();
+        }
         return new TokenCredentials(headerWithoutPrefix, clientName);
     }
 }

@@ -25,7 +25,8 @@ import static org.pac4j.core.util.CommonHelper.*;
 /**
  * <p>Default callback logic:</p>
  * <p>The credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in
- * the web session. Finally, the user is redirected back to the originally requested url (or to the <code>defaultUrl</code>).</p>
+ * the web session (depending on the saveInSession attribut, default is true). Finally, the user is redirected back to the originally requested
+ * url (or to the <code>defaultUrl</code>).</p>
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -33,6 +34,16 @@ import static org.pac4j.core.util.CommonHelper.*;
 public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> implements CallbackLogic<R, C> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
+    private boolean saveInSession = true;
+
+    public Boolean getSaveInSession() {
+        return saveInSession;
+    }
+
+    public void setSaveInSession(Boolean saveInSession) {
+        this.saveInSession = saveInSession;
+    }
 
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
@@ -47,6 +58,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
         } else {
             defaultUrl = inputDefaultUrl;
         }
+
         final boolean multiProfile;
         if (inputMultiProfile == null) {
             multiProfile = false;
@@ -96,7 +108,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
                                    final boolean multiProfile, final boolean renewSession) {
         final ProfileManager manager = getProfileManager(context, config);
         if (profile != null) {
-            manager.save(true, profile, multiProfile);
+            manager.save(this.saveInSession, profile, multiProfile);
             if (renewSession) {
                 renewSession(context, config);
             }
