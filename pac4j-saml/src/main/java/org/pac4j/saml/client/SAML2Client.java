@@ -60,9 +60,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
     protected SAML2ProfileHandler<AuthnRequest> profileHandler;
-    
+
     protected SAML2ResponseValidator responseValidator;
-    
+
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
     protected SAML2MetadataResolver idpMetadataResolver;
@@ -91,8 +91,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         CommonHelper.assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
-        this.configuration.init(getName(), context); 
-        
+        this.configuration.init(getName(), context);
+
         initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
@@ -119,11 +119,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected void initSAMLProfileHandler() {
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
-                        this.configuration.getDestinationBindingType(), 
+                        this.configuration.getDestinationBindingType(),
                         this.configuration.isForceSignRedirectBindingAuthnRequest()),
                 new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
-    
+
     protected void initSAMLResponseValidator() {
         // Build the SAML response validator
         this.responseValidator = new SAML2DefaultResponseValidator(
@@ -132,7 +132,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.getWantsAssertionsSigned());
     }
-    
+
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
@@ -191,7 +191,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     public String getStateParameter(final WebContext webContext) {
         final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
-        webContext.setSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE, "");
+        if (relayState != null) {
+            webContext.setSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE, "");
+        }
         return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
     }
 
