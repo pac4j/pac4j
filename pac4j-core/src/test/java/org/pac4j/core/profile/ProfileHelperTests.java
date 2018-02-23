@@ -68,24 +68,7 @@ public final class ProfileHelperTests implements TestsConstants {
     @Test
     public void testProfileRestoreFromClassName() {
         final String typedId = CommonProfile.class.getName() + CommonProfile.SEPARATOR;
-        profileRestoreMustBringBackAllAttributes(typedId);
-    }
-
-    /**
-     * Tests {@link ProfileHelper#restoreOrBuildProfile(ProfileDefinition, String, Map, Map, Object...)} when the profile is created using
-     * through the profile definition's create function. The Typed ID does not contain a separator.
-     */
-    @Test
-    public void testProfileRestoreFromProfileDefinitionCreateFunction() {
-        final String typedId = CommonProfile.class.getName();
-        profileRestoreMustBringBackAllAttributes(typedId);
-    }
-
-    private void profileRestoreMustBringBackAllAttributes(final String typedId) {
-        final ProfileDefinition<CommonProfile> pd = new CommonProfileDefinition<>();
-        final Map<String,Object> profileAttributes = exampleSamlProfileAttributes();
-        final Map<String,Object> authenticationAttributes = exampleSamlAuthenticationAttributes();
-        final CommonProfile restoredProfile = ProfileHelper.restoreOrBuildProfile(pd, typedId, profileAttributes, authenticationAttributes);
+        final CommonProfile restoredProfile = profileRestoreMustBringBackAllAttributes(typedId);
 
         assertNotNull(restoredProfile);
         assertEquals("a@b.cc", restoredProfile.getEmail());
@@ -108,6 +91,45 @@ public final class ProfileHelperTests implements TestsConstants {
         assertEquals("NameIdSpProvidedId", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID));
         assertEquals(notBeforeTime, restoredProfile.getAuthenticationAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE));
         assertEquals(notOnOrAfterTime, restoredProfile.getAuthenticationAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE));
+    }
+
+    /**
+     * Tests {@link ProfileHelper#restoreOrBuildProfile(ProfileDefinition, String, Map, Map, Object...)} when the profile is created using
+     * through the profile definition's create function. The Typed ID does not contain a separator.
+     */
+    @Test
+    public void testProfileRestoreFromProfileDefinitionCreateFunction() {
+        final String typedId = CommonProfile.class.getName();
+        final CommonProfile restoredProfile = profileRestoreMustBringBackAllAttributes(typedId);
+
+        assertNotNull(restoredProfile);
+        assertEquals("a@b.cc", restoredProfile.getEmail());
+        assertEquals("John", restoredProfile.getFirstName());
+        assertEquals("Doe", restoredProfile.getFamilyName());
+        assertEquals(Gender.UNSPECIFIED, restoredProfile.getGender()); // Because it was not set
+        assertNull(restoredProfile.getDisplayName()); // Was not set either
+
+        assertEquals("12345-67890", restoredProfile.getAttribute(SESSION_INDEX));
+        assertEquals(notBeforeTime, restoredProfile.getAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE));
+        assertEquals(notOnOrAfterTime, restoredProfile.getAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE));
+
+        assertEquals("IssuerId", restoredProfile.getAuthenticationAttribute(ISSUER_ID));
+        List<String> context = (List<String>) restoredProfile.getAuthenticationAttribute(AUTHN_CONTEXT);
+        assertThat(context, CoreMatchers.hasItem("ContextItem1"));
+        assertThat(context, CoreMatchers.hasItem("ContextItem2"));
+        assertEquals("NameIdFormat", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_FORMAT));
+        assertEquals("NameIdNameQualifier", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_NAME_QUALIFIER));
+        assertEquals("NameIdSpNameQualifier", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_SP_NAME_QUALIFIER));
+        assertEquals("NameIdSpProvidedId", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID));
+        assertEquals(notBeforeTime, restoredProfile.getAuthenticationAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE));
+        assertEquals(notOnOrAfterTime, restoredProfile.getAuthenticationAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE));
+    }
+
+    private CommonProfile profileRestoreMustBringBackAllAttributes(final String typedId) {
+        final ProfileDefinition<CommonProfile> pd = new CommonProfileDefinition<>();
+        final Map<String,Object> profileAttributes = exampleSamlProfileAttributes();
+        final Map<String,Object> authenticationAttributes = exampleSamlAuthenticationAttributes();
+        return ProfileHelper.restoreOrBuildProfile(pd, typedId, profileAttributes, authenticationAttributes);
     }
 
     private Map<String, Object> exampleSamlProfileAttributes() {

@@ -63,7 +63,8 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
      * @param name The attribute name.
      * @param value The attribute value.
      */
-    public void convertAndAdd(final CommonProfile profile, final AttributeLocation attributeLocation, final String name, final Object value) {
+    public void convertAndAdd(final CommonProfile profile, final AttributeLocation attributeLocation, final String name,
+            final Object value) {
         if (value != null) {
             final Object convertedValue;
             final AttributeConverter<? extends Object> converter = this.converters.get(name);
@@ -78,15 +79,15 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
             }
 
             switch (attributeLocation) {
-            case PROFILE_ATTRIBUTE:
-                profile.addAttribute(name, convertedValue);
-                break;
-            case AUTHENTICATION_ATTRIBUTE:
-                profile.addAuthenticationAttribute(name, convertedValue);
-                break;
-            default:
-                logger.debug("Unsupported attribute location {}.", attributeLocation);
-                break;
+                case PROFILE_ATTRIBUTE:
+                    profile.addAttribute(name, convertedValue);
+                    break;
+                case AUTHENTICATION_ATTRIBUTE:
+                    profile.addAuthenticationAttribute(name, convertedValue);
+                    break;
+                default:
+                    logger.debug("Unsupported attribute location {}.", attributeLocation);
+                    break;
             }
         }
     }
