@@ -198,7 +198,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      */
     protected void saveRequestedUrl(final C context, final List<Client> currentClients) {
-        if (!ajaxRequestResolver.isAjax(context)) {
+        if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
             final String requestedUrl = context.getFullRequestURL();
             logger.debug("requestedUrl: {}", requestedUrl);
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
@@ -260,10 +260,18 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.profileStorageDecision = profileStorageDecision;
     }
 
+    public AjaxRequestResolver getAjaxRequestResolver() {
+        return ajaxRequestResolver;
+    }
+
+    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
+        this.ajaxRequestResolver = ajaxRequestResolver;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
             "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
-            "errorUrl", getErrorUrl());
+            "errorUrl", getErrorUrl(), "ajaxRequestResolver", this.ajaxRequestResolver);
     }
 }

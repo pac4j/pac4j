@@ -21,6 +21,9 @@ title: Release notes&#58;
 - Supports the `javax.faces.partial.ajax` parameter for AJAX requests
 - If only one client is defined in the configuration, it is used as a fallback on the security and callback endpoints
 
+**v2.3.0**:
+
+- Saving the profile in session can be disabled on the callback endpoint
 
 **v2.2.1**:
 
