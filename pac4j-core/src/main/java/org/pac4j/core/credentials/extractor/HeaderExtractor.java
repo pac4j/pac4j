@@ -2,6 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 
 /**
@@ -12,9 +13,39 @@ import org.pac4j.core.credentials.TokenCredentials;
  */
 public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
-    private final String headerName;
+    private String headerName;
 
-    private final String prefixHeader;
+    private String prefixHeader;
+
+    private boolean trimValue;
+
+    public String getHeaderName() {
+        return headerName;
+    }
+
+    public void setHeaderName(String headerName) {
+        this.headerName = headerName;
+    }
+
+    public String getPrefixHeader() {
+        return prefixHeader;
+    }
+
+    public void setPrefixHeader(String prefixHeader) {
+        this.prefixHeader = prefixHeader;
+    }
+
+    public boolean isTrimValue() {
+        return trimValue;
+    }
+
+    public void setTrimValue(boolean trimValue) {
+        this.trimValue = trimValue;
+    }
+
+    public HeaderExtractor() {
+        // empty constructor as needed to be instanciated by beanutils
+    }
 
     public HeaderExtractor(final String headerName, final String prefixHeader) {
         this.headerName = headerName;
@@ -23,6 +54,9 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public TokenCredentials extract(WebContext context) {
+        CommonHelper.assertNotBlank("headerName", this.headerName);
+        CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
+
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
             return null;
@@ -32,7 +66,11 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 
-        final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+        String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+
+        if (trimValue) {
+            headerWithoutPrefix = headerWithoutPrefix.trim();
+        }
         return new TokenCredentials(headerWithoutPrefix);
     }
 }

@@ -67,7 +67,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, null, renewSession, null);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, null, null, renewSession, null);
         logic.setClientFinder(clientFinder);
     }
 

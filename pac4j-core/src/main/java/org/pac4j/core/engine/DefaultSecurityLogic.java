@@ -17,6 +17,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.RequireAllMatchersChecker;
+import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
@@ -52,6 +54,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
     private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
+
+    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -194,9 +198,11 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      */
     protected void saveRequestedUrl(final C context, final List<Client> currentClients) {
-        final String requestedUrl = context.getFullRequestURL();
-        logger.debug("requestedUrl: {}", requestedUrl);
-        context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
+        if (!ajaxRequestResolver.isAjax(context)) {
+            final String requestedUrl = context.getFullRequestURL();
+            logger.debug("requestedUrl: {}", requestedUrl);
+            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
+        }
     }
 
     /**

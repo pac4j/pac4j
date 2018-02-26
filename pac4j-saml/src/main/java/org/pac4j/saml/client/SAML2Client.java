@@ -189,7 +189,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     public String getStateParameter(final WebContext webContext) {
         final String relayState = (String) webContext.getSessionStore().get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
-        webContext.getSessionStore().set(webContext, SAML_RELAY_STATE_ATTRIBUTE, "");
+        if (relayState != null) {
+            webContext.getSessionStore().set(webContext, SAML_RELAY_STATE_ATTRIBUTE, "");
+        }
         return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
     }
 

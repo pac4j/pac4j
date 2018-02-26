@@ -19,11 +19,12 @@ public interface CallbackLogic<R, C extends WebContext> {
      * @param config the security configuration
      * @param httpActionAdapter the HTTP action adapter
      * @param defaultUrl the default url
+     * @param saveInSession whether profile should be saved in session
      * @param multiProfile whether multi profiles are supported
      * @param renewSession whether the session must be renewed
      * @param client the default client
      * @return the resulting action of the callback
      */
     R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter,
-                     String defaultUrl, Boolean multiProfile, Boolean renewSession, String client);
+                     String defaultUrl, Boolean saveInSession, Boolean multiProfile, Boolean renewSession, String client);
 }
