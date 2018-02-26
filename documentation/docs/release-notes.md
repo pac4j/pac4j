@@ -3,7 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v2.2.0**:
+**v2.3.0**:
+
+- Saving the profile in session can be disabled on the callback endpoint
+
+**v2.2.1**:
 
 - Improve SAML support: fix generated binding, handle AttributeConsumingServiceIndex in authentication request, add capability to add authentication-related attributes to the user profile with specific attributes added to the profile...
 
