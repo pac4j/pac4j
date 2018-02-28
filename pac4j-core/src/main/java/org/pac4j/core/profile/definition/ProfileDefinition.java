@@ -50,7 +50,10 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
      * @param profile the profile
      * @param name the attribute name
      * @param value the attribute value
+     * 
+     * @deprecated Use {@link #convertAndAdd(CommonProfile, AttributeLocation, String, Object)} instead.
      */
+    @Deprecated
     public void convertAndAdd(final CommonProfile profile, final String name, final Object value) {
         convertAndAdd(profile, PROFILE_ATTRIBUTE, name, value);
     }
@@ -78,16 +81,10 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
                 logger.debug("no conversion => key: {} / value: {} / {}", name, convertedValue, convertedValue.getClass());
             }
 
-            switch (attributeLocation) {
-                case PROFILE_ATTRIBUTE:
-                    profile.addAttribute(name, convertedValue);
-                    break;
-                case AUTHENTICATION_ATTRIBUTE:
-                    profile.addAuthenticationAttribute(name, convertedValue);
-                    break;
-                default:
-                    logger.debug("Unsupported attribute location {}.", attributeLocation);
-                    break;
+            if (attributeLocation.equals(AUTHENTICATION_ATTRIBUTE)) {
+                profile.addAuthenticationAttribute(name, convertedValue);
+            } else {
+                profile.addAttribute(name, convertedValue);
             }
         }
     }
@@ -99,7 +96,10 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
      *
      * @param profile The profile.
      * @param attributes The profile attributes. May be {@code null}.
+     * 
+     * @deprecated Use {@link #convertAndAdd(CommonProfile, Map, Map)} instead.
      */
+    @Deprecated
     public void convertAndAdd(final CommonProfile profile, final Map<String, Object> attributes) {
         convertAndAdd(profile, attributes, null);
     }
