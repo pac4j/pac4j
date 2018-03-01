@@ -47,20 +47,6 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
     }
 
     /**
-     * Convert a profile attribute, if necessary, and add it to the profile.
-     *
-     * @param profile the profile
-     * @param name the attribute name
-     * @param value the attribute value
-     * 
-     * @deprecated Use {@link #convertAndAdd(CommonProfile, AttributeLocation, String, Object)} instead.
-     */
-    @Deprecated
-    public void convertAndAdd(final CommonProfile profile, final String name, final Object value) {
-        convertAndAdd(profile, PROFILE_ATTRIBUTE, name, value);
-    }
-
-    /**
      * Convert a profile or authentication attribute, if necessary, and add it to the profile.
      *
      * @param profile The profile.
@@ -89,21 +75,6 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
                 profile.addAttribute(name, convertedValue);
             }
         }
-    }
-
-    /**
-     * Convert the profile attributes, if necessary, and add them to the profile.
-     * 
-     * You may want to use {@link #convertAndAdd(CommonProfile, Map, Map)} which supports adding authentication attributes.
-     *
-     * @param profile The profile.
-     * @param attributes The profile attributes. May be {@code null}.
-     * 
-     * @deprecated Use {@link #convertAndAdd(CommonProfile, Map, Map)} instead.
-     */
-    @Deprecated
-    public void convertAndAdd(final CommonProfile profile, final Map<String, Object> attributes) {
-        convertAndAdd(profile, attributes, null);
     }
 
     /**

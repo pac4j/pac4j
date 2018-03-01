@@ -90,9 +90,9 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             if (configuration.getProxyReceptor() != null) {
                 profile = getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
                 profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
-                getProfileDefinition().convertAndAdd(profile, newAttributes);
+                getProfileDefinition().convertAndAdd(profile, newAttributes, null);
             } else {
-                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal,
+                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, null, principal,
                     configuration.getProxyReceptor());
             }
             logger.debug("profile returned by CAS: {}", profile);

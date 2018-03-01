@@ -11,6 +11,8 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Iterator;
 
 /**
@@ -55,14 +57,14 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
                     while (nodes.hasNext()) {
                         json = nodes.next();
                         final String attribute = json.fieldNames().next();
-                        convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                        convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                     }
                     // CAS v5
                 } else if (json instanceof ObjectNode) {
                     final Iterator<String> keys = json.fieldNames();
                     while (keys.hasNext()) {
                         final String key = keys.next();
-                        convertAndAdd(profile, key, JsonHelper.getElement(json, key));
+                        convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, key));
                     }
                 }
             }

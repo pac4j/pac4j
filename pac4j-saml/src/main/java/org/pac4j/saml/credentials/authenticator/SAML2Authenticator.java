@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,9 +78,9 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
             }
 
             if (!values.isEmpty()) {
-                getProfileDefinition().convertAndAdd(profile, name, values);
+                getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
                 if (CommonHelper.isNotBlank(friendlyName)) {
-                    getProfileDefinition().convertAndAdd(profile, friendlyName, values);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, friendlyName, values);
                 }
             } else {
                 logger.debug("No attribute values found for {}", name);

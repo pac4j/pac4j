@@ -15,6 +15,9 @@ import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConv
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -148,7 +151,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             extractData(profile, json, FacebookProfileDefinition.FRIENDS);
             extractData(profile, json, FacebookProfileDefinition.MOVIES);
@@ -167,7 +170,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
         final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
-            convertAndAdd(profile, name, JsonHelper.getElement(data, "data"));
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, name, JsonHelper.getElement(data, "data"));
         }
     }
 }
