@@ -1,10 +1,14 @@
 package org.pac4j.core.profile.definition;
 
+import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,13 +47,29 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
     }
 
     /**
-     * Convert the attribute if necessary and add it to the profile.
+     * Convert a profile attribute, if necessary, and add it to the profile.
      *
      * @param profile the profile
      * @param name the attribute name
      * @param value the attribute value
+     * 
+     * @deprecated Use {@link #convertAndAdd(CommonProfile, AttributeLocation, String, Object)} instead.
      */
+    @Deprecated
     public void convertAndAdd(final CommonProfile profile, final String name, final Object value) {
+        convertAndAdd(profile, PROFILE_ATTRIBUTE, name, value);
+    }
+
+    /**
+     * Convert a profile or authentication attribute, if necessary, and add it to the profile.
+     *
+     * @param profile The profile.
+     * @param attributeLocation Location of the attribute inside the profile: classic profile attribute, authentication attribute, ...
+     * @param name The attribute name.
+     * @param value The attribute value.
+     */
+    public void convertAndAdd(final CommonProfile profile, final AttributeLocation attributeLocation, final String name,
+            final Object value) {
         if (value != null) {
             final Object convertedValue;
             final AttributeConverter<? extends Object> converter = this.converters.get(name);
@@ -57,29 +77,52 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
                 convertedValue = converter.convert(value);
                 if (convertedValue != null) {
                     logger.debug("converted to => key: {} / value: {} / {}", name, convertedValue, convertedValue.getClass());
-                    profile.addAttribute(name, convertedValue);
                 }
             } else {
                 convertedValue = value;
                 logger.debug("no conversion => key: {} / value: {} / {}", name, convertedValue, convertedValue.getClass());
+            }
+
+            if (attributeLocation.equals(AUTHENTICATION_ATTRIBUTE)) {
+                profile.addAuthenticationAttribute(name, convertedValue);
+            } else {
                 profile.addAttribute(name, convertedValue);
             }
         }
     }
 
     /**
-     * Convert the attributes if necessary and add them to the profile.
+     * Convert the profile attributes, if necessary, and add them to the profile.
+     * 
+     * You may want to use {@link #convertAndAdd(CommonProfile, Map, Map)} which supports adding authentication attributes.
      *
-     * @param profile the profile
-     * @param attributes the attributes
+     * @param profile The profile.
+     * @param attributes The profile attributes. May be {@code null}.
+     * 
+     * @deprecated Use {@link #convertAndAdd(CommonProfile, Map, Map)} instead.
      */
+    @Deprecated
     public void convertAndAdd(final CommonProfile profile, final Map<String, Object> attributes) {
-        if (attributes != null) {
-            for (final Map.Entry<String, Object> entry : attributes.entrySet()){
-                final String key = entry.getKey();
-                final Object value = entry.getValue();
-                convertAndAdd(profile, key, value);
-            }
+        convertAndAdd(profile, attributes, null);
+    }
+
+    /**
+     * Convert the profile and authentication attributes, if necessary, and add them to the profile.
+     *
+     * @param profile The profile.
+     * @param profileAttributes The profile attributes. May be {@code null}.
+     * @param authenticationAttributes The authentication attributes. May be {@code null}.
+     */
+    public void convertAndAdd(final CommonProfile profile,
+            final Map<String, Object> profileAttributes,
+            final Map<String, Object> authenticationAttributes) {
+        if (profileAttributes != null) {
+            profileAttributes.entrySet().stream()
+                .forEach(entry -> convertAndAdd(profile, PROFILE_ATTRIBUTE, entry.getKey(), entry.getValue()));
+        }
+        if (authenticationAttributes != null) {
+            authenticationAttributes.entrySet().stream()
+                .forEach(entry -> convertAndAdd(profile, AUTHENTICATION_ATTRIBUTE, entry.getKey(), entry.getValue()));
         }
     }
 
