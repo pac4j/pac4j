@@ -1,5 +1,7 @@
 package org.pac4j.openid.credentials.authenticator;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -78,7 +80,7 @@ public class YahooAuthenticator implements Authenticator<OpenIdCredentials> {
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
             for (final String name : PROFILE_DEFINITION.getPrimaryAttributes()) {
-                PROFILE_DEFINITION.convertAndAdd(profile, name, fetchResp.getAttributeValue(name));
+                PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, name, fetchResp.getAttributeValue(name));
             }
         }
         return profile;

@@ -46,12 +46,14 @@ public final class ProfileHelper {
      *
      * @param profileDefinition the profile definition
      * @param typedId the typed identifier
-     * @param attributes the attributes
+     * @param profileAttributes The profile attributes. May be {@code null}.
+     * @param authenticationAttributes The authentication attributes. May be {@code null}.
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
-        final String typedId, final Map<String, Object> attributes, final Object... parameters) {
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, 
+            final String typedId, final Map<String, Object> profileAttributes, final Map<String, Object> authenticationAttributes,
+            final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
         }
@@ -66,10 +68,11 @@ public final class ProfileHelper {
                 logger.error("Cannot build instance for class name: {}", className, e);
                 return null;
             }
-            profile.addAttributes(attributes);
+            profile.addAttributes(profileAttributes);
+            profile.addAuthenticationAttributes(authenticationAttributes);
         } else {
             profile = profileDefinition.newProfile(parameters);
-            profileDefinition.convertAndAdd(profile, attributes);
+            profileDefinition.convertAndAdd(profile, profileAttributes, authenticationAttributes);
         }
         profile.setId(ProfileHelper.sanitizeIdentifier(profile, typedId));
         return profile;

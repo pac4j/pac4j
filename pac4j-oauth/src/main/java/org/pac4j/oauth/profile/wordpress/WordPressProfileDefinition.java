@@ -2,6 +2,9 @@ package org.pac4j.oauth.profile.wordpress;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
@@ -44,12 +47,12 @@ public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPre
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "ID")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             json = json.get("meta");
             if (json != null) {
                 final String attribute = WordPressProfileDefinition.LINKS;
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

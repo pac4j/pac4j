@@ -9,6 +9,8 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 
 /**
@@ -45,7 +47,7 @@ public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProf
             final String userId = (String) JsonHelper.getElement(json, "user_id");
             profile.setId(CommonHelper.substringAfter(userId, "/user/"));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

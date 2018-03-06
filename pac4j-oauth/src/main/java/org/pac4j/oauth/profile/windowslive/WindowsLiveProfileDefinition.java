@@ -8,6 +8,8 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 
 /**
@@ -42,7 +44,7 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

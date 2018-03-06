@@ -9,6 +9,8 @@ import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -86,7 +88,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
