@@ -1,5 +1,7 @@
 package org.pac4j.gae.client;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.redirect.RedirectAction;
@@ -46,8 +48,8 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
             if (user != null) {
                 final GaeUserServiceProfile profile = PROFILE_DEFINITION.newProfile();
                 profile.setId(user.getEmail());
-                PROFILE_DEFINITION.convertAndAdd(profile, CommonProfileDefinition.EMAIL, user.getEmail());
-                PROFILE_DEFINITION.convertAndAdd(profile, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());
+                PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.EMAIL, user.getEmail());
+                PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());
                 if (service.isUserAdmin()) {
                     profile.addRole(GaeUserServiceProfile.PAC4J_GAE_GLOBAL_ADMIN_ROLE);
                 }

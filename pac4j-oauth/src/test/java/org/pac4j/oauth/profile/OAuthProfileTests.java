@@ -41,10 +41,10 @@ public final class OAuthProfileTests implements TestsConstants {
         final GitHubProfile profile = new GitHubProfile();
         profile.setId(ID);
         final GitHubProfile profile2 =
-            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes());
+            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes(), null);
         assertEquals(ID, profile2.getId());
         final GitHubProfile profile3 =
-            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes());
+            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes(), null);
         assertEquals(ID, profile3.getId());
     }
 
@@ -54,13 +54,13 @@ public final class OAuthProfileTests implements TestsConstants {
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
         final GitHubProfile profile2 =
-            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes());
+            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes(), null);
         assertEquals(ID, profile2.getId());
         final Map<String, Object> attributes = profile2.getAttributes();
         assertEquals(1, attributes.size());
         assertEquals(VALUE, attributes.get(NAME));
         final GitHubProfile profile3 =
-            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes());
+            (GitHubProfile) ProfileHelper.restoreOrBuildProfile(null, profile.getTypedId(), profile.getAttributes(), null);
         assertEquals(ID, profile3.getId());
     }
 }

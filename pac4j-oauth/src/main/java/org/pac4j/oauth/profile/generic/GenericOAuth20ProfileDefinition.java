@@ -3,6 +3,9 @@ package org.pac4j.oauth.profile.generic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Verb;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,15 +64,15 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
                 profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, getProfileId())));
             }
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             for (final String attribute : getSecondaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             for (final Map.Entry<String, String> entry : getProfileAttributes().entrySet()) {
                 final String key = entry.getKey();
                 final String value = entry.getValue();
-                convertAndAdd(profile, key, JsonHelper.getElement(json, value));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, value));
             }
 
         }
