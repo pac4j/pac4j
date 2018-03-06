@@ -3,6 +3,7 @@ package org.pac4j.saml.sso.impl;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -101,7 +102,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
         request.setID(generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
-        request.setIssueInstant(DateTime.now().plusSeconds(this.issueInstantSkewSeconds));
+        request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIsPassive(this.passive);
         request.setForceAuthn(this.forceAuth);
