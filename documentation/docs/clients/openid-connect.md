@@ -107,7 +107,7 @@ config.addCustomParam("display", "popup");
 config.addCustomParam("prompt", "none");
 ```
 
-Custom `state` values may be defined in the configuration using the below method
+Custom `state` values may be defined in the configuration using the below method:
 
 ```java
 config.setWithState(true);
