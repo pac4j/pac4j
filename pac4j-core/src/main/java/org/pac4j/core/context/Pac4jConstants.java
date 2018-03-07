@@ -60,6 +60,9 @@ public interface Pac4jConstants {
 
     String PASSWORD = "password";
 
+    /* Whether the profile should be saved into the session */
+    String SAVE_IN_SESSION = "saveInSession";
+
     /* Whether multiple profiles are accepted */
     String MULTI_PROFILE = "multiProfile";
 
