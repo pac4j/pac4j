@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.SAMLObject;
@@ -39,7 +40,16 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
+import org.pac4j.saml.exceptions.SAMLAssertionAudienceException;
+import org.pac4j.saml.exceptions.SAMLAssertionConditionException;
+import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.exceptions.SAMLInResponseToMismatchException;
+import org.pac4j.saml.exceptions.SAMLIssueInstantException;
+import org.pac4j.saml.exceptions.SAMLIssuerException;
+import org.pac4j.saml.exceptions.SAMLNameIdDecryptionException;
+import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
 import org.pac4j.saml.util.UriUtils;
@@ -129,17 +139,17 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
         }
 
         if (!isIssueInstantValid(response.getIssueInstant())) {
-            throw new SAMLException("Response issue instant is too old or in the future");
+            throw new SAMLIssueInstantException("Response issue instant is too old or in the future");
         }
         
         final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
         if (messageStorage != null && response.getInResponseTo() != null) {
             final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
             if (xmlObject == null) {
-                throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " 
+                throw new SAMLInResponseToMismatchException("InResponseToField of the Response doesn't correspond to sent message "
                     + response.getInResponseTo());
             } else if (!(xmlObject instanceof LogoutRequest)) {
-                throw new SAMLException("Sent request was of different type than the expected LogoutRequest " 
+                throw new SAMLInResponseToMismatchException("Sent request was of different type than the expected LogoutRequest "
                     + response.getInResponseTo());
             }
         }
@@ -154,12 +164,12 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
         try {
             if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
                     && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
-                throw new SAMLException("Intended destination " + destination
+                throw new SAMLEndpointMismatchException("Intended destination " + destination
                         + " doesn't match any of the endpoint URLs on endpoint "
                         + endpoint.getLocation());
             }
         } catch (final Exception e) {
-            throw new SAMLException(e);
+            throw new SAMLEndpointMismatchException(e);
         }
     }
 
@@ -171,12 +181,12 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
      */
     protected final void validateIssuer(final Issuer issuer, final SAML2MessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
-            throw new SAMLException("Issuer type is not entity but " + issuer.getFormat());
+            throw new SAMLIssuerException("Issuer type is not entity but " + issuer.getFormat());
         }
 
         final String entityId = context.getSAMLPeerEntityContext().getEntityId();
         if (entityId == null || !entityId.equals(issuer.getValue())) {
-            throw new SAMLException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
+            throw new SAMLIssuerException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
     }
 
@@ -204,7 +214,7 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
             final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (final DecryptionException e) {
-            throw new SAMLException("Decryption of an EncryptedID failed.", e);
+            throw new SAMLNameIdDecryptionException("Decryption of an EncryptedID failed.", e);
         }
     }
 
@@ -278,15 +288,15 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
     protected final void validateAssertionConditions(final Conditions conditions, final SAML2MessageContext context) {
 
         if (conditions == null) {
-            throw new SAMLException("Assertion conditions cannot be null");
+            throw new SAMLAssertionConditionException("Assertion conditions cannot be null");
         }
 
         if (conditions.getNotBefore() != null && conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {
-            throw new SAMLException("Assertion condition notBefore is not valid");
+            throw new SAMLAssertionConditionException("Assertion condition notBefore is not valid");
         }
 
         if (conditions.getNotOnOrAfter() != null && conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
-            throw new SAMLException("Assertion condition notOnOrAfter is not valid");
+            throw new SAMLAssertionConditionException("Assertion condition notOnOrAfter is not valid");
         }
 
         final String entityId = context.getSAMLSelfEntityContext().getEntityId();
@@ -315,7 +325,7 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
             }
         }
         if (!audienceUris.contains(spEntityId)) {
-            throw new SAMLException("Assertion audience " + audienceUris + " does not match SP configuration "
+            throw new SAMLAssertionAudienceException("Assertion audience " + audienceUris + " does not match SP configuration "
                     + spEntityId);
         }
     }
@@ -338,7 +348,7 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
             validateSignature(signature, entityId, engine);
         } else {
             if (!peerContext.isAuthenticated()) {
-                throw new SAMLException("Assertion or response must be signed");
+                throw new SAMLSignatureRequiredException("Assertion or response must be signed");
             }
         }
     }
@@ -357,7 +367,7 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
         try {
             validator.validate(signature);
         } catch (final SignatureException e) {
-            throw new SAMLException("SAMLSignatureProfileValidator failed to validate signature", e);
+            throw new SAMLSignatureValidationException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
         final CriteriaSet criteriaSet = new CriteriaSet();
@@ -369,20 +379,21 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
         try {
             valid = trustEngine.validate(signature, criteriaSet);
         } catch (final SecurityException e) {
-            throw new SAMLException("An error occurred during signature validation", e);
+            throw new SAMLSignatureValidationException("An error occurred during signature validation", e);
         }
         if (!valid) {
-            throw new SAMLException("Signature is not trusted");
+            throw new SAMLSignatureValidationException("Signature is not trusted");
         }
     }
 
     private boolean isDateValid(final DateTime issueInstant, final int interval) {
-        final DateTime before =  DateTime.now().plusSeconds(acceptedSkew);
-        final DateTime after =  DateTime.now().minusSeconds(acceptedSkew + interval);
-        boolean isDateValid = issueInstant.isBefore(before) && issueInstant.isAfter(after);
+        final DateTime before =  DateTime.now(DateTimeZone.UTC).plusSeconds(acceptedSkew);
+        final DateTime after =  DateTime.now(DateTimeZone.UTC).minusSeconds(acceptedSkew + interval);
+        final DateTime issueInstanceUtc = issueInstant.toDateTime(DateTimeZone.UTC);
+        boolean isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {
-            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstant.getZone()), 
-                after.toDateTime(issueInstant.getZone()), issueInstant);
+            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstanceUtc.getZone()),
+                after.toDateTime(issueInstanceUtc.getZone()), issueInstanceUtc);
         }
         return isDateValid;
     }

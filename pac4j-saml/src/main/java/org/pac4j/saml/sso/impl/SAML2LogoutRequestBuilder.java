@@ -3,6 +3,7 @@ package org.pac4j.saml.sso.impl;
 import java.util.Optional;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
@@ -66,7 +67,7 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
 
         request.setID(generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
-        request.setIssueInstant(DateTime.now().plusSeconds(this.issueInstantSkewSeconds));
+        request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
         request.setDestination(ssoService.getLocation());
 
