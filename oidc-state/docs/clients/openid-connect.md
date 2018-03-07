@@ -106,3 +106,10 @@ config.addCustomParam("display", "popup");
 // select prompt mode: none, consent, select_account
 config.addCustomParam("prompt", "none");
 ```
+
+Custom `state` values may be defined in the configuration using the below method
+
+```java
+config.setWithState(true);
+config.setStateData("custom-state-value");
+```
