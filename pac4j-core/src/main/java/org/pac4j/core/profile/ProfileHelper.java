@@ -43,15 +43,37 @@ public final class ProfileHelper {
 
     /**
      * Restore or build a profile.
+     * 
+     * You may want to use {@link #restoreOrBuildProfile(ProfileDefinition, String, Map, Map, Object...)} which supports authentication
+     * attributes.
      *
      * @param profileDefinition the profile definition
      * @param typedId the typed identifier
-     * @param attributes the attributes
+     * @param attributes The profile attributes. May be {@code null}.
+     * @param parameters additional parameters for the profile definition
+     * @return the restored or built profile
+     * 
+     * @deprecated Use {@link #restoreOrBuildProfile(ProfileDefinition, String, Map, Map, Object...)} instead.
+     */
+    @Deprecated
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
+        final String typedId, final Map<String, Object> attributes, final Object... parameters) {
+        return restoreOrBuildProfile(profileDefinition, typedId, attributes, null, parameters);
+    }
+
+    /**
+     * Restore or build a profile.
+     *
+     * @param profileDefinition the profile definition
+     * @param typedId the typed identifier
+     * @param profileAttributes The profile attributes. May be {@code null}.
+     * @param authenticationAttributes The authentication attributes. May be {@code null}.
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
     public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, 
-        final String typedId, final Map<String, Object> attributes, final Object... parameters) {
+            final String typedId, final Map<String, Object> profileAttributes, final Map<String, Object> authenticationAttributes,
+            final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
         }
@@ -66,10 +88,11 @@ public final class ProfileHelper {
                 logger.error("Cannot build instance for class name: {}", className, e);
                 return null;
             }
-            profile.addAttributes(attributes);
+            profile.addAttributes(profileAttributes);
+            profile.addAuthenticationAttributes(authenticationAttributes);
         } else {
             profile = profileDefinition.newProfile(parameters);
-            profileDefinition.convertAndAdd(profile, attributes);
+            profileDefinition.convertAndAdd(profile, profileAttributes, authenticationAttributes);
         }
         profile.setId(typedId);
         return profile;
