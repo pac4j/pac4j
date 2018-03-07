@@ -4,6 +4,7 @@ package org.pac4j.saml.exceptions;
  * This is {@link SAMLAuthnInstantException}.
  *
  * @author Misagh Moayyed
+ * @since 3.0.0
  */
 public class SAMLAuthnInstantException extends SAMLException {
     public SAMLAuthnInstantException(final String message) {

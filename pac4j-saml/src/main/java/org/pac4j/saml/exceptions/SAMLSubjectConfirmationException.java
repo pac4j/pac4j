@@ -4,6 +4,7 @@ package org.pac4j.saml.exceptions;
  * This is {@link SAMLSubjectConfirmationException}.
  *
  * @author Misagh Moayyed
+ * @since 3.0.0
  */
 public class SAMLSubjectConfirmationException extends SAMLException {
     public SAMLSubjectConfirmationException(final String message) {

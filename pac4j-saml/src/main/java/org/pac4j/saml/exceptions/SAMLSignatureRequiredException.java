@@ -4,6 +4,7 @@ package org.pac4j.saml.exceptions;
  * This is {@link SAMLSignatureRequiredException}.
  *
  * @author Misagh Moayyed
+ * @since 3.0.0
  */
 public class SAMLSignatureRequiredException extends SAMLException {
     public SAMLSignatureRequiredException(final String message) {

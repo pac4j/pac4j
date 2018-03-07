@@ -4,6 +4,7 @@ package org.pac4j.saml.exceptions;
  * This is {@link SAMLIssueInstantException}.
  *
  * @author Misagh Moayyed
+ * @since 3.0.0
  */
 public class SAMLIssueInstantException extends SAMLException {
     public SAMLIssueInstantException(final String message) {

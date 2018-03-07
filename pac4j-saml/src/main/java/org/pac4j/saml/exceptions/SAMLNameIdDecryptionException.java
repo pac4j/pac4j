@@ -4,6 +4,7 @@ package org.pac4j.saml.exceptions;
  * This is {@link SAMLNameIdDecryptionException}.
  *
  * @author Misagh Moayyed
+ * @since 3.0.0
  */
 public class SAMLNameIdDecryptionException extends SAMLException {
     public SAMLNameIdDecryptionException(final String message) {
