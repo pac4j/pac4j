@@ -4,12 +4,13 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
-import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectActionBuilder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
+import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -44,6 +45,7 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setUrlResolver(this.getUrlResolver());
+        setCallbackUrlResolver(new QueryParameterCallbackUrlResolver(configuration.getCustomParams()));
 
         defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, this));
         defaultCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration));
