@@ -91,6 +91,10 @@ public class OidcConfiguration extends InitializableObject {
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
+    private boolean withState;
+
+    private String stateData;
+
     @Override
     protected void internalInit() {
         // checks
@@ -293,6 +297,22 @@ public class OidcConfiguration extends InitializableObject {
         this.logoutUrl = logoutUrl;
     }
 
+    public boolean isWithState() {
+        return withState;
+    }
+
+    public void setWithState(final boolean withState) {
+        this.withState = withState;
+    }
+
+    public String getStateData() {
+        return stateData;
+    }
+
+    public void setStateData(final String stateData) {
+        this.stateData = stateData;
+    }
+    
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -300,6 +320,7 @@ public class OidcConfiguration extends InitializableObject {
             "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
             "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
-            "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
+            "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
+            "withState", withState, "stateData", stateData);
     }
 }
