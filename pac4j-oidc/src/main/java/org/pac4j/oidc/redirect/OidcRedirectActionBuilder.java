@@ -41,7 +41,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         this.authParams = new HashMap<>();
         // add scope
         final String scope = configuration.getScope();
-        if(CommonHelper.isNotBlank(scope)){
+        if (CommonHelper.isNotBlank(scope)) {
             this.authParams.put(OidcConfiguration.SCOPE, scope);
         } else {
             // default values
@@ -85,15 +85,14 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
 
     protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
         // Init state for CSRF mitigation
-        final String stateData;
+        final State state;
         if (configuration.isWithState()) {
-            stateData = configuration.getStateData();
+            state = new State(configuration.getStateData());
         } else {
-            final State state = new State();
-            stateData = state.getValue();
+            state = new State();
         }
-        params.put(OidcConfiguration.STATE, stateData);
-        context.getSessionStore().set(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE, stateData);
+        params.put(OidcConfiguration.STATE, state.getValue());
+        context.getSessionStore().set(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE, state);
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             final Nonce nonce = new Nonce();
