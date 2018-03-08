@@ -320,12 +320,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     protected final void validateSamlSSOResponse(final Response response, final SAML2MessageContext context,
                                                  final SignatureTrustEngine engine, final Decrypter decrypter) {
 
+        final List<SAMLException> errors = new ArrayList<>();
         for (final Assertion assertion : response.getAssertions()) {
             if (!assertion.getAuthnStatements().isEmpty()) {
                 try {
                     validateAssertion(assertion, context, engine, decrypter);
                 } catch (final SAMLException e) {
                     logger.error("Current assertion validation failed, continue with the next one", e);
+                    errors.add(e);
                     continue;
                 }
                 context.setSubjectAssertion(assertion);
@@ -333,6 +335,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             }
         }
 
+        if (!errors.isEmpty()) {
+            throw errors.get(0);
+        }
         if (context.getSubjectAssertion() == null) {
             throw new SAMAssertionSubjectException("No valid subject assertion found in response");
         }
