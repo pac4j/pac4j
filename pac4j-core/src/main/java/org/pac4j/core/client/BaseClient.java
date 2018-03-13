@@ -216,7 +216,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
 
     public void setCustomProperties(final Map<String, Object> customProperties) {
-        this.customProperties = customProperties;
+        CommonHelper.assertNotNull("customProperties", customProperties);
+        this.customProperties =  customProperties;
     }
 
     @Override
