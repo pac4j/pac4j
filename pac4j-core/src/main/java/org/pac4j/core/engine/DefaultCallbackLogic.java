@@ -35,7 +35,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    private boolean saveInSession = true;
+    private Boolean saveInSession;
 
     public Boolean getSaveInSession() {
         return saveInSession;
@@ -108,7 +108,15 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
                                    final boolean multiProfile, final boolean renewSession) {
         final ProfileManager manager = getProfileManager(context, config);
         if (profile != null) {
-            manager.save(this.saveInSession, profile, multiProfile);
+
+            final boolean saveInSession;
+            if (this.saveInSession == null) {
+                saveInSession = true;
+            } else {
+                saveInSession = this.saveInSession;
+            }
+
+            manager.save(saveInSession, profile, multiProfile);
             if (renewSession) {
                 renewSession(context, config);
             }
