@@ -84,8 +84,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
                 while (it.hasNext()) {
                     final EntityDescriptor entityDescriptor = it.next();
-                    if (SAML2IdentityProviderMetadataResolver.this.idpEntityId == null) {
-                        SAML2IdentityProviderMetadataResolver.this.idpEntityId = entityDescriptor.getEntityID();
+                    if (this.idpEntityId == null) {
+                        this.idpEntityId = entityDescriptor.getEntityID();
                     }
                 }
             }
