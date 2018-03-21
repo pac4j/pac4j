@@ -162,12 +162,27 @@ public class SAML2ClientConfiguration extends InitializableObject {
             }
         }
 
-        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
-        this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
-        this.signatureAlgorithms = new ArrayList<>(config.getSignatureAlgorithms());
-        this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
-        this.signatureReferenceDigestMethods.remove("http://www.w3.org/2001/04/xmlenc#sha512");
-        this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
+		// Bootstrap signature signing configuration if not manually set
+		final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
+				.buildDefaultSignatureSigningConfiguration();
+		if (this.blackListedSignatureSigningAlgorithms == null) {
+			this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
+					config.getBlacklistedAlgorithms());
+		}
+		if (this.signatureAlgorithms == null) {
+			this.signatureAlgorithms = new ArrayList<>(
+					config.getSignatureAlgorithms());
+		}
+		if (this.signatureReferenceDigestMethods == null) {
+			this.signatureReferenceDigestMethods = new ArrayList<>(
+					config.getSignatureReferenceDigestMethods());
+			this.signatureReferenceDigestMethods
+					.remove("http://www.w3.org/2001/04/xmlenc#sha512");
+		}
+		if (this.signatureCanonicalizationAlgorithm == null) {
+			this.signatureCanonicalizationAlgorithm = config
+					.getSignatureCanonicalizationAlgorithm();
+		}
     }
 
     public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
