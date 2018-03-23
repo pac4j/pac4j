@@ -3,7 +3,7 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v2.3.0**:
+**v2.3.1**:
 
 - Saving the profile in session can be disabled on the callback endpoint
 
