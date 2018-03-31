@@ -23,13 +23,11 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
     public static final String NAME = "name";
     public static final String LAST_NAME = "last_name";
     public static final String LINK = "link";
-    public static final String UPDATED_TIME = "updated_time";
 
     public WindowsLiveProfileDefinition() {
         super(x -> new WindowsLiveProfile());
         Arrays.stream(new String[] {NAME, LAST_NAME}).forEach(a -> primary(a, Converters.STRING));
         primary(LINK, Converters.URL);
-        primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
     }
 
     @Override

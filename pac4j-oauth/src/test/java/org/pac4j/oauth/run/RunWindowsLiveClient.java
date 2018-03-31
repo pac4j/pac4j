@@ -53,8 +53,7 @@ public final class RunWindowsLiveClient extends RunClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, Gender.UNSPECIFIED,
-                Locale.FRANCE, null, "https://profile.live.com/", null);
-        assertNotNull(profile.getUpdatedTime());
-        assertEquals(7, profile.getAttributes().size());
+                Locale.US, null, "https://profile.live.com/", null);
+        assertEquals(6, profile.getAttributes().size());
     }
 }
