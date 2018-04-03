@@ -3,6 +3,7 @@ invokeDoc=false
 
 echo -e "TRAVIS_PULL_REQUEST: $TRAVIS_PULL_REQUEST\n"
 echo -e "TRAVIS_BRANCH: $TRAVIS_BRANCH\n"
+echo -e "TRAVIS_TAG: $TRAVIS_TAG\n"
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "gh-pages" ]; then
   case "${TRAVIS_JOB_NUMBER}" in
