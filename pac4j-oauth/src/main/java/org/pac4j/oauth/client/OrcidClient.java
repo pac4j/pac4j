@@ -15,7 +15,7 @@ import org.pac4j.scribe.builder.api.OrcidApi20;
  */
 public class OrcidClient extends OAuth20Client<OrcidProfile> {
 
-    protected static final String DEFAULT_SCOPE = "/orcid-profile/read-limited";
+    protected static final String DEFAULT_SCOPE = "/authenticate";
 
     public OrcidClient() {
         setScope(DEFAULT_SCOPE);
