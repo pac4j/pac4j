@@ -118,6 +118,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private Supplier<List<XSAny>> authnRequestExtensions;
 
+    private String attributeAsId;
+
     public SAML2ClientConfiguration() {
     }
 
@@ -125,14 +127,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
                                     final String identityProviderMetadataPath) {
         this(null, null, mapPathToResource(keystorePath), keystorePassword, privateKeyPassword,
             mapPathToResource(identityProviderMetadataPath), null, null,
-            DEFAULT_PROVIDER_NAME, null);
+            DEFAULT_PROVIDER_NAME, null, null);
     }
 
     public SAML2ClientConfiguration(final Resource keystoreResource, final String keystorePassword, final String privateKeyPassword,
                                     final Resource identityProviderMetadataResource) {
         this(null, null, keystoreResource, keystorePassword, privateKeyPassword,
             identityProviderMetadataResource, null, null,
-            DEFAULT_PROVIDER_NAME, null);
+            DEFAULT_PROVIDER_NAME, null, null);
     }
 
     public SAML2ClientConfiguration(final Resource keystoreResource, final String keyStoreAlias,
@@ -140,14 +142,15 @@ public class SAML2ClientConfiguration extends InitializableObject {
                                     final Resource identityProviderMetadataResource) {
         this(keyStoreAlias, keyStoreType, keystoreResource, keystorePassword,
             privateKeyPassword, identityProviderMetadataResource, null,
-            null, DEFAULT_PROVIDER_NAME, null);
+            null, DEFAULT_PROVIDER_NAME, null, null);
     }
 
     private SAML2ClientConfiguration(final String keyStoreAlias, final String keyStoreType,
                                      final Resource keystoreResource, final String keystorePassword,
                                      final String privateKeyPassword, final Resource identityProviderMetadataResource,
                                      final String identityProviderEntityId, final String serviceProviderEntityId,
-                                     final String providerName, final Supplier<List<XSAny>> authnRequestExtensions) {
+                                     final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
+                                     final String attributeAsId) {
         this.keyStoreAlias = keyStoreAlias;
         this.keyStoreType = keyStoreType;
         this.keystoreResource = keystoreResource;
@@ -158,6 +161,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.serviceProviderEntityId = serviceProviderEntityId;
         this.providerName = providerName;
         this.authnRequestExtensions = authnRequestExtensions;
+        this.attributeAsId = attributeAsId;
     }
 
     @Override
@@ -493,6 +497,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setAuthnRequestExtensions(Supplier<List<XSAny>> authnRequestExtensions) {
         this.authnRequestExtensions = authnRequestExtensions;
+    }
+
+    public String getAttributeAsId() {
+        return attributeAsId;
+    }
+
+    public void setAttributeAsId(String attributeAsId) {
+        this.attributeAsId = attributeAsId;
     }
 
     /**
