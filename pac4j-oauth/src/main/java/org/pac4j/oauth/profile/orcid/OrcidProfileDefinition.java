@@ -49,7 +49,7 @@ public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfil
     @Override
     public OrcidProfile extractUserProfile(String body) {
         OrcidProfile profile = newProfile();
-		profile.setId(CommonHelper.substringBetween(body, "<path>", "</path>"));
+        profile.setId(CommonHelper.substringBetween(body, "<path>", "</path>"));
         for(final String attribute : getPrimaryAttributes()) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
