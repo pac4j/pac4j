@@ -180,31 +180,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
             }
         }
 
-        // Bootstrap signature signing configuration if not manually set
-        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
-            .buildDefaultSignatureSigningConfiguration();
-        if (this.blackListedSignatureSigningAlgorithms == null) {
-            this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
-                config.getBlacklistedAlgorithms());
-            LOGGER.info("Bootstrapped Blacklisted Algorithms");
-        }
-        if (this.signatureAlgorithms == null) {
-            this.signatureAlgorithms = new ArrayList<>(
-                config.getSignatureAlgorithms());
-            LOGGER.info("Bootstrapped Signature Algorithms");
-        }
-        if (this.signatureReferenceDigestMethods == null) {
-            this.signatureReferenceDigestMethods = new ArrayList<>(
-                config.getSignatureReferenceDigestMethods());
-            this.signatureReferenceDigestMethods
-                .remove("http://www.w3.org/2001/04/xmlenc#sha512");
-            LOGGER.info("Bootstrapped Signature Reference Digest Methods");
-        }
-        if (this.signatureCanonicalizationAlgorithm == null) {
-            this.signatureCanonicalizationAlgorithm = config
-                .getSignatureCanonicalizationAlgorithm();
-            LOGGER.info("Bootstrapped Canonicalization Algorithm");
-        }
+        initSignatureSigningConfiguration();
     }
 
     public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
@@ -608,6 +584,34 @@ public class SAML2ClientConfiguration extends InitializableObject {
                 ks.aliases().nextElement());
         } catch (final Exception e) {
             throw new SAMLException("Could not create keystore", e);
+        }
+    }
+
+    private void initSignatureSigningConfiguration() {
+        // Bootstrap signature signing configuration if not manually set
+        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
+            .buildDefaultSignatureSigningConfiguration();
+        if (this.blackListedSignatureSigningAlgorithms == null) {
+            this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
+                config.getBlacklistedAlgorithms());
+            LOGGER.info("Bootstrapped Blacklisted Algorithms");
+        }
+        if (this.signatureAlgorithms == null) {
+            this.signatureAlgorithms = new ArrayList<>(
+                config.getSignatureAlgorithms());
+            LOGGER.info("Bootstrapped Signature Algorithms");
+        }
+        if (this.signatureReferenceDigestMethods == null) {
+            this.signatureReferenceDigestMethods = new ArrayList<>(
+                config.getSignatureReferenceDigestMethods());
+            this.signatureReferenceDigestMethods
+                .remove("http://www.w3.org/2001/04/xmlenc#sha512");
+            LOGGER.info("Bootstrapped Signature Reference Digest Methods");
+        }
+        if (this.signatureCanonicalizationAlgorithm == null) {
+            this.signatureCanonicalizationAlgorithm = config
+                .getSignatureCanonicalizationAlgorithm();
+            LOGGER.info("Bootstrapped Canonicalization Algorithm");
         }
     }
 }
