@@ -1,9 +1,13 @@
 
 package org.pac4j.saml.sso.impl;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
@@ -12,6 +16,7 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.Extensions;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.NameIDPolicy;
 import org.opensaml.saml.saml2.core.RequestedAuthnContext;
@@ -51,6 +56,10 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     private final int assertionConsumerServiceIndex;
 
+    private final String providerName;
+
+    private final Supplier<List<XSAny>> extensions;
+
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     /**
@@ -67,6 +76,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         this.passive = cfg.isPassive();
         this.attributeConsumingServiceIndex = cfg.getAttributeConsumingServiceIndex();
         this.assertionConsumerServiceIndex = cfg.getAssertionConsumerServiceIndex();
+        this.providerName = cfg.getProviderName();
+        this.extensions = cfg.getAuthnRequestExtensions();
     }
 
     @Override
@@ -105,7 +116,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIsPassive(this.passive);
         request.setForceAuthn(this.forceAuth);
-        request.setProviderName("pac4j-saml");
+        request.setProviderName(this.providerName);
 
         if (nameIdPolicyFormat != null) {
             final NameIDPolicy nameIdPolicy = new NameIDPolicyBuilder().buildObject();
@@ -125,6 +136,15 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         if (attributeConsumingServiceIndex >= 0) {
             request.setAttributeConsumingServiceIndex(attributeConsumingServiceIndex);
         }
+
+        // Setting extensions if they are defined
+        if (extensions != null) {
+            Extensions extensionsElem = ((SAMLObjectBuilder<Extensions>) this.builderFactory
+                .getBuilder(Extensions.DEFAULT_ELEMENT_NAME)).buildObject();
+            extensionsElem.getUnknownXMLObjects().addAll(extensions.get());
+            request.setExtensions(extensionsElem);
+        }
+
         return request;
     }
 

@@ -3,6 +3,7 @@ package org.pac4j.saml.client;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
+import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
@@ -29,11 +30,8 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * The {@link SAML2ClientConfiguration} is responsible for capturing client settings and passing them around.
@@ -43,12 +41,11 @@ import java.util.List;
  */
 public class SAML2ClientConfiguration extends InitializableObject {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
-
     protected static final String RESOURCE_PREFIX = "resource:";
     protected static final String CLASSPATH_PREFIX = "classpath:";
     protected static final String FILE_PREFIX = "file:";
-
+    protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
     private Resource keystoreResource;
 
     private String keystorePassword;
@@ -98,31 +95,44 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private int attributeConsumingServiceIndex = -1;
 
-    public SAML2ClientConfiguration() {}
+    private String providerName;
+
+    private Supplier<List<XSAny>> authnRequestExtensions;
+
+    private String attributeAsId;
+
+
+    public SAML2ClientConfiguration() {
+    }
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
                                     final String identityProviderMetadataPath) {
         this(null, null, mapPathToResource(keystorePath), keystorePassword, privateKeyPassword,
-                mapPathToResource(identityProviderMetadataPath), null, null);
+            mapPathToResource(identityProviderMetadataPath), null, null,
+            DEFAULT_PROVIDER_NAME, null, null);
     }
 
     public SAML2ClientConfiguration(final Resource keystoreResource, final String keystorePassword, final String privateKeyPassword,
                                     final Resource identityProviderMetadataResource) {
         this(null, null, keystoreResource, keystorePassword, privateKeyPassword,
-                identityProviderMetadataResource, null, null);
+            identityProviderMetadataResource, null, null,
+            DEFAULT_PROVIDER_NAME, null, null);
     }
 
     public SAML2ClientConfiguration(final Resource keystoreResource, final String keyStoreAlias,
                                     final String keyStoreType, final String keystorePassword, final String privateKeyPassword,
                                     final Resource identityProviderMetadataResource) {
-        this(keyStoreAlias, keyStoreType, keystoreResource, keystorePassword, privateKeyPassword,
-                identityProviderMetadataResource, null, null);
+        this(keyStoreAlias, keyStoreType, keystoreResource, keystorePassword,
+            privateKeyPassword, identityProviderMetadataResource, null,
+            null, DEFAULT_PROVIDER_NAME, null, null);
     }
 
     private SAML2ClientConfiguration(final String keyStoreAlias, final String keyStoreType,
                                      final Resource keystoreResource, final String keystorePassword,
                                      final String privateKeyPassword, final Resource identityProviderMetadataResource,
-                                     final String identityProviderEntityId, final String serviceProviderEntityId) {
+                                     final String identityProviderEntityId, final String serviceProviderEntityId,
+                                     final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
+                                     final String attributeAsId) {
         this.keyStoreAlias = keyStoreAlias;
         this.keyStoreType = keyStoreType;
         this.keystoreResource = keystoreResource;
@@ -131,6 +141,32 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.identityProviderMetadataResource = identityProviderMetadataResource;
         this.identityProviderEntityId = identityProviderEntityId;
         this.serviceProviderEntityId = serviceProviderEntityId;
+        this.providerName = providerName;
+        this.authnRequestExtensions = authnRequestExtensions;
+        this.attributeAsId = attributeAsId;
+    }
+
+    protected static UrlResource newUrlResource(final String url) {
+        try {
+            return new UrlResource(url);
+        } catch (final MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    protected static Resource mapPathToResource(final String path) {
+        CommonHelper.assertNotBlank("path", path);
+        if (path.startsWith(RESOURCE_PREFIX)) {
+            return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
+        } else if (path.startsWith(CLASSPATH_PREFIX)) {
+            return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
+        } else if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
+            return newUrlResource(path);
+        } else if (path.startsWith(FILE_PREFIX)) {
+            return new FileSystemResource(path.substring(FILE_PREFIX.length()));
+        } else {
+            return new FileSystemResource(path);
+        }
     }
 
     @Override
@@ -149,16 +185,31 @@ public class SAML2ClientConfiguration extends InitializableObject {
             }
         }
 
-        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
-        this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
-        this.signatureAlgorithms = new ArrayList<>(config.getSignatureAlgorithms());
-        this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
-        this.signatureReferenceDigestMethods.remove("http://www.w3.org/2001/04/xmlenc#sha512");
-        this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
-    }
-
-    public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
-        this.identityProviderMetadataResource = identityProviderMetadataResource;
+        // Bootstrap signature signing configuration if not manually set
+        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
+            .buildDefaultSignatureSigningConfiguration();
+        if (this.blackListedSignatureSigningAlgorithms == null) {
+            this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
+                config.getBlacklistedAlgorithms());
+            LOGGER.info("Bootstrapped Blacklisted Algorithms");
+        }
+        if (this.signatureAlgorithms == null) {
+            this.signatureAlgorithms = new ArrayList<>(
+                config.getSignatureAlgorithms());
+            LOGGER.info("Bootstrapped Signature Algorithms");
+        }
+        if (this.signatureReferenceDigestMethods == null) {
+            this.signatureReferenceDigestMethods = new ArrayList<>(
+                config.getSignatureReferenceDigestMethods());
+            this.signatureReferenceDigestMethods
+                .remove("http://www.w3.org/2001/04/xmlenc#sha512");
+            LOGGER.info("Bootstrapped Signature Reference Digest Methods");
+        }
+        if (this.signatureCanonicalizationAlgorithm == null) {
+            this.signatureCanonicalizationAlgorithm = config
+                .getSignatureCanonicalizationAlgorithm();
+            LOGGER.info("Bootstrapped Canonicalization Algorithm");
+        }
     }
 
     public void setIdentityProviderMetadataResourceFilepath(final String path) {
@@ -185,39 +236,20 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.assertionConsumerServiceIndex = assertionConsumerServiceIndex;
     }
 
-    protected static UrlResource newUrlResource(final String url) {
-        try {
-            return new UrlResource(url);
-        } catch (final MalformedURLException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    protected static Resource mapPathToResource(final String path) {
-        CommonHelper.assertNotBlank("path", path);
-        if (path.startsWith(RESOURCE_PREFIX)) {
-            return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
-        } else if (path.startsWith(CLASSPATH_PREFIX)) {
-            return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
-        } else if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
-            return newUrlResource(path);
-        } else if (path.startsWith(FILE_PREFIX)) {
-            return new FileSystemResource(path.substring(FILE_PREFIX.length()));
-        } else {
-            return new FileSystemResource(path);
-        }
-    }
-
     public Resource getIdentityProviderMetadataResource() {
         return this.identityProviderMetadataResource;
     }
 
-    public void setIdentityProviderEntityId(final String identityProviderEntityId) {
-        this.identityProviderEntityId = identityProviderEntityId;
+    public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
+        this.identityProviderMetadataResource = identityProviderMetadataResource;
     }
 
     public String getIdentityProviderEntityId() {
         return identityProviderEntityId;
+    }
+
+    public void setIdentityProviderEntityId(final String identityProviderEntityId) {
+        this.identityProviderEntityId = identityProviderEntityId;
     }
 
     public void setKeystoreAlias(final String keyStoreAlias) {
@@ -226,10 +258,6 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setKeystoreType(final String keyStoreType) {
         this.keyStoreType = keyStoreType;
-    }
-
-    public void setKeystoreResource(final Resource keystoreResource) {
-        this.keystoreResource = keystoreResource;
     }
 
     public void setKeystoreResourceFilepath(final String path) {
@@ -248,14 +276,6 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.keystoreResource = mapPathToResource(path);
     }
 
-    public void setKeystorePassword(final String keystorePassword) {
-        this.keystorePassword = keystorePassword;
-    }
-
-    public void setPrivateKeyPassword(final String privateKeyPassword) {
-        this.privateKeyPassword = privateKeyPassword;
-    }
-
     public String getKeyStoreAlias() {
         return keyStoreAlias;
     }
@@ -268,16 +288,24 @@ public class SAML2ClientConfiguration extends InitializableObject {
         return keystoreResource;
     }
 
+    public void setKeystoreResource(final Resource keystoreResource) {
+        this.keystoreResource = keystoreResource;
+    }
+
     public String getKeystorePassword() {
         return keystorePassword;
+    }
+
+    public void setKeystorePassword(final String keystorePassword) {
+        this.keystorePassword = keystorePassword;
     }
 
     public String getPrivateKeyPassword() {
         return privateKeyPassword;
     }
 
-    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
-        this.serviceProviderMetadataResource = serviceProviderMetadataResource;
+    public void setPrivateKeyPassword(final String privateKeyPassword) {
+        this.privateKeyPassword = privateKeyPassword;
     }
 
     public void setServiceProviderMetadataResourceFilepath(final String path) {
@@ -293,20 +321,20 @@ public class SAML2ClientConfiguration extends InitializableObject {
         }
     }
 
-    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
-        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
-    }
-
     public WritableResource getServiceProviderMetadataResource() {
         return serviceProviderMetadataResource;
     }
 
-    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
-        this.serviceProviderEntityId = serviceProviderEntityId;
+    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
+        this.serviceProviderMetadataResource = serviceProviderMetadataResource;
     }
 
     public String getServiceProviderEntityId() {
         return serviceProviderEntityId;
+    }
+
+    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
+        this.serviceProviderEntityId = serviceProviderEntityId;
     }
 
     public boolean isPassive() {
@@ -367,6 +395,10 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public boolean isForceServiceProviderMetadataGeneration() {
         return forceServiceProviderMetadataGeneration;
+    }
+
+    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
+        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
     }
 
     public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
@@ -437,13 +469,35 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.attributeConsumingServiceIndex = attributeConsumingServiceIndex;
     }
 
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public Supplier<List<XSAny>> getAuthnRequestExtensions() {
+        return authnRequestExtensions;
+    }
+
+    public void setAuthnRequestExtensions(Supplier<List<XSAny>> authnRequestExtensions) {
+        this.authnRequestExtensions = authnRequestExtensions;
+    }
+
+    public String getAttributeAsId() {
+        return attributeAsId;
+    }
+
+    public void setAttributeAsId(String attributeAsId) {
+        this.attributeAsId = attributeAsId;
+    }
+
     /**
      * Initializes the configuration for a particular client.
      *
-     * @param clientName
-     *            Name of the client. The configuration can use the value or not.
-     * @param context
-     *            Web context to transport additional information to the configuration.
+     * @param clientName Name of the client. The configuration can use the value ornot.
+     * @param context    Web context to transport additional information to the configuration.
      */
     protected void init(final String clientName, final WebContext context) {
         init();
@@ -497,8 +551,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
             }
 
             LOGGER.info("Created keystore {} with key alias {} ",
-                    keystoreResource.getFile().getCanonicalPath(),
-                    ks.aliases().nextElement());
+                keystoreResource.getFile().getCanonicalPath(),
+                ks.aliases().nextElement());
         } catch (final Exception e) {
             throw new SAMLException("Could not create keystore", e);
         }
