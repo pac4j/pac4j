@@ -1,5 +1,6 @@
 package org.pac4j.saml.credentials.authenticator;
 
+import org.apache.commons.lang.StringUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
@@ -40,6 +41,13 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final String attributeAsId;
+
+    public SAML2Authenticator(String attributeAsId) {
+
+        this.attributeAsId = attributeAsId;
+    }
+
     @Override
     protected void internalInit() {
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new SAML2Profile()));
@@ -70,7 +78,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
                 if (attributeValueElement != null) {
                     final String value = attributeValueElement.getTextContent();
                     logger.debug("Adding attribute value {} for attribute {} / {}", value,
-                            name, friendlyName);
+                        name, friendlyName);
                     values.add(value);
                 } else {
                     logger.warn("Attribute value DOM element is null for {}", attribute);
@@ -78,6 +86,13 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
             }
 
             if (!values.isEmpty()) {
+                if (StringUtils.isNotBlank(attributeAsId) && attributeAsId.equals(name)) {
+                    if (values.size() == 1) {
+                        profile.setId(values.get(0));
+                    } else {
+                        logger.warn("Will not add {} as id because it has multiple values: {}", attributeAsId, values);
+                    }
+                }
                 getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
                 if (CommonHelper.isNotBlank(friendlyName)) {
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, friendlyName, values);
