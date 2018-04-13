@@ -166,7 +166,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
         List<String> authnContexts = new ArrayList<String>();
         for (AuthnStatement authnStatement : authnStatements) {
-            authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+            if(authnStatement.getAuthnContext().getAuthnContextClassRef() != null) {
+                authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+            }
         }
 
 
