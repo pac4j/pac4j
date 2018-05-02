@@ -60,11 +60,11 @@ public class PathMatcher implements Matcher {
      */
     public PathMatcher excludeRegex(final String regex) {
         CommonHelper.assertNotBlank("regex", regex);
-        logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression " + 
+        logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression " +
                 "to avoid any security issues!");
 
         if (!regex.startsWith("^") || !regex.endsWith("$")) {
-            throw new TechnicalException("Your regular expression: '" + regex + "' must start with a ^ and end with a $ " + 
+            throw new TechnicalException("Your regular expression: '" + regex + "' must start with a ^ and end with a $ " +
                 "to define a full path matching");
         }
 
@@ -79,6 +79,9 @@ public class PathMatcher implements Matcher {
 
     // Returns true if a path should be authenticated, false to skip authentication.
     boolean matches(final String path) {
+        logger.debug("path to match: {}", path);
+        // TODO: remove
+        System.out.println("path to match: " + path);
 
         if (excludedPaths.contains(path)) {
             return false;
