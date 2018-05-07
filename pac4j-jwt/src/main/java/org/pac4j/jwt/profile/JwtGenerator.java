@@ -31,6 +31,8 @@ public class JwtGenerator<U extends CommonProfile> {
 
     private EncryptionConfiguration encryptionConfiguration;
 
+    private Date expirationTime;
+    
     public JwtGenerator() {}
 
     public JwtGenerator(final SignatureConfiguration signatureConfiguration) {
@@ -56,7 +58,9 @@ public class JwtGenerator<U extends CommonProfile> {
         for (final Map.Entry<String, Object> entry : claims.entrySet()) {
             builder.claim(entry.getKey(), entry.getValue());
         }
-
+        if (this.expirationTime != null) {
+            builder.expirationTime(this.expirationTime);
+        }
         return internalGenerate(builder.build());
     }
 
@@ -108,6 +112,10 @@ public class JwtGenerator<U extends CommonProfile> {
                 .subject(profile.getTypedId())
                 .issueTime(new Date());
 
+        if (this.expirationTime != null) {
+            builder.expirationTime(this.expirationTime);
+        }
+        
         // add attributes
         final Map<String, Object> attributes = profile.getAttributes();
         for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -134,6 +142,14 @@ public class JwtGenerator<U extends CommonProfile> {
 
     public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         this.encryptionConfiguration = encryptionConfiguration;
+    }
+
+    public Date getExpirationTime() {
+        return new Date(expirationTime.getTime());
+    }
+
+    public void setExpirationTime(final Date expirationTime) {
+        this.expirationTime = new Date(expirationTime.getTime());
     }
 
     @Override
