@@ -237,7 +237,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                 logger.error("The JWT is expired: no profile is built");
                 return;
             }
-             if (this.expirationTime != null && expTime.after(this.expirationTime)) {
+            if (this.expirationTime != null && expTime.after(this.expirationTime)) {
                 logger.error("The JWT is expired: no profile is built");
                 return;
             }
