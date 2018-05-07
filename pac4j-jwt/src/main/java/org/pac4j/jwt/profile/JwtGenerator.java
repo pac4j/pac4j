@@ -145,11 +145,11 @@ public class JwtGenerator<U extends CommonProfile> {
     }
 
     public Date getExpirationTime() {
-        return expirationTime;
+        return new Date(expirationTime.getTime());
     }
 
     public void setExpirationTime(final Date expirationTime) {
-        this.expirationTime = expirationTime;
+        this.expirationTime = new Date(expirationTime.getTime());
     }
 
     @Override

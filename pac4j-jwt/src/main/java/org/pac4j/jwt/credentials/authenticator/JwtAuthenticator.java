@@ -237,7 +237,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                 logger.error("The JWT is expired: no profile is built");
                 return;
             }
-            if (this.expirationTime != null && expTime.after(this.expirationTime)) {
+             if (this.expirationTime != null && expTime.after(this.expirationTime)) {
                 logger.error("The JWT is expired: no profile is built");
                 return;
             }
@@ -307,11 +307,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     public void setExpirationTime(final Date expirationTime) {
-        this.expirationTime = expirationTime;
+        this.expirationTime = new Date(expirationTime.getTime());
     }
 
     public Date getExpirationTime() {
-        return expirationTime;
+        return new Date(expirationTime.getTime());
     }
 
     @Override
