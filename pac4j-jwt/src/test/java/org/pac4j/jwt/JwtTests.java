@@ -103,6 +103,20 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testPlainJwtExpiredByAuthenticator() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.EXPIRATION_TIME, tomorrow());
+        final String token = generator.generate(claims);
+        JwtAuthenticator authenticator = new JwtAuthenticator();
+        final Date expDate = new Date();
+        expDate.setHours(-1);
+        authenticator.setExpirationTime(expDate);
+        assertNull(authenticator.validateToken(token));
+    }
+    
+    @Test
     public void testPlainJwtNoSubject() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final String token = generator.generate(new HashMap<>());
