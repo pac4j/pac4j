@@ -310,6 +310,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         this.expirationTime = expirationTime;
     }
 
+    public Date getExpirationTime() {
+        return expirationTime;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
