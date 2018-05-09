@@ -133,7 +133,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
-        assertEquals(302, response.getStatus());
+        assertEquals(307, response.getStatus());
         assertEquals(Pac4jConstants.DEFAULT_URL_VALUE, response.getRedirectedUrl());
     }
 
@@ -155,7 +155,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
-        assertEquals(302, response.getStatus());
+        assertEquals(307, response.getStatus());
         assertEquals(PAC4J_URL, response.getRedirectedUrl());
     }
 
@@ -176,7 +176,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertEquals(newSessionId, originalSessionId);
-        assertEquals(302, response.getStatus());
+        assertEquals(307, response.getStatus());
         assertEquals(Pac4jConstants.DEFAULT_URL_VALUE, response.getRedirectedUrl());
     }
 }
