@@ -20,6 +20,8 @@ public interface HttpConstants {
 
     int TEMP_REDIRECT = 302;
 
+    int TEMP_REDIRECT_307 = 307;
+
     int BAD_REQUEST = 400;
 
     int DEFAULT_HTTP_PORT = 80;

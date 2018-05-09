@@ -47,6 +47,19 @@ public class HttpAction extends TechnicalException {
     }
 
     /**
+     * Build a 307 redirection.
+     *
+     * @param context context
+     * @param url url
+     * @return an HTTP redirection
+     */
+    public static HttpAction redirect307(final WebContext context, final String url) {
+        context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+        context.setResponseStatus(HttpConstants.TEMP_REDIRECT_307);
+        return new HttpAction(HttpConstants.TEMP_REDIRECT_307);
+    }
+
+    /**
      * Build an HTTP Ok.
      *
      * @param context context
