@@ -11,5 +11,5 @@ import org.pac4j.saml.context.SAML2MessageContext;
  */
 public interface SAML2ObjectBuilder<T extends SAMLObject> {
 
-    <T> T build(final SAML2MessageContext context);
+    T build(SAML2MessageContext context);
 }
