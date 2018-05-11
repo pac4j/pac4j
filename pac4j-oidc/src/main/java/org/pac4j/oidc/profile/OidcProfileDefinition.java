@@ -20,29 +20,32 @@ import java.util.function.Function;
  */
 public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileDefinition<P> {
 
-    public static final String NAME = "name";
-    public static final String GIVEN_NAME = "given_name";
-    public static final String MIDDLE_NAME = "middle_name";
-    public static final String NICKNAME = "nickname";
-    public static final String PREFERRED_USERNAME = "preferred_username";
-    public static final String PROFILE = "profile";
-    public static final String PICTURE = "picture";
-    public static final String WEBSITE = "website";
-    public static final String EMAIL_VERIFIED = "email_verified";
-    public static final String BIRTHDATE = "birthdate";
-    public static final String ZONEINFO = "zoneinfo";
-    public static final String PHONE_NUMBER = "phone_number";
-    public static final String PHONE_NUMBER_VERIFIED = "phone_number_verified";
-    public static final String ADDRESS = "address";
-    public static final String UPDATED_AT = "updated_at";
-    public static final String ACCESS_TOKEN = "access_token";
-    public static final String ID_TOKEN = "id_token";
-    public static final String REFRESH_TOKEN = "refresh_token";
-    public static final String AUTH_TIME       = "auth_time";
-    public static final String NONCE           = "nonce";
-    public static final String ACR             = "acr";
-    public static final String AMR             = "amr";
-    public static final String AZP             = "azp";
+    public static final String NAME                     = "name";
+    public static final String GIVEN_NAME               = "given_name";
+    public static final String MIDDLE_NAME              = "middle_name";
+    public static final String NICKNAME                 = "nickname";
+    public static final String PREFERRED_USERNAME       = "preferred_username";
+    public static final String PROFILE                  = "profile";
+    public static final String PICTURE                  = "picture";
+    public static final String WEBSITE                  = "website";
+    public static final String EMAIL_VERIFIED           = "email_verified";
+    public static final String BIRTHDATE                = "birthdate";
+    public static final String ZONEINFO                 = "zoneinfo";
+    public static final String PHONE_NUMBER             = "phone_number";
+    public static final String PHONE_NUMBER_VERIFIED    = "phone_number_verified";
+    public static final String ADDRESS                  = "address";
+    public static final String UPDATED_AT               = "updated_at";
+    public static final String ACCESS_TOKEN             = "access_token";
+    public static final String ID_TOKEN                 = "id_token";
+    public static final String REFRESH_TOKEN            = "refresh_token";
+    public static final String AUTH_TIME                = "auth_time";
+    public static final String NONCE                    = "nonce";
+    public static final String ACR                      = "acr";
+    public static final String AMR                      = "amr";
+    public static final String AZP                      = "azp";
+
+    // Custom secondary attributes
+    public static final String TOKEN_EXPIRATION_ADVANCE = "token_expiration_advance";
 
     public OidcProfileDefinition() {
         super(x -> (P) new OidcProfile());
@@ -74,6 +77,9 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
         Arrays.stream(new String[] {JwtClaims.EXPIRATION_TIME, JwtClaims.ISSUED_AT, JwtClaims.NOT_BEFORE})
             .forEach(a -> primary(a, Converters.DATE_TZ_GENERAL));
         primary(AUTH_TIME, new OidcLongTimeConverter());
+
+        // custom attributes
+        secondary(TOKEN_EXPIRATION_ADVANCE, Converters.INTEGER);
     }
 
     public OidcProfileDefinition(final Function<Object[], P> profileFactory) {
