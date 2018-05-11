@@ -50,6 +50,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     private String authnContextClassRef = null;
 
     private String nameIdPolicyFormat = null;
+    
+    private boolean useNameQualifier = true;
 
     private int issueInstantSkewSeconds = 0;
 
@@ -79,6 +81,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         this.assertionConsumerServiceIndex = cfg.getAssertionConsumerServiceIndex();
         this.providerName = cfg.getProviderName();
         this.extensions = cfg.getAuthnRequestExtensions();
+        this.useNameQualifier = cfg.isUseNameQualifier();
     }
 
     @Override
@@ -156,7 +159,9 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         final Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         issuer.setFormat(Issuer.ENTITY);
-        issuer.setNameQualifier(spEntityId);
+        if(this.useNameQualifier) {
+        	issuer.setNameQualifier(spEntityId);
+        }
         return issuer;
     }
 
