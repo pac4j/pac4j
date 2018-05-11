@@ -484,6 +484,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
     public void setAttributeAsId(String attributeAsId) {
         this.attributeAsId = attributeAsId;
     }
+    
+    public boolean isUseNameQualifier() {
+        return useNameQualifier;
+    }
+
+    public void setUseNameQualifier(boolean useNameQualifier) {
+        this.useNameQualifier = useNameQualifier;
+    }
 
     /**
      * Initializes the configuration for a particular client.
@@ -616,12 +624,4 @@ public class SAML2ClientConfiguration extends InitializableObject {
             LOGGER.info("Bootstrapped Canonicalization Algorithm");
         }
     }
-
-	public boolean isUseNameQualifier() {
-		return useNameQualifier;
-	}
-
-	public void setUseNameQualifier(boolean useNameQualifier) {
-		this.useNameQualifier = useNameQualifier;
-	}
 }
