@@ -140,7 +140,8 @@ public class OidcProfile extends AbstractJwtProfile {
     }
 
     public int getTokenExpirationAdvance() {
-        return (int) getAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE);
+        Object tokenExpirationAdvance = getAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE);
+        return tokenExpirationAdvance != null ? (int) tokenExpirationAdvance : -1;
     }
 
     public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
