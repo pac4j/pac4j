@@ -7,16 +7,21 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.jwt.profile.JwtGenerator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
+import static org.junit.Assert.*;
 
 /**
  * General test cases for {@link OidcProfile}.
  *
  * @author Jacob Severson
  * @author Misagh Moayyed
+ * @author Juan José Vázquez
  * @since  1.8.0
  */
 public final class OidcProfileTests implements TestsConstants {
@@ -130,5 +135,60 @@ public final class OidcProfileTests implements TestsConstants {
         assertNull(profile.getAccessToken());
         assertNull(profile.getIdTokenString());
         assertNull(profile.getRefreshToken());
+    }
+
+    /**
+     * Default behavior. No expiration info.
+     */
+    @Test
+    public void testNullTokenExpiration() {
+        OidcProfile profile = new OidcProfile();
+        assertFalse(profile.isExpired());
+    }
+
+    /**
+     * If the token is not expired, then the session is not considered expired.
+     */
+    @Test
+    public void testNoExpirationWithNoExpiredToken() {
+        final JwtGenerator jwtGenerator = new JwtGenerator<OidcProfile>();
+        final ZonedDateTime expAfter = LocalDateTime.from(LocalDateTime.now()).plusHours(1).atZone(ZoneId.systemDefault());
+        jwtGenerator.setExpirationTime(Date.from(expAfter.toInstant()));
+        final OidcProfile profile = new OidcProfile();
+        final String idTokenString = jwtGenerator.generate(profile);
+        profile.setIdTokenString(idTokenString);
+        profile.setTokenExpirationAdvance(0);
+        assertFalse(profile.isExpired());
+    }
+
+    /**
+     * If the token is expired, then the session is considered expired.
+     */
+    @Test
+    public void testExpirationWithExpiredToken() {
+        final JwtGenerator jwtGenerator = new JwtGenerator<OidcProfile>();
+        final ZonedDateTime expBefore = LocalDateTime.from(LocalDateTime.now()).plusHours(-1).atZone(ZoneId.systemDefault());
+        jwtGenerator.setExpirationTime(Date.from(expBefore.toInstant()));
+        final OidcProfile profile = new OidcProfile();
+        final String idTokenString = jwtGenerator.generate(profile);
+        profile.setIdTokenString(idTokenString);
+        profile.setTokenExpirationAdvance(0);
+        assertTrue(profile.isExpired());
+    }
+
+    /**
+     * The token is not expired but the session will be consider expired if
+     * a long enough token expiration advance is established.
+     */
+    @Test
+    public void testAdvancedExpirationWithNoExpiredToken() {
+        final JwtGenerator jwtGenerator = new JwtGenerator<OidcProfile>();
+        final ZonedDateTime expAfter = LocalDateTime.from(LocalDateTime.now()).plusHours(1).atZone(ZoneId.systemDefault());
+        jwtGenerator.setExpirationTime(Date.from(expAfter.toInstant()));
+        final OidcProfile profile = new OidcProfile();
+        final String idTokenString = jwtGenerator.generate(profile);
+        profile.setIdTokenString(idTokenString);
+        profile.setTokenExpirationAdvance(3600); // 1 hour
+        assertTrue(profile.isExpired());
     }
 }
