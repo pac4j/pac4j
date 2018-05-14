@@ -202,6 +202,9 @@ ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter encountered an
 
 Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle's Java Download site.
 
+### d) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+
+ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In SAML2ClientConfiguration you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
 
 # Integration with various IdPs
 
