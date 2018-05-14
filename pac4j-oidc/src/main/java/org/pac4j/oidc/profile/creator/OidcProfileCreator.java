@@ -175,6 +175,9 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
                 }
             }
 
+            // session expiration with token behavior
+            profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
+
             return profile;
 
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {

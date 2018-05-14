@@ -1,6 +1,7 @@
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
@@ -136,5 +137,34 @@ public class OidcProfile extends AbstractJwtProfile {
         removeAttribute(OidcProfileDefinition.ACCESS_TOKEN);
         removeAttribute(OidcProfileDefinition.ID_TOKEN);
         removeAttribute(OidcProfileDefinition.REFRESH_TOKEN);
+    }
+
+    public int getTokenExpirationAdvance() {
+        Object tokenExpirationAdvance = getAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE);
+        return tokenExpirationAdvance != null ? (int) tokenExpirationAdvance : -1;
+    }
+
+    public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
+        addAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE, tokenExpirationAdvance);
+    }
+
+    @Override
+    public boolean isExpired() {
+        if (getTokenExpirationAdvance() < 0)
+            return false;
+        else {
+            try {
+                JWT jwt = this.getIdToken();
+                JWTClaimsSet claims = jwt.getJWTClaimsSet();
+                Date expiresOn = claims.getExpirationTime();
+
+                Calendar now = Calendar.getInstance();
+                now.add( Calendar.SECOND, getTokenExpirationAdvance() );
+
+                return expiresOn.before(now.getTime());
+            } catch (ParseException e) {
+                throw new TechnicalException(e);
+            }
+        }
     }
 }

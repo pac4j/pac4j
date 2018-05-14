@@ -21,9 +21,9 @@ public class AzureAdProfileDefinition extends OidcProfileDefinition<AzureAdProfi
     public static final String IPADDR = "ipaddr";
     public static final String UPN = "upn";
 
-    public AzureAdProfileDefinition(int idTokenExpireAdvance) {
+    public AzureAdProfileDefinition() {
         super();
         Arrays.stream(new String[] {IDP, OID, TID, VER, UNQIUE_NAME, IPADDR, UPN}).forEach(a -> primary(a, Converters.STRING));
-        setProfileFactory(x -> new AzureAdProfile(idTokenExpireAdvance));
+        setProfileFactory(x -> new AzureAdProfile());
     }
 }

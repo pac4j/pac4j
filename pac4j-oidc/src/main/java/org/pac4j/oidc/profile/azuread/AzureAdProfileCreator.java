@@ -21,7 +21,7 @@ public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile> {
 
     @Override
     protected void internalInit() {
-        defaultProfileDefinition(new AzureAdProfileDefinition(10));
+        defaultProfileDefinition(new AzureAdProfileDefinition());
         super.internalInit();
     }
 
