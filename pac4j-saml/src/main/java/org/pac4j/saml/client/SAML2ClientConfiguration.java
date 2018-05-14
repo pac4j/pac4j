@@ -91,6 +91,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private String authnContextClassRef = null;
 
     private String nameIdPolicyFormat = null;
+    
+    private boolean useNameQualifier = true;
 
     private WritableResource serviceProviderMetadataResource;
 
@@ -481,6 +483,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setAttributeAsId(String attributeAsId) {
         this.attributeAsId = attributeAsId;
+    }
+    
+    public boolean isUseNameQualifier() {
+        return useNameQualifier;
+    }
+
+    public void setUseNameQualifier(boolean useNameQualifier) {
+        this.useNameQualifier = useNameQualifier;
     }
 
     /**
