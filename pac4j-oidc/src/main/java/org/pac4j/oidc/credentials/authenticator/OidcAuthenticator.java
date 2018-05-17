@@ -21,7 +21,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The OpenID Connect authenticator.
@@ -32,6 +35,11 @@ import java.util.List;
 public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcAuthenticator.class);
+
+    private static final Collection<ClientAuthenticationMethod> SUPPORTED_METHODS = 
+            Arrays.asList(
+                    ClientAuthenticationMethod.CLIENT_SECRET_POST, 
+                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
 
     protected OidcConfiguration configuration;
 
@@ -50,17 +58,40 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 
         final ClientAuthenticationMethod chosenMethod;
         final ClientAuthenticationMethod configurationMethod = configuration.getClientAuthenticationMethod();
+        
+        final ClientAuthenticationMethod preferredMethod;
+        if (configurationMethod == null || SUPPORTED_METHODS.contains(configurationMethod)) {
+            preferredMethod = configurationMethod;
+        } else {
+            // Use method suggested by provider metadata.
+            preferredMethod = null;
+            logger.warn("Configured authentication method ({}) is not supported.", configurationMethod);
+        } 
+        
         if (CommonHelper.isNotEmpty(metadataMethods)) {
-            if (metadataMethods.contains(configurationMethod)) {
-                chosenMethod = configurationMethod;
+            if (preferredMethod != null && metadataMethods.contains(preferredMethod)) {
+                chosenMethod = preferredMethod;
             } else {
-                chosenMethod = metadataMethods.get(0);
-                logger.warn("Preferred token endpoint Authentication method: {} not available. Defaulting to: {}",
-                        configurationMethod, chosenMethod);
+                Optional<ClientAuthenticationMethod> firstSupported = 
+                    metadataMethods.stream().filter((m) -> SUPPORTED_METHODS.contains(m)).findFirst();
+                if (firstSupported.isPresent()) {
+                    chosenMethod = firstSupported.get();
+                    if (preferredMethod != null) {
+                        logger.warn(
+                            "Preferred authentication method ({}) not supported by provider according to provider metadata." + 
+                            " Defaulting to: {}",
+                            metadataMethods, chosenMethod);
+                    }
+                } else {
+                    chosenMethod = ClientAuthenticationMethod.getDefault();
+                    logger.warn("None of the Token endpoint provider metadata authentication methods ({}) are supported." + 
+                        " Defaulting to: {}",
+                        metadataMethods, chosenMethod);
+                }
             }
         } else {
-            chosenMethod = ClientAuthenticationMethod.getDefault();
-            logger.warn("Provider metadata does not provide Token endpoint authentication methods. Defaulting to: {}",
+            chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
+            logger.warn("Provider metadata does not provide Token endpoint authentication methods. Using: {}",
                     chosenMethod);
         }
 
