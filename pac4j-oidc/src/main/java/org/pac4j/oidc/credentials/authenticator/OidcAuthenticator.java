@@ -61,20 +61,20 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         final ClientAuthenticationMethod chosenMethod;
         if (CommonHelper.isNotEmpty(metadataMethods)) {
             if (preferredMethod != null) {
-            	if (metadataMethods.contains(preferredMethod)) {
-            		chosenMethod = preferredMethod;
-            	} else {
-            		throw new TechnicalException(
-	    				"Preferred authentication method (" + preferredMethod + ") not supported " + 
-	    				"by provider according to provider metadata (" + metadataMethods + ").");
-            	}
+                if (metadataMethods.contains(preferredMethod)) {
+                    chosenMethod = preferredMethod;
+                } else {
+                    throw new TechnicalException(
+                        "Preferred authentication method (" + preferredMethod + ") not supported " + 
+                        "by provider according to provider metadata (" + metadataMethods + ").");
+                }
             } else {
                 chosenMethod = firstSupportedMethod(metadataMethods);
             }
         } else {
-        	chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
-        	logger.info("Provider metadata does not provide Token endpoint authentication methods. Using: {}",
-        			chosenMethod);
+            chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
+            logger.info("Provider metadata does not provide Token endpoint authentication methods. Using: {}",
+                    chosenMethod);
         }
 
         final ClientID _clientID = new ClientID(configuration.getClientId());
@@ -88,41 +88,41 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         }
     }
 
-	/**
-	 * The preferred {@link ClientAuthenticationMethod} specified in the given
-	 * {@link OidcConfiguration}, or <code>null</code> meaning that the a
-	 * provider-supported method should be chosen.
-	 */
-	private static ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
-		final ClientAuthenticationMethod configurationMethod = config.getClientAuthenticationMethod();
-		if (configurationMethod == null) {
-			return null;
-		}
-        
-        if (!SUPPORTED_METHODS.contains(configurationMethod)) {
-        	throw new TechnicalException("Configured authentication method (" + configurationMethod + ") is not supported.");
+    /**
+     * The preferred {@link ClientAuthenticationMethod} specified in the given
+     * {@link OidcConfiguration}, or <code>null</code> meaning that the a
+     * provider-supported method should be chosen.
+     */
+    private static ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
+        final ClientAuthenticationMethod configurationMethod = config.getClientAuthenticationMethod();
+        if (configurationMethod == null) {
+            return null;
         }
         
-		return configurationMethod;
-	}
+        if (!SUPPORTED_METHODS.contains(configurationMethod)) {
+            throw new TechnicalException("Configured authentication method (" + configurationMethod + ") is not supported.");
+        }
+        
+        return configurationMethod;
+    }
 
-	/**
-	 * The first {@link ClientAuthenticationMethod} from the given list of
-	 * methods that is supported by this implementation.
-	 * 
-	 * @throws TechnicalException
-	 *         if none of the provider-supported methods is supported.
-	 */
-	private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
-		Optional<ClientAuthenticationMethod> firstSupported = 
-		    metadataMethods.stream().filter((m) -> SUPPORTED_METHODS.contains(m)).findFirst();
-		if (firstSupported.isPresent()) {
-		    return firstSupported.get();
-		} else {
-			throw new TechnicalException("None of the Token endpoint provider metadata authentication methods are supported: " + 
-		        metadataMethods);
-		}
-	}
+    /**
+     * The first {@link ClientAuthenticationMethod} from the given list of
+     * methods that is supported by this implementation.
+     * 
+     * @throws TechnicalException
+     *         if none of the provider-supported methods is supported.
+     */
+    private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
+        Optional<ClientAuthenticationMethod> firstSupported = 
+            metadataMethods.stream().filter((m) -> SUPPORTED_METHODS.contains(m)).findFirst();
+        if (firstSupported.isPresent()) {
+            return firstSupported.get();
+        } else {
+            throw new TechnicalException("None of the Token endpoint provider metadata authentication methods are supported: " + 
+                metadataMethods);
+        }
+    }
 
     @Override
     public void validate(final OidcCredentials credentials, final WebContext context) {
