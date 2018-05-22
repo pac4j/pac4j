@@ -100,10 +100,7 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 		}
         
         if (!SUPPORTED_METHODS.contains(configurationMethod)) {
-            logger.warn("Configured authentication method ({}) is not supported.", configurationMethod);
-            
-            // Choose one that is supported by the provider.
-            return null;
+        	throw new TechnicalException("Configured authentication method (" + configurationMethod + ") is not supported.");
         }
         
 		return configurationMethod;
