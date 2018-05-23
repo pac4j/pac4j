@@ -57,12 +57,15 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-        final String header = context.getRequestHeader(this.headerName);
+        String header = context.getRequestHeader(this.headerName);
         if (header == null) {
-            return null;
+            header = context.getRequestHeader(this.headerName.toLowerCase());
+            if (header == null) {
+                return null;
+            }
         }
 
-        if  (!header.startsWith(this.prefixHeader)) {
+        if (!header.startsWith(this.prefixHeader)) {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 

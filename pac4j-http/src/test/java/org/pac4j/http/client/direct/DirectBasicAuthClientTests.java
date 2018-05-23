@@ -34,7 +34,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
-                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+            MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -49,6 +49,18 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
+            "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
+        final UsernamePasswordCredentials credentials = client.getCredentials(context);
+        final CommonProfile profile = client.getUserProfile(credentials, context);
+        assertEquals(USERNAME, profile.getId());
+    }
+
+    @Test
+    public void testAuthenticationLowercase() {
+        final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final MockWebContext context = MockWebContext.create();
+        final String header = USERNAME + ":" + USERNAME;
+        context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER.toLowerCase(),
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);
