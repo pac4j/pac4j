@@ -78,7 +78,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
 
     @Test
     public void testNullConnector() {
-        final CouchProfileService couchProfileService = new CouchProfileService(null);
+        final CouchProfileService couchProfileService = new CouchProfileService((CouchDbConnector) null);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         TestsHelper.expectException(() -> couchProfileService.init(), TechnicalException.class, "couchDbConnector cannot be null");
     }

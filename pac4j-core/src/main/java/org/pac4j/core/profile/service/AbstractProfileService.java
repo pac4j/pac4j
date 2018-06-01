@@ -47,6 +47,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     protected String[] attributeNames;
 
+    protected boolean isExperimental;
+
     @Override
     protected void internalInit() {
         assertNotNull("profileDefinition", getProfileDefinition());
@@ -310,6 +312,14 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     protected boolean isLegacyMode() {
         return attributes != null;
+    }
+
+    protected boolean isExperimental() {
+        return isExperimental;
+    }
+
+    protected void setExperimental(boolean isExperimental) {
+        this.isExperimental = isExperimental;
     }
 
     public PasswordEncoder getPasswordEncoder() {

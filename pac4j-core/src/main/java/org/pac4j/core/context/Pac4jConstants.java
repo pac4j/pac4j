@@ -81,4 +81,6 @@ public interface Pac4jConstants {
     String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
 
     String DEFAULT_REALM_NAME = "authentication required";
+
+    String EXPERIMENTAL_PROFILE_PROPERTY = "org.pac4j.experimental.profile";
 }
