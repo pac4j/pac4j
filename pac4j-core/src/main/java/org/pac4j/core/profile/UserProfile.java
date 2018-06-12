@@ -66,7 +66,20 @@ public abstract class UserProfile implements Serializable, Externalizable {
     {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
-            map.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
+            Object preparedValue = ProfileHelper.getInternalAttributeHandler().prepare(value);
+
+            //support multiple attribute values (e.g. roles can be received as separate attributes and require merging)
+            //https://github.com/pac4j/pac4j/issues/1145
+            if ( preparedValue instanceof Collection && map.get(key) instanceof Collection ) {
+            	List<Object> result = new ArrayList<>();
+            	result.addAll((Collection)map.get(key));
+            	result.addAll((Collection)preparedValue);
+            	map.put(key, result);
+            }
+            else {
+            	map.put(key, preparedValue);
+            }
+            
         }
     }
 
