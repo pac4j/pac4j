@@ -28,13 +28,13 @@ public class SAML2Profile extends CommonProfile {
      * Create a profile with possibility to merge attributes with the same name and collection-type values.
      * In SAML2 it's very important to get full collection of roles which are received in separate single-element collections.
      * 
-     * In order to use it you may initialize the client in the following way: <br />
+     * In order to use it you may initialize the client in the following way: <br>
      * <pre>
      * SAML2Client client = new SAML2Client();
      * SAML2ClientConfiguration config = new SAML2ClientConfiguration();
      * SAML2Authenticator authenticator = new SAML2Authenticator(config.getAttributeAsId());
      * boolean canMergeAttributes = true;
-     * authenticator.setProfileDefinition(new CommonProfileDefinition<>(x -> new SAML2Profile(canMergeAttributes)));
+     * authenticator.setProfileDefinition(new CommonProfileDefinition&lt;&gt;(x &rarr; new SAML2Profile(canMergeAttributes)));
      * client.setAuthenticator(authenticator);
      * </pre> 
      * 
