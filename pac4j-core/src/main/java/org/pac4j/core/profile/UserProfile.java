@@ -98,6 +98,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Add an attribute.
+     * 
+     * If existing attribute value is collection and the new value is collection - merge the collections
      *
      * @param key key of the attribute
      * @param value value of the attribute
