@@ -42,6 +42,16 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private String linkedId;
 
+    private boolean canAttributesBeMerged;
+    
+    UserProfile() {
+        this( false ); //backwards compatibility
+    }
+    
+    UserProfile( boolean canAttributesBeMerged ) {
+        this.canAttributesBeMerged = canAttributesBeMerged;
+    }
+
     /**
      * Build a profile from user identifier and attributes.
      *
@@ -91,7 +101,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private boolean canMergeAttributes(final Map<String, Object> map, final String key, Object preparedValue)
     {
-        return preparedValue instanceof Collection && map.get(key) instanceof Collection;
+        return this.canAttributesBeMerged && preparedValue instanceof Collection && map.get(key) instanceof Collection;
     }
 
     private <T> Collection<T> mergeCollectionAttributes(Collection<T> existingCollection, Collection<T> newCollection)

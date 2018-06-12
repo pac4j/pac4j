@@ -44,11 +44,20 @@ public final class CommonProfileTests implements TestsConstants {
     
     @Test
     public void testAddAttributeMultipleValues() {
-        final CommonProfile userProfile = new CommonProfile();
+        final CommonProfile userProfile = new CommonProfile(true);
         userProfile.addAttribute(KEY, Arrays.asList("Value1"));
         userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(Arrays.asList("Value1", "Value2", "Value3"), userProfile.getAttribute(KEY));
+    }
+    
+    @Test
+    public void testAddAttributeMultipleValuesOldBehaviour() {
+        final CommonProfile userProfile = new CommonProfile(false);
+        userProfile.addAttribute(KEY, Arrays.asList("Value1"));
+        userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList("Value2", "Value3"), userProfile.getAttribute(KEY));
     }
 
     @Test

@@ -16,6 +16,14 @@ import java.util.Locale;
 public class CommonProfile extends UserProfile {
 
     private static final long serialVersionUID = -1856159870249261877L;
+    
+    public CommonProfile() {
+        //default constructor for backwards compatibility
+    }
+    
+    public CommonProfile( boolean canMergeAttributes ) {
+        super( canMergeAttributes );
+    }
 
     /**
      * Return the email of the user.
