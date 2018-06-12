@@ -42,7 +42,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private String linkedId;
 
-    private boolean canAttributesBeMerged;
+    private final boolean canAttributesBeMerged;
     
     UserProfile() {
         this( false ); //backwards compatibility
