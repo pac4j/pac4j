@@ -21,6 +21,11 @@ public class CommonProfile extends UserProfile {
         //default constructor for backwards compatibility
     }
     
+    /**
+     * Create a profile with possibility to merge attributes with the same name and collection-type values
+     * @param canMergeAttributes if true - merge attributes with the same name and collection-type values, if false - overwrite them
+     * @since 3.1.0
+     */
     public CommonProfile( boolean canMergeAttributes ) {
         super( canMergeAttributes );
     }

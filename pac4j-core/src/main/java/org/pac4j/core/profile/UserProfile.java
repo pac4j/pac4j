@@ -44,11 +44,16 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private final boolean canAttributesBeMerged;
     
-    UserProfile() {
+    protected UserProfile() {
         this( false ); //backwards compatibility
     }
     
-    UserProfile( boolean canAttributesBeMerged ) {
+    /**
+     * Create a profile with possibility to merge attributes with the same name and collection-type values.
+     * @param canAttributesBeMerged if true - merge attributes with the same name and collection-type values, if false - overwrite them
+     * @since 3.1.0
+     */
+    protected UserProfile( boolean canAttributesBeMerged ) {
         this.canAttributesBeMerged = canAttributesBeMerged;
     }
 
