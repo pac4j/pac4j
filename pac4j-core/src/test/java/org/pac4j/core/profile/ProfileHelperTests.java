@@ -27,7 +27,7 @@ public final class ProfileHelperTests implements TestsConstants {
     private static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
     private static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";
     private static final String SESSION_INDEX = "sessionindex";
-    private static final String ISSUER_ID = "issuerId"; 
+    private static final String ISSUER_ID = "issuerId";
     private static final String AUTHN_CONTEXT = "authnContext";
     private static final String SAML_NAME_ID_FORMAT = "samlNameIdFormat";
     private static final String SAML_NAME_ID_NAME_QUALIFIER = "samlNameIdNameQualifier";
@@ -36,7 +36,6 @@ public final class ProfileHelperTests implements TestsConstants {
 
     private LocalDateTime notBeforeTime;
     private LocalDateTime notOnOrAfterTime;
-
 
     @Before
     public void setUpTestData() {
@@ -173,4 +172,31 @@ public final class ProfileHelperTests implements TestsConstants {
         return attr;
     }
 
+    @Test
+    public void testFlatIntoOneProfileOneAnonymousProfile() {
+        final List<CommonProfile> profiles = Arrays.asList( AnonymousProfile.INSTANCE );
+        assertEquals(AnonymousProfile.INSTANCE, ProfileHelper.flatIntoOneProfile(profiles).get());
+    }
+
+    @Test
+    public void testFlatIntoOneProfileNAnonymousProfiles() {
+        final List<CommonProfile> profiles = Arrays.asList( null, AnonymousProfile.INSTANCE, null, AnonymousProfile.INSTANCE );
+        assertEquals(AnonymousProfile.INSTANCE, ProfileHelper.flatIntoOneProfile(profiles).get());
+    }
+
+    @Test
+    public void testFlatIntoOneProfileOneProfile() {
+        final CommonProfile profile1 = new CommonProfile();
+        profile1.setId("ONE");
+        final List<CommonProfile> profiles = Arrays.asList( profile1 );
+        assertEquals(profile1, ProfileHelper.flatIntoOneProfile(profiles).get());
+    }
+
+    @Test
+    public void testFlatIntoOneProfileNProfiles() {
+        final CommonProfile profile2 = new CommonProfile();
+        profile2.setId("TWO");
+        final List<CommonProfile> profiles = Arrays.asList( AnonymousProfile.INSTANCE, null, profile2 );
+        assertEquals(profile2, ProfileHelper.flatIntoOneProfile(profiles).get());
+    }
 }
