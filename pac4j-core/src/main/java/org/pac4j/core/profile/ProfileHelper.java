@@ -51,7 +51,7 @@ public final class ProfileHelper {
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, 
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
             final String typedId, final Map<String, Object> profileAttributes, final Map<String, Object> authenticationAttributes,
             final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
@@ -125,14 +125,19 @@ public final class ProfileHelper {
     }
 
     /**
-     * Flat the list of profiles into a single optional profile.
+     * Flat the list of profiles into a single optional profile (skip any anonymous profile unless it's the only one).
      *
      * @param profiles the list of profiles
      * @param <U> the kind of profile
      * @return the (optional) profile
      */
     public static <U extends CommonProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
-        return profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
+        final Optional<U> profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
+        if (profile.isPresent()) {
+            return profile;
+        } else {
+            return profiles.stream().filter(p -> p != null).findFirst();
+        }
     }
 
     /**
