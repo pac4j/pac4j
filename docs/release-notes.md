@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.0.1**:
+
+- The `ProfileHelper.flatIntoOneProfile` method returns an `AnonymousProfile` (instead of empty) if it's the only profile
+
 **v3.0.0**:
 
 - Handle AJAX requests in the OpenID Connect logout
