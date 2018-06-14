@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.1.0**:
+
+- Added attribute merging capabilities for user profile: multiple attributes with the same name and value of collection type can be merged into a single attribute
+
 **v3.0.0**:
 
 - Handle AJAX requests in the OpenID Connect logout
