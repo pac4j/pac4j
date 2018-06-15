@@ -138,8 +138,11 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             final Enumeration<String> aliases = keyStore.aliases();
             while (aliases.hasMoreElements()) {
                 final String currentAlias = aliases.nextElement();
-                if (currentAlias.equalsIgnoreCase(keyStoreAlias)
-                    || keyStore.entryInstanceOf(currentAlias, KeyStore.PrivateKeyEntry.class)) {
+                if (keyStoreAlias != null) {
+                    if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
+                        return currentAlias;
+                    }
+                } else if (keyStore.entryInstanceOf(currentAlias, KeyStore.PrivateKeyEntry.class)) {
                     return currentAlias;
                 }
             }
