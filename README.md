@@ -60,4 +60,4 @@ If you have any question, please use the [pac4j mailing lists](http://www.pac4j.
 
 ## Sponsored by
 
-[![CAS in the cloud](http://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) The CAS and pac4j consulting company
+[![CAS in the cloud](http://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*
