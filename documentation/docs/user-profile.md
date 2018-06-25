@@ -38,6 +38,8 @@ As the identifier must be a `String`, you may use the `ProfileHelper.sanitizeIde
 ## 2) Attributes
 
 User profiles have attributes, populated from the data retrieved from the identity provider (after conversion).
+Multiple attributes with the same name and value of collection type can be (optionally) merged into a single attribute.
+In particular it can be useful for identity providers that return roles in different single-element collections.  
 
 
 ## 3) Authentication-related attributes

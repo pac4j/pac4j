@@ -6,6 +6,7 @@ import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,24 @@ public final class CommonProfileTests implements TestsConstants {
         userProfile.addAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
+    }
+    
+    @Test
+    public void testAddAttributeMultipleValues() {
+        final CommonProfile userProfile = new CommonProfile(true);
+        userProfile.addAttribute(KEY, Arrays.asList("Value1"));
+        userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList("Value1", "Value2", "Value3"), userProfile.getAttribute(KEY));
+    }
+    
+    @Test
+    public void testAddAttributeMultipleValuesOldBehaviour() {
+        final CommonProfile userProfile = new CommonProfile(false);
+        userProfile.addAttribute(KEY, Arrays.asList("Value1"));
+        userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList("Value2", "Value3"), userProfile.getAttribute(KEY));
     }
 
     @Test
