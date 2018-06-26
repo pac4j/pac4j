@@ -49,7 +49,7 @@ public class RedirectAction {
     public static RedirectAction post(final String location, final Map<String, String> data) {
         RedirectAction action = new RedirectAction();
         action.type = RedirectType.SUCCESS;
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append("<html>\n");
         buffer.append("<body>\n");
         buffer.append("<form action=\"" + escapeHtml(location) + "\" name=\"f\" method=\"post\">\n");

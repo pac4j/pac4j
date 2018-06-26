@@ -32,7 +32,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             throw HttpAction.unauthorized(context);
         }
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
         buffer.append("<partial-response>");
         buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");

@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
  */
 public final class IsRememberedAuthorizerTests extends IsAuthenticatedAuthorizerTests {
 
+    @Override
     protected Authorizer newAuthorizer() {
         return new IsRememberedAuthorizer<>();
     }

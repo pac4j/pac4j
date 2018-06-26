@@ -51,7 +51,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> client.getCredentials(context
                 .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)), HttpAction.class,
-                "Perfoming a 200 HTTP action");
+                "Performing a 200 HTTP action");
         assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
     }

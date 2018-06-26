@@ -1,8 +1,6 @@
 package org.pac4j.cas.profile;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is the user profile for sites using CAS protocol with proxy capabilities.</p>
@@ -18,8 +16,6 @@ import org.slf4j.LoggerFactory;
 public class CasProxyProfile extends CasProfile {
     
     private static final long serialVersionUID = 4956675835922254493L;
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected AttributePrincipal attributePrincipal = null;
     

@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class GuavaStoreTests extends AbstractStoreTests<GuavaStore> {
 
+    @Override
     protected GuavaStore buildStore() {
         return new GuavaStore(10, 1000, TimeUnit.MILLISECONDS);
     }

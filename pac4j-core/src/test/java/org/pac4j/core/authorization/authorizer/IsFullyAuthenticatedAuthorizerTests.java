@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
  */
 public final class IsFullyAuthenticatedAuthorizerTests extends IsAuthenticatedAuthorizerTests {
 
+    @Override
     protected Authorizer newAuthorizer() {
         return new IsFullyAuthenticatedAuthorizer();
     }

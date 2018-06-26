@@ -100,7 +100,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
             Stream<Class> acceptableConverters = Arrays.stream(getConverters())
                 .filter(x -> {
                     try {
-                        AbstractAttributeConverter<?> converter = (AbstractAttributeConverter<?>) x.newInstance();
+                        AbstractAttributeConverter<?> converter = (AbstractAttributeConverter<?>) x.getDeclaredConstructor().newInstance();
                         Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
                     } catch (Exception e) {

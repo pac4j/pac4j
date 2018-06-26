@@ -26,7 +26,7 @@ public final class ConfigBuilder {
             } else {
                 clazz = (Class<ConfigFactory>) Class.forName(factoryName, true, tccl);
             }
-            final ConfigFactory factory = clazz.newInstance();
+            final ConfigFactory factory = clazz.getDeclaredConstructor().newInstance();
             return factory.build(parameters);
         } catch (final Exception e) {
             throw new TechnicalException("Cannot build configuration", e);

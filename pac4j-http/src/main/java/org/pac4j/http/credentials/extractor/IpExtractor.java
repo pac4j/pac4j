@@ -31,6 +31,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
+    @Override
     public TokenCredentials extract(WebContext context) {
         final String ip;
         if (alternateIpHeaders.isEmpty()) {
