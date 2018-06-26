@@ -68,6 +68,6 @@ public final class IsAnonymousAuthorizerTests implements TestsConstants {
         profiles.add(new CommonProfile());
         authorizer.setRedirectionUrl(PAC4J_URL);
         TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
-            "Perfoming a 302 HTTP action");
+            "Performing a 302 HTTP action");
     }
 }

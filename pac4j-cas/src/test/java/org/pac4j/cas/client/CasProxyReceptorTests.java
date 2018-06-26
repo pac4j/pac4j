@@ -64,8 +64,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
         TestsHelper.expectException(() -> client.getCredentials(context), HttpAction.class,
-            "Perfoming a 200 HTTP action");
+            "Performing a 200 HTTP action");
         assertEquals(200, context.getResponseStatus());
-        assertTrue(context.getResponseContent().length() > 0);
+        assertFalse(context.getResponseContent().isEmpty());
     }
 }
