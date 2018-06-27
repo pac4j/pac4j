@@ -17,7 +17,7 @@ public class HttpAction extends TechnicalException {
     protected int code;
 
     private HttpAction(final int code) {
-        super("Perfoming a " + code + " HTTP action");
+        super("Performing a " + code + " HTTP action");
         this.code = code;
     }
 

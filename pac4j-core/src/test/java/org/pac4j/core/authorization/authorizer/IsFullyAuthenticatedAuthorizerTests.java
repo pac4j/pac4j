@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
  */
 public final class IsFullyAuthenticatedAuthorizerTests extends IsAuthenticatedAuthorizerTests {
 
+    @Override
     protected Authorizer newAuthorizer() {
         return new IsFullyAuthenticatedAuthorizer();
     }
@@ -26,7 +27,7 @@ public final class IsFullyAuthenticatedAuthorizerTests extends IsAuthenticatedAu
         profiles.add(new AnonymousProfile());
         ((IsFullyAuthenticatedAuthorizer) authorizer).setRedirectionUrl(PAC4J_URL);
         TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
-            "Perfoming a 302 HTTP action");
+            "Performing a 302 HTTP action");
     }
 
     @Test

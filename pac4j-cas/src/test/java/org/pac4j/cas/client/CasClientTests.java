@@ -161,7 +161,7 @@ public final class CasClientTests implements TestsConstants {
             .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod(HTTP_METHOD.POST.name());
         TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class,
-            "Perfoming a 204 HTTP action");
+            "Performing a 204 HTTP action");
         assertEquals(204, context.getResponseStatus());
     }
 

@@ -24,6 +24,7 @@ public class DefaultCallbackClientFinder implements ClientFinder {
 
     public DefaultCallbackClientFinder() {}
 
+    @Override
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
 
         final List<Client> result = new ArrayList<>();

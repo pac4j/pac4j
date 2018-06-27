@@ -77,7 +77,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final StringBuffer attributesList = new StringBuffer();
+        final StringBuilder attributesList = new StringBuilder();
         String id = null;
         final List values = new ArrayList();
         int i = 0;
@@ -145,7 +145,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     protected String buildAttributesList(final List<String> names) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         boolean firstOne = true;
         for (final String name : names) {
             if (!firstOne) {

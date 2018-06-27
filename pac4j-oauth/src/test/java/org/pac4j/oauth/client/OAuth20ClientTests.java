@@ -70,7 +70,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     public static Map<String, String> splitQuery(URL url) {
         Map<String, String> query_pairs = new LinkedHashMap<>();
         String query = url.getQuery();
-        String[] pairs = query.split("&");
+        String[] pairs = query.split("&", -1);
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
             query_pairs.put(CommonHelper.urlEncode(pair.substring(0, idx)), CommonHelper.urlEncode(pair.substring(idx + 1)));

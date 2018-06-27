@@ -28,8 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * Generates metadata object with standard values and overriden user defined values.
@@ -221,7 +221,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
         final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
                 .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
-        final Collection<NameIDFormat> formats = new LinkedList<NameIDFormat>();
+        final Collection<NameIDFormat> formats = new ArrayList<>();
 
         if (this.nameIdPolicyFormat != null) {
             final NameIDFormat nameID = builder.buildObject();
