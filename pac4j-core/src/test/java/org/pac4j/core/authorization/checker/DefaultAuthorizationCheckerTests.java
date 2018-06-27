@@ -40,6 +40,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     }
 
     private static class IdAuthorizer implements Authorizer<CommonProfile> {
+        @Override
         public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) {
             return VALUE.equals(profiles.get(0).getId());
         }

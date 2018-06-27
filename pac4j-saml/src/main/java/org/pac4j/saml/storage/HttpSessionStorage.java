@@ -6,7 +6,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 
 /**
  * Class implements storage of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
@@ -33,7 +33,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     /**
      * Internal storage for messages, corresponding to the object in session.
      */
-    private Hashtable<String, XMLObject> internalMessages;
+    private LinkedHashMap<String, XMLObject> internalMessages;
 
     /**
      * Session key for storage of the hashtable.
@@ -64,7 +64,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     @Override
     public void storeMessage(final String messageID, final XMLObject message) {
         log.debug("Storing message {} to session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
-        final Hashtable<String, XMLObject> messages = getMessages();
+        final LinkedHashMap<String, XMLObject> messages = getMessages();
         messages.put(messageID, message);
         updateSession(messages);
     }
@@ -85,7 +85,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      */
     @Override
     public XMLObject retrieveMessage(final String messageID) {
-        final Hashtable<String, XMLObject> messages = getMessages();
+        final LinkedHashMap<String, XMLObject> messages = getMessages();
         final XMLObject o = messages.get(messageID);
         if (o == null) {
             log.debug("Message {} not found in session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
@@ -105,7 +105,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      *
      * @return message storage
      */
-    private Hashtable<String, XMLObject> getMessages() {
+    private LinkedHashMap<String, XMLObject> getMessages() {
         if (internalMessages == null) {
             internalMessages = initializeSession();
         }
@@ -119,14 +119,14 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * Method synchronizes on session object to prevent two threads from overwriting each others hashtable.
      */
     @SuppressWarnings("unchecked")
-    private Hashtable<String, XMLObject> initializeSession() {
-        Hashtable<String, XMLObject> messages = (Hashtable<String, XMLObject>)
+    private LinkedHashMap<String, XMLObject> initializeSession() {
+        LinkedHashMap<String, XMLObject> messages = (LinkedHashMap<String, XMLObject>)
                 context.getSessionStore().get(context, SAML_STORAGE_KEY);
         if (messages == null) {
             synchronized (context) {
-                messages = (Hashtable<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                messages = (LinkedHashMap<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
                 if (messages == null) {
-                    messages = new Hashtable<>();
+                    messages = new LinkedHashMap<>();
                     updateSession(messages);
                 }
             }
@@ -138,7 +138,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * Updates session with the internalMessages key. Some application servers require session value to be updated
      * in order to replicate the session across nodes or persist it correctly.
      */
-    private void updateSession(final Hashtable<String, XMLObject> messages) {
+    private void updateSession(final LinkedHashMap<String, XMLObject> messages) {
         context.getSessionStore().set(context, SAML_STORAGE_KEY, messages);
     }
 }

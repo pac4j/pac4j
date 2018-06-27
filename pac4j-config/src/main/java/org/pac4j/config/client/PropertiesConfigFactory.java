@@ -33,6 +33,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         this.callbackUrl = callbackUrl;
     }
 
+    @Override
     public Config build(final Object... parameters) {
 
         final List<Client> clients = new ArrayList<>();
