@@ -51,12 +51,13 @@ which can encode plaintext passwords into crypted passwords as well as check if 
 
 The password encoder must be defined for these two authenticators via constructors or via the `setPasswordEncoder(passwordEncoder)` method.
 
-Two `PasswordEncoder` implementations are available:
+Three `PasswordEncoder` implementations are available:
 
 - a wrapper for the Spring Security Crypto [`PasswordEncoder`](https://github.com/spring-projects/spring-security/blob/master/crypto/src/main/java/org/springframework/security/crypto/password/PasswordEncoder.java): the [`SpringSecurityPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/SpringSecurityPasswordEncoder.java)
-- a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.3.1/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java).
+- a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.4.0/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java)
+- one based on the jBCrypt library:  the [`JBCryptPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/JBCryptPasswordEncoder.java).
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additionnal <i>spring-security-crypto</i> dependency and the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additionnal <i>spring-security-crypto</i> dependency, the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency and the <code>JBCryptPasswordEncoder</code> the <i>jBCrypt</i> dependency.</div>
 
 
 ## 3) `ProfileCreator`
