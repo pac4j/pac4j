@@ -66,6 +66,7 @@
 		<spring.version>5.0.2.RELEASE</spring.version>
 		<spring.security.version>5.0.0.RELEASE</spring.security.version>
 		<shiro.version>1.4.0</shiro.version>
+        <jbcrypt.version>0.4.1</jbcrypt.version>
 		<mockito.version>2.13.0</mockito.version>
 		<slf4j.version>1.7.25</slf4j.version>
         <unboundid.version>4.0.3</unboundid.version>
@@ -138,6 +139,11 @@
 				<artifactId>shiro-core</artifactId>
 				<version>${shiro.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>de.svenkubiak</groupId>
+                <artifactId>jBCrypt</artifactId>
+                <version>${jbcrypt.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
