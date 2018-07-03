@@ -1,41 +1,41 @@
 package org.pac4j.core.profile.converter;
 
+import java.util.regex.Pattern;
+
 import org.pac4j.core.profile.Gender;
 
 /**
  * This class converts a String to a Gender.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class GenderConverter extends AbstractAttributeConverter<Gender> {
 
+    private final Pattern maleText;
+    private final Pattern femaleText;
+
     public GenderConverter() {
         super(Gender.class);
+        this.maleText = Pattern.compile("(^m$)|(^male$)");
+        this.femaleText = Pattern.compile("(^f$)|(^female$)");
+    }
+
+    public GenderConverter(final String maleText, final String femaleText) {
+        super(Gender.class);
+        this.maleText = Pattern.compile(maleText);
+        this.femaleText = Pattern.compile(femaleText);
     }
 
     @Override
     protected Gender internalConvert(final Object attribute) {
-        if (attribute instanceof String) {
-            final String s = ((String) attribute).toLowerCase();
-            if ("m".equals(s) || "male".equals(s)) {
-                return Gender.MALE;
-            } else if ("f".equals(s) || "female".equals(s)) {
-                return Gender.FEMALE;
-            } else {
-                return Gender.UNSPECIFIED;
-            }
-            // for Vk:
-        } else if (attribute instanceof Integer) {
-            Integer value = (Integer) attribute;
-            if (value == 2) {
-                return Gender.MALE;
-            } else if (value == 1) {
-                return Gender.FEMALE;
-            } else {
-                return Gender.UNSPECIFIED;
-            }
+        final String s = attribute.toString().toLowerCase();
+        if (maleText.matcher(s).matches()) {
+            return Gender.MALE;
+        } else if (femaleText.matcher(s).matches()) {
+            return Gender.FEMALE;
+        } else {
+            return Gender.UNSPECIFIED;
         }
-        return null;
     }
 }
