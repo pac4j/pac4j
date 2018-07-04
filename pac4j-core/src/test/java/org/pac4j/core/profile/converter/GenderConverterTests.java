@@ -1,14 +1,10 @@
 package org.pac4j.core.profile.converter;
 
-import java.util.regex.Pattern;
-
 import org.junit.Test;
 import org.pac4j.core.profile.Gender;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the {@link GenderConverter} class.
