@@ -6,6 +6,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.core.profile.converter.GenderConverter;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
@@ -60,7 +61,7 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkC
             CAN_WRITE_PRIVATE_MESSAGE})
             .forEach(a -> primary(a, Converters.BOOLEAN));
         primary(BIRTH_DATE, new DateConverter("dd.MM.yyyy"));
-        primary(SEX, Converters.GENDER);
+        primary(SEX, new GenderConverter("2", "1"));
     }
 
     @Override
