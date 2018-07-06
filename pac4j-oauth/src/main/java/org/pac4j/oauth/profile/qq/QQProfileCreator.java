@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.qq;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 
@@ -13,7 +14,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 /**
  * Specific profile creator for Tencent QQ.
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
@@ -34,7 +35,9 @@ public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
         String openid = profileDefinition.extractOpenid(body);
 
         String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        profileUrl = profileUrl + "?openid=" + openid + "&oauth_consumer_key=" + configuration.getKey();
+        profileUrl = CommonHelper.addParameter(profileUrl, "openid", openid);
+        profileUrl = CommonHelper.addParameter(profileUrl, "oauth_consumer_key",
+            configuration.getKey());
         body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);

@@ -15,8 +15,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Run manually a test for the {@link QQClient}.
  *
- * @author Zhang Zhenli
- * @since 1.9.0
+ * @author zhangzhenli
+ * @since 3.1.0
  */
 public final class RunQQClient extends RunClient {
 
@@ -51,7 +51,7 @@ public final class RunQQClient extends RunClient {
         qqClient.setKey(apiKey);
         qqClient.setSecret(apiSecret);
         qqClient.setCallbackUrl("https://mtsapi.house365.com/callback");
-        qqClient.addScope(QQClient.TencentQQScope.get_user_info);
+        qqClient.addScope(QQClient.QQScope.GET_USER_INFO);
         return qqClient;
     }
 

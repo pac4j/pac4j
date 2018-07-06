@@ -17,7 +17,7 @@ import com.github.scribejava.core.model.Verb;
  * "http://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token">
  * OAuth2.0</a></p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class QQApi20 extends DefaultApi20 {

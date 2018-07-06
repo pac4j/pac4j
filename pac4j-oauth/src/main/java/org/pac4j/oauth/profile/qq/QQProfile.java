@@ -10,7 +10,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * <p>This class is the user profile for Tencent QQ Connect with appropriate getters.</p>
  * <p>It is returned by the {@link QQClient}.</p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class QQProfile extends OAuth20Profile {
@@ -19,27 +19,27 @@ public class QQProfile extends OAuth20Profile {
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(QQProfileDefinition.nickname);
+        return (String) getAttribute(QQProfileDefinition.NICKNAME);
     }
 
     @Override
     public String getUsername() {
-        return (String) getAttribute(QQProfileDefinition.nickname);
+        return (String) getAttribute(QQProfileDefinition.NICKNAME);
     }
 
     @Override
     public Gender getGender() {
-        return (Gender) getAttribute(QQProfileDefinition.gender);
+        return (Gender) getAttribute(QQProfileDefinition.GENDER);
     }
 
     @Override
     public String getLocation() {
-        final String location = getAttribute(QQProfileDefinition.province) + " " + getAttribute(QQProfileDefinition.city);
+        final String location = getAttribute(QQProfileDefinition.PROVINCE) + " " + getAttribute(QQProfileDefinition.CITY);
         return location;
     }
 
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(QQProfileDefinition.figureurl_qq_2);
+        return (URI) getAttribute(QQProfileDefinition.FIGUREURL_QQ_2);
     }
 }

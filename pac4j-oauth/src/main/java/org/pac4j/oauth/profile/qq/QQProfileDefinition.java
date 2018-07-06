@@ -21,53 +21,53 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * This class defines the attributes of the Tencent QQ Connect profile.
  * <p>More info at: <a href="http://wiki.connect.qq.com/get_user_info">get_user_info</a></p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAuth20Configuration> {
 
-    public static final String ret = "ret";
+    public static final Pattern OPENID_REGEX = Pattern.compile("\"openid\"\\s*:\\s*\"(\\S*?)\"");
 
-    public static final String msg = "msg";
+    public static final String RET = "ret";
 
-    public static final String nickname = "nickname";
+    public static final String MSG = "msg";
 
-    public static final String gender = "gender";
+    public static final String NICKNAME = "nickname";
 
-    public static final String province = "province";
+    public static final String PROVINCE = "province";
 
-    public static final String city = "city";
+    public static final String CITY = "city";
 
-    public static final String year = "year";
+    public static final String YEAR = "year";
 
-    public static final String figureurl = "figureurl";
+    public static final String FIGUREURL = "figureurl";
 
-    public static final String figureurl_1 = "figureurl_1";
+    public static final String FIGUREURL_1 = "figureurl_1";
 
-    public static final String figureurl_2 = "figureurl_2";
+    public static final String FIGUREURL_2 = "figureurl_2";
 
-    public static final String figureurl_qq_1 = "figureurl_qq_1";
+    public static final String FIGUREURL_QQ_1 = "figureurl_qq_1";
 
-    public static final String figureurl_qq_2 = "figureurl_qq_2";
+    public static final String FIGUREURL_QQ_2 = "figureurl_qq_2";
 
     public QQProfileDefinition() {
         Arrays.stream(new String[]{
-            msg,
-            nickname,
-            province,
-            city,
-            year
+            MSG,
+            NICKNAME,
+            PROVINCE,
+            CITY,
+            YEAR
         }).forEach(a -> primary(a, Converters.STRING));
         Arrays.stream(new String[]{
-            figureurl,
-            figureurl_1,
-            figureurl_2,
-            figureurl_qq_1,
-            figureurl_qq_2
+            FIGUREURL,
+            FIGUREURL_1,
+            FIGUREURL_2,
+            FIGUREURL_QQ_1,
+            FIGUREURL_QQ_2
         }).forEach(a -> primary(a, Converters.URL));
-        primary(ret, Converters.INTEGER);
-        primary(gender, new GenderConverter("男", "女"));
-        primary(year, new DateConverter("yyyy"));
+        primary(RET, Converters.INTEGER);
+        primary(GENDER, new GenderConverter("男", "女"));
+        primary(YEAR, new DateConverter("yyyy"));
     }
 
     public String getOpenidUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
@@ -86,14 +86,12 @@ public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAu
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
+                    JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
     }
-
-    public static final Pattern OPENID_REGEX = Pattern.compile("\"openid\"\\s*:\\s*\"(\\S*?)\"");
-    public static final Pattern CLIENT_ID_REGEX = Pattern.compile("\"client_id\"\\s*:\\s*\"(\\S*?)\"");
 
     public String extractOpenid(String body) {
         String openid = extractParameter(body, OPENID_REGEX, true);
@@ -109,8 +107,9 @@ public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAu
         }
 
         if (required) {
-            throw new OAuthException("Response body is incorrect. Can't extract a '" + regexPattern.pattern()
-                + "' from this: '" + response + "'", null);
+            throw new OAuthException(
+                "Response body is incorrect. Can't extract a '" + regexPattern.pattern()
+                    + "' from this: '" + response + "'", null);
         }
 
         return null;
