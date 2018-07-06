@@ -12,7 +12,6 @@ import com.github.scribejava.core.model.Verb;
 /**
  * This class represents the OAuth API implementation for Tencent QQ Connect using OAuth protocol
  * version 2. It could be part of the Scribe library.
- * <p>
  * <p>More info at: <a href=
  * "http://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token">
  * OAuth2.0</a></p>
