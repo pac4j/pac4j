@@ -12,7 +12,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  * Specific profile creator for Wechat.
  *
  * @author zhangzhenli
- * @since 2.0.0
+ * @since 3.1.0
  */
 public class WechatProfileCreator extends OAuth20ProfileCreator<WechatProfile> {
     public WechatProfileCreator(OAuth20Configuration configuration,

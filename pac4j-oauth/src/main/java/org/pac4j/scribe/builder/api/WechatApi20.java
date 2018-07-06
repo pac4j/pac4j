@@ -94,21 +94,6 @@ public class WechatApi20 extends DefaultApi20 {
     public OAuth20Service createService(OAuthConfig config) {
         return new WechatService(this, config);
     }
-/*
-    @Override
-    public ClientAuthenticationType getClientAuthenticationType() {
-        return new ClientAuthenticationType() {
-
-            @Override
-            public void addClientAuthentication(OAuthRequest request, String apiKey,
-                                                String apiSecret) {
-                request.addParameter(APPID, apiKey);
-                if (apiSecret != null) {
-                    request.addParameter(SECRET, apiSecret);
-                }
-            }
-        };
-    }
-*/
 }
+
 

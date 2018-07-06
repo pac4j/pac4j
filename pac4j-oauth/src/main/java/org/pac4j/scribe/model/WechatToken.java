@@ -1,5 +1,7 @@
 package org.pac4j.scribe.model;
 
+import org.pac4j.core.util.CommonHelper;
+
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 /**
@@ -62,9 +64,7 @@ public class WechatToken extends OAuth2AccessToken {
 
     @Override
     public String toString() {
-        return "WechatToken{" + super.toString() + " " +
-            "openid='" + openid + '\'' +
-            ", unionid='" + unionid + '\'' +
-            '}';
+        return CommonHelper.toNiceString(WechatToken.class, "accessToken", getAccessToken(),
+            "openid", openid, "unionid", unionid);
     }
 }

@@ -39,15 +39,15 @@ public class WechatService extends OAuth20Service {
     @Override
     public <R> Future<R> execute(OAuthRequest request, OAuthAsyncRequestCallback<R> callback,
                                  OAuthRequest.ResponseConverter<R> converter) {
-        request = addClientAuthentication(request);
-        return super.execute(request, callback, converter);
+        OAuthRequest authRequest = addClientAuthentication(request);
+        return super.execute(authRequest, callback, converter);
     }
 
     @Override
     public Response execute(OAuthRequest request)
         throws InterruptedException, ExecutionException, IOException {
-        request = addClientAuthentication(request);
-        return super.execute(request);
+        OAuthRequest authRequest = addClientAuthentication(request);
+        return super.execute(authRequest);
     }
 
     private OAuthRequest addClientAuthentication(OAuthRequest request) {
