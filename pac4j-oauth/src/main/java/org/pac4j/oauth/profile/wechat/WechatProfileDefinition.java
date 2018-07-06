@@ -27,47 +27,47 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProfile, OAuth20Configuration> {
 
-    public static final String openid = "openid";
+    public static final String OPENID = "openid";
 
-    public static final String nickname = "nickname";
+    public static final String NICKNAME = "nickname";
     /**
      * Gender, 1 male and 2 female
      */
-    public static final String sex = "sex";
+    public static final String SEX = "sex";
 
-    public static final String province = "province";
+    public static final String PROVINCE = "province";
 
-    public static final String city = "city";
+    public static final String CITY = "city";
     /**
      * country, For example, China is CN
      */
-    public static final String country = "country";
+    public static final String COUNTRY = "country";
     /**
      * User avatar, the last value represents the size of the square avatar (0, 46, 64, 96, 132 values are optional, 0 is 640 * 640
      * square avatar), the item is empty when the user has no avatar
      */
-    public static final String headimgurl = "headimgurl";
+    public static final String HEADIMGURL = "headimgurl";
     /**
      * User privilege information, json array, such as WeChat Waka users (chinaunicom)
      */
-    public static final String privilege = "privilege ";
+    public static final String PRIVILEGE = "privilege ";
     /**
      * User union identity. For an application under the WeChat open platform account, the unionid of the same user is unique.
      */
-    public static final String unionid = "unionid";
+    public static final String UNIONID = "unionid";
 
     public WechatProfileDefinition() {
         Arrays.stream(new String[]{
-            openid,
-            nickname,
-            province,
-            city,
-            country,
-            privilege,
-            unionid
+            OPENID,
+            NICKNAME,
+            PROVINCE,
+            CITY,
+            COUNTRY,
+            PRIVILEGE,
+            UNIONID
         }).forEach(a -> primary(a, Converters.STRING));
-        primary(sex, new GenderConverter("1", "2"));
-        primary(headimgurl, Converters.URL);
+        primary(SEX, new GenderConverter("1", "2"));
+        primary(HEADIMGURL, Converters.URL);
     }
 
 
@@ -76,7 +76,7 @@ public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProf
         if (accessToken instanceof WechatToken) {
             WechatToken token = (WechatToken) accessToken;
             String profileUrl;
-            if (WechatClient.WechatScope.snsapi_base.name().equals(token.getScope())) {
+            if (WechatClient.WechatScope.SNSAPI_BASE.toString().toLowerCase().equals(token.getScope())) {
                 profileUrl = "https://api.weixin.qq.com/sns/auth?openid=" + token.getOpenid();
             } else {
                 profileUrl = "https://api.weixin.qq.com/sns/userinfo?openid=" + token.getOpenid();

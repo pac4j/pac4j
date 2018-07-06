@@ -24,15 +24,15 @@ public class WechatClient extends OAuth20Client<WechatProfile> {
         /**
          * Only for WeChat QRCode login. Get the nickname, avatar, and gender of the logged in user.
          */
-        snsapi_login,
+        SNSAPI_LOGIN,
         /**
          * Exchange code for access_token, refresh_token, and authorized scope
          */
-        snsapi_base,
+        SNSAPI_BASE,
         /**
          * Get user personal information
          */
-        snsapi_userinfo
+        SNSAPI_USERINFO
     }
 
     protected List<WechatScope> scopes;
@@ -60,7 +60,7 @@ public class WechatClient extends OAuth20Client<WechatProfile> {
         StringBuilder builder = null;
         if (scopes == null || scopes.isEmpty()) {
             scopes = new ArrayList<>();
-            scopes.add(WechatScope.snsapi_base);
+            scopes.add(WechatScope.SNSAPI_BASE);
         }
         if (scopes != null) {
             for (WechatScope value : scopes) {
@@ -69,7 +69,7 @@ public class WechatClient extends OAuth20Client<WechatProfile> {
                 } else {
                     builder.append(",");
                 }
-                builder.append(value.toString());
+                builder.append(value.toString().toLowerCase());
             }
         }
         return builder == null ? null : builder.toString();

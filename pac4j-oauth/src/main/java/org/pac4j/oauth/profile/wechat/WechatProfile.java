@@ -18,29 +18,29 @@ public class WechatProfile extends OAuth20Profile {
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(WechatProfileDefinition.nickname);
+        return (String) getAttribute(WechatProfileDefinition.NICKNAME);
     }
 
     @Override
     public String getUsername() {
-        return (String) getAttribute(WechatProfileDefinition.nickname);
+        return (String) getAttribute(WechatProfileDefinition.NICKNAME);
     }
 
     @Override
     public Gender getGender() {
-        return (Gender) getAttribute(WechatProfileDefinition.sex);
+        return (Gender) getAttribute(WechatProfileDefinition.SEX);
     }
 
     @Override
     public String getLocation() {
-        final String location = getAttribute(WechatProfileDefinition.city) + ","
-            + getAttribute(WechatProfileDefinition.province) + ","
-            + getAttribute(WechatProfileDefinition.country);
+        final String location = getAttribute(WechatProfileDefinition.CITY) + ","
+            + getAttribute(WechatProfileDefinition.PROVINCE) + ","
+            + getAttribute(WechatProfileDefinition.COUNTRY);
         return location;
     }
 
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(WechatProfileDefinition.headimgurl);
+        return (URI) getAttribute(WechatProfileDefinition.HEADIMGURL);
     }
 }

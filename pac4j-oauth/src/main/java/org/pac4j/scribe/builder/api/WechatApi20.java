@@ -57,7 +57,7 @@ public class WechatApi20 extends DefaultApi20 {
         String authorizationUrl = super.getAuthorizationUrl(config, additionalParams);
         authorizationUrl = authorizationUrl.replace(OAuthConstants.CLIENT_ID, APPID);
         if (config.getScope() != null && config.getScope().contains(
-            WechatClient.WechatScope.snsapi_login.name())) {
+            WechatClient.WechatScope.SNSAPI_LOGIN.toString().toLowerCase())) {
             authorizationUrl = AUTHORIZE_ENDPOINT_URL_1 + authorizationUrl;
         } else {
             authorizationUrl = AUTHORIZE_ENDPOINT_URL_2 + authorizationUrl;
