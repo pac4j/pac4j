@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 /**
  * Weibo token extra.
  * <p>More info at: <a href="http://open.weibo.com/wiki/Oauth2/access_token">Oauth2/access token</a></p>
- * <p>
+ *
  * @author zhangzhenli
  * @since 3.1.0
  */

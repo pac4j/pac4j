@@ -19,7 +19,6 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the  Sina Weibo profile definition (using OAuth 2.0 protocol).
- * <p>
  * <p>More info at: <a href="http://open.weibo.com/wiki/2/users/show">users/show</a></p>
  *
  * @author zhangzhenli

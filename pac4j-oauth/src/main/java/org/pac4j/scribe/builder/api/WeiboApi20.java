@@ -10,7 +10,6 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 /**
  * This class represents the OAuth API implementation for Weibo using OAuth protocol
  * version 2. It could be part of the Scribe library.
- * <p>
  * <p>More info at: <a href="http://open.weibo.com/wiki/Oauth2/authorize">OAuth2.0</a></p>
  *
  * @author zhangzhenli
