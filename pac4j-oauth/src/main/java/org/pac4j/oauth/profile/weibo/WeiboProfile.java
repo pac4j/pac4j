@@ -10,7 +10,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * <p>This class is the user profile for  Sina Weibo (using OAuth protocol version 2) with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oauth.client.WeiboClient}.</p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class WeiboProfile extends OAuth20Profile {
@@ -19,32 +19,32 @@ public class WeiboProfile extends OAuth20Profile {
 
     @Override
     public String getFirstName() {
-        return (String) getAttribute(WeiboProfileDefinition.name);
+        return (String) getAttribute(WeiboProfileDefinition.NAME);
     }
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(WeiboProfileDefinition.screen_name);
+        return (String) getAttribute(WeiboProfileDefinition.SCREEN_NAME);
     }
 
     @Override
     public String getUsername() {
-        return (String) getAttribute(WeiboProfileDefinition.screen_name);
+        return (String) getAttribute(WeiboProfileDefinition.SCREEN_NAME);
     }
 
     @Override
     public Locale getLocale() {
-        return (Locale) getAttribute(WeiboProfileDefinition.lang);
+        return (Locale) getAttribute(WeiboProfileDefinition.LANG);
     }
 
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(WeiboProfileDefinition.avatar_hd);
+        return (URI) getAttribute(WeiboProfileDefinition.AVATAR_HD);
     }
 
     @Override
     public URI getProfileUrl() {
-        final URI attribute = (URI) getAttribute(WeiboProfileDefinition.profile_url);
+        final URI attribute = (URI) getAttribute(WeiboProfileDefinition.PROFILE_URL);
         if (attribute.isAbsolute()) {
             return attribute;
         } else {

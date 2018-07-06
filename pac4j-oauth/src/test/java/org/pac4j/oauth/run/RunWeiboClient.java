@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Run manually a test for the {@link WeiboClient}.
  *
- * @author ZhangZhenli
- * @since 1.9.0
+ * @author zhangzhenli
+ * @since 3.1.0
  */
 public final class RunWeiboClient extends RunClient {
 
@@ -52,7 +52,7 @@ public final class RunWeiboClient extends RunClient {
         weiboClient.setKey(apiKey);
         weiboClient.setSecret(apiSecret);
         weiboClient.setCallbackUrl("https://git.xjiakao.com/cas/login?client_name=WeiboClient");
-        weiboClient.setScope(WeiboClient.WeiboScope.email);
+        weiboClient.setScope(WeiboClient.WeiboScope.EMAIL);
         return weiboClient;
     }
 

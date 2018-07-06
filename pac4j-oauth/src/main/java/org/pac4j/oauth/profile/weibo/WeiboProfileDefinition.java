@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
@@ -21,7 +22,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * <p>
  * <p>More info at: <a href="http://open.weibo.com/wiki/2/users/show">users/show</a></p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class WeiboProfileDefinition extends OAuth20ProfileDefinition<WeiboProfile, OAuth20Configuration> {
@@ -29,196 +30,197 @@ public class WeiboProfileDefinition extends OAuth20ProfileDefinition<WeiboProfil
     /**
      * int64    User UID
      */
-    public static final String id = "id";
+    public static final String ID = "id";
     /**
      * string   String-type user UID
      */
-    public static final String idstr = "idstr";
+    public static final String IDSTR = "idstr";
     /**
      * string   User's Nickname
      */
-    public static final String screen_name = "screen_name";
+    public static final String SCREEN_NAME = "screen_name";
     /**
      * string   Friendly display name
      */
-    public static final String name = "name";
+    public static final String NAME = "name";
     /**
      * int  User's provincial ID
      */
-    public static final String province = "province";
+    public static final String PROVINCE = "province";
     /**
      * int  User's city ID
      */
-    public static final String city = "city";
+    public static final String CITY = "city";
     /**
      * string   User location
      */
-    public static final String location = "location";
+    public static final String LOCATION = "location";
     /**
      * string   User personal description
      */
-    public static final String description = "description";
+    public static final String DESCRIPTION = "description";
     /**
      * url  User blog address
      */
-    public static final String url = "url";
+    public static final String URL = "url";
     /**
      * url  User avatar address (middle), 50×50 pixels
      */
-    public static final String profile_image_url = "profile_image_url";
+    public static final String PROFILE_IMAGE_URL = "profile_image_url";
     /**
      * url  User cover image url
      */
-    public static final String cover_image_phone = "cover_image_phone";
+    public static final String COVER_IMAGE_PHONE = "cover_image_phone";
     /**
      * url  User's Weibo unified URL address
      */
-    public static final String profile_url = "profile_url";
+    public static final String PROFILE_URL = "profile_url";
     /**
      * string   User's personalized domain name
      */
-    public static final String domain = "domain";
+    public static final String DOMAIN = "domain";
     /**
      * string   User's weihao number
      */
-    public static final String weihao = "weihao";
+    public static final String WEIHAO = "weihao";
     /**
      * string   Gender, m: male, f: female, n: unknown
      */
-    public static final String gender = "gender";
+    public static final String GENDER = "gender";
     /**
      * int  Number of fans
      */
-    public static final String followers_count = "followers_count";
+    public static final String FOLLOWERS_COUNT = "followers_count";
     /**
      * int  Number of followers
      */
-    public static final String friends_count = "friends_count";
+    public static final String FRIENDS_COUNT = "friends_count";
     /**
      * int  Weibo number
      */
-    public static final String statuses_count = "statuses_count";
+    public static final String STATUSES_COUNT = "statuses_count";
     /**
      * int  Number of favorites
      */
-    public static final String favourites_count = "favourites_count";
+    public static final String FAVOURITES_COUNT = "favourites_count";
     /**
      * string   User creation (registration) time
      */
-    public static final String created_at = "created_at";
+    public static final String CREATED_AT = "created_at";
     /**
      * boolean  Not supported yet
      */
-    public static final String following = "following";
+    public static final String FOLLOWING = "following";
     /**
      * boolean  Whether to allow everyone to send me a private message, true: yes, false: no
      */
-    public static final String allow_all_act_msg = "allow_all_act_msg";
+    public static final String ALLOW_ALL_ACT_MSG = "allow_all_act_msg";
     /**
      * boolean  Whether to allow identification of the user's geographic location, true: yes, false: no
      */
-    public static final String geo_enabled = "geo_enabled";
+    public static final String GEO_ENABLED = "geo_enabled";
     /**
      * boolean    Whether it is a Weibo authenticated user, that is, a V-user, true: yes, false: no
      */
-    public static final String verified = "verified";
+    public static final String VERIFIED = "verified";
     /**
      * int    Not supported yet
      */
-    public static final String verified_type = "verified_type";
+    public static final String VERIFIED_TYPE = "verified_type";
     /**
      * string    User note information, this field is only returned when querying user relationships
      */
-    public static final String remark = "remark";
+    public static final String REMARK = "remark";
     /**
      * object    User's recent Weibo information field
      */
-    public static final String status = "status";
+    public static final String STATUS = "status";
     /**
      * boolean    Whether to allow everyone to comment on my Weibo, true: yes, false: no
      */
-    public static final String allow_all_comment = "allow_all_comment";
+    public static final String ALLOW_ALL_COMMENT = "allow_all_comment";
     /**
      * string    User avatar address (larger image), 180 × 180 pixels
      */
-    public static final String avatar_large = "avatar_large";
+    public static final String AVATAR_LARGE = "avatar_large";
     /**
      * string    User avatar address (HD), HD avatar original
      */
-    public static final String avatar_hd = "avatar_hd";
+    public static final String AVATAR_HD = "avatar_hd";
     /**
      * string    Reason for certification
      */
-    public static final String verified_reason = "verified_reason";
+    public static final String VERIFIED_REASON = "verified_reason";
     /**
      * boolean    Whether the user is concerned about the currently logged in user, true: yes, false: no
      */
-    public static final String follow_me = "follow_me";
+    public static final String FOLLOW_ME = "follow_me";
     /**
      * int    User's online status, 0: not online, 1: online
      */
-    public static final String online_status = "online_status";
+    public static final String ONLINE_STATUS = "online_status";
     /**
      * int    User's mutual powder count
      */
-    public static final String bi_followers_count = "bi_followers_count";
+    public static final String BI_FOLLOWERS_COUNT = "bi_followers_count";
     /**
      * string    User's current language version, zh-cn: Simplified Chinese, zh-tw: Traditional Chinese, en: English
      */
-    public static final String lang = "lang";
+    public static final String LANG = "lang";
 
 
     public WeiboProfileDefinition() {
         Arrays.stream(new String[]{
-            url,
-            profile_image_url,
-            cover_image_phone,
-            profile_url,
-            avatar_large,
-            avatar_hd,
+            URL,
+            PROFILE_IMAGE_URL,
+            COVER_IMAGE_PHONE,
+            PROFILE_URL,
+            AVATAR_LARGE,
+            AVATAR_HD,
         }).forEach(a -> primary(a, Converters.URL));
         Arrays.stream(new String[]{
-            idstr,
-            screen_name,
-            name,
-            location,
-            description,
-            domain,
-            weihao,
-            created_at,
-            remark,
-            verified_reason
+            IDSTR,
+            SCREEN_NAME,
+            NAME,
+            LOCATION,
+            DESCRIPTION,
+            DOMAIN,
+            WEIHAO,
+            CREATED_AT,
+            REMARK,
+            VERIFIED_REASON
         }).forEach(a -> primary(a, Converters.STRING));
         Arrays.stream(new String[]{
-            following,
-            allow_all_act_msg,
-            geo_enabled,
-            verified,
-            allow_all_comment,
-            follow_me
+            FOLLOWING,
+            ALLOW_ALL_ACT_MSG,
+            GEO_ENABLED,
+            VERIFIED,
+            ALLOW_ALL_COMMENT,
+            FOLLOW_ME
         }).forEach(a -> primary(a, Converters.BOOLEAN));
         Arrays.stream(new String[]{
-            province,
-            city,
-            followers_count,
-            friends_count,
-            statuses_count,
-            favourites_count,
-            verified_type,
-            online_status,
-            bi_followers_count
+            PROVINCE,
+            CITY,
+            FOLLOWERS_COUNT,
+            FRIENDS_COUNT,
+            STATUSES_COUNT,
+            FAVOURITES_COUNT,
+            VERIFIED_TYPE,
+            ONLINE_STATUS,
+            BI_FOLLOWERS_COUNT
         }).forEach(a -> primary(a, Converters.INTEGER));
-        primary(id, Converters.LONG);
-        primary(lang, Converters.LOCALE);
-        primary(gender, Converters.GENDER);
+        primary(ID, Converters.LONG);
+        primary(LANG, Converters.LOCALE);
+        primary(GENDER, Converters.GENDER);
     }
 
     @Override
     public String getProfileUrl(final OAuth2AccessToken accessToken,
                                 final OAuth20Configuration configuration) {
-        if (accessToken instanceof WeiboToken)
-            return "https://api.weibo.com/2/users/show.json" + "?uid=" + ((WeiboToken) accessToken).getUid();
-        else
+        if (accessToken instanceof WeiboToken) {
+            return CommonHelper.addParameter("https://api.weibo.com/2/users/show.json", "uid",
+                ((WeiboToken) accessToken).getUid());
+        } else
             throw new OAuthException("Token in getProfileUrl is not an WeiboToken");
     }
 

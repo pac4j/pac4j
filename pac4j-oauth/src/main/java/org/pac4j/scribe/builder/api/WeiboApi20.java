@@ -13,7 +13,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  * <p>
  * <p>More info at: <a href="http://open.weibo.com/wiki/Oauth2/authorize">OAuth2.0</a></p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class WeiboApi20 extends DefaultApi20 {

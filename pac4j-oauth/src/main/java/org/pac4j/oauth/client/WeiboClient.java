@@ -8,12 +8,12 @@ import org.pac4j.scribe.builder.api.WeiboApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Weibo using OAuth protocol version 2.0.</p>
- * <p>The <i>scope</i> is by default : {@link WeiboScope#email}, but it can also but set to : {@link WeiboScope#all}
- * or {@link WeiboScope#email}.</p>
+ * <p>The <i>scope</i> is by default : {@link WeiboScope#EMAIL}, but it can also but set to : {@link WeiboScope#ALL}
+ * or {@link WeiboScope#EMAIL}.</p>
  * <p>It returns a {@link WeiboProfile}.</p>
  * <p>More information at http://open.weibo.com/wiki/Oauth2/access_token/</p>
  *
- * @author Zhang Zhenli
+ * @author zhangzhenli
  * @since 3.1.0
  */
 public class WeiboClient extends OAuth20Client<WeiboProfile> {
@@ -25,18 +25,18 @@ public class WeiboClient extends OAuth20Client<WeiboProfile> {
      * "http://open.weibo.com/wiki/Scope">Scope</a></p>
      */
     public enum WeiboScope {
-        all,                        //     Request all of the following scope permissions
-        email,                      //    User's contact mailbox
-        direct_messages_write,   //     Private message sending interface
-        direct_messages_read,    //     Private message reading interfac
-        invitation_write,         //     Invitation to send interface
-        friendships_groups_read,//    Friend group read interface group
-        friendships_groups_write,//    Friend group write interface group
-        statuses_to_me_read,     // Directional microblog reading interface group
-        follow_app_official_microblog // Pay attention to the application of official Weibo
+        ALL,                        //     Request all of the following scope permissions
+        EMAIL,                      //    User's contact mailbox
+        DIRECT_MESSAGES_WRITE,   //     Private message sending interface
+        DIRECT_MESSAGES_READ,    //     Private message reading interfac
+        INVITATION_WRITE,         //     Invitation to send interface
+        FRIENDSHIPS_GROUPS_READ,//    Friend group read interface group
+        FRIENDSHIPS_GROUPS_WRITE,//    Friend group write interface group
+        STATUSES_TO_ME_READ,     // Directional microblog reading interface group
+        FOLLOW_APP_OFFICIAL_MICROBLOG // Pay attention to the application of official Weibo
     }
 
-    protected WeiboScope scope = WeiboScope.email;
+    protected WeiboScope scope = WeiboScope.EMAIL;
 
     protected String scopeValue;
 
@@ -52,8 +52,8 @@ public class WeiboClient extends OAuth20Client<WeiboProfile> {
     protected void clientInit() {
         CommonHelper.assertNotNull("scope", this.scope);
         if (this.scope == null)
-            this.scope = WeiboScope.email;
-        this.scopeValue = this.scope.toString();
+            this.scope = WeiboScope.EMAIL;
+        this.scopeValue = this.scope.toString().toLowerCase();
         configuration.setApi(new WeiboApi20());
         configuration.setScope(scopeValue);
         configuration.setProfileDefinition(new WeiboProfileDefinition());
