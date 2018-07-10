@@ -264,7 +264,7 @@ public class LdaptiveAuthenticatorBuilder {
         if (l.getProviderClass() != null) {
             try {
                 final Class clazz = ClassUtils.getClass(l.getProviderClass());
-                bindCf.setProvider(Provider.class.cast(clazz.newInstance()));
+                bindCf.setProvider(Provider.class.cast(clazz.getDeclaredConstructor().newInstance()));
             } catch (final Exception e) {
                 LOGGER.error(e.getMessage(), e);
             }

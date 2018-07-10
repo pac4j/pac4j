@@ -39,6 +39,7 @@ class SpnegoServiceTicketHelper {
             this.serviceName = serviceName;
         }
 
+        @Override
         public byte[] run() throws GSSException {
             GSSManager gssManager = GSSManager.getInstance();
 

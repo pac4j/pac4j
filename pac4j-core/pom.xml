@@ -36,6 +36,11 @@
             <artifactId>shiro-core</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>de.svenkubiak</groupId>
+            <artifactId>jBCrypt</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>junit</groupId>

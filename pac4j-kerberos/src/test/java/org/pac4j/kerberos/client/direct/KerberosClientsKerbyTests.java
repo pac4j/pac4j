@@ -107,7 +107,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testIndirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header
-        assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), MockWebContext.create(),"Perfoming a 401 HTTP action");
+        assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), MockWebContext.create(),"Performing a 401 HTTP action");
     }
 
     @Test
@@ -115,7 +115,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         final MockWebContext context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), context, "Perfoming a 401 HTTP action");
+        assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), context, "Performing a 401 HTTP action");
     }
 
     @Test

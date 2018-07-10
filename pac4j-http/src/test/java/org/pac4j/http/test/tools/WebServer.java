@@ -27,6 +27,7 @@ public class WebServer extends NanoHTTPD {
         return this;
     }
 
+    @Override
     public void start() {
         try {
             start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);

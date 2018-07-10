@@ -24,7 +24,9 @@ public abstract class Credentials implements Serializable {
         this.userProfile = userProfile;
     }
 
+    @Override
     public abstract boolean equals(Object o);
 
+    @Override
     public abstract int hashCode();
 }

@@ -3,17 +3,20 @@ package org.pac4j.core.profile.converter;
 import org.junit.Test;
 import org.pac4j.core.profile.Gender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * This class tests the {@link GenderConverter} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class GenderConverterTests {
 
     private final GenderConverter converter = new GenderConverter();
+    private final GenderConverter converterNumber = new GenderConverter("2", "1");
+    private final GenderConverter converterChinese = new GenderConverter("男", "女");
 
     @Test
     public void testNull() {
@@ -22,7 +25,7 @@ public final class GenderConverterTests {
 
     @Test
     public void testNotAString() {
-        assertNull(this.converter.convert(Boolean.TRUE));
+        assertEquals(Gender.UNSPECIFIED, this.converter.convert(Boolean.TRUE));
     }
 
     @Test
@@ -37,12 +40,12 @@ public final class GenderConverterTests {
 
     @Test
     public void testMaleNumber() {
-        assertEquals(Gender.MALE, this.converter.convert(2));
+        assertEquals(Gender.MALE, this.converterNumber.convert(2));
     }
 
     @Test
     public void testFemaleNumber() {
-        assertEquals(Gender.FEMALE, this.converter.convert(1));
+        assertEquals(Gender.FEMALE, this.converterNumber.convert(1));
     }
 
     @Test
@@ -63,5 +66,20 @@ public final class GenderConverterTests {
     @Test
     public void testUnspecifiedEnum() {
         assertEquals(Gender.UNSPECIFIED, this.converter.convert(Gender.UNSPECIFIED.toString()));
+    }
+
+    @Test
+    public void testMaleChinese() {
+        assertEquals(Gender.MALE, this.converterChinese.convert("男"));
+    }
+
+    @Test
+    public void testFemaleChinese() {
+        assertEquals(Gender.FEMALE, this.converterChinese.convert("女"));
+    }
+
+    @Test
+    public void testUnspecifiedChinese() {
+        assertEquals(Gender.UNSPECIFIED, this.converterChinese.convert("其他"));
     }
 }

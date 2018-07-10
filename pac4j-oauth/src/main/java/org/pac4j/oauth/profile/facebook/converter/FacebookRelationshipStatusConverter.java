@@ -10,7 +10,8 @@ import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
  * @since 1.0.0
  */
 public final class FacebookRelationshipStatusConverter implements AttributeConverter<FacebookRelationshipStatus> {
-    
+
+    @Override
     public FacebookRelationshipStatus convert(final Object attribute) {
         if (attribute != null) {
             if (attribute instanceof String) {

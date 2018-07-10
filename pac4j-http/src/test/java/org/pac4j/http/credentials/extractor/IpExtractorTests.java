@@ -61,7 +61,7 @@ public final class IpExtractorTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testSetNullIpHeaderChain() {
         final IpExtractor ipExtractor = new IpExtractor();
-        ipExtractor.setAlternateIpHeaders(null);
+        ipExtractor.setAlternateIpHeaders((String[]) null);
     }
 
     @Test

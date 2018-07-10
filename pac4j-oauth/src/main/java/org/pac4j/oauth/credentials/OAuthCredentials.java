@@ -12,7 +12,9 @@ public abstract class OAuthCredentials extends Credentials {
 
     private static final long serialVersionUID = -7705033802712382951L;
 
+    @Override
     public abstract boolean equals(Object o);
 
+    @Override
     public abstract int hashCode();
 }
