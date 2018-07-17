@@ -136,7 +136,7 @@ public class J2EContext implements WebContext {
 
     @Override
     public void setResponseStatus(final int code) {
-        if (code == HttpConstants.OK || code == HttpConstants.TEMP_REDIRECT) {
+        if (code < 400) {
             this.response.setStatus(code);
         } else {
             try {
