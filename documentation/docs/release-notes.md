@@ -5,8 +5,13 @@ title: Release notes&#58;
 
 **v3.1.0**:
 
-- Added attribute merging capabilities for user profile: multiple attributes with the same name and value of collection type can be merged into a single attribute
+- Added attribute merging capabilities for the user profile: multiple attributes with the same name and value of the collection type can be merged into a single attribute
 - Added Weibo, QQ and Wechat (OAuth) supports
+
+**v3.0.2**:
+
+- Properly handles all the HTTP codes in the `setResponseStatus` method of the `J2EContext`
+- Added the `setExcludedPath` and `setExcludedPattern` methods to the `PathMatcher` class (for Shiro)
 
 **v3.0.1**:
 
