@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.0.2**:
+
+- Properly handles all the HTTP codes in the `setResponseStatus` method of the `J2EContext`
+- Added the `setExcludedPath` and `setExcludedPattern` methods to the `PathMatcher` class (for Shiro)
+
 **v3.0.1**:
 
 - The `ProfileHelper.flatIntoOneProfile` method returns an `AnonymousProfile` (instead of empty) if it's the only profile
