@@ -17,7 +17,7 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
     public AzureAdOidcConfiguration() {
     }
 
-    public AzureAdOidcConfiguration(OidcConfiguration oidcConfiguration) {
+    public AzureAdOidcConfiguration(final OidcConfiguration oidcConfiguration) {
         this.setProviderMetadata(oidcConfiguration.getProviderMetadata());
         this.setClientId(oidcConfiguration.getClientId());
         this.setSecret(oidcConfiguration.getSecret());
@@ -34,6 +34,11 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
         this.setResponseType(oidcConfiguration.getResponseType());
         this.setResponseMode(oidcConfiguration.getResponseMode());
         this.setLogoutUrl(oidcConfiguration.getLogoutUrl());
+
+        if (oidcConfiguration instanceof AzureAdOidcConfiguration) {
+            final AzureAdOidcConfiguration azureConfig = AzureAdOidcConfiguration.class.cast(oidcConfiguration);
+            this.setTenant(azureConfig.getTenant());
+        }
     }
 
     @Override
