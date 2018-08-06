@@ -49,7 +49,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             this.urlResolver = new DefaultUrlResolver();
         }
         if (this.callbackUrlResolver == null) {
-            this.callbackUrlResolver = new QueryParameterCallbackUrlResolver();
+            this.callbackUrlResolver = newDefaultCallbackUrlResolver();
         }
         if (this.ajaxRequestResolver == null) {
             ajaxRequestResolver = new DefaultAjaxRequestResolver();
@@ -63,6 +63,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
         CommonHelper.assertNotNull("profileCreator", getProfileCreator());
         CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
+    }
+
+    protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
+        return new QueryParameterCallbackUrlResolver();
     }
 
     /**
