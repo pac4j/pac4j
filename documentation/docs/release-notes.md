@@ -7,6 +7,9 @@ title: Release notes&#58;
 
 - Added attribute merging capabilities for the user profile: multiple attributes with the same name and value of the collection type can be merged into a single attribute
 - Added Weibo, QQ and Wechat (OAuth) supports
+
+**v3.0.3:**
+
 - `AzureAdClient` uses the `PathParameterCallbackUrlResolver` by default
 
 **v3.0.2**:
