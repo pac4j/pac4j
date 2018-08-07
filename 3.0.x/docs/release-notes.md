@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.0.3:**
+
+- `AzureAdClient` uses the `PathParameterCallbackUrlResolver` by default
+
 **v3.0.2**:
 
 - Properly handles all the HTTP codes in the `setResponseStatus` method of the `J2EContext`
