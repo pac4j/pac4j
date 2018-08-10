@@ -113,6 +113,16 @@ public class PathMatcher implements Matcher {
         regularExpressions.forEach(regex -> excludeRegex(regex));
     }
 
+    public void setExcludedPath(final String path) {
+        excludedPaths.clear();
+        excludePath(path);
+    }
+
+    public void setExcludedPattern(final String regularExpression) {
+        excludedPatterns.clear();
+        excludeRegex(regularExpression);
+    }
+
     private static void validatePath(String path) {
         CommonHelper.assertNotBlank("path", path);
         if (!path.startsWith("/")) {

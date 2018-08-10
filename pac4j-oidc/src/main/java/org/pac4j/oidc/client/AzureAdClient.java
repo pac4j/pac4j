@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.callback.PathParameterCallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
@@ -60,6 +62,11 @@ public class AzureAdClient extends OidcClient<AzureAdProfile,AzureAdOidcConfigur
         defaultProfileCreator(new AzureAdProfileCreator(getConfiguration()));
 
         super.clientInit();
+    }
+
+    @Override
+    protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
+        return new PathParameterCallbackUrlResolver();
     }
 
     public String getAccessTokenFromRefreshToken(AzureAdProfile azureAdProfile) {
