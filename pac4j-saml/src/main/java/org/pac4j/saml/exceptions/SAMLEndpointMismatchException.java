@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLEndpointMismatchException extends SAMLException {
+    private static final long serialVersionUID = -1352860736771222912L;
+
     public SAMLEndpointMismatchException(final String message) {
         super(message);
     }

@@ -74,7 +74,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         return SAMLConstants.SAML2_POST_BINDING_URI;
     }
 
-    private String getDecodedAuthnRequest(final String content) {
+    private static String getDecodedAuthnRequest(final String content) {
         assertTrue(content.contains("<form"));
         final String samlRequestField = StringUtils.substringBetween(content, "SAMLRequest", "</div");
         final String value = StringUtils.substringBetween(samlRequestField, "value=\"", "\"");

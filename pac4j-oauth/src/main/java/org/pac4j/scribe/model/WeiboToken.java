@@ -11,6 +11,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  */
 public class WeiboToken extends OAuth2AccessToken {
 
+    private static final long serialVersionUID = 1489916603771001585L;
     private String uid;
 
     public WeiboToken(OAuth2AccessToken accessToken, String uid) {

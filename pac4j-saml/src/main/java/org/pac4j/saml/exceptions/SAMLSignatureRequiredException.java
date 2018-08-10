@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLSignatureRequiredException extends SAMLException {
+    private static final long serialVersionUID = 7054748433033124696L;
+
     public SAMLSignatureRequiredException(final String message) {
         super(message);
     }
