@@ -25,8 +25,9 @@ public class SAML2CredentialsSerializationTests {
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     @Test
-    public void verifyOperation() throws Exception {
-        final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
+    public void verifyOperation() {
+        final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>)
+            this.builderFactory.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
         assertNotNull(nameIdBuilder);
 
         final NameID nameid = nameIdBuilder.buildObject();
@@ -35,7 +36,8 @@ public class SAML2CredentialsSerializationTests {
         nameid.setNameQualifier("pac4j");
         nameid.setSPProvidedID("pac4j");
 
-        final SAMLObjectBuilder<Conditions> conditionsBuilder = (SAMLObjectBuilder<Conditions>) this.builderFactory.getBuilder(Conditions.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<Conditions> conditionsBuilder = (SAMLObjectBuilder<Conditions>)
+            this.builderFactory.getBuilder(Conditions.DEFAULT_ELEMENT_NAME);
         assertNotNull(conditionsBuilder);
 
         final Conditions conditions = conditionsBuilder.buildObject();
@@ -45,7 +47,8 @@ public class SAML2CredentialsSerializationTests {
         final List<String> contexts = new ArrayList<>();
         contexts.add("cas-context");
 
-        final SAMLObjectBuilder<Attribute> attributeBuilder = (SAMLObjectBuilder<Attribute>) this.builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<Attribute> attributeBuilder = (SAMLObjectBuilder<Attribute>)
+            this.builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
         assertNotNull(attributeBuilder);
 
         final List<Attribute> attributes = new ArrayList<>();
@@ -54,7 +57,8 @@ public class SAML2CredentialsSerializationTests {
         attr.setName("pac4j");
         attr.setNameFormat("pac4j");
         attributes.add(attr);
-        final SAML2Credentials credentials = new SAML2Credentials(nameid, "example.issuer.com", attributes, conditions, "session-index", contexts);
+        final SAML2Credentials credentials = new SAML2Credentials(nameid, "example.issuer.com",
+            attributes, conditions, "session-index", contexts);
         final byte[] data = SerializationUtils.serialize(credentials);
         final SAML2Credentials result = (SAML2Credentials) SerializationUtils.deserialize(data);
         assertNotNull(result);
