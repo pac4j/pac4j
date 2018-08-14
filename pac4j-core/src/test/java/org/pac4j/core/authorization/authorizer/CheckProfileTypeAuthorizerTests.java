@@ -18,9 +18,13 @@ import static org.junit.Assert.assertTrue;
 public final class CheckProfileTypeAuthorizerTests {
 
     private static class FakeProfile1 extends CommonProfile {
+        private static final long serialVersionUID = 593942762996944056L;
+
         public FakeProfile1() {}
     }
     private static class FakeProfile2 extends CommonProfile {
+        private static final long serialVersionUID = -7923087937494697612L;
+
         public FakeProfile2() {}
     }
 

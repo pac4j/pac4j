@@ -11,6 +11,7 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class OAuth20Credentials extends OAuthCredentials {
 
+    private static final long serialVersionUID = -1370874913317625788L;
     private String code;
 
     private OAuth2AccessToken accessToken;

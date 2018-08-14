@@ -191,7 +191,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                 }
             }
         }
-        return new SAML2Credentials(nameId, issuerEntityId, attributes, subjectAssertion.getConditions(), sessionIndex, authnContexts);
+        return new SAML2Credentials(nameId, issuerEntityId, attributes,
+            subjectAssertion.getConditions(), sessionIndex, authnContexts);
     }
 
     /**

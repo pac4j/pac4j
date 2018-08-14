@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLAssertionAudienceException extends SAMLException {
+    private static final long serialVersionUID = -3632157637070077883L;
+
     public SAMLAssertionAudienceException(final String message) {
         super(message);
     }
