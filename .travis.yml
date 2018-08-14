@@ -6,8 +6,8 @@ install: "mvn install --settings travis/settings.xml -B -V"
 script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/settings.xml -B -V"
 
 jdk:
-  - oraclejdk8
-
+  - oraclejdk11
+  
 cache:
   directories:
     - '$HOME/.m2/repository'
