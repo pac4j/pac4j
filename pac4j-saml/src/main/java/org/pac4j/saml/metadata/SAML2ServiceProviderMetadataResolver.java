@@ -1,11 +1,9 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
-import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -18,6 +16,7 @@ import org.springframework.core.io.WritableResource;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -59,7 +58,11 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         this.forceSpMetadataGeneration = configuration.isForceServiceProviderMetadataGeneration();
         this.binding = configuration.getDestinationBindingType();
 
-        // If the spEntityId is blank, use the callback url
+        determineServiceProviderEntityId(callbackUrl);
+        prepareServiceProviderMetadata();
+    }
+
+    private void determineServiceProviderEntityId(final String callbackUrl) {
         try {
             if (CommonHelper.isBlank(this.spEntityId)) {
                 final URL url = new URL(callbackUrl);
@@ -75,9 +78,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    @Override
-    public final MetadataResolver resolve() {
-
+    private MetadataResolver prepareServiceProviderMetadata() {
         final boolean credentialProviderRequired = this.authnRequestSigned || this.wantsAssertionsSigned;
         if (credentialProviderRequired && this.credentialProvider == null) {
             throw new TechnicalException("Credentials Provider can not be null when authnRequestSigned or" +
@@ -100,46 +101,46 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
             // for now same for logout url
             metadataGenerator.setSingleLogoutServiceUrl(callbackUrl);
-            final MetadataResolver spMetadataProvider = metadataGenerator.buildMetadataResolver();
 
             // Initialize metadata provider for our SP and get the XML as a String
             this.spMetadata = metadataGenerator.getMetadata();
-            if (this.spMetadataResource != null) {
+            writeServiceProviderMetadataToResource();
+            return metadataGenerator.buildMetadataResolver();
+        } catch (final Exception e) {
+            throw new TechnicalException("Unable to generate metadata for service provider", e);
+        }
+    }
 
-                if (spMetadataResource.exists() && !this.forceSpMetadataGeneration) {
-                    logger.info("Metadata file already exists at {}.", this.spMetadataResource.getFilename());
-                } else {
-                    logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
-                    final File parent = spMetadataResource.getFile().getParentFile();
-                    if (parent != null) {
-                        logger.info("Attempting to create directory structure for: {}", parent.getCanonicalPath());
-                        if (!parent.exists() && !parent.mkdirs()) {
-                            logger.warn("Could not construct the directory structure for SP metadata: {}",
-                                    parent.getCanonicalPath());
-                        }
-                    }
-                    final Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-                    final StreamResult result = new StreamResult(new StringWriter());
-                    final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
-                    transformer.transform(source, result);
-                    try (final OutputStream spMetadataOutputStream = this.spMetadataResource.getOutputStream()) {
-                        spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
+    private void writeServiceProviderMetadataToResource() throws IOException, TransformerException {
+        if (this.spMetadataResource != null) {
+            if (spMetadataResource.exists() && !this.forceSpMetadataGeneration) {
+                logger.info("Metadata file already exists at {}.", this.spMetadataResource.getFilename());
+            } else {
+                logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
+                final File parent = spMetadataResource.getFile().getParentFile();
+                if (parent != null) {
+                    logger.info("Attempting to create directory structure for: {}", parent.getCanonicalPath());
+                    if (!parent.exists() && !parent.mkdirs()) {
+                        logger.warn("Could not construct the directory structure for SP metadata: {}",
+                            parent.getCanonicalPath());
                     }
                 }
+                final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                final StreamResult result = new StreamResult(new StringWriter());
+                final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
+                transformer.transform(source, result);
+                try (final OutputStream spMetadataOutputStream = this.spMetadataResource.getOutputStream()) {
+                    spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
+                }
             }
-            return spMetadataProvider;
-        } catch (final ComponentInitializationException e) {
-            throw new TechnicalException("Error initializing spMetadataProvider", e);
-        } catch (final MarshallingException e) {
-            logger.warn("Unable to marshal SP metadata", e);
-        } catch (final IOException e) {
-            logger.warn("Unable to print SP metadata", e);
-        } catch (final Exception e) {
-            logger.warn("Unable to transform metadata", e);
         }
-        return null;
+    }
+
+    @Override
+    public final MetadataResolver resolve() {
+        return prepareServiceProviderMetadata();
     }
 
     @Override
