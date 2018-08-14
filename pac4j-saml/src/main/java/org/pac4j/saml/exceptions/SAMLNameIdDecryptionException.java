@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLNameIdDecryptionException extends SAMLException {
+    private static final long serialVersionUID = 1452441332362175576L;
+
     public SAMLNameIdDecryptionException(final String message) {
         super(message);
     }

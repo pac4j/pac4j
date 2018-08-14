@@ -15,6 +15,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  */
 public class WechatToken extends OAuth2AccessToken {
 
+    private static final long serialVersionUID = -4657457530761699382L;
     private String openid;
     private String unionid;
 

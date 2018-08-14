@@ -15,6 +15,8 @@ import java.util.List;
  */
 public abstract class AbstractJwtProfile extends CommonProfile {
 
+    private static final long serialVersionUID = -6146872796913837767L;
+
     public String getSubject() {
         return getId();
     }
