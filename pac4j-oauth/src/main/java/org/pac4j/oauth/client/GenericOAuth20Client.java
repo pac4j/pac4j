@@ -30,6 +30,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
     private String tokenUrl;
     private String profileUrl;
     private String profilePath;
+    private String profileId;
     private Verb profileVerb;
     private Map<String, String> profileAttrs;
     private Map<String, String> customParams;
@@ -53,6 +54,9 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
         profileDefinition.setProfileVerb(profileVerb);
         profileDefinition.setProfileUrl(profileUrl);
 
+        if (profileId != null) {
+            profileDefinition.setProfileId(profileId);
+        }
         if (profileAttrs != null) {
             for (Map.Entry<String, String> entry : profileAttrs.entrySet()) {
                 String key = entry.getKey();
@@ -142,5 +146,9 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
     public void setCustomParams(final Map<String, String> customParamsMap) {
         this.customParams = customParamsMap;
+    }
+
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
     }
 }
