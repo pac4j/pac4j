@@ -148,7 +148,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
         this.customParams = customParamsMap;
     }
 
-    public void setProfileId(String profileId) {
+    public void setProfileId(final String profileId) {
         this.profileId = profileId;
     }
 }
