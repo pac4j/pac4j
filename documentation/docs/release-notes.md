@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 - Allow to set the `profileId` for the `GenericOAuth20Client`
 - Fixed the `setConfiguration` method name in the OAuth v2.0 support
+- Added support for HiOrg-Server (OAuth)
 
 **v3.1.0**:
 
