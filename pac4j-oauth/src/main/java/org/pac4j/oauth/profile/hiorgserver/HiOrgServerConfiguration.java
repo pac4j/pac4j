@@ -6,7 +6,7 @@ import org.pac4j.oauth.config.OAuth20Configuration;
  * HiOrg-Server OAuth configuration.
  *
  * @author Martin Böhmer
- * @since 3.1.1
+ * @since 3.2.0
  */
 public class HiOrgServerConfiguration extends OAuth20Configuration {
 
