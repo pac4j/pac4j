@@ -7,7 +7,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * is returned by the {@link org.pac4j.oauth.client.HiOrgServerClient}.
  *
  * @author Martin Boehmer
- * @since 3.1.1
+ * @since 3.2.0
  */
 public class HiOrgServerProfile extends OAuth20Profile {
 

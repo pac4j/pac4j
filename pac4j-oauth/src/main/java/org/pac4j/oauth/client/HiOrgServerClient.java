@@ -11,7 +11,7 @@ import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
  * This class is the OAuth client to authenticate users in HiOrg-Server.
  *
  * @author Martin Böhmer
- * @since 3.1.1
+ * @since 3.2.0
  */
 public class HiOrgServerClient extends OAuth20Client<HiOrgServerProfile> {
 

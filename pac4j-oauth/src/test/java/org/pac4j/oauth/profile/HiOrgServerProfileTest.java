@@ -10,6 +10,7 @@ import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
  * This class tests the {@link HiOrgServerProfile} class.
  *
  * @author Martin Böhmer
+ * @since 3.2.0
  */
 public class HiOrgServerProfileTest {
 
