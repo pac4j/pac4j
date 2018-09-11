@@ -22,6 +22,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
         configuration.setPrivateKeyPassword("pac4j");
+        configuration.setSignMetadata(true);
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
