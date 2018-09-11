@@ -42,7 +42,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.SAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 import org.slf4j.Logger;
@@ -105,7 +105,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private boolean authnRequestSigned;
 
-    private final List<SAML2MetadataGenerator.RequestedServiceProviderAttribute> requestedServiceProviderAttributes = new ArrayList<>();
+    private final List<SAML2ServiceProvicerRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
 
     private Collection<String> blackListedSignatureSigningAlgorithms;
     private List<String> signatureAlgorithms;
@@ -190,7 +190,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
         initSignatureSigningConfiguration();
     }
 
-    public List<SAML2MetadataGenerator.RequestedServiceProviderAttribute> getRequestedServiceProviderAttributes() {
+    public List<SAML2ServiceProvicerRequestedAttribute> getRequestedServiceProviderAttributes() {
         return requestedServiceProviderAttributes;
     }
 

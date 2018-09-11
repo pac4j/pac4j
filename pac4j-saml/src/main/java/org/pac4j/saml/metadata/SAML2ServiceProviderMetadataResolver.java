@@ -47,7 +47,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String nameIdPolicyFormat;
     private final String binding;
     private final boolean signMetadata;
-    private List<SAML2MetadataGenerator.RequestedServiceProviderAttribute> requestedAttributes;
+    private List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes;
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {

@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -77,7 +76,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected boolean signMetadata;
 
-    protected List<RequestedServiceProviderAttribute> requestedAttributes = new ArrayList<>();
+    protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
 
     public SAML2MetadataGenerator(final String binding) {
         this.binding = binding;
@@ -241,10 +240,10 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         if (!requestedAttributes.isEmpty()) {
             final SAMLObjectBuilder<AttributeConsumingService> attrServiceBuilder =
                 (SAMLObjectBuilder<AttributeConsumingService>) this.builderFactory
-                .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
+                    .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
             final AttributeConsumingService attributeService =
                 attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
-            for (final RequestedServiceProviderAttribute attr : this.requestedAttributes) {
+            for (final SAML2ServiceProvicerRequestedAttribute attr : this.requestedAttributes) {
                 final SAMLObjectBuilder<RequestedAttribute> attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
                     .getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
                 final RequestedAttribute requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
@@ -389,78 +388,11 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         this.signMetadata = signMetadata;
     }
 
-    public List<RequestedServiceProviderAttribute> getRequestedAttributes() {
+    public List<SAML2ServiceProvicerRequestedAttribute> getRequestedAttributes() {
         return requestedAttributes;
     }
 
-    public void setRequestedAttributes(final List<RequestedServiceProviderAttribute> requestedAttributes) {
+    public void setRequestedAttributes(final List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes) {
         this.requestedAttributes = requestedAttributes;
-    }
-
-    public static class RequestedServiceProviderAttribute implements Serializable {
-        private static final long serialVersionUID = 1040516205957826527L;
-
-        public String name;
-        public String friendlyName;
-        public String nameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri";
-        public boolean isRequired;
-
-        public RequestedServiceProviderAttribute() {
-        }
-
-        public RequestedServiceProviderAttribute(final String name, final String friendlyName) {
-            this.name = name;
-            this.friendlyName = friendlyName;
-        }
-
-        public RequestedServiceProviderAttribute(final String name, final String friendlyName,
-                                                 final String nameFormat, final boolean isRequired) {
-            this.name = name;
-            this.friendlyName = friendlyName;
-            this.nameFormat = nameFormat;
-            this.isRequired = isRequired;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(final String name) {
-            this.name = name;
-        }
-
-        public String getFriendlyName() {
-            return friendlyName;
-        }
-
-        public void setFriendlyName(final String friendlyName) {
-            this.friendlyName = friendlyName;
-        }
-
-        public String getNameFormat() {
-            return nameFormat;
-        }
-
-        public void setNameFormat(final String nameFormat) {
-            this.nameFormat = nameFormat;
-        }
-
-        public boolean isRequired() {
-            return isRequired;
-        }
-
-        public void setRequired(final boolean required) {
-            isRequired = required;
-        }
-
-        @Override
-        public String toString() {
-            return "RequestedServiceProviderAttribute{" +
-                "name='" + name + '\'' +
-                ", friendlyName='" + friendlyName + '\'' +
-                ", nameFormat='" + nameFormat + '\'' +
-                ", isRequired=" + isRequired +
-                '}';
-        }
     }
 }

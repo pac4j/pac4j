@@ -26,7 +26,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.getRequestedServiceProviderAttributes().add(
-            new SAML2MetadataGenerator.RequestedServiceProviderAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName"));
+            new SAML2ServiceProvicerRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName"));
         configuration.init();
     }
 
