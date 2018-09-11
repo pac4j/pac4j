@@ -94,6 +94,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
     
     private boolean useNameQualifier = true;
 
+    private boolean signMetadata;
+
     private WritableResource serviceProviderMetadataResource;
 
     private boolean forceServiceProviderMetadataGeneration;
@@ -491,6 +493,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setUseNameQualifier(boolean useNameQualifier) {
         this.useNameQualifier = useNameQualifier;
+    }
+
+    public boolean isSignMetadata() {
+        return signMetadata;
+    }
+
+    public void setSignMetadata(final boolean signMetadata) {
+        this.signMetadata = signMetadata;
     }
 
     /**
