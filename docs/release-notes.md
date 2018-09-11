@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.2.0**:
+
+- Allow to set the `profileId` for the `GenericOAuth20Client`
+- Fixed the `setConfiguration` method name in the OAuth v2.0 support
+
 **v3.1.0**:
 
 - Added attribute merging capabilities for the user profile: multiple attributes with the same name and value of the collection type can be merged into a single attribute
