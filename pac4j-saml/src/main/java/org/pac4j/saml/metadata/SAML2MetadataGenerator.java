@@ -132,12 +132,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     protected final Extensions generateMetadataExtensions() {
-        final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>) this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
+            this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
         final Extensions extensions = builderExt.buildObject();
         extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
 
-        final SAMLObjectBuilder<DigestMethod> builder = (SAMLObjectBuilder<DigestMethod>) this.builderFactory.getBuilder(DigestMethod.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<DigestMethod> builder = (SAMLObjectBuilder<DigestMethod>)
+            this.builderFactory.getBuilder(DigestMethod.DEFAULT_ELEMENT_NAME);
 
         DigestMethod method = builder.buildObject();
         method.setAlgorithm("http://www.w3.org/2001/04/xmlenc#sha512");
@@ -191,7 +193,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     protected final SPSSODescriptor buildSPSSODescriptor() {
-        final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>)
+            this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         final SPSSODescriptor spDescriptor = builder.buildObject();
 
         spDescriptor.setAuthnRequestsSigned(this.authnRequestSigned);
@@ -200,12 +203,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.addSupportedProtocol(SAMLConstants.SAML10P_NS);
         spDescriptor.addSupportedProtocol(SAMLConstants.SAML11P_NS);
 
-        final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>) this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
+            this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
         final Extensions extensions = builderExt.buildObject();
         extensions.getNamespaceManager().registerAttributeName(RequestInitiator.DEFAULT_ELEMENT_NAME);
 
-        final SAMLObjectBuilder<RequestInitiator> builderReq = (SAMLObjectBuilder<RequestInitiator>) this.builderFactory.getBuilder(RequestInitiator.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<RequestInitiator> builderReq = (SAMLObjectBuilder<RequestInitiator>)
+            this.builderFactory.getBuilder(RequestInitiator.DEFAULT_ELEMENT_NAME);
 
         final RequestInitiator requestInitiator = builderReq.buildObject();
         requestInitiator.setLocation(this.requestInitiatorLocation);
