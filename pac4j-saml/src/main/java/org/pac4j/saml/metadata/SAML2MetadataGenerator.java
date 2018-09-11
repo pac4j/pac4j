@@ -98,7 +98,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     @Override
     public final EntityDescriptor buildEntityDescriptor() {
-        final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
+        final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>)
+            this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
         final EntityDescriptor descriptor = builder.buildObject();
         descriptor.setEntityID(this.entityId);
         descriptor.setValidUntil(DateTime.now(DateTimeZone.UTC).plusYears(20));
