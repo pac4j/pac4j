@@ -5,6 +5,9 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.Serializable;
@@ -18,6 +21,7 @@ import java.util.List;
  * @since 1.5.0
  */
 public class SAML2Credentials extends Credentials {
+    private static final Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
 
     private static final long serialVersionUID = 5040516205957826527L;
 
@@ -63,6 +67,8 @@ public class SAML2Credentials extends Credentials {
         this.conditions.setNotBefore(conditions.getNotBefore());
         this.conditions.setNotOnOrAfter(conditions.getNotOnOrAfter());
         this.authnContexts = authnContexts;
+
+        logger.info("Constructed SAML2 credentials: {}", this);
     }
 
     public final SAMLNameID getNameId() {
@@ -115,8 +121,15 @@ public class SAML2Credentials extends Credentials {
     }
 
     @Override
-    public final String toString() {
-        return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + ", sessionIndex=" + this.sessionIndex + "]";
+    public String toString() {
+        return "SAML2Credentials{" +
+            "nameId=" + nameId +
+            ", sessionIndex='" + sessionIndex + '\'' +
+            ", attributes=" + attributes +
+            ", conditions=" + conditions +
+            ", issuerId='" + issuerId + '\'' +
+            ", authnContexts=" + authnContexts +
+            '}';
     }
 
     public String getIssuerId() {
@@ -174,6 +187,17 @@ public class SAML2Credentials extends Credentials {
         public void setNameQualifier(final String nameQualifier) {
             this.nameQualifier = nameQualifier;
         }
+
+        @Override
+        public String toString() {
+            return "SAMLNameID{" +
+                "format='" + format + '\'' +
+                ", nameQualifier='" + nameQualifier + '\'' +
+                ", spNameQualifier='" + spNameQualifier + '\'' +
+                ", spProviderId='" + spProviderId + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+        }
     }
 
     public static class SAMLAttribute implements Serializable {
@@ -214,6 +238,16 @@ public class SAML2Credentials extends Credentials {
         public void setAttributeValues(final List<String> attributeValues) {
             this.attributeValues = attributeValues;
         }
+
+        @Override
+        public String toString() {
+            return "SAMLAttribute{" +
+                "friendlyName='" + friendlyName + '\'' +
+                ", name='" + name + '\'' +
+                ", nameFormat='" + nameFormat + '\'' +
+                ", attributeValues=" + attributeValues +
+                '}';
+        }
     }
 
     public static class SAMLConditions implements Serializable {
@@ -235,6 +269,14 @@ public class SAML2Credentials extends Credentials {
 
         public void setNotOnOrAfter(final DateTime notOnOrAfter) {
             this.notOnOrAfter = notOnOrAfter;
+        }
+
+        @Override
+        public String toString() {
+            return "SAMLConditions{" +
+                "notBefore=" + notBefore +
+                ", notOnOrAfter=" + notOnOrAfter +
+                '}';
         }
     }
 }

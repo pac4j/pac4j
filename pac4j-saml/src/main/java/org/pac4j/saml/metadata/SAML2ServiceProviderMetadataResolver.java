@@ -27,13 +27,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * @author Misagh Moayyed
  * @since 1.7
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
-    protected final static Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
 
     private final CredentialProvider credentialProvider;
     private String spEntityId;
@@ -41,11 +42,12 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private String spMetadata;
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
-    private boolean authnRequestSigned;
-    private boolean wantsAssertionsSigned;
+    private final boolean authnRequestSigned;
+    private final boolean wantsAssertionsSigned;
     private final String nameIdPolicyFormat;
-    private String binding;
+    private final String binding;
     private final boolean signMetadata;
+    private List<SAML2MetadataGenerator.RequestedServiceProviderAttribute> requestedAttributes;
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
@@ -59,6 +61,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         this.forceSpMetadataGeneration = configuration.isForceServiceProviderMetadataGeneration();
         this.binding = configuration.getDestinationBindingType();
         this.signMetadata = configuration.isSignMetadata();
+        this.requestedAttributes = configuration.getRequestedServiceProviderAttributes();
 
         determineServiceProviderEntityId(callbackUrl);
         prepareServiceProviderMetadata();
@@ -93,7 +96,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             metadataGenerator.setAuthnRequestSigned(this.authnRequestSigned);
             metadataGenerator.setNameIdPolicyFormat(this.nameIdPolicyFormat);
             metadataGenerator.setSignMetadata(this.signMetadata);
-
+            metadataGenerator.setRequestedAttributes(this.requestedAttributes);
             if (credentialProviderRequired) {
                 metadataGenerator.setCredentialProvider(this.credentialProvider);
             }
@@ -117,7 +120,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private void writeServiceProviderMetadataToResource() throws IOException, TransformerException {
         if (this.spMetadataResource != null) {
             if (spMetadataResource.exists() && !this.forceSpMetadataGeneration) {
-                logger.info("Metadata file already exists at {}.", this.spMetadataResource.getFilename());
+                logger.info("Metadata file already exists at {}.", this.spMetadataResource.getFile());
             } else {
                 logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                 final File parent = spMetadataResource.getFile().getParentFile();
