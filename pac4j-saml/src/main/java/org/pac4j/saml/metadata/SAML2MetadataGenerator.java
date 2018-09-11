@@ -16,10 +16,12 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.Extensions;
 import org.opensaml.saml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml.saml2.metadata.NameIDFormat;
+import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.security.credential.UsageType;
@@ -35,6 +37,7 @@ import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Generates metadata object with standard values and overriden user defined values.
@@ -72,6 +75,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected String nameIdPolicyFormat = null;
 
     protected boolean signMetadata;
+
+    protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
 
     public SAML2MetadataGenerator(final String binding) {
         this.binding = binding;
@@ -232,6 +237,25 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, this.credentialProvider.getKeyInfo()));
         }
 
+        if (!requestedAttributes.isEmpty()) {
+            final SAMLObjectBuilder<AttributeConsumingService> attrServiceBuilder =
+                (SAMLObjectBuilder<AttributeConsumingService>) this.builderFactory
+                    .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
+            final AttributeConsumingService attributeService =
+                attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
+            for (final SAML2ServiceProvicerRequestedAttribute attr : this.requestedAttributes) {
+                final SAMLObjectBuilder<RequestedAttribute> attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
+                    .getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+                final RequestedAttribute requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+                requestAttribute.setIsRequired(attr.isRequired());
+                requestAttribute.setName(attr.getName());
+                requestAttribute.setFriendlyName(attr.getFriendlyName());
+                requestAttribute.setNameFormat(attr.getNameFormat());
+
+                attributeService.getRequestAttributes().add(requestAttribute);
+            }
+            spDescriptor.getAttributeConsumingServices().add(attributeService);
+        }
         return spDescriptor;
 
     }
@@ -362,5 +386,13 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public void setSignMetadata(final boolean signMetadata) {
         this.signMetadata = signMetadata;
+    }
+
+    public List<SAML2ServiceProvicerRequestedAttribute> getRequestedAttributes() {
+        return requestedAttributes;
+    }
+
+    public void setRequestedAttributes(final List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes) {
+        this.requestedAttributes = requestedAttributes;
     }
 }
