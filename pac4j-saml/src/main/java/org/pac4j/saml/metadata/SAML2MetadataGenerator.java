@@ -239,9 +239,11 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         }
 
         if (!requestedAttributes.isEmpty()) {
-            final SAMLObjectBuilder<AttributeConsumingService> attrServiceBuilder = (SAMLObjectBuilder<AttributeConsumingService>) this.builderFactory
+            final SAMLObjectBuilder<AttributeConsumingService> attrServiceBuilder =
+                (SAMLObjectBuilder<AttributeConsumingService>) this.builderFactory
                 .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
-            final AttributeConsumingService attributeService = attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
+            final AttributeConsumingService attributeService =
+                attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
             for (final RequestedServiceProviderAttribute attr : this.requestedAttributes) {
                 final SAMLObjectBuilder<RequestedAttribute> attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
                     .getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
@@ -411,7 +413,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
             this.friendlyName = friendlyName;
         }
 
-        public RequestedServiceProviderAttribute(final String name, final String friendlyName, final String nameFormat, final boolean isRequired) {
+        public RequestedServiceProviderAttribute(final String name, final String friendlyName,
+                                                 final String nameFormat, final boolean isRequired) {
             this.name = name;
             this.friendlyName = friendlyName;
             this.nameFormat = nameFormat;
