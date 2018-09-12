@@ -1,9 +1,8 @@
 package org.pac4j.scribe.builder.api;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.core.utils.OAuthEncoder;
+import java.util.HashMap;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Map;
@@ -20,10 +19,7 @@ public final class StravaApi20 extends DefaultApi20 {
     /**
      * Strava authorization URL
      */
-    private static final String AUTHORIZE_URL = "https://www.strava.com/oauth/authorize?approval_prompt=%s&response_type=code"
-        + "&client_id=%s&redirect_uri=%s";
-
-    private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";
+    private static final String AUTHORIZE_BASE_URL = "https://www.strava.com/oauth/authorize";
 
     private static final String ACCESS_TOKEN_URL = "https://www.strava.com/oauth/token";
 
@@ -48,20 +44,19 @@ public final class StravaApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config, final Map<String, String> additionalParams) {
-        CommonHelper.assertNotBlank("config.getCallback()", config.getCallback(), "Must provide a valid callback url.");
-
-        // Append scope if present
-        if (config.getScope() != null) {
-            return String.format(SCOPED_AUTHORIZE_URL, this.approvalPrompt, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
-                    OAuthEncoder.encode(config.getScope()));
-        } else {
-            return String.format(AUTHORIZE_URL, this.approvalPrompt, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
+            Map<String, String> additionalParams) {
+        CommonHelper.assertNotBlank("callback", callback, "Must provide a valid callback url.");
+        
+        if (additionalParams == null) {
+            additionalParams = new HashMap<>();
         }
+        additionalParams.put("approval_prompt=", this.approvalPrompt);
+        return super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
     }
 
     @Override
     protected String getAuthorizationBaseUrl() {
-        return "https://www.strava.com/oauth/authorize";
+        return AUTHORIZE_BASE_URL;
     }
 }
