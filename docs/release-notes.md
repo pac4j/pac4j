@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Allow to set the `profileId` for the `GenericOAuth20Client`
 - Fixed the `setConfiguration` method name in the OAuth v2.0 support
 - Optionally sign or specificy requested attributes in the SAML SP metadata
+- Update to Scribejava v5.6.0
 
 **v3.1.0**:
 
