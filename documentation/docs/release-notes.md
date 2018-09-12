@@ -7,7 +7,7 @@ title: Release notes&#58;
 
 - Allow to set the `profileId` for the `GenericOAuth20Client`
 - Fixed the `setConfiguration` method name in the OAuth v2.0 support
-- Optionally sign the SAML SP metadata
+- Optionally sign or specificy requested attributes in the SAML SP metadata
 
 **v3.1.0**:
 
