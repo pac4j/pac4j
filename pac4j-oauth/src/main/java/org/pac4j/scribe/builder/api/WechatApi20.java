@@ -10,11 +10,13 @@ import com.github.scribejava.core.builder.api.ClientAuthenticationType;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.builder.api.OAuth2SignatureType;
 import com.github.scribejava.core.extractors.TokenExtractor;
+import com.github.scribejava.core.httpclient.HttpClient;
+import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import java.io.OutputStream;
 
 
 /**
@@ -53,10 +55,11 @@ public class WechatApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(OAuthConfig config, Map<String, String> additionalParams) {
-        String authorizationUrl = super.getAuthorizationUrl(config, additionalParams);
+    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
+            Map<String, String> additionalParams) {
+        String authorizationUrl = super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
         authorizationUrl = authorizationUrl.replace(OAuthConstants.CLIENT_ID, APPID);
-        if (config.getScope() != null && config.getScope().contains(
+        if (scope != null && scope.contains(
             WechatClient.WechatScope.SNSAPI_LOGIN.toString().toLowerCase())) {
             authorizationUrl = AUTHORIZE_ENDPOINT_URL_1 + authorizationUrl;
         } else {
@@ -91,8 +94,9 @@ public class WechatApi20 extends DefaultApi20 {
     }
 
     @Override
-    public OAuth20Service createService(OAuthConfig config) {
-        return new WechatService(this, config);
+    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String scope, OutputStream debugStream,
+            String state, String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+        return new WechatService(this, apiKey, apiSecret, callback, scope, state, responseType, userAgent, httpClientConfig, httpClient);
     }
 }
 

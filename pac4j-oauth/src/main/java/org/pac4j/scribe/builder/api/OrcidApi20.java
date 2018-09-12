@@ -3,9 +3,7 @@ package org.pac4j.scribe.builder.api;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.extractors.TokenExtractor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.core.utils.OAuthEncoder;
 import java.util.Map;
 import org.pac4j.scribe.extractors.OrcidJsonExtractor;
 
@@ -26,12 +24,14 @@ public class OrcidApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(final OAuthConfig oAuthConfig, final Map<String, String> additionalParams) {
-        // #show_login skips showing the registration form, which is only cluttersome
-        return String.format(AUTH_URL + "?client_id=%s&scope=%s&response_type=%s&redirect_uri=%s#show_login",
-            oAuthConfig.getApiKey(), (oAuthConfig.getScope()!=null)?OAuthEncoder.encode(oAuthConfig.getScope()):"",
-            "code", OAuthEncoder.encode(oAuthConfig.getCallback()));
+    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
+            Map<String, String> additionalParams) {
+        if (callback != null && !callback.endsWith("#show_login")) {
+            callback = callback + "#show_login";
+        }
+        return super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
     }
+    
     @Override
     protected String getAuthorizationBaseUrl() {
         return AUTH_URL;
