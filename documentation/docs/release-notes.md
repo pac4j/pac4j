@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Fixed the `setConfiguration` method name in the OAuth v2.0 support
 - Optionally sign or specificy requested attributes in the SAML SP metadata
 - Update to Scribejava v5.6.0
+- Added support for HiOrg-Server (OAuth)
 
 **v3.1.0**:
 
