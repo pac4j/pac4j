@@ -163,6 +163,8 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
             extractData(profile, json, FacebookProfileDefinition.GROUPS);
             extractData(profile, json, FacebookProfileDefinition.MUSIC_LISTENS);
             extractData(profile, json, FacebookProfileDefinition.PICTURE);
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

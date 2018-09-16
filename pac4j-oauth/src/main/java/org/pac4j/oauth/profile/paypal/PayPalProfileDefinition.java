@@ -49,6 +49,8 @@ public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProf
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

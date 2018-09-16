@@ -51,7 +51,11 @@ public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<Bitbuck
                 for (final String attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }
+            } else {
+                raiseProfileExtractionJsonError(body, "user");
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

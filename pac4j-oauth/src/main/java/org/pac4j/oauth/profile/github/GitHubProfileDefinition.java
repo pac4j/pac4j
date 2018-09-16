@@ -76,6 +76,8 @@ public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProf
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

@@ -82,7 +82,11 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
                 for (final String attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }
+            } else {
+                raiseProfileExtractionJsonError(body, "profile");
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }
