@@ -48,7 +48,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
-    protected final static Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
 
     protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
