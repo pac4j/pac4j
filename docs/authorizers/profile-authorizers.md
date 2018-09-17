@@ -7,7 +7,7 @@ Some authorizers only apply on the user profile:
 
 ## 1) Roles/permissions
 
-To check roles and permissions on the user profile, you first need to compute them with an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions).
+To check roles and permissions on the user profile, you first need to compute them with an [`AuthorizationGenerator`](../clients.html#compute-roles-and-permissions).
 
 - [`RequireAnyRoleAuthorizer`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/RequireAnyRoleAuthorizer.java) checks that a user profile has at least one of the expected roles
 
