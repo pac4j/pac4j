@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
  * This is {@link SAML2CredentialsSerializationTests}.
  *
  * @author Misagh Moayyed
- * @since 6.0.0
  */
 public class SAML2CredentialsSerializationTests {
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();

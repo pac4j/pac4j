@@ -51,8 +51,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         init();
 
         final SAML2Profile profile = getProfileDefinition().newProfile();
+
         final SAML2Credentials.SAMLNameID nameId = credentials.getNameId();
         profile.setId(nameId.getValue());
+
         profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
         profile.addAuthenticationAttribute(SAML_NAME_ID_FORMAT, nameId.getFormat());
         profile.addAuthenticationAttribute(SAML_NAME_ID_NAME_QUALIFIER, nameId.getNameQualifier());
@@ -67,7 +69,8 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
             final List<String> values = attribute.getAttributeValues();
             if (!values.isEmpty()) {
-                if (StringUtils.isNotBlank(attributeAsId) && attributeAsId.equals(name)) {
+                if (StringUtils.isNotBlank(attributeAsId)
+                    && (attributeAsId.equalsIgnoreCase(name) || attributeAsId.equalsIgnoreCase(friendlyName))) {
                     if (values.size() == 1) {
                         profile.setId(values.get(0));
                     } else {
