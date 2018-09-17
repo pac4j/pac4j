@@ -75,6 +75,8 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, value));
             }
 
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

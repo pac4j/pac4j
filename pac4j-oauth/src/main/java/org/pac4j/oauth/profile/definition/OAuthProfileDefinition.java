@@ -7,6 +7,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.config.OAuthConfiguration;
 
 import java.util.function.Function;
+import org.pac4j.core.exception.TechnicalException;
 
 /**
  * OAuth profile definition.
@@ -50,4 +51,36 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      * @return the returned profile
      */
     public abstract P extractUserProfile(String body);
+    
+    /**
+     * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.
+     * 
+     * @param body the request body that the user profile should be have been extracted from
+     * @param missingNode the name of a JSON node that was found missing. may be omitted
+     */
+    protected void raiseProfileExtractionJsonError(String body, String missingNode) {
+        logger.error("Unable to extract user profile as no JSON node '{}' was found in body: {}", missingNode, body);
+        throw new TechnicalException("No JSON node '" + missingNode + "' to extract user profile from");
+    }
+    
+    /**
+     * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.
+     * 
+     * @param body the request body that the user profile should have been extracted from
+     */
+    protected void raiseProfileExtractionJsonError(String body) {
+        logger.error("Unable to extract user profile as no JSON node was found in body: {}", body);
+        throw new TechnicalException("No JSON node to extract user profile from");
+    }
+    
+    /**
+     * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.
+     * 
+     * @param body the request body that the user profile should have been extracted from
+     */
+    protected void raiseProfileExtractionError(String body) {
+        logger.error("Unable to extract user profile from body: {}", body);
+        throw new TechnicalException("Unable to extract user profile");
+    }
+    
 }
