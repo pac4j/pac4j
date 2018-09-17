@@ -89,6 +89,8 @@ public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAu
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

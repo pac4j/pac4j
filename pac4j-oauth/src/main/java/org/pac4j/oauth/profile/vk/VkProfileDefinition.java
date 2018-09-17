@@ -76,10 +76,15 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkC
         if (json != null) {
             ArrayNode array = (ArrayNode) json.get("response");
             JsonNode userNode = array.get(0);
+            if (userNode == null) {
+                raiseProfileExtractionJsonError(body, "response");
+            }
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, "uid")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

@@ -54,6 +54,8 @@ public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPre
                 final String attribute = WordPressProfileDefinition.LINKS;
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

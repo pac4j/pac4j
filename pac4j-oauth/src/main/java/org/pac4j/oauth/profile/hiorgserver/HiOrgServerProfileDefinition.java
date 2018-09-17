@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import java.util.HashSet;
 import java.util.Set;
-import org.pac4j.core.exception.TechnicalException;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
@@ -62,8 +61,7 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {
-            logger.error("Unable to extract user profile as no JSON node was found in body: {}", body);
-            throw new TechnicalException("No JSON node to extract user profile from");
+            raiseProfileExtractionJsonError(body);
         }
         extractRoles(profile);
         return profile;

@@ -225,7 +225,6 @@ public class WeiboProfileDefinition extends OAuth20ProfileDefinition<WeiboProfil
 
     @Override
     public WeiboProfile extractUserProfile(final String body) throws HttpAction {
-        System.out.println(body);
         final WeiboProfile profile = new WeiboProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
@@ -235,6 +234,8 @@ public class WeiboProfileDefinition extends OAuth20ProfileDefinition<WeiboProfil
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

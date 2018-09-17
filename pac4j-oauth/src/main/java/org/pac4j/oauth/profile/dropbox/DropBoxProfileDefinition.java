@@ -58,6 +58,8 @@ public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxPr
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, FAMILY_NAME, JsonHelper.getElement(json, "surname"));
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, DISPLAY_NAME, JsonHelper.getElement(json, "display_name"));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }
