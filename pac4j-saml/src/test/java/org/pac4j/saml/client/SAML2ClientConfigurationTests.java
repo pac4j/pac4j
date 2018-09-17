@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
  * This is {@link SAML2ClientConfigurationTests}.
  *
  * @author Misagh Moayyed
- * @since 6.0.0
  */
 public class SAML2ClientConfigurationTests {
     @Test
