@@ -10,6 +10,7 @@ title: Release notes&#58;
 - Optionally sign or specificy requested attributes in the SAML SP metadata
 - Update to Scribejava v5.6.0
 - Added support for HiOrg-Server (OAuth)
+- Revised OAuth error handling for extracting user profiles. Now, an exception is thrown instead of returning an empty profile.
 
 **v3.1.0**:
 
