@@ -1,25 +1,5 @@
 package org.pac4j.saml.client;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -33,6 +13,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.TBSCertificate;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
+import org.bouncycastle.util.encoders.Base64;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
@@ -52,6 +33,30 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
+import sun.security.provider.X509Factory;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The {@link SAML2ClientConfiguration} is responsible for capturing client settings and passing them around.
@@ -92,7 +97,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private String authnContextClassRef = null;
 
     private String nameIdPolicyFormat = null;
-    
+
     private boolean useNameQualifier = true;
 
     private boolean signMetadata;
@@ -100,6 +105,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private WritableResource serviceProviderMetadataResource;
 
     private boolean forceServiceProviderMetadataGeneration;
+
+    private boolean forceKeystoreGeneration;
 
     private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
@@ -178,9 +185,10 @@ public class SAML2ClientConfiguration extends InitializableObject {
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
         CommonHelper.assertNotNull("identityProviderMetadataResource", this.identityProviderMetadataResource);
 
-        if (!this.keystoreResource.exists()) {
+        if (!this.keystoreResource.exists() || this.forceKeystoreGeneration) {
             if (this.keystoreResource instanceof WritableResource) {
-                LOGGER.warn("Provided keystoreResource does not exist. Creating one for: {}", this.keystoreResource);
+                LOGGER.warn("Provided keystoreResource does not exist or keystore generation is forced. Creating one for: {}",
+                    this.keystoreResource);
                 createKeystore();
             } else {
                 throw new TechnicalException("Provided keystoreResource does not exist and cannot be created");
@@ -220,6 +228,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setAssertionConsumerServiceIndex(final int assertionConsumerServiceIndex) {
         this.assertionConsumerServiceIndex = assertionConsumerServiceIndex;
+    }
+
+    public boolean isForceKeystoreGeneration() {
+        return forceKeystoreGeneration;
+    }
+
+    public void setForceKeystoreGeneration(final boolean forceKeystoreGeneration) {
+        this.forceKeystoreGeneration = forceKeystoreGeneration;
     }
 
     protected static UrlResource newUrlResource(final String url) {
@@ -493,7 +509,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
     public void setAttributeAsId(String attributeAsId) {
         this.attributeAsId = attributeAsId;
     }
-    
+
     public boolean isUseNameQualifier() {
         return useNameQualifier;
     }
@@ -513,8 +529,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
     /**
      * Initializes the configuration for a particular client.
      *
-     * @param clientName
-     *            Name of the client. The configuration can use the value or not.
+     * @param clientName Name of the client. The configuration can use the value or not.
      */
     protected void init(final String clientName) {
         init();
@@ -523,16 +538,16 @@ public class SAML2ClientConfiguration extends InitializableObject {
     /**
      * Generate a self-signed certificate for dn using the provided signature algorithm and key pair.
      *
-     * @param dn X.500 name to associate with certificate issuer/subject.
-     * @param sigName name of the signature algorithm to use.
+     * @param dn       X.500 name to associate with certificate issuer/subject.
+     * @param sigName  name of the signature algorithm to use.
      * @param sigAlgID algorithm ID associated with the signature algorithm name.
-     * @param keyPair the key pair to associate with the certificate.
+     * @param keyPair  the key pair to associate with the certificate.
      * @return an X509Certificate containing the public key in keyPair.
      * @throws Exception
      */
     private X509Certificate createSelfSignedCert(X500Name dn, String sigName, AlgorithmIdentifier sigAlgID, KeyPair keyPair)
         throws Exception {
-        V3TBSCertificateGenerator certGen = new V3TBSCertificateGenerator();
+        final V3TBSCertificateGenerator certGen = new V3TBSCertificateGenerator();
 
         certGen.setSerialNumber(new ASN1Integer(BigInteger.valueOf(1)));
         certGen.setIssuer(dn);
@@ -562,7 +577,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
         v.add(sigAlgID);
         v.add(new DERBitString(sig.sign()));
 
-        X509Certificate cert = (X509Certificate)CertificateFactory.getInstance("X.509")
+        final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X.509")
             .generateCertificate(new ByteArrayInputStream(new DERSequence(v).getEncoded(ASN1Encoding.DER)));
 
         // check the certificate - this will confirm the encoded sig algorithm ID is correct.
@@ -601,16 +616,68 @@ public class SAML2ClientConfiguration extends InitializableObject {
             final char[] keyPassword = this.privateKeyPassword.toCharArray();
             ks.setKeyEntry(this.keyStoreAlias, signingKey, keyPassword, new Certificate[]{certificate});
 
-            try (final FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {
+            final File keystoreFile = this.keystoreResource.getFile();
+            try (final FileOutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {
                 ks.store(fos, password);
                 fos.flush();
             }
+
+            final File signingCertEncoded = getSigningBase64CertificatePath();
+            writeEncodedCertificateToFile(signingCertEncoded, certificate.getEncoded());
+
+            final File signingCertBinary = getSigningBinaryCertificatePath();
+            writeBinaryCertificateToFile(signingCertBinary, certificate.getEncoded());
+
+            final File signingKeyEncoded = getSigningKeyFile();
+            writeEncodedCertificateToFile(signingKeyEncoded, signingKey.getEncoded());
 
             LOGGER.info("Created keystore {} with key alias {} ",
                 keystoreResource.getFile().getCanonicalPath(),
                 ks.aliases().nextElement());
         } catch (final Exception e) {
             throw new SAMLException("Could not create keystore", e);
+        }
+    }
+
+    public File getSigningBinaryCertificatePath() throws IOException {
+        return new File(keystoreResource.getFile().getParentFile(), "saml-signing-cert.crt");
+    }
+
+    public File getSigningBase64CertificatePath() throws IOException {
+        return new File(keystoreResource.getFile().getParentFile(), "saml-signing-cert.pem");
+    }
+
+    public File getSigningKeyFile() throws IOException {
+        return new File(keystoreResource.getFile().getParentFile(), "saml-signing-cert.key");
+    }
+
+    private static void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
+        if (file.exists()) {
+            final boolean res = file.delete();
+            LOGGER.debug("Deleted file [{}]:{}", file, res);
+        }
+        try (final FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(certificate);
+            fos.flush();
+        } catch (final Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    private static void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
+        if (file.exists()) {
+            final boolean res = file.delete();
+            LOGGER.debug("Deleted file [{}]:{}", file, res);
+        }
+        final Base64 encoder = new Base64();
+        try (final FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(X509Factory.BEGIN_CERT.getBytes(StandardCharsets.UTF_8));
+            fos.write("\n".getBytes(StandardCharsets.UTF_8));
+            encoder.encode(certificate, fos);
+            fos.write(X509Factory.END_CERT.getBytes(StandardCharsets.UTF_8));
+            fos.flush();
+        } catch (final Exception e) {
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

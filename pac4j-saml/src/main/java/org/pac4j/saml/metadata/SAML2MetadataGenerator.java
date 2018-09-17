@@ -4,16 +4,14 @@ import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.opensaml.core.xml.XMLObjectBuilder;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
-import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
@@ -26,13 +24,11 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.opensaml.xmlsec.signature.Signature;
-import org.opensaml.xmlsec.signature.support.SignatureConstants;
-import org.opensaml.xmlsec.signature.support.Signer;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -48,7 +44,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
-    protected final static Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
 
     protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
@@ -74,8 +70,6 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected String nameIdPolicyFormat = null;
 
-    protected boolean signMetadata;
-
     protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
 
     public SAML2MetadataGenerator(final String binding) {
@@ -83,21 +77,20 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     @Override
-    public final MetadataResolver buildMetadataResolver() throws Exception {
-        final EntityDescriptor md = buildEntityDescriptor();
-        final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
-        final DOMMetadataResolver resolver = new DOMMetadataResolver(entityDescriptorElement);
+    public final MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
+        final FilesystemMetadataResolver resolver = new FilesystemMetadataResolver(metadataResource.getFile());
         resolver.setRequireValidMetadata(true);
         resolver.setFailFastInitialization(true);
         resolver.setId(resolver.getClass().getCanonicalName());
+        resolver.setParserPool(Configuration.getParserPool());
         resolver.initialize();
         return resolver;
     }
 
     @Override
-    public final String getMetadata() throws Exception {
-        final EntityDescriptor md = buildEntityDescriptor();
-        final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+    public final String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
+        final Element entityDescriptorElement = this.marshallerFactory
+            .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME).marshall(entityDescriptor);
         return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
@@ -111,30 +104,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         descriptor.setID(generateEntityDescriptorId());
         descriptor.setExtensions(generateMetadataExtensions());
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
-
-        if (this.signMetadata && credentialProvider != null) {
-            final boolean result = signMetadata(descriptor);
-            logger.info("SAML entity descriptor was signed: {}", result);
-        }
         return descriptor;
-    }
-
-    private boolean signMetadata(final SignableSAMLObject signableSAMLObject) {
-        final XMLObjectBuilder sigBuilder = this.builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-        final Signature signature = (Signature) sigBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
-        signature.setSigningCredential(this.credentialProvider.getCredential());
-        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);
-        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        signature.setKeyInfo(this.credentialProvider.getKeyInfo());
-        signableSAMLObject.setSignature(signature);
-        try {
-            Configuration.getMarshallerFactory().getMarshaller(signableSAMLObject).marshall(signableSAMLObject);
-            Signer.signObject(signature);
-            return true;
-        } catch (final Exception e) {
-            logger.error("Error happened during signing object", e);
-        }
-        return false;
     }
 
     protected final Extensions generateMetadataExtensions() {
@@ -378,14 +348,6 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
-    }
-
-    public boolean isSignMetadata() {
-        return signMetadata;
-    }
-
-    public void setSignMetadata(final boolean signMetadata) {
-        this.signMetadata = signMetadata;
     }
 
     public List<SAML2ServiceProvicerRequestedAttribute> getRequestedAttributes() {
