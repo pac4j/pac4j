@@ -653,7 +653,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private static void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
-            file.delete();
+            final boolean res = file.delete();
+            LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
         try (final FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(certificate);
@@ -665,7 +666,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private static void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
-            file.delete();
+            final boolean res = file.delete();
+            LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
         final Base64 encoder = new Base64();
         try (final FileOutputStream fos = new FileOutputStream(file)) {
