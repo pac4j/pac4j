@@ -122,7 +122,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
             entityDescriptor = this.metadata.resolveSingle(set);
             if (entityDescriptor == null) {
-                throw new SAMLException("Cannot find entity " + entityId + " in metadata provider");
+                throw new SAMLException("Cannot find entity " + entityId.getEntityId() + " in metadata provider");
             }
             final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
