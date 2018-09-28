@@ -20,7 +20,6 @@ public class WeiboClient extends OAuth20Client<WeiboProfile> {
 
     /**
      * WeiboScope.
-     * <p>
      * <p>More info at: <a href=
      * "http://open.weibo.com/wiki/Scope">Scope</a></p>
      */
