@@ -36,8 +36,6 @@ import java.util.Map;
 public final class Configuration {
     protected static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
-    private static BasicParserPool parserPool;
-
     private Configuration() {
     }
 
@@ -47,40 +45,6 @@ public final class Configuration {
     }
 
     private static void bootstrap() {
-        parserPool = new BasicParserPool();
-        parserPool.setMaxPoolSize(100);
-        parserPool.setCoalescing(true);
-        parserPool.setIgnoreComments(true);
-        parserPool.setNamespaceAware(true);
-        parserPool.setExpandEntityReferences(false);
-        parserPool.setXincludeAware(false);
-        parserPool.setIgnoreElementContentWhitespace(true);
-
-        final Map<String, Object> builderAttributes = new HashMap<String, Object>();
-        parserPool.setBuilderAttributes(builderAttributes);
-
-        final Map<String, Boolean> features = new HashMap<>();
-        features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
-        features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
-        features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
-        features.put("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
-        features.put("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
-
-        parserPool.setBuilderFeatures(features);
-
-        try {
-            parserPool.initialize();
-        } catch (final ComponentInitializationException e) {
-            throw new RuntimeException("Exception initializing parserPool", e);
-        }
-
-
-        try {
-            InitializationService.initialize();
-        } catch (final InitializationException e) {
-            throw new RuntimeException("Exception initializing OpenSAML", e);
-        }
-
         XMLObjectProviderRegistry registry;
         synchronized (ConfigurationService.class) {
             registry = ConfigurationService.get(XMLObjectProviderRegistry.class);
@@ -90,11 +54,50 @@ public final class Configuration {
             }
         }
 
+        if (!System.getProperty("skipPac4jOpenSAMLinit", "false").equals("true")) {
+            try {
+                InitializationService.initialize();
+            } catch (final InitializationException e) {
+                throw new RuntimeException("Exception initializing OpenSAML", e);
+            }
+        }
+
+        ParserPool parserPool = initParserPool();
         registry.setParserPool(parserPool);
     }
 
+    private static ParserPool initParserPool() {
+
+        try {
+            BasicParserPool parserPool = new BasicParserPool();
+            parserPool.setMaxPoolSize(100);
+            parserPool.setCoalescing(true);
+            parserPool.setIgnoreComments(true);
+            parserPool.setNamespaceAware(true);
+            parserPool.setExpandEntityReferences(false);
+            parserPool.setXincludeAware(false);
+            parserPool.setIgnoreElementContentWhitespace(true);
+
+            final Map<String, Object> builderAttributes = new HashMap<String, Object>();
+            parserPool.setBuilderAttributes(builderAttributes);
+
+            final Map<String, Boolean> features = new HashMap<>();
+            features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
+            features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
+            features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
+            features.put("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
+            features.put("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
+
+            parserPool.setBuilderFeatures(features);
+            parserPool.initialize();
+            return parserPool;
+        } catch (final ComponentInitializationException e) {
+            throw new RuntimeException("Exception initializing parserPool", e);
+        }
+    }
+
     public static ParserPool getParserPool() {
-        return parserPool;
+        return XMLObjectProviderRegistrySupport.getParserPool();
     }
 
     public static XMLObjectBuilderFactory getBuilderFactory() {

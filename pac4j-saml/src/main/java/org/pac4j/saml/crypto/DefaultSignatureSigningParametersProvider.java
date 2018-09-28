@@ -7,7 +7,7 @@ import org.opensaml.saml.security.impl.SAMLMetadataSignatureSigningParametersRes
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
 import org.opensaml.xmlsec.SignatureSigningParameters;
-import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.criterion.SignatureSigningConfigurationCriterion;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
