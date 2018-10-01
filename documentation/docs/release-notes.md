@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.3.0**:
+
+
 **v3.2.0**:
 
 - Allow to set the `profileId` for the `GenericOAuth20Client`
