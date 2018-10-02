@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v3.3.0**:
 
 - Improve SAML support: always return a default key which is a private one, add a SingleLogoutService URL in the SP metadata, make local and central logouts work together
+- Default state generation can be overriden by your own `StateGenerator` for the OAuth, OpenID Connect and SAML protocols
 
 **v3.2.0**:
 
