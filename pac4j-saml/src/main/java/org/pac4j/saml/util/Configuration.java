@@ -37,7 +37,7 @@ import javax.annotation.Priority;
  *
  * Uses the Java service API to find an instance of {@link ConfigurationManager} to do the actual configuration. Will
  * use the implementation with the lowest {@link Priority} annotation. If none are found, a relatively sane
- * implementation, {@link DefaultConfigurationManager}, will be used.
+ * implementation, {@link DefaultConfigurationManager}, will be used. The default priority is 100.
  *
  * @see ServiceLoader
  *
@@ -67,9 +67,9 @@ public final class Configuration {
             p2 = p2a.value();
         }
         if (p1 < p2) {
-            return 1;
-        } else if (p1 > p2) {
             return -1;
+        } else if (p1 > p2) {
+            return 1;
         } else {
             return obj2.getClass().getSimpleName().compareTo(obj1.getClass().getSimpleName());
         }
