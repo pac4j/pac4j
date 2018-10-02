@@ -8,8 +8,8 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.state.StateGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -35,6 +35,7 @@ import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
+import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
 import java.util.ArrayList;
@@ -50,8 +51,6 @@ import java.util.List;
  * @since 1.5.0
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
-
-    public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
     protected CredentialProvider credentialProvider;
 
@@ -72,6 +71,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected Decrypter decrypter;
 
     protected SAML2ClientConfiguration configuration;
+
+    protected StateGenerator stateGenerator = new SAML2StateGenerator(this);
 
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
@@ -186,15 +187,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return metadataManager;
     }
 
-    public String getStateParameter(final WebContext webContext) {
-        final String relayState = (String) webContext.getSessionStore().get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
-        // clean from session after retrieving it
-        if (relayState != null) {
-            webContext.getSessionStore().set(webContext, SAML_RELAY_STATE_ATTRIBUTE, "");
-        }
-        return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
-    }
-
     public final SAML2ResponseValidator getResponseValidator() {
         return this.responseValidator;
     }
@@ -237,5 +229,14 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     public SAML2SignatureTrustEngineProvider getSignatureTrustEngineProvider() {
         return signatureTrustEngineProvider;
+    }
+
+    public StateGenerator getStateGenerator() {
+        return stateGenerator;
+    }
+
+    public void setStateGenerator(final StateGenerator stateGenerator) {
+        CommonHelper.assertNotNull("stateGenerator", stateGenerator);
+        this.stateGenerator = stateGenerator;
     }
 }

@@ -46,7 +46,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
     @Override
     public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         final SAML2MessageContext samlContext = this.client.getContextProvider().buildContext(context);
-        final String relayState = this.client.getStateParameter(context);
+        final String relayState = this.client.getStateGenerator().generateState(context);
 
         final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, currentProfile);
         this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
