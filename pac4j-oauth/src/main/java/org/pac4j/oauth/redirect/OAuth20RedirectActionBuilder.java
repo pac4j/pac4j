@@ -37,18 +37,15 @@ public class OAuth20RedirectActionBuilder implements RedirectActionBuilder {
     public RedirectAction redirect(final WebContext context) {
         try {
 
-            final OAuth20Service service;
-            // with state: generate a state, save it in session and build a new service with this state
-            if (this.configuration.isWithState()) {
-                final String state = getStateParameter();
+            final String state;
+            if (configuration.isWithState()) {
+                state = this.configuration.getStateGenerator().generateState(context);
                 logger.debug("save sessionState: {}", state);
-                context.getSessionStore().set(context, this.configuration.getStateSessionAttributeName(client.getName()), state);
-
-                service = this.configuration.buildService(context, client, state);
+                context.getSessionStore().set(context, configuration.getStateSessionAttributeName(client.getName()), state);
             } else {
-
-                service = this.configuration.buildService(context, client, null);
+                state = null;
             }
+            final OAuth20Service service = this.configuration.buildService(context, client, state);
             final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return RedirectAction.redirect(authorizationUrl);
@@ -56,16 +53,5 @@ public class OAuth20RedirectActionBuilder implements RedirectActionBuilder {
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
-    }
-
-    protected String getStateParameter() {
-        final String stateData = this.configuration.getStateData();
-        final String stateParameter;
-        if (CommonHelper.isNotBlank(stateData)) {
-            stateParameter = stateData;
-        } else {
-            stateParameter = CommonHelper.randomString(10);
-        }
-        return stateParameter;
     }
 }

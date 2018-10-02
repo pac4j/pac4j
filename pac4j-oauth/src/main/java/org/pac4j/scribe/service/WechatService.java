@@ -30,15 +30,15 @@ public class WechatService extends OAuth20Service {
      * Default constructor
      *
      * @param api    OAuth2.0 api information
-     * @param apiKey
-     * @param apiSecret
-     * @param callback
-     * @param scope
-     * @param state
-     * @param responseType
-     * @param userAgent
-     * @param httpClientConfig
-     * @param httpClient 
+     * @param apiKey the API key
+     * @param apiSecret the API secret
+     * @param callback the callback URL
+     * @param scope the scope
+     * @param state the state
+     * @param responseType the response type
+     * @param userAgent the user agent
+     * @param httpClientConfig the HTTP client configuration
+     * @param httpClient  the HTTP client
      * 
      */
     public WechatService(DefaultApi20 api, String apiKey, String apiSecret, String callback, String scope, String state,

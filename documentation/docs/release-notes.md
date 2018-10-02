@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.3.0**:
+
+- Improve SAML support: always return a default key which is a private one, add a SingleLogoutService URL in the SP metadata, make local and central logouts work together
+- Default state generation can be overriden by your own `StateGenerator` for the OAuth, OpenID Connect and SAML protocols
+
 **v3.2.0**:
 
 - Allow to set the `profileId` for the `GenericOAuth20Client`
@@ -10,7 +15,8 @@ title: Release notes&#58;
 - Optionally sign or specificy requested attributes in the SAML SP metadata
 - Update to Scribejava v5.6.0
 - Added support for HiOrg-Server (OAuth)
-- Revised OAuth error handling for extracting user profiles. Now, an exception is thrown instead of returning an empty profile.
+- Revised OAuth error handling for extracting user profiles. Now, an exception is thrown instead of returning an empty profile
+- Fix the `Access-Control-Expose-Headers` name and the `Access-Control-Allow-Credentials` header verification
 
 **v3.1.0**:
 

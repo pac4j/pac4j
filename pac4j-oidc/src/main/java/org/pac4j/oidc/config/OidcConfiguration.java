@@ -9,6 +9,8 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.state.StateGenerator;
+import org.pac4j.core.state.StaticOrRandomStateGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -96,7 +98,7 @@ public class OidcConfiguration extends InitializableObject {
 
     private boolean withState;
 
-    private String stateData;
+    private StateGenerator stateGenerator = new StaticOrRandomStateGenerator();
 
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
     private boolean expireSessionWithToken = false;
@@ -314,12 +316,14 @@ public class OidcConfiguration extends InitializableObject {
         this.withState = withState;
     }
 
+    @Deprecated
     public String getStateData() {
-        return stateData;
+        return ((StaticOrRandomStateGenerator) stateGenerator).getStateData();
     }
 
+    @Deprecated
     public void setStateData(final String stateData) {
-        this.stateData = stateData;
+        ((StaticOrRandomStateGenerator) stateGenerator).setStateData(stateData);
     }
 
     public boolean isExpireSessionWithToken() {
@@ -338,6 +342,15 @@ public class OidcConfiguration extends InitializableObject {
         this.tokenExpirationAdvance = tokenExpirationAdvance;
     }
 
+    public StateGenerator getStateGenerator() {
+        return stateGenerator;
+    }
+
+    public void setStateGenerator(final StateGenerator stateGenerator) {
+        CommonHelper.assertNotNull("stateGenerator", stateGenerator);
+        this.stateGenerator = stateGenerator;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -346,6 +359,6 @@ public class OidcConfiguration extends InitializableObject {
             "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
-            "withState", withState, "stateData", stateData);
+            "withState", withState, "stateGenerator", stateGenerator);
     }
 }
