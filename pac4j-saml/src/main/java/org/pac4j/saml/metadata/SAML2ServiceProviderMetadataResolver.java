@@ -70,10 +70,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     }
 
     private MetadataResolver prepareServiceProviderMetadata() {
-        final boolean credentialProviderRequired = configuration.isAuthnRequestSigned() || configuration.isWantsAssertionsSigned();
+        final boolean credentialProviderRequired = configuration.isAuthnRequestSigned() || configuration.isSignMetadata();
         if (credentialProviderRequired && this.credentialProvider == null) {
             throw new TechnicalException("Credentials Provider can not be null when authnRequestSigned or" +
-                " wantsAssertionsSigned is set to true");
+                " signMetadata is set to true");
         }
 
         try {
