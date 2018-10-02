@@ -52,7 +52,7 @@ import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
 import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
-import org.pac4j.saml.util.UriUtils;
+import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -263,7 +263,7 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
     
                 final URI recipientUri = new URI(data.getRecipient());
                 final URI appEndpointUri = new URI(endpoint.getLocation());
-                if (!UriUtils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
+                if (!SAML2Utils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
                     logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. " 
                         + "SP ACS URL from context: {}", recipientUri, appEndpointUri);
                     return false;
