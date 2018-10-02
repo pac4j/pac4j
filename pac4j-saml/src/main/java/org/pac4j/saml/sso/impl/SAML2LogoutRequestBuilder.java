@@ -1,26 +1,20 @@
 package org.pac4j.saml.sso.impl;
 
-import java.util.Optional;
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
-import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.SessionIndex;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
-import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.SAML2Profile;
-import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
+import org.pac4j.saml.util.SAML2Utils;
 
 /**
  * Build a SAML2 Logout Request
@@ -28,10 +22,9 @@ import org.pac4j.saml.util.Configuration;
  * @author Matthieu Taggiasco
  * @since 2.0.0
  */
+public class SAML2LogoutRequestBuilder {
 
-public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutRequest> {
-
-    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+    private String bindingType;
 
     private int issueInstantSkewSeconds = 0;
 
@@ -47,17 +40,15 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
         this.bindingType = bindingType;
     }
 
-    @Override
-    public LogoutRequest build(SAML2MessageContext context) {
+    public LogoutRequest build(final SAML2MessageContext context, final SAML2Profile profile) {
         final SingleLogoutService ssoService = context.getIDPSingleLogoutService(this.bindingType);
-        final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService();
-        return buildLogoutRequest(context, assertionConsumerService, ssoService);
+        return buildLogoutRequest(context, ssoService, profile);
     }
 
     @SuppressWarnings("unchecked")
     protected final LogoutRequest buildLogoutRequest(final SAML2MessageContext context,
-                                                     final AssertionConsumerService assertionConsumerService,
-                                                     final SingleLogoutService ssoService) {
+                                                     final SingleLogoutService ssoService,
+                                                     final SAML2Profile profile) {
 
         final SAMLObjectBuilder<LogoutRequest> builder = (SAMLObjectBuilder<LogoutRequest>) this.builderFactory
             .getBuilder(LogoutRequest.DEFAULT_ELEMENT_NAME);
@@ -65,35 +56,29 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
 
         final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
 
-        request.setID(generateID());
+        request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
         request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
         request.setDestination(ssoService.getLocation());
 
-        // very very bad...
-        ProfileManager manager = new ProfileManager(context.getWebContext());
-        Optional<UserProfile> p = manager.get(true);
-        if (p.isPresent() && p.get() instanceof SAML2Profile) {
-            final SAML2Profile samlP = (SAML2Profile) p.get();
-            // name id added (id of profile)
-            final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory
-                .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
-            final NameID nameId = nameIdBuilder.buildObject();
-            nameId.setValue(samlP.getId());
-            nameId.setFormat(samlP.getSamlNameIdFormat());
-            nameId.setNameQualifier(samlP.getSamlNameIdNameQualifier());
-            nameId.setSPNameQualifier(samlP.getSamlNameIdSpNameQualifier());
-            nameId.setSPProvidedID(samlP.getSamlNameIdSpProviderId());
-            request.setNameID(nameId);
-            // session index added
-            final String sessIdx = (String) samlP.getAttribute("sessionindex");
-            final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
-                .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
-            final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
-            sessionIdx.setSessionIndex(sessIdx);
-            request.getSessionIndexes().add(sessionIdx);
-        }
+        // name id added (id of profile)
+        final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory
+            .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
+        final NameID nameId = nameIdBuilder.buildObject();
+        nameId.setValue(profile.getId());
+        nameId.setFormat(profile.getSamlNameIdFormat());
+        nameId.setNameQualifier(profile.getSamlNameIdNameQualifier());
+        nameId.setSPNameQualifier(profile.getSamlNameIdSpNameQualifier());
+        nameId.setSPProvidedID(profile.getSamlNameIdSpProviderId());
+        request.setNameID(nameId);
+        // session index added
+        final String sessIdx = (String) profile.getAttribute("sessionindex");
+        final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
+            .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
+        final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
+        sessionIdx.setSessionIndex(sessIdx);
+        request.getSessionIndexes().add(sessionIdx);
 
         return request;
     }
@@ -105,10 +90,6 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
         final Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         return issuer;
-    }
-
-    protected final String generateID() {
-        return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
     }
 
     public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
