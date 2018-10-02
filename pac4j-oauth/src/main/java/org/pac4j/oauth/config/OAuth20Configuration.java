@@ -2,6 +2,9 @@ package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.state.StateGenerator;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.state.StaticOrRandomStateGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +28,7 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
     private boolean withState;
 
-    private String stateData;
+    private StateGenerator stateGenerator = new StaticOrRandomStateGenerator();
 
     /**
      * Return the name of the attribute storing the state in session.
@@ -53,11 +56,22 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
         this.withState = withState;
     }
 
+    @Deprecated
     public String getStateData() {
-        return stateData;
+        return ((StaticOrRandomStateGenerator) stateGenerator).getStateData();
     }
 
+    @Deprecated
     public void setStateData(final String stateData) {
-        this.stateData = stateData;
+        ((StaticOrRandomStateGenerator) stateGenerator).setStateData(stateData);
+    }
+
+    public StateGenerator getStateGenerator() {
+        return stateGenerator;
+    }
+
+    public void setStateGenerator(final StateGenerator stateGenerator) {
+        CommonHelper.assertNotNull("stateGenerator", stateGenerator);
+        this.stateGenerator = stateGenerator;
     }
 }
