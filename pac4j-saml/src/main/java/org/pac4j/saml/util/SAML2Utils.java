@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * URI utilities.
+ * SAML2 utilities.
  * 
  * @author jkacer
  * @since 1.8.0
