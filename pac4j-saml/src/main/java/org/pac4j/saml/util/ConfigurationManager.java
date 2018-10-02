@@ -8,7 +8,7 @@ package org.pac4j.saml.util;
  *
  * @see java.util.ServiceLoader
  *
- * @since 3.2.0
+ * @since 3.3.0
  */
 public interface ConfigurationManager {
     void configure();
