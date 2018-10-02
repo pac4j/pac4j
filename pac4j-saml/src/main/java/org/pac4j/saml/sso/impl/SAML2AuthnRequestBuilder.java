@@ -1,10 +1,8 @@
-
 package org.pac4j.saml.sso.impl;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -13,7 +11,6 @@ import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
-import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -30,6 +27,7 @@ import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
+import org.pac4j.saml.util.SAML2Utils;
 
 /**
  * Build a SAML2 Authn Request from the given {@link MessageContext}.
@@ -37,7 +35,6 @@ import org.pac4j.saml.util.Configuration;
  * @author Michael Remond
  * @since 1.5.0
  */
-
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
 
     private final boolean forceAuth;
@@ -45,13 +42,13 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     private final AuthnContextComparisonTypeEnumeration comparisonType;
 
-    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+    private String bindingType;
 
-    private String authnContextClassRef = null;
+    private String authnContextClassRef;
 
-    private String nameIdPolicyFormat = null;
+    private String nameIdPolicyFormat;
     
-    private boolean useNameQualifier = true;
+    private boolean useNameQualifier;
 
     private int issueInstantSkewSeconds = 0;
 
@@ -114,7 +111,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
         final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
 
-        request.setID(generateID());
+        request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
         request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
@@ -163,10 +160,6 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             issuer.setNameQualifier(spEntityId);
         }
         return issuer;
-    }
-
-    protected final String generateID() {
-        return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
     }
 
     protected final AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {

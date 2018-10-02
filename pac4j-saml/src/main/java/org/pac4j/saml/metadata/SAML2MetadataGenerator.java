@@ -1,7 +1,6 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -26,6 +25,7 @@ import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
+import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -101,7 +101,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         final EntityDescriptor descriptor = builder.buildObject();
         descriptor.setEntityID(this.entityId);
         descriptor.setValidUntil(DateTime.now(DateTimeZone.UTC).plusYears(20));
-        descriptor.setID(generateEntityDescriptorId());
+        descriptor.setID(SAML2Utils.generateID());
         descriptor.setExtensions(generateMetadataExtensions());
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
         return descriptor;
@@ -160,14 +160,6 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return extensions;
     }
 
-    protected final String generateEntityDescriptorId() {
-        try {
-            return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     protected final SPSSODescriptor buildSPSSODescriptor() {
         final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>)
             this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
@@ -198,9 +190,10 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
         int index = 0;
-        // Fix the POST binding for the response instead of using the binding of the request
+        // Use POST binding for received responses and logout requests
         spDescriptor.getAssertionConsumerServices()
             .add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
+        spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_BINDING_URI));
 
         if (credentialProvider != null) {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, this.credentialProvider.getKeyInfo()));
@@ -257,7 +250,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return formats;
     }
 
-    protected final AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
+    protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
                                                                          final boolean isDefault) {
         final SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
             .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);

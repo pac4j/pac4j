@@ -10,7 +10,6 @@ import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.SAML2Profile;
-import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.SAML2ProfileHandler;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.sso.impl.*;
@@ -24,7 +23,7 @@ import org.pac4j.saml.transport.Pac4jSAMLResponse;
  */
 public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutActionBuilder<U> {
 
-    protected SAML2ObjectBuilder<LogoutRequest> saml2LogoutObjectBuilder;
+    protected SAML2LogoutRequestBuilder saml2LogoutRequestBuilder;
 
     protected SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
 
@@ -36,7 +35,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         CommonHelper.assertNotNull("client", client);
         this.client = client;
         final SAML2ClientConfiguration cfg = client.getConfiguration();
-        this.saml2LogoutObjectBuilder = new SAML2LogoutRequestBuilder(cfg.getDestinationBindingType());
+        this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(cfg.getDestinationBindingType());
         this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.client.getSignatureTrustEngineProvider());
         this.logoutProfileHandler = new SAML2LogoutProfileHandler(
                 new SAML2LogoutMessageSender(this.client.getSignatureSigningParametersProvider(),
@@ -49,7 +48,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         final SAML2MessageContext samlContext = this.client.getContextProvider().buildContext(context);
         final String relayState = this.client.getStateParameter(context);
 
-        final LogoutRequest logoutRequest = this.saml2LogoutObjectBuilder.build(samlContext);
+        final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, currentProfile);
         this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
         final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
