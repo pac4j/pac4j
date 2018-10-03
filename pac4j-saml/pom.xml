@@ -22,6 +22,8 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.1</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
+        <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
+        <httpcore.version>4.4.8</httpcore.version>
     </properties>
 
     <dependencies>
@@ -152,6 +154,11 @@
             <scope>compile</scope>
             <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${httpcore.version}</version>
+        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -190,11 +197,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.8</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
