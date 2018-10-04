@@ -8,6 +8,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.state.StateGenerator;
 import org.pac4j.core.util.CommonHelper;
@@ -107,9 +108,19 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
         defaultRedirectActionBuilder(new SAML2RedirectActionBuilder(this));
         defaultCredentialsExtractor(ctx -> {
-            final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
-            final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            return credentials;
+            // SAML authn response
+            if (ContextHelper.isPost(ctx)) {
+                final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
+                final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
+                return credentials;
+            } else if (ContextHelper.isGet(ctx)) {
+                // SAML logout request
+                // currently ignored
+                logger.info("Not supported: ignoring SAML logout request");
+                return null;
+            } else {
+                throw new TechnicalException("Unexpected HTTP method SAML call: " + ctx.getRequestMethod());
+            }
         });
         defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId()));
         defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));

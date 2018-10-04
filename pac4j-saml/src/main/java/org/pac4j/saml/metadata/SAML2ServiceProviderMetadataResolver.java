@@ -70,21 +70,14 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     }
 
     private MetadataResolver prepareServiceProviderMetadata() {
-        final boolean credentialProviderRequired = configuration.isAuthnRequestSigned() || configuration.isSignMetadata();
-        if (credentialProviderRequired && this.credentialProvider == null) {
-            throw new TechnicalException("Credentials Provider can not be null when authnRequestSigned or" +
-                " signMetadata is set to true");
-        }
-
         try {
             final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator(configuration.getDestinationBindingType());
             metadataGenerator.setWantAssertionSigned(configuration.isWantsAssertionsSigned());
             metadataGenerator.setAuthnRequestSigned(configuration.isAuthnRequestSigned());
             metadataGenerator.setNameIdPolicyFormat(configuration.getNameIdPolicyFormat());
             metadataGenerator.setRequestedAttributes(configuration.getRequestedServiceProviderAttributes());
-            if (credentialProviderRequired) {
-                metadataGenerator.setCredentialProvider(this.credentialProvider);
-            }
+
+            metadataGenerator.setCredentialProvider(this.credentialProvider);
 
             metadataGenerator.setEntityId(configuration.getServiceProviderEntityId());
             metadataGenerator.setRequestInitiatorLocation(callbackUrl);
