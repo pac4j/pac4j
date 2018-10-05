@@ -193,7 +193,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         // Use POST binding for received responses and logout requests
         spDescriptor.getAssertionConsumerServices()
             .add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
-        spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_BINDING_URI));
+        spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_REDIRECT_BINDING_URI));
 
         if (credentialProvider != null) {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, this.credentialProvider.getKeyInfo()));
