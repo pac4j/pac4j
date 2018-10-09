@@ -66,15 +66,9 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected String requestInitiatorLocation = null;
 
-    protected String binding;
-
     protected String nameIdPolicyFormat = null;
 
     protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
-
-    public SAML2MetadataGenerator(final String binding) {
-        this.binding = binding;
-    }
 
     @Override
     public final MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
@@ -190,10 +184,10 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
         int index = 0;
-        // Use POST binding for received responses and logout requests
+        // Use POST binding for authn responses and IdP logout requests
         spDescriptor.getAssertionConsumerServices()
             .add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
-        spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_REDIRECT_BINDING_URI));
+        spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_BINDING_URI));
 
         if (credentialProvider != null) {
             spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, this.credentialProvider.getKeyInfo()));
