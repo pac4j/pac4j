@@ -92,7 +92,9 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private String comparisonType = null;
 
-    private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+    private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
+    private String spLogoutRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     private String authnContextClassRef = null;
 
@@ -386,12 +388,40 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.comparisonType = comparisonType;
     }
 
+    /**
+     * Use {@link #getAuthnRequestBindingType()}.
+     *
+     * @return the authn request binding type
+     */
+    @Deprecated
     public String getDestinationBindingType() {
-        return destinationBindingType;
+        return getAuthnRequestBindingType();
     }
 
+    /**
+     * Use {@link #setAuthnRequestBindingType(String)}.
+     *
+     * @param destinationBindingType the authn request binding type
+     */
+    @Deprecated
     public void setDestinationBindingType(final String destinationBindingType) {
-        this.destinationBindingType = destinationBindingType;
+        setAuthnRequestBindingType(destinationBindingType);
+    }
+
+    public String getAuthnRequestBindingType() {
+        return authnRequestBindingType;
+    }
+
+    public void setAuthnRequestBindingType(final String authnRequestBindingType) {
+        this.authnRequestBindingType = authnRequestBindingType;
+    }
+
+    public String getSpLogoutRequestBindingType() {
+        return spLogoutRequestBindingType;
+    }
+
+    public void setSpLogoutRequestBindingType(final String spLogoutRequestBindingType) {
+        this.spLogoutRequestBindingType = spLogoutRequestBindingType;
     }
 
     public String getAuthnContextClassRef() {

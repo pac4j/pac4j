@@ -35,11 +35,11 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         CommonHelper.assertNotNull("client", client);
         this.client = client;
         final SAML2ClientConfiguration cfg = client.getConfiguration();
-        this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(cfg.getDestinationBindingType());
+        this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(cfg.getSpLogoutRequestBindingType());
         this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.client.getSignatureTrustEngineProvider());
         this.logoutProfileHandler = new SAML2LogoutProfileHandler(
                 new SAML2LogoutMessageSender(this.client.getSignatureSigningParametersProvider(),
-                        cfg.getDestinationBindingType(), false, cfg.isAuthnRequestSigned()),
+                        cfg.getSpLogoutRequestBindingType(), false, cfg.isAuthnRequestSigned()),
                 new SAML2WebSSOMessageReceiver(this.logoutResponseValidator));
     }
 
@@ -52,7 +52,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
         final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
-        if (this.client.getConfiguration().getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+        if (this.client.getConfiguration().getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
             final String content = adapter.getOutgoingContent();
             return RedirectAction.success(content);
         }

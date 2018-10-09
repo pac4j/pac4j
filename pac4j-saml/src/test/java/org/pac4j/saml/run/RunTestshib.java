@@ -45,7 +45,7 @@ public class RunTestshib extends RunClient {
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "test-sp-metadata.xml").getAbsolutePath()));
-        cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+        cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
         final SAML2Client client = new SAML2Client(cfg);
         client.setCallbackUrl(PAC4J_URL);
         return client;
