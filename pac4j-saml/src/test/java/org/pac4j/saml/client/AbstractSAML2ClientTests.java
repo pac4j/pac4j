@@ -30,7 +30,7 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
                         new ClassPathResource("testshib-providers.xml"));
 
         cfg.setMaximumAuthenticationLifetime(3600);
-        cfg.setDestinationBindingType(getDestinationBindingType());
+        cfg.setAuthnRequestBindingType(getAuthnRequestBindingType());
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setForceServiceProviderMetadataGeneration(true);
         cfg.setForceKeystoreGeneration(true);
@@ -43,5 +43,5 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
 
     protected abstract String getCallbackUrl();
 
-    protected abstract String getDestinationBindingType();
+    protected abstract String getAuthnRequestBindingType();
 }

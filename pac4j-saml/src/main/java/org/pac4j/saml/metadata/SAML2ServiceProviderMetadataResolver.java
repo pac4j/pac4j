@@ -11,6 +11,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -38,6 +39,7 @@ import java.util.List;
  * @since 1.7
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
+
     protected static final Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
 
     private final CredentialProvider credentialProvider;
@@ -71,7 +73,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     private MetadataResolver prepareServiceProviderMetadata() {
         try {
-            final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator(configuration.getDestinationBindingType());
+            final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
             metadataGenerator.setWantAssertionSigned(configuration.isWantsAssertionsSigned());
             metadataGenerator.setAuthnRequestSigned(configuration.isAuthnRequestSigned());
             metadataGenerator.setNameIdPolicyFormat(configuration.getNameIdPolicyFormat());
@@ -81,10 +83,11 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
             metadataGenerator.setEntityId(configuration.getServiceProviderEntityId());
             metadataGenerator.setRequestInitiatorLocation(callbackUrl);
-            // Assertion consumer service url is the callback url
+            // Assertion consumer service url is the callback URL
             metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
-            // for now same for logout url
-            metadataGenerator.setSingleLogoutServiceUrl(callbackUrl);
+            final String logoutUrl = CommonHelper.addParameter(callbackUrl, SAML2Client.IDP_LOGOUT_REQUEST_EXTRA_PARAMETER, "true");
+            // the logout URL is callback URL with an extra parameter
+            metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
 
             // Initialize metadata provider for our SP and get the XML as a String
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();

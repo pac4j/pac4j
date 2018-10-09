@@ -71,7 +71,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Override
-    protected String getDestinationBindingType() {
+    protected String getAuthnRequestBindingType() {
         return SAMLConstants.SAML2_POST_BINDING_URI;
     }
 
