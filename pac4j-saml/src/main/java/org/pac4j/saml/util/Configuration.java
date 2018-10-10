@@ -75,10 +75,6 @@ public final class Configuration {
             configurationManagerList.sort(Configuration::compareManagers);
             configurationManagerList.get(0).configure();
         }
-
-        for (ConfigurationManager configurationManager : configurationManagers) {
-            configurationManager.configure();
-        }
     }
 
 
