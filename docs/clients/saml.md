@@ -270,3 +270,81 @@ SimpleSAMLphp exposes his IdP metadata on `http://idp-domain/simplesamlphp/saml2
 	</md:EntityDescriptor>
 </md:EntitiesDescriptor>
 ```
+
+### Custom OpenSAML bootstrap
+
+Behind the scenes, OpenSAML uses a singleton registry to hold its configuration (builders, marshallers, parsers, etc).
+While pac4j ships with generally sane defaults for this configuration
+(see `org.pac4j.saml.util.Configuration$DefaultConfigurationManager`), it might be useful for a developer to override
+this configuration.
+
+Pac4j uses a Java service provider to find a configuration class and bootstrap the OpenSAML libraries. It will load all
+implementations of `org.pac4j.saml.util.Configuration` it can find on the classpath and use the one with the `javax.annotation.Priority` value.
+
+To use a custom configuration, one must add a jar with the following to the classpath:
+
+1. Implementation of `org.pac4j.saml.util.Configuration`. This implementation should have a `javax.annotation.Priority` annotation
+denoting the priority. The lowest value is the one that will ultimately be used configuration. The default implementation has
+and effective priority of `100`. Generic providers likely should use something like `50`, while end user implementors should
+use `1`.  for example:
+
+    ```java
+    @Priority(100)
+    public static class DefaultConfigurationManager implements ConfigurationManager {
+        @Override
+        public void configure() {
+            XMLObjectProviderRegistry registry;
+            synchronized (ConfigurationService.class) {
+                registry = ConfigurationService.get(XMLObjectProviderRegistry.class);
+                if (registry == null) {
+                    registry = new XMLObjectProviderRegistry();
+                    ConfigurationService.register(XMLObjectProviderRegistry.class, registry);
+                }
+            }
+
+            try {
+                InitializationService.initialize();
+            } catch (final InitializationException e) {
+                throw new RuntimeException("Exception initializing OpenSAML", e);
+            }
+
+            ParserPool parserPool = initParserPool();
+            registry.setParserPool(parserPool);
+        }
+
+        private static ParserPool initParserPool() {
+
+            try {
+                BasicParserPool parserPool = new BasicParserPool();
+                parserPool.setMaxPoolSize(100);
+                parserPool.setCoalescing(true);
+                parserPool.setIgnoreComments(true);
+                parserPool.setNamespaceAware(true);
+                parserPool.setExpandEntityReferences(false);
+                parserPool.setXincludeAware(false);
+                parserPool.setIgnoreElementContentWhitespace(true);
+
+                final Map<String, Object> builderAttributes = new HashMap<String, Object>();
+                parserPool.setBuilderAttributes(builderAttributes);
+
+                final Map<String, Boolean> features = new HashMap<>();
+                features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
+                features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
+                features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
+                features.put("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
+                features.put("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
+
+                parserPool.setBuilderFeatures(features);
+                parserPool.initialize();
+                return parserPool;
+            } catch (final ComponentInitializationException e) {
+                throw new RuntimeException("Exception initializing parserPool", e);
+            }
+        }
+    }
+    ```
+
+1. `/META-INF/services/org.pac4j.saml.util.ConfigurationManager` file. This file should have the fully qualified classname
+of the `org.pac4j.saml.util.Configuration` implementation
+
+For more information, see [https://docs.oracle.com/javase/tutorial/ext/basics/spi.html]
