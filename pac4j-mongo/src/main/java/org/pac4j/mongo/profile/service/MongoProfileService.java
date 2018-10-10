@@ -114,7 +114,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
                 // filter on names
                 for (final Map.Entry<String, Object> entry : result.entrySet()) {
                     final String name = entry.getKey();
-                    if (names == null || names.contains(name)) {
+                    if (names.contains(name)) {
                         newAttributes.put(name, entry.getValue());
                     }
                 }

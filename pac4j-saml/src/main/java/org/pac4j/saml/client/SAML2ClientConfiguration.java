@@ -33,7 +33,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
-import sun.security.provider.X509Factory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -69,6 +68,9 @@ import java.util.function.Supplier;
 public class SAML2ClientConfiguration extends InitializableObject {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
+
+    protected static final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
+    protected static final String END_CERT = "-----END CERTIFICATE-----";
 
     protected static final String RESOURCE_PREFIX = "resource:";
     protected static final String CLASSPATH_PREFIX = "classpath:";
@@ -713,10 +715,10 @@ public class SAML2ClientConfiguration extends InitializableObject {
         }
         final Base64 encoder = new Base64();
         try (final FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(X509Factory.BEGIN_CERT.getBytes(StandardCharsets.UTF_8));
+            fos.write(BEGIN_CERT.getBytes(StandardCharsets.UTF_8));
             fos.write("\n".getBytes(StandardCharsets.UTF_8));
             encoder.encode(certificate, fos);
-            fos.write(X509Factory.END_CERT.getBytes(StandardCharsets.UTF_8));
+            fos.write(END_CERT.getBytes(StandardCharsets.UTF_8));
             fos.flush();
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
