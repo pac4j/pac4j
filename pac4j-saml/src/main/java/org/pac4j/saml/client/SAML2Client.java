@@ -122,7 +122,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 return credentials;
             }
         });
-        defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId()));
+        defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId(), this.configuration.getMappedAttributes()));
         defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));
     }
 
