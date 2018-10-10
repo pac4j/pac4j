@@ -55,7 +55,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -135,6 +137,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private Supplier<List<XSAny>> authnRequestExtensions;
 
     private String attributeAsId;
+
+    private Map<String, String> mappedAttributes = new LinkedHashMap<>();
 
     public SAML2ClientConfiguration() {
     }
@@ -554,6 +558,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setSignMetadata(final boolean signMetadata) {
         this.signMetadata = signMetadata;
+    }
+
+    public Map<String, String> getMappedAttributes() {
+        return mappedAttributes;
+    }
+
+    public void setMappedAttributes(final Map<String, String> mappedAttributes) {
+        this.mappedAttributes = mappedAttributes;
     }
 
     /**

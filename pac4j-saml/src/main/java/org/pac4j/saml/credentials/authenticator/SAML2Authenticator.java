@@ -11,7 +11,9 @@ import org.pac4j.saml.profile.SAML2Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -37,8 +39,21 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
     private final String attributeAsId;
 
-    public SAML2Authenticator(final String attributeAsId) {
+    /**
+     * Describes the map of attributes that are to be fetched from the credential (map keys)
+     * and then transformed/renamed using map values before they are put into a profile.
+     * An example might be: fetch givenName from credential and rename it to 'urn:oid:2.5.4.42' or vice versa.
+     * Note that this setting only applies to attribute names, and not friendly-names.
+     */
+    private final Map<String, String> mappedAttributes;
+
+    public SAML2Authenticator(final String attributeAsId, final Map<String, String> mappedAttributes) {
         this.attributeAsId = attributeAsId;
+        this.mappedAttributes = mappedAttributes;
+    }
+
+    public SAML2Authenticator(final String attributeAsId) {
+        this(attributeAsId, new HashMap<>());
     }
 
     @Override
@@ -77,8 +92,18 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
                         logger.warn("Will not add {} as id because it has multiple values: {}", attributeAsId, values);
                     }
                 }
-                getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
+
+                if (mappedAttributes != null && !mappedAttributes.isEmpty() && mappedAttributes.containsKey(name)) {
+                    final String newName = mappedAttributes.get(name);
+                    logger.debug("Mapping attribute {} as {} with values {} to profile", name, newName, values);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, newName, values);
+                } else {
+                    logger.debug("Adding attribute {} to profile with values {}", name, values);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
+                }
+
                 if (CommonHelper.isNotBlank(friendlyName)) {
+                    logger.debug("Adding attribute {} to profile with values {}", friendlyName, values);
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, friendlyName, values);
                 }
             } else {
