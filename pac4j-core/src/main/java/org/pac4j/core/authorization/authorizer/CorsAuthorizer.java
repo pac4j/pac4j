@@ -43,7 +43,7 @@ public class CorsAuthorizer implements Authorizer<CommonProfile> {
             context.setResponseHeader(HttpConstants.ACCESS_CONTROL_MAX_AGE_HEADER, "" + maxAge);
         }
 
-        if (allowCredentials != null) {
+        if (allowCredentials != null && allowCredentials) {
             context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER, allowCredentials.toString());
         }
 

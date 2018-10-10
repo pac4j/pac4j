@@ -89,6 +89,8 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkC
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

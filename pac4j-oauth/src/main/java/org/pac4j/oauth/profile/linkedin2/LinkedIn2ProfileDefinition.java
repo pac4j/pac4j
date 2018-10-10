@@ -65,6 +65,9 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
     public LinkedIn2Profile extractUserProfile(final String body) {
         LinkedIn2Profile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json == null) {
+            raiseProfileExtractionJsonError(body);
+        }
         profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
         for (final String attribute : getPrimaryAttributes()) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));

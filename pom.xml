@@ -12,7 +12,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>3.1.0-SNAPSHOT</version>
+	<version>3.3.0-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -61,6 +61,7 @@
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<logback.version>1.2.3</logback.version>
 		<commons-codec.version>1.11</commons-codec.version>
+		<commons-io.version>2.6</commons-io.version>
 		<guava.version>23.6-jre</guava.version>
 		<nimbus-jose-jwt.version>5.4</nimbus-jose-jwt.version>
 		<spring.version>5.0.2.RELEASE</spring.version>
@@ -148,6 +149,11 @@
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>

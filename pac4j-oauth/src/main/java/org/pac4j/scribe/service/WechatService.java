@@ -7,8 +7,9 @@ import java.util.concurrent.Future;
 import org.pac4j.scribe.builder.api.WechatApi20;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.httpclient.HttpClient;
+import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.model.OAuthAsyncRequestCallback;
-import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.oauth.OAuth20Service;
@@ -21,19 +22,30 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  * @since 3.1.0
  */
 public class WechatService extends OAuth20Service {
-
-    private OAuthConfig config;
+    
+    private final String apiKey;
+    private final String apiSecrect;
 
     /**
      * Default constructor
      *
      * @param api    OAuth2.0 api information
-     * @param config OAuth 2.0 configuration param object
+     * @param apiKey the API key
+     * @param apiSecret the API secret
+     * @param callback the callback URL
+     * @param scope the scope
+     * @param state the state
+     * @param responseType the response type
+     * @param userAgent the user agent
+     * @param httpClientConfig the HTTP client configuration
+     * @param httpClient  the HTTP client
+     * 
      */
-    public WechatService(DefaultApi20 api,
-                         OAuthConfig config) {
-        super(api, config);
-        this.config = config;
+    public WechatService(DefaultApi20 api, String apiKey, String apiSecret, String callback, String scope, String state,
+            String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+        super(api, apiKey, apiSecret, callback, scope, state, responseType, userAgent, httpClientConfig, httpClient);
+        this.apiKey = apiKey;
+        this.apiSecrect = apiSecret;
     }
 
     @Override
@@ -51,8 +63,8 @@ public class WechatService extends OAuth20Service {
     }
 
     private OAuthRequest addClientAuthentication(OAuthRequest request) {
-        request.addParameter(WechatApi20.APPID, config.getApiKey());
-        request.addParameter(WechatApi20.SECRET, config.getApiSecret());
+        request.addParameter(WechatApi20.APPID, this.apiKey);
+        request.addParameter(WechatApi20.SECRET, this.apiSecrect);
         return request;
     }
 }

@@ -32,3 +32,4 @@ documentation/_site/
 .pmdruleset.xml
 pac4j-saml/testKeystore.jks
 .factorypath
+pac4j-saml/saml-signing-cert.*

@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLInResponseToMismatchException extends SAMLException {
+    private static final long serialVersionUID = 7977187629415365600L;
+
     public SAMLInResponseToMismatchException(final String message) {
         super(message);
     }

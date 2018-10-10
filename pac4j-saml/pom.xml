@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
@@ -16,6 +16,7 @@
         <opensaml.version>3.3.1</opensaml.version>
         <joda-time.version>2.9.9</joda-time.version>
         <velocity.version>1.7</velocity.version>
+        <xmlsectool.version>2.0.0</xmlsectool.version>
         <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
         velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
         <commons-collections.version>3.2.2</commons-collections.version>
@@ -106,6 +107,15 @@
                     <groupId>org.bouncycastle</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.shibboleth.tool</groupId>
+            <artifactId>xmlsectool</artifactId>
+            <version>${xmlsectool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>

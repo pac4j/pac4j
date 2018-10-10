@@ -10,9 +10,9 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 [J2E](https://github.com/pac4j/j2e-pac4j) &bull; [Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j) &bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j) &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 
-[Play 2.x](https://github.com/pac4j/play-pac4j) &bull; [Vertx](https://github.com/pac4j/vertx-pac4j) &bull; [Spark Java](https://github.com/pac4j/spark-pac4j) &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) &bull; [Pippo](http://www.pippo.ro/doc/security.html#pac4j-integration) &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
+[Play 2.x](https://github.com/pac4j/play-pac4j) &bull; [Vertx](https://github.com/pac4j/vertx-pac4j) &bull; [Spark Java](https://github.com/pac4j/spark-pac4j) &bull; [Javalin](https://github.com/pac4j/javalin-pac4j) &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) &bull; [Pippo](http://www.pippo.ro/doc/security.html#pac4j-integration) &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
 
-[CAS server](https://apereo.github.io/cas/5.2.x/integration/Delegate-Authentication.html) &bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j) &bull; [Dropwizard](https://github.com/evnm/dropwizard-pac4j) &bull; [Apache Knox](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) &bull; [Jooby](http://jooby.org/doc/pac4j)
+[CAS server](https://apereo.github.io/cas/5.3.x/integration/Delegate-Authentication.html) &bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j) &bull; [Dropwizard](https://github.com/evnm/dropwizard-pac4j) &bull; [Apache Knox](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) &bull; [Jooby](http://jooby.org/doc/pac4j)
 
 ## Authentication mechanisms:
 
@@ -30,7 +30,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Versions
 
-The version **3.1.0-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
+The version **3.3.0-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
 The source code can be cloned and locally built via Maven:
 

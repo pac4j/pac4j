@@ -32,7 +32,7 @@ public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAut
         return configuration;
     }
 
-    public void setConfiguraton(final OAuth20Configuration configuration) {
+    public void setConfiguration(final OAuth20Configuration configuration) {
         this.configuration = configuration;
     }
 

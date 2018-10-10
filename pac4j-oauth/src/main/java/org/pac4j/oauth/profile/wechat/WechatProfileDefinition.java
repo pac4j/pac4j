@@ -102,6 +102,8 @@ public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProf
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

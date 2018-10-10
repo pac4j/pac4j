@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLAssertionConditionException extends SAMLException {
+    private static final long serialVersionUID = -5853248740778879997L;
+
     public SAMLAssertionConditionException(final String message) {
         super(message);
     }

@@ -68,10 +68,12 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         return (FacebookConfiguration) configuration;
     }
 
+    @Deprecated
     public void setStateData(final String stateData) {
         configuration.setStateData(stateData);
     }
 
+    @Deprecated
     public String getStateData() {
         return configuration.getStateData();
     }

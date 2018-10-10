@@ -28,7 +28,7 @@ public final class RunOAuth20Client extends RunGithubClient {
         config.setKey("62374f5573a89a8f9900");
         config.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
         final OAuth20Client client = new OAuth20Client();
-        client.setConfiguraton(config);
+        client.setConfiguration(config);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }

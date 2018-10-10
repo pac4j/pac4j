@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-oauth</artifactId>
@@ -13,7 +13,7 @@
     <name>pac4j for OAuth protocol</name>
 
     <properties>
-        <scribe.version>5.3.0</scribe.version>
+        <scribe.version>5.6.0</scribe.version>
     </properties>
 
     <dependencies>

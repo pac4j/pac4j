@@ -49,6 +49,9 @@ public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfil
     @Override
     public OrcidProfile extractUserProfile(String body) {
         OrcidProfile profile = newProfile();
+        if (body == null || body.isEmpty()) {
+            raiseProfileExtractionError(body);
+        }
         profile.setId(CommonHelper.substringBetween(body, "<path>", "</path>"));
         for(final String attribute : getPrimaryAttributes()) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,

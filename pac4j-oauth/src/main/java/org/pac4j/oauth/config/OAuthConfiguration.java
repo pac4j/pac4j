@@ -2,7 +2,6 @@ package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
-import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
@@ -65,10 +64,8 @@ public class OAuthConfiguration<S extends OAuthService, T extends Token> extends
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        final OAuthConfig oAuthConfig = new OAuthConfig(this.key, this.secret, finalCallbackUrl, this.scope,
-            null, state, this.responseType, null, this.httpClientConfig, null);
-
-        return getApi().createService(oAuthConfig);
+        return getApi().createService(this.key, this.secret, finalCallbackUrl, this.scope, null, state, this.responseType, null,
+                this.httpClientConfig, null);
     }
 
     public String getKey() {

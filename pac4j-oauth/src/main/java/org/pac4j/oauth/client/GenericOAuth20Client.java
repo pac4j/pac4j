@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import com.github.scribejava.core.model.Verb;
@@ -14,6 +13,8 @@ import org.pac4j.core.profile.converter.AbstractAttributeConverter;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 import org.pac4j.scribe.builder.api.GenericApi20;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is a generic OAuth2 client to authenticate users in a standard OAuth2 server.</p>
@@ -24,12 +25,13 @@ import org.pac4j.scribe.builder.api.GenericApi20;
  */
 public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
-    private static final Logger LOG = Logger.getLogger(GenericOAuth20Client.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(GenericOAuth20Client.class);
 
     private String authUrl;
     private String tokenUrl;
     private String profileUrl;
     private String profilePath;
+    private String profileId;
     private Verb profileVerb;
     private Map<String, String> profileAttrs;
     private Map<String, String> customParams;
@@ -53,6 +55,9 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
         profileDefinition.setProfileVerb(profileVerb);
         profileDefinition.setProfileUrl(profileUrl);
 
+        if (profileId != null) {
+            profileDefinition.setProfileId(profileId);
+        }
         if (profileAttrs != null) {
             for (Map.Entry<String, String> entry : profileAttrs.entrySet()) {
                 String key = entry.getKey();
@@ -63,7 +68,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
                 } else if (tokens.length == 1) {
                     profileDefinition.profileAttribute(key, value, null);
                 } else {
-                    LOG.warning("Ignored incorrect attribute value expressions:" + value);
+                    LOG.warn("Ignored incorrect attribute value expressions:" + value);
                 }
             }
         }
@@ -89,7 +94,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
                     .toArray(Class[]::new);
                 return converterClasses;
             } catch (Exception e) {
-                LOG.warning(e.toString());
+                LOG.warn(e.toString());
             }
         }
         return converterClasses;
@@ -104,14 +109,14 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
                         Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
                     } catch (Exception e) {
-                        LOG.warning("Ignore type which no parameterless constructor:" + x.getName());
+                        LOG.warn("Ignore type which no parameterless constructor:" + x.getName());
                     }
                     return false;
                 });
             Class converterClazz = acceptableConverters.findFirst().get();
             return (AbstractAttributeConverter<?>) converterClazz.newInstance();
         } catch (Exception e) {
-            LOG.warning(e.toString());
+            LOG.warn(e.toString());
         }
         return null;
     }
@@ -142,5 +147,9 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
     public void setCustomParams(final Map<String, String> customParamsMap) {
         this.customParams = customParamsMap;
+    }
+
+    public void setProfileId(final String profileId) {
+        this.profileId = profileId;
     }
 }

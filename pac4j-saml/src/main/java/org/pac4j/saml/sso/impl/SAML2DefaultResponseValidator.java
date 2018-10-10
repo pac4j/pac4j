@@ -66,7 +66,7 @@ import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
-import org.pac4j.saml.util.UriUtils;
+import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,7 +191,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                 }
             }
         }
-        return new SAML2Credentials(nameId, issuerEntityId, attributes, subjectAssertion.getConditions(), sessionIndex, authnContexts);
+        return new SAML2Credentials(nameId, issuerEntityId, attributes,
+            subjectAssertion.getConditions(), sessionIndex, authnContexts);
     }
 
     /**
@@ -566,7 +567,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
                 final URI recipientUri = new URI(data.getRecipient());
                 final URI appEndpointUri = new URI(endpoint.getLocation());
-                if (!UriUtils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
+                if (!SAML2Utils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
                     logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. "
                         + "SP ACS URL from context: {}", recipientUri, appEndpointUri);
                     return false;
