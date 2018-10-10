@@ -4,14 +4,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.IpProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.regex.Pattern;
 
 /**
  * Authenticates users based on their IP and a regexp pattern.
@@ -19,13 +14,7 @@ import java.util.regex.Pattern;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator extends ProfileDefinitionAware<IpProfile> implements Authenticator<TokenCredentials> {
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private String regexPattern;
-
-    private Pattern pattern;
+public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile> implements Authenticator<TokenCredentials> {
 
     public IpRegexpAuthenticator() { }
 
@@ -54,16 +43,5 @@ public class IpRegexpAuthenticator extends ProfileDefinitionAware<IpProfile> imp
         logger.debug("profile: {}", profile);
 
         credentials.setUserProfile(profile);
-    }
-
-    public void setRegexpPattern(final String regexpPattern) {
-        CommonHelper.assertNotNull("regexpPattern", regexpPattern);
-        this.regexPattern = regexpPattern;
-        this.pattern = Pattern.compile(regexpPattern);
-    }
-
-    @Override
-    public String toString() {
-        return "IpRegexpAuthenticator[" + this.regexPattern + "]";
     }
 }
