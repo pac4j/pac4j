@@ -70,7 +70,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     public SAML2AuthnRequestBuilder(final SAML2ClientConfiguration cfg) {
         this.forceAuth = cfg.isForceAuth();
         this.comparisonType = getComparisonTypeEnumFromString(cfg.getComparisonType());
-        this.bindingType = cfg.getDestinationBindingType();
+        this.bindingType = cfg.getAuthnRequestBindingType();
         this.authnContextClassRef = cfg.getAuthnContextClassRef();
         this.nameIdPolicyFormat = cfg.getNameIdPolicyFormat();
         this.passive = cfg.isPassive();

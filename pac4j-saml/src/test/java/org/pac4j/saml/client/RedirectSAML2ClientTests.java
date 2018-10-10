@@ -109,7 +109,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Override
-    protected String getDestinationBindingType() {
+    protected String getAuthnRequestBindingType() {
         return SAMLConstants.SAML2_REDIRECT_BINDING_URI;
     }
 

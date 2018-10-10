@@ -52,6 +52,8 @@ import java.util.List;
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
 
+    public static final String IDP_LOGOUT_REQUEST_EXTRA_PARAMETER = "idplogoutrequest";
+
     protected CredentialProvider credentialProvider;
 
     protected SAMLContextProvider contextProvider;
@@ -107,18 +109,27 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
         defaultRedirectActionBuilder(new SAML2RedirectActionBuilder(this));
         defaultCredentialsExtractor(ctx -> {
-            final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
-            final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            return credentials;
+            final boolean logoutRequest = ctx.getRequestParameter(IDP_LOGOUT_REQUEST_EXTRA_PARAMETER) != null;
+            // SAML logout request
+            if (logoutRequest) {
+                // currently ignored
+                logger.info("Not supported: ignoring SAML logout request");
+                return null;
+            } else {
+                // SAML authn response
+                final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
+                final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
+                return credentials;
+            }
         });
-        defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId()));
+        defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId(), this.configuration.getMappedAttributes()));
         defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));
     }
 
     protected void initSAMLProfileHandler() {
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
-                        this.configuration.getDestinationBindingType(),
+                        this.configuration.getAuthnRequestBindingType(),
                         this.configuration.isAuthnRequestSigned()),
                 new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
@@ -130,6 +141,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.decrypter,
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.isWantsAssertionsSigned());
+        this.responseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {

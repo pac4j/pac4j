@@ -55,7 +55,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -85,14 +87,18 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private String serviceProviderEntityId;
 
-    private int maximumAuthenticationLifetime;
+    private int maximumAuthenticationLifetime = 3600;
+
+    private int acceptedSkew = 300;
 
     private boolean forceAuth = false;
     private boolean passive = false;
 
     private String comparisonType = null;
 
-    private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+    private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
+    private String spLogoutRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     private String authnContextClassRef = null;
 
@@ -133,6 +139,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private Supplier<List<XSAny>> authnRequestExtensions;
 
     private String attributeAsId;
+
+    private Map<String, String> mappedAttributes = new LinkedHashMap<>();
 
     public SAML2ClientConfiguration() {
     }
@@ -261,6 +269,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
         }
     }
 
+    public int getAcceptedSkew() {
+        return acceptedSkew;
+    }
+
+    public void setAcceptedSkew(final int acceptedSkew) {
+        this.acceptedSkew = acceptedSkew;
+    }
+
     public Resource getIdentityProviderMetadataResource() {
         return this.identityProviderMetadataResource;
     }
@@ -386,12 +402,40 @@ public class SAML2ClientConfiguration extends InitializableObject {
         this.comparisonType = comparisonType;
     }
 
+    /**
+     * Use {@link #getAuthnRequestBindingType()}.
+     *
+     * @return the authn request binding type
+     */
+    @Deprecated
     public String getDestinationBindingType() {
-        return destinationBindingType;
+        return getAuthnRequestBindingType();
     }
 
+    /**
+     * Use {@link #setAuthnRequestBindingType(String)}.
+     *
+     * @param destinationBindingType the authn request binding type
+     */
+    @Deprecated
     public void setDestinationBindingType(final String destinationBindingType) {
-        this.destinationBindingType = destinationBindingType;
+        setAuthnRequestBindingType(destinationBindingType);
+    }
+
+    public String getAuthnRequestBindingType() {
+        return authnRequestBindingType;
+    }
+
+    public void setAuthnRequestBindingType(final String authnRequestBindingType) {
+        this.authnRequestBindingType = authnRequestBindingType;
+    }
+
+    public String getSpLogoutRequestBindingType() {
+        return spLogoutRequestBindingType;
+    }
+
+    public void setSpLogoutRequestBindingType(final String spLogoutRequestBindingType) {
+        this.spLogoutRequestBindingType = spLogoutRequestBindingType;
     }
 
     public String getAuthnContextClassRef() {
@@ -466,7 +510,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
         return this.wantsAssertionsSigned;
     }
 
-    public void setWantsAssertionsSigned(boolean wantsAssertionsSigned) {
+    public void setWantsAssertionsSigned(final boolean wantsAssertionsSigned) {
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
@@ -524,6 +568,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setSignMetadata(final boolean signMetadata) {
         this.signMetadata = signMetadata;
+    }
+
+    public Map<String, String> getMappedAttributes() {
+        return mappedAttributes;
+    }
+
+    public void setMappedAttributes(final Map<String, String> mappedAttributes) {
+        this.mappedAttributes = mappedAttributes;
     }
 
     /**

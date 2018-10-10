@@ -90,12 +90,14 @@ cfg.setForceAuth(true);
 cfg.setPassive(true);
 ```
 
-You can define the binding type via the `setDestinationBindingType` method:
+You can define the binding type for the authentication request via the `setAuthnRequestBindingType` method and the binding type for the SP logout request via the `setSpLogoutRequestBindingType` method:
 
 ```java
-cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-// or cfg.setDestinationBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+// or cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
 ```
+
+Notice that the SP metadata will define the POST binding for the authentication response and for the IdP logout request.
 
 Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behavior, set the `maximumAuthenticationLifetime` parameter:
 
@@ -105,12 +107,11 @@ client.setMaximumAuthenticationLifetime(600);
 ```
 
 By default, the entity ID of your application (the Service Provider) will be equals to the [callback url](clients.html#the-callback-url). 
-This can lead to problems with some IDP because of the query string not being accepted (like ADFS v2.0). So you can force your own 
-entity ID with the `serviceProviderEntityId` parameter:
+But you can force your own entity ID with the `serviceProviderEntityId` parameter:
 
 ```java
 // custom SP entity ID
-cfg.setServiceProviderEntityId("http://localhost:8080/callback?client_name=SAML2Client");
+cfg.setServiceProviderEntityId("http://localhost:8080/callback?extraParameter");
 ```
 
 To allow the authentication request sent to the identity provider to specify an attribute consuming index:
@@ -156,6 +157,7 @@ You can generate the SP metadata in two ways:
 - or by defining the appropriate configuration: `cfg.setServiceProviderMetadata(new FileSystemResource("/tmp/sp-metadata.xml"));`
 
 
+
 ## 4) Authentication Attributes
 
 The following authentication attributes are populated by this client:
@@ -170,13 +172,7 @@ The following authentication attributes are populated by this client:
 
 You must follow these rules to successfully authenticate using Microsoft ADFS 2.0/3.0.
 
-### a) Entity ID
-
-You must always specify an explicit Entity ID that does not contain any question mark. By default, *pac4j* uses the same 
-Entity ID as the AssertionConsumerService location, which contains the client's name as a parameter after a question mark. 
-Unfortunately, ADFS does not work well with such IDs and starts an infinite redirection loop when A SAML message with such a message arrives.
-
-### b) Maximum authentication time
+### a) Maximum authentication time
 
 *pac4j* has the default maximum time set to 1 hour while ADFS has it set to 8 hours. Therefore it can happen that ADFS 
 sends an assertion which is still valid on ADFS side but evaluated as invalid on the *pac4j* side.
@@ -188,7 +184,7 @@ There are two possibilities how to make the values equal:
 - change the value in ADFS management console in the trust properties dialog
 - change the value on *pac4j* side using the `setMaximumAuthenticationLifetime` method.
 
-### c) Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
+### b) Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
 
 You must install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK 
 running *pac4j*. If you don't do it, you may encounter errors like this:
@@ -202,7 +198,7 @@ ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter encountered an
 
 Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle's Java Download site.
 
-### d) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+### c) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
 
 ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In SAML2ClientConfiguration you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
 
