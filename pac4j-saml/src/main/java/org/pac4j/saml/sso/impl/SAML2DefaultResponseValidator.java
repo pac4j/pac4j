@@ -89,14 +89,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
 
-    /**
-     * The default maximum authentication lifetime, in seconds. Used for {@link #maximumAuthenticationLifetime} if a meaningless (&lt;=0)
-     * value is passed to the constructor.
-     */
-    private static final int DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME = 3600;
-
     /* maximum skew in seconds between SP and IDP clocks */
-    private int acceptedSkew = 120;
+    private int acceptedSkew;
 
     /* maximum lifetime after a successful authentication on an IDP */
     private int maximumAuthenticationLifetime;
@@ -123,18 +117,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                                          final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = engine;
         this.decrypter = decrypter;
-        this.maximumAuthenticationLifetime = (maximumAuthenticationLifetime > 0 ?
-            maximumAuthenticationLifetime : DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME);
+        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.uriComparator = uriComparator;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
-    /**
-     * Validates the SAML protocol response and the SAML SSO response.
-     * The method decrypt encrypted assertions if any.
-     *
-     * @param context the context
-     */
+
     @Override
     public Credentials validate(final SAML2MessageContext context) {
 
@@ -163,14 +151,13 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         final String sessionIndex = getSessionIndex(subjectAssertion);
 
         final String issuerEntityId = subjectAssertion.getIssuer().getValue();
-        List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
-        List<String> authnContexts = new ArrayList<String>();
-        for (AuthnStatement authnStatement : authnStatements) {
+        final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
+        final List<String> authnContexts = new ArrayList<String>();
+        for (final AuthnStatement authnStatement : authnStatements) {
             if(authnStatement.getAuthnContext().getAuthnContextClassRef() != null) {
                 authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
             }
         }
-
 
         final List<Attribute> attributes = new ArrayList<Attribute>();
         for (final AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
@@ -201,7 +188,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param subjectAssertion assertion from the response
      * @return the sessionIndex if found in the assertion
      */
-    private final String getSessionIndex(Assertion subjectAssertion) {
+    private String getSessionIndex(final Assertion subjectAssertion) {
         List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
         if (authnStatements != null && authnStatements.size() > 0) {
             AuthnStatement statement = authnStatements.get(0);
@@ -730,7 +717,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
         final boolean isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {
-            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstanceUtc.getZone()),
+            logger.warn("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstanceUtc.getZone()),
                 after.toDateTime(issueInstanceUtc.getZone()), issueInstanceUtc);
         }
         return isDateValid;
