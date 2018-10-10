@@ -13,7 +13,7 @@
     <name>pac4j for SAML protocol</name>
 
     <properties>
-        <opensaml.version>3.4.0-SNAPSHOT</opensaml.version>
+        <opensaml.version>3.4.0</opensaml.version>
         <joda-time.version>2.9.9</joda-time.version>
         <velocity.version>1.7</velocity.version>
         <xmlsectool.version>2.0.0</xmlsectool.version>
@@ -227,18 +227,11 @@
             <id>shib-release</id>
             <url>https://build.shibboleth.net/nexus/content/groups/public</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
             <releases>
                 <enabled>true</enabled>
             </releases>
-        </repository>
-        <repository>
-            <id>shib-thirdparty-snapshots</id>
-            <url>https://build.shibboleth.net/nexus/content/repositories/thirdparty-snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 </project>
