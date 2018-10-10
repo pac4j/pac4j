@@ -141,6 +141,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.decrypter,
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.isWantsAssertionsSigned());
+        this.responseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {

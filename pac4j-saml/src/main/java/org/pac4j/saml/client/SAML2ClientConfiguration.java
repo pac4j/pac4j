@@ -87,7 +87,9 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private String serviceProviderEntityId;
 
-    private int maximumAuthenticationLifetime;
+    private int maximumAuthenticationLifetime = 3600;
+
+    private int acceptedSkew = 300;
 
     private boolean forceAuth = false;
     private boolean passive = false;
@@ -265,6 +267,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
         } else {
             return new FileSystemResource(path);
         }
+    }
+
+    public int getAcceptedSkew() {
+        return acceptedSkew;
+    }
+
+    public void setAcceptedSkew(final int acceptedSkew) {
+        this.acceptedSkew = acceptedSkew;
     }
 
     public Resource getIdentityProviderMetadataResource() {
@@ -500,7 +510,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
         return this.wantsAssertionsSigned;
     }
 
-    public void setWantsAssertionsSigned(boolean wantsAssertionsSigned) {
+    public void setWantsAssertionsSigned(final boolean wantsAssertionsSigned) {
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
