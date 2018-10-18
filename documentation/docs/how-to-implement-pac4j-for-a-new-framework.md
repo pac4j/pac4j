@@ -34,11 +34,11 @@ You can also add **matchers** to define whether the security must apply or not.
 
 ## 3) "Filters/controllers"
 
-To secure your Java web application, **the reference implementation is to create three "filters/controllers"**:
+To secure your Java web application, **the reference implementation is to create one filter and two endpoints**:
 
-- one to **protect urls**
-- another one to **receive callbacks** for stateful authentication processes (indirect clients)
-- the last one **to perform logout**.
+- one filter to **protect urls**
+- one endpoint to **receive callbacks** for stateful authentication processes (indirect clients)
+- another endpoint **to perform logout**.
 
 In your framework, you will need to create:
 
@@ -48,9 +48,9 @@ Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store
 2) optionally a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
 
 
-### A) Secure an url
+### A) Secure an URL
 
-The logic to secure an url is defined by the `SecurityLogic` interface and its default implementation: [`DefaultSecurityLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java). In your framework, you must define the appropriate "filter", "interceptor", "controller" or whatever the mechanism used to intercept the HTTP request and delegate to the `SecurityLogic` class:
+The logic to secure an URL is defined by the `SecurityLogic` interface and its default implementation: [`DefaultSecurityLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java). In your framework, you must define the appropriate "filter", "interceptor", "controller" or whatever the mechanism used to intercept the HTTP request and delegate to the `SecurityLogic` class:
 
 1) If the HTTP request matches the **matchers** configuration (or no **matchers** are defined), the security is applied. Otherwise, the user is automatically granted access
 
@@ -115,7 +115,7 @@ In your framework, you must define the appropriate "controller" to reply to an H
 
 1) the credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in the web session.
 
-2) finally, the user is redirected back to the originally requested url (or to the **defaultUrl**).
+2) finally, the user is redirected back to the originally requested URL (or to the **defaultUrl**).
 
 **Examples**:
 
