@@ -77,7 +77,7 @@ In fact, the `AuthorizationGenerator` component can be used to do more than just
 
 For an indirect client, you must define the callback URL which will be used in the login process: after a successful login, the identity provider will redirect the user back to the application on the callback URL.
 
-On this callback URL, the "callback filter" must be defined to finish the login process.
+On this callback URL, the "callback endpoint" must be defined to finish the login process.
 
 As the callback URL can be shared between multiple clients, the callback URL can hold the information of the client (to be able to distinguish between the different clients), as a query parameter or as a path parameter.
 
