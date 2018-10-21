@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -25,11 +26,28 @@ public final class HttpUtils {
     private HttpUtils() {
     }
 
+    /**
+     * Build error message from connection in case of failure
+     * @param connection HttpURLConnection
+     * @return String by combining response code, message and error stream
+     * @throws IOException
+     */
     public static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
         final StringBuilder messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
         if (connection.getResponseMessage() != null) {
             messageBuilder.append(" ");
             messageBuilder.append(connection.getResponseMessage());
+        }
+        try (final InputStreamReader isr = new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)){
+            String output;
+            messageBuilder.append("[");
+            while ((output = br.readLine()) != null) {
+                messageBuilder.append(output);
+            }
+            messageBuilder.append("]");
+        }finally {
+            connection.disconnect();
         }
         return messageBuilder.toString();
     }
@@ -46,7 +64,7 @@ public final class HttpUtils {
         return openConnection(url, HttpConstants.HTTP_METHOD.DELETE.name(), null);
     }
 
-    protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers) 
+    protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers)
         throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
@@ -63,7 +81,7 @@ public final class HttpUtils {
     }
 
     public static String readBody(final HttpURLConnection connection) throws IOException {
-        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream(), "UTF-8"); 
+        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
             final BufferedReader br = new BufferedReader(isr)) {
             final StringBuilder sb = new StringBuilder();
             String output;
