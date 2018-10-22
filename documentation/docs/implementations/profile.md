@@ -24,24 +24,24 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/green_check.png" /><br />by injection thanks to the <code class="highlighter-rouge">ComponentConfig</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>j2e-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/green_check.png" /><br />by injection thanks to the <code class="highlighter-rouge">Pac4jProducer</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
@@ -52,31 +52,31 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>

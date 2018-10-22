@@ -29,15 +29,15 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>j2e-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
@@ -47,27 +47,27 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
