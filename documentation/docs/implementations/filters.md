@@ -24,59 +24,59 @@ title: Implementations comparison for the filter and endpoints&#58;
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code>SecurityInterceptor</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityInterceptor</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>CallbackController</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>LogoutController</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackController</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutController</code></td>
     </tr>
     <tr>
         <td>j2e-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code>SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code>SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code>SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code>LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Secure</code> annotation or the <code>Security</code> trait</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackController</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutController</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackRoute</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutRoute</code></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
