@@ -29,15 +29,15 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>j2e-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ENoHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroSessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ENoHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
@@ -47,27 +47,27 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayWebContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayCacheSessionStore</code> to use the Play Cache, <code class="highlighter-rouge">PlayCookieSessionStore</code> to use the Play session cookie</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlaytHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxWebContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxSessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SparkWebContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2SessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2SessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
