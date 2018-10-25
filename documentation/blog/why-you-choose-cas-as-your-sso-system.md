@@ -1,6 +1,6 @@
 ---
 layout: blog
-title: Why you should use CAS as your SSO system
+title: Why you should choose CAS as your SSO system
 author: Jérôme LELEU
 date: October 2018
 ---
@@ -43,8 +43,8 @@ If your software only supports technologies A and B, you can only address client
 
 Your existing environment is also the second most important criteria when choosing an SSO system! Big bang projects almost always fail and it's hard to deal with legacy. I don't remember having a customer without an existing software to integrate with.
 And this is the great strength of CAS:
-- the CAS server can act as a SAML, OAuth, OpenID Connect or CAS server
-- but it can also play the role of a client delegating the authentication to another CAS server, to a SAML IdP, to Facebook, Google, Twitter and other identity providers.
+- the CAS server can act as a SAML IdP, an OAuth provider, an OpenID Connect provder or as a CAS server of course
+- but it can also play the role of a client delegating the authentication to another CAS server, to a SAML IdP, to Facebook, Google, Twitter and many other identity providers.
 
 This is one of the main contributions I brought to CAS and I'm especially proud of this interoperability.
 
