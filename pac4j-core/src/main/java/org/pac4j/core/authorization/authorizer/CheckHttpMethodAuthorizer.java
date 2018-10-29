@@ -35,4 +35,16 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HTTP
         final String requestMethod = context.getRequestMethod();
         return requestMethod.equalsIgnoreCase(element.toString());
     }
+
+    public static CheckHttpMethodAuthorizer checkHttpMethod(HTTP_METHOD... methods) {
+        return new CheckHttpMethodAuthorizer(methods);
+    }
+
+    public static CheckHttpMethodAuthorizer checkHttpMethod(List<HTTP_METHOD> methods) {
+        return new CheckHttpMethodAuthorizer(methods);
+    }
+
+    public static CheckHttpMethodAuthorizer checkHttpMethod(Set<HTTP_METHOD> methods) {
+        return new CheckHttpMethodAuthorizer(methods);
+    }
 }

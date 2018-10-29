@@ -34,4 +34,16 @@ public class RequireAnyPermissionAuthorizer<U extends CommonProfile> extends Abs
         final Set<String> profilePermissions = profile.getPermissions();
         return profilePermissions.contains(element);
     }
+
+    public static <U extends CommonProfile> RequireAnyPermissionAuthorizer<U> requireAnyPermission(String ... permissions) {
+        return new RequireAnyPermissionAuthorizer<>(permissions);
+    }
+
+    public static <U extends CommonProfile> RequireAnyPermissionAuthorizer<U> requireAnyPermission(List<String> permissions) {
+        return new RequireAnyPermissionAuthorizer<>(permissions);
+    }
+
+    public static <U extends CommonProfile> RequireAnyPermissionAuthorizer<U> requireAnyPermission(Set<String> permissions) {
+        return new RequireAnyPermissionAuthorizer<>(permissions);
+    }
 }

@@ -32,4 +32,17 @@ public class CheckProfileTypeAuthorizer<U extends CommonProfile> extends Abstrac
     protected boolean check(final WebContext context, final U profile, final Class<U> element) {
         return profile.getClass().isAssignableFrom(element);
     }
+
+    public static <U extends CommonProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Class<U> ... types) {
+        return new CheckProfileTypeAuthorizer<>(types);
+    }
+
+    public static <U extends CommonProfile> CheckProfileTypeAuthorizer<U> checkProfileType(List<Class<U>> types) {
+        return new CheckProfileTypeAuthorizer<>(types);
+    }
+
+    public static <U extends CommonProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Set<Class<U>> types) {
+        return new CheckProfileTypeAuthorizer<>(types);
+    }
+
 }

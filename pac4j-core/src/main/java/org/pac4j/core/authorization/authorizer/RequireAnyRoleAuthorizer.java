@@ -32,4 +32,16 @@ public class RequireAnyRoleAuthorizer<U extends CommonProfile> extends AbstractR
         final Set<String> profileRoles = profile.getRoles();
         return profileRoles.contains(element);
     }
+
+    public static <U extends CommonProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(String ... roles) {
+        return new RequireAnyRoleAuthorizer<>(roles);
+    }
+
+    public static <U extends CommonProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(List<String> roles) {
+        return new RequireAnyRoleAuthorizer<>(roles);
+    }
+
+    public static <U extends CommonProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(Set<String> roles) {
+        return new RequireAnyRoleAuthorizer<>(roles);
+    }
 }
