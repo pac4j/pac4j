@@ -30,4 +30,8 @@ public class IsAuthenticatedAuthorizer<U extends CommonProfile> extends Abstract
     public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile != null && !(profile instanceof AnonymousProfile);
     }
+
+    public static <U extends CommonProfile> IsAuthenticatedAuthorizer<U> isAuthenticated() {
+        return new IsAuthenticatedAuthorizer<>();
+    }
 }

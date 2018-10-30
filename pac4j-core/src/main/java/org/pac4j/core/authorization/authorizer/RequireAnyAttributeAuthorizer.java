@@ -47,4 +47,9 @@ public class RequireAnyAttributeAuthorizer<U extends CommonProfile> extends Abst
         }
         return attributeValues.toString().matches(this.valueToMatch);
     }
+
+    public static <U extends CommonProfile> RequireAnyAttributeAuthorizer<U> requireAnyAttribute(String valueToMatch) {
+        return new RequireAnyAttributeAuthorizer<>(valueToMatch);
+    }
+
 }
