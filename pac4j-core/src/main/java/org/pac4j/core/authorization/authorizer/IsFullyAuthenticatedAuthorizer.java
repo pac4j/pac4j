@@ -29,4 +29,8 @@ public class IsFullyAuthenticatedAuthorizer<U extends CommonProfile> extends Abs
     public boolean isProfileAuthorized(final WebContext context, final U profile) {
         return profile != null && !(profile instanceof AnonymousProfile) && !profile.isRemembered();
     }
+
+    public static <U extends CommonProfile> IsFullyAuthenticatedAuthorizer<U> isFullyAuthenticated() {
+        return new IsFullyAuthenticatedAuthorizer<>();
+    }
 }

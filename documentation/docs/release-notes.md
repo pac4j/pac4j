@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.4.0**:
+
+- Added ability to create a composition of authorizers (conjunction or disjunction).
+
 **v3.3.0**:
 
 - Improve SAML support: always return a default key which is a private one, add a SingleLogoutService URL in the SP metadata, make local and central logouts work together, allow attributes to be mapped to new names
