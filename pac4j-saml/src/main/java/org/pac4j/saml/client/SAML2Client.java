@@ -6,6 +6,7 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
@@ -31,10 +32,7 @@ import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.redirect.SAML2RedirectActionBuilder;
 import org.pac4j.saml.sso.SAML2ProfileHandler;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
-import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
-import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
-import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
-import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
+import org.pac4j.saml.sso.impl.*;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
@@ -62,7 +60,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected SAML2ProfileHandler<AuthnRequest> profileHandler;
 
+    protected SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
+
     protected SAML2ResponseValidator responseValidator;
+
+    protected SAML2ResponseValidator logoutResponseValidator;
 
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
@@ -106,18 +108,19 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLResponseValidator();
         initSAMLProfileHandler();
+        initSAMLLogoutResponseValidator();
+        initSAMLLogoutProfileHandler();
 
         defaultRedirectActionBuilder(new SAML2RedirectActionBuilder(this));
         defaultCredentialsExtractor(ctx -> {
             final boolean logoutRequest = ctx.getRequestParameter(IDP_LOGOUT_REQUEST_EXTRA_PARAMETER) != null;
-            // SAML logout request
+            final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
             if (logoutRequest) {
-                // currently ignored
-                logger.info("Not supported: ignoring SAML logout request");
+                // SAML logout request
+                this.logoutProfileHandler.receive(samlContext);
                 return null;
             } else {
                 // SAML authn response
-                final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
                 final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
                 return credentials;
             }
@@ -132,6 +135,17 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                         this.configuration.getAuthnRequestBindingType(),
                         this.configuration.isAuthnRequestSigned()),
                 new SAML2WebSSOMessageReceiver(this.responseValidator));
+    }
+
+    protected void initSAMLLogoutProfileHandler() {
+        this.logoutProfileHandler = new SAML2LogoutProfileHandler(
+            new SAML2LogoutMessageSender(this.signatureSigningParametersProvider,
+                this.configuration.getSpLogoutRequestBindingType(), false, this.configuration.isAuthnRequestSigned()),
+            new SAML2LogoutMessageReceiver(this.logoutResponseValidator));
+    }
+
+    protected void initSAMLLogoutResponseValidator() {
+        this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.signatureTrustEngineProvider);
     }
 
     protected void initSAMLResponseValidator() {
@@ -250,5 +264,13 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     public void setStateGenerator(final StateGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
+    }
+
+    public SAML2ProfileHandler<LogoutRequest> getLogoutProfileHandler() {
+        return logoutProfileHandler;
+    }
+
+    public void setLogoutProfileHandler(final SAML2ProfileHandler<LogoutRequest> logoutProfileHandler) {
+        this.logoutProfileHandler = logoutProfileHandler;
     }
 }

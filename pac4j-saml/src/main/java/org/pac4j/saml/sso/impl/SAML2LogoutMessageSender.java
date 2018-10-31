@@ -26,14 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
-
 /**
  * Sender for SAML logout messages
  * 
  * @author Matthieu Taggiasco
  * @since 2.0.0
  */
-
 public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutRequest> {
 
     private final static Logger logger = LoggerFactory.getLogger(SAML2LogoutMessageSender.class);
@@ -153,9 +151,9 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
             final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
-        }
 
-        if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
+        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
+
             final Pac4jHTTPRedirectDeflateEncoder encoder =
                     new Pac4jHTTPRedirectDeflateEncoder(adapter, forceSignRedirectBindingLogoutRequest);
             return encoder;

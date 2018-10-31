@@ -30,7 +30,7 @@ public final class HttpUtils {
      * Build error message from connection in case of failure
      * @param connection HttpURLConnection
      * @return String by combining response code, message and error stream
-     * @throws IOException
+     * @throws IOException an IO exception
      */
     public static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
         final StringBuilder messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");

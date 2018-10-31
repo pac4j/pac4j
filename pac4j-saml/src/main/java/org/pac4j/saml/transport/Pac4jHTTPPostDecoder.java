@@ -18,7 +18,7 @@ import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,9 @@ import java.nio.charset.StandardCharsets;
  * @since 1.8
  */
 public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
-    private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostDecoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostDecoder.class);
+
+    private static final String[] SAML_PARAMETERS = {"SAMLRequest", "SAMLResponse", "logoutRequest"};
 
     /** Parser pool used to deserialize the message. */
     private ParserPool parserPool;
@@ -43,10 +45,8 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
     private final WebContext context;
 
     public Pac4jHTTPPostDecoder(final WebContext context) {
+        CommonHelper.assertNotNull("context", context);
         this.context = context;
-        if (this.context == null) {
-            throw new TechnicalException("Context cannot be null");
-        }
     }
 
     @Override
@@ -68,25 +68,28 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         }
     }
 
-    protected InputStream getBase64DecodedMessage()
-            throws MessageDecodingException {
-        logger.debug("Getting Base64 encoded message from context, ignoring the given request");
-        String encodedMessage = this.context.getRequestParameter("SAMLRequest");
-        if(Strings.isNullOrEmpty(encodedMessage)) {
-            encodedMessage = this.context.getRequestParameter("SAMLResponse");
+    protected InputStream getBase64DecodedMessage() throws MessageDecodingException {
+        String encodedMessage = null;
+        for (final String parameter : SAML_PARAMETERS) {
+            encodedMessage = this.context.getRequestParameter(parameter);
+            if (CommonHelper.isNotBlank(encodedMessage)) {
+                break;
+            }
         }
 
-        if(Strings.isNullOrEmpty(encodedMessage)) {
-            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. "
+        if (Strings.isNullOrEmpty(encodedMessage)) {
+            throw new MessageDecodingException("Request did not contain either a SAMLRequest, a SAMLResponse or a logoutRequest parameter. "
                 + "Invalid request for SAML 2 HTTP POST binding.");
         } else {
             logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);
             final byte[] decodedBytes = Base64Support.decode(encodedMessage);
-            if(decodedBytes == null) {
-                throw new MessageDecodingException("Unable to Base64 decode SAML message");
-            } else {
-                logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
+            final String decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
+            if (decodedMessage.contains("<")) {
+                logger.trace("Decoded SAML message:\n{}", decodedMessage);
                 return new ByteArrayInputStream(decodedBytes);
+            } else {
+                logger.warn("Unable to Base64 decode SAML message: using it as is (likely a CAS v<6 message)");
+                return new ByteArrayInputStream(encodedMessage.getBytes(StandardCharsets.UTF_8));
             }
         }
     }
