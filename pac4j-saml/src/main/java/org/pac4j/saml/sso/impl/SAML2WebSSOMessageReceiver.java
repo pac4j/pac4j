@@ -75,6 +75,8 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
         decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
 
+        decodedCtx.setWebContext(context.getWebContext());
+
         return this.validator.validate(decodedCtx);
     }
 }

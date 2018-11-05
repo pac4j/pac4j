@@ -32,6 +32,7 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
@@ -72,17 +73,19 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
 
     public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                          final Decrypter decrypter,
+                                         final LogoutHandler logoutHandler,
                                          final int maximumAuthenticationLifetime,
                                          final boolean wantsAssertionsSigned) {
-        this(engine, decrypter, maximumAuthenticationLifetime, wantsAssertionsSigned, new BasicURLComparator());
+        this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, new BasicURLComparator());
     }
 
     public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                          final Decrypter decrypter,
+                                         final LogoutHandler logoutHandler,
                                          final int maximumAuthenticationLifetime,
                                          final boolean wantsAssertionsSigned,
                                          final URIComparator uriComparator) {
-        super(engine, decrypter, uriComparator);
+        super(engine, decrypter, logoutHandler, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
@@ -113,6 +116,7 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
         final Assertion subjectAssertion = context.getSubjectAssertion();
 
         final String sessionIndex = getSessionIndex(subjectAssertion);
+        logoutHandler.recordSession(context.getWebContext(), sessionIndex);
 
         final String issuerEntityId = subjectAssertion.getIssuer().getValue();
         final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();

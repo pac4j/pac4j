@@ -20,6 +20,8 @@ import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -142,6 +144,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     private Map<String, String> mappedAttributes = new LinkedHashMap<>();
 
+    private LogoutHandler logoutHandler;
+
     public SAML2ClientConfiguration() {
     }
 
@@ -201,6 +205,10 @@ public class SAML2ClientConfiguration extends InitializableObject {
             } else {
                 throw new TechnicalException("Provided keystoreResource does not exist and cannot be created");
             }
+        }
+
+        if (logoutHandler == null) {
+            logoutHandler = new DefaultLogoutHandler();
         }
 
         initSignatureSigningConfiguration();
@@ -759,5 +767,19 @@ public class SAML2ClientConfiguration extends InitializableObject {
                 .getSignatureCanonicalizationAlgorithm();
             LOGGER.info("Bootstrapped Canonicalization Algorithm");
         }
+    }
+
+    public LogoutHandler getLogoutHandler() {
+        return logoutHandler;
+    }
+
+    public void setLogoutHandler(final LogoutHandler logoutHandler) {
+        this.logoutHandler = logoutHandler;
+    }
+
+    public LogoutHandler findLogoutHandler() {
+        init();
+
+        return logoutHandler;
     }
 }

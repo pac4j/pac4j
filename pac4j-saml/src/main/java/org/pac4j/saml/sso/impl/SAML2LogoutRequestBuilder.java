@@ -73,7 +73,7 @@ public class SAML2LogoutRequestBuilder {
         nameId.setSPProvidedID(profile.getSamlNameIdSpProviderId());
         request.setNameID(nameId);
         // session index added
-        final String sessIdx = (String) profile.getAttribute("sessionindex");
+        final String sessIdx = profile.getSessionIndex();
         final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
             .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
         final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();

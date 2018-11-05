@@ -3,7 +3,7 @@ package org.pac4j.cas.credentials.extractor;
 import java.util.Base64;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.logout.CasLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -38,14 +38,12 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
 
     @Override
     public TokenCredentials extract(final WebContext context) {
-        final CasLogoutHandler logoutHandler = configuration.findLogoutHandler();
+        final LogoutHandler logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
             final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
-            if (logoutHandler != null) {
-                logoutHandler.recordSession(context, ticket);
-            }
+            logoutHandler.recordSession(context, ticket);
             final TokenCredentials casCredentials = new TokenCredentials(ticket);
             logger.debug("casCredentials: {}", casCredentials);
             return casCredentials;
@@ -55,7 +53,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonUtils.isNotBlank(ticket) && logoutHandler != null) {
+            if (CommonUtils.isNotBlank(ticket)) {
                 logoutHandler.destroySessionBack(context, ticket);
             }
             logger.debug("back logout request: no credential returned");
@@ -66,7 +64,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonUtils.isNotBlank(ticket) && logoutHandler != null) {
+            if (CommonUtils.isNotBlank(ticket)) {
                 logoutHandler.destroySessionFront(context, ticket);
             }
             logger.debug("front logout request: no credential returned");

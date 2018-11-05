@@ -36,4 +36,3 @@ public class SAML2LogoutProfileHandler implements SAML2ProfileHandler<LogoutRequ
         return this.messageReceiver.receiveMessage(context);
     }
 }
-

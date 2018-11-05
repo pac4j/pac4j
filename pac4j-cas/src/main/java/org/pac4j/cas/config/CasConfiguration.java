@@ -2,8 +2,8 @@ package org.pac4j.cas.config;
 
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
-import org.pac4j.cas.logout.CasLogoutHandler;
-import org.pac4j.cas.logout.DefaultCasLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -54,7 +54,7 @@ public class CasConfiguration extends InitializableObject {
 
     private ProxyList allowedProxyChains = new ProxyList();
 
-    private CasLogoutHandler logoutHandler;
+    private LogoutHandler logoutHandler;
 
     private TicketValidator defaultTicketValidator;
 
@@ -117,7 +117,7 @@ public class CasConfiguration extends InitializableObject {
 
     protected void initializeLogoutHandler() {
         if (this.logoutHandler == null) {
-            this.logoutHandler = new DefaultCasLogoutHandler();
+            this.logoutHandler = new DefaultLogoutHandler();
         }
     }
 
@@ -298,17 +298,17 @@ public class CasConfiguration extends InitializableObject {
         this.allowedProxyChains = allowedProxyChains;
     }
 
-    public CasLogoutHandler getLogoutHandler() {
+    public LogoutHandler getLogoutHandler() {
         return logoutHandler;
     }
 
-    public CasLogoutHandler findLogoutHandler() {
+    public LogoutHandler findLogoutHandler() {
         init();
 
         return logoutHandler;
     }
 
-    public void setLogoutHandler(final CasLogoutHandler logoutHandler) {
+    public void setLogoutHandler(final LogoutHandler logoutHandler) {
         this.logoutHandler = logoutHandler;
     }
 

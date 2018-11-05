@@ -24,7 +24,7 @@ public class SAML2DefaultResponseValidatorTests {
     private SAML2DefaultResponseValidator createResponseValidatorWithSigningValidationOf(boolean wantsAssertionsSigned) {
         SAML2SignatureTrustEngineProvider trustEngineProvider = mock(SAML2SignatureTrustEngineProvider.class);
         Decrypter decrypter = mock(Decrypter.class);
-        return new SAML2DefaultResponseValidator(trustEngineProvider, decrypter, 0, wantsAssertionsSigned);
+        return new SAML2DefaultResponseValidator(trustEngineProvider, decrypter, null, 0, wantsAssertionsSigned);
     }
 
     @Test

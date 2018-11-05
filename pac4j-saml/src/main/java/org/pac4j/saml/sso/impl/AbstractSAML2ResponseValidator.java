@@ -21,6 +21,7 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.*;
@@ -47,16 +48,19 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
     protected final Decrypter decrypter;
 
+    protected final LogoutHandler logoutHandler;
 
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
-                                             final Decrypter decrypter) {
-        this(signatureTrustEngineProvider, decrypter, new BasicURLComparator());
+                                             final Decrypter decrypter, final LogoutHandler logoutHandler) {
+        this(signatureTrustEngineProvider, decrypter, logoutHandler, new BasicURLComparator());
     }
 
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
-                                             final Decrypter decrypter, final URIComparator uriComparator) {
+                                             final Decrypter decrypter, final LogoutHandler logoutHandler,
+                                             final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = signatureTrustEngineProvider;
         this.decrypter = decrypter;
+        this.logoutHandler = logoutHandler;
         this.uriComparator = uriComparator;
     }
 

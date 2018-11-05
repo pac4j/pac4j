@@ -9,13 +9,14 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.state.StateGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2ContextProvider;
-import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.SAML2Credentials;
+import org.pac4j.saml.credentials.SAML2CredentialsExtractor;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
@@ -49,8 +50,6 @@ import java.util.List;
  * @since 1.5.0
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
-
-    public static final String IDP_LOGOUT_REQUEST_EXTRA_PARAMETER = "idplogoutrequest";
 
     protected CredentialProvider credentialProvider;
 
@@ -112,19 +111,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         initSAMLLogoutProfileHandler();
 
         defaultRedirectActionBuilder(new SAML2RedirectActionBuilder(this));
-        defaultCredentialsExtractor(ctx -> {
-            final boolean logoutRequest = ctx.getRequestParameter(IDP_LOGOUT_REQUEST_EXTRA_PARAMETER) != null;
-            final SAML2MessageContext samlContext = this.contextProvider.buildContext(ctx);
-            if (logoutRequest) {
-                // SAML logout request
-                this.logoutProfileHandler.receive(samlContext);
-                return null;
-            } else {
-                // SAML authn response
-                final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-                return credentials;
-            }
-        });
+        defaultCredentialsExtractor(new SAML2CredentialsExtractor(this));
         defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId(), this.configuration.getMappedAttributes()));
         defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));
     }
@@ -145,7 +132,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     protected void initSAMLLogoutResponseValidator() {
-        this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.signatureTrustEngineProvider, this.decrypter);
+        this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.signatureTrustEngineProvider,
+                                                                        this.decrypter, this.configuration.getLogoutHandler());
         this.logoutResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
@@ -154,6 +142,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.responseValidator = new SAML2DefaultResponseValidator(
                 this.signatureTrustEngineProvider,
                 this.decrypter,
+                this.configuration.getLogoutHandler(),
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.isWantsAssertionsSigned());
         this.responseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
@@ -212,6 +201,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
             throw new TechnicalException("Error initializing manager", e);
         }
         return metadataManager;
+    }
+
+    @Override
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
+        configuration.findLogoutHandler().renewSession(oldSessionId, context);
     }
 
     public final SAML2ResponseValidator getResponseValidator() {

@@ -5,6 +5,8 @@ import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -20,8 +22,9 @@ import java.util.List;
  */
 public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator {
 
-    public SAML2LogoutResponseValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter) {
-        super(engine, decrypter);
+    public SAML2LogoutResponseValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
+                                        final LogoutHandler logoutHandler) {
+        super(engine, decrypter, logoutHandler);
     }
 
     /**
@@ -40,17 +43,20 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutRequest(logoutRequest, context, engine);
 
+            // should we reply a logout response?
+            return null;
+
         } else if (message instanceof LogoutResponse) {
             // SP-initiated
             final LogoutResponse logoutResponse = (LogoutResponse) message;
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
 
+            throw HttpAction.ok(context.getWebContext(), "");
+
         } else {
             throw new SAMLException("Must be a LogoutRequest or LogoutResponse type");
         }
-
-        return null;
     }
 
     /**
@@ -79,7 +85,8 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
         if (sessionIndexes == null || sessionIndexes.size() != 1) {
             throw new SAMLException("We must have one session index in the logout request");
         }
-        //final String sessionIndex = sessionIndexes.get(0).getSessionIndex();
+        String sessionIndex = sessionIndexes.get(0).getSessionIndex();
+        logoutHandler.destroySessionBack(context.getWebContext(), sessionIndex);
     }
 
     /**
@@ -101,8 +108,6 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
         validateIssuerIfItExists(logoutResponse.getIssuer(), context);
 
         verifyEndpoint(context.getSPSSODescriptor().getSingleLogoutServices().get(0), logoutResponse.getDestination());
-
-        // sessionindex ?
     }
 
     @Override
