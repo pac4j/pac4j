@@ -167,8 +167,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return isDateValid;
     }
 
-    protected final void verifyEndpoint(final SAML2MessageContext context, final String destination) {
-        final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
+    protected final void verifyEndpoint(final Endpoint endpoint, final String destination) {
         try {
             if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
                 && !uriComparator.compare(destination, endpoint.getResponseLocation())) {

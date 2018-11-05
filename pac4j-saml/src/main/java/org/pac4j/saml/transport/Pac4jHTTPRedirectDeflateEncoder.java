@@ -118,7 +118,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
      *
      * @throws MessageEncodingException thrown if there is a problem compressing the message
      */
-    protected String deflateAndBase64Encode(SAMLObject message) throws MessageEncodingException {
+    String deflateAndBase64Encode(SAMLObject message) throws MessageEncodingException {
         log.debug("Deflating and Base64 encoding SAML message");
         try {
             String messageStr = SerializeSupport.nodeToString(marshallMessage(message));
@@ -170,7 +170,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
             throws MessageEncodingException {
         log.debug("Building URL to redirect client to");
 
-        URLBuilder urlBuilder = null;
+        URLBuilder urlBuilder;
         try {
             urlBuilder = new URLBuilder(endpoint);
         } catch (MalformedURLException e) {
@@ -250,7 +250,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         log.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
                 CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
 
-        String b64Signature = null;
+        String b64Signature;
         try {
             byte[] rawSignature =
                     XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes(StandardCharsets.UTF_8));

@@ -198,7 +198,7 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
             }
         }
 
-        verifyEndpoint(context, response.getDestination());
+        verifyEndpoint(context.getSAMLEndpointContext().getEndpoint(), response.getDestination());
         if (request != null) {
             verifyRequest(request, context);
         }

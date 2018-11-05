@@ -100,7 +100,7 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
 
         validateIssuerIfItExists(logoutResponse.getIssuer(), context);
 
-        verifyEndpoint(context, logoutResponse.getDestination());
+        verifyEndpoint(context.getSPSSODescriptor().getSingleLogoutServices().get(0), logoutResponse.getDestination());
 
         // sessionindex ?
     }
