@@ -16,6 +16,7 @@ public interface SAML2ResponseValidator {
      * The method decrypt encrypted assertions if any.
      *
      * @param context the context
+     * @return the SAML credentials
      */
     Credentials validate(SAML2MessageContext context);
 

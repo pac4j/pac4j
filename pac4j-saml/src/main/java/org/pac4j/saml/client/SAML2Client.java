@@ -145,7 +145,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     protected void initSAMLLogoutResponseValidator() {
-        this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.signatureTrustEngineProvider);
+        this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.signatureTrustEngineProvider, this.decrypter);
+        this.logoutResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
     protected void initSAMLResponseValidator() {

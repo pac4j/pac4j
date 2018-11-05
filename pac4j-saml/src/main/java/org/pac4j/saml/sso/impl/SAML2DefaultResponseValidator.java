@@ -21,7 +21,6 @@ import org.opensaml.saml.saml2.core.EncryptedAttribute;
 import org.opensaml.saml.saml2.core.EncryptedID;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.Response;
-import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.Subject;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.core.SubjectConfirmationData;
@@ -40,11 +39,8 @@ import org.pac4j.saml.exceptions.SAMLAssertionAudienceException;
 import org.pac4j.saml.exceptions.SAMLAssertionConditionException;
 import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
 import org.pac4j.saml.exceptions.SAMLAuthnSessionCriteriaException;
-import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.exceptions.SAMLInResponseToMismatchException;
-import org.pac4j.saml.exceptions.SAMLIssueInstantException;
-import org.pac4j.saml.exceptions.SAMLNameIdDecryptionException;
 import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
 import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
@@ -64,6 +60,7 @@ import java.util.Set;
  * with the correct SAML assertion and the corresponding nameID's Bearer subject if every checks succeeds.
  *
  * @author Michael Remond
+ * @author Jerome Leleu
  * @since 1.5.0
  */
 public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidator {
@@ -72,10 +69,6 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
     private int maximumAuthenticationLifetime;
 
     private final boolean wantsAssertionsSigned;
-
-    private final Decrypter decrypter;
-
-    private final URIComparator uriComparator;
 
     public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                          final Decrypter decrypter,
@@ -89,13 +82,10 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
                                          final int maximumAuthenticationLifetime,
                                          final boolean wantsAssertionsSigned,
                                          final URIComparator uriComparator) {
-        super(engine);
-        this.decrypter = decrypter;
+        super(engine, decrypter, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
-        this.uriComparator = uriComparator;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
-
 
     @Override
     public Credentials validate(final SAML2MessageContext context) {
@@ -187,23 +177,11 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
     protected final void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
                                                       final SignatureTrustEngine engine) {
 
-        if (!StatusCode.SUCCESS.equals(response.getStatus().getStatusCode().getValue())) {
-            String status = response.getStatus().getStatusCode().getValue();
-            if (response.getStatus().getStatusMessage() != null) {
-                status += " / " + response.getStatus().getStatusMessage().getMessage();
-            }
-            throw new SAMLException("Authentication response is not success ; actual " + status);
-        }
+        validateSuccess(response.getStatus());
 
-        if (response.getSignature() != null) {
-            final String entityId = context.getSAMLPeerEntityContext().getEntityId();
-            validateSignature(response.getSignature(), entityId, engine);
-            context.getSAMLPeerEntityContext().setAuthenticated(true);
-        }
+        validateSignatureIfItExists(response.getSignature(), context, engine);
 
-        if (!isIssueInstantValid(response.getIssueInstant())) {
-            throw new SAMLIssueInstantException("Response issue instant is too old or in the future");
-        }
+        validateIssueInstant(response.getIssueInstant());
 
         AuthnRequest request = null;
         final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
@@ -220,13 +198,12 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
             }
         }
 
-        verifyEndpoint(context.getSAMLEndpointContext().getEndpoint(), response.getDestination());
+        verifyEndpoint(context, response.getDestination());
         if (request != null) {
             verifyRequest(request, context);
         }
-        if (response.getIssuer() != null) {
-            validateIssuer(response.getIssuer(), context);
-        }
+
+        validateIssuerIfItExists(response.getIssuer(), context);
     }
 
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
@@ -256,19 +233,6 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
                 logger.warn("Response was received using a different binding {} than was requested {}",
                     context.getSAMLBindingContext().getBindingUri(), requestedBinding);
             }
-        }
-    }
-
-    protected final void verifyEndpoint(final Endpoint endpoint, final String destination) {
-        try {
-            if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
-                && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
-                throw new SAMLEndpointMismatchException("Intended destination " + destination
-                    + " doesn't match any of the endpoint URLs on endpoint "
-                    + endpoint.getLocation());
-            }
-        } catch (final Exception e) {
-            throw new SAMLEndpointMismatchException(e);
         }
     }
 
@@ -352,9 +316,7 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
     protected final void validateAssertion(final Assertion assertion, final SAML2MessageContext context,
                                            final SignatureTrustEngine engine, final Decrypter decrypter) {
 
-        if (!isIssueInstantValid(assertion.getIssueInstant())) {
-            throw new SAMLIssueInstantException("Assertion issue instant is too old or in the future");
-        }
+        validateIssueInstant(assertion.getIssueInstant());
 
         validateIssuer(assertion.getIssuer(), context);
 
@@ -437,31 +399,6 @@ public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidato
         }
 
         throw new SAMLSubjectConfirmationException("Subject confirmation validation failed");
-    }
-
-    /**
-     * Decrypts an EncryptedID, using a decrypter.
-     *
-     * @param encryptedId The EncryptedID to be decrypted.
-     * @param decrypter   The decrypter to use.
-     * @return Decrypted ID or {@code null} if any input is {@code null}.
-     * @throws SAMLException If the input ID cannot be decrypted.
-     */
-    protected final NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
-        if (encryptedId == null) {
-            return null;
-        }
-        if (decrypter == null) {
-            logger.warn("Encrypted attributes returned, but no keystore was provided.");
-            return null;
-        }
-
-        try {
-            final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
-            return decryptedId;
-        } catch (final DecryptionException e) {
-            throw new SAMLNameIdDecryptionException("Decryption of an EncryptedID failed.", e);
-        }
     }
 
     /**
