@@ -11,10 +11,7 @@ import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessag
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
-import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.opensaml.saml.saml2.metadata.*;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -60,7 +57,6 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
         final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
 
-        final SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
 
         final MessageEncoder encoder = getMessageEncoder(context);
@@ -75,7 +71,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
         outboundContext.setMessage(request);
         outboundContext.getSAMLEndpointContext().setEndpoint(acsService);
-        outboundContext.getSAMLPeerEndpointContext().setEndpoint(ssoService);
+        outboundContext.getSAMLPeerEndpointContext().setEndpoint(getEndpoint(context));
 
         outboundContext.getSAMLPeerEntityContext().setRole(context.getSAMLPeerEntityContext().getRole());
         outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());
@@ -110,6 +106,8 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             throw new SAMLException("Error initializing saml encoder", e);
         }
     }
+
+    protected abstract Endpoint getEndpoint(SAML2MessageContext context);
 
     protected final void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                        final IDPSSODescriptor idpssoDescriptor,

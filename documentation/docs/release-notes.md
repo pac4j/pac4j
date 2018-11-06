@@ -5,7 +5,8 @@ title: Release notes&#58;
 
 **v3.4.0**:
 
-- Added ability to create a composition of authorizers (conjunction or disjunction).
+- Added ability to create a composition of authorizers (conjunction or disjunction)
+- SAML SLO support (POST and HTTP-Redirect bindings)
 
 **v3.3.0**:
 

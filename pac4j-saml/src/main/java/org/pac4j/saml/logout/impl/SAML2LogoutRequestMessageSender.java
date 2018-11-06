@@ -1,6 +1,8 @@
 package org.pac4j.saml.logout.impl;
 
 import org.opensaml.saml.saml2.core.LogoutRequest;
+import org.opensaml.saml.saml2.metadata.Endpoint;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
 
@@ -18,5 +20,9 @@ public class SAML2LogoutRequestMessageSender extends AbstractSAML2MessageSender<
                                            final boolean signErrorResponses,
                                            final boolean isRequestSigned) {
         super(signatureSigningParametersProvider, destinationBindingType, signErrorResponses, isRequestSigned);
+    }
+
+    protected Endpoint getEndpoint(final SAML2MessageContext context) {
+        return context.getIDPSingleLogoutService(destinationBindingType);
     }
 }

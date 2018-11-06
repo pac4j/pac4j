@@ -1,8 +1,10 @@
 package org.pac4j.saml.sso.impl;
 
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
 
@@ -32,5 +34,9 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
             signOutboundContext = true;
         }
         return signOutboundContext;
+    }
+
+    protected Endpoint getEndpoint(final SAML2MessageContext context) {
+        return context.getIDPSingleSignOnService(destinationBindingType);
     }
 }

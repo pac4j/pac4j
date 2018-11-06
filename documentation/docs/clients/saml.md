@@ -5,7 +5,7 @@ title: SAML
 
 *pac4j* allows you to login with any SAML identity provider using the SAML v2.0 protocol.
 
-It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, ...
+It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, Shibboleth v3...
 
 ## 1) Dependency
 
@@ -34,10 +34,10 @@ keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlK
 
 Alternatively, you can also let pac4j create the keystore for you. If the keystore resource does not exist and is writable, *pac4j* will attempt to generate a keystore and produce the relevant key pairs inside it.
 
-Then, you must define a [`SAML2ClientConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2ClientConfiguration.java):
+Then, you must define a [`SAML2Configuration`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/config/SAML2Configuration.java):
 
 ```java
-SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
+SAML2Configuration cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
                                         "pac4j-demo-passwd",
                                         "pac4j-demo-passwd",
                                         new ClassPathResource("testshib-providers.xml"));
@@ -55,7 +55,7 @@ The fourth parameter (`identityProviderMetadataResource`) should point to your I
 Or you can also use the "prefix mechanism" to define the `Resource`:
 
 ```java
-SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks",
+SAML2Configuration cfg = new SAML2Configuration("resource:samlKeystore.jks",
                                         "pac4j-demo-passwd",
                                         "pac4j-demo-passwd",
                                         "resource:testshib-providers.xml");
@@ -157,8 +157,22 @@ You can generate the SP metadata in two ways:
 - or by defining the appropriate configuration: `cfg.setServiceProviderMetadata(new FileSystemResource("/tmp/sp-metadata.xml"));`
 
 
+## 4) Logout
 
-## 4) Authentication Attributes
+The SAML support handles both the POST and HTTP-Redirect bindings for logout requests/responses.
+
+The `SAML2Client` can participate in the central logout and send a logout request to the IdP.
+The binding of this request is controlled by the `spLogoutRequestBindingType` property and
+the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`.
+
+When calling the IdP, the SAML *pac4j* application locally removes the user profiles and optionally destroys the web session based on the [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java).
+You may use your own logout handler by implementing the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface
+and define it in the SAML configuration.
+
+When called by the IdP, the SAML *pac4j* application also removes the user profiles based on the logout handler and returns a logout response with a binding defined by the `spLogoutResponseBindingType` property (in the `SAML2Configuration`).
+
+
+## 5) Authentication Attributes
 
 The following authentication attributes are populated by this client:
 
@@ -166,9 +180,10 @@ The following authentication attributes are populated by this client:
 - The authentication method(s) asserted by the IdP (`getAuthenticationAttribute("authnContext")` or `SAML2Profile.getAuthnContexts()`)
 - The NotBefore SAML Condition (`getAuthenticationAttribute("notBefore")` or `SAML2Profile.getNotBefore()`)
 - The NotOnOrAfter SAML Condition (`getAuthenticationAttribute("notOnOrAfter")` or `SAML2Profile.getNotOnOrAfter()`)
+- the session index.
 
 
-## 5) ADFS subtilities
+## 6) ADFS subtilities
 
 You must follow these rules to successfully authenticate using Microsoft ADFS 2.0/3.0.
 
@@ -200,7 +215,8 @@ Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files c
 
 ### c) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
 
-ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In SAML2ClientConfiguration you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
+ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In the `SAML2Configuration`, you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
+
 
 # Integration with various IdPs
 
@@ -211,7 +227,7 @@ SimpleSAMLphp is a commonly used IdP. To integrate PAC4J with SimpleSAMLphp use 
 ### DemoConfigFactory.java
 
 ```java
-final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks",
+final SAML2Configuration cfg = new SAML2Configuration("resource:samlKeystore.jks",
  "pac4j-demo-passwd",
  "pac4j-demo-passwd",
  "resource:idp-metadata.xml"); //the id-metadata.xml contains IdP metadata, you will have to create this
