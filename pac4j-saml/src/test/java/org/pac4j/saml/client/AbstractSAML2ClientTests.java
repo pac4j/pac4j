@@ -1,6 +1,7 @@
 package org.pac4j.saml.client;
 
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.storage.HttpSessionStorageFactory;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -23,8 +24,8 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
     }
 
     protected final SAML2Client getClient() {
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration(new FileSystemResource("target/samlKeystore.jks"),
+        final SAML2Configuration cfg =
+                new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
                         "pac4j-demo-passwd",
                         "pac4j-demo-passwd",
                         new ClassPathResource("testshib-providers.xml"));

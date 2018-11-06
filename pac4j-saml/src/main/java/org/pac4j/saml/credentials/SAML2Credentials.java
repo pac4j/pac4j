@@ -5,7 +5,7 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
+import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -21,7 +21,7 @@ import java.util.List;
  * @since 1.5.0
  */
 public class SAML2Credentials extends Credentials {
-    private static final Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(SAML2AuthnResponseValidator.class);
 
     private static final long serialVersionUID = 5040516205957826527L;
 

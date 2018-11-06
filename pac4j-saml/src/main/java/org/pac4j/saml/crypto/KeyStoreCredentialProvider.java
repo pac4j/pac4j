@@ -22,7 +22,7 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
-    public KeyStoreCredentialProvider(final SAML2ClientConfiguration configuration) {
+    public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
         this(configuration.getKeyStoreAlias(), 
             configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType(),
             configuration.getKeystoreResource(), configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());

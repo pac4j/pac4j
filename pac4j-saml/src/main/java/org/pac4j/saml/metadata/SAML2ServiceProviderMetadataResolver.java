@@ -11,7 +11,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
@@ -45,9 +45,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     private final CredentialProvider credentialProvider;
     private final String callbackUrl;
-    private final SAML2ClientConfiguration configuration;
+    private final SAML2Configuration configuration;
 
-    public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
+    public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
         this.credentialProvider = credentialProvider;
         this.callbackUrl = callbackUrl;

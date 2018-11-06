@@ -8,12 +8,12 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.state.StateGenerator;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
+import org.pac4j.saml.logout.impl.SAML2LogoutRequestBuilder;
 import org.pac4j.saml.profile.SAML2Profile;
-import org.pac4j.saml.sso.SAML2ProfileHandler;
-import org.pac4j.saml.sso.impl.*;
+import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 /**
@@ -30,7 +30,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
 
     protected final SAMLContextProvider contextProvider;
 
-    protected final SAML2ClientConfiguration configuration;
+    protected final SAML2Configuration configuration;
 
     protected final StateGenerator stateGenerator;
 

@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultLogoutHandler<C extends WebContext> implements LogoutHandler<C> {
 
-    protected static final Logger logger = LoggerFactory.getLogger(DefaultLogoutHandler.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Store<String, Object> store = new GuavaStore<>(10000, 30, TimeUnit.MINUTES);
 

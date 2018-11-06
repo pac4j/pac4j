@@ -10,9 +10,16 @@ import org.pac4j.core.store.Store;
 @Deprecated
 public class DefaultCasLogoutHandler<C extends WebContext> extends DefaultLogoutHandler<C> implements CasLogoutHandler<C> {
 
-    public DefaultCasLogoutHandler() {}
+    public DefaultCasLogoutHandler() {
+        warn();
+    }
 
     public DefaultCasLogoutHandler(final Store<String, Object> store) {
         super(store);
+        warn();
+    }
+
+    protected void warn() {
+        logger.warn("Deprecated: use the DefaultLogoutHandler component instead of the DefaultCasLogoutHandler component");
     }
 }

@@ -7,9 +7,9 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.sso.SAML2ObjectBuilder;
+import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
@@ -28,7 +28,7 @@ public class SAML2RedirectActionBuilder implements RedirectActionBuilder {
     public SAML2RedirectActionBuilder(final SAML2Client client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
-        final SAML2ClientConfiguration cfg = client.getConfiguration();
+        final SAML2Configuration cfg = client.getConfiguration();
         this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(cfg);
     }
 

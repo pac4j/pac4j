@@ -45,6 +45,7 @@ import org.pac4j.saml.exceptions.SAMLInResponseToMismatchException;
 import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
 import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
+import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
 import org.pac4j.saml.util.SAML2Utils;
 
@@ -64,27 +65,27 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class SAML2DefaultResponseValidator extends AbstractSAML2ResponseValidator {
+public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator {
 
     /* maximum lifetime after a successful authentication on an IDP */
     private int maximumAuthenticationLifetime;
 
     private final boolean wantsAssertionsSigned;
 
-    public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
-                                         final Decrypter decrypter,
-                                         final LogoutHandler logoutHandler,
-                                         final int maximumAuthenticationLifetime,
-                                         final boolean wantsAssertionsSigned) {
+    public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
+                                       final Decrypter decrypter,
+                                       final LogoutHandler logoutHandler,
+                                       final int maximumAuthenticationLifetime,
+                                       final boolean wantsAssertionsSigned) {
         this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, new BasicURLComparator());
     }
 
-    public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
-                                         final Decrypter decrypter,
-                                         final LogoutHandler logoutHandler,
-                                         final int maximumAuthenticationLifetime,
-                                         final boolean wantsAssertionsSigned,
-                                         final URIComparator uriComparator) {
+    public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
+                                       final Decrypter decrypter,
+                                       final LogoutHandler logoutHandler,
+                                       final int maximumAuthenticationLifetime,
+                                       final boolean wantsAssertionsSigned,
+                                       final URIComparator uriComparator) {
         super(engine, decrypter, logoutHandler, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.wantsAssertionsSigned = wantsAssertionsSigned;

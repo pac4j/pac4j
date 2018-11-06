@@ -1,4 +1,4 @@
-package org.pac4j.saml.sso;
+package org.pac4j.saml.profile.api;
 
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.context.SAML2MessageContext;

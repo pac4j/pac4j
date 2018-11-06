@@ -37,14 +37,17 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected final boolean cas5Compatibility;
+
     /** Parser pool used to deserialize the message. */
     protected ParserPool parserPool;
 
     protected final WebContext context;
 
-    public AbstractPac4jDecoder(final WebContext context) {
+    public AbstractPac4jDecoder(final WebContext context, final boolean cas5Compatibility) {
         CommonHelper.assertNotNull("context", context);
         this.context = context;
+        this.cas5Compatibility = cas5Compatibility;
     }
 
     protected InputStream getBase64DecodedMessage() throws MessageDecodingException {
@@ -60,8 +63,8 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
             throw new MessageDecodingException("Request did not contain either a SAMLRequest, a SAMLResponse or a logoutRequest parameter");
         } else {
             logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);
-            if (encodedMessage.contains("<")) {
-                logger.warn("Not a base64 message: using it as is (likely a CAS v<6 message)");
+            if (encodedMessage.contains("<") && cas5Compatibility) {
+                logger.warn("Not a base64 message: using it for CAS v5 backward compatibility");
                 return new ByteArrayInputStream(encodedMessage.getBytes(StandardCharsets.UTF_8));
             } else {
                 final byte[] decodedBytes = Base64Support.decode(encodedMessage);

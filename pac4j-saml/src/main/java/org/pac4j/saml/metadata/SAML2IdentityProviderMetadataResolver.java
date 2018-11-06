@@ -12,7 +12,7 @@ import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
 
-    public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration) {
+    public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
         this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderEntityId());
     }
 

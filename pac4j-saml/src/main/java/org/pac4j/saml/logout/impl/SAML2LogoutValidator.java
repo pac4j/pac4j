@@ -1,15 +1,17 @@
-package org.pac4j.saml.sso.impl;
+package org.pac4j.saml.logout.impl;
 
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 
 import java.util.List;
 
@@ -20,11 +22,14 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator {
+public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
-    public SAML2LogoutResponseValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                        final LogoutHandler logoutHandler) {
+    protected final boolean cas5Compatibility;
+
+    public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
+                                final LogoutHandler logoutHandler, final boolean cas5Compatibility) {
         super(engine, decrypter, logoutHandler);
+        this.cas5Compatibility = cas5Compatibility;
     }
 
     /**
@@ -35,6 +40,7 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
     @Override
     public Credentials validate(final SAML2MessageContext context) {
 
+        final WebContext webContext = context.getWebContext();
         final SAMLObject message = context.getMessage();
 
         // IDP-initiated or CAS v5/v6?
@@ -43,7 +49,6 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutRequest(logoutRequest, context, engine);
 
-            // should we reply a logout response?
             return null;
 
         } else if (message instanceof LogoutResponse) {
@@ -52,7 +57,8 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
 
-            throw HttpAction.ok(context.getWebContext(), "");
+            // nothing to reply to the logout response
+            throw HttpAction.ok(webContext, "");
 
         } else {
             throw new SAMLException("Must be a LogoutRequest or LogoutResponse type");
@@ -71,8 +77,9 @@ public class SAML2LogoutResponseValidator extends AbstractSAML2ResponseValidator
 
         validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
 
-        // don't check because of CAS v5
-        // validateIssueInstant(logoutRequest.getIssueInstant());
+        if (!cas5Compatibility) {
+            validateIssueInstant(logoutRequest.getIssueInstant());
+        }
 
         validateIssuerIfItExists(logoutRequest.getIssuer(), context);
 

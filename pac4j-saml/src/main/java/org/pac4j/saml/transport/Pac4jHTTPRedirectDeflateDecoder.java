@@ -21,8 +21,8 @@ import java.util.zip.*;
  */
 public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
-    public Pac4jHTTPRedirectDeflateDecoder(final WebContext context) {
-        super(context);
+    public Pac4jHTTPRedirectDeflateDecoder(final WebContext context, final boolean cas5Compatibility) {
+        super(context, cas5Compatibility);
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.pac4j.config.builder;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                 final String destinationBindingType = getProperty(SAML_DESTINATION_BINDING_TYPE, i);
                 final String keystoreAlias = getProperty(SAML_KEYSTORE_ALIAS, i);
 
-                final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(keystorePath, keystorePassword,
+                final SAML2Configuration cfg = new SAML2Configuration(keystorePath, keystorePassword,
                         privateKeyPassword, identityProviderMetadataPath);
                 if (isNotBlank(maximumAuthenticationLifetime)) {
                     cfg.setMaximumAuthenticationLifetime(Integer.parseInt(maximumAuthenticationLifetime));

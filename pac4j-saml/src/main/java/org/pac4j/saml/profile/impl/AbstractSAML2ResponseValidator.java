@@ -1,4 +1,4 @@
-package org.pac4j.saml.sso.impl;
+package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
@@ -25,7 +25,7 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.*;
-import org.pac4j.saml.sso.SAML2ResponseValidator;
+import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

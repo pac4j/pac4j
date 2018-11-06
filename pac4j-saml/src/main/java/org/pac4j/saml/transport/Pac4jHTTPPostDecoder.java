@@ -18,8 +18,8 @@ import java.io.InputStream;
  */
 public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
 
-    public Pac4jHTTPPostDecoder(final WebContext context) {
-        super(context);
+    public Pac4jHTTPPostDecoder(final WebContext context, final boolean cas5Compatibility) {
+        super(context, cas5Compatibility);
     }
 
     @Override
