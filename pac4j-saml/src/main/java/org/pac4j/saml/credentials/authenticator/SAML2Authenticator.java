@@ -1,10 +1,6 @@
 package org.pac4j.saml.credentials.authenticator;
 
 import org.apache.commons.lang.StringUtils;
-import org.opensaml.core.xml.XMLObject;
-import org.opensaml.saml.saml2.core.Attribute;
-import org.opensaml.saml.saml2.core.Conditions;
-import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -14,12 +10,12 @@ import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Authenticator for SAML 2.0
@@ -43,9 +39,21 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
     private final String attributeAsId;
 
-    public SAML2Authenticator(String attributeAsId) {
+    /**
+     * Describes the map of attributes that are to be fetched from the credential (map keys)
+     * and then transformed/renamed using map values before they are put into a profile.
+     * An example might be: fetch givenName from credential and rename it to 'urn:oid:2.5.4.42' or vice versa.
+     * Note that this setting only applies to attribute names, and not friendly-names.
+     */
+    private final Map<String, String> mappedAttributes;
 
+    public SAML2Authenticator(final String attributeAsId, final Map<String, String> mappedAttributes) {
         this.attributeAsId = attributeAsId;
+        this.mappedAttributes = mappedAttributes;
+    }
+
+    public SAML2Authenticator(final String attributeAsId) {
+        this(attributeAsId, new HashMap<>());
     }
 
     @Override
@@ -58,43 +66,44 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         init();
 
         final SAML2Profile profile = getProfileDefinition().newProfile();
-        final NameID nameId = credentials.getNameId();
+
+        final SAML2Credentials.SAMLNameID nameId = credentials.getNameId();
         profile.setId(nameId.getValue());
+
         profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
         profile.addAuthenticationAttribute(SAML_NAME_ID_FORMAT, nameId.getFormat());
         profile.addAuthenticationAttribute(SAML_NAME_ID_NAME_QUALIFIER, nameId.getNameQualifier());
-        profile.addAuthenticationAttribute(SAML_NAME_ID_SP_NAME_QUALIFIER, nameId.getSPNameQualifier());
-        profile.addAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID, nameId.getSPProvidedID());
+        profile.addAuthenticationAttribute(SAML_NAME_ID_SP_NAME_QUALIFIER, nameId.getSpNameQualifier());
+        profile.addAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID, nameId.getSpProviderId());
 
-        for (final Attribute attribute : credentials.getAttributes()) {
+        for (final SAML2Credentials.SAMLAttribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
             final String name = attribute.getName();
             final String friendlyName = attribute.getFriendlyName();
 
-            final List<String> values = new ArrayList<>();
-            for (final XMLObject attributeValue : attribute.getAttributeValues()) {
-                final Element attributeValueElement = attributeValue.getDOM();
-                if (attributeValueElement != null) {
-                    final String value = attributeValueElement.getTextContent();
-                    logger.debug("Adding attribute value {} for attribute {} / {}", value,
-                        name, friendlyName);
-                    values.add(value);
-                } else {
-                    logger.warn("Attribute value DOM element is null for {}", attribute);
-                }
-            }
-
+            final List<String> values = attribute.getAttributeValues();
             if (!values.isEmpty()) {
-                if (StringUtils.isNotBlank(attributeAsId) && attributeAsId.equals(name)) {
+                if (StringUtils.isNotBlank(attributeAsId)
+                    && (attributeAsId.equalsIgnoreCase(name) || attributeAsId.equalsIgnoreCase(friendlyName))) {
                     if (values.size() == 1) {
                         profile.setId(values.get(0));
                     } else {
                         logger.warn("Will not add {} as id because it has multiple values: {}", attributeAsId, values);
                     }
                 }
-                getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
+
+                if (mappedAttributes != null && !mappedAttributes.isEmpty() && mappedAttributes.containsKey(name)) {
+                    final String newName = mappedAttributes.get(name);
+                    logger.debug("Mapping attribute {} as {} with values {} to profile", name, newName, values);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, newName, values);
+                } else {
+                    logger.debug("Adding attribute {} to profile with values {}", name, values);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
+                }
+
                 if (CommonHelper.isNotBlank(friendlyName)) {
+                    logger.debug("Adding attribute {} to profile with values {}", friendlyName, values);
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, friendlyName, values);
                 }
             } else {
@@ -107,7 +116,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         profile.addAuthenticationAttribute(AUTHN_CONTEXT, credentials.getAuthnContexts());
         // Retrieve conditions attributes
         // Adding them to both the "regular" and authentication attributes so we don't break anyone currently using it.
-        Conditions conditions = credentials.getConditions();
+        final SAML2Credentials.SAMLConditions conditions = credentials.getConditions();
         if (conditions != null) {
             profile.addAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());
             profile.addAuthenticationAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());

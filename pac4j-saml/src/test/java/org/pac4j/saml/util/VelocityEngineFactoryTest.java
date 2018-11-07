@@ -3,8 +3,9 @@ package org.pac4j.saml.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -27,7 +28,7 @@ public class VelocityEngineFactoryTest {
             engine.getProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS));
     }
 
-    private Vector<String> vector(final String... values) {
-        return new Vector<>(Arrays.asList(values));
+    private static List<String> vector(final String... values) {
+        return new ArrayList<>(Arrays.asList(values));
     }
 }

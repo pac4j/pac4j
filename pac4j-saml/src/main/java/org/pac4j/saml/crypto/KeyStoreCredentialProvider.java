@@ -16,7 +16,7 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.security.x509.X509Credential;
-import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
@@ -133,12 +133,16 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
-    private String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
+    protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
             final Enumeration<String> aliases = keyStore.aliases();
             while (aliases.hasMoreElements()) {
                 final String currentAlias = aliases.nextElement();
-                if (keyStoreAlias == null || currentAlias.equalsIgnoreCase(keyStoreAlias)) {
+                if (keyStoreAlias != null) {
+                    if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
+                        return currentAlias;
+                    }
+                } else if (keyStore.entryInstanceOf(currentAlias, KeyStore.PrivateKeyEntry.class)) {
                     return currentAlias;
                 }
             }

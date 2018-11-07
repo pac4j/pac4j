@@ -34,4 +34,16 @@ public class RequireAllRolesAuthorizer<U extends CommonProfile> extends Abstract
         final Set<String> profileRoles = profile.getRoles();
         return profileRoles.contains(element);
     }
+
+    public static <U extends CommonProfile> RequireAllRolesAuthorizer<U> requireAllRoles(String ... roles) {
+        return new RequireAllRolesAuthorizer<>(roles);
+    }
+
+    public static <U extends CommonProfile> RequireAllRolesAuthorizer<U> requireAllRoles(List<String> roles) {
+        return new RequireAllRolesAuthorizer<>(roles);
+    }
+
+    public static <U extends CommonProfile> RequireAllRolesAuthorizer<U> requireAllRoles(Set<String> roles) {
+        return new RequireAllRolesAuthorizer<>(roles);
+    }
 }

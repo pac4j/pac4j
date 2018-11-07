@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLIssueInstantException extends SAMLException {
+    private static final long serialVersionUID = -3487208015746622248L;
+
     public SAMLIssueInstantException(final String message) {
         super(message);
     }

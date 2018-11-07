@@ -3,6 +3,8 @@ package org.pac4j.saml.metadata;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 
+import java.io.IOException;
+
 /**
  * Defines operations required to resolve metadata for idp and sp.
  * @author Misagh Moayyed
@@ -13,7 +15,7 @@ public interface SAML2MetadataResolver {
 
     String getEntityId();
 
-    String getMetadata();
+    String getMetadata() throws IOException;
 
     XMLObject getEntityDescriptorElement();
 }

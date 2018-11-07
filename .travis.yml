@@ -1,6 +1,6 @@
 language: java
 
-sudo: required
+sudo: false
 
 install: "mvn install --settings travis/settings.xml -B -V"
 script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/settings.xml -B -V"

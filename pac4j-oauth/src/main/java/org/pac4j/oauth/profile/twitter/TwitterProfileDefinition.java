@@ -105,6 +105,8 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

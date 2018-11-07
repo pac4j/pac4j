@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.crypto;
 
 import org.opensaml.saml.saml2.encryption.Decrypter;
@@ -26,7 +25,7 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
     private final CredentialProvider credentialProvider;
 
     static {
-        final List<EncryptedKeyResolver> list = new ArrayList<EncryptedKeyResolver>();
+        final List<EncryptedKeyResolver> list = new ArrayList<>();
         list.add(new InlineEncryptedKeyResolver());
         list.add(new EncryptedElementTypeEncryptedKeyResolver());
         list.add(new SimpleRetrievalMethodEncryptedKeyResolver());

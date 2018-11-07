@@ -122,7 +122,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
                 i++;
             }
         }
-        logger.debug("Found: ", listAttributes);
+        logger.debug("Found: {}", listAttributes);
 
         return listAttributes;
     }

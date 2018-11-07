@@ -7,6 +7,7 @@ import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.state.SAML2StateGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -59,7 +60,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testRelayState() {
         final SAML2Client client = getClient();
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        context.getSessionStore().set(context, SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        context.getSessionStore().set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         final RedirectAction action = client.getRedirectAction(context);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
@@ -70,11 +71,11 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Override
-    protected String getDestinationBindingType() {
+    protected String getAuthnRequestBindingType() {
         return SAMLConstants.SAML2_POST_BINDING_URI;
     }
 
-    private String getDecodedAuthnRequest(final String content) {
+    private static String getDecodedAuthnRequest(final String content) {
         assertTrue(content.contains("<form"));
         final String samlRequestField = StringUtils.substringBetween(content, "SAMLRequest", "</div");
         final String value = StringUtils.substringBetween(samlRequestField, "value=\"", "\"");

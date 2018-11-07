@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLAuthnSessionCriteriaException extends SAMLException {
+    private static final long serialVersionUID = 8635812340829541343L;
+
     public SAMLAuthnSessionCriteriaException(final String message) {
         super(message);
     }

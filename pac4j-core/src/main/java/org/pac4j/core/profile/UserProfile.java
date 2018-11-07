@@ -4,8 +4,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Streams;
+
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
@@ -39,6 +42,21 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private String linkedId;
 
+    private final boolean canAttributesBeMerged;
+    
+    protected UserProfile() {
+        this( false ); //backwards compatibility
+    }
+    
+    /**
+     * Create a profile with possibility to merge attributes with the same name and collection-type values.
+     * @param canAttributesBeMerged if true - merge attributes with the same name and collection-type values, if false - overwrite them
+     * @since 3.1.0
+     */
+    protected UserProfile( boolean canAttributesBeMerged ) {
+        this.canAttributesBeMerged = canAttributesBeMerged;
+    }
+
     /**
      * Build a profile from user identifier and attributes.
      *
@@ -66,12 +84,40 @@ public abstract class UserProfile implements Serializable, Externalizable {
     {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
-            map.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
+            Object valueForMap = getValueForMap(map, key, ProfileHelper.getInternalAttributeHandler().prepare(value));
+            map.put(key, valueForMap);
         }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private Object getValueForMap(final Map<String, Object> map, final String key, Object preparedValue) {
+        // support multiple attribute values (e.g. roles can be received as separate attributes and require merging)
+        // https://github.com/pac4j/pac4j/issues/1145
+        if (canMergeAttributes(map, key, preparedValue))
+        {
+            Collection existingCollection = (Collection) map.get(key);
+            Collection newCollection = (Collection) preparedValue;
+            return mergeCollectionAttributes(existingCollection, newCollection);
+        } else
+        {
+            return preparedValue;
+        }
+    }
+
+    private boolean canMergeAttributes(final Map<String, Object> map, final String key, Object preparedValue)
+    {
+        return this.canAttributesBeMerged && preparedValue instanceof Collection && map.get(key) instanceof Collection;
+    }
+
+    private <T> Collection<T> mergeCollectionAttributes(Collection<T> existingCollection, Collection<T> newCollection)
+    {
+        return Streams.concat(existingCollection.stream(), newCollection.stream()).collect(Collectors.toList());
     }
 
     /**
      * Add an attribute.
+     * 
+     * If existing attribute value is collection and the new value is collection - merge the collections
      *
      * @param key key of the attribute
      * @param value value of the attribute

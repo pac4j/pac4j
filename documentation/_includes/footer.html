@@ -8,5 +8,11 @@
         </div>
     </div>
 </footer>
+
+{% if page.url contains 'docs' %}
+    <script>
+        anchors.add();
+    </script>
+{% endif %}
 </body>
 </html>

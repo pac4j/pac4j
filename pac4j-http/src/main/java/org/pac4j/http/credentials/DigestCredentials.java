@@ -16,6 +16,7 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class DigestCredentials extends TokenCredentials {
 
+    private static final long serialVersionUID = -5130296967270874521L;
     private String username;
 
     private String realm;

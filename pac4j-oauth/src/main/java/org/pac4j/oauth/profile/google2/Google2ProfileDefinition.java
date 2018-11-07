@@ -58,6 +58,8 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

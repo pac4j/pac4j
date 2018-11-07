@@ -90,12 +90,14 @@ cfg.setForceAuth(true);
 cfg.setPassive(true);
 ```
 
-You can define the binding type via the `setDestinationBindingType` method:
+You can define the binding type for the authentication request via the `setAuthnRequestBindingType` method and the binding type for the SP logout request via the `setSpLogoutRequestBindingType` method:
 
 ```java
-cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-// or cfg.setDestinationBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+// or cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
 ```
+
+Notice that the SP metadata will define the POST binding for the authentication response and for the IdP logout request.
 
 Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behavior, set the `maximumAuthenticationLifetime` parameter:
 
@@ -105,12 +107,11 @@ client.setMaximumAuthenticationLifetime(600);
 ```
 
 By default, the entity ID of your application (the Service Provider) will be equals to the [callback url](clients.html#the-callback-url). 
-This can lead to problems with some IDP because of the query string not being accepted (like ADFS v2.0). So you can force your own 
-entity ID with the `serviceProviderEntityId` parameter:
+But you can force your own entity ID with the `serviceProviderEntityId` parameter:
 
 ```java
 // custom SP entity ID
-cfg.setServiceProviderEntityId("http://localhost:8080/callback?client_name=SAML2Client");
+cfg.setServiceProviderEntityId("http://localhost:8080/callback?extraParameter");
 ```
 
 To allow the authentication request sent to the identity provider to specify an attribute consuming index:
@@ -156,6 +157,7 @@ You can generate the SP metadata in two ways:
 - or by defining the appropriate configuration: `cfg.setServiceProviderMetadata(new FileSystemResource("/tmp/sp-metadata.xml"));`
 
 
+
 ## 4) Authentication Attributes
 
 The following authentication attributes are populated by this client:
@@ -170,13 +172,7 @@ The following authentication attributes are populated by this client:
 
 You must follow these rules to successfully authenticate using Microsoft ADFS 2.0/3.0.
 
-### a) Entity ID
-
-You must always specify an explicit Entity ID that does not contain any question mark. By default, *pac4j* uses the same 
-Entity ID as the AssertionConsumerService location, which contains the client's name as a parameter after a question mark. 
-Unfortunately, ADFS does not work well with such IDs and starts an infinite redirection loop when A SAML message with such a message arrives.
-
-### b) Maximum authentication time
+### a) Maximum authentication time
 
 *pac4j* has the default maximum time set to 1 hour while ADFS has it set to 8 hours. Therefore it can happen that ADFS 
 sends an assertion which is still valid on ADFS side but evaluated as invalid on the *pac4j* side.
@@ -188,7 +184,7 @@ There are two possibilities how to make the values equal:
 - change the value in ADFS management console in the trust properties dialog
 - change the value on *pac4j* side using the `setMaximumAuthenticationLifetime` method.
 
-### c) Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
+### b) Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
 
 You must install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK 
 running *pac4j*. If you don't do it, you may encounter errors like this:
@@ -202,7 +198,7 @@ ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter encountered an
 
 Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle's Java Download site.
 
-### d) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+### c) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
 
 ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In SAML2ClientConfiguration you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
 
@@ -274,3 +270,81 @@ SimpleSAMLphp exposes his IdP metadata on `http://idp-domain/simplesamlphp/saml2
 	</md:EntityDescriptor>
 </md:EntitiesDescriptor>
 ```
+
+### Custom OpenSAML bootstrap
+
+Behind the scenes, OpenSAML uses a singleton registry to hold its configuration (builders, marshallers, parsers, etc).
+While pac4j ships with generally sane defaults for this configuration
+(see `org.pac4j.saml.util.Configuration$DefaultConfigurationManager`), it might be useful for a developer to override
+this configuration.
+
+Pac4j uses a Java service provider to find a configuration class and bootstrap the OpenSAML libraries. It will load all
+implementations of `org.pac4j.saml.util.Configuration` it can find on the classpath and use the one with the `javax.annotation.Priority` value.
+
+To use a custom configuration, one must add a jar with the following to the classpath:
+
+1. Implementation of `org.pac4j.saml.util.Configuration`. This implementation should have a `javax.annotation.Priority` annotation
+denoting the priority. The lowest value is the one that will ultimately be used configuration. The default implementation has
+and effective priority of `100`. Generic providers likely should use something like `50`, while end user implementors should
+use `1`.  for example:
+
+    ```java
+    @Priority(100)
+    public static class DefaultConfigurationManager implements ConfigurationManager {
+        @Override
+        public void configure() {
+            XMLObjectProviderRegistry registry;
+            synchronized (ConfigurationService.class) {
+                registry = ConfigurationService.get(XMLObjectProviderRegistry.class);
+                if (registry == null) {
+                    registry = new XMLObjectProviderRegistry();
+                    ConfigurationService.register(XMLObjectProviderRegistry.class, registry);
+                }
+            }
+
+            try {
+                InitializationService.initialize();
+            } catch (final InitializationException e) {
+                throw new RuntimeException("Exception initializing OpenSAML", e);
+            }
+
+            ParserPool parserPool = initParserPool();
+            registry.setParserPool(parserPool);
+        }
+
+        private static ParserPool initParserPool() {
+
+            try {
+                BasicParserPool parserPool = new BasicParserPool();
+                parserPool.setMaxPoolSize(100);
+                parserPool.setCoalescing(true);
+                parserPool.setIgnoreComments(true);
+                parserPool.setNamespaceAware(true);
+                parserPool.setExpandEntityReferences(false);
+                parserPool.setXincludeAware(false);
+                parserPool.setIgnoreElementContentWhitespace(true);
+
+                final Map<String, Object> builderAttributes = new HashMap<String, Object>();
+                parserPool.setBuilderAttributes(builderAttributes);
+
+                final Map<String, Boolean> features = new HashMap<>();
+                features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
+                features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
+                features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
+                features.put("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
+                features.put("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
+
+                parserPool.setBuilderFeatures(features);
+                parserPool.initialize();
+                return parserPool;
+            } catch (final ComponentInitializationException e) {
+                throw new RuntimeException("Exception initializing parserPool", e);
+            }
+        }
+    }
+    ```
+
+1. `/META-INF/services/org.pac4j.saml.util.ConfigurationManager` file. This file should have the fully qualified classname
+of the `org.pac4j.saml.util.Configuration` implementation
+
+For more information, see [https://docs.oracle.com/javase/tutorial/ext/basics/spi.html]

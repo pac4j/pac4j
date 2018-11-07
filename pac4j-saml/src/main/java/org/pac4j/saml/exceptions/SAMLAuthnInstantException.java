@@ -7,6 +7,8 @@ package org.pac4j.saml.exceptions;
  * @since 3.0.0
  */
 public class SAMLAuthnInstantException extends SAMLException {
+    private static final long serialVersionUID = 8085515962141416379L;
+
     public SAMLAuthnInstantException(final String message) {
         super(message);
     }

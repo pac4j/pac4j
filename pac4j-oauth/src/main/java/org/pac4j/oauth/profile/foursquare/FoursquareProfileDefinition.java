@@ -50,11 +50,11 @@ public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<Foursq
         FoursquareProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {
-            return profile;
+            raiseProfileExtractionJsonError(body);
         }
         JsonNode response = (JsonNode) JsonHelper.getElement(json, "response");
         if (response == null) {
-            return profile;
+            raiseProfileExtractionJsonError(body, "response");
         }
         JsonNode user = (JsonNode) JsonHelper.getElement(response, "user");
         if (user != null) {
@@ -63,6 +63,8 @@ public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<Foursq
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(user, attribute));
             }
+        } else {
+            raiseProfileExtractionJsonError(body, "user");
         }
         return profile;
     }

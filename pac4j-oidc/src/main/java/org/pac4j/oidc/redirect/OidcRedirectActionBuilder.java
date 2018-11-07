@@ -87,7 +87,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         // Init state for CSRF mitigation
         final State state;
         if (configuration.isWithState()) {
-            state = new State(configuration.getStateData());
+            state = new State(configuration.getStateGenerator().generateState(context));
         } else {
             state = new State();
         }

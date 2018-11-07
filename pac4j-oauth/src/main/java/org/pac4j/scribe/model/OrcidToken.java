@@ -10,6 +10,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  */
 public class OrcidToken extends OAuth2AccessToken {
 
+    private static final long serialVersionUID = 3129683748679852572L;
     private String orcid;
 
     public OrcidToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope, String orcid, 

@@ -24,6 +24,6 @@ title: Main concepts and components&#58;
 
 8) The ["**security filter**"](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url) (or whatever the mechanism used to intercept HTTP requests) protects an URL by checking that the user is authenticated and that the authorizations are valid, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients
 
-9) The ["**callback controller**"](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client) finishes the login process for an indirect client
+9) The ["**callback endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client) finishes the login process for an indirect client
 
-10) The [**logout controller**"](how-to-implement-pac4j-for-a-new-framework.html#c-logout) handles the application and/or the identity server logouts
+10) The [**logout endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#c-logout) handles the application and/or the identity server logouts

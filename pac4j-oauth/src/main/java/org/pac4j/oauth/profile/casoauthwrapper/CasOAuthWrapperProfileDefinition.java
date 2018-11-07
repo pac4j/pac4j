@@ -46,10 +46,11 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
     @Override
     public CasOAuthWrapperProfile extractUserProfile(final String body) {
         final CasOAuthWrapperProfile profile = newProfile();
+        final String attributesNode = "attributes";
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
-            json = json.get("attributes");
+            json = json.get(attributesNode);
             if (json != null) {
                 // CAS <= v4.2
                 if (json instanceof ArrayNode) {
@@ -67,7 +68,11 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
                         convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, key));
                     }
                 }
+            } else {
+                raiseProfileExtractionJsonError(body, attributesNode);
             }
+        } else {
+            raiseProfileExtractionJsonError(body);
         }
         return profile;
     }

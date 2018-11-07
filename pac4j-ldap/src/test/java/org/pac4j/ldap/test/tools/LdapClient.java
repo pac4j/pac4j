@@ -28,7 +28,7 @@ public final class LdapClient {
 
         final ConnectionConfig connectionConfig = new ConnectionConfig();
         connectionConfig.setConnectTimeout(Duration.ofMillis(500));
-        connectionConfig.setResponseTimeout(Duration.ofMillis(1000));
+        connectionConfig.setResponseTimeout(Duration.ofSeconds(1));
         connectionConfig.setLdapUrl("ldap://localhost:" + LdapServer.PORT);
 
         connectionFactory = new DefaultConnectionFactory();
@@ -47,7 +47,7 @@ public final class LdapClient {
 
         final BlockingConnectionPool connectionPool = new BlockingConnectionPool();
         connectionPool.setPoolConfig(poolConfig);
-        connectionPool.setBlockWaitTime(Duration.ofMillis(1000));
+        connectionPool.setBlockWaitTime(Duration.ofSeconds(1));
         connectionPool.setValidator(searchValidator);
         connectionPool.setPruneStrategy(pruneStrategy);
         connectionPool.setConnectionFactory((DefaultConnectionFactory) connectionFactory);
