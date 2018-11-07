@@ -22,6 +22,7 @@ public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDef
     public static final String PICTURE_URL = "picture_url";
     public static final String PROFILE_URL = "profile_url";
     public static final String LOCATION = "location";
+    public static final String USERNAME = "username";
 
     public CommonProfileDefinition() {
         primary(EMAIL, Converters.STRING);
@@ -33,6 +34,7 @@ public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDef
         primary(PICTURE_URL, Converters.URL);
         primary(PROFILE_URL, Converters.URL);
         primary(LOCATION, Converters.STRING);
+        primary(USERNAME, Converters.STRING);
     }
 
     public CommonProfileDefinition(final Function<Object[], P> profileFactory) {
