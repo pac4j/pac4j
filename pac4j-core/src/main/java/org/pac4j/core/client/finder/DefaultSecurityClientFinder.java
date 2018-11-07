@@ -6,10 +6,13 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Find the right clients based on the query parameter for the {@link org.pac4j.core.engine.SecurityLogic}.
@@ -18,6 +21,8 @@ import java.util.List;
  * @since 1.8.0
  */
 public class DefaultSecurityClientFinder implements ClientFinder {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSecurityClientFinder.class);
 
     private String clientNameParameter = Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER;
 
@@ -28,11 +33,14 @@ public class DefaultSecurityClientFinder implements ClientFinder {
         // we don't have defined clients to secure the URL, use the general default security ones from the Clients if they exist
         // we check the nullity and not the blankness to allow the blank string to mean no client
         // so no clients parameter -> use the default security ones; clients=blank string -> no clients defined
+        logger.debug("Provided clientNames: {}", securityClientNames);
         if (clientNames == null) {
             securityClientNames = clients.getDefaultSecurityClients();
+            logger.debug("Default security clients: {}", securityClientNames);
             // still no clients defined and we only have one client, use it
             if (securityClientNames == null && clients.findAllClients().size() == 1) {
                 securityClientNames = clients.getClients().get(0).getName();
+                logger.debug("Only client: {}", securityClientNames);
             }
         }
 
@@ -41,6 +49,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
             // if a "client_name" parameter is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
             final String clientNameOnRequest = context.getRequestParameter(clientNameParameter);
+            logger.debug("clientNameOnRequest: {}", clientNameOnRequest);
             if (clientNameOnRequest != null) {
                 // from the request
                 final Client client = clients.findClient(clientNameOnRequest);
@@ -66,6 +75,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
                 }
             }
         }
+        logger.debug("result: {}", result.stream().map(c -> c.getName()).collect(Collectors.toList()));
         return result;
     }
 

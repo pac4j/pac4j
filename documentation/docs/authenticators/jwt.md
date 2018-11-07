@@ -27,7 +27,7 @@ The [`JwtAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/sr
 
 It can be defined for HTTP clients which deal with `TokenCredentials`.
 
-It supports plain text, signed and/or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception.
+It supports plain text, signed and/or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception. If the provided JWT has an expiration date, then `JwtAuthenticator` may also be configured to only accept JWTs that pass a date criteria that is compared against the JWT expiration date, via `JwtAuthenticator#setExpirationTime()`
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that for security reasons, plain text JWT tokens will be accepted ONLY if no signature configuration is defined. If one or more signature configurations are defined, the JWT tokens are expected to be signed accordingly.</div>
 
@@ -91,6 +91,12 @@ To generate a plain text, signed and/or encrypted JWT, a `JwtGenerator` can be d
 ```java
 JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(SECRET), new SecretEncryptionConfiguration(SECRET));
 String token = generator.generate(facebookProfile);
+```
+
+JWTs may also be generated with an assigned expiration time:
+
+```java
+generator.setExpirationTime(new Date());
 ```
 
 ## 4) JWK

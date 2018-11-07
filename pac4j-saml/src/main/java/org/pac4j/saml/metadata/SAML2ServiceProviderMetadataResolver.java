@@ -78,8 +78,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     @Override
     public final MetadataResolver resolve() {
 
-        if (this.authnRequestSigned && this.credentialProvider == null) {
-            throw new TechnicalException("Credentials Provider can not be null when authnRequestSigned is set to true");
+        final boolean credentialProviderRequired = this.authnRequestSigned || this.wantsAssertionsSigned;
+        if (credentialProviderRequired && this.credentialProvider == null) {
+            throw new TechnicalException("Credentials Provider can not be null when authnRequestSigned or" +
+                " wantsAssertionsSigned is set to true");
         }
 
         try {
@@ -88,7 +90,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             metadataGenerator.setAuthnRequestSigned(this.authnRequestSigned);
             metadataGenerator.setNameIdPolicyFormat(this.nameIdPolicyFormat);
 
-            if (this.authnRequestSigned) {
+            if (credentialProviderRequired) {
                 metadataGenerator.setCredentialProvider(this.credentialProvider);
             }
 

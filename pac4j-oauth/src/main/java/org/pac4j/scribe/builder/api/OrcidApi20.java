@@ -17,8 +17,8 @@ import org.pac4j.scribe.extractors.OrcidJsonExtractor;
  */
 public class OrcidApi20 extends DefaultApi20 {
 
-    private static final String AUTH_URL = "http://www.orcid.org/oauth/authorize/";
-    private static final String TOKEN_URL = "https://api.orcid.org/oauth/token";
+    private static final String AUTH_URL = "http://www.orcid.org/oauth/authorize";
+    private static final String TOKEN_URL = "https://orcid.org/oauth/token";
 
     @Override
     public String getAccessTokenEndpoint() {

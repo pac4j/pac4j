@@ -13,6 +13,8 @@ import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
  * <p>This class is the OAuth client to authenticate users in Twitter.</p>
  * <p>You can define if a screen should always been displayed for authorization confirmation by using the
  * {@link #setAlwaysConfirmAuthorization(boolean)} method (<code>false</code> by default).</p>
+ * <p>If your twitter oauth app allows requests for email addresses you can enable requesting an email
+ * address by using the {@link #setIncludeEmail(boolean)} method (<code>false</code> by default).</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.twitter.TwitterProfile}.</p>
  * <p>More information at https://dev.twitter.com/docs/api/1/get/account/verify_credentials</p>
  *
@@ -23,17 +25,24 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
 
     private boolean alwaysConfirmAuthorization = false;
 
+    private boolean includeEmail = false;
+
     public TwitterClient() {}
 
     public TwitterClient(final String key, final String secret) {
+        this(key, secret, false);
+    }
+
+    public TwitterClient(final String key, final String secret, boolean includeEmail) {
         setKey(key);
         setSecret(secret);
+        this.includeEmail = includeEmail;
     }
 
     @Override
     protected void clientInit() {
         configuration.setApi(getApi());
-        configuration.setProfileDefinition(new TwitterProfileDefinition());
+        configuration.setProfileDefinition(new TwitterProfileDefinition(includeEmail));
         configuration.setHasBeenCancelledFactory(ctx -> {
             final String denied = ctx.getRequestParameter("denied");
             if (CommonHelper.isNotBlank(denied)) {
@@ -63,5 +72,13 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
 
     public void setAlwaysConfirmAuthorization(final boolean alwaysConfirmAuthorization) {
         this.alwaysConfirmAuthorization = alwaysConfirmAuthorization;
+    }
+
+    public boolean isIncludeEmail() {
+        return includeEmail;
+    }
+
+    public void setIncludeEmail(final boolean includeEmail) {
+        this.includeEmail = includeEmail;
     }
 }

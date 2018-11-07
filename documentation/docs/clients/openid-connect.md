@@ -106,3 +106,17 @@ config.addCustomParam("display", "popup");
 // select prompt mode: none, consent, select_account
 config.addCustomParam("prompt", "none");
 ```
+
+Custom `state` values may be defined in the configuration using the below method:
+
+```java
+config.setWithState(true);
+config.setStateData("custom-state-value");
+```
+
+Additionally, it is possible to establish a behavior according to which, the local session expires when the access token does. In order to do this, just enable `ExpireSessionWithToken` in configuration. This behavior is disabled by default. The additional param `TokenExpirationAdvance` allows to set the time in seconds, previous to the token expiration, in which the session expiration is advanced. By default it is `0` seconds.
+
+```java
+config.setExpireSessionWithToken(true);
+config.setTokenExpirationAdvance(10);
+```

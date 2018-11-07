@@ -47,6 +47,9 @@ public class OidcConfiguration extends InitializableObject {
     /* default max clock skew */
     public static final int DEFAULT_MAX_CLOCK_SKEW = 30;
 
+    /* default time period advance (in seconds) for considering an access token expired */
+    public static final int DEFAULT_TOKEN_EXPIRATION_ADVANCE = 0;
+
     /* OpenID client identifier */
     private String clientId;
 
@@ -90,6 +93,16 @@ public class OidcConfiguration extends InitializableObject {
     private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
+
+    private boolean withState;
+
+    private String stateData;
+
+    /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
+    private boolean expireSessionWithToken = false;
+
+    /** time period advance (in seconds) for considering an access token expired */
+    private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
 
     @Override
     protected void internalInit() {
@@ -293,6 +306,38 @@ public class OidcConfiguration extends InitializableObject {
         this.logoutUrl = logoutUrl;
     }
 
+    public boolean isWithState() {
+        return withState;
+    }
+
+    public void setWithState(final boolean withState) {
+        this.withState = withState;
+    }
+
+    public String getStateData() {
+        return stateData;
+    }
+
+    public void setStateData(final String stateData) {
+        this.stateData = stateData;
+    }
+
+    public boolean isExpireSessionWithToken() {
+        return expireSessionWithToken;
+    }
+
+    public void setExpireSessionWithToken(boolean expireSessionWithToken) {
+        this.expireSessionWithToken = expireSessionWithToken;
+    }
+
+    public int getTokenExpirationAdvance() {
+        return isExpireSessionWithToken() ? tokenExpirationAdvance : -1;
+    }
+
+    public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
+        this.tokenExpirationAdvance = tokenExpirationAdvance;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -300,6 +345,7 @@ public class OidcConfiguration extends InitializableObject {
             "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
             "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
-            "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
+            "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
+            "withState", withState, "stateData", stateData);
     }
 }

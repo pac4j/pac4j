@@ -3,6 +3,9 @@ package org.pac4j.oauth.profile.dropbox;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Verb;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -47,13 +50,13 @@ public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxPr
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "account_id")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             json = (JsonNode) JsonHelper.getElement(json, "name");
             if (json != null) {
-                convertAndAdd(profile, FIRST_NAME, JsonHelper.getElement(json, "familiar_name"));
-                convertAndAdd(profile, FAMILY_NAME, JsonHelper.getElement(json, "surname"));
-                convertAndAdd(profile, DISPLAY_NAME, JsonHelper.getElement(json, "display_name"));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, FIRST_NAME, JsonHelper.getElement(json, "familiar_name"));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, FAMILY_NAME, JsonHelper.getElement(json, "surname"));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, DISPLAY_NAME, JsonHelper.getElement(json, "display_name"));
             }
         }
         return profile;

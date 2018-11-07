@@ -2,7 +2,9 @@ package org.pac4j.core.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -49,6 +51,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     private Authenticator<C> authenticator;
 
     private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
+
+    private Map<String, Object> customProperties = new LinkedHashMap<>();
 
     /**
      * Retrieve the credentials.
@@ -102,7 +106,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * Retrieve a user userprofile.
      *
      * @param credentials the credentials
-     * @param context the web context
+     * @param context     the web context
      * @return the user profile
      */
     protected final U retrieveUserProfile(final C credentials, final WebContext context) {
@@ -127,9 +131,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * Notify of the web session renewal.
      *
      * @param oldSessionId the old session identifier
-     * @param context the web context
+     * @param context      the web context
      */
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) { }
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
+    }
 
     public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
         return this.authorizationGenerators;
@@ -206,10 +211,19 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.profileCreator = profileCreator;
     }
 
+    public Map<String, Object> getCustomProperties() {
+        return customProperties;
+    }
+
+    public void setCustomProperties(final Map<String, Object> customProperties) {
+        CommonHelper.assertNotNull("customProperties", customProperties);
+        this.customProperties =  customProperties;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator,
-                "authorizationGenerators", authorizationGenerators);
+            "authenticator", this.authenticator, "profileCreator", this.profileCreator,
+            "authorizationGenerators", authorizationGenerators, "customProperties", customProperties);
     }
 }

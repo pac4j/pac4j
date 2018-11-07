@@ -87,7 +87,7 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
         String base64Secret = Base64.encode(rndBytes).toString();
         secretSignatureConfiguration.setSecretBytes(rndBytes);
         assertEquals(base64Secret,secretSignatureConfiguration.getSecretBase64());
-        Arrays.equals(secretSignatureConfiguration.getSecretBytes(),rndBytes);
+        assertTrue(Arrays.equals(secretSignatureConfiguration.getSecretBytes(),rndBytes));
     }
 
     @Test

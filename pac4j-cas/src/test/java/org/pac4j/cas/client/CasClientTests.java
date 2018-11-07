@@ -11,8 +11,8 @@ import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
-import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
@@ -173,7 +173,7 @@ public final class CasClientTests implements TestsConstants {
         final int resultSize = deflater.deflate(buffer);
         final byte[] output = new byte[resultSize];
         System.arraycopy(buffer, 0, output, 0, resultSize);
-        return DatatypeConverter.printBase64Binary(output);
+        return Base64.getEncoder().encodeToString(output);
     }
 
     @Test

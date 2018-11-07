@@ -113,7 +113,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         final MockDirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(directClient));
         TestsHelper.expectException(() -> call(), TechnicalException.class,
-            "one and only one indirect client must be retrieved from the callback");
+            "unable to find one indirect client for the callback: check the callback URL for a client name parameter or" +
+                " suffix path or ensure that your configuration defaults to one indirect client");
     }
 
     @Test

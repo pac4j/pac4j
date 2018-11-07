@@ -57,6 +57,10 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         assertFalse(profile.isLongTermAuthenticationRequestTokenUsed());
         assertEquals("AcceptUsersAuthenticationHandler", profile.getSuccessfulAuthenticationHandlers());
         assertNotNull(profile.getAuthenticationDate());
-        assertEquals(6, profile.getAttributes().size());
+        assertTrue(profile.isFromNewLogin());
+        assertEquals("groupMembership", profile.getAttribute("affiliation"));
+        assertEquals("commonName", profile.getAttribute("cn"));
+        assertEquals("uid", profile.getAttribute("uid"));
+        assertEquals(11, profile.getAttributes().size());
     }
 }

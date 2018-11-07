@@ -59,6 +59,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
+    private Date expirationTime;
+    
     public JwtAuthenticator() {}
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
@@ -223,15 +225,19 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     @SuppressWarnings("unchecked")
     protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
         final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
-        String subject = claimSet.getSubject();
+        final String subject = claimSet.getSubject();
         if (subject == null) {
             throw new TechnicalException("JWT must contain a subject ('sub' claim)");
         }
 
-        final Date expirationTime = claimSet.getExpirationTime();
-        if (expirationTime != null) {
+        final Date expTime = claimSet.getExpirationTime();
+        if (expTime != null) {
             final Date now = new Date();
-            if (expirationTime.before(now)) {
+            if (expTime.before(now)) {
+                logger.error("The JWT is expired: no profile is built");
+                return;
+            }
+            if (this.expirationTime != null && expTime.after(this.expirationTime)) {
                 logger.error("The JWT is expired: no profile is built");
                 return;
             }
@@ -245,7 +251,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
 
-        final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes);
+        final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes, null);
 
         if (roles != null) {
             profile.addRoles(roles);
@@ -298,6 +304,14 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     public void setRealmName(final String realmName) {
         this.realmName = realmName;
+    }
+
+    public void setExpirationTime(final Date expirationTime) {
+        this.expirationTime = new Date(expirationTime.getTime());
+    }
+
+    public Date getExpirationTime() {
+        return new Date(expirationTime.getTime());
     }
 
     @Override

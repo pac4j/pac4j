@@ -1,7 +1,6 @@
 package org.pac4j.scribe.builder.api;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
-import com.github.scribejava.core.model.OAuth1RequestToken;
 
 /**
  * This class represents the OAuth API implementation for Bitbucket.
@@ -19,8 +18,8 @@ public class BitBucketApi extends DefaultApi10a {
     }
 
     @Override
-    public String getAuthorizationUrl(final OAuth1RequestToken requestToken) {
-        return OAUTH_ENDPOINT + "authenticate?oauth_token=" + requestToken.getToken();
+    protected String getAuthorizationBaseUrl() {
+        return OAUTH_ENDPOINT + "authenticate";
     }
 
     @Override

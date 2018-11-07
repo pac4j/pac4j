@@ -3,6 +3,19 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.0.3:**
+
+- `AzureAdClient` uses the `PathParameterCallbackUrlResolver` by default
+
+**v3.0.2**:
+
+- Properly handles all the HTTP codes in the `setResponseStatus` method of the `J2EContext`
+- Added the `setExcludedPath` and `setExcludedPattern` methods to the `PathMatcher` class (for Shiro)
+
+**v3.0.1**:
+
+- The `ProfileHelper.flatIntoOneProfile` method returns an `AnonymousProfile` (instead of empty) if it's the only profile
+
 **v3.0.0**:
 
 - Handle AJAX requests in the OpenID Connect logout
@@ -12,15 +25,18 @@ title: Release notes&#58;
 - Added "multi-tenancy" capabilities: you can dynamically define multiple callback URLs for the same client, except for SAML for which you need as many `SAML2Client` as the number of different callback URLs you want
 - The `CallbackUrlResolver` computes the callback URL (using a query parameter or a path parameter to define the client), based on the `UrlResolver` which computes a URL
 - You can define an error (page) URL at the logics' level to handle unexpected exceptions
-- The SAML Keystore alias can be defined via a property
+- The SAML Keystore alias can be defined via a property; SAML date comparisons are now UTC-based
 - The client name is not set at the credential's level
 - The username of the `AzureAdProfile` is the UPN
-- The issue time is generated for a new JWT
-- The user profile can be expired (currently handled for AzureAD)
+- The issue time is generated and an expiration date can be used for a JWT
+- The OpenID Connect user profile can be expired
 - In the `J2EContext`, header names are checked in a case-insensitive way
 - Supports the `javax.faces.partial.ajax` parameter for AJAX requests
 - If only one client is defined in the configuration, it is used as a fallback on the security and callback endpoints
 
+**v2.3.1**:
+
+- Saving the profile in session can be disabled on the callback endpoint
 
 **v2.2.1**:
 

@@ -8,6 +8,8 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 
 /**
@@ -21,13 +23,11 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
     public static final String NAME = "name";
     public static final String LAST_NAME = "last_name";
     public static final String LINK = "link";
-    public static final String UPDATED_TIME = "updated_time";
 
     public WindowsLiveProfileDefinition() {
         super(x -> new WindowsLiveProfile());
         Arrays.stream(new String[] {NAME, LAST_NAME}).forEach(a -> primary(a, Converters.STRING));
         primary(LINK, Converters.URL);
-        primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

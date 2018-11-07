@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
@@ -160,7 +161,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
                     } else {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                     }
-                    getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims());
+                    getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
                 }
             }
 
@@ -170,9 +171,12 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
                 final Object value = entry.getValue();
                 // it's not the subject and this attribute does not already exist, add it
                 if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
-                    getProfileDefinition().convertAndAdd(profile, key, value);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
                 }
             }
+
+            // session expiration with token behavior
+            profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
 
             return profile;
 

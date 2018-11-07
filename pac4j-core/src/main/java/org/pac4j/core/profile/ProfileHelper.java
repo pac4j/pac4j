@@ -46,12 +46,14 @@ public final class ProfileHelper {
      *
      * @param profileDefinition the profile definition
      * @param typedId the typed identifier
-     * @param attributes the attributes
+     * @param profileAttributes The profile attributes. May be {@code null}.
+     * @param authenticationAttributes The authentication attributes. May be {@code null}.
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
     public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
-        final String typedId, final Map<String, Object> attributes, final Object... parameters) {
+            final String typedId, final Map<String, Object> profileAttributes, final Map<String, Object> authenticationAttributes,
+            final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
         }
@@ -66,10 +68,11 @@ public final class ProfileHelper {
                 logger.error("Cannot build instance for class name: {}", className, e);
                 return null;
             }
-            profile.addAttributes(attributes);
+            profile.addAttributes(profileAttributes);
+            profile.addAuthenticationAttributes(authenticationAttributes);
         } else {
             profile = profileDefinition.newProfile(parameters);
-            profileDefinition.convertAndAdd(profile, attributes);
+            profileDefinition.convertAndAdd(profile, profileAttributes, authenticationAttributes);
         }
         profile.setId(ProfileHelper.sanitizeIdentifier(profile, typedId));
         return profile;
@@ -122,14 +125,19 @@ public final class ProfileHelper {
     }
 
     /**
-     * Flat the list of profiles into a single optional profile.
+     * Flat the list of profiles into a single optional profile (skip any anonymous profile unless it's the only one).
      *
      * @param profiles the list of profiles
      * @param <U> the kind of profile
      * @return the (optional) profile
      */
     public static <U extends CommonProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
-        return profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
+        final Optional<U> profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
+        if (profile.isPresent()) {
+            return profile;
+        } else {
+            return profiles.stream().filter(p -> p != null).findFirst();
+        }
     }
 
     /**

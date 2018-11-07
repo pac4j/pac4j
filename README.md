@@ -30,7 +30,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Versions
 
-The version **3.0.0-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
+The version **3.0.3-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
 The source code can be cloned and locally built via Maven:
 
@@ -57,3 +57,7 @@ If you have any question, please use the [pac4j mailing lists](http://www.pac4j.
 
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
 - [pac4j developers](https://groups.google.com/forum/?hl=en#!forum/pac4j-dev)
+
+## Sponsored by
+
+[![CAS in the cloud](http://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*

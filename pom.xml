@@ -12,7 +12,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -116,6 +116,11 @@
             <dependency>
                 <groupId>org.pac4j</groupId>
                 <artifactId>pac4j-sql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-jwt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

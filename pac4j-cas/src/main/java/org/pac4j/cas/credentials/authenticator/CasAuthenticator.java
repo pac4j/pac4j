@@ -12,6 +12,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.InternalAttributeHandler;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> implements Authenticator<TokenCredentials> {
 
-    private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
+    private static final Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
     protected CasConfiguration configuration;
 
@@ -73,16 +74,19 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             logger.debug("principal: {}", principal);
 
             final String id = principal.getName();
-            final Map<String, Object> newAttributes = new HashMap<>();
-            // restore attributes
-            final Map<String, Object> attributes = principal.getAttributes();
-            if (attributes != null) {
-                for (final Map.Entry<String, Object> entry : attributes.entrySet()){
-                    final String key = entry.getKey();
-                    final Object value = entry.getValue();
-                    final Object restored = ProfileHelper.getInternalAttributeHandler().restore(value);
-                    newAttributes.put(key, restored);
-                }
+            final Map<String, Object> newPrincipalAttributes = new HashMap<>();
+            final Map<String, Object> newAuthenticationAttributes = new HashMap<>();
+            // restore both sets of attributes
+            final Map<String, Object> oldPrincipalAttributes = principal.getAttributes();
+            final Map<String, Object> oldAuthenticationAttributes = assertion.getAttributes();
+            final InternalAttributeHandler attrHandler = ProfileHelper.getInternalAttributeHandler();
+            if (oldPrincipalAttributes != null) {
+                oldPrincipalAttributes.entrySet().stream()
+                    .forEach(e -> newPrincipalAttributes.put(e.getKey(), attrHandler.restore(e.getValue())));
+            }
+            if (oldAuthenticationAttributes != null) {
+                oldAuthenticationAttributes.entrySet().stream()
+                    .forEach(e -> newAuthenticationAttributes.put(e.getKey(), attrHandler.restore(e.getValue())));
             }
 
             final CommonProfile profile;
@@ -90,10 +94,10 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             if (configuration.getProxyReceptor() != null) {
                 profile = getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
                 profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
-                getProfileDefinition().convertAndAdd(profile, newAttributes);
+                getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
             } else {
-                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal,
-                    configuration.getProxyReceptor());
+                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newPrincipalAttributes,
+                        newAuthenticationAttributes, principal, configuration.getProxyReceptor());
             }
             logger.debug("profile returned by CAS: {}", profile);
 

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static org.pac4j.core.context.Pac4jConstants.*;
-
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -226,7 +226,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         if (isLegacyMode()) {
             final U profile = getProfileDefinition().newProfile();
             for (final String attributeName : attributeNames) {
-                getProfileDefinition().convertAndAdd(profile, attributeName, storageAttributes.get(attributeName));
+                getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, attributeName, storageAttributes.get(attributeName));
             }
             final Object retrievedUsername = storageAttributes.get(getUsernameAttribute());
             if (retrievedUsername != null) {

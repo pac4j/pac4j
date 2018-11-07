@@ -5,6 +5,7 @@ import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.SAMLObject;
@@ -49,7 +50,20 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
+import org.pac4j.saml.exceptions.SAMLAssertionAudienceException;
+import org.pac4j.saml.exceptions.SAMLAssertionConditionException;
+import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
+import org.pac4j.saml.exceptions.SAMLAuthnSessionCriteriaException;
+import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.exceptions.SAMLInResponseToMismatchException;
+import org.pac4j.saml.exceptions.SAMLIssueInstantException;
+import org.pac4j.saml.exceptions.SAMLIssuerException;
+import org.pac4j.saml.exceptions.SAMLNameIdDecryptionException;
+import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
+import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
+import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
 import org.pac4j.saml.util.UriUtils;
@@ -70,11 +84,10 @@ import java.util.Set;
  *
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
-    private final static Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
 
     /**
      * The default maximum authentication lifetime, in seconds. Used for {@link #maximumAuthenticationLifetime} if a meaningless (&lt;=0)
@@ -152,8 +165,10 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         final String issuerEntityId = subjectAssertion.getIssuer().getValue();
         List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
         List<String> authnContexts = new ArrayList<String>();
-        for(AuthnStatement authnStatement : authnStatements) {
-            authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+        for (AuthnStatement authnStatement : authnStatements) {
+            if(authnStatement.getAuthnContext().getAuthnContextClassRef() != null) {
+                authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+            }
         }
 
 
@@ -198,14 +213,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     /**
      * Validates the SAML protocol response:
-     *  - IssueInstant
-     *  - Issuer
-     *  - StatusCode
-     *  - Signature
+     * - IssueInstant
+     * - Issuer
+     * - StatusCode
+     * - Signature
      *
      * @param response the response
-     * @param context the context
-     * @param engine the engine
+     * @param context  the context
+     * @param engine   the engine
      */
     protected final void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
                                                       final SignatureTrustEngine engine) {
@@ -225,7 +240,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         }
 
         if (!isIssueInstantValid(response.getIssueInstant())) {
-            throw new SAMLException("Response issue instant is too old or in the future");
+            throw new SAMLIssueInstantException("Response issue instant is too old or in the future");
         }
 
         AuthnRequest request = null;
@@ -233,12 +248,13 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         if (messageStorage != null && response.getInResponseTo() != null) {
             final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
             if (xmlObject == null) {
-                throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message "
+                throw new SAMLInResponseToMismatchException("InResponseToField of the Response doesn't correspond to sent message "
                     + response.getInResponseTo());
             } else if (xmlObject instanceof AuthnRequest) {
                 request = (AuthnRequest) xmlObject;
             } else {
-                throw new SAMLException("Sent request was of different type than the expected AuthnRequest " + response.getInResponseTo());
+                throw new SAMLInResponseToMismatchException("Sent request was of different type than the expected AuthnRequest "
+                    + response.getInResponseTo());
             }
         }
 
@@ -271,12 +287,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                 }
                 if (!requestedResponseURL.equals(responseLocation)) {
                     logger.warn("Response was received at a different endpoint URL {} than was requested {}",
-                            responseLocation, requestedResponseURL);
+                        responseLocation, requestedResponseURL);
                 }
             }
             if (requestedBinding != null && !requestedBinding.equals(context.getSAMLBindingContext().getBindingUri())) {
                 logger.warn("Response was received using a different binding {} than was requested {}",
-                        context.getSAMLBindingContext().getBindingUri(), requestedBinding);
+                    context.getSAMLBindingContext().getBindingUri(), requestedBinding);
             }
         }
     }
@@ -284,13 +300,13 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     protected final void verifyEndpoint(final Endpoint endpoint, final String destination) {
         try {
             if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
-                    && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
-                throw new SAMLException("Intended destination " + destination
-                        + " doesn't match any of the endpoint URLs on endpoint "
-                        + endpoint.getLocation());
+                && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
+                throw new SAMLEndpointMismatchException("Intended destination " + destination
+                    + " doesn't match any of the endpoint URLs on endpoint "
+                    + endpoint.getLocation());
             }
         } catch (final Exception e) {
-            throw new SAMLException(e);
+            throw new SAMLEndpointMismatchException(e);
         }
     }
 
@@ -298,20 +314,22 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * Validates the SAML SSO response by finding a valid assertion with authn statements.
      * Populates the {@link SAML2MessageContext} with a subjectAssertion and a subjectNameIdentifier.
      *
-     * @param response the response
-     * @param context the context
-     * @param engine the engine
+     * @param response  the response
+     * @param context   the context
+     * @param engine    the engine
      * @param decrypter the decrypter
      */
     protected final void validateSamlSSOResponse(final Response response, final SAML2MessageContext context,
                                                  final SignatureTrustEngine engine, final Decrypter decrypter) {
 
+        final List<SAMLException> errors = new ArrayList<>();
         for (final Assertion assertion : response.getAssertions()) {
             if (!assertion.getAuthnStatements().isEmpty()) {
                 try {
                     validateAssertion(assertion, context, engine, decrypter);
                 } catch (final SAMLException e) {
                     logger.error("Current assertion validation failed, continue with the next one", e);
+                    errors.add(e);
                     continue;
                 }
                 context.setSubjectAssertion(assertion);
@@ -319,24 +337,27 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             }
         }
 
+        if (!errors.isEmpty()) {
+            throw errors.get(0);
+        }
         if (context.getSubjectAssertion() == null) {
-            throw new SAMLException("No valid subject assertion found in response");
+            throw new SAMAssertionSubjectException("No valid subject assertion found in response");
         }
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
         final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
         if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
-                && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
+            && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
             throw new SAMLException(
-                    "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
+                "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
         }
     }
 
     /**
      * Decrypt encrypted assertions and add them to the assertions list of the response.
      *
-     * @param response the response
+     * @param response  the response
      * @param decrypter the decrypter
      */
     protected final void decryptEncryptedAssertions(final Response response, final Decrypter decrypter) {
@@ -355,39 +376,39 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     /**
      * Validate issuer format and value.
      *
-     * @param issuer the issuer
+     * @param issuer  the issuer
      * @param context the context
      */
     protected final void validateIssuer(final Issuer issuer, final SAML2MessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
-            throw new SAMLException("Issuer type is not entity but " + issuer.getFormat());
+            throw new SAMLIssuerException("Issuer type is not entity but " + issuer.getFormat());
         }
 
         final String entityId = context.getSAMLPeerEntityContext().getEntityId();
         if (entityId == null || !entityId.equals(issuer.getValue())) {
-            throw new SAMLException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
+            throw new SAMLIssuerException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
     }
 
     /**
      * Validate the given assertion:
-     *  - issueInstant
-     *  - issuer
-     *  - subject
-     *  - conditions
-     *  - authnStatements
-     *  - signature
+     * - issueInstant
+     * - issuer
+     * - subject
+     * - conditions
+     * - authnStatements
+     * - signature
      *
      * @param assertion the assertion
-     * @param context the context
-     * @param engine the engine
+     * @param context   the context
+     * @param engine    the engine
      * @param decrypter the decrypter
      */
     protected final void validateAssertion(final Assertion assertion, final SAML2MessageContext context,
                                            final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         if (!isIssueInstantValid(assertion.getIssueInstant())) {
-            throw new SAMLException("Assertion issue instant is too old or in the future");
+            throw new SAMLIssueInstantException("Assertion issue instant is too old or in the future");
         }
 
         validateIssuer(assertion.getIssuer(), context);
@@ -395,7 +416,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         if (assertion.getSubject() != null) {
             validateSubject(assertion.getSubject(), context, decrypter);
         } else {
-            throw new SAMLException("Assertion subject cannot be null");
+            throw new SAMAssertionSubjectException("Assertion subject cannot be null");
         }
 
         validateAssertionConditions(assertion.getConditions(), context);
@@ -408,17 +429,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     /**
      * Validate the given subject by finding a valid Bearer confirmation. If the subject is valid, put its nameID in the context.
-     *
+     * <p>
      * NameID / BaseID / EncryptedID is first looked up directly in the Subject. If not present there, then all relevant
      * SubjectConfirmations are parsed and the IDs are taken from them.
      *
-     * @param subject
-     *            The Subject from an assertion.
-     * @param context
-     *            SAML message context.
-     * @param decrypter
-     *            Decrypter used to decrypt some encrypted IDs, if they are present. May be {@code null}, no decryption will be possible
-     *            then.
+     * @param subject   The Subject from an assertion.
+     * @param context   SAML message context.
+     * @param decrypter Decrypter used to decrypt some encrypted IDs, if they are present.
+     *                  May be {@code null}, no decryption will be possible then.
      */
     @SuppressWarnings("unchecked")
     protected final void validateSubject(final Subject subject, final SAML2MessageContext context,
@@ -454,7 +472,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
                 // Encrypted ID can overwrite the non-encrypted one, if present
                 final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation,
-                        decrypter);
+                    decrypter);
                 if (decryptedNameIdFromConfirmation != null) {
                     nameIDFromConfirmation = decryptedNameIdFromConfirmation;
                 }
@@ -473,17 +491,15 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             }
         }
 
-        throw new SAMLException("Subject confirmation validation failed");
+        throw new SAMLSubjectConfirmationException("Subject confirmation validation failed");
     }
 
     /**
      * Decrypts an EncryptedID, using a decrypter.
      *
      * @param encryptedId The EncryptedID to be decrypted.
-     * @param decrypter The decrypter to use.
-     *
+     * @param decrypter   The decrypter to use.
      * @return Decrypted ID or {@code null} if any input is {@code null}.
-     *
      * @throws SAMLException If the input ID cannot be decrypted.
      */
     protected final NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
@@ -499,17 +515,17 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (final DecryptionException e) {
-            throw new SAMLException("Decryption of an EncryptedID failed.", e);
+            throw new SAMLNameIdDecryptionException("Decryption of an EncryptedID failed.", e);
         }
     }
 
     /**
      * Validate Bearer subject confirmation data
-     *  - notBefore
-     *  - NotOnOrAfter
-     *  - recipient
+     * - notBefore
+     * - NotOnOrAfter
+     * - recipient
      *
-     * @param data the data
+     * @param data    the data
      * @param context the context
      * @return true if all Bearer subject checks are passing
      */
@@ -566,11 +582,11 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     /**
      * Validate assertionConditions
-     *  - notBefore
-     *  - notOnOrAfter
+     * - notBefore
+     * - notOnOrAfter
      *
      * @param conditions the conditions
-     * @param context the context
+     * @param context    the context
      */
     protected final void validateAssertionConditions(final Conditions conditions, final SAML2MessageContext context) {
 
@@ -579,11 +595,11 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         }
 
         if (conditions.getNotBefore() != null && conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {
-            throw new SAMLException("Assertion condition notBefore is not valid");
+            throw new SAMLAssertionConditionException("Assertion condition notBefore is not valid");
         }
 
         if (conditions.getNotOnOrAfter() != null && conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
-            throw new SAMLException("Assertion condition notOnOrAfter is not valid");
+            throw new SAMLAssertionConditionException("Assertion condition notOnOrAfter is not valid");
         }
 
         final String entityId = context.getSAMLSelfEntityContext().getEntityId();
@@ -594,13 +610,13 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * Validate audience by matching the SP entityId.
      *
      * @param audienceRestrictions the audience restrictions
-     * @param spEntityId the sp entity id
+     * @param spEntityId           the sp entity id
      */
     protected final void validateAudienceRestrictions(final List<AudienceRestriction> audienceRestrictions,
                                                       final String spEntityId) {
 
         if (audienceRestrictions == null || audienceRestrictions.isEmpty()) {
-            throw new SAMLException("Audience restrictions cannot be null or empty");
+            throw new SAMLAssertionAudienceException("Audience restrictions cannot be null or empty");
         }
 
         final Set<String> audienceUris = new HashSet<String>();
@@ -612,28 +628,28 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             }
         }
         if (!audienceUris.contains(spEntityId)) {
-            throw new SAMLException("Assertion audience " + audienceUris + " does not match SP configuration "
-                    + spEntityId);
+            throw new SAMLAssertionAudienceException("Assertion audience " + audienceUris
+                + " does not match SP configuration " + spEntityId);
         }
     }
 
     /**
      * Validate the given authnStatements:
-     *  - authnInstant
-     *  - sessionNotOnOrAfter
+     * - authnInstant
+     * - sessionNotOnOrAfter
      *
      * @param authnStatements the authn statements
-     * @param context the context
+     * @param context         the context
      */
     protected final void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
                                                           final SAML2MessageContext context) {
 
         for (final AuthnStatement statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
-                throw new SAMLException("Authentication issue instant is too old or in the future");
+                throw new SAMLAuthnInstantException("Authentication issue instant is too old or in the future");
             }
             if (statement.getSessionNotOnOrAfter() != null && statement.getSessionNotOnOrAfter().isBeforeNow()) {
-                throw new SAMLException("Authentication session between IDP and subject has ended");
+                throw new SAMLAuthnSessionCriteriaException("Authentication session between IDP and subject has ended");
             }
             // TODO implement authnContext validation
         }
@@ -644,8 +660,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * the assertions to be signed, the validation fails.
      *
      * @param signature the signature
-     * @param context the context
-     * @param engine the engine
+     * @param context   the context
+     * @param engine    the engine
      */
     protected final void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
                                                     final SignatureTrustEngine engine) {
@@ -657,7 +673,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             validateSignature(signature, entityId, engine);
         } else {
             if (wantsAssertionsSigned(context) && !peerContext.isAuthenticated()) {
-                throw new SAMLException("Assertion or response must be signed");
+                throw new SAMLSignatureRequiredException("Assertion or response must be signed");
             }
         }
     }
@@ -673,7 +689,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     /**
      * Validate the given digital signature by checking its profile and value.
      *
-     * @param signature the signature
+     * @param signature   the signature
      * @param idpEntityId the idp entity id
      * @param trustEngine the trust engine
      */
@@ -684,7 +700,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         try {
             validator.validate(signature);
         } catch (final SignatureException e) {
-            throw new SAMLException("SAMLSignatureProfileValidator failed to validate signature", e);
+            throw new SAMLSignatureValidationException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
         final CriteriaSet criteriaSet = new CriteriaSet();
@@ -696,20 +712,25 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         try {
             valid = trustEngine.validate(signature, criteriaSet);
         } catch (final SecurityException e) {
-            throw new SAMLException("An error occurred during signature validation", e);
+            throw new SAMLSignatureValidationException("An error occurred during signature validation", e);
         }
         if (!valid) {
-            throw new SAMLException("Signature is not trusted");
+            throw new SAMLSignatureValidationException("Signature is not trusted");
         }
     }
 
     private boolean isDateValid(final DateTime issueInstant, final int interval) {
-        final DateTime before =  DateTime.now().plusSeconds(acceptedSkew);
-        final DateTime after =  DateTime.now().minusSeconds(acceptedSkew + interval);
-        boolean isDateValid = issueInstant.isBefore(before) && issueInstant.isAfter(after);
+        final DateTime now = DateTime.now(DateTimeZone.UTC);
+
+        final DateTime before = now.plusSeconds(acceptedSkew);
+        final DateTime after = now.minusSeconds(acceptedSkew + interval);
+
+        final DateTime issueInstanceUtc = issueInstant.toDateTime(DateTimeZone.UTC);
+
+        final boolean isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {
-            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstant.getZone()),
-                after.toDateTime(issueInstant.getZone()), issueInstant);
+            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstanceUtc.getZone()),
+                after.toDateTime(issueInstanceUtc.getZone()), issueInstanceUtc);
         }
         return isDateValid;
     }

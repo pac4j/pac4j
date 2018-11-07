@@ -9,6 +9,8 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 
 /**
@@ -59,7 +61,7 @@ public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<Foursq
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(user, "id")));
 
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(user, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(user, attribute));
             }
         }
         return profile;

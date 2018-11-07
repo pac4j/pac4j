@@ -9,6 +9,8 @@ import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -25,6 +27,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
     public static final String DEFAULT_PROFILE = "default_profile";
     public static final String DEFAULT_PROFILE_IMAGE = "default_profile_image";
     public static final String DESCRIPTION = "description";
+    public static final String EMAIL = "email";
     public static final String FAVOURITES_COUNT = "favourites_count";
     public static final String FOLLOW_REQUEST_SENT = "follow_request_sent";
     public static final String FOLLOWERS_COUNT = "followers_count";
@@ -56,9 +59,17 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
     public static final String UTC_OFFSET = "utc_offset";
     public static final String VERIFIED = "verified";
 
+    private static final String VERIFY_CREDENTIALS_URL = "https://api.twitter.com/1.1/account/verify_credentials.json";
+
+    private final boolean includeEmail;
+
     public TwitterProfileDefinition() {
+        this(false);
+    }
+
+    public TwitterProfileDefinition(boolean includeEmail) {
         super(x -> new TwitterProfile());
-        Arrays.stream(new String[] {DESCRIPTION, NAME, SCREEN_NAME, TIME_ZONE})
+        Arrays.stream(new String[] {DESCRIPTION, EMAIL, NAME, SCREEN_NAME, TIME_ZONE})
                 .forEach(a -> primary(a, Converters.STRING));
         Arrays.stream(new String[] {CONTRIBUTORS_ENABLED, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FOLLOW_REQUEST_SENT, FOLLOWING,
                 GEO_ENABLED, IS_TRANSLATOR, NOTIFICATIONS, PROFILE_USE_BACKGROUND_IMAGE, PROTECTED, SHOW_ALL_INLINE_MEDIA,
@@ -72,11 +83,17 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
                 PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.COLOR));
         primary(LANG, Converters.LOCALE);
         primary(CREATED_AT, new DateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
+
+        this.includeEmail = includeEmail;
     }
 
     @Override
     public String getProfileUrl(final OAuth1Token accessToken, final OAuth10Configuration configuration) {
-        return "https://api.twitter.com/1.1/account/verify_credentials.json";
+        if (includeEmail) {
+            // https://developer.twitter.com/en/docs/accounts-and-users/manage-account-settings/api-reference/get-account-verify_credentials
+            return VERIFY_CREDENTIALS_URL + "?include_email=true";
+        }
+        return VERIFY_CREDENTIALS_URL;
     }
 
     @Override
@@ -86,7 +103,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

@@ -9,6 +9,8 @@ import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 
 /**
@@ -75,7 +77,7 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkC
             JsonNode userNode = array.get(0);
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, "uid")));
             for (final String attribute : getPrimaryAttributes()) {
-                convertAndAdd(profile, attribute, JsonHelper.getElement(userNode, attribute));
+                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
         }
         return profile;

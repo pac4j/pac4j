@@ -3,6 +3,7 @@ package org.pac4j.saml.metadata;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -96,7 +97,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
         final EntityDescriptor descriptor = builder.buildObject();
         descriptor.setEntityID(this.entityId);
-        descriptor.setValidUntil(DateTime.now().plusYears(20));
+        descriptor.setValidUntil(DateTime.now(DateTimeZone.UTC).plusYears(20));
         descriptor.setID(generateEntityDescriptorId());
         descriptor.setExtensions(generateMetadataExtensions());
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());

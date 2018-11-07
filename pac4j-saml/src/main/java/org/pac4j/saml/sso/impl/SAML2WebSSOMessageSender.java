@@ -30,8 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest> {
 
-    private final static Logger logger = LoggerFactory.getLogger(SAML2WebSSOProfileHandler.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(SAML2WebSSOProfileHandler.class);
 
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
     private final String destinationBindingType;
@@ -62,9 +61,9 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
 
         outboundContext.getProfileRequestContext().setInboundMessageContext(
-                context.getProfileRequestContext().getInboundMessageContext());
+            context.getProfileRequestContext().getInboundMessageContext());
         outboundContext.getProfileRequestContext().setOutboundMessageContext(
-                context.getProfileRequestContext().getOutboundMessageContext());
+            context.getProfileRequestContext().getOutboundMessageContext());
 
         outboundContext.setMessage(authnRequest);
         outboundContext.getSAMLEndpointContext().setEndpoint(acsService);
@@ -74,7 +73,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());
         outboundContext.getSAMLProtocolContext().setProtocol(context.getSAMLProtocolContext().getProtocol());
         outboundContext.getSecurityParametersContext()
-                .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(spDescriptor));
+            .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(spDescriptor));
 
         if (relayState != null) {
             outboundContext.getSAMLBindingContext().setRelayState(relayState.toString());
@@ -106,22 +105,33 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
         try {
             final EndpointURLSchemeSecurityHandler handlerEnd =
-                    new EndpointURLSchemeSecurityHandler();
+                new EndpointURLSchemeSecurityHandler();
             handlerEnd.initialize();
             handlerEnd.invoke(outboundContext);
 
             final SAMLOutboundDestinationHandler handlerDest =
-                    new SAMLOutboundDestinationHandler();
+                new SAMLOutboundDestinationHandler();
             handlerDest.initialize();
             handlerDest.invoke(outboundContext);
 
-            if (spDescriptor.isAuthnRequestsSigned()) {
-                final SAMLOutboundProtocolMessageSigningHandler handler = new
-                        SAMLOutboundProtocolMessageSigningHandler();
-                handler.invoke(outboundContext);
+            boolean signOutboundContext = false;
 
+            if (this.isAuthnRequestSigned) {
+                logger.debug("Authn requests are expected to be always signed before submission");
+                signOutboundContext = true;
+            } else if (spDescriptor.isAuthnRequestsSigned()) {
+                logger.debug("The service provider metadata indicates that authn requests are signed");
+                signOutboundContext = true;
             } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
-                logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
+                logger.debug("The identity provider metadata indicates that authn requests may be signed");
+                signOutboundContext = true;
+            }
+
+            if (signOutboundContext) {
+                logger.debug("Signing SAML2 outbound context...");
+                final SAMLOutboundProtocolMessageSigningHandler handler = new
+                    SAMLOutboundProtocolMessageSigningHandler();
+                handler.invoke(outboundContext);
             }
         } catch (final Exception e) {
             throw new SAMLException(e);
@@ -152,6 +162,6 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         }
 
         throw new UnsupportedOperationException("Binding type - "
-                + destinationBindingType + " is not supported");
+            + destinationBindingType + " is not supported");
     }
 }

@@ -2,8 +2,8 @@ language: java
 
 sudo: required
 
-install: true
-script: "mvn install --settings travis/settings.xml -B -V"
+install: "mvn install --settings travis/settings.xml -B -V"
+script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/settings.xml -B -V"
 
 jdk:
   - oraclejdk8

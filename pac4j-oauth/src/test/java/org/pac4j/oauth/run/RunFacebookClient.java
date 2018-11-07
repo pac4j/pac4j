@@ -67,7 +67,7 @@ public final class RunFacebookClient extends RunClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null, Gender.MALE,
-                Locale.FRANCE, "https://scontent.xx.fbcdn.net/v/t1.0-1/c170.50.621.621/s50x50/550165_168023156660068_12755354_n.jpg?oh=",
+                Locale.FRANCE, "https://lookaside.facebook.com/platform/profilepic/?asid=771361542992890&height=50&width=50&ext=",
                 "https://www.facebook.com/app_scoped_user_id/771361542992890/", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
@@ -80,10 +80,9 @@ public final class RunFacebookClient extends RunClient {
         final List<FacebookEducation> educations = profile.getEducation();
         FacebookEducation education = educations.get(0);
         assertEquals("lycée mixte", education.getSchool().getName());
-        assertEquals("2000", education.getYear().getName());
         assertEquals("High School", education.getType());
         education = educations.get(1);
-        assertEquals("Ingénieur", education.getDegree().getName());
+        assertEquals("IngéNieur", education.getDegree().getName());
         assertNull(profile.getEmail());
         assertEquals("San Francisco, California", profile.getHometown().getName());
         assertEquals("female", profile.getInterestedIn().get(0));

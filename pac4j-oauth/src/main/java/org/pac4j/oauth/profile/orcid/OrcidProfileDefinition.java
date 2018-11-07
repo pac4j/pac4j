@@ -2,6 +2,9 @@ package org.pac4j.oauth.profile.orcid;
 
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -46,8 +49,10 @@ public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfil
     @Override
     public OrcidProfile extractUserProfile(String body) {
         OrcidProfile profile = newProfile();
+        profile.setId(CommonHelper.substringBetween(body, "<path>", "</path>"));
         for(final String attribute : getPrimaryAttributes()) {
-            convertAndAdd(profile, attribute, CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
+                    CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
         }
         return profile;
     }

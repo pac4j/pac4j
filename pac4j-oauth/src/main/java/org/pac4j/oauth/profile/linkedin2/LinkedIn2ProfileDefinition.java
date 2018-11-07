@@ -9,6 +9,8 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,11 +67,12 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
         final JsonNode json = JsonHelper.getFirstNode(body);
         profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
         for (final String attribute : getPrimaryAttributes()) {
-            convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
         }
         final Object positions = JsonHelper.getElement(json, LinkedIn2ProfileDefinition.POSITIONS);
         if (positions != null && positions instanceof JsonNode) {
-            convertAndAdd(profile, LinkedIn2ProfileDefinition.POSITIONS, JsonHelper.getElement((JsonNode) positions, "values"));
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, LinkedIn2ProfileDefinition.POSITIONS, JsonHelper.getElement((JsonNode) positions,
+                    "values"));
         }
         addUrl(profile, json, LinkedIn2ProfileDefinition.SITE_STANDARD_PROFILE_REQUEST);
         addUrl(profile, json, LinkedIn2ProfileDefinition.API_STANDARD_PROFILE_REQUEST);
@@ -78,6 +81,6 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
 
     private void addUrl(final LinkedIn2Profile profile, final JsonNode json, final String name) {
         final String url = (String) JsonHelper.getElement(json, name + ".url");
-        convertAndAdd(profile, name, url);
+        convertAndAdd(profile, PROFILE_ATTRIBUTE, name, url);
     }
 }

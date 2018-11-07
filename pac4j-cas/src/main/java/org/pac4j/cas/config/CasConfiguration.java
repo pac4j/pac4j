@@ -13,6 +13,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * CAS configuration.
@@ -61,6 +63,9 @@ public class CasConfiguration extends InitializableObject {
     private UrlResolver urlResolver;
 
     private String postLogoutUrlParameter = SERVICE_PARAMETER;
+
+    /* Map containing user defined parameters */
+    private Map<String, String> customParams = new HashMap<>();
 
     public CasConfiguration() {}
 
@@ -237,6 +242,14 @@ public class CasConfiguration extends InitializableObject {
         this.prefixUrl = prefixUrl;
     }
 
+    public Map<String, String> getCustomParams() {
+        return customParams;
+    }
+
+    public void setCustomParams(final Map<String, String> customParams) {
+        this.customParams = customParams;
+    }
+    
     public long getTimeTolerance() {
         return timeTolerance;
     }
@@ -345,6 +358,10 @@ public class CasConfiguration extends InitializableObject {
         this.urlResolver = urlResolver;
     }
 
+    public void addCustomParam(final String name, final String value) {
+        this.customParams.put(name, value);
+    }
+    
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
