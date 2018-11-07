@@ -43,6 +43,6 @@ public class SAML2ClientConfiguration extends SAML2Configuration {
     }
 
     protected void warn() {
-        LOGGER.warn("Deprecated: use the SAML2Configuration component instead of the SAML2ClientConfiguration component");
+        LOGGER.warn("!! DEPRECATED: use the SAML2Configuration component instead of the SAML2ClientConfiguration component");
     }
 }

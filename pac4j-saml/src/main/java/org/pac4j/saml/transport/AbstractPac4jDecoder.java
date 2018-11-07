@@ -62,9 +62,9 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
         if (Strings.isNullOrEmpty(encodedMessage)) {
             throw new MessageDecodingException("Request did not contain either a SAMLRequest, a SAMLResponse or a logoutRequest parameter");
         } else {
-            logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);
             if (encodedMessage.contains("<") && cas5Compatibility) {
                 logger.warn("Not a base64 message: using it for CAS v5 backward compatibility");
+                logger.trace("Non-decoded SAML message:\n{}", encodedMessage);
                 return new ByteArrayInputStream(encodedMessage.getBytes(StandardCharsets.UTF_8));
             } else {
                 final byte[] decodedBytes = Base64Support.decode(encodedMessage);

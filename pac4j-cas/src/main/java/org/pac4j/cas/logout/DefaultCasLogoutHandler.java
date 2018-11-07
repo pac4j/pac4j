@@ -20,6 +20,6 @@ public class DefaultCasLogoutHandler<C extends WebContext> extends DefaultLogout
     }
 
     protected void warn() {
-        logger.warn("Deprecated: use the DefaultLogoutHandler component instead of the DefaultCasLogoutHandler component");
+        logger.warn("!! DEPRECATED: use the DefaultLogoutHandler component instead of the DefaultCasLogoutHandler component");
     }
 }

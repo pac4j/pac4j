@@ -44,7 +44,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
         this.spLogoutResponseBindingType = client.getConfiguration().getSpLogoutResponseBindingType();
         this.saml2LogoutResponseBuilder = new SAML2LogoutResponseBuilder(spLogoutResponseBindingType);
         this.saml2LogoutResponseMessageSender = new SAML2LogoutResponseMessageSender(client.getSignatureSigningParametersProvider(),
-            spLogoutResponseBindingType);
+            spLogoutResponseBindingType, false, client.getConfiguration().isSpLogoutRequestSigned());
     }
 
     @Override

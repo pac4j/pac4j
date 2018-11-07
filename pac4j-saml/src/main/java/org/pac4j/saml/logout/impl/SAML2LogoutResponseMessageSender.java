@@ -15,8 +15,9 @@ import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
 public class SAML2LogoutResponseMessageSender extends AbstractSAML2MessageSender<LogoutResponse> {
 
     public SAML2LogoutResponseMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
-                                            final String destinationBindingType) {
-        super(signatureSigningParametersProvider, destinationBindingType, true, false);
+                                            final String destinationBindingType, final boolean signErrorResponses,
+                                            final boolean isRequestSigned) {
+        super(signatureSigningParametersProvider, destinationBindingType, signErrorResponses, isRequestSigned);
     }
 
     protected Endpoint getEndpoint(final SAML2MessageContext context) {
