@@ -4,13 +4,14 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
-import org.pac4j.cas.logout.CasLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectActionBuilder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -21,7 +22,7 @@ import org.pac4j.core.util.CommonHelper;
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
- * <p>By default, the {@link CasLogoutHandler} will be a {@link org.pac4j.cas.logout.DefaultCasLogoutHandler}. Use <code>null</code> to
+ * <p>By default, the {@link LogoutHandler} will be a {@link DefaultLogoutHandler}. Use <code>null</code> to
  * disable logout support.</p>
  *
  * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be

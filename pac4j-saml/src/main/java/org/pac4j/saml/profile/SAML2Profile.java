@@ -80,5 +80,4 @@ public class SAML2Profile extends CommonProfile {
     public String getSamlNameIdSpProviderId() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_PROVIDED_ID);
     }
-
 }

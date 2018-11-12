@@ -1,4 +1,4 @@
-package org.pac4j.saml.sso;
+package org.pac4j.saml.profile.api;
 
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -16,6 +16,7 @@ public interface SAML2ResponseValidator {
      * The method decrypt encrypted assertions if any.
      *
      * @param context the context
+     * @return the SAML credentials
      */
     Credentials validate(SAML2MessageContext context);
 

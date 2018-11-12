@@ -11,8 +11,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
@@ -40,13 +39,15 @@ import java.util.List;
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
 
+    public static final String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
+
     protected static final Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
 
     private final CredentialProvider credentialProvider;
     private final String callbackUrl;
-    private final SAML2ClientConfiguration configuration;
+    private final SAML2Configuration configuration;
 
-    public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration, final String callbackUrl,
+    public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
         this.credentialProvider = credentialProvider;
         this.callbackUrl = callbackUrl;
@@ -85,7 +86,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             metadataGenerator.setRequestInitiatorLocation(callbackUrl);
             // Assertion consumer service url is the callback URL
             metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
-            final String logoutUrl = CommonHelper.addParameter(callbackUrl, SAML2Client.IDP_LOGOUT_REQUEST_EXTRA_PARAMETER, "true");
+            final String logoutUrl = CommonHelper.addParameter(callbackUrl, LOGOUT_ENDPOINT_PARAMETER, "true");
             // the logout URL is callback URL with an extra parameter
             metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
 

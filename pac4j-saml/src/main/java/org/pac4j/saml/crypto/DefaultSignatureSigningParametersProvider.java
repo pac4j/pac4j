@@ -10,7 +10,7 @@ import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.criterion.SignatureSigningConfigurationCriterion;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +27,10 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
     private static final Logger logger = LoggerFactory.getLogger(DefaultSignatureSigningParametersProvider.class);
 
     private final CredentialProvider credentialProvider;
-    private final SAML2ClientConfiguration configuration;
+    private final SAML2Configuration configuration;
 
     public DefaultSignatureSigningParametersProvider(final CredentialProvider credentialProvider,
-                                                     final SAML2ClientConfiguration configuration) {
+                                                     final SAML2Configuration configuration) {
         this.credentialProvider = credentialProvider;
         this.configuration = configuration;
     }

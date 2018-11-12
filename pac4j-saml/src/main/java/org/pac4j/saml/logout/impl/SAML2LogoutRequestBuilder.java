@@ -1,4 +1,4 @@
-package org.pac4j.saml.sso.impl;
+package org.pac4j.saml.logout.impl;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -29,7 +29,6 @@ public class SAML2LogoutRequestBuilder {
     private int issueInstantSkewSeconds = 0;
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-
 
     /**
      * Instantiates a new Saml 2 logout request builder.
@@ -73,7 +72,7 @@ public class SAML2LogoutRequestBuilder {
         nameId.setSPProvidedID(profile.getSamlNameIdSpProviderId());
         request.setNameID(nameId);
         // session index added
-        final String sessIdx = (String) profile.getAttribute("sessionindex");
+        final String sessIdx = profile.getSessionIndex();
         final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
             .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
         final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();

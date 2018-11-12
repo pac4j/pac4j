@@ -1,21 +1,21 @@
-package org.pac4j.saml.sso.impl;
+package org.pac4j.saml.profile.impl;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
+import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.impl.SAMLOutboundDestinationHandler;
 import org.opensaml.saml.common.binding.security.impl.EndpointURLSchemeSecurityHandler;
 import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.LogoutRequest;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
-import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.saml.saml2.core.RequestAbstractType;
+import org.opensaml.saml.saml2.core.StatusResponseType;
+import org.opensaml.saml.saml2.metadata.*;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.sso.SAML2MessageSender;
+import org.pac4j.saml.profile.api.SAML2MessageSender;
 import org.pac4j.saml.storage.SAMLMessageStorage;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
@@ -24,44 +24,39 @@ import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-
-
 /**
- * Sender for SAML logout messages
- * 
- * @author Matthieu Taggiasco
- * @since 2.0.0
+ * Common message sender.
+ *
+ * @author Jerome Leleu
+ * @since 3.4.0
  */
+public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implements SAML2MessageSender<T> {
 
-public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutRequest> {
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final static Logger logger = LoggerFactory.getLogger(SAML2LogoutMessageSender.class);
+    protected final SignatureSigningParametersProvider signatureSigningParametersProvider;
+    protected final String destinationBindingType;
+    protected final boolean signErrorResponses;
+    protected final boolean isRequestSigned;
 
-    private final SignatureSigningParametersProvider signatureSigningParametersProvider;
-    private final String destinationBindingType;
-    private final boolean signErrorResponses;
-    private final boolean forceSignRedirectBindingLogoutRequest;
-
-    public SAML2LogoutMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
-            final String destinationBindingType,
-            final boolean signErrorResponses,
-            final boolean forceSignRedirectBindingLogoutRequest) {
+    public AbstractSAML2MessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
+                                      final String destinationBindingType,
+                                      final boolean signErrorResponses,
+                                      final boolean isRequestSigned) {
         this.signatureSigningParametersProvider = signatureSigningParametersProvider;
         this.destinationBindingType = destinationBindingType;
         this.signErrorResponses = signErrorResponses;
-        this.forceSignRedirectBindingLogoutRequest = forceSignRedirectBindingLogoutRequest;
+        this.isRequestSigned = isRequestSigned;
     }
 
     @Override
     public void sendMessage(final SAML2MessageContext context,
-                            final LogoutRequest logoutRequest,
+                            final T request,
                             final Object relayState) {
 
         final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
         final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
 
-        final SingleLogoutService ssoLogoutService = context.getIDPSingleLogoutService(destinationBindingType);
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
 
         final MessageEncoder encoder = getMessageEncoder(context);
@@ -70,27 +65,27 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
         outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
 
         outboundContext.getProfileRequestContext().setInboundMessageContext(
-                context.getProfileRequestContext().getInboundMessageContext());
+            context.getProfileRequestContext().getInboundMessageContext());
         outboundContext.getProfileRequestContext().setOutboundMessageContext(
-                context.getProfileRequestContext().getOutboundMessageContext());
+            context.getProfileRequestContext().getOutboundMessageContext());
 
-        outboundContext.setMessage(logoutRequest);
+        outboundContext.setMessage(request);
         outboundContext.getSAMLEndpointContext().setEndpoint(acsService);
-        outboundContext.getSAMLPeerEndpointContext().setEndpoint(ssoLogoutService);
+        outboundContext.getSAMLPeerEndpointContext().setEndpoint(getEndpoint(context));
 
         outboundContext.getSAMLPeerEntityContext().setRole(context.getSAMLPeerEntityContext().getRole());
         outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());
         outboundContext.getSAMLProtocolContext().setProtocol(context.getSAMLProtocolContext().getProtocol());
         outboundContext.getSecurityParametersContext()
-                .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(spDescriptor));
+            .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(spDescriptor));
 
         if (relayState != null) {
             outboundContext.getSAMLBindingContext().setRelayState(relayState.toString());
         }
 
-        invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, outboundContext);
-
         try {
+            invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, outboundContext);
+
             encoder.setMessageContext(outboundContext);
             encoder.initialize();
             encoder.prepareContext();
@@ -98,7 +93,11 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
 
             final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
             if (messageStorage != null) {
-                messageStorage.storeMessage(logoutRequest.getID(), logoutRequest);
+                if (request instanceof RequestAbstractType) {
+                    messageStorage.storeMessage(((RequestAbstractType) request).getID(), request);
+                } else if (request instanceof StatusResponseType) {
+                    messageStorage.storeMessage(((StatusResponseType) request).getID(), request);
+                }
             }
 
         } catch (final MessageEncodingException e) {
@@ -108,60 +107,54 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
         }
     }
 
+    protected abstract Endpoint getEndpoint(SAML2MessageContext context);
 
     protected final void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                        final IDPSSODescriptor idpssoDescriptor,
                                                        final SAML2MessageContext outboundContext) {
         try {
             final EndpointURLSchemeSecurityHandler handlerEnd =
-                    new EndpointURLSchemeSecurityHandler();
+                new EndpointURLSchemeSecurityHandler();
             handlerEnd.initialize();
             handlerEnd.invoke(outboundContext);
 
             final SAMLOutboundDestinationHandler handlerDest =
-                    new SAMLOutboundDestinationHandler();
+                new SAMLOutboundDestinationHandler();
             handlerDest.initialize();
             handlerDest.invoke(outboundContext);
 
-            if (spDescriptor.isAuthnRequestsSigned()) {
+            if (mustSignRequest(spDescriptor, idpssoDescriptor)) {
+                logger.debug("Signing SAML2 outbound context...");
                 final SAMLOutboundProtocolMessageSigningHandler handler = new
-                        SAMLOutboundProtocolMessageSigningHandler();
+                    SAMLOutboundProtocolMessageSigningHandler();
                 handler.setSignErrorResponses(this.signErrorResponses);
                 handler.invoke(outboundContext);
-
-            } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
-                logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
             }
         } catch (final Exception e) {
             throw new SAMLException(e);
         }
-
     }
 
-    /**
-     * Build the WebSSO handler for sending and receiving SAML2 messages.
-     * @param ctx
-     * @return the encoder instance
-     */
+    protected boolean mustSignRequest(final SPSSODescriptor spDescriptor, final IDPSSODescriptor idpssoDescriptor) {
+        return isRequestSigned;
+    }
+
     private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
 
         final Pac4jSAMLResponse adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
 
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
-
             final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
             final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
-        }
 
-        if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            final Pac4jHTTPRedirectDeflateEncoder encoder =
-                    new Pac4jHTTPRedirectDeflateEncoder(adapter, forceSignRedirectBindingLogoutRequest);
-            return encoder;
-        }
+        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
+            return new Pac4jHTTPRedirectDeflateEncoder(adapter, this.isRequestSigned);
 
-        throw new UnsupportedOperationException("Binding type - "
+        } else {
+            throw new UnsupportedOperationException("Binding type - "
                 + destinationBindingType + " is not supported");
+        }
     }
 }
