@@ -31,7 +31,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         final SAML2MessageContext messageContext = new SAML2MessageContext();
 
         if (ContextHelper.isGet(context)) {
-            final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
+            final byte[] base64DecodedMessage = this.getBase64DecodedMessage();
             final InputStream inflatedMessage = inflate(base64DecodedMessage);
             final SAMLObject inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
             messageContext.setMessage(inboundMessage);
@@ -43,17 +43,23 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         }
     }
 
-    protected InputStream inflate(final InputStream inputStream) throws MessageDecodingException {
+    protected InputStream inflate(final byte[] input) throws MessageDecodingException {
         try {
-            return internalInflate(inputStream, new Inflater(true));
+            // compatible with GZIP and PKZIP
+            return internalInflate(input, new Inflater(true));
         } catch (final IOException e) {
-            throw new MessageDecodingException("Cannot decode message", e);
+            try {
+                // deflate compression only
+                return internalInflate(input, new Inflater());
+            } catch (final IOException e2) {
+                throw new MessageDecodingException("Cannot decode message", e2);
+            }
         }
     }
 
-    protected InputStream internalInflate(final InputStream inputStream, final Inflater inflater) throws IOException {
+    protected InputStream internalInflate(final byte[] input, final Inflater inflater) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final InflaterInputStream iis = new InflaterInputStream(inputStream, inflater);
+        final InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
         try {
             byte[] buffer = new byte[1000];
             int length;

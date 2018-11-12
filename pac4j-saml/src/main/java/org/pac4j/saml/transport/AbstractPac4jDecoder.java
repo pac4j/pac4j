@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -47,7 +46,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
         this.context = context;
     }
 
-    protected InputStream getBase64DecodedMessage() throws MessageDecodingException {
+    protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         String encodedMessage = null;
         for (final String parameter : SAML_PARAMETERS) {
             encodedMessage = this.context.getRequestParameter(parameter);
@@ -65,11 +64,11 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
         } else {
             if (encodedMessage.contains("<")) {
                 logger.trace("Raw SAML message:\n{}", encodedMessage);
-                return new ByteArrayInputStream(encodedMessage.getBytes(StandardCharsets.UTF_8));
+                return encodedMessage.getBytes(StandardCharsets.UTF_8);
             } else {
                 final byte[] decodedBytes = Base64Support.decode(encodedMessage);
                 logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
-                return new ByteArrayInputStream(decodedBytes);
+                return decodedBytes;
             }
         }
     }

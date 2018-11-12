@@ -12,7 +12,7 @@ import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 /**
  * Decoder for messages sent via POST and SOAP bindings.
@@ -35,8 +35,8 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
             final String relayState = this.context.getRequestParameter("RelayState");
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext, relayState);
-            final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
-            final XMLObject xmlObject = this.unmarshallMessage(base64DecodedMessage);
+            final byte[] base64DecodedMessage = this.getBase64DecodedMessage();
+            final XMLObject xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
             final SAMLObject inboundMessage;
             if (xmlObject instanceof Envelope) {
                 Envelope soapMessage = (Envelope) xmlObject;

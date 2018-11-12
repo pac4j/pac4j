@@ -25,12 +25,9 @@ import java.util.List;
  */
 public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
-    protected final boolean cas5Compatibility;
-
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                final LogoutHandler logoutHandler, final boolean cas5Compatibility) {
+                                final LogoutHandler logoutHandler) {
         super(engine, decrypter, logoutHandler);
-        this.cas5Compatibility = cas5Compatibility;
     }
 
     /**
@@ -79,9 +76,8 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         // TODO: make it work for SOAP logout requests from Shibboleth
         //validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
 
-        if (!cas5Compatibility) {
-            validateIssueInstant(logoutRequest.getIssueInstant());
-        }
+        // don't check because of CAS v5
+        //validateIssueInstant(logoutRequest.getIssueInstant());
 
         validateIssuerIfItExists(logoutRequest.getIssuer(), context);
 

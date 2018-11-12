@@ -151,8 +151,6 @@ public class SAML2Configuration extends InitializableObject {
 
     private LogoutHandler logoutHandler;
 
-    private boolean cas5Compatibility = true;
-
     public SAML2Configuration() {
     }
 
@@ -621,14 +619,6 @@ public class SAML2Configuration extends InitializableObject {
         init();
 
         return logoutHandler;
-    }
-
-    public boolean isCas5Compatibility() {
-        return cas5Compatibility;
-    }
-
-    public void setCas5Compatibility(final boolean cas5Compatibility) {
-        this.cas5Compatibility = cas5Compatibility;
     }
 
     /**
