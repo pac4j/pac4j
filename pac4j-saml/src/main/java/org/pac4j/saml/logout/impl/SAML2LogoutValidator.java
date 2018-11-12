@@ -17,7 +17,7 @@ import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 import java.util.List;
 
 /**
- * Validator for SAML logout request/response from the IdP.
+ * Validator for SAML logout requests/responses from the IdP.
  * 
  * @author Matthieu Taggiasco
  * @author Jerome Leleu
