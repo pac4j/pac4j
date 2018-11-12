@@ -95,6 +95,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.configuration = configuration;
     }
 
+    @Deprecated
+    public SAML2Client(final SAML2ClientConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", this.configuration);
