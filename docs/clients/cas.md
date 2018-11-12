@@ -111,9 +111,9 @@ To correlate proxy information, the `CasProxyReceptor` uses an internal [`Store`
 
 ### d) Logout configuration
 
-To handle CAS logout requests, a [`DefaultCasLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/logout/DefaultCasLogoutHandler.java) is automatically created. Unless you specify your own implementation of the [`CasLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/logout/CasLogoutHandler.java) interface.
+To handle CAS logout requests, a [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java) is automatically created. Unless you specify your own implementation of the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface.
 
-The `DefaultCasLogoutHandler`:
+The `DefaultLogoutHandler`:
  
 - relies on the capabilities of the `SessionStore` (`destroySession`, `getTrackableSession` and `buildFromTrackableSession`  methods)
 - stores data in a [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
