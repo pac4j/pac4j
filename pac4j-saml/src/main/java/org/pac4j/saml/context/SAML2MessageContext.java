@@ -18,6 +18,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.opensaml.soap.messaging.context.SOAP11Context;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -45,7 +46,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     private BaseID baseID;
 
     /** SubjectConfirmations used during assertion evaluation. */
-    private List<SubjectConfirmation> subjectConfirmations = new ArrayList<SubjectConfirmation>();
+    private List<SubjectConfirmation> subjectConfirmations = new ArrayList<>();
 
     private SAMLMessageStorage samlMessageStorage;
 
@@ -143,6 +144,10 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
 
     public final SAMLSelfEntityContext getSAMLSelfEntityContext() {
         return this.getSubcontext(SAMLSelfEntityContext.class, true);
+    }
+
+    public final SOAP11Context getSOAP11Context() {
+        return this.getSubcontext(SOAP11Context.class, true);
     }
 
     public final SAMLMetadataContext getSAMLSelfMetadataContext() {

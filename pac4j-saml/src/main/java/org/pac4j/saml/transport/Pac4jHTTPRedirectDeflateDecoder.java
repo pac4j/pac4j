@@ -1,14 +1,15 @@
 package org.pac4j.saml.transport;
 
-import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.*;
@@ -21,13 +22,13 @@ import java.util.zip.*;
  */
 public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
-    public Pac4jHTTPRedirectDeflateDecoder(final WebContext context, final boolean cas5Compatibility) {
-        super(context, cas5Compatibility);
+    public Pac4jHTTPRedirectDeflateDecoder(final WebContext context) {
+        super(context);
     }
 
     @Override
     protected void doDecode() throws MessageDecodingException {
-        final MessageContext messageContext = new MessageContext();
+        final SAML2MessageContext messageContext = new SAML2MessageContext();
 
         if (ContextHelper.isGet(context)) {
             final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
@@ -43,8 +44,17 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
     }
 
     protected InputStream inflate(final InputStream inputStream) throws MessageDecodingException {
+        try {
+            return internalInflate(inputStream, new Inflater(true));
+        } catch (final IOException e) {
+            throw new MessageDecodingException("Cannot decode message", e);
+        }
+    }
+
+    protected InputStream internalInflate(final InputStream inputStream, final Inflater inflater) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (final InflaterInputStream iis = new InflaterInputStream(inputStream, new Inflater(true))) {
+        final InflaterInputStream iis = new InflaterInputStream(inputStream, inflater);
+        try {
             byte[] buffer = new byte[1000];
             int length;
             while ((length = iis.read(buffer)) > 0) {
@@ -54,13 +64,14 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
             final String decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
             logger.debug("Inflated SAML message: {}", decodedMessage);
             return new ByteArrayInputStream(decodedBytes);
-        } catch (final Exception e) {
-            throw new MessageDecodingException("Cannot decode message", e);
+        } finally {
+            baos.close();
+            iis.close();
         }
     }
 
     @Override
-    public String getBindingURI() {
+    public String getBindingURI(final SAML2MessageContext messageContext) {
         return SAMLConstants.SAML2_REDIRECT_BINDING_URI;
     }
 }

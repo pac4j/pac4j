@@ -159,7 +159,7 @@ You can generate the SP metadata in two ways:
 
 ## 4) Logout
 
-The SAML support handles both the POST and HTTP-Redirect bindings for logout requests/responses.
+The SAML support handles the HTTP-POST and the HTTP-Redirect bindings for logout requests/responses (and the SOAP binding for incoming logout requests).
 
 The `SAML2Client` can participate in the central logout and send a logout request to the IdP.
 The binding of this request is controlled by the `spLogoutRequestBindingType` property and

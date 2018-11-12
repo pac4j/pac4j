@@ -46,12 +46,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
- * Browser SSO profile with HTTP-POST binding. (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
+ * This class is the client to authenticate and logout users with a SAML2 Identity Provider.
  *
  * @author Michael Remond
  * @author Misagh Moayyed
  * @author Ruochao Zheng
+ * @author Jerome Leleu
  * @since 1.5.0
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
@@ -127,14 +127,14 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                         this.configuration.getAuthnRequestBindingType(),
                         true,
                         this.configuration.isAuthnRequestSigned()),
-                new SAML2WebSSOMessageReceiver(this.authnResponseValidator, this.configuration.isCas5Compatibility()));
+                new SAML2WebSSOMessageReceiver(this.authnResponseValidator));
     }
 
     protected void initSAMLLogoutProfileHandler() {
         this.logoutProfileHandler = new SAML2LogoutProfileHandler(
             new SAML2LogoutRequestMessageSender(this.signatureSigningParametersProvider,
                 this.configuration.getSpLogoutRequestBindingType(), false, this.configuration.isSpLogoutRequestSigned()),
-            new SAML2LogoutMessageReceiver(this.logoutValidator, this.configuration.isCas5Compatibility()));
+            new SAML2LogoutMessageReceiver(this.logoutValidator));
     }
 
     protected void initSAMLLogoutResponseValidator() {

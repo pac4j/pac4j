@@ -9,7 +9,6 @@ import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
-import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.decoder.AbstractMessageDecoder;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
@@ -17,6 +16,7 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,17 +37,14 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final boolean cas5Compatibility;
-
     /** Parser pool used to deserialize the message. */
     protected ParserPool parserPool;
 
     protected final WebContext context;
 
-    public AbstractPac4jDecoder(final WebContext context, final boolean cas5Compatibility) {
+    public AbstractPac4jDecoder(final WebContext context) {
         CommonHelper.assertNotNull("context", context);
         this.context = context;
-        this.cas5Compatibility = cas5Compatibility;
     }
 
     protected InputStream getBase64DecodedMessage() throws MessageDecodingException {
@@ -58,18 +55,20 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
                 break;
             }
         }
+        if (Strings.isNullOrEmpty(encodedMessage)) {
+            encodedMessage = this.context.getRequestContent();
+        }
 
         if (Strings.isNullOrEmpty(encodedMessage)) {
-            throw new MessageDecodingException("Request did not contain either a SAMLRequest, a SAMLResponse or a logoutRequest parameter");
+            throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
+                + "a logoutRequest parameter or a body content");
         } else {
-            if (encodedMessage.contains("<") && cas5Compatibility) {
-                logger.warn("Not a base64 message: using it for CAS v5 backward compatibility");
-                logger.trace("Non-decoded SAML message:\n{}", encodedMessage);
+            if (encodedMessage.contains("<")) {
+                logger.trace("Raw SAML message:\n{}", encodedMessage);
                 return new ByteArrayInputStream(encodedMessage.getBytes(StandardCharsets.UTF_8));
             } else {
                 final byte[] decodedBytes = Base64Support.decode(encodedMessage);
-                final String decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
-                logger.trace("Decoded SAML message:\n{}", decodedMessage);
+                logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
                 return new ByteArrayInputStream(decodedBytes);
             }
         }
@@ -97,14 +96,20 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
      *
      * @param messageContext the current message context
      */
-    protected void populateBindingContext(MessageContext<SAMLObject> messageContext) {
+    protected void populateBindingContext(final SAML2MessageContext messageContext) {
         SAMLBindingContext bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
-        bindingContext.setBindingUri(getBindingURI());
+        bindingContext.setBindingUri(getBindingURI(messageContext));
         bindingContext.setHasBindingSignature(false);
         bindingContext.setIntendedDestinationEndpointURIRequired(SAMLBindingSupport.isMessageSigned(messageContext));
     }
 
-    public abstract String getBindingURI();
+    /**
+     * Get the binding of the message context;.
+     *
+     * @param messageContext the message context
+     * @return the binding URI
+     */
+    public abstract String getBindingURI(SAML2MessageContext messageContext);
 
     /**
      * Helper method that deserializes and unmarshalls the message from the given stream.

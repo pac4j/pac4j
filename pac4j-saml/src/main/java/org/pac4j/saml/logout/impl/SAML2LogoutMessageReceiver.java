@@ -20,15 +20,15 @@ public class SAML2LogoutMessageReceiver extends AbstractSAML2MessageReceiver {
 
     private static final String SAML2_SLO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:logout";
 
-    public SAML2LogoutMessageReceiver(final SAML2ResponseValidator validator, final boolean cas5Compatibility) {
-        super(validator, cas5Compatibility);
+    public SAML2LogoutMessageReceiver(final SAML2ResponseValidator validator) {
+        super(validator);
     }
 
     @Override
     protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
         final AbstractPac4jDecoder decoder;
         if (ContextHelper.isPost(webContext)) {
-            decoder = new Pac4jHTTPPostDecoder(webContext, cas5Compatibility);
+            decoder = new Pac4jHTTPPostDecoder(webContext);
             try {
                 decoder.setParserPool(Configuration.getParserPool());
                 decoder.initialize();
@@ -38,7 +38,7 @@ public class SAML2LogoutMessageReceiver extends AbstractSAML2MessageReceiver {
                 throw new SAMLException("Error decoding POST SAML message", e);
             }
         } else if (ContextHelper.isGet(webContext)) {
-            decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext, cas5Compatibility);
+            decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
 
             try {
                 decoder.setParserPool(Configuration.getParserPool());

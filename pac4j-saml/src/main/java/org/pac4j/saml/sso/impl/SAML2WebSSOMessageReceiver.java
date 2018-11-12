@@ -15,13 +15,13 @@ public class SAML2WebSSOMessageReceiver extends AbstractSAML2MessageReceiver {
 
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
-    public SAML2WebSSOMessageReceiver(final SAML2ResponseValidator validator, final boolean cas5Compatibility) {
-        super(validator, cas5Compatibility);
+    public SAML2WebSSOMessageReceiver(final SAML2ResponseValidator validator) {
+        super(validator);
     }
 
     @Override
     protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
-        final Pac4jHTTPPostDecoder decoder = new Pac4jHTTPPostDecoder(webContext, cas5Compatibility);
+        final Pac4jHTTPPostDecoder decoder = new Pac4jHTTPPostDecoder(webContext);
         try {
             decoder.setParserPool(Configuration.getParserPool());
             decoder.initialize();

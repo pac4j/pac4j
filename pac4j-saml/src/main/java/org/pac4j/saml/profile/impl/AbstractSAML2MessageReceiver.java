@@ -24,11 +24,8 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
 
     protected final SAML2ResponseValidator validator;
 
-    protected final boolean cas5Compatibility;
-
-    public AbstractSAML2MessageReceiver(final SAML2ResponseValidator validator, final boolean cas5Compatibility) {
+    public AbstractSAML2MessageReceiver(final SAML2ResponseValidator validator) {
         this.validator = validator;
-        this.cas5Compatibility = cas5Compatibility;
     }
 
     @Override

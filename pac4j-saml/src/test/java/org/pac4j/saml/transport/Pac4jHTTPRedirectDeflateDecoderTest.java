@@ -38,7 +38,7 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
         String message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
 
         webContext.addRequestParameter("SAMLResponse", message);
-        final Pac4jHTTPRedirectDeflateDecoder decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext, true);
+        final Pac4jHTTPRedirectDeflateDecoder decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
         decoder.setParserPool(Configuration.getParserPool());
         decoder.initialize();
         decoder.decode();
