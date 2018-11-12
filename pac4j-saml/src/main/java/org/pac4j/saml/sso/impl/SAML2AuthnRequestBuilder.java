@@ -23,9 +23,9 @@ import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.sso.SAML2ObjectBuilder;
+import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 
@@ -67,7 +67,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
      *
      * @param cfg Client configuration.
      */
-    public SAML2AuthnRequestBuilder(final SAML2ClientConfiguration cfg) {
+    public SAML2AuthnRequestBuilder(final SAML2Configuration cfg) {
         this.forceAuth = cfg.isForceAuth();
         this.comparisonType = getComparisonTypeEnumFromString(cfg.getComparisonType());
         this.bindingType = cfg.getAuthnRequestBindingType();

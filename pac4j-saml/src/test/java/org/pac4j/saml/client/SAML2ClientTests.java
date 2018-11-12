@@ -2,6 +2,7 @@ package org.pac4j.saml.client;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -44,8 +45,8 @@ public final class SAML2ClientTests {
             throw new TechnicalException("File could not be deleted");
         }
 
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("testKeystore.jks",
+        final SAML2Configuration cfg =
+                new SAML2Configuration("testKeystore.jks",
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
                         "resource:testshib-providers.xml");
@@ -65,8 +66,8 @@ public final class SAML2ClientTests {
             throw new TechnicalException("File could not be deleted");
         }
 
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration(new FileSystemResource("testKeystore.jks"),
+        final SAML2Configuration cfg =
+                new SAML2Configuration(new FileSystemResource("testKeystore.jks"),
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
                         new ClassPathResource("testshib-providers.xml"));
@@ -91,8 +92,8 @@ public final class SAML2ClientTests {
     }
 
     protected SAML2Client getClient() {
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
+        final SAML2Configuration cfg =
+                new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
                         "pac4j-demo-passwd",
                         "pac4j-demo-passwd",
                         new ClassPathResource("testshib-providers.xml"));

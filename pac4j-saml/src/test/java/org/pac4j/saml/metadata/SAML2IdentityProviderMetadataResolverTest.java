@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import static org.junit.Assert.*;
@@ -17,7 +17,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
 
     @Before
     public void setUp() {
-        SAML2ClientConfiguration configuration = new SAML2ClientConfiguration();
+        SAML2Configuration configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
     }

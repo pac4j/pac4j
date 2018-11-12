@@ -3,7 +3,7 @@ package org.pac4j.saml.metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -14,11 +14,11 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     private SAML2ServiceProviderMetadataResolver metadataResolver;
 
-    private SAML2ClientConfiguration configuration;
+    private SAML2Configuration configuration;
 
     @Before
     public void setUp() {
-        configuration = new SAML2ClientConfiguration();
+        configuration = new SAML2Configuration();
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
         configuration.setPrivateKeyPassword("pac4j");

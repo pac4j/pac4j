@@ -1,6 +1,7 @@
 package org.pac4j.saml.client;
 
 import org.junit.Test;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
 public class SAML2ClientConfigurationTests {
     @Test
     public void verifySigningCertExported() {
-        final SAML2ClientConfiguration configuration = new SAML2ClientConfiguration();
+        final SAML2Configuration configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");

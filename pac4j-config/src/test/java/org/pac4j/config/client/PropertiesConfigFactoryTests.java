@@ -23,7 +23,7 @@ import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.sql.profile.service.DbProfileService;
 import org.pac4j.sql.test.tools.DbServer;
 
@@ -136,7 +136,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
             final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
             assertNotNull(saml2client);
-            final SAML2ClientConfiguration saml2Config = saml2client.getConfiguration();
+            final SAML2Configuration saml2Config = saml2client.getConfiguration();
             assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2Config.getDestinationBindingType());
             assertEquals(VALUE, saml2Config.getKeyStoreAlias());
 

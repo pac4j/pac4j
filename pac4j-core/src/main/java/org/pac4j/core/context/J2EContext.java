@@ -185,7 +185,6 @@ public class J2EContext implements WebContext {
             return requestURL.toString();
         }
         return requestURL.append('?').append(queryString).toString();
-
     }
 
     @Override
