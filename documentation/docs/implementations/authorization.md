@@ -62,8 +62,8 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
@@ -72,8 +72,8 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td></td>
-        <td></td>
+         <td><img src="/img/red_cross.png" /></td>
+         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>CAS</td>

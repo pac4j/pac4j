@@ -80,10 +80,10 @@ title: Implementations comparison for the filter and endpoints&#58;
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">RatpackPac4j.login</code> and <code class="highlighter-rouge">RatpackPac4j.requireAuth</code> methods</td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">RatpackPac4j.authenticator</code> method</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">RatpackPac4j.logout()</code> method</td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
@@ -94,10 +94,10 @@ title: Implementations comparison for the filter and endpoints&#58;
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
     </tr>
     <tr>
         <td>CAS</td>

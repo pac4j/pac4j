@@ -71,9 +71,9 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">RatpackWebContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">RatpackSessionStore</code></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
@@ -83,9 +83,9 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowWebContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowSessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowNopHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>CAS</td>

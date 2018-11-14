@@ -80,10 +80,10 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
@@ -94,10 +94,10 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />From the <code class="highlighter-rouge">securityContext.getAuthenticatedAccount()</code></td>
+        <td><img src="/img/green_check.png" /><br />From the <code class="highlighter-rouge">securityContext.getAuthenticatedAccount()</code></td>
     </tr>
     <tr>
         <td>CAS</td>
