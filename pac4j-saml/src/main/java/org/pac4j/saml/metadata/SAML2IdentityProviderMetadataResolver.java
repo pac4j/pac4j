@@ -110,8 +110,6 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
             return ((EntitiesDescriptor) md).getEntityDescriptors().get(0).getEntityID();
         } else if (md instanceof EntityDescriptor) {
             return ((EntityDescriptor) md).getEntityID();
-        } else if (this.idpEntityId != null) {
-            return this.idpEntityId;
         }
         throw new SAMLException("No idp entityId found");
     }
