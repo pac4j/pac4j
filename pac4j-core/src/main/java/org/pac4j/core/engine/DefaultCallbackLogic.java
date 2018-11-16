@@ -103,7 +103,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
 
     protected void saveUserProfile(final C context, final Config config, final CommonProfile profile,
                                    final boolean saveInSession, final boolean multiProfile, final boolean renewSession) {
-        final ProfileManager manager = getProfileManager(context, config);
+        final ProfileManager manager = getProfileManager(context);
         if (profile != null) {
             manager.save(saveInSession, profile, multiProfile);
             if (renewSession) {

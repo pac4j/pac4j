@@ -81,7 +81,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             assertNotNull("configClients", configClients);
 
             // logic
-            final ProfileManager manager = getProfileManager(context, config);
+            final ProfileManager manager = getProfileManager(context);
             final List<CommonProfile> profiles = manager.getAll(true);
 
             // compute redirection URL

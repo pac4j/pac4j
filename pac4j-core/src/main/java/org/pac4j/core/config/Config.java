@@ -16,6 +16,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -25,6 +26,9 @@ import java.util.function.Function;
  * @since 1.8.0
  */
 public class Config {
+
+    private static Function<WebContext, ProfileManager> profileManagerFactory;
+    private static BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2;
 
     protected Clients clients;
 
@@ -41,8 +45,6 @@ public class Config {
     protected CallbackLogic callbackLogic;
 
     protected LogoutLogic logoutLogic;
-
-    protected Function<WebContext, ProfileManager> profileManagerFactory;
 
     public Config() {}
 
@@ -187,11 +189,31 @@ public class Config {
         this.logoutLogic = logoutLogic;
     }
 
-    public Function<WebContext, ProfileManager> getProfileManagerFactory() {
+    public static Function<WebContext, ProfileManager> getProfileManagerFactory() {
         return profileManagerFactory;
     }
 
-    public void setProfileManagerFactory(final Function<WebContext, ProfileManager> profileManagerFactory) {
-        this.profileManagerFactory = profileManagerFactory;
+    public static void setProfileManagerFactory(final Function<WebContext, ProfileManager> profileManagerFactory) {
+        Config.profileManagerFactory = profileManagerFactory;
+    }
+
+    public static void defaultProfileManagerFactory(final Function<WebContext, ProfileManager> profileManagerFactory) {
+        if (Config.profileManagerFactory == null) {
+            Config.profileManagerFactory = profileManagerFactory;
+        }
+    }
+
+    public static BiFunction<WebContext, SessionStore, ProfileManager> getProfileManagerFactory2() {
+        return profileManagerFactory2;
+    }
+
+    public static void setProfileManagerFactory2(final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+        Config.profileManagerFactory2 = profileManagerFactory2;
+    }
+
+    public static void defaultProfileManagerFactory2(final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+        if (Config.profileManagerFactory2 == null) {
+            Config.profileManagerFactory2 = profileManagerFactory2;
+        }
     }
 }
