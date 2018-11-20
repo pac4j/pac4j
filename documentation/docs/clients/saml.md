@@ -5,7 +5,7 @@ title: SAML
 
 *pac4j* allows you to login with any SAML identity provider using the SAML v2.0 protocol.
 
-It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, Shibboleth v3...
+It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, Shibboleth v3.4...
 
 ## 1) Dependency
 
