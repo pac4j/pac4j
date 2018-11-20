@@ -5,7 +5,7 @@ title: OpenID Connect
 
 *pac4j* allows you to login using the OpenID Connect protocol v1.0.
 
-It has been tested with various OpenID Connect providers: Google, AzureAD, Okta, IdentityServer3 (and 4), MitreID, Keycloak…
+It has been tested with various OpenID Connect providers: Google, AzureAD, Okta, IdentityServer3 (and 4), MitreID, Keycloak 4.6...
 
 ## 1) Dependency
 

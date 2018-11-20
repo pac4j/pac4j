@@ -3,9 +3,9 @@ package org.pac4j.oidc.profile;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
-import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.jwt.profile.JwtGenerator;
 
@@ -25,6 +25,8 @@ import static org.junit.Assert.*;
  * @since  1.8.0
  */
 public final class OidcProfileTests implements TestsConstants {
+
+    private static final JavaSerializationHelper serializer = new JavaSerializationHelper();
 
     public static final String ID_TOKEN = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwczovL2p3dC1pZHAuZXhhbX"
             + "BsZS5jb20iLCJzdWIiOiJtYWlsdG86cGVyc29uQGV4YW1wbGUuY29tIiwibmJmIjoxNDQwMTEyMDE1LCJleHAiOjE0NDAxMTU2"
@@ -58,9 +60,9 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setIdTokenString(ID_TOKEN);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
 
-        byte[] result = SerializationUtils.serialize(profile);
+        byte[] result = serializer.serializeToBytes(profile);
+        profile = (OidcProfile) serializer.unserializeFromBytes(result);
 
-        profile = SerializationUtils.deserialize(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
@@ -77,8 +79,8 @@ public final class OidcProfileTests implements TestsConstants {
         OidcProfile profile = new OidcProfile();
         profile.setIdTokenString(ID_TOKEN);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        byte[] result = SerializationUtils.serialize(profile);
-        profile = SerializationUtils.deserialize(result);
+        byte[] result = serializer.serializeToBytes(profile);
+        profile = (OidcProfile) serializer.unserializeFromBytes(result);
         assertNull(profile.getAccessToken());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);
         assertEquals(profile.getRefreshToken().getValue(), REFRESH_TOKEN);
@@ -92,8 +94,8 @@ public final class OidcProfileTests implements TestsConstants {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        byte[] result = SerializationUtils.serialize(profile);
-        profile = SerializationUtils.deserialize(result);
+        byte[] result = serializer.serializeToBytes(profile);
+        profile = (OidcProfile) serializer.unserializeFromBytes(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
@@ -110,8 +112,8 @@ public final class OidcProfileTests implements TestsConstants {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setIdTokenString(ID_TOKEN);
-        byte[] result = SerializationUtils.serialize(profile);
-        profile = SerializationUtils.deserialize(result);
+        byte[] result = serializer.serializeToBytes(profile);
+        profile = (OidcProfile) serializer.unserializeFromBytes(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
@@ -130,8 +132,8 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setAccessToken(populatedAccessToken);
         profile.clearSensitiveData();
 
-        byte[] result = SerializationUtils.serialize(profile);
-        profile = SerializationUtils.deserialize(result);
+        byte[] result = serializer.serializeToBytes(profile);
+        profile = (OidcProfile) serializer.unserializeFromBytes(result);
         assertNull(profile.getAccessToken());
         assertNull(profile.getIdTokenString());
         assertNull(profile.getRefreshToken());
