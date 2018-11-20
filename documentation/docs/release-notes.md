@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 - Added ability to create a composition of authorizers (conjunction or disjunction)
 - SAML SLO support with SOAP (ingoing only), HTTP-POST and HTTP-Redirect bindings
+- OpenID Connect improvements: supports multiple JWS algorithms from the identity server, retrieves the Keycloak roles
 
 **v3.3.0**:
 
