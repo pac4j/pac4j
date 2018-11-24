@@ -72,6 +72,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             oAuthBuilder.tryCreateFoursquareClient(clients);
             oAuthBuilder.tryCreateWindowsLiveClient(clients);
             oAuthBuilder.tryCreateLinkedInClient(clients);
+            oAuthBuilder.tryCreateOauth2Client(clients);
         }
         // pac4j-saml dependency required
         if (hasSaml2Clients()) {
@@ -171,6 +172,9 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             return true;
         }
         if (isNotBlank(getProperty(TWITTER_ID)) && isNotBlank(getProperty(TWITTER_SECRET))) {
+            return true;
+        }
+        if (isNotBlank(getProperty(OAUTH2_KEY)) && isNotBlank(getProperty(OAUTH2_SECRET))) {
             return true;
         }
         return false;

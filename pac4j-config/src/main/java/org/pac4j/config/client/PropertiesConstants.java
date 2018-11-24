@@ -40,6 +40,9 @@ public interface PropertiesConstants {
     String GOOGLE_SECRET = "google.secret";
     String GOOGLE_SCOPE = "google.scope";
 
+    String OAUTH2_KEY = "oauth2.key";
+    String OAUTH2_SECRET = "oauth2.secret";
+
     String AUTHENTICATOR_TEST_TOKEN = "testToken";
     String AUTHENTICATOR_TEST_USERNAME_PASSWORD = "testUsernamePassword";
 

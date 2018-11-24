@@ -121,4 +121,15 @@ public class OAuthBuilder extends AbstractBuilder {
             clients.add(twitterClient);
         }
     }
+
+    public void tryCreateOauth2Client(final List<Client> clients) {
+        final String key = getProperty(OAUTH2_KEY);
+        final String secret = getProperty(OAUTH2_SECRET);
+        if (isNotBlank(key) && isNotBlank(secret)) {
+            final OAuth20Client oAuth20Client = new OAuth20Client();
+            oAuth20Client.setKey(key);
+            oAuth20Client.setSecret(secret);
+            clients.add(oAuth20Client);
+        }
+    }
 }
