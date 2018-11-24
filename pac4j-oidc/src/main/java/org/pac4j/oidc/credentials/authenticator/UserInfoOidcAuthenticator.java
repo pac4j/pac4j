@@ -4,6 +4,8 @@ import static java.util.Optional.ofNullable;
 
 import java.io.IOException;
 
+import javax.naming.AuthenticationException;
+
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -65,7 +67,7 @@ public class UserInfoOidcAuthenticator implements Authenticator<TokenCredentials
             if (userInfoResponse instanceof UserInfoErrorResponse) {
                 logger.error("Bad User Info response, error={}",
                     ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
-                return null;
+                throw new AuthenticationException();
             } else {
                 final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                 final JWTClaimsSet userInfoClaimsSet;
@@ -76,7 +78,7 @@ public class UserInfoOidcAuthenticator implements Authenticator<TokenCredentials
                 }
                 return userInfoClaimsSet;
             }
-        } catch (IOException | ParseException | java.text.ParseException e) {
+        } catch (IOException | ParseException | java.text.ParseException | AuthenticationException e) {
             throw new TechnicalException(e);
         }
     }
