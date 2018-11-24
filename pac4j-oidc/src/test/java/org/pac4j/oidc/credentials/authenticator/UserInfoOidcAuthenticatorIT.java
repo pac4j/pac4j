@@ -30,10 +30,10 @@ public class UserInfoOidcAuthenticatorIT implements TestsConstants {
     public static void setUp() {
         final WebServer webServer = new WebServer(PORT)
             .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json",
-                String.format("{\n" +
-                    "    \"sub\": \"%s\",\n" +
-                    "    \"name\": \"%s\",\n" +
-                    "    \"preferred_username\": \"%s\"\n" +
+                String.format("{%n" +
+                    "    \"sub\": \"%s\",%n" +
+                    "    \"name\": \"%s\",%n" +
+                    "    \"preferred_username\": \"%s\"%n" +
                     "}", ID, GOOD_USERNAME, USERNAME)))
             .defineResponse("notfound", new ServerResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found"));
         webServer.start();
