@@ -21,7 +21,12 @@ import org.pac4j.oidc.profile.OidcProfile;
 
 import fi.iki.elonen.NanoHTTPD;
 
-
+/**
+ * Tests {@link UserInfoOidcAuthenticator}.
+ *
+ * @author Rakesh Sarangi
+ * @since 3.5.0
+ */
 public class UserInfoOidcAuthenticatorIT implements TestsConstants {
 
     private static final int PORT = 8088;

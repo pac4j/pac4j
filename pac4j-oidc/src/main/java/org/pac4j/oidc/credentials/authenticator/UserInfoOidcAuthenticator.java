@@ -27,6 +27,12 @@ import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 
+/**
+ * The OpenId Connect authenticator by user info.
+ *
+ * @author Rakesh Sarangi
+ * @since 3.5.0
+ */
 public class UserInfoOidcAuthenticator implements Authenticator<TokenCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(UserInfoOidcAuthenticator.class);
