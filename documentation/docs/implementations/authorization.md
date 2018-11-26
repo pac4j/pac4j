@@ -91,6 +91,11 @@ title: Implementations comparison for the authorization checks&#58;
         <td></td>
     </tr>
     <tr>
+        <td>lagom-pac4j</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
         <td>Knox</td>
         <td></td>
         <td></td>

@@ -121,6 +121,13 @@ title: Implementations comparison for the profile management&#58;
         <td></td>
     </tr>
     <tr>
+        <td>lagom-pac4j</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
         <td>Knox</td>
         <td></td>
         <td></td>
