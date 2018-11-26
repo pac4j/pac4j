@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.5.0**:
+
+- Added `UserInfoOidcAuthenticator` to authenticate a user based on access token received from an OIDC authenticator
+
+
 **v3.4.0**:
 
 - Added ability to create a composition of authorizers (conjunction or disjunction)
