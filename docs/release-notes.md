@@ -5,7 +5,7 @@ title: Release notes&#58;
 
 **v3.5.0**:
 
-- Added `UserInfoOidcAuthenticator` to authenticate a user based on access token received from an OIDC authenticator
+- Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
 
 
 **v3.4.0**:
