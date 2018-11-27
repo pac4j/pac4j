@@ -18,7 +18,9 @@ public interface LogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param key the key
      */
-    void recordSession(C context, String key);
+    default void recordSession(C context, String key) {
+        // do nothing by default
+    }
 
     /**
      * Destroys the current web session for the given key for a front channel logout.
@@ -26,7 +28,9 @@ public interface LogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param key the key
      */
-    void destroySessionFront(C context, String key);
+    default void destroySessionFront(C context, String key) {
+        // do nothing by default
+    }
 
     /**
      * Destroys the current web session for the given key for a back channel logout.
@@ -34,7 +38,9 @@ public interface LogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param key the key
      */
-    void destroySessionBack(C context, String key);
+    default void destroySessionBack(C context, String key) {
+        // do nothing by default
+    }
 
     /**
      * Renew the web session.
@@ -42,5 +48,7 @@ public interface LogoutHandler<C extends WebContext> {
      * @param oldSessionId the old session identifier
      * @param context the web context
      */
-    void renewSession(String oldSessionId, C context);
+    default void renewSession(String oldSessionId, C context) {
+        // do nothing by default
+    }
 }
