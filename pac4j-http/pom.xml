@@ -12,10 +12,6 @@
     <packaging>jar</packaging>
     <name>pac4j for HTTP protocol</name>
 
-    <properties>
-        <nanohttpd.version>2.3.1</nanohttpd.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
