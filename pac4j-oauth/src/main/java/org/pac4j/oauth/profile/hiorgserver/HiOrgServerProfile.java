@@ -62,4 +62,12 @@ public class HiOrgServerProfile extends OAuth20Profile {
         return getAttribute(HiOrgServerProfileDefinition.LEADER, Boolean.class);
     }
 
+    /**
+     * @return An identifier to uniquely identify a HiOrg-Server user consisting
+     * of the username and the organisation id.
+     */
+    public String getUsernameAtOrganisation() {
+        return getUsername() + "@" + getOrganisationId();
+    }
+
 }
