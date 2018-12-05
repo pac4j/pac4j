@@ -24,7 +24,7 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
     public static final String NAME = "name";
     public static final String FIRST_NAME = "vorname";
     public static final String FULL_NAME = "fullname";
-    public static final String GROUP = "gruppe";
+    public static final String ROLES = "gruppe";
     public static final String LEADER = "leitung";
     public static final String POSITION = "funktion";
     public static final String ORGANISATION_ID = "orga";
@@ -41,7 +41,7 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         primary(NAME, Converters.STRING);
         primary(FIRST_NAME, Converters.STRING);
         primary(FULL_NAME, Converters.STRING);
-        primary(GROUP, Converters.INTEGER);
+        primary(ROLES, Converters.INTEGER);
         primary(LEADER, Converters.BOOLEAN);
         primary(POSITION, Converters.STRING);
         primary(ORGANISATION_ID, Converters.STRING);

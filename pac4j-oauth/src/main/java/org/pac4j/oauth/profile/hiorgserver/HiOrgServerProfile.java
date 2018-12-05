@@ -34,7 +34,7 @@ public class HiOrgServerProfile extends OAuth20Profile {
     }
 
     public int getRolesAsInteger() {
-        Integer rolesAsInt = getAttribute(HiOrgServerProfileDefinition.GROUP, Integer.class);
+        Integer rolesAsInt = getAttribute(HiOrgServerProfileDefinition.ROLES, Integer.class);
         if (rolesAsInt != null) {
             return rolesAsInt;
         } else {
@@ -42,8 +42,8 @@ public class HiOrgServerProfile extends OAuth20Profile {
         }
     }
 
-    public boolean hasRole(int groupId) {
-        return (getRolesAsInteger() & groupId) == groupId;
+    public boolean hasRole(int roleId) {
+        return (getRolesAsInteger() & roleId) == roleId;
     }
 
     public String getOrganisationId() {
@@ -64,10 +64,11 @@ public class HiOrgServerProfile extends OAuth20Profile {
 
     /** An alternative identifier to uniquely identify a HiOrg-Server user.
      * 
-     * @return username and the organisation id, joined by an at-sign
+     * @return username and the organisation id, joined by an at-sign, lowercase
      */
     public String getAlternativeId() {
-        return getUsername() + "@" + getOrganisationId();
+        String alternativeId = getUsername() + "@" + getOrganisationId();
+        return alternativeId.toLowerCase();
     }
     
     /**
