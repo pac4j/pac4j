@@ -62,12 +62,21 @@ public class HiOrgServerProfile extends OAuth20Profile {
         return getAttribute(HiOrgServerProfileDefinition.LEADER, Boolean.class);
     }
 
-    /**
-     * @return An identifier to uniquely identify a HiOrg-Server user consisting
-     * of the username and the organisation id.
+    /** An alternative identifier to uniquely identify a HiOrg-Server user.
+     * 
+     * @return username and the organisation id, joined by an at-sign
      */
-    public String getUsernameAtOrganisation() {
+    public String getAlternativeId() {
         return getUsername() + "@" + getOrganisationId();
+    }
+    
+    /**
+     * A alternative, typed identifier based on {@link #getAlternativeId()}.
+     * 
+     * @return the class name and {@link #getAlternativeId()}, joined by the seperator constant
+     */
+    public String getTypedAlternativeId() {
+        return this.getClass().getName() + SEPARATOR + getAlternativeId();
     }
 
 }

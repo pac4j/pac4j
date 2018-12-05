@@ -30,7 +30,8 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
     public static final String ORGANISATION_ID = "orga";
     public static final String ORGANISATION_NAME = "organisation";
 
-    public static final String USERNAME_AT_ORGANISATION = "username_at_orga";
+    public static final String ALTERNATIVE_ID = "alt_user_id";
+    public static final String TYPED_ALTERNATIVE_ID = "typed_alt_user_id";
 
     protected static final String BASE_URL = "https://www.hiorg-server.de/api/oauth2/v1/user.php";
     
@@ -45,7 +46,8 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         primary(POSITION, Converters.STRING);
         primary(ORGANISATION_ID, Converters.STRING);
         primary(ORGANISATION_NAME, Converters.STRING);
-        secondary(USERNAME_AT_ORGANISATION, Converters.STRING);
+        secondary(ALTERNATIVE_ID, Converters.STRING);
+        secondary(TYPED_ALTERNATIVE_ID, Converters.STRING);
     }
     
     @Override
@@ -64,7 +66,8 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             // Secondary attributes are generated from primary attributes
-            convertAndAdd(profile, PROFILE_ATTRIBUTE, USERNAME_AT_ORGANISATION, profile.getUsernameAtOrganisation());
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, ALTERNATIVE_ID, profile.getAlternativeId());
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, TYPED_ALTERNATIVE_ID, profile.getTypedAlternativeId());
         } else {
             raiseProfileExtractionJsonError(body);
         }
