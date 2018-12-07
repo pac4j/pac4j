@@ -34,9 +34,12 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
             final JWT jwt = SignedJWT.parse(profile.getAccessToken().getValue());
             final JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
 
-            final JSONArray realmRolesJsonArray = (JSONArray) jwtClaimsSet.getJSONObjectClaim("realm_access").get("roles");
-            if (realmRolesJsonArray != null) {
-                realmRolesJsonArray.forEach(role -> profile.addRole((String) role));
+            final JSONObject realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
+            if (realmRolesJsonObject != null) {
+                final JSONArray realmRolesJsonArray = (JSONArray)  realmRolesJsonObject.get("roles");
+                if (realmRolesJsonArray != null) {
+                    realmRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                }
             }
 
             if (clientId != null) {
