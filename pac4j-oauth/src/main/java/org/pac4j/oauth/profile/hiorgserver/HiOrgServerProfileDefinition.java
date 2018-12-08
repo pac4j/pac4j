@@ -24,12 +24,15 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
     public static final String NAME = "name";
     public static final String FIRST_NAME = "vorname";
     public static final String FULL_NAME = "fullname";
-    public static final String GROUP = "gruppe";
+    public static final String ROLES = "gruppe";
     public static final String LEADER = "leitung";
     public static final String POSITION = "funktion";
     public static final String ORGANISATION_ID = "orga";
     public static final String ORGANISATION_NAME = "organisation";
-    
+
+    public static final String ALTERNATIVE_ID = "alt_user_id";
+    public static final String TYPED_ALTERNATIVE_ID = "typed_alt_user_id";
+
     protected static final String BASE_URL = "https://www.hiorg-server.de/api/oauth2/v1/user.php";
     
     public HiOrgServerProfileDefinition() {
@@ -38,11 +41,13 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         primary(NAME, Converters.STRING);
         primary(FIRST_NAME, Converters.STRING);
         primary(FULL_NAME, Converters.STRING);
-        primary(GROUP, Converters.INTEGER);
+        primary(ROLES, Converters.INTEGER);
         primary(LEADER, Converters.BOOLEAN);
         primary(POSITION, Converters.STRING);
         primary(ORGANISATION_ID, Converters.STRING);
         primary(ORGANISATION_NAME, Converters.STRING);
+        secondary(ALTERNATIVE_ID, Converters.STRING);
+        secondary(TYPED_ALTERNATIVE_ID, Converters.STRING);
     }
     
     @Override
@@ -60,6 +65,9 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
+            // Secondary attributes are generated from primary attributes
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, ALTERNATIVE_ID, profile.getAlternativeId());
+            convertAndAdd(profile, PROFILE_ATTRIBUTE, TYPED_ALTERNATIVE_ID, profile.getTypedAlternativeId());
         } else {
             raiseProfileExtractionJsonError(body);
         }
