@@ -56,16 +56,6 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
         this.withState = withState;
     }
 
-    @Deprecated
-    public String getStateData() {
-        return ((StaticOrRandomStateGenerator) stateGenerator).getStateData();
-    }
-
-    @Deprecated
-    public void setStateData(final String stateData) {
-        ((StaticOrRandomStateGenerator) stateGenerator).setStateData(stateData);
-    }
-
     public StateGenerator getStateGenerator() {
         return stateGenerator;
     }

@@ -415,26 +415,6 @@ public class SAML2Configuration extends InitializableObject {
         this.comparisonType = comparisonType;
     }
 
-    /**
-     * Use {@link #getAuthnRequestBindingType()}.
-     *
-     * @return the authn request binding type
-     */
-    @Deprecated
-    public String getDestinationBindingType() {
-        return getAuthnRequestBindingType();
-    }
-
-    /**
-     * Use {@link #setAuthnRequestBindingType(String)}.
-     *
-     * @param destinationBindingType the authn request binding type
-     */
-    @Deprecated
-    public void setDestinationBindingType(final String destinationBindingType) {
-        setAuthnRequestBindingType(destinationBindingType);
-    }
-
     public String getAuthnRequestBindingType() {
         return authnRequestBindingType;
     }
