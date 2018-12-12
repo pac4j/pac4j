@@ -50,7 +50,7 @@ public interface PropertiesConstants {
     String SAML_MAXIMUM_AUTHENTICATION_LIFETIME = "saml.maximumAuthenticationLifetime";
     String SAML_SERVICE_PROVIDER_ENTITY_ID = "saml.serviceProviderEntityId";
     String SAML_SERVICE_PROVIDER_METADATA_PATH = "saml.serviceProviderMetadataPath";
-    String SAML_DESTINATION_BINDING_TYPE = "saml.destinationBindingType";
+    String SAML_AUTHN_REQUEST_BINDING_TYPE = "saml.authnRequestBindingType";
     String SAML_KEYSTORE_ALIAS = "saml.keystoreAlias";
 
     String CAS_LOGIN_URL = "cas.loginUrl";

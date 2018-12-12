@@ -70,9 +70,6 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         final SAML2Credentials.SAMLNameID nameId = credentials.getNameId();
         profile.setId(nameId.getValue());
 
-        // @Deprecated: the session index is an authentication attribute, not a user one: to be removed
-        profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
-
         profile.addAuthenticationAttribute(SESSION_INDEX, credentials.getSessionIndex());
         profile.addAuthenticationAttribute(SAML_NAME_ID_FORMAT, nameId.getFormat());
         profile.addAuthenticationAttribute(SAML_NAME_ID_NAME_QUALIFIER, nameId.getNameQualifier());
