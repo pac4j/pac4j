@@ -16,19 +16,14 @@ import java.util.function.Function;
  */
 public class ProfileManagerFactoryAware<C extends WebContext> {
 
-    private final Function<C, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY = webContext -> new ProfileManager(webContext);
+    private static final Function<WebContext, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY = webContext -> new ProfileManager(webContext);
 
-    private final BiFunction<C, SessionStore<C>, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY2 =
+    private static final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY2 =
         (webContext, sessionStore)-> new ProfileManager(webContext, sessionStore);
 
     private Function<C, ProfileManager> profileManagerFactory;
 
     private BiFunction<C, SessionStore<C>, ProfileManager> profileManagerFactory2;
-
-    @Deprecated
-    protected ProfileManager getProfileManager(final C context, final Config config) {
-        return getProfileManager(context);
-    }
 
     protected ProfileManager getProfileManager(final C context) {
         if (profileManagerFactory != null) {
@@ -46,7 +41,7 @@ public class ProfileManagerFactoryAware<C extends WebContext> {
         } else if (Config.getProfileManagerFactory2() != null) {
             return Config.getProfileManagerFactory2().apply(context, sessionStore);
         } else {
-            return DEFAULT_PROFILE_MANAGER_FACTORY2.apply(context, sessionStore);
+            return DEFAULT_PROFILE_MANAGER_FACTORY2.apply(context, (SessionStore<WebContext>) sessionStore);
         }
     }
 

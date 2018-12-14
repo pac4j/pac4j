@@ -12,6 +12,8 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,12 +22,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * The default configuration with clients, authorizers and matchers.
+ * The default configuration with clients, authorizers, matchers, etc.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
 public class Config {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
     private static Function<WebContext, ProfileManager> profileManagerFactory;
     private static BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2;
@@ -193,12 +197,15 @@ public class Config {
         return profileManagerFactory;
     }
 
-    public static void setProfileManagerFactory(final Function<WebContext, ProfileManager> profileManagerFactory) {
+    public static void setProfileManagerFactory(final String name, final Function<WebContext, ProfileManager> profileManagerFactory) {
+        CommonHelper.assertNotNull("profileManagerFactory", profileManagerFactory);
+        LOGGER.info("Setting Config.profileManagerFactory: {}", name);
         Config.profileManagerFactory = profileManagerFactory;
     }
 
-    public static void defaultProfileManagerFactory(final Function<WebContext, ProfileManager> profileManagerFactory) {
+    public static void defaultProfileManagerFactory(final String name, final Function<WebContext, ProfileManager> profileManagerFactory) {
         if (Config.profileManagerFactory == null) {
+            LOGGER.info("Setting default Config.profileManagerFactory: {}", name);
             Config.profileManagerFactory = profileManagerFactory;
         }
     }
@@ -207,12 +214,15 @@ public class Config {
         return profileManagerFactory2;
     }
 
-    public static void setProfileManagerFactory2(final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+    public static void setProfileManagerFactory2(final String name, final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+        CommonHelper.assertNotNull("profileManagerFactory2", profileManagerFactory2);
+        LOGGER.info("Setting Config.profileManagerFactory2: {}", name);
         Config.profileManagerFactory2 = profileManagerFactory2;
     }
 
-    public static void defaultProfileManagerFactory2(final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+    public static void defaultProfileManagerFactory2(final String name, final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
         if (Config.profileManagerFactory2 == null) {
+            LOGGER.info("Setting default Config.profileManagerFactory2: {}", name);
             Config.profileManagerFactory2 = profileManagerFactory2;
         }
     }
