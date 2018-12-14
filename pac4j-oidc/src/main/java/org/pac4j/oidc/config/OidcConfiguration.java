@@ -316,16 +316,6 @@ public class OidcConfiguration extends InitializableObject {
         this.withState = withState;
     }
 
-    @Deprecated
-    public String getStateData() {
-        return ((StaticOrRandomStateGenerator) stateGenerator).getStateData();
-    }
-
-    @Deprecated
-    public void setStateData(final String stateData) {
-        ((StaticOrRandomStateGenerator) stateGenerator).setStateData(stateData);
-    }
-
     public boolean isExpireSessionWithToken() {
         return expireSessionWithToken;
     }

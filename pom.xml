@@ -12,7 +12,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>3.4.0-SNAPSHOT</version>
+	<version>4.0.0-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -74,9 +74,10 @@
         <h2.version>1.4.196</h2.version>
 		<java.version>1.8</java.version>
         <jackson.version>2.9.5</jackson.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
+        <nanohttpd.version>2.3.1</nanohttpd.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -194,6 +195,12 @@
                 <version>${project.version}</version>
                 <type>test-jar</type>
             </dependency>
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-http</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -234,6 +241,11 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.nanohttpd</groupId>
+                <artifactId>nanohttpd</artifactId>
+                <version>${nanohttpd.version}</version>
             </dependency>
 			<!-- for testing -->
 		</dependencies>

@@ -5,7 +5,7 @@ title: OpenID Connect
 
 *pac4j* allows you to login using the OpenID Connect protocol v1.0.
 
-It has been tested with various OpenID Connect providers: Google, AzureAD, Okta, IdentityServer3 (and 4), MitreID, Keycloak…
+It has been tested with various OpenID Connect providers: Google, AzureAD, Okta, IdentityServer3 (and 4), MitreID, Keycloak 4.6...
 
 ## 1) Dependency
 
@@ -23,7 +23,11 @@ You need to use the following module: `pac4j-oidc`.
 
 ## 2) Clients
 
+#### Indirect clients
+
 For any OpenID Connect identity provider, you should use the generic [OidcClient](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/OidcClient.java) (or one of its subclasses) and the [`OidcConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/config/OidcConfiguration.java) to define the appropriate configuration.
+
+Note:  *[OidcClient](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/OidcClient.java) can be used only for indirect clients (web browser based authentication)*
 
 Before *pac4j* v1.9.2, the configuration was directly set at the client level.
 
@@ -76,6 +80,23 @@ You can request to use the `nonce` parameter to reinforce security via:
 ```java
 config.setUseNonce(true);
 ```
+
+#### Direct clients
+
+For direct clients (web services), you can get the `access token` from any OpenID Connect identity provider and use that in your request to get the user profile.
+
+For that, the [HeaderClient](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/HeaderClient.java) would be appropriate, along with the [UserInfoOidcAuthenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/credentials/authenticator/UserInfoOidcAuthenticator.java).
+
+```java
+OidcConfiguration config = new OidcConfiguration();
+config.setClientId(clientId);
+config.setSecret(secret);
+config.setDiscoveryURI(discoveryUri);
+UserInfoOidcAuthenticator authenticator = new UserInfoOidcAuthenticator(config);
+HeaderClient client = new HeaderClient("Authorization", "Bearer ", authenticator);
+```
+
+The request to the server should have an `Authorization` header with the value as `Bearer {access token}`.
 
 ## 3) Advanced configuration
 

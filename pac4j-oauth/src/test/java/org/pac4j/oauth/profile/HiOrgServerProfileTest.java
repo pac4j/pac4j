@@ -18,7 +18,7 @@ public class HiOrgServerProfileTest {
     public void testGetRoles() {
         int rolesAsInt = 1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256 + 512 + 1024;
         String body = "{ \"" + HiOrgServerProfileDefinition.USER_ID + "\": 12345, \""
-                + HiOrgServerProfileDefinition.GROUP + "\": " + rolesAsInt + " }";
+                + HiOrgServerProfileDefinition.ROLES + "\": " + rolesAsInt + " }";
         final HiOrgServerProfileDefinition profileDefinition = new HiOrgServerProfileDefinition();
         final HiOrgServerProfile profile = profileDefinition.extractUserProfile(body);
         final Set<String> roles = profile.getRoles();

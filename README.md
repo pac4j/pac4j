@@ -23,7 +23,8 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 [CAS server](https://apereo.github.io/cas/5.3.x/integration/Delegate-Authentication.html)
 &bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j)
-&bull; [Dropwizard](https://github.com/evnm/dropwizard-pac4j)
+&bull; [Dropwizard](https://github.com/pac4j/dropwizard-pac4j)
+&bull; [Lagom](https://github.com/pac4j/lagom-pac4j)
 &bull; [Apache Knox](http://knox.apache.org/books/knox-1-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect)
 &bull; [Jooby](http://jooby.org/doc/pac4j)
 

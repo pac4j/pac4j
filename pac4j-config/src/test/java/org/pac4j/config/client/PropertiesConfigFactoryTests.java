@@ -55,7 +55,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(SAML_PRIVATE_KEY_PASSWORD, PASSWORD);
         properties.put(SAML_KEYSTORE_PATH, PATH);
         properties.put(SAML_IDENTITY_PROVIDER_METADATA_PATH, PATH);
-        properties.put(SAML_DESTINATION_BINDING_TYPE, SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+        properties.put(SAML_AUTHN_REQUEST_BINDING_TYPE, SAMLConstants.SAML2_REDIRECT_BINDING_URI);
         properties.put(SAML_KEYSTORE_ALIAS, VALUE);
         properties.put(OIDC_ID, ID);
         properties.put(OIDC_SECRET, SECRET);
@@ -137,7 +137,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
             assertNotNull(saml2client);
             final SAML2Configuration saml2Config = saml2client.getConfiguration();
-            assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2Config.getDestinationBindingType());
+            assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2Config.getAuthnRequestBindingType());
             assertEquals(VALUE, saml2Config.getKeyStoreAlias());
 
             final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");

@@ -93,6 +93,11 @@ When using dependency injection, the configuration can be defined via source cod
         <td><img src="/img/green_check.png" /></td>
     </tr>
     <tr>
+        <td>lagom-pac4j</td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /></td>
+    </tr>
+    <tr>
         <td>Knox</td>
         <td><img src="/img/green_check.png" /></td>
         <td><img src="/img/red_cross.png" /></td>

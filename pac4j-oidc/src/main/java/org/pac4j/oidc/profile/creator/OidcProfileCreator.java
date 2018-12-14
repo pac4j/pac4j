@@ -1,28 +1,23 @@
 package org.pac4j.oidc.profile.creator;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
-import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -31,8 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
 import java.util.Map;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -50,7 +43,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
     protected OidcConfiguration configuration;
 
-    protected IDTokenValidator idTokenValidator;
+    protected TokenValidator tokenValidator;
 
     public OidcProfileCreator(final OidcConfiguration configuration) {
         this.configuration = configuration;
@@ -60,49 +53,11 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
     protected void internalInit() {
         assertNotNull("configuration", configuration);
 
-        // check algorithms
-        final List<JWSAlgorithm> metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
-        CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
-            "There must at least one JWS algorithm supported on the OpenID Connect provider side");
-        JWSAlgorithm jwsAlgorithm;
-        final JWSAlgorithm preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
-        if (metadataAlgorithms.contains(preferredAlgorithm)) {
-            jwsAlgorithm = preferredAlgorithm;
-        } else {
-            jwsAlgorithm = metadataAlgorithms.get(0);
-            logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredAlgorithm, jwsAlgorithm);
+        if (tokenValidator == null) {
+            tokenValidator = new TokenValidator(configuration);
         }
-        if ("none".equals(jwsAlgorithm.getName())) {
-            jwsAlgorithm = null;
-        }
-
-        final ClientID _clientID = new ClientID(configuration.getClientId());
-        final Secret _secret = new Secret(configuration.getSecret());
-        // Init IDTokenVerifier
-        if (jwsAlgorithm == null) {
-            this.idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
-        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
-            JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
-            this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
-        } else {
-            this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
-        }
-        this.idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
 
         defaultProfileDefinition(new OidcProfileDefinition<>());
-    }
-
-    protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
-        try {
-            return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
-                    configuration.findProviderMetadata().getJWKSetURI().toURL(), configuration.findResourceRetriever());
-        } catch (final MalformedURLException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    protected IDTokenValidator createHMACTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID, final Secret secret) {
-        return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
     }
 
     @Override
@@ -126,7 +81,6 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
         try {
 
-            // check idToken
             final Nonce nonce;
             if (configuration.isUseNonce()) {
                 nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
@@ -134,7 +88,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
                 nonce = null;
             }
             // Check ID Token
-            final IDTokenClaimsSet claimsSet = this.idTokenValidator.validate(idToken, nonce);
+            final IDTokenClaimsSet claimsSet = this.tokenValidator.validate(idToken, nonce);
             assertNotNull("claimsSet", claimsSet);
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, claimsSet.getSubject()));
 
