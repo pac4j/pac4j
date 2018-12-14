@@ -205,8 +205,7 @@ public class Config {
 
     public static void defaultProfileManagerFactory(final String name, final Function<WebContext, ProfileManager> profileManagerFactory) {
         if (Config.profileManagerFactory == null) {
-            LOGGER.info("Setting default Config.profileManagerFactory: {}", name);
-            Config.profileManagerFactory = profileManagerFactory;
+            setProfileManagerFactory(name, profileManagerFactory);
         }
     }
 
@@ -224,8 +223,7 @@ public class Config {
     public static void defaultProfileManagerFactory2(final String name,
                                                      final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
         if (Config.profileManagerFactory2 == null) {
-            LOGGER.info("Setting default Config.profileManagerFactory2: {}", name);
-            Config.profileManagerFactory2 = profileManagerFactory2;
+            setProfileManagerFactory2(name, profileManagerFactory2);
         }
     }
 }
