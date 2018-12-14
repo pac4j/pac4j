@@ -118,7 +118,7 @@ By default, the profile manager is the [`ProfileMamager`](https://github.com/pac
 
 In some *pac4j* implementations, there are specific profile managers: `UndertowProfileManager`, `ShiroProfileManager`, etc.
 
-A custom profile manager can be set via two factories:
+A custom profile manager can be instantiated via two factories:
 
 - `setProfileManagerFactory(final Function<WebContext, ProfileManager> factory)`
 - `setProfileManagerFactory2(final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> factory)`.
