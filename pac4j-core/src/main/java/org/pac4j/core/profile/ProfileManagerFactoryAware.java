@@ -16,7 +16,8 @@ import java.util.function.Function;
  */
 public class ProfileManagerFactoryAware<C extends WebContext> {
 
-    private static final Function<WebContext, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY = webContext -> new ProfileManager(webContext);
+    private static final Function<WebContext, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY =
+        webContext -> new ProfileManager(webContext);
 
     private static final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY2 =
         (webContext, sessionStore)-> new ProfileManager(webContext, sessionStore);

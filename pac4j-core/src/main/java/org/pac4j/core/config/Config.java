@@ -214,13 +214,15 @@ public class Config {
         return profileManagerFactory2;
     }
 
-    public static void setProfileManagerFactory2(final String name, final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+    public static void setProfileManagerFactory2(final String name,
+                                                 final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
         CommonHelper.assertNotNull("profileManagerFactory2", profileManagerFactory2);
         LOGGER.info("Setting Config.profileManagerFactory2: {}", name);
         Config.profileManagerFactory2 = profileManagerFactory2;
     }
 
-    public static void defaultProfileManagerFactory2(final String name, final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+    public static void defaultProfileManagerFactory2(final String name,
+                                                     final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
         if (Config.profileManagerFactory2 == null) {
             LOGGER.info("Setting default Config.profileManagerFactory2: {}", name);
             Config.profileManagerFactory2 = profileManagerFactory2;
