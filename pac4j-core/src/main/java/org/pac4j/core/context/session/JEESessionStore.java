@@ -1,6 +1,6 @@
 package org.pac4j.core.context.session;
 
-import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.JEEContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,31 +11,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Store data in the J2E web session.
+ * Store data in the JEE web session.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class J2ESessionStore implements SessionStore<J2EContext> {
+public class JEESessionStore implements SessionStore<JEEContext> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected HttpSession getHttpSession(final J2EContext context) {
+    protected HttpSession getHttpSession(final JEEContext context) {
         return context.getRequest().getSession();
     }
 
     @Override
-    public String getOrCreateSessionId(final J2EContext context) {
+    public String getOrCreateSessionId(final JEEContext context) {
         return getHttpSession(context).getId();
     }
 
     @Override
-    public Object get(final J2EContext context, final String key) {
+    public Object get(final JEEContext context, final String key) {
         return getHttpSession(context).getAttribute(key);
     }
 
     @Override
-    public void set(final J2EContext context, final String key, final Object value) {
+    public void set(final JEEContext context, final String key, final Object value) {
         if (value == null) {
             getHttpSession(context).removeAttribute(key);
         } else {
@@ -44,27 +44,27 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
     }
 
     @Override
-    public boolean destroySession(final J2EContext context) {
+    public boolean destroySession(final JEEContext context) {
         getHttpSession(context).invalidate();
         return true;
     }
 
     @Override
-    public Object getTrackableSession(final J2EContext context) {
+    public Object getTrackableSession(final JEEContext context) {
         return getHttpSession(context);
     }
 
     @Override
-    public SessionStore<J2EContext> buildFromTrackableSession(final J2EContext context, final Object trackableSession) {
+    public SessionStore<JEEContext> buildFromTrackableSession(final JEEContext context, final Object trackableSession) {
         if (trackableSession != null) {
-            return new J2EProvidedSessionStore((HttpSession) trackableSession);
+            return new JEEProvidedSessionStore((HttpSession) trackableSession);
         } else {
             return null;
         }
     }
 
     @Override
-    public boolean renewSession(final J2EContext context) {
+    public boolean renewSession(final JEEContext context) {
         final HttpServletRequest request = context.getRequest();
         final HttpSession session = request.getSession();
         logger.debug("Discard old session: {}", session.getId());

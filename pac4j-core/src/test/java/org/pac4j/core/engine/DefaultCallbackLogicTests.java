@@ -9,7 +9,7 @@ import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -35,17 +35,17 @@ import static org.junit.Assert.assertTrue;
  */
 public final class DefaultCallbackLogicTests implements TestsConstants {
 
-    private DefaultCallbackLogic<Object, J2EContext> logic;
+    private DefaultCallbackLogic<Object, JEEContext> logic;
 
     protected MockHttpServletRequest request;
 
     protected MockHttpServletResponse response;
 
-    private J2EContext context;
+    private JEEContext context;
 
     private Config config;
 
-    private HttpActionAdapter<Object, J2EContext> httpActionAdapter;
+    private HttpActionAdapter<Object, JEEContext> httpActionAdapter;
 
     private String defaultUrl;
 
@@ -58,7 +58,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         logic = new DefaultCallbackLogic<>();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        context = new J2EContext(request, response);
+        context = new JEEContext(request, response);
         config = new Config();
         httpActionAdapter = (code, ctx) -> null;
         defaultUrl = null;
