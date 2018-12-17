@@ -36,7 +36,7 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 /**
- * Pac4j implementation extending directly the {@link AbstractMessageEncoder} as intermediate classes use the J2E HTTP response.
+ * Pac4j implementation extending directly the {@link AbstractMessageEncoder} as intermediate classes use the JEE HTTP response.
  * It's mostly a copy/paste of the source code of these intermediate opensaml classes.
  *
  * @author Misagh Moayyed

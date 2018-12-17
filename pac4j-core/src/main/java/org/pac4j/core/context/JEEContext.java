@@ -1,6 +1,6 @@
 package org.pac4j.core.context;
 
-import org.pac4j.core.context.session.J2ESessionStore;
+import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -14,43 +14,43 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
- * This implementation uses the J2E {@link HttpServletRequest} and {@link HttpServletResponse}.
+ * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
  *
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class J2EContext implements WebContext {
+public class JEEContext implements WebContext {
 
     private final HttpServletRequest request;
 
     private final HttpServletResponse response;
 
-    private SessionStore<J2EContext> sessionStore;
+    private SessionStore<JEEContext> sessionStore;
 
     /**
-     * Build a J2E context from the current HTTP request and response.
+     * Build a JEE context from the current HTTP request and response.
      *
      * @param request  the current request
      * @param response the current response
      */
-    public J2EContext(final HttpServletRequest request, final HttpServletResponse response) {
-        this(request, response, new J2ESessionStore());
+    public JEEContext(final HttpServletRequest request, final HttpServletResponse response) {
+        this(request, response, new JEESessionStore());
     }
 
     /**
-     * Build a J2E context from the current HTTP request and response.
+     * Build a JEE context from the current HTTP request and response.
      *
      * @param request      the current request
      * @param response     the current response
      * @param sessionStore the session store to use
      */
-    public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
+    public JEEContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<JEEContext> sessionStore) {
         CommonHelper.assertNotNull("request", request);
         CommonHelper.assertNotNull("response", response);
         this.request = request;
         this.response = response;
         if (sessionStore == null) {
-            this.sessionStore = new J2ESessionStore();
+            this.sessionStore = new JEESessionStore();
         } else {
             this.sessionStore = sessionStore;
         }

@@ -14,12 +14,12 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 /**
- * Tests {@link J2EContext}.
+ * Tests {@link JEEContext}.
  *
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public final class J2EContextTest implements TestsConstants {
+public final class JEEContextTest implements TestsConstants {
 
     private HttpServletRequest request;
 
@@ -46,7 +46,7 @@ public final class J2EContextTest implements TestsConstants {
         headerNames.add(KEY);
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(headerNames));
         when(request.getHeader(KEY)).thenReturn(VALUE);
-        final J2EContext context = new J2EContext(request, response);
+        final JEEContext context = new JEEContext(request, response);
         assertEquals(VALUE, context.getRequestHeader(key));
     }
 }
