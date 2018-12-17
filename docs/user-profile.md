@@ -109,3 +109,18 @@ In fact, most clients never return a `CommonProfile`, but specific profiles like
 
 Each user profile may have a linked identifier, it's the identifier of another user profile. This way, both user profiles are linked and it allows you to authenticate via an account for a user
 and load the linked user defined in the first user, especially by using the [`LoadLinkedUserAuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/LoadLinkedUserAuthorizationGenerator.java).
+
+## 11) Profile manager
+
+The profile manager is meant to deal with the user profile: it can be used to save or restore it.
+
+By default, the profile manager is the [`ProfileMamager`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileManager.java) component.
+
+In some *pac4j* implementations, there are specific profile managers: `UndertowProfileManager`, `ShiroProfileManager`, etc.
+
+A custom profile manager can be instantiated via two factories:
+
+- `setProfileManagerFactory(final Function<WebContext, ProfileManager> factory)`
+- `setProfileManagerFactory2(final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> factory)`.
+
+It can be set at a components level (like for the logics) or at the `Config` level.

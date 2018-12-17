@@ -26,7 +26,7 @@ td {
 }
 </style>
 
-_pac4j_ is a security engine for Java which supports authentication/authorization and is available for many frameworks: J2E, Play, Vertx, Spring Security, Shiro and Ratpack to name only a few.
+_pac4j_ is a security engine for Java which supports authentication/authorization and is available for many frameworks: JEE, Play, Vertx, Spring Security, Shiro and Ratpack to name only a few.
 
 Regarding authentication, one very common use case is to have a user authenticating via a browser (Facebook login for example) and then turn his identity into something usable for calling web services.
 This could be an opaque string, but it requires checking the value to get the identity user.

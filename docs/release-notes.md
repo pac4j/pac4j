@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 **v4.0.0**:
 
+- Improved the profile manager configuration
+- Renamed `J2E` components as `JEE`
+
 
 **v3.5.0**:
 

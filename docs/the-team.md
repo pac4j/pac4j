@@ -7,7 +7,7 @@ title: The Team
 
 <div class="bio">
     <div><a href="https://github.com/leleuj"><img src="https://avatars3.githubusercontent.com/u/1038508?s=100" /></a></div>
-    <div><i>Jérôme Leleu</i><br />&#9656; Project leader, core committer, maintainer of many pac4j implementations: J2E, Spring MVC, Shiro, Spring Security, Play...</div>
+    <div><i>Jérôme Leleu</i><br />&#9656; Project leader, core committer, maintainer of many pac4j implementations: JEE, Spring MVC, Shiro, Spring Security, Play...</div>
 </div>
 <div class="clear"></div>
 
