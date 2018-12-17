@@ -1,6 +1,5 @@
 package org.pac4j.saml.credentials.authenticator;
 
-import org.apache.commons.lang.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -84,7 +83,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
             final List<String> values = attribute.getAttributeValues();
             if (!values.isEmpty()) {
-                if (StringUtils.isNotBlank(attributeAsId)
+                if (CommonHelper.isNotBlank(attributeAsId)
                     && (attributeAsId.equalsIgnoreCase(name) || attributeAsId.equalsIgnoreCase(friendlyName))) {
                     if (values.size() == 1) {
                         profile.setId(values.get(0));

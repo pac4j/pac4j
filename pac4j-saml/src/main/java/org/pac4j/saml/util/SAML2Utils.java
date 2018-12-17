@@ -3,8 +3,8 @@ package org.pac4j.saml.util;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public final class SAML2Utils implements HttpConstants {
     }
 
     public static String generateID() {
-        return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
+        return "_".concat(CommonHelper.randomString(39)).toLowerCase();
     }
 
     /**
