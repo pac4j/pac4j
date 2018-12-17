@@ -156,7 +156,7 @@ public interface WebContext {
     void addResponseCookie(Cookie cookie);
 
     /**
-     * Get the "servlet path" (in a J2E style).
+     * Get the "servlet path" (in a JEE style).
      *
      * @return the "servlet path"
      * @since 1.8.1

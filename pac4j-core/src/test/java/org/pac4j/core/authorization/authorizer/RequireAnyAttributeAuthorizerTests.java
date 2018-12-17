@@ -3,7 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
  */
 public final class RequireAnyAttributeAuthorizerTests {
 
-    private final J2EContext context = new J2EContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
+    private final JEEContext context = new JEEContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
 
     private List<CommonProfile> profiles;
 

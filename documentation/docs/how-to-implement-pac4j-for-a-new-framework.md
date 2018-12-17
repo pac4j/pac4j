@@ -42,7 +42,7 @@ To secure your Java web application, **the reference implementation is to create
 
 In your framework, you will need to create:
 
-1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for J2E environment where you can already use the existing `J2EContext`.
+1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for JEE environment where you can already use the existing `JEEContext`.
 Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session management
 
 2) optionally a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
@@ -62,7 +62,7 @@ The logic to secure an URL is defined by the `SecurityLogic` interface and its d
 
 **Examples**:
 
-- In J2E:
+- In JEE:
 
 ```java
     @Override
@@ -119,7 +119,7 @@ In your framework, you must define the appropriate "controller" to reply to an H
 
 **Examples**:
 
-- In J2E:
+- In JEE:
 
 ```java
     @Override
@@ -164,14 +164,14 @@ In your framework, you must define the appropriate "controller" to reply to an H
 
 **Examples**:
 
-- In J2E:
+- In JEE:
 
 ```java
     @Override
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException {
 
-        assertNotNull("applicationLogoutLogic", logoutLogic);
+        assertNotNull("logoutLogic", logoutLogic);
 
         final Config config = getConfig();
         assertNotNull("config", config);

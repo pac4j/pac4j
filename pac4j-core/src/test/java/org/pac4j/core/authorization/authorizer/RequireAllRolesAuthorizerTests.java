@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public final class RequireAllRolesAuthorizerTests {
     private static final String ROLE2 = "role2";
     private static final String ROLE3 = "role3";
 
-    private final J2EContext context = new J2EContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
+    private final JEEContext context = new JEEContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
 
     private List<CommonProfile> profiles;
 
