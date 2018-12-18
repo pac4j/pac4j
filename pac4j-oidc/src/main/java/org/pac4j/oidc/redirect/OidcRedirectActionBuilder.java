@@ -13,7 +13,9 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,14 +65,14 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
 
     @Override
     public RedirectAction redirect(final WebContext context) {
-        final Map<String, String> params = buildParams();
+        final Map<String, List<String>> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
-        params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
+        params.put(OidcConfiguration.REDIRECT_URI, Collections.singletonList(computedCallbackUrl));
 
         addStateAndNonceParameters(context, params);
 
         if (configuration.getMaxAge() != null) {
-            params.put(OidcConfiguration.MAX_AGE, configuration.getMaxAge().toString());
+            params.put(OidcConfiguration.MAX_AGE, Collections.singletonList(configuration.getMaxAge().toString()));
         }
 
         final String location = buildAuthenticationRequestUrl(params);
@@ -79,11 +81,13 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         return RedirectAction.redirect(location);
     }
 
-    protected Map<String, String> buildParams() {
-        return new HashMap<>(this.authParams);
+    protected Map<String, List<String>> buildParams() {
+        final Map<String, List<String>> map = new HashMap<>();
+        this.authParams.forEach((key, value) -> map.put(key, Collections.singletonList(value)));
+        return map;
     }
 
-    protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
+    protected void addStateAndNonceParameters(final WebContext context, final Map<String, List<String>> params) {
         // Init state for CSRF mitigation
         final State state;
         if (configuration.isWithState()) {
@@ -91,17 +95,17 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         } else {
             state = new State();
         }
-        params.put(OidcConfiguration.STATE, state.getValue());
+        params.put(OidcConfiguration.STATE, Collections.singletonList(state.getValue()));
         context.getSessionStore().set(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE, state);
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             final Nonce nonce = new Nonce();
-            params.put(OidcConfiguration.NONCE, nonce.getValue());
+            params.put(OidcConfiguration.NONCE, Collections.singletonList(nonce.getValue()));
             context.getSessionStore().set(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE, nonce.getValue());
         }
     }
 
-    protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
+    protected String buildAuthenticationRequestUrl(final Map<String, List<String>> params) {
         // Build authentication request query string
         final String queryString;
         try {
