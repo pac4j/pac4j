@@ -7,12 +7,12 @@ title: Release notes&#58;
 
 - Improved the profile manager configuration
 - Renamed `J2E` components as `JEE`
+- Updated the OpenID Connect/JWT dependencies
 
 
 **v3.5.0**:
 
 - Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
-
 
 **v3.4.0**:
 

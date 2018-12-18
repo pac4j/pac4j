@@ -7,14 +7,10 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.jwt.config.AbstractKeyEncryptionConfigurationTests;
 import org.pac4j.jwt.util.JWKHelper;
 
-import java.io.UnsupportedEncodingException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -26,19 +22,14 @@ import static org.junit.Assert.assertTrue;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public final class RSASignatureConfigurationTests implements TestsConstants {
+public final class RSASignatureConfigurationTests extends AbstractKeyEncryptionConfigurationTests {
 
     private JWTClaimsSet buildClaims() {
         return new JWTClaimsSet.Builder().subject(VALUE).build();
     }
 
-    private KeyPair buildKeyPair() {
-        try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            return keyGen.generateKeyPair();
-        } catch (final NoSuchAlgorithmException e) {
-            throw new TechnicalException(e);
-        }
+    protected String getAlgorithm() {
+        return "RSA";
     }
 
     @Test
@@ -69,7 +60,7 @@ public final class RSASignatureConfigurationTests implements TestsConstants {
     }
 
     @Test
-    public void buildFromJwk() throws UnsupportedEncodingException {
+    public void buildFromJwk() {
         final String json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
         JWKHelper.buildRSAKeyPairFromJwk(json);
     }
