@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +47,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
     @Override
     public OidcCredentials extract(final WebContext context) {
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
-        final Map<String, String> parameters = retrieveParameters(context);
+        final Map<String, List<String>> parameters = retrieveParameters(context);
         AuthenticationResponse response;
         try {
             response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
@@ -91,11 +93,11 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
         return credentials;
     }
 
-    protected Map<String, String> retrieveParameters(final WebContext context) {
+    protected Map<String, List<String>> retrieveParameters(final WebContext context) {
         final Map<String, String[]> requestParameters = context.getRequestParameters();
-        Map<String, String> map = new HashMap<>();
+        final Map<String, List<String>> map = new HashMap<>();
         for (final Map.Entry<String, String[]> entry : requestParameters.entrySet()) {
-            map.put(entry.getKey(), entry.getValue()[0]);
+            map.put(entry.getKey(), Arrays.asList(entry.getValue()));
         }
         return map;
     }

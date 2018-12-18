@@ -6,13 +6,10 @@ import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jwt.*;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.jwt.config.AbstractKeyEncryptionConfigurationTests;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
@@ -23,15 +20,10 @@ import static org.junit.Assert.assertEquals;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public final class ECEncryptionConfigurationTests implements TestsConstants {
+public final class ECEncryptionConfigurationTests extends AbstractKeyEncryptionConfigurationTests {
 
-    private KeyPair buildKeyPair() {
-        try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-            return keyGen.generateKeyPair();
-        } catch (final NoSuchAlgorithmException e) {
-            throw new TechnicalException(e);
-        }
+    protected String getAlgorithm() {
+        return "EC";
     }
 
     private JWTClaimsSet buildClaims() {
@@ -88,7 +80,7 @@ public final class ECEncryptionConfigurationTests implements TestsConstants {
     }
 
     @Test
-    public void testEncryptMissingKey() throws ParseException, JOSEException {
+    public void testEncryptMissingKey() {
         final ECEncryptionConfiguration config = new ECEncryptionConfiguration();
         config.setAlgorithm(JWEAlgorithm.ECDH_ES_A256KW);
         config.setMethod(EncryptionMethod.A128GCM);
@@ -98,7 +90,7 @@ public final class ECEncryptionConfigurationTests implements TestsConstants {
     }
 
     @Test
-    public void testDecryptMissingKey() throws ParseException, JOSEException {
+    public void testDecryptMissingKey() throws ParseException {
         final ECEncryptionConfiguration config = new ECEncryptionConfiguration(buildKeyPair());
         config.setAlgorithm(JWEAlgorithm.ECDH_ES_A192KW);
         config.setMethod(EncryptionMethod.A128GCM);

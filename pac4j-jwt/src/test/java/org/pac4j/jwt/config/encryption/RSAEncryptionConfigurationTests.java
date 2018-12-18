@@ -6,13 +6,10 @@ import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jwt.*;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.jwt.config.AbstractKeyEncryptionConfigurationTests;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
@@ -23,15 +20,10 @@ import static org.junit.Assert.assertEquals;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public final class RSAEncryptionConfigurationTests implements TestsConstants {
+public final class RSAEncryptionConfigurationTests extends AbstractKeyEncryptionConfigurationTests {
 
-    private KeyPair buildKeyPair() {
-        try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            return keyGen.generateKeyPair();
-        } catch (final NoSuchAlgorithmException e) {
-            throw new TechnicalException(e);
-        }
+    protected String getAlgorithm() {
+        return "RSA";
     }
 
     private JWTClaimsSet buildClaims() {
@@ -88,7 +80,7 @@ public final class RSAEncryptionConfigurationTests implements TestsConstants {
     }
 
     @Test
-    public void testEncryptMissingKey() throws ParseException, JOSEException {
+    public void testEncryptMissingKey() {
         final RSAEncryptionConfiguration config = new RSAEncryptionConfiguration();
         config.setAlgorithm(JWEAlgorithm.RSA_OAEP);
         config.setMethod(EncryptionMethod.A128GCM);
@@ -98,7 +90,7 @@ public final class RSAEncryptionConfigurationTests implements TestsConstants {
     }
 
     @Test
-    public void testDecryptMissingKey() throws ParseException, JOSEException {
+    public void testDecryptMissingKey() throws ParseException {
         final RSAEncryptionConfiguration config = new RSAEncryptionConfiguration(buildKeyPair());
         config.setAlgorithm(JWEAlgorithm.RSA_OAEP);
         config.setMethod(EncryptionMethod.A128GCM);
