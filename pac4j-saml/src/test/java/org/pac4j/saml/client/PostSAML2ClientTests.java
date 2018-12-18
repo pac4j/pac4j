@@ -1,12 +1,12 @@
 package org.pac4j.saml.client;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -77,8 +77,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
 
     private static String getDecodedAuthnRequest(final String content) {
         assertTrue(content.contains("<form"));
-        final String samlRequestField = StringUtils.substringBetween(content, "SAMLRequest", "</div");
-        final String value = StringUtils.substringBetween(samlRequestField, "value=\"", "\"");
+        final String samlRequestField = CommonHelper.substringBetween(content, "SAMLRequest", "</div");
+        final String value = CommonHelper.substringBetween(samlRequestField, "value=\"", "\"");
         return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
     }
 }

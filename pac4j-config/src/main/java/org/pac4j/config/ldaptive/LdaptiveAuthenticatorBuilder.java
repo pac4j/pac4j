@@ -1,7 +1,5 @@
 package org.pac4j.config.ldaptive;
 
-import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.ldaptive.BindConnectionInitializer;
 import org.ldaptive.BindRequest;
 import org.ldaptive.ConnectionConfig;
@@ -32,9 +30,11 @@ import org.ldaptive.sasl.SaslConfig;
 import org.ldaptive.ssl.KeyStoreCredentialConfig;
 import org.ldaptive.ssl.SslConfig;
 import org.ldaptive.ssl.X509CredentialConfig;
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.time.Duration;
 import java.util.Arrays;
 
@@ -99,7 +99,7 @@ public class LdaptiveAuthenticatorBuilder {
         resolver.setUserFilter(l.getUserFilter());
 
         final Authenticator auth;
-        if (StringUtils.isBlank(l.getPrincipalAttributePassword())) {
+        if (CommonHelper.isBlank(l.getPrincipalAttributePassword())) {
             auth = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
         } else {
             auth = new Authenticator(resolver, getPooledCompareAuthenticationHandler(l));
@@ -112,7 +112,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getDirectBindAuthenticator(final LdapAuthenticationProperties l) {
-        if (StringUtils.isBlank(l.getDnFormat())) {
+        if (CommonHelper.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for direct bind authentication");
         }
         final FormatDnResolver resolver = new FormatDnResolver(l.getDnFormat());
@@ -125,7 +125,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getActiveDirectoryAuthenticator(final LdapAuthenticationProperties l) {
-        if (StringUtils.isBlank(l.getDnFormat())) {
+        if (CommonHelper.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for active directory authentication");
         }
         final FormatDnResolver resolver = new FormatDnResolver(l.getDnFormat());
@@ -228,9 +228,9 @@ public class LdaptiveAuthenticatorBuilder {
             sc.setSecurityStrength(l.getSaslSecurityStrength());
             bc.setBindSaslConfig(sc);
             cc.setConnectionInitializer(bc);
-        } else if (StringUtils.equals(l.getBindCredential(), "*") && StringUtils.equals(l.getBindDn(), "*")) {
+        } else if (CommonHelper.areEquals(l.getBindCredential(), "*") && CommonHelper.areEquals(l.getBindDn(), "*")) {
             cc.setConnectionInitializer(new FastBindOperation.FastBindConnectionInitializer());
-        } else if (StringUtils.isNotBlank(l.getBindDn()) && StringUtils.isNotBlank(l.getBindCredential())) {
+        } else if (CommonHelper.isNotBlank(l.getBindDn()) && CommonHelper.isNotBlank(l.getBindCredential())) {
             cc.setConnectionInitializer(new BindConnectionInitializer(l.getBindDn(), new Credential(l.getBindCredential())));
         }
         return cc;
@@ -263,8 +263,8 @@ public class LdaptiveAuthenticatorBuilder {
         final DefaultConnectionFactory bindCf = new DefaultConnectionFactory(cc);
         if (l.getProviderClass() != null) {
             try {
-                final Class clazz = ClassUtils.getClass(l.getProviderClass());
-                bindCf.setProvider(Provider.class.cast(clazz.getDeclaredConstructor().newInstance()));
+                final Constructor<? extends Provider> constructor = CommonHelper.getConstructor(l.getProviderClass());
+                bindCf.setProvider(constructor.newInstance());
             } catch (final Exception e) {
                 LOGGER.error(e.getMessage(), e);
             }
@@ -294,7 +294,7 @@ public class LdaptiveAuthenticatorBuilder {
         cp.setValidator(new SearchValidator());
         cp.setFailFastInitialize(l.isFailFast());
 
-        if (StringUtils.isNotBlank(l.getPoolPassivator())) {
+        if (CommonHelper.isNotBlank(l.getPoolPassivator())) {
             final AbstractLdapProperties.LdapConnectionPoolPassivator pass =
                     AbstractLdapProperties.LdapConnectionPoolPassivator.valueOf(l.getPoolPassivator().toUpperCase());
             switch (pass) {
