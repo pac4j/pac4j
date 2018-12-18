@@ -9,13 +9,13 @@ import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
  * <p>This class is the OAuth client to authenticate users in GitHub.</p>
  * <p>The <i>scope</i> can be defined to require specific permissions from the user by using the {@link #setScope(String)} method.
  * By default, the <i>scope</i> is: <code>user</code>.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.github.GitHubProfile}.</p>
+ * <p>It returns a {@link GitHubProfile}.</p>
  * <p>More information at http://developer.github.com/v3/users/</p>
  *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class GitHubClient extends OAuth20Client<GitHubProfile> {
+public class GitHubClient extends OAuth20Client {
 
     public static final String DEFAULT_SCOPE = "user";
 

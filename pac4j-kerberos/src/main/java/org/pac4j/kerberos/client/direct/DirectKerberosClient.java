@@ -14,7 +14,7 @@ import org.pac4j.kerberos.profile.KerberosProfile;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class DirectKerberosClient extends DirectClient<KerberosCredentials, KerberosProfile> {
+public class DirectKerberosClient extends DirectClient<KerberosCredentials> {
 
     public DirectKerberosClient() {
     }

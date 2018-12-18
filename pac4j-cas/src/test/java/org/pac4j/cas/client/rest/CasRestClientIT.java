@@ -58,7 +58,7 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final CasRestProfile profile = client.getUserProfile(credentials, context);
+        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context);
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -87,7 +87,7 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final CasRestProfile profile = client.getUserProfile(credentials, context);
+        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context);
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 

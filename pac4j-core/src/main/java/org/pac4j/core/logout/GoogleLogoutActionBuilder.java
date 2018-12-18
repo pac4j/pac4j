@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class GoogleLogoutActionBuilder<U extends CommonProfile> implements LogoutActionBuilder<U> {
+public class GoogleLogoutActionBuilder implements LogoutActionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(GoogleLogoutActionBuilder.class);
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
 
         final String redirectUrl = "https://accounts.google.com/Logout";
         logger.debug("redirectUrl: {}", redirectUrl);

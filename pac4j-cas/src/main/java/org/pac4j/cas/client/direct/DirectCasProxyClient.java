@@ -12,7 +12,6 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -29,7 +28,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonProfile> {
+public class DirectCasProxyClient extends DirectClient<TokenCredentials> {
 
     private CasConfiguration configuration;
 

@@ -11,13 +11,13 @@ import org.pac4j.oauth.profile.google2.Google2ProfileDefinition;
  * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
  * <p>The <i>scope</i> is by default : {@link Google2Scope#EMAIL_AND_PROFILE}, but it can also but set to : {@link Google2Scope#PROFILE}
  * or {@link Google2Scope#EMAIL}.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.</p>
+ * <p>It returns a {@link Google2Profile}.</p>
  * <p>More information at https://developers.google.com/accounts/docs/OAuth2Login</p>
  *
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2Client extends OAuth20Client<Google2Profile> {
+public class Google2Client extends OAuth20Client {
 
     public enum Google2Scope {
         EMAIL,
@@ -62,7 +62,7 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
             }
             return false;
         });
-        defaultLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
+        defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());
 
         super.clientInit();
     }

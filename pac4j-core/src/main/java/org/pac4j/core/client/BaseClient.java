@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements Client<C, U> {
+public abstract class BaseClient<C extends Credentials> extends InitializableObject implements Client<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -50,7 +50,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private Authenticator<C> authenticator;
 
-    private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
+    private ProfileCreator<C, ? extends CommonProfile> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
@@ -83,19 +83,19 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) {
+    public final CommonProfile getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;
         }
 
-        U profile = retrieveUserProfile(credentials, context);
+        CommonProfile profile = retrieveUserProfile(credentials, context);
         if (profile != null) {
             profile.setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
-                    profile = (U) authorizationGenerator.generate(context, profile);
+                    profile = authorizationGenerator.generate(context, profile);
                 }
             }
         }
@@ -109,8 +109,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param context     the web context
      * @return the user profile
      */
-    protected final U retrieveUserProfile(final C credentials, final WebContext context) {
-        final U profile = this.profileCreator.create(credentials, context);
+    protected final CommonProfile retrieveUserProfile(final C credentials, final WebContext context) {
+        final CommonProfile profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }
@@ -189,11 +189,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         }
     }
 
-    public ProfileCreator<C, U> getProfileCreator() {
+    public ProfileCreator<C, ? extends CommonProfile> getProfileCreator() {
         return profileCreator;
     }
 
-    protected void defaultProfileCreator(final ProfileCreator<C, U> profileCreator) {
+    protected void defaultProfileCreator(final ProfileCreator<C, ? extends CommonProfile> profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
@@ -207,7 +207,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.authenticator = authenticator;
     }
 
-    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+    public void setProfileCreator(final ProfileCreator<C, ? extends CommonProfile> profileCreator) {
         this.profileCreator = profileCreator;
     }
 

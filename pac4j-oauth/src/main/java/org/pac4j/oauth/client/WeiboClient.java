@@ -16,7 +16,7 @@ import org.pac4j.scribe.builder.api.WeiboApi20;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class WeiboClient extends OAuth20Client<WeiboProfile> {
+public class WeiboClient extends OAuth20Client {
 
     /**
      * WeiboScope.

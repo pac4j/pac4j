@@ -16,7 +16,7 @@ import org.pac4j.scribe.builder.api.QQApi20;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class QQClient extends OAuth20Client<QQProfile> {
+public class QQClient extends OAuth20Client {
 
     public enum QQScope {
         /**

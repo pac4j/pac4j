@@ -8,6 +8,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
@@ -24,7 +25,7 @@ import java.net.URISyntaxException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OidcLogoutActionBuilder<U extends OidcProfile> implements LogoutActionBuilder<U> {
+public class OidcLogoutActionBuilder implements LogoutActionBuilder {
 
     protected OidcConfiguration configuration;
 
@@ -36,12 +37,12 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> implements LogoutAct
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
         final String logoutUrl = configuration.getLogoutUrl();
-        if (CommonHelper.isNotBlank(logoutUrl)) {
+        if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
             try {
                 final URI endSessionEndpoint = new URI(logoutUrl);
-                final JWT idToken = currentProfile.getIdToken();
+                final JWT idToken = ((OidcProfile) currentProfile).getIdToken();
 
                 LogoutRequest logoutRequest;
                 if (CommonHelper.isNotBlank(targetUrl)) {

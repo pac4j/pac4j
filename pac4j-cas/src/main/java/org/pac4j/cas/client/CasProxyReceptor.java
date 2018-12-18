@@ -6,7 +6,6 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 
@@ -27,7 +26,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends IndirectClient<TokenCredentials, CommonProfile> {
+public final class CasProxyReceptor extends IndirectClient<TokenCredentials> {
 
     public static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";
 

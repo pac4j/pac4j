@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>This class is a generic OAuth2 client to authenticate users in a standard OAuth2 server.</p>
  * <p>All configuration parameters can be specified setting the corresponding attribute.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.OAuth20Profile}.</p>
+ * <p>It returns a {@link OAuth20Profile}.</p>
  *
  * @author Julio Arrebola
  */
-public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
+public class GenericOAuth20Client extends OAuth20Client {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericOAuth20Client.class);
 

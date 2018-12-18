@@ -10,7 +10,7 @@ import org.pac4j.core.redirect.RedirectAction;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class MockIndirectClient extends IndirectClient<Credentials, CommonProfile> {
+public final class MockIndirectClient extends IndirectClient<Credentials> {
 
     private RedirectAction redirectAction;
 

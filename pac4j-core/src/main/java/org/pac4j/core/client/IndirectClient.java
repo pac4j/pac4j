@@ -25,7 +25,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class IndirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
+public abstract class IndirectClient<C extends Credentials> extends BaseClient<C> {
 
     public final static String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
 
@@ -39,7 +39,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private RedirectActionBuilder redirectActionBuilder;
 
-    private LogoutActionBuilder<U> logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
+    private LogoutActionBuilder logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
     @Override
     protected final void internalInit() {
@@ -148,7 +148,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public final RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
         init();
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
@@ -197,11 +197,11 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         }
     }
 
-    public LogoutActionBuilder<U> getLogoutActionBuilder() {
+    public LogoutActionBuilder getLogoutActionBuilder() {
         return logoutActionBuilder;
     }
 
-    protected void defaultLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+    protected void defaultLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;
         }
@@ -211,7 +211,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         this.redirectActionBuilder = redirectActionBuilder;
     }
 
-    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+    public void setLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
         this.logoutActionBuilder = logoutActionBuilder;
     }
 

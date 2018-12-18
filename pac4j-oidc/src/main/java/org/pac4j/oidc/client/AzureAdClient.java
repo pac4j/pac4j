@@ -43,7 +43,7 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  * @author Emond Papegaaij
  * @since 1.8.3
  */
-public class AzureAdClient extends OidcClient<AzureAdProfile,AzureAdOidcConfiguration> {
+public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
 
     private ObjectMapper objectMapper;
     private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};

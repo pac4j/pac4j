@@ -19,7 +19,7 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
  * @author Julio Arrebola
  * @since 2.0.0
  */
-public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile,KeycloakOidcConfiguration> {
+public class KeycloakOidcClient extends OidcClient<KeycloakOidcConfiguration> {
 
     public KeycloakOidcClient() {
     }

@@ -23,7 +23,7 @@ import org.pac4j.core.redirect.RedirectAction;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public interface Client<C extends Credentials, U extends CommonProfile> {
+public interface Client<C extends Credentials> {
 
     /**
      * Get the name of the client.
@@ -56,7 +56,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param context web context
      * @return the user profile
      */
-    U getUserProfile(C credentials, WebContext context);
+    CommonProfile getUserProfile(C credentials, WebContext context);
 
     /**
      * <p>Return the logout action (indirect clients).</p>
@@ -66,5 +66,5 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param targetUrl the target url after logout
      * @return the redirection
      */
-    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl);
+    RedirectAction getLogoutAction(WebContext context, CommonProfile currentProfile, String targetUrl);
 }

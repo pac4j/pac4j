@@ -5,6 +5,7 @@ import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.state.StateGenerator;
 import org.pac4j.saml.client.SAML2Client;
@@ -22,7 +23,7 @@ import org.pac4j.saml.transport.Pac4jSAMLResponse;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutActionBuilder<U> {
+public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     protected SAML2LogoutRequestBuilder saml2LogoutRequestBuilder;
 
@@ -46,22 +47,27 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
-        final String relayState = this.stateGenerator.generateState(context);
+    public RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
+        if (currentProfile instanceof SAML2Profile) {
+            final SAML2Profile saml2Profile = (SAML2Profile) currentProfile;
+            final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
+            final String relayState = this.stateGenerator.generateState(context);
 
-        final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, currentProfile);
-        this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
+            final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
+            this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
-        // we won't get any session index from the logout response so we call the local logout before calling the IdP
-        this.logoutHandler.destroySessionFront(context, currentProfile.getSessionIndex());
+            // we won't get any session index from the logout response so we call the local logout before calling the IdP
+            this.logoutHandler.destroySessionFront(context, saml2Profile.getSessionIndex());
 
-        final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
-        if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            final String content = adapter.getOutgoingContent();
-            return RedirectAction.success(content);
+            final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
+            if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+                final String content = adapter.getOutgoingContent();
+                return RedirectAction.success(content);
+            }
+            final String location = adapter.getRedirectUrl();
+            return RedirectAction.redirect(location);
+        } else {
+            return null;
         }
-        final String location = adapter.getRedirectUrl();
-        return RedirectAction.redirect(location);
     }
 }

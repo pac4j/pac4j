@@ -18,7 +18,7 @@ import org.pac4j.kerberos.profile.KerberosProfile;
  *
  * @since 2.1.0
  */
-public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, KerberosProfile> {
+public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> {
     public IndirectKerberosClient() {}
 
     public IndirectKerberosClient(final Authenticator authenticator) {
