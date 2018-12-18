@@ -2,7 +2,9 @@ package org.pac4j.core.util;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -189,8 +191,13 @@ public final class CommonHelperTests {
     }
 
     @Test
-    public void testRandomString() {
-        assertNotNull(CommonHelper.randomString(10));
+    public void testRandomStringNChars() {
+        Arrays.asList(0, 10, 31, 32, 33, 39).forEach(i -> testRandomString(i));
+    }
+
+    private void testRandomString(final int size) {
+        final String s = CommonHelper.randomString(size);
+        assertEquals(size, s.length());
     }
 
     @Test
@@ -220,5 +227,17 @@ public final class CommonHelperTests {
         assertFalse(CommonHelper.isNotEmpty(null));
         assertFalse(CommonHelper.isNotEmpty(new ArrayList<>()));
         assertTrue(CommonHelper.isNotEmpty(Arrays.asList(new String[] {VALUE})));
+    }
+
+    @Test
+    public void testGetConstructorOK() throws Exception {
+        Constructor constructor = CommonHelper.getConstructor(CommonProfile.class.getName());
+        final CommonProfile profile = (CommonProfile) constructor.newInstance();
+        assertNotNull(profile);
+    }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void testGetConstructorMissingClass() throws Exception {
+        CommonHelper.getConstructor("this.class.does.not.Exist");
     }
 }

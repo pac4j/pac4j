@@ -4,7 +4,6 @@ import net.shibboleth.tool.xmlsectool.XMLSecTool;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
@@ -102,7 +101,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     private void writeServiceProviderMetadataToResource(final String tempMetadata) throws Exception {
         final WritableResource metadataResource = configuration.getServiceProviderMetadataResource();
-        if (metadataResource != null && StringUtils.isNotBlank(tempMetadata)) {
+        if (metadataResource != null && CommonHelper.isNotBlank(tempMetadata)) {
             if (metadataResource.exists() && !configuration.isForceServiceProviderMetadataGeneration()) {
                 logger.info("Metadata file already exists at {}.", metadataResource.getFile());
             } else {

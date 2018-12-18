@@ -3,10 +3,13 @@ package org.pac4j.core.util;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class gathers all the utilities methods.
@@ -230,7 +233,12 @@ public final class CommonHelper {
      * @return the random size
      */
     public static String randomString(final int size) {
-        return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+        final StringBuilder builder = new StringBuilder();
+        while (builder.length() < size) {
+            final String suffix = java.util.UUID.randomUUID().toString().replace("-", "");
+            builder.append(suffix);
+        }
+        return builder.substring(0, size);
     }
 
     /**
@@ -308,5 +316,35 @@ public final class CommonHelper {
 
     private static boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;
+    }
+
+    private static final Map<String, Constructor> constructorsCache = new HashMap<>();
+
+    /**
+     * Get the constructor of the class.
+     *
+     * @param name the name of the class
+     * @return the constructor
+     * @throws ClassNotFoundException class not found
+     * @throws NoSuchMethodException method not found
+     */
+    public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
+        Constructor constructor = constructorsCache.get(name);
+        if (constructor == null) {
+            synchronized (constructorsCache) {
+                constructor = constructorsCache.get(name);
+                if (constructor == null) {
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+
+                    if (tccl == null) {
+                        constructor = Class.forName(name).getDeclaredConstructor();
+                    } else {
+                        constructor = Class.forName(name, true, tccl).getDeclaredConstructor();
+                    }
+                    constructorsCache.put(name, constructor);
+                }
+            }
+        }
+        return constructor;
     }
 }
