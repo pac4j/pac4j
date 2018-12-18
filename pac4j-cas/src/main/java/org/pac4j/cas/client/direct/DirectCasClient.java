@@ -62,7 +62,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
         super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public interface AuthorizationGenerator<U extends CommonProfile> {
+public interface AuthorizationGenerator {
 
     /**
      * Generate the authorization information from and for the user profile.
@@ -18,5 +18,5 @@ public interface AuthorizationGenerator<U extends CommonProfile> {
      * @param profile the user profile for which to generate the authorization information.
      * @return the updated profile or a new one
      */
-    U generate(WebContext context, U profile);
+    CommonProfile generate(WebContext context, CommonProfile profile);
 }

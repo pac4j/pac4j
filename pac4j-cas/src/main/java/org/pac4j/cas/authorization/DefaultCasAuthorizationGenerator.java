@@ -11,10 +11,8 @@ import org.pac4j.core.profile.CommonProfile;
  *
  * @author Michael Remond
  * @since 1.5.1
- *
- * @param <U> the profile
  */
-public class DefaultCasAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
+public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator {
 
     public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
 
@@ -29,7 +27,7 @@ public class DefaultCasAuthorizationGenerator<U extends CommonProfile> implement
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
         String rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
         boolean isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);

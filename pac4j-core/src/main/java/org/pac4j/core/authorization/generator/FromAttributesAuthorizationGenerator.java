@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class FromAttributesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
+public class FromAttributesAuthorizationGenerator implements AuthorizationGenerator {
 
     private Collection<String> roleAttributes;
 
@@ -48,13 +48,13 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
         return profile;
     }
 
-    private void generateAuth(final U profile, final Iterable<String> attributes, final boolean isRole) {
+    private void generateAuth(final CommonProfile profile, final Iterable<String> attributes, final boolean isRole) {
         if (attributes == null) {
             return;
         }
@@ -83,7 +83,7 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
 
     }
 
-    private void addRoleOrPermissionToProfile(final U profile, final String value, final boolean isRole) {
+    private void addRoleOrPermissionToProfile(final CommonProfile profile, final String value, final boolean isRole) {
         if (isRole) {
             profile.addRole(value);
         } else {

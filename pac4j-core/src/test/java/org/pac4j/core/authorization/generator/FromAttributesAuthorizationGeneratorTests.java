@@ -49,8 +49,8 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfigWithCollections() {
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
-                new FromAttributesAuthorizationGenerator<>(new ArrayList<>(), new HashSet<>());
+        final FromAttributesAuthorizationGenerator generator =
+                new FromAttributesAuthorizationGenerator(new ArrayList<>(), new HashSet<>());
         generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
@@ -58,8 +58,8 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfig() {
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
-                new FromAttributesAuthorizationGenerator<>(null, (String[]) null);
+        final FromAttributesAuthorizationGenerator generator =
+                new FromAttributesAuthorizationGenerator(null, (String[]) null);
         generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
@@ -73,8 +73,8 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final String[] permissionAttributes = new String[] {
             ATTRIB2
         };
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
-            new FromAttributesAuthorizationGenerator<>(roleAttributes,permissionAttributes);
+        final FromAttributesAuthorizationGenerator generator =
+            new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
         generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
@@ -94,8 +94,8 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final String[] permissionAttributes = new String[] {
             ATTRIB2
         };
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
-            new FromAttributesAuthorizationGenerator<>(roleAttributes,permissionAttributes);
+        final FromAttributesAuthorizationGenerator generator =
+            new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
         generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         final Set<String> permissions = this.profile.getPermissions();
@@ -112,8 +112,8 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final String[] permissionAttributes = new String[] {
             ATTRIB5
         };
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
-            new FromAttributesAuthorizationGenerator<>(roleAttributes,permissionAttributes);
+        final FromAttributesAuthorizationGenerator generator =
+            new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
         generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
@@ -130,8 +130,8 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final String[] permissionAttributes = new String[] {
             ATTRIB2
         };
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
-            new FromAttributesAuthorizationGenerator<>(roleAttributes, permissionAttributes);
+        final FromAttributesAuthorizationGenerator generator =
+            new FromAttributesAuthorizationGenerator(roleAttributes, permissionAttributes);
         generator.setSplitChar("|");
         generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
@@ -151,7 +151,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                 ATTRIB3, ATTRIB4
         };
 
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
+        final FromAttributesAuthorizationGenerator generator = new FromAttributesAuthorizationGenerator(
                 roleAttributes,
                 permissionAttributes);
 

@@ -59,7 +59,7 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, this.serviceUrl));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
     public CasConfiguration getConfiguration() {

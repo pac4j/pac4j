@@ -44,7 +44,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private String name;
 
-    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
+    private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
     private CredentialsExtractor<C> credentialsExtractor;
 
@@ -94,8 +94,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         if (profile != null) {
             profile.setClientName(getName());
             if (this.authorizationGenerators != null) {
-                for (AuthorizationGenerator<U> authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile);
+                for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
+                    profile = (U) authorizationGenerator.generate(context, profile);
                 }
             }
         }
@@ -136,16 +136,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
     }
 
-    public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
+    public List<AuthorizationGenerator> getAuthorizationGenerators() {
         return this.authorizationGenerators;
     }
 
-    public void setAuthorizationGenerators(final List<AuthorizationGenerator<U>> authorizationGenerators) {
+    public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = authorizationGenerators;
     }
 
-    public void setAuthorizationGenerators(final AuthorizationGenerator<U>... authorizationGenerators) {
+    public void setAuthorizationGenerators(final AuthorizationGenerator... authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = Arrays.asList(authorizationGenerators);
     }
@@ -155,16 +155,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      *
      * @param authorizationGenerator an authorizations generator
      */
-    public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+    public void setAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
     }
 
-    public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+    public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
         this.authorizationGenerators.add(authorizationGenerator);
     }
 
-    public void addAuthorizationGenerators(final List<AuthorizationGenerator<U>> authorizationGenerators) {
+    public void addAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators.addAll(authorizationGenerators);
     }

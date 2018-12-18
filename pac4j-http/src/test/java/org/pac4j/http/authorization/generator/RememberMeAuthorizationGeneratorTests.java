@@ -26,14 +26,14 @@ public final class RememberMeAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testNoRme() {
-        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator<>();
+        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator();
         ag.generate(MockWebContext.create(), profile);
         assertFalse(profile.isRemembered());
     }
 
     @Test
     public void testBadRmeValue() {
-        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator<>();
+        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator();
         final MockWebContext context = MockWebContext.create().addRequestParameter("rme", "no");
         ag.generate(context, profile);
         assertFalse(profile.isRemembered());
@@ -41,7 +41,7 @@ public final class RememberMeAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testGoodRmeValue() {
-        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator<>();
+        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator();
         final MockWebContext context = MockWebContext.create().addRequestParameter("rme", "true");
         ag.generate(context, profile);
         assertTrue(profile.isRemembered());
@@ -49,7 +49,7 @@ public final class RememberMeAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testGoodSpecialRmeValue() {
-        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator<>("r", "y");
+        final RememberMeAuthorizationGenerator ag = new RememberMeAuthorizationGenerator("r", "y");
         final MockWebContext context = MockWebContext.create().addRequestParameter("r", "y");
         ag.generate(context, profile);
         assertTrue(profile.isRemembered());
@@ -57,6 +57,6 @@ public final class RememberMeAuthorizationGeneratorTests implements TestsConstan
 
     @Test(expected = TechnicalException.class)
     public void testBlankValues() {
-        new RememberMeAuthorizationGenerator<>("", "");
+        new RememberMeAuthorizationGenerator("", "");
     }
 }

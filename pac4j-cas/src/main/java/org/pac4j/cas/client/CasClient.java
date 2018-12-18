@@ -53,7 +53,7 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
         defaultAuthenticator(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
         defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout",
             configuration.getPostLogoutUrlParameter()));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
     @Override
