@@ -13,6 +13,7 @@
     <name>pac4j configuration</name>
 
     <properties>
+        <commonslang3.version>3.8.1</commonslang3.version>
         <hikaricp.version>2.7.6</hikaricp.version>
     </properties>
 
@@ -55,6 +56,11 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commonslang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
