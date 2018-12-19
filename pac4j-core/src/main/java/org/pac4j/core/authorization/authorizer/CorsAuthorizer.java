@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CorsAuthorizer implements Authorizer<CommonProfile> {
+public class CorsAuthorizer implements Authorizer<UserProfile> {
 
     private String allowOrigin;
 
@@ -30,7 +30,7 @@ public class CorsAuthorizer implements Authorizer<CommonProfile> {
     private String allowHeaders;
 
     @Override
-    public boolean isAuthorized(WebContext context, List<CommonProfile> profiles) {
+    public boolean isAuthorized(WebContext context, List<UserProfile> profiles) {
         CommonHelper.assertNotBlank("allowOrigin", allowOrigin);
 
         context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, allowOrigin);

@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyRoleAuthorizer<U extends CommonProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
 
     public RequireAnyRoleAuthorizer() { }
 
@@ -33,15 +33,15 @@ public class RequireAnyRoleAuthorizer<U extends CommonProfile> extends AbstractR
         return profileRoles.contains(element);
     }
 
-    public static <U extends CommonProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(String ... roles) {
+    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(String ... roles) {
         return new RequireAnyRoleAuthorizer<>(roles);
     }
 
-    public static <U extends CommonProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(List<String> roles) {
+    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(List<String> roles) {
         return new RequireAnyRoleAuthorizer<>(roles);
     }
 
-    public static <U extends CommonProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(Set<String> roles) {
+    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(Set<String> roles) {
         return new RequireAnyRoleAuthorizer<>(roles);
     }
 }

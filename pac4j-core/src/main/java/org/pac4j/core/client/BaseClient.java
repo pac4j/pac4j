@@ -12,7 +12,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -83,14 +83,14 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
     }
 
     @Override
-    public final CommonProfile getUserProfile(final C credentials, final WebContext context) {
+    public final UserProfile getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;
         }
 
-        CommonProfile profile = retrieveUserProfile(credentials, context);
+        UserProfile profile = retrieveUserProfile(credentials, context);
         if (profile != null) {
             profile.setClientName(getName());
             if (this.authorizationGenerators != null) {
@@ -109,8 +109,8 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
      * @param context     the web context
      * @return the user profile
      */
-    protected final CommonProfile retrieveUserProfile(final C credentials, final WebContext context) {
-        final CommonProfile profile = this.profileCreator.create(credentials, context);
+    protected final UserProfile retrieveUserProfile(final C credentials, final WebContext context) {
+        final UserProfile profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }

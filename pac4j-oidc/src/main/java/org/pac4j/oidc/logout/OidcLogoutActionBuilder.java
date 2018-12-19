@@ -8,7 +8,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
@@ -37,7 +37,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
+    public RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         final String logoutUrl = configuration.getLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
             try {

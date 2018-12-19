@@ -8,7 +8,8 @@ import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.context.*;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AnonymousProfile;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.BasicUserProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.*;
@@ -28,20 +29,20 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     private final DefaultAuthorizationChecker checker = new DefaultAuthorizationChecker();
 
-    private List<CommonProfile> profiles;
+    private List<UserProfile> profiles;
 
-    private CommonProfile profile;
+    private BasicUserProfile profile;
 
     @Before
     public void setUp() {
-        profile = new CommonProfile();
+        profile = new BasicUserProfile();
         profiles = new ArrayList<>();
         profiles.add(profile);
     }
 
-    private static class IdAuthorizer implements Authorizer<CommonProfile> {
+    private static class IdAuthorizer implements Authorizer<UserProfile> {
         @Override
-        public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) {
+        public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
             return VALUE.equals(profiles.get(0).getId());
         }
     }

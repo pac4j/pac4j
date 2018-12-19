@@ -52,7 +52,7 @@ public final class HeaderClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
         final TokenCredentials credentials = client.getCredentials(context);
-        final CommonProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
         assertEquals(VALUE, profile.getId());
     }
 }

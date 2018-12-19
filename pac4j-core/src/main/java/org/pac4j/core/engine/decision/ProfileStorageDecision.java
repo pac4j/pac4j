@@ -3,7 +3,7 @@ package org.pac4j.core.engine.decision;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 
@@ -33,5 +33,5 @@ public interface ProfileStorageDecision<C extends WebContext> {
      * @param profile the retrieved profile after login
      * @return whether we must save the profile in session
      */
-    boolean mustSaveProfileInSession(C context, List<Client> currentClients, DirectClient directClient, CommonProfile profile);
+    boolean mustSaveProfileInSession(C context, List<Client> currentClients, DirectClient directClient, UserProfile profile);
 }

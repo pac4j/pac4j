@@ -98,7 +98,7 @@ public final class ProfileHelper {
      * @param <U> the kind of profile
      * @return the (optional) profile
      */
-    public static <U extends CommonProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
+    public static <U extends UserProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
         final Optional<U> profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
         if (profile.isPresent()) {
             return profile;
@@ -114,7 +114,7 @@ public final class ProfileHelper {
      * @param <U> the kind of profile
      * @return the list of profiles
      */
-    public static <U extends CommonProfile> List<U> flatIntoAProfileList(final Map<String, U> profiles) {
+    public static <U extends UserProfile> List<U> flatIntoAProfileList(final Map<String, U> profiles) {
         return new ArrayList<>(profiles.values());
     }
 
@@ -125,11 +125,11 @@ public final class ProfileHelper {
      * @param id the identifier object
      * @return the sanitized identifier
      */
-    public static String sanitizeIdentifier(final UserProfile profile, final Object id) {
+    public static String sanitizeIdentifier(final BasicUserProfile profile, final Object id) {
         if (id != null) {
             String sId = id.toString();
             if (profile != null) {
-                final String type = profile.getClass().getName() + UserProfile.SEPARATOR;
+                final String type = profile.getClass().getName() + BasicUserProfile.SEPARATOR;
                 if (sId.startsWith(type)) {
                     sId = sId.substring(type.length());
                 }

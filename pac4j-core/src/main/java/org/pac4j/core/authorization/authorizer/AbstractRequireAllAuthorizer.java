@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 /**
  * An authorizer to require all the elements.
@@ -9,7 +9,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public abstract class AbstractRequireAllAuthorizer<E extends Object, U extends CommonProfile>
+public abstract class AbstractRequireAllAuthorizer<E extends Object, U extends UserProfile>
     extends AbstractRequireElementAuthorizer<E, U> {
 
     @Override
