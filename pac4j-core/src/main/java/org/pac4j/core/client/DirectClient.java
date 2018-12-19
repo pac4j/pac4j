@@ -14,7 +14,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
+public abstract class DirectClient<C extends Credentials> extends BaseClient<C> {
 
     @Override
     protected final void internalInit() {
@@ -43,7 +43,7 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public final RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
         return null;
     }
 }

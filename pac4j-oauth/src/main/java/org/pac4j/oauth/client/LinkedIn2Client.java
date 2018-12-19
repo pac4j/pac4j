@@ -10,7 +10,7 @@ import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile}.</p>
+ * <p>It returns a {@link LinkedIn2Profile}.</p>
  * <p>The scope (by default : <code>r_fullprofile</code>) can be specified using the {@link #setScope(String)} method, as well as the
  * returned fields through the {@link #setFields(String)} method.</p>
  * <p>More information at https://developer.linkedin.com/documents/profile-api</p>
@@ -18,7 +18,7 @@ import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
+public class LinkedIn2Client extends OAuth20Client {
 
     public LinkedIn2Client() {
         configuration = new LinkedIn2Configuration();

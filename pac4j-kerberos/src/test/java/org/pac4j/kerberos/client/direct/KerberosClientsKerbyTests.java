@@ -142,7 +142,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         }
     }
 
-    private void checkWithGoodTicket(Client<KerberosCredentials, KerberosProfile> client) throws Exception {
+    private void checkWithGoodTicket(Client<KerberosCredentials> client) throws Exception {
         String spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
 
         // mock web request
@@ -151,7 +151,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         assertNotNull(credentials);
         System.out.println(credentials);
 
-        final KerberosProfile profile = client.getUserProfile(credentials, context);
+        final KerberosProfile profile = (KerberosProfile) client.getUserProfile(credentials, context);
         assertNotNull(profile);
         assertEquals(clientPrincipal, profile.getId());
     }

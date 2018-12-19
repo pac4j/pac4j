@@ -15,13 +15,13 @@ import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
  * {@link #setAlwaysConfirmAuthorization(boolean)} method (<code>false</code> by default).</p>
  * <p>If your twitter oauth app allows requests for email addresses you can enable requesting an email
  * address by using the {@link #setIncludeEmail(boolean)} method (<code>false</code> by default).</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.twitter.TwitterProfile}.</p>
+ * <p>It returns a {@link TwitterProfile}.</p>
  * <p>More information at https://dev.twitter.com/docs/api/1/get/account/verify_credentials</p>
  *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TwitterClient extends OAuth10Client<TwitterProfile> {
+public class TwitterClient extends OAuth10Client {
 
     private boolean alwaysConfirmAuthorization = false;
 

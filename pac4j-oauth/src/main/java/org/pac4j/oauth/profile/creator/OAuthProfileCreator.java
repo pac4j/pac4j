@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
  * @since 2.0.0
  */
 abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration<S, T>,
-    T extends Token, S extends OAuthService> implements ProfileCreator<C, U> {
+    T extends Token, S extends OAuthService> implements ProfileCreator<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

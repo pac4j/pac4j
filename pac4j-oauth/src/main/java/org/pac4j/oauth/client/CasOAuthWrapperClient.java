@@ -9,13 +9,13 @@ import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 /**
  * <p>This class is the OAuth client to authenticate users on CAS servers using OAuth wrapper.</p>
  * <p>The url of the OAuth endpoint of the CAS server must be set by using the {@link #setCasOAuthUrl(String)} method.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile}.</p>
+ * <p>It returns a {@link CasOAuthWrapperProfile}.</p>
  * <p>More information at https://wiki.jasig.org/display/CASUM/OAuth+server+support</p>
  *
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile> {
+public class CasOAuthWrapperClient extends OAuth20Client {
 
     /**
      * The CAS OAuth server url (without a trailing slash).
@@ -48,7 +48,7 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
         } else {
             configuration.setResponseType("code");
         }
-        defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
+        defaultLogoutActionBuilder(new CasLogoutActionBuilder(casLogoutUrl, "service"));
 
         super.clientInit();
     }

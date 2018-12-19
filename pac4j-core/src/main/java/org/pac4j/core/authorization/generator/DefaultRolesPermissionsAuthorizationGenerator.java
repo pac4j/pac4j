@@ -12,7 +12,7 @@ import java.util.Collection;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultRolesPermissionsAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
+public class DefaultRolesPermissionsAuthorizationGenerator implements AuthorizationGenerator {
 
     private final Collection<String> defaultRoles;
 
@@ -38,7 +38,7 @@ public class DefaultRolesPermissionsAuthorizationGenerator<U extends CommonProfi
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
         if (defaultRoles != null) {
             profile.addRoles(defaultRoles);
         }

@@ -26,7 +26,7 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
     @Test
     public void testNullArrays() {
         final DefaultRolesPermissionsAuthorizationGenerator generator =
-            new DefaultRolesPermissionsAuthorizationGenerator<>((String[]) null, null);
+            new DefaultRolesPermissionsAuthorizationGenerator((String[]) null, null);
         checkEmptyProfile(generator);
     }
 
@@ -40,14 +40,14 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
     @Test
     public void testNullLists() {
         final DefaultRolesPermissionsAuthorizationGenerator generator =
-            new DefaultRolesPermissionsAuthorizationGenerator<>((List<String>) null, null);
+            new DefaultRolesPermissionsAuthorizationGenerator((List<String>) null, null);
         checkEmptyProfile(generator);
     }
 
     @Test
     public void testDefaultValuesArrays() {
         final DefaultRolesPermissionsAuthorizationGenerator generator =
-            new DefaultRolesPermissionsAuthorizationGenerator<>(DEFAULT_ROLES_ARRAY, DEFAULT_PERMISSIONS_ARRAY);
+            new DefaultRolesPermissionsAuthorizationGenerator(DEFAULT_ROLES_ARRAY, DEFAULT_PERMISSIONS_ARRAY);
         checkProfile(generator);
     }
 
@@ -65,7 +65,7 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
     @Test
     public void testDefaultValuesLists() {
         final DefaultRolesPermissionsAuthorizationGenerator generator =
-            new DefaultRolesPermissionsAuthorizationGenerator<>(DEFAULT_ROLES_LIST, DEFAULT_PERMISSIONS_LIST);
+            new DefaultRolesPermissionsAuthorizationGenerator(DEFAULT_ROLES_LIST, DEFAULT_PERMISSIONS_LIST);
         checkProfile(generator);
     }
 }

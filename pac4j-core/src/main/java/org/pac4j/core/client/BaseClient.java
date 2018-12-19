@@ -38,19 +38,19 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements Client<C, U> {
+public abstract class BaseClient<C extends Credentials> extends InitializableObject implements Client<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String name;
 
-    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
+    private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
     private CredentialsExtractor<C> credentialsExtractor;
 
     private Authenticator<C> authenticator;
 
-    private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
+    private ProfileCreator<C> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
@@ -83,18 +83,18 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) {
+    public final CommonProfile getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;
         }
 
-        U profile = retrieveUserProfile(credentials, context);
+        CommonProfile profile = retrieveUserProfile(credentials, context);
         if (profile != null) {
             profile.setClientName(getName());
             if (this.authorizationGenerators != null) {
-                for (AuthorizationGenerator<U> authorizationGenerator : this.authorizationGenerators) {
+                for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
                     profile = authorizationGenerator.generate(context, profile);
                 }
             }
@@ -109,8 +109,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param context     the web context
      * @return the user profile
      */
-    protected final U retrieveUserProfile(final C credentials, final WebContext context) {
-        final U profile = this.profileCreator.create(credentials, context);
+    protected final CommonProfile retrieveUserProfile(final C credentials, final WebContext context) {
+        final CommonProfile profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }
@@ -136,16 +136,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
     }
 
-    public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
+    public List<AuthorizationGenerator> getAuthorizationGenerators() {
         return this.authorizationGenerators;
     }
 
-    public void setAuthorizationGenerators(final List<AuthorizationGenerator<U>> authorizationGenerators) {
+    public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = authorizationGenerators;
     }
 
-    public void setAuthorizationGenerators(final AuthorizationGenerator<U>... authorizationGenerators) {
+    public void setAuthorizationGenerators(final AuthorizationGenerator... authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = Arrays.asList(authorizationGenerators);
     }
@@ -155,16 +155,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      *
      * @param authorizationGenerator an authorizations generator
      */
-    public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+    public void setAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
     }
 
-    public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+    public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
         this.authorizationGenerators.add(authorizationGenerator);
     }
 
-    public void addAuthorizationGenerators(final List<AuthorizationGenerator<U>> authorizationGenerators) {
+    public void addAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators.addAll(authorizationGenerators);
     }
@@ -189,11 +189,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         }
     }
 
-    public ProfileCreator<C, U> getProfileCreator() {
+    public ProfileCreator<C> getProfileCreator() {
         return profileCreator;
     }
 
-    protected void defaultProfileCreator(final ProfileCreator<C, U> profileCreator) {
+    protected void defaultProfileCreator(final ProfileCreator<C> profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
@@ -207,7 +207,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.authenticator = authenticator;
     }
 
-    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+    public void setProfileCreator(final ProfileCreator<C> profileCreator) {
         this.profileCreator = profileCreator;
     }
 

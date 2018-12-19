@@ -6,7 +6,6 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
 
@@ -18,7 +17,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredentials, CommonProfile> {
+public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredentials> {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 

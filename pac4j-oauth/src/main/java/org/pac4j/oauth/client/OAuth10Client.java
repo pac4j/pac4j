@@ -6,7 +6,6 @@ import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.credentials.authenticator.OAuth10Authenticator;
 import org.pac4j.oauth.credentials.extractor.OAuth10CredentialsExtractor;
-import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
 import org.pac4j.oauth.redirect.OAuth10RedirectActionBuilder;
 
@@ -16,7 +15,7 @@ import org.pac4j.oauth.redirect.OAuth10RedirectActionBuilder;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAuth10Credentials, U> {
+public class OAuth10Client extends IndirectClient<OAuth10Credentials> {
 
     protected OAuth10Configuration configuration = new OAuth10Configuration();
 

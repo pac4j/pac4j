@@ -10,7 +10,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public interface LogoutActionBuilder<U extends CommonProfile> {
+public interface LogoutActionBuilder {
 
     /**
      * Return the {@link RedirectAction} for logout.
@@ -20,5 +20,5 @@ public interface LogoutActionBuilder<U extends CommonProfile> {
      * @param targetUrl the target URL after logout
      * @return the redirection
      */
-    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl);
+    RedirectAction getLogoutAction(WebContext context, CommonProfile currentProfile, String targetUrl);
 }

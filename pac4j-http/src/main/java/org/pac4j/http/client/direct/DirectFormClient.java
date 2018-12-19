@@ -3,7 +3,6 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -15,7 +14,7 @@ import org.pac4j.core.credentials.extractor.FormExtractor;
  * @author Jerome Leleu
  * @since 1.8.6
  */
-public class DirectFormClient extends DirectClient<UsernamePasswordCredentials, CommonProfile> {
+public class DirectFormClient extends DirectClient<UsernamePasswordCredentials> {
 
     private String usernameParameter = Pac4jConstants.USERNAME;
 

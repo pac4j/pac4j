@@ -2,7 +2,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.strava.StravaProfileDefinition;
-import org.pac4j.oauth.profile.strava.StravaProfile;
 import org.pac4j.scribe.builder.api.StravaApi20;
 
 /**
@@ -17,7 +16,7 @@ import org.pac4j.scribe.builder.api.StravaApi20;
  * @author Adrian Papusoi
  * @since 1.7.0
  */
-public class StravaClient extends OAuth20Client<StravaProfile> {
+public class StravaClient extends OAuth20Client {
 
     /**
      * approvalPrompt is by default "auto".   <br>
