@@ -14,6 +14,7 @@ import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -37,7 +38,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinitionAware<U> implements ProfileCreator<OidcCredentials, U> {
+public class OidcProfileCreator extends ProfileDefinitionAware implements ProfileCreator<OidcCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
@@ -62,13 +63,13 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
     @Override
     @SuppressWarnings("unchecked")
-    public U create(final OidcCredentials credentials, final WebContext context) {
+    public CommonProfile create(final OidcCredentials credentials, final WebContext context) {
         init();
 
         final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile
-        final U profile = getProfileDefinition().newProfile();
+        final OidcProfile profile = (OidcProfile) getProfileDefinition().newProfile();
         profile.setAccessToken(accessToken);
         final JWT idToken = credentials.getIdToken();
         profile.setIdTokenString(idToken.getParsedString());

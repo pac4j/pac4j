@@ -50,7 +50,7 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
 
     private Authenticator<C> authenticator;
 
-    private ProfileCreator<C, ? extends CommonProfile> profileCreator = AuthenticatorProfileCreator.INSTANCE;
+    private ProfileCreator<C> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
@@ -189,11 +189,11 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         }
     }
 
-    public ProfileCreator<C, ? extends CommonProfile> getProfileCreator() {
+    public ProfileCreator<C> getProfileCreator() {
         return profileCreator;
     }
 
-    protected void defaultProfileCreator(final ProfileCreator<C, ? extends CommonProfile> profileCreator) {
+    protected void defaultProfileCreator(final ProfileCreator<C> profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
@@ -207,7 +207,7 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         this.authenticator = authenticator;
     }
 
-    public void setProfileCreator(final ProfileCreator<C, ? extends CommonProfile> profileCreator) {
+    public void setProfileCreator(final ProfileCreator<C> profileCreator) {
         this.profileCreator = profileCreator;
     }
 

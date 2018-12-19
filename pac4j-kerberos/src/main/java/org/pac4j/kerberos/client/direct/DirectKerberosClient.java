@@ -5,7 +5,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
-import org.pac4j.kerberos.profile.KerberosProfile;
 
 /**
  * <p>This class is the client to authenticate users directly based on Kerberos ticket.
@@ -23,8 +22,7 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials> {
         setAuthenticator(authenticator);
     }
 
-    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials,
-        KerberosProfile> profileCreator) {
+    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials> profileCreator) {
         setAuthenticator(authenticator);
         setProfileCreator(profileCreator);
     }
