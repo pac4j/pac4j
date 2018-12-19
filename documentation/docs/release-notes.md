@@ -6,7 +6,7 @@ title: Release notes&#58;
 **v3.5.0**:
 
 - Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
-
+- Updated the OpenID Connect/JWT dependencies (v6)
 
 **v3.4.0**:
 
