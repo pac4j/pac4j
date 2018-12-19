@@ -13,7 +13,7 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class SpringSecurityPropertiesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
+public class SpringSecurityPropertiesAuthorizationGenerator implements AuthorizationGenerator {
 
     public final static String DISABLED = "disabled";
     public final static String ENABLED = "enabled";
@@ -43,7 +43,7 @@ public class SpringSecurityPropertiesAuthorizationGenerator<U extends CommonProf
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
         final String id = profile.getId();
         final List<String> roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {

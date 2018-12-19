@@ -10,12 +10,12 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AuthenticatorProfileCreator<C extends Credentials, P extends CommonProfile> implements ProfileCreator<C, P> {
+public class AuthenticatorProfileCreator<C extends Credentials> implements ProfileCreator<C> {
 
     public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator<>();
 
     @Override
-    public P create(final C credentials, final WebContext context) {
-        return (P) credentials.getUserProfile();
+    public CommonProfile create(final C credentials, final WebContext context) {
+        return credentials.getUserProfile();
     }
 }

@@ -17,7 +17,6 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -38,7 +37,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfile> {
+public class DirectCasClient extends DirectClient<TokenCredentials> {
 
     private CasConfiguration configuration;
 
@@ -62,7 +61,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
         super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
     @Override

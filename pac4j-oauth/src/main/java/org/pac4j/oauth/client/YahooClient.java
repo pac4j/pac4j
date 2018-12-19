@@ -8,13 +8,13 @@ import org.pac4j.oauth.profile.yahoo.YahooProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Yahoo.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.yahoo.YahooProfile}.</p>
+ * <p>It returns a {@link YahooProfile}.</p>
  * <p>More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html</p>
  *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class YahooClient extends OAuth10Client<YahooProfile> {
+public class YahooClient extends OAuth10Client {
 
     public YahooClient() {
     }

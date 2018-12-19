@@ -11,22 +11,20 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
-import org.pac4j.kerberos.profile.KerberosProfile;
 
 /**
  * @author Vidmantas Zemleris, at Kensu.io
  *
  * @since 2.1.0
  */
-public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, KerberosProfile> {
+public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> {
     public IndirectKerberosClient() {}
 
     public IndirectKerberosClient(final Authenticator authenticator) {
         defaultAuthenticator(authenticator);
     }
 
-    public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials,
-        KerberosProfile> profileCreator) {
+    public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials> profileCreator) {
         defaultAuthenticator(authenticator);
         defaultProfileCreator(profileCreator);
     }

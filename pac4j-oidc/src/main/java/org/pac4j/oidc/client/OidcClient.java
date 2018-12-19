@@ -6,9 +6,8 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.credentials.extractor.OidcExtractor;
-import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
-import org.pac4j.oidc.profile.OidcProfile;
 
+import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.redirect.OidcRedirectActionBuilder;
 
@@ -21,7 +20,7 @@ import org.pac4j.oidc.redirect.OidcRedirectActionBuilder;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class OidcClient<U extends OidcProfile,V extends OidcConfiguration> extends IndirectClient<OidcCredentials, U> {
+public class OidcClient<V extends OidcConfiguration> extends IndirectClient<OidcCredentials> {
 
     private V configuration = null;
 
@@ -47,8 +46,8 @@ public class OidcClient<U extends OidcProfile,V extends OidcConfiguration> exten
         defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OidcExtractor(configuration, this));
         defaultAuthenticator(new OidcAuthenticator(configuration, this));
-        defaultProfileCreator(new OidcProfileCreator<>(configuration));
-        defaultLogoutActionBuilder(new OidcLogoutActionBuilder<U>(configuration));
+        defaultProfileCreator(new OidcProfileCreator(configuration));
+        defaultLogoutActionBuilder(new OidcLogoutActionBuilder(configuration));
     }
 
     @Override

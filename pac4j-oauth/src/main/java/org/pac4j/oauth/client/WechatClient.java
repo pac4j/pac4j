@@ -18,7 +18,7 @@ import org.pac4j.scribe.builder.api.WechatApi20;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class WechatClient extends OAuth20Client<WechatProfile> {
+public class WechatClient extends OAuth20Client {
 
     public enum WechatScope {
         /**

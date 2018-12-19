@@ -8,12 +8,12 @@ import org.pac4j.scribe.builder.api.BitBucketApi;
 /**
  * This class is the OAuth client to authenticate users in Bitbucket.
  *
- * It returns a {@link org.pac4j.oauth.profile.bitbucket.BitbucketProfile}.
+ * It returns a {@link BitbucketProfile}.
  *
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
-public class BitbucketClient extends OAuth10Client<BitbucketProfile> {
+public class BitbucketClient extends OAuth10Client {
 
     public BitbucketClient() {
     }

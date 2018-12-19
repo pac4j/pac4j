@@ -11,7 +11,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public interface ProfileCreator<C extends Credentials, U extends CommonProfile> {
+public interface ProfileCreator<C extends Credentials> {
 
     /**
      * Create a profile from a credentials.
@@ -20,5 +20,5 @@ public interface ProfileCreator<C extends Credentials, U extends CommonProfile> 
      * @param context the web context
      * @return the created profile
      */
-    U create(C credentials, WebContext context);
+    CommonProfile create(C credentials, WebContext context);
 }

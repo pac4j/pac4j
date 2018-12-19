@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswordCredentials, CasRestProfile> {
+public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswordCredentials> {
 
     protected CasConfiguration configuration;
 

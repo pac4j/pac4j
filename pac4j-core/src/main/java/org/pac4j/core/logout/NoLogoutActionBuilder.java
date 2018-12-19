@@ -10,12 +10,12 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class NoLogoutActionBuilder<U extends CommonProfile> implements LogoutActionBuilder<U> {
+public class NoLogoutActionBuilder implements LogoutActionBuilder {
 
-    public static final NoLogoutActionBuilder INSTANCE = new NoLogoutActionBuilder<>();
+    public static final NoLogoutActionBuilder INSTANCE = new NoLogoutActionBuilder();
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
         return null;
     }
 }

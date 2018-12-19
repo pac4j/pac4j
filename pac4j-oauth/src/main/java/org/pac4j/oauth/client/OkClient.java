@@ -4,13 +4,12 @@ import com.github.scribejava.apis.OdnoklassnikiApi;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.ok.OkConfiguration;
 import org.pac4j.oauth.profile.ok.OkProfileDefinition;
-import org.pac4j.oauth.profile.ok.OkProfile;
 
 /**
  * @author imayka (imayka[at]ymail[dot]com)
  * @since 1.8
  */
-public final class OkClient extends OAuth20Client<OkProfile> {
+public final class OkClient extends OAuth20Client {
 
     public OkClient() {
         configuration = new OkConfiguration();

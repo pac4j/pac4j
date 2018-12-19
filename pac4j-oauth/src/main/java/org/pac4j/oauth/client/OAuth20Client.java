@@ -6,7 +6,6 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.credentials.authenticator.OAuth20Authenticator;
 import org.pac4j.oauth.credentials.extractor.OAuth20CredentialsExtractor;
-import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 import org.pac4j.oauth.redirect.OAuth20RedirectActionBuilder;
 
@@ -16,7 +15,7 @@ import org.pac4j.oauth.redirect.OAuth20RedirectActionBuilder;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAuth20Credentials, U> {
+public class OAuth20Client extends IndirectClient<OAuth20Credentials> {
 
     protected OAuth20Configuration configuration = new OAuth20Configuration();
 

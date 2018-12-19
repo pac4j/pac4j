@@ -22,7 +22,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
  * <p>An extended access token can be requested by setting <code>true</code> on the
  * {@link FacebookConfiguration#setRequiresExtendedToken(boolean)} method.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.facebook.FacebookProfile}.</p>
+ * <p>It returns a {@link FacebookProfile}.</p>
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
  *
@@ -30,7 +30,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  * @author Mehdi BEN HAJ ABBES
  * @since 1.0.0
  */
-public class FacebookClient extends OAuth20Client<FacebookProfile> {
+public class FacebookClient extends OAuth20Client {
 
     public FacebookClient() {
         configuration = new FacebookConfiguration();

@@ -5,7 +5,6 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.openid.credentials.OpenIdCredentials;
 import org.pac4j.openid.credentials.authenticator.YahooAuthenticator;
 import org.pac4j.openid.credentials.extractor.YahooCredentialsExtractor;
-import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
 import org.pac4j.openid.redirect.YahooRedirectActionBuilder;
 
 /**
@@ -16,7 +15,7 @@ import org.pac4j.openid.redirect.YahooRedirectActionBuilder;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials, YahooOpenIdProfile> {
+public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials> {
 
     public final static String DISCOVERY_INFORMATION = "discoveryInformation";
 

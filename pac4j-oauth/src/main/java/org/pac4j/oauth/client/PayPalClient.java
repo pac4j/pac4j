@@ -11,13 +11,13 @@ import org.pac4j.scribe.builder.api.PayPalApi20;
  * <p>By default, the following <i>scope</i> is requested to PayPal : openid profile email address.</p>
  * <p>The <i>scope</i> can be defined to require permissions from the user and retrieve attributes from PayPal, by using the
  * {@link #setScope(String)} method.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.paypal.PayPalProfile}.</p>
+ * <p>It returns a {@link PayPalProfile}.</p>
  * <p>More information at https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/</p>
  *
  * @author Jerome Leleu
  * @since 1.4.2
  */
-public class PayPalClient extends OAuth20Client<PayPalProfile> {
+public class PayPalClient extends OAuth20Client {
 
     public final static String DEFAULT_SCOPE = "openid profile email address";
 

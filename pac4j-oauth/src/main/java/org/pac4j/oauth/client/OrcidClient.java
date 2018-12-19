@@ -7,13 +7,13 @@ import org.pac4j.scribe.builder.api.OrcidApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in ORCiD.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.</p>
+ * <p>It returns a {@link OrcidProfile}.</p>
  * <p>More information at http://support.orcid.org/knowledgebase/articles/175079-tutorial-retrieve-data-from-an-orcid-record-with</p>
  *
  * @author Jens Tinglev
  * @since 1.6.0
  */
-public class OrcidClient extends OAuth20Client<OrcidProfile> {
+public class OrcidClient extends OAuth20Client {
 
     protected static final String DEFAULT_SCOPE = "/authenticate";
 

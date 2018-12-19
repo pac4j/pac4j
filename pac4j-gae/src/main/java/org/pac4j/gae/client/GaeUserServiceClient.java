@@ -20,7 +20,7 @@ import com.google.appengine.api.users.UserServiceFactory;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, GaeUserServiceProfile> {
+public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
 
     private static final ProfileDefinition<GaeUserServiceProfile> PROFILE_DEFINITION
         = new CommonProfileDefinition<>(x -> new GaeUserServiceProfile());

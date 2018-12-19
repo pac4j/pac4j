@@ -10,7 +10,7 @@ import org.pac4j.core.profile.AnonymousProfile;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class AnonymousClient extends DirectClient<AnonymousCredentials, AnonymousProfile> {
+public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
     public final static AnonymousClient INSTANCE = new AnonymousClient();
 

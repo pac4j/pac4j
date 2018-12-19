@@ -7,13 +7,13 @@ import org.pac4j.scribe.builder.api.WordPressApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in WordPress.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.wordpress.WordPressProfile}.</p>
+ * <p>It returns a {@link WordPressProfile}.</p>
  * <p>More information at http://developer.wordpress.com/docs/oauth2/</p>
  *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressClient extends OAuth20Client<WordPressProfile> {
+public class WordPressClient extends OAuth20Client {
 
     public WordPressClient() {
     }

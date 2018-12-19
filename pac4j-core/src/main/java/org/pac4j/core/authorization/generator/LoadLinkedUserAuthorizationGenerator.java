@@ -13,16 +13,16 @@ import org.pac4j.core.util.InitializableObject;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> extends InitializableObject
-        implements AuthorizationGenerator<U> {
+public class LoadLinkedUserAuthorizationGenerator extends InitializableObject
+        implements AuthorizationGenerator {
 
-    private ProfileService<U> profileService;
+    private ProfileService profileService;
 
     private boolean failIfLinkedUserNotFound = true;
 
     public LoadLinkedUserAuthorizationGenerator() {}
 
-    public LoadLinkedUserAuthorizationGenerator(final ProfileService<U> profileService) {
+    public LoadLinkedUserAuthorizationGenerator(final ProfileService profileService) {
         this.profileService = profileService;
     }
 
@@ -32,10 +32,10 @@ public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> exten
     }
 
     @Override
-    public U generate(final WebContext context, final U profile) {
+    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
         init();
 
-        final U linkedProfile = profileService.findByLinkedId(profile.getId());
+        final CommonProfile linkedProfile = profileService.findByLinkedId(profile.getId());
 
         if (linkedProfile != null) {
             return linkedProfile;
@@ -49,11 +49,11 @@ public class LoadLinkedUserAuthorizationGenerator<U extends CommonProfile> exten
         }
     }
 
-    public ProfileService<U> getProfileService() {
+    public ProfileService getProfileService() {
         return profileService;
     }
 
-    public void setProfileService(final ProfileService<U> profileService) {
+    public void setProfileService(final ProfileService profileService) {
         this.profileService = profileService;
     }
 

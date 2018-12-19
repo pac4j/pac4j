@@ -34,7 +34,6 @@ import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
-import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.redirect.SAML2RedirectActionBuilder;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
@@ -54,7 +53,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
+public class SAML2Client extends IndirectClient<SAML2Credentials> {
 
     protected CredentialProvider credentialProvider;
 
@@ -118,7 +117,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         defaultRedirectActionBuilder(new SAML2RedirectActionBuilder(this));
         defaultCredentialsExtractor(new SAML2CredentialsExtractor(this));
         defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId(), this.configuration.getMappedAttributes()));
-        defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));
+        defaultLogoutActionBuilder(new SAML2LogoutActionBuilder(this));
     }
 
     protected void initSAMLProfileHandler() {

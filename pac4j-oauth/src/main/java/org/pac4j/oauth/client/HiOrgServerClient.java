@@ -4,7 +4,6 @@ import com.github.scribejava.apis.HiOrgServerApi20;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerConfiguration;
-import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
 
 /**
@@ -13,7 +12,7 @@ import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
  * @author Martin Böhmer
  * @since 3.2.0
  */
-public class HiOrgServerClient extends OAuth20Client<HiOrgServerProfile> {
+public class HiOrgServerClient extends OAuth20Client {
 
     private final static String LOGOUT_URL = "https://www.hiorg-server.de/logout.php";
 

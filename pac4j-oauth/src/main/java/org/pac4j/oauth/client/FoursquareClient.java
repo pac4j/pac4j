@@ -9,13 +9,13 @@ import org.pac4j.oauth.profile.foursquare.FoursquareProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Foursquare.
- * It returns a {@link org.pac4j.oauth.profile.foursquare.FoursquareProfile}.</p>
+ * It returns a {@link FoursquareProfile}.</p>
  * <p>More information at https://developer.foursquare.com/overview/auth.html</p>
  *
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareClient extends OAuth20Client<FoursquareProfile>{
+public class FoursquareClient extends OAuth20Client {
 
     public FoursquareClient() {}
 
