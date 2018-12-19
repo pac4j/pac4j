@@ -18,8 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Extract the authorization code on the callback.
@@ -48,7 +50,9 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
         final Map<String, String> parameters = retrieveParameters(context);
         AuthenticationResponse response;
         try {
-            response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
+            response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl),
+                    parameters.entrySet().stream().collect(
+                            Collectors.toMap(Map.Entry::getKey, e -> Collections.singletonList(e.getValue()))));
         } catch (final URISyntaxException | ParseException e) {
             throw new TechnicalException(e);
         }

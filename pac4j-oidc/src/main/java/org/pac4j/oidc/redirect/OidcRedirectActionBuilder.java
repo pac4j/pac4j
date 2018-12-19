@@ -13,8 +13,10 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Redirect to the OpenID Connect provider.
@@ -105,7 +107,8 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         // Build authentication request query string
         final String queryString;
         try {
-            queryString = AuthenticationRequest.parse(params).toQueryString();
+            queryString = AuthenticationRequest.parse(params.entrySet().stream().collect(
+                    Collectors.toMap(Map.Entry::getKey, e -> Collections.singletonList(e.getValue())))).toQueryString();
         } catch (Exception e) {
             throw new TechnicalException(e);
         }
