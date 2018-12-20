@@ -20,7 +20,7 @@ public class Pac4JPrincipal implements Principal {
 
     private final String name;
 
-    public Pac4JPrincipal(CommonProfile profile) {
+    public Pac4JPrincipal(final UserProfile profile) {
         String username = profile.getUsername();
         if (CommonHelper.isNotBlank(username)) {
             this.name = username;
