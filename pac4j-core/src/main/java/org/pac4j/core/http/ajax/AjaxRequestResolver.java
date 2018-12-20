@@ -2,6 +2,7 @@ package org.pac4j.core.http.ajax;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 
 /**
  * Compute if a HTTP request is an AJAX one and the appropriate response.
@@ -26,5 +27,5 @@ public interface AjaxRequestResolver {
      * @param context the web context
      * @return the AJAX response
      */
-    HttpAction buildAjaxResponse(HttpAction action, WebContext context);
+    HttpAction buildAjaxResponse(RedirectionAction action, WebContext context);
 }

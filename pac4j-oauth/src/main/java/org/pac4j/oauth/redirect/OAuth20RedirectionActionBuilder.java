@@ -3,7 +3,7 @@ package org.pac4j.oauth.redirect;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -35,7 +35,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public HttpAction redirect(final WebContext context) {
+    public RedirectionAction redirect(final WebContext context) {
         try {
 
             final String state;

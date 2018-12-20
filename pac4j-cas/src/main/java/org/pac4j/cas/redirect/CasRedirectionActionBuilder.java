@@ -3,7 +3,7 @@ package org.pac4j.cas.redirect;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
@@ -33,7 +33,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public HttpAction redirect(final WebContext context) {
+    public RedirectionAction redirect(final WebContext context) {
         final String computeLoginUrl = configuration.computeFinalLoginUrl(context);
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         final String redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, CasConfiguration.SERVICE_PARAMETER,

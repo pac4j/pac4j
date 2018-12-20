@@ -3,10 +3,7 @@ package org.pac4j.core.http.ajax;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
-import org.pac4j.core.exception.http.UnauthorizedAction;
+import org.pac4j.core.exception.http.*;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -26,7 +23,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     }
 
     @Override
-    public HttpAction buildAjaxResponse(final HttpAction action, final WebContext context) {
+    public HttpAction buildAjaxResponse(final RedirectionAction action, final WebContext context) {
         if (!(action instanceof TemporaryRedirectAction)) {
             throw UnauthorizedAction.INSTANCE;
         }

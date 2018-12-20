@@ -1,7 +1,7 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -12,7 +12,7 @@ import org.pac4j.core.profile.CommonProfile;
  */
 public final class MockIndirectClient extends IndirectClient<Credentials> {
 
-    private HttpAction redirectAction;
+    private RedirectionAction redirectAction;
 
     private ReturnCredentials returnCredentials;
 
@@ -22,12 +22,12 @@ public final class MockIndirectClient extends IndirectClient<Credentials> {
         setName(name);
     }
 
-    public MockIndirectClient(final String name, final HttpAction redirectAction, final Credentials credentials,
+    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final Credentials credentials,
                               final CommonProfile profile) {
         this(name, redirectAction, () -> credentials, profile);
     }
 
-    public MockIndirectClient(final String name, final HttpAction redirectAction, final ReturnCredentials returnCredentials,
+    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final ReturnCredentials returnCredentials,
                               final CommonProfile profile) {
         setName(name);
         this.redirectAction = redirectAction;

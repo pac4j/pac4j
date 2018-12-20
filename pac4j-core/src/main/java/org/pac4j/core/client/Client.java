@@ -2,7 +2,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectAction;
 
@@ -38,7 +38,7 @@ public interface Client<C extends Credentials> {
      * @param context the current web context
      * @return the performed redirection
      */
-    HttpAction redirect(WebContext context);
+    RedirectionAction redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at

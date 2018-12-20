@@ -3,7 +3,7 @@ package org.pac4j.oidc.redirect;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
-import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -65,7 +65,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public HttpAction redirect(final WebContext context) {
+    public RedirectionAction redirect(final WebContext context) {
         final Map<String, String> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);

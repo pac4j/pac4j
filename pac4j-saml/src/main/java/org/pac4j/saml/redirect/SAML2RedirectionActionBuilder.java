@@ -3,8 +3,8 @@ package org.pac4j.saml.redirect;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
@@ -35,7 +35,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public HttpAction redirect(final WebContext wc) {
+    public RedirectionAction redirect(final WebContext wc) {
         final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc);
         final String relayState = this.client.getStateGenerator().generateState(wc);
 
