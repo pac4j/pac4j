@@ -14,7 +14,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.SeeOtherAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
@@ -150,7 +150,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
         if (ContextHelper.isPost(context)) {
             return new SeeOtherAction(redirectUrl);
         } else {
-            return new TemporaryRedirectAction(redirectUrl);
+            return new FoundAction(redirectUrl);
         }
     }
 

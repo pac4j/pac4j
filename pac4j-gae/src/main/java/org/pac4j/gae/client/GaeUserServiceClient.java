@@ -3,7 +3,7 @@ package org.pac4j.gae.client;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
@@ -36,7 +36,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
             final String destinationUrl = computeFinalCallbackUrl(ctx);
             final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
                 : service.createLoginURL(destinationUrl, authDomain);
-            return new TemporaryRedirectAction(loginUrl);
+            return new FoundAction(loginUrl);
         });
         defaultCredentialsExtractor(ctx -> {
             final GaeUserCredentials credentials = new GaeUserCredentials();

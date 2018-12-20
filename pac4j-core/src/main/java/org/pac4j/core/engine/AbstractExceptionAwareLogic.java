@@ -2,7 +2,7 @@ package org.pac4j.core.engine;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.util.CommonHelper;
@@ -43,7 +43,7 @@ public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> exten
             return httpActionAdapter.adapt(action, context);
         } else {
             if (CommonHelper.isNotBlank(errorUrl)) {
-                final HttpAction action = new TemporaryRedirectAction(errorUrl);
+                final HttpAction action = new FoundAction(errorUrl);
                 return httpActionAdapter.adapt(action, context);
             } else {
                 throw runtimeException(e);

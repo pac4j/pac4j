@@ -5,7 +5,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -42,7 +42,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testBadClientOnRequest() {
         final MockIndirectClient client =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, FAKE_VALUE);
         TestsHelper.expectException(() -> finder.find(clients, context, NAME), TechnicalException.class,
@@ -61,7 +61,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
 
     private void internalTestClientOnRequestAllowedList(final String parameterName, final String names) {
         final MockIndirectClient client =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, parameterName);
         final List<Client> currentClients = finder.find(clients, context, names);
@@ -72,9 +72,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testClientOnRequestNotAllowed() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         TestsHelper.expectException(() -> finder.find(clients, context, CLIENT_NAME), TechnicalException.class,
@@ -84,9 +84,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testClientOnRequestNotAllowedList() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         TestsHelper.expectException(() -> finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE), TechnicalException.class,
@@ -96,9 +96,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testNoClientOnRequest() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
         final List<Client> currentClients = finder.find(clients, context, CLIENT_NAME);
@@ -109,9 +109,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testNoClientOnRequestBadDefaultClient() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> finder.find(clients, context, FAKE_VALUE), TechnicalException.class,
@@ -140,9 +140,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
 
     private void internalTestNoClientOnRequestList(final String names) {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
         final List<Client> currentClients = finder.find(clients, context, names);
@@ -154,9 +154,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testDefaultSecurityClients() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         clients.setDefaultSecurityClients(CLIENT_NAME);
         final List<Client> result = finder.find(clients, MockWebContext.create(), null);
@@ -167,7 +167,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testOneClientAsDefault() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1);
         final List<Client> result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
@@ -177,7 +177,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
     @Test
     public void testBlankClientRequested() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1);
         final List<Client> result = finder.find(clients, MockWebContext.create(), "");
         assertEquals(0, result.size());

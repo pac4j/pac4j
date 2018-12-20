@@ -24,11 +24,11 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
     @Override
     public HttpAction buildAjaxResponse(final RedirectionAction action, final WebContext context) {
-        if (!(action instanceof TemporaryRedirectAction)) {
+        if (!(action instanceof FoundAction)) {
             throw UnauthorizedAction.INSTANCE;
         }
 
-        final String url = ((TemporaryRedirectAction) action).getLocation();
+        final String url = ((FoundAction) action).getLocation();
 
         if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
             if (CommonHelper.isNotBlank(url)) {

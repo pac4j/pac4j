@@ -5,7 +5,7 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
@@ -48,6 +48,6 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
             return new OkAction(content);
         }
         final String location = adapter.getRedirectUrl();
-        return new TemporaryRedirectAction(location);
+        return new FoundAction(location);
     }
 }

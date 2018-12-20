@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -44,7 +44,7 @@ public final class ConfigTests implements TestsConstants {
     @Test
     public void testConstructor() {
         final MockIndirectClient client =
-            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Config config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));
