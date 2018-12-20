@@ -163,7 +163,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             return handleException(e, httpActionAdapter, context);
         }
 
-        return httpActionAdapter.adapt(action.getCode(), context);
+        return httpActionAdapter.adapt(action, context);
     }
 
     /**

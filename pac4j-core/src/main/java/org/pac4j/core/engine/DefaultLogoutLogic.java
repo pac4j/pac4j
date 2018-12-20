@@ -145,7 +145,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             return handleException(e, httpActionAdapter, context);
         }
 
-        return httpActionAdapter.adapt(action.getCode(), context);
+        return httpActionAdapter.adapt(action, context);
     }
 
     @Override

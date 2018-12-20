@@ -1,6 +1,7 @@
 package org.pac4j.core.http.adapter;
 
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.exception.HttpAction;
 
 /**
  * No-operation HTTP action adapter for the {@link JEEContext}.
@@ -13,7 +14,7 @@ public class JEENopHttpActionAdapter implements HttpActionAdapter<Object, JEECon
     public static final JEENopHttpActionAdapter INSTANCE = new JEENopHttpActionAdapter();
 
     @Override
-    public Object adapt(int code, JEEContext context) {
+    public Object adapt(final HttpAction action, final JEEContext context) {
         return null;
     }
 }

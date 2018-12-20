@@ -98,7 +98,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             return handleException(e, httpActionAdapter, context);
         }
 
-        return httpActionAdapter.adapt(action.getCode(), context);
+        return httpActionAdapter.adapt(action, context);
     }
 
     protected void saveUserProfile(final C context, final Config config, final UserProfile profile,
