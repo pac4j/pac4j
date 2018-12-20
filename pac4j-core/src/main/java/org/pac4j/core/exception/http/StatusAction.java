@@ -1,7 +1,7 @@
 package org.pac4j.core.exception.http;
 
 /**
- * An HTTP action.
+ * An HTTP action with just a specific status.
  *
  * @author Jerome Leleu
  * @since 4.0.0

@@ -3,7 +3,7 @@ package org.pac4j.core.exception.http;
 import org.pac4j.core.context.HttpConstants;
 
 /**
- * A redirection HTTP action.
+ * A temporary redirect HTTP action.
  *
  * @author Jerome Leleu
  * @since 4.0.0

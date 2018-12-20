@@ -77,7 +77,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
 
     /**
      * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
-     * an AJAX one, an unauthorized response is returned instead of a "redirection".</p>
+     * an AJAX one, an unauthorized response is thrown instead of a "redirection".</p>
      *
      * @param context context
      * @return the "redirection" action

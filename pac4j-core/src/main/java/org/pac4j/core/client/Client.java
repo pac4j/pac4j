@@ -35,7 +35,7 @@ public interface Client<C extends Credentials> {
      * <p>Redirect to the authentication provider for an indirect client.</p>
      *
      * @param context the current web context
-     * @return the performed redirection
+     * @return the redirection to perform
      */
     RedirectionAction redirect(WebContext context);
 
@@ -63,7 +63,7 @@ public interface Client<C extends Credentials> {
      * @param context the current web context
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
-     * @return the redirection
+     * @return the redirection to perform
      */
     RedirectionAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
 }
