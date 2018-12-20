@@ -3,7 +3,7 @@ package org.pac4j.core.logout.handler;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.ProfileManagerFactoryAware;
+import org.pac4j.core.profile.factory.ProfileManagerFactoryAware2;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactoryAware<C> implements LogoutHandler<C> {
+public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactoryAware2<C> implements LogoutHandler<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

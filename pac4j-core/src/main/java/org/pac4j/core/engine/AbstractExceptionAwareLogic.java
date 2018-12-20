@@ -3,7 +3,7 @@ package org.pac4j.core.engine;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.ProfileManagerFactoryAware;
+import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -14,9 +14,11 @@ When the user is successfully authenticated by *pac4j*, his data are retrieved f
 - a remember-me nature (`isRemembered()`)
 - a linked identifier (`getLinkedId()`)
 
-In fact, the root class of the profiles hierarchy is the [`UserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java). Though, it's an abstract class which is never referenced and used directly.
+In fact, the root class of the profiles hierarchy is the [`BasicUserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/BasicUserProfile.java). It implements the [`UserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java) interface.
 
-The first user profile which must be considered is the [`CommonProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java) which defines the most common methods available in most profiles.
+This is for specific use cases where you want a minimal user profile.
+
+In the *pac4j* environment, the first user profile which must be considered is the [`CommonProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java) which defines the most common methods available in most profiles.
 
 ## 1) Identifier
 
