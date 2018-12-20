@@ -9,6 +9,8 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
@@ -45,13 +47,15 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private LinkedHashMap<String, CommonProfile> profiles;
 
+    private HttpAction action;
+
     @Before
     public void setUp() {
         logic = new DefaultLogoutLogic<>();
         context = MockWebContext.create();
         config = new Config();
         config.setClients(new Clients());
-        httpActionAdapter = (code, ctx) -> null;
+        httpActionAdapter = (act, ctx) -> { action = act; return null; };
         defaultUrl = null;
         logoutUrlPattern = null;
         localLogout = null;
@@ -110,8 +114,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profiles.put(NAME, new CommonProfile());
         addProfilesToContext();
         call();
-        assertEquals(204, context.getResponseStatus());
-        assertEquals("", context.getResponseContent());
+        assertEquals(204, action.getCode());
         expectedNProfiles(0);
     }
 
@@ -121,8 +124,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         addProfilesToContext();
         localLogout = false;
         call();
-        assertEquals(204, context.getResponseStatus());
-        assertEquals("", context.getResponseContent());
+        assertEquals(204, action.getCode());
         expectedNProfiles(1);
     }
 
@@ -133,8 +135,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         addProfilesToContext();
         localLogout = false;
         call();
-        assertEquals(204, context.getResponseStatus());
-        assertEquals("", context.getResponseContent());
+        assertEquals(204, action.getCode());
         expectedNProfiles(0);
     }
 
@@ -152,8 +153,8 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         context.addRequestParameter(Pac4jConstants.URL, CALLBACK_URL);
         logoutUrlPattern = ".*";
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(CALLBACK_URL + "?p=" + CALLBACK_URL, context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL + "?p=" + CALLBACK_URL, ((TemporaryRedirectAction) action).getLocation());
         expectedNProfiles(0);
     }
 
@@ -170,8 +171,8 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         centralLogout = true;
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(CALLBACK_URL + "?p=null", context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL + "?p=null", ((TemporaryRedirectAction) action).getLocation());
         expectedNProfiles(0);
     }
 
@@ -179,16 +180,16 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     public void testLogoutWithDefaultUrl() {
         defaultUrl = CALLBACK_URL;
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(CALLBACK_URL, context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL, ((TemporaryRedirectAction) action).getLocation());
     }
 
     @Test
     public void testLogoutWithGoodUrl() {
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(PATH, context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(PATH, ((TemporaryRedirectAction) action).getLocation());
     }
 
     @Test
@@ -196,7 +197,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         logoutUrlPattern = VALUE;
         call();
-        assertEquals(204, context.getResponseStatus());
+        assertEquals(204, action.getCode());
         assertEquals("", context.getResponseContent());
     }
 
@@ -206,7 +207,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         defaultUrl = CALLBACK_URL;
         logoutUrlPattern = VALUE;
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(CALLBACK_URL, context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL, ((TemporaryRedirectAction) action).getLocation());
     }
 }

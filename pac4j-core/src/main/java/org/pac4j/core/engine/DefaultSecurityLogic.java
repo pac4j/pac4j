@@ -14,7 +14,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
 import org.pac4j.core.engine.decision.ProfileStorageDecision;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.ForbiddenAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -177,7 +179,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<UserProfile> profiles,
                                    final String authorizers) {
-        return HttpAction.forbidden(context);
+        return ForbiddenAction.INSTANCE;
     }
 
     /**
@@ -225,7 +227,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @return an unauthorized error
      */
     protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
-        return HttpAction.unauthorized(context);
+        return UnauthorizedAction.INSTANCE;
     }
 
     public ClientFinder getClientFinder() {

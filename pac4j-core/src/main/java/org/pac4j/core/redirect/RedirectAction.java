@@ -2,7 +2,9 @@ package org.pac4j.core.redirect;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Map;
@@ -79,9 +81,9 @@ public class RedirectAction {
      */
     public HttpAction perform(final WebContext context) {
         if (type == RedirectAction.RedirectType.REDIRECT) {
-            return HttpAction.redirect(context, location);
+            return new TemporaryRedirectAction(location);
         } else {
-            return HttpAction.ok(context, content);
+            return new OkAction(content);
         }
     }
 

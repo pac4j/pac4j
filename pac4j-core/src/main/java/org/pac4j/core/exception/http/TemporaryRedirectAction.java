@@ -1,0 +1,23 @@
+package org.pac4j.core.exception.http;
+
+import org.pac4j.core.context.HttpConstants;
+
+/**
+ * A redirection HTTP action.
+ *
+ * @author Jerome Leleu
+ * @since 4.0.0
+ */
+public class TemporaryRedirectAction extends HttpAction {
+
+    private final String location;
+
+    public TemporaryRedirectAction(final String location) {
+        super(HttpConstants.TEMP_REDIRECT);
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+}

@@ -3,7 +3,7 @@ package org.pac4j.core.http.ajax;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 
@@ -29,7 +29,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
-            throw HttpAction.unauthorized(context);
+            throw UnauthorizedAction.INSTANCE;
         }
 
         final StringBuilder buffer = new StringBuilder();

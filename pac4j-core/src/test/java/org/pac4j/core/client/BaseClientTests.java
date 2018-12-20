@@ -4,7 +4,8 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
@@ -26,8 +27,8 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context);
-        final String redirectionUrl = context.getResponseLocation();
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(context);
+        final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
         final Credentials credentials = client.getCredentials(context);
         assertNull(credentials);
@@ -39,8 +40,8 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context);
-        final String redirectionUrl = context.getResponseLocation();
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(context);
+        final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
 
@@ -62,7 +63,6 @@ public final class BaseClientTests implements TestsConstants {
                                         .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
         final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.redirect(context));
         assertEquals(401, e.getCode());
-        assertEquals(401, context.getResponseStatus());
     }
 
     @Test
@@ -74,7 +74,6 @@ public final class BaseClientTests implements TestsConstants {
         context.getSessionStore().set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.redirect(context));
         assertEquals(401, e.getCode());
-        assertEquals(401, context.getResponseStatus());
     }
 
     @Test

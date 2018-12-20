@@ -1,7 +1,7 @@
 package org.pac4j.core.http.adapter;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
 
 /**
  * HTTP action adapter.
