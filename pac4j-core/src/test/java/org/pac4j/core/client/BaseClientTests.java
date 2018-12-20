@@ -7,7 +7,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -24,7 +23,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testDirectClient() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         final TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(context);
@@ -37,7 +36,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testIndirectClientWithImmediate() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         final TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(context);
@@ -48,7 +47,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testNullCredentials() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
         assertNull(client.getUserProfile(null, context));
@@ -57,7 +56,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testAjaxRequest() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()
                                         .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
@@ -68,7 +67,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testAlreadyTried() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         context.getSessionStore().set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
@@ -79,7 +78,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testSaveAlreadyTried() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
@@ -89,7 +88,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testStateParameter() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> client.redirect(context));
     }

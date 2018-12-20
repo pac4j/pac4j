@@ -14,7 +14,6 @@ import org.pac4j.core.exception.http.StatusAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -269,7 +268,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testRedirectByIndirectClient() {
         final IndirectClient indirectClient =
-            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(PAC4J_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         clients = NAME;
         call();
@@ -280,9 +279,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testDoubleIndirectClientOneChosen() {
         final IndirectClient indirectClient =
-            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(PAC4J_URL), new MockCredentials(), new CommonProfile());
         final IndirectClient indirectClient2 =
-            new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(VALUE, new TemporaryRedirectAction(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME + "," + VALUE;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
@@ -294,9 +293,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testDoubleIndirectClientBadOneChosen() {
         final IndirectClient indirectClient =
-            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(PAC4J_URL), new MockCredentials(), new CommonProfile());
         final IndirectClient indirectClient2 =
-            new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(VALUE, new TemporaryRedirectAction(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);

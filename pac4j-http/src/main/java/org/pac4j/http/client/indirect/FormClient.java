@@ -3,7 +3,6 @@ package org.pac4j.http.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -64,9 +63,9 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
 
-        defaultRedirectActionBuilder(ctx -> {
+        defaultRedirectionActionBuilder(ctx -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
-            return RedirectAction.redirect(finalLoginUrl);
+            return new TemporaryRedirectAction(finalLoginUrl);
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
@@ -147,7 +146,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "redirectActionBuilder", getRedirectActionBuilder(), "extractor", getCredentialsExtractor(),
+                "redirectActionBuilder", getRedirectionActionBuilder(), "extractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

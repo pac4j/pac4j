@@ -5,9 +5,9 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
@@ -31,7 +31,7 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> 
 
     @Override
     protected void clientInit() {
-        defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
+        defaultRedirectionActionBuilder(webContext -> new TemporaryRedirectAction(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new KerberosExtractor());
     }
 

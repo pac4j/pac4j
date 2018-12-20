@@ -8,7 +8,7 @@ import org.pac4j.core.context.HttpConstants;
  * @author Jerome Leleu
  * @since 4.0.0
  */
-public class OkAction extends HttpAction {
+public class OkAction extends RedirectionAction {
 
     private final String content;
 

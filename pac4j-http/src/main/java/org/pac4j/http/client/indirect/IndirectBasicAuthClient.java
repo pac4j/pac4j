@@ -3,8 +3,8 @@ package org.pac4j.http.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -48,7 +48,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     protected void clientInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
+        defaultRedirectionActionBuilder(webContext ->  new TemporaryRedirectAction(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new BasicAuthExtractor());
     }
 
@@ -91,7 +91,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     public String toString() {
         return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "redirectActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
             "realmName", this.realmName);
