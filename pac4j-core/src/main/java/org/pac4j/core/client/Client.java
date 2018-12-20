@@ -2,9 +2,8 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * <p>This interface is the core class of the library. It represents an authentication mechanism to validate user's credentials and
@@ -36,9 +35,9 @@ public interface Client<C extends Credentials> {
      * <p>Redirect to the authentication provider for an indirect client.</p>
      *
      * @param context the current web context
-     * @return the performed redirection
+     * @return the redirection to perform
      */
-    HttpAction redirect(WebContext context);
+    RedirectionAction redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
@@ -64,7 +63,7 @@ public interface Client<C extends Credentials> {
      * @param context the current web context
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
-     * @return the redirection
+     * @return the redirection to perform
      */
-    RedirectAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
+    RedirectionAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
 }

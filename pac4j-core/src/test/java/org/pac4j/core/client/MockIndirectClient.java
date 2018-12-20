@@ -1,8 +1,8 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * Mock an indirect client.
@@ -12,7 +12,7 @@ import org.pac4j.core.redirect.RedirectAction;
  */
 public final class MockIndirectClient extends IndirectClient<Credentials> {
 
-    private RedirectAction redirectAction;
+    private RedirectionAction redirectAction;
 
     private ReturnCredentials returnCredentials;
 
@@ -22,12 +22,12 @@ public final class MockIndirectClient extends IndirectClient<Credentials> {
         setName(name);
     }
 
-    public MockIndirectClient(final String name, final RedirectAction redirectAction, final Credentials credentials,
+    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final Credentials credentials,
                               final CommonProfile profile) {
         this(name, redirectAction, () -> credentials, profile);
     }
 
-    public MockIndirectClient(final String name, final RedirectAction redirectAction, final ReturnCredentials returnCredentials,
+    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final ReturnCredentials returnCredentials,
                               final CommonProfile profile) {
         setName(name);
         this.redirectAction = redirectAction;
@@ -37,7 +37,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials> {
 
     @Override
     protected void clientInit() {
-        defaultRedirectActionBuilder(ctx -> redirectAction);
+        defaultRedirectionActionBuilder(ctx -> redirectAction);
         defaultCredentialsExtractor(ctx -> returnCredentials.get());
         defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
         defaultLogoutActionBuilder(getLogoutActionBuilder());

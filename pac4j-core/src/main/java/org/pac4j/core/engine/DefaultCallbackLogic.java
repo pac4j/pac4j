@@ -11,7 +11,8 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
@@ -98,7 +99,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             return handleException(e, httpActionAdapter, context);
         }
 
-        return httpActionAdapter.adapt(action.getCode(), context);
+        return httpActionAdapter.adapt(action, context);
     }
 
     protected void saveUserProfile(final C context, final Config config, final UserProfile profile,
@@ -144,7 +145,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             redirectUrl = requestedUrl;
         }
         logger.debug("redirectUrl: {}", redirectUrl);
-        return HttpAction.redirect(context, redirectUrl);
+        return new TemporaryRedirectAction(redirectUrl);
     }
 
     public ClientFinder getClientFinder() {

@@ -3,10 +3,11 @@ package org.pac4j.oidc.redirect;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
-import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.redirect.RedirectActionBuilder;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -24,9 +25,9 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcRedirectActionBuilder implements RedirectActionBuilder {
+public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(OidcRedirectActionBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(OidcRedirectionActionBuilder.class);
 
     protected OidcConfiguration configuration;
 
@@ -34,7 +35,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
 
     private Map<String, String> authParams;
 
-    public OidcRedirectActionBuilder(final OidcConfiguration configuration, final OidcClient client) {
+    public OidcRedirectionActionBuilder(final OidcConfiguration configuration, final OidcClient client) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotNull("client", client);
         this.configuration = configuration;
@@ -64,7 +65,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
     }
 
     @Override
-    public RedirectAction redirect(final WebContext context) {
+    public RedirectionAction redirect(final WebContext context) {
         final Map<String, String> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
@@ -78,7 +79,7 @@ public class OidcRedirectActionBuilder implements RedirectActionBuilder {
         final String location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
-        return RedirectAction.redirect(location);
+        return new TemporaryRedirectAction(location);
     }
 
     protected Map<String, String> buildParams() {

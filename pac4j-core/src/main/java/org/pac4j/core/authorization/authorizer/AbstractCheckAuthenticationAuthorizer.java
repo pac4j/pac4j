@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.profile.UserProfile;
 
 /**
@@ -23,7 +23,7 @@ public abstract class AbstractCheckAuthenticationAuthorizer<U extends UserProfil
     @Override
     protected boolean handleError(final WebContext context) {
         if (this.redirectionUrl != null) {
-            throw HttpAction.redirect(context, this.redirectionUrl);
+            throw new TemporaryRedirectAction(this.redirectionUrl);
         } else {
             return false;
         }

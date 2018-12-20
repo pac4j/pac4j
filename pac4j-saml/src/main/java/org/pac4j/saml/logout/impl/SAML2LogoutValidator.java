@@ -5,9 +5,8 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
@@ -38,7 +37,6 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     @Override
     public Credentials validate(final SAML2MessageContext context) {
 
-        final WebContext webContext = context.getWebContext();
         final SAMLObject message = context.getMessage();
 
         // IDP-initiated
@@ -56,7 +54,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             validateLogoutResponse(logoutResponse, context, engine);
 
             // nothing to reply to the logout response
-            throw HttpAction.ok(webContext, "");
+            throw new OkAction("");
 
         } else {
             throw new SAMLException("Must be a LogoutRequest or LogoutResponse type");

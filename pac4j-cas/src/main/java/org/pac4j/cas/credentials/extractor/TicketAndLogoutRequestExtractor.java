@@ -3,13 +3,14 @@ package org.pac4j.cas.credentials.extractor;
 import java.util.Base64;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.core.exception.http.NoContentAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
                 logoutHandler.destroySessionBack(context, ticket);
             }
             logger.debug("back logout request: no credential returned");
-            throw HttpAction.noContent(context);
+            throw NoContentAction.INSTANCE;
 
         } else if (isFrontLogoutRequest(context)) {
             final String logoutMessage = uncompressLogoutMessage(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
@@ -134,7 +135,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             buffer.append(CommonUtils.urlEncode(relayStateValue));
             final String redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
-            throw HttpAction.redirect(context, redirectUrl);
+            throw new TemporaryRedirectAction(redirectUrl);
         }
     }
 }

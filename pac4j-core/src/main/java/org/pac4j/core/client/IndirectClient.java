@@ -4,7 +4,9 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
@@ -14,8 +16,7 @@ import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.core.redirect.RedirectActionBuilder;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -37,7 +38,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
 
     private AjaxRequestResolver ajaxRequestResolver;
 
-    private RedirectActionBuilder redirectActionBuilder;
+    private RedirectionActionBuilder redirectionActionBuilder;
 
     private LogoutActionBuilder logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
@@ -58,7 +59,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         clientInit();
 
         // ensures components have been properly initialized
-        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
+        CommonHelper.assertNotNull("redirectionActionBuilder", this.redirectionActionBuilder);
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
         CommonHelper.assertNotNull("profileCreator", getProfileCreator());
@@ -74,39 +75,32 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
      */
     protected abstract void clientInit();
 
-    @Override
-    public final HttpAction redirect(final WebContext context) {
-        final RedirectAction action = getRedirectAction(context);
-        return action.perform(context);
-    }
-
     /**
-     * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
-     * {@link #redirect(WebContext)} should be generally called instead.</p>
      * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
-     * an AJAX one, an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
+     * an AJAX one, an unauthorized response is thrown instead of a "redirection".</p>
      *
      * @param context context
-     * @return the redirection action
+     * @return the "redirection" action
      */
-    public RedirectAction getRedirectAction(final WebContext context) {
+    @Override
+    public final RedirectionAction redirect(final WebContext context) {
         init();
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning the appropriate action");
-            RedirectAction action = redirectActionBuilder.redirect(context);
+            final RedirectionAction action = redirectionActionBuilder.redirect(context);
             cleanRequestedUrl(context);
-            return ajaxRequestResolver.buildAjaxResponse(action.getLocation(), context);
+            throw ajaxRequestResolver.buildAjaxResponse(action, context);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw HttpAction.unauthorized(context);
+            throw UnauthorizedAction.INSTANCE;
         }
 
-        return redirectActionBuilder.redirect(context);
+        return redirectionActionBuilder.redirect(context);
     }
 
     private void cleanRequestedUrl(final WebContext context) {
@@ -148,7 +142,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public final RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         init();
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
@@ -187,13 +181,13 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         this.ajaxRequestResolver = ajaxRequestResolver;
     }
 
-    public RedirectActionBuilder getRedirectActionBuilder() {
-        return redirectActionBuilder;
+    public RedirectionActionBuilder getRedirectionActionBuilder() {
+        return redirectionActionBuilder;
     }
 
-    protected void defaultRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
-        if (this.redirectActionBuilder == null) {
-            this.redirectActionBuilder = redirectActionBuilder;
+    protected void defaultRedirectionActionBuilder(final RedirectionActionBuilder redirectActionBuilder) {
+        if (this.redirectionActionBuilder == null) {
+            this.redirectionActionBuilder = redirectActionBuilder;
         }
     }
 
@@ -207,8 +201,8 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         }
     }
 
-    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
-        this.redirectActionBuilder = redirectActionBuilder;
+    public void setRedirectionActionBuilder(final RedirectionActionBuilder redirectionActionBuilder) {
+        this.redirectionActionBuilder = redirectionActionBuilder;
     }
 
     public void setLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
@@ -219,7 +213,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
                 "urlResolver", this.urlResolver, "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver",
-                this.ajaxRequestResolver, "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor",
+                this.ajaxRequestResolver, "redirectionActionBuilder", this.redirectionActionBuilder, "credentialsExtractor",
                 getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
                 "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
     }

@@ -3,8 +3,7 @@ package org.pac4j.core.http.ajax;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.exception.http.*;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -24,12 +23,18 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     }
 
     @Override
-    public RedirectAction buildAjaxResponse(final String url,final WebContext context) {
+    public HttpAction buildAjaxResponse(final RedirectionAction action, final WebContext context) {
+        if (!(action instanceof TemporaryRedirectAction)) {
+            throw UnauthorizedAction.INSTANCE;
+        }
+
+        final String url = ((TemporaryRedirectAction) action).getLocation();
+
         if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
-            throw HttpAction.unauthorized(context);
+            throw UnauthorizedAction.INSTANCE;
         }
 
         final StringBuilder buffer = new StringBuilder();
@@ -38,6 +43,6 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");
         buffer.append("</partial-response>");
 
-        return RedirectAction.success(buffer.toString());
+        return new OkAction(buffer.toString());
     }
 }

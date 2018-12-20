@@ -7,7 +7,7 @@ import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.credentials.authenticator.OAuth20Authenticator;
 import org.pac4j.oauth.credentials.extractor.OAuth20CredentialsExtractor;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
-import org.pac4j.oauth.redirect.OAuth20RedirectActionBuilder;
+import org.pac4j.oauth.redirect.OAuth20RedirectionActionBuilder;
 
 /**
  * The generic OAuth 2.0 client.
@@ -21,7 +21,7 @@ public class OAuth20Client extends IndirectClient<OAuth20Credentials> {
 
     @Override
     protected void clientInit() {
-        defaultRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration, this));
+        defaultRedirectionActionBuilder(new OAuth20RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration, this));
         defaultAuthenticator(new OAuth20Authenticator(configuration, this));
         defaultProfileCreator(new OAuth20ProfileCreator<>(configuration, this));
@@ -55,7 +55,7 @@ public class OAuth20Client extends IndirectClient<OAuth20Credentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", getCallbackUrl(),
                 "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
-                "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+                "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", this.configuration);
     }
 }

@@ -1,12 +1,11 @@
 package org.pac4j.http.client.indirect;
 
 import org.junit.Test;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -65,46 +64,42 @@ public final class FormClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
-        formClient.redirect(context);
-        assertEquals(LOGIN_URL, context.getResponseLocation());
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) formClient.redirect(context);
+        assertEquals(LOGIN_URL, action.getLocation());
     }
 
     @Test
     public void testGetCredentialsMissingUsername() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() ->
-                formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)),
-                HttpAction.class, "Performing a 302 HTTP action");
-        assertEquals(302, context.getResponseStatus());
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) TestsHelper.expectException(
+            () -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)));
+        assertEquals(302, action.getCode());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
-                .get(HttpConstants.LOCATION_HEADER));
+                + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, action.getLocation());
     }
 
     @Test
     public void testGetCredentialsMissingPassword() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() ->
-                formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
-                HttpAction.class, "Performing a 302 HTTP action");
-        assertEquals(302, context.getResponseStatus());
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) TestsHelper.expectException(
+            () -> formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)));
+        assertEquals(302, action.getCode());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
-               + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+               + FormClient.MISSING_FIELD_ERROR, action.getLocation());
     }
 
     @Test
     public void testGetCredentials() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
-                HttpAction.class, "Performing a 302 HTTP action");
-        assertEquals(302, context.getResponseStatus());
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) TestsHelper.expectException(
+            () -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)));
+        assertEquals(302, action.getCode());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
-                .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+                + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), action.getLocation());
     }
 
     @Test
