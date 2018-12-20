@@ -3,10 +3,12 @@ package org.pac4j.saml.logout;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.state.StateGenerator;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -47,7 +49,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         if (currentProfile instanceof SAML2Profile) {
             final SAML2Profile saml2Profile = (SAML2Profile) currentProfile;
             final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
@@ -62,10 +64,10 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
                 final String content = adapter.getOutgoingContent();
-                return RedirectAction.success(content);
+                return new OkAction(content);
             }
             final String location = adapter.getRedirectUrl();
-            return RedirectAction.redirect(location);
+            return new TemporaryRedirectAction(location);
         } else {
             return null;
         }

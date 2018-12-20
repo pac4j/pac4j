@@ -13,7 +13,6 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -145,7 +144,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutActionBuilder((ctx, p, targetUrl) -> RedirectAction.redirect(CALLBACK_URL + "?p=" + targetUrl));
+        client.setLogoutActionBuilder((ctx, p, targetUrl) -> new TemporaryRedirectAction(CALLBACK_URL + "?p=" + targetUrl));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();
@@ -164,7 +163,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutActionBuilder((ctx, p, targetUrl) -> RedirectAction.redirect(CALLBACK_URL + "?p=" + targetUrl));
+        client.setLogoutActionBuilder((ctx, p, targetUrl) -> new TemporaryRedirectAction(CALLBACK_URL + "?p=" + targetUrl));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();

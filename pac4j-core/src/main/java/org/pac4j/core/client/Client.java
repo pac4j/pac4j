@@ -4,7 +4,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * <p>This interface is the core class of the library. It represents an authentication mechanism to validate user's credentials and
@@ -66,5 +65,5 @@ public interface Client<C extends Credentials> {
      * @param targetUrl the target url after logout
      * @return the redirection
      */
-    RedirectAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
+    RedirectionAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
 }

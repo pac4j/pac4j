@@ -9,11 +9,11 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.NoContentAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.redirect.RedirectAction;
 
 import java.util.regex.Pattern;
 import java.util.List;
@@ -132,10 +132,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                             } else {
                                 targetUrl = null;
                             }
-                            final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
+                            final RedirectionAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
                             logger.debug("Logout action: {}", logoutAction);
                             if (logoutAction != null) {
-                                action = logoutAction.perform(context);
+                                action = logoutAction;
                                 break;
                             }
                         }
