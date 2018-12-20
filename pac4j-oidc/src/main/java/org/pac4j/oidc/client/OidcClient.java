@@ -54,7 +54,7 @@ public class OidcClient<V extends OidcConfiguration> extends IndirectClient<Oidc
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
             "configuration", configuration);

@@ -55,7 +55,7 @@ public class OAuth10Client extends IndirectClient<OAuth10Credentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", getCallbackUrl(),
                 "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
-                "redirectActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+                "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", this.configuration);
     }
 }

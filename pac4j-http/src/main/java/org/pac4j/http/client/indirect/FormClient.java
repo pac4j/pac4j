@@ -146,7 +146,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "redirectActionBuilder", getRedirectionActionBuilder(), "extractor", getCredentialsExtractor(),
+                "redirectionActionBuilder", getRedirectionActionBuilder(), "extractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

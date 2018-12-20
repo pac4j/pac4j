@@ -91,7 +91,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     public String toString() {
         return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
             "realmName", this.realmName);
