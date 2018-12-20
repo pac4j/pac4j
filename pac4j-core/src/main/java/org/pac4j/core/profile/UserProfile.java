@@ -1,6 +1,7 @@
 package org.pac4j.core.profile;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Set;
 
@@ -14,6 +15,10 @@ public interface UserProfile extends Serializable {
 
     default String getId() {
         throw new UnsupportedOperationException("Your user profile must implement the getId method");
+    }
+
+    default String getUsername() {
+        return null;
     }
 
     default Object getAttribute(String name) {
@@ -62,5 +67,9 @@ public interface UserProfile extends Serializable {
 
     default boolean isExpired() {
         return false;
+    }
+
+    default Principal asPrincipal() {
+        return new Pac4JPrincipal(this);
     }
 }
