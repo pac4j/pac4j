@@ -14,6 +14,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.SeeOtherAction;
 import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
@@ -143,6 +144,16 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallbackWithOriginallyRequestedUrl() {
+        internalTestCallbackWithOriginallyRequestedUrl(302);
+    }
+
+    @Test
+    public void testCallbackWithOriginallyRequestedUrlAndPostRequest() {
+        request.setMethod("POST");
+        internalTestCallbackWithOriginallyRequestedUrl(303);
+    }
+
+    private void internalTestCallbackWithOriginallyRequestedUrl(final int code) {
         HttpSession session = request.getSession();
         final String originalSessionId = session.getId();
         session.setAttribute(Pac4jConstants.REQUESTED_URL, PAC4J_URL);
@@ -159,8 +170,12 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
-        assertEquals(302, action.getCode());
-        assertEquals(PAC4J_URL, ((TemporaryRedirectAction) action).getLocation());
+        assertEquals(code, action.getCode());
+        if (action instanceof SeeOtherAction) {
+            assertEquals(PAC4J_URL, ((SeeOtherAction) action).getLocation());
+        } else {
+            assertEquals(PAC4J_URL, ((TemporaryRedirectAction) action).getLocation());
+        }
     }
 
     @Test
