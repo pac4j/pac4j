@@ -7,7 +7,7 @@ import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.credentials.authenticator.OAuth10Authenticator;
 import org.pac4j.oauth.credentials.extractor.OAuth10CredentialsExtractor;
 import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
-import org.pac4j.oauth.redirect.OAuth10RedirectActionBuilder;
+import org.pac4j.oauth.redirect.OAuth10RedirectionActionBuilder;
 
 /**
  * The generic OAuth 1.0 client.
@@ -21,7 +21,7 @@ public class OAuth10Client extends IndirectClient<OAuth10Credentials> {
 
     @Override
     protected void clientInit() {
-        defaultRedirectActionBuilder(new OAuth10RedirectActionBuilder(configuration, this));
+        defaultRedirectionActionBuilder(new OAuth10RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth10CredentialsExtractor(configuration, this));
         defaultAuthenticator(new OAuth10Authenticator(configuration, this));
         defaultProfileCreator(new OAuth10ProfileCreator<>(configuration, this));
@@ -55,7 +55,7 @@ public class OAuth10Client extends IndirectClient<OAuth10Credentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", getCallbackUrl(),
                 "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
-                "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+                "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", this.configuration);
     }
 }

@@ -11,7 +11,7 @@ title: Customizations&#58;
 Be sure to clearly understand what the roles of the different components are:
 
 - a [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) is a whole login process: it is indirect for UI ([`IndirectClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/IndirectClient.java)) and direct for web services ([`DirectClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/DirectClient.java). It redirects to the identity provider (indirect client only), extracts the user credentials, validates the user credentials and creates a user profile for the authenticated user
-- a [`RedirectActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectActionBuilder.java) redirects the user to the identity provider for login (indirect clients)
+- a [`RedirectionActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectionActionBuilder.java) redirects the user to the identity provider for login (indirect clients)
 - a [`CredentialsExtractor`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java) extracts the user credentials from the HTTP request (indirect and direct clients)
 - an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) validates the user credentials (indirect and direct clients)
 - a [`ProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java) creates a user profile for the authenticated user (indirect and direct clients)
@@ -25,7 +25,7 @@ Nonetheless, building a `Client` requires extra efforts. Notice that:
 
 - you really need to understand what kind of authentication mechanism you want to support: is it for UI (credentials are provided only once and authentication almost always occurs at an external identity provider) or for web services (credentials are passed for every request)
 
-- all clients should implement the `IndirectClient` interface and define the appropriate `RedirectActionBuilder`, `CredentialsExtractor`, `Authenticator` and `ProfileCreator` (and optional `LogoutActionBuilder`)
+- all clients should implement the `IndirectClient` interface and define the appropriate `RedirectionActionBuilder`, `CredentialsExtractor`, `Authenticator` and `ProfileCreator` (and optional `LogoutActionBuilder`)
 
 - it may require to create a new [`Credentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java) type (if it is not a simple string designed by the `TokenCredentials` or a username/password designed by the `UsernamePasswordCredentials`). These new credentials may inherit from the base credentials of the supported protocol (like `OAuthCredentials`)
 

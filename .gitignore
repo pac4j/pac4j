@@ -33,3 +33,4 @@ documentation/_site/
 pac4j-saml/testKeystore.jks
 .factorypath
 pac4j-saml/saml-signing-cert.*
+krb5.conf

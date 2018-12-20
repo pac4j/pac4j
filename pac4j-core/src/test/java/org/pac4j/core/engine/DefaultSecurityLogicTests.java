@@ -8,11 +8,12 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.MockCredentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.StatusAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -48,13 +49,15 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private int nbCall;
 
+    private HttpAction action;
+
     @Before
     public void setUp() {
         logic = new DefaultSecurityLogic();
         context = MockWebContext.create();
         config = new Config();
         securityGrantedAccessAdapter = (context, profiles, parameters) -> { nbCall++; return null; };
-        httpActionAdapter = (code, ctx) -> null;
+        httpActionAdapter = (act, ctx) -> { action = act; return null; };
         clients = null;
         authorizers = null;
         matchers = null;
@@ -114,7 +117,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         clients = "";
         call();
-        assertEquals(401, context.getResponseStatus());
+        assertEquals(401, action.getCode());
     }
 
     @Test
@@ -124,7 +127,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.addMatcher(NAME, context -> false);
         matchers = NAME;
         call();
-        assertEquals(-1, context.getResponseStatus());
+        assertNull(action);
         assertEquals(1, nbCall);
     }
 
@@ -140,7 +143,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.addAuthorizer(NAME, (context, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
         call();
-        assertEquals(-1, context.getResponseStatus());
+        assertNull(action);
         assertEquals(1, nbCall);
     }
 
@@ -155,7 +158,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.addAuthorizer(NAME, (context, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
         call();
-        assertEquals(403, context.getResponseStatus());
+        assertEquals(403, action.getCode());
     }
 
     @Test
@@ -167,9 +170,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, prof) -> { throw HttpAction.status(400, context); } );
+        config.addAuthorizer(NAME, (context, prof) -> { throw new StatusAction(400); } );
         call();
-        assertEquals(400, context.getResponseStatus());
+        assertEquals(400, action.getCode());
         assertEquals(0, nbCall);
     }
 
@@ -196,12 +199,12 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testDirectClientThrowsRequiresHttpAction() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
-        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status(400, context); },
+        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw new StatusAction(400); },
             profile);
         config.setClients(new Clients(CALLBACK_URL, directClient));
         clients = NAME;
         call();
-        assertEquals(400, context.getResponseStatus());
+        assertEquals(400, action.getCode());
         assertEquals(0, nbCall);
     }
 
@@ -265,34 +268,34 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testRedirectByIndirectClient() {
         final IndirectClient indirectClient =
-            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(PAC4J_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         clients = NAME;
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(PAC4J_URL, context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(PAC4J_URL, ((TemporaryRedirectAction) action).getLocation());
     }
 
     @Test
     public void testDoubleIndirectClientOneChosen() {
         final IndirectClient indirectClient =
-            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(PAC4J_URL), new MockCredentials(), new CommonProfile());
         final IndirectClient indirectClient2 =
-            new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(VALUE, new TemporaryRedirectAction(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME + "," + VALUE;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
         call();
-        assertEquals(302, context.getResponseStatus());
-        assertEquals(PAC4J_BASE_URL, context.getResponseLocation());
+        assertEquals(302, action.getCode());
+        assertEquals(PAC4J_BASE_URL, ((TemporaryRedirectAction) action).getLocation());
     }
 
     @Test
     public void testDoubleIndirectClientBadOneChosen() {
         final IndirectClient indirectClient =
-            new MockIndirectClient(NAME, RedirectAction.redirect(PAC4J_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(PAC4J_URL), new MockCredentials(), new CommonProfile());
         final IndirectClient indirectClient2 =
-            new MockIndirectClient(VALUE, RedirectAction.redirect(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
+            new MockIndirectClient(VALUE, new TemporaryRedirectAction(PAC4J_BASE_URL), new MockCredentials(), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);

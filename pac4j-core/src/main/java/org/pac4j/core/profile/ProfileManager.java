@@ -5,7 +5,7 @@ import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 

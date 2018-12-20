@@ -1,7 +1,8 @@
 package org.pac4j.core.logout;
 
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         if (isBlank(serverLogoutUrl)) {
             return null;
         }
@@ -42,7 +43,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
             redirectUrl = addParameter(redirectUrl, postLogoutUrlParameter, targetUrl);
         }
         logger.debug("redirectUrl: {}", redirectUrl);
-        return RedirectAction.redirect(redirectUrl);
+        return new TemporaryRedirectAction(redirectUrl);
     }
 
     @Override

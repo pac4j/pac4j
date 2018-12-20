@@ -2,7 +2,7 @@ package org.pac4j.cas.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -36,12 +36,9 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        try {
-            client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE));
-        } catch (final HttpAction e) {
-            assertEquals(200, context.getResponseStatus());
-            assertEquals("", context.getResponseContent());
-        }
+        final HttpAction action = (HttpAction) TestsHelper.expectException(
+            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)));
+        assertEquals(200, action.getCode());
     }
 
     @Test
@@ -49,11 +46,9 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> client.getCredentials(context
-                .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)), HttpAction.class,
-                "Performing a 200 HTTP action");
-        assertEquals(200, context.getResponseStatus());
-        assertEquals("", context.getResponseContent());
+        final HttpAction action = (HttpAction) TestsHelper.expectException(
+            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)));
+        assertEquals(200, action.getCode());
     }
 
     @Test
@@ -63,9 +58,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        TestsHelper.expectException(() -> client.getCredentials(context), HttpAction.class,
-            "Performing a 200 HTTP action");
-        assertEquals(200, context.getResponseStatus());
-        assertFalse(context.getResponseContent().isEmpty());
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context));
+        assertEquals(200, action.getCode());
     }
 }

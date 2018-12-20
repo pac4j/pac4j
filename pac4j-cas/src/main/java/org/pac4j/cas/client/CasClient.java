@@ -5,7 +5,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.core.logout.handler.LogoutHandler;
-import org.pac4j.cas.redirect.CasRedirectActionBuilder;
+import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -47,7 +47,7 @@ public class CasClient extends IndirectClient<TokenCredentials> {
         configuration.setUrlResolver(this.getUrlResolver());
         setCallbackUrlResolver(new QueryParameterCallbackUrlResolver(configuration.getCustomParams()));
 
-        defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, this));
+        defaultRedirectionActionBuilder(new CasRedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration));
         defaultAuthenticator(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
         defaultLogoutActionBuilder(new CasLogoutActionBuilder(configuration.getPrefixUrl() + "logout",
@@ -72,7 +72,7 @@ public class CasClient extends IndirectClient<TokenCredentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
             "configuration", this.configuration, "urlResolver", this.urlResolver);

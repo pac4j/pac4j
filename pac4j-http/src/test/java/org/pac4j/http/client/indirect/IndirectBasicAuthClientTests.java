@@ -4,8 +4,9 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -72,9 +73,9 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
-        basicAuthClient.redirect(context);
+        final TemporaryRedirectAction action = (TemporaryRedirectAction) basicAuthClient.redirect(context);
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
-            context.getResponseLocation());
+            action.getLocation());
     }
 
     @Test
@@ -132,7 +133,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
             basicAuthClient.getCredentials(context);
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
-            assertEquals(401, context.getResponseStatus());
+            assertEquals(401, e.getCode());
             assertEquals("Basic realm=\"authentication required\"",
                     context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
         }

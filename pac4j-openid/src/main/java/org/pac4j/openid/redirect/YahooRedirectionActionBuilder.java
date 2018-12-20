@@ -7,9 +7,10 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.core.redirect.RedirectActionBuilder;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.client.YahooOpenIdClient;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfileDefinition;
@@ -19,26 +20,26 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Redirect action builder for Yahoo.
+ * Redirection action builder for Yahoo.
  *
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class YahooRedirectActionBuilder implements RedirectActionBuilder {
+public class YahooRedirectionActionBuilder implements RedirectionActionBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(YahooRedirectActionBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(YahooRedirectionActionBuilder.class);
 
     private static final String YAHOO_GENERIC_USER_IDENTIFIER = "https://me.yahoo.com";
 
     private YahooOpenIdClient client;
 
-    public YahooRedirectActionBuilder(final YahooOpenIdClient client) {
+    public YahooRedirectionActionBuilder(final YahooOpenIdClient client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
     }
 
     @Override
-    public RedirectAction redirect(final WebContext context) {
+    public RedirectionAction redirect(final WebContext context) {
         try {
             // perform discovery on the user-supplied identifier
             final List discoveries = this.client.getConsumerManager().discover(YAHOO_GENERIC_USER_IDENTIFIER);
@@ -62,7 +63,7 @@ public class YahooRedirectActionBuilder implements RedirectActionBuilder {
 
             final String redirectionUrl = authRequest.getDestinationUrl(true);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return RedirectAction.redirect(redirectionUrl);
+            return new TemporaryRedirectAction(redirectionUrl);
         } catch (final OpenIDException e) {
             throw new TechnicalException("OpenID exception", e);
         }

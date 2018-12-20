@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
@@ -13,7 +14,6 @@ import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -29,11 +29,11 @@ import static org.junit.Assert.*;
 public final class ClientsTests implements TestsConstants {
 
     private MockIndirectClient newFacebookClient() {
-        return new MockIndirectClient("FacebookClient", RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        return new MockIndirectClient("FacebookClient", new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
     }
 
     private MockIndirectClient newYahooClient() {
-        return new MockIndirectClient("YahooClient", RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        return new MockIndirectClient("YahooClient", new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
     }
 
     @Test
@@ -117,9 +117,9 @@ public final class ClientsTests implements TestsConstants {
     @Test
     public void rejectSameName() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: name");
     }
@@ -127,9 +127,9 @@ public final class ClientsTests implements TestsConstants {
     @Test
     public void rejectSameNameDifferentCase() {
         final MockIndirectClient client1 =
-            new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME, new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(NAME.toUpperCase(), RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(NAME.toUpperCase(), new TemporaryRedirectAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: NAME");
     }

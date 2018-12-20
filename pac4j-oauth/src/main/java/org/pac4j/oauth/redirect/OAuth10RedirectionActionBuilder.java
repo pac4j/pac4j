@@ -4,11 +4,12 @@ import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.redirect.RedirectActionBuilder;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.slf4j.Logger;
@@ -18,20 +19,20 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 /**
- * OAuth 1.0 redirect action builder.
+ * OAuth 1.0 redirection action builder.
  *
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10RedirectActionBuilder implements RedirectActionBuilder {
+public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(OAuth10RedirectActionBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(OAuth10RedirectionActionBuilder.class);
 
     protected OAuth10Configuration configuration;
 
     protected IndirectClient client;
 
-    public OAuth10RedirectActionBuilder(final OAuth10Configuration configuration, final IndirectClient client) {
+    public OAuth10RedirectionActionBuilder(final OAuth10Configuration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
@@ -39,7 +40,7 @@ public class OAuth10RedirectActionBuilder implements RedirectActionBuilder {
     }
 
     @Override
-    public RedirectAction redirect(final WebContext context) {
+    public RedirectionAction redirect(final WebContext context) {
         try {
 
             final OAuth10aService service = this.configuration.buildService(context, client, null);
@@ -54,7 +55,7 @@ public class OAuth10RedirectActionBuilder implements RedirectActionBuilder {
             context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             final String authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return RedirectAction.redirect(authorizationUrl);
+            return new TemporaryRedirectAction(authorizationUrl);
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

@@ -6,10 +6,11 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.ForbiddenAction;
+import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.util.CommonHelper;
@@ -37,7 +38,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         final String logoutUrl = configuration.getLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
             try {
@@ -54,10 +55,10 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                 if (ajaxRequestResolver.isAjax(context)) {
                     context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
                     context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
-                    throw HttpAction.status(403, context);
+                    throw ForbiddenAction.INSTANCE;
                 }
 
-                return RedirectAction.redirect(logoutRequest.toURI().toString());
+                return new TemporaryRedirectAction(logoutRequest.toURI().toString());
             } catch (final URISyntaxException e) {
                 throw new TechnicalException(e);
             }

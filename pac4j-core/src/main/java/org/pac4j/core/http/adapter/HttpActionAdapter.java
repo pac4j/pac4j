@@ -1,6 +1,7 @@
 package org.pac4j.core.http.adapter;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.http.HttpAction;
 
 /**
  * HTTP action adapter.
@@ -13,9 +14,9 @@ public interface HttpActionAdapter<R, C extends WebContext> {
     /**
      * Adapt the HTTP action.
      *
-     * @param code the HTTP action status code
+     * @param action the HTTP action
      * @param context the web context
      * @return the specific framework HTTP result
      */
-    R adapt(int code, C context);
+    R adapt(HttpAction action, C context);
 }

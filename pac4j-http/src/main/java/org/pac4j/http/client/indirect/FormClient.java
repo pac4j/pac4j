@@ -1,13 +1,13 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
@@ -63,9 +63,9 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
 
-        defaultRedirectActionBuilder(ctx -> {
+        defaultRedirectionActionBuilder(ctx -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
-            return RedirectAction.redirect(finalLoginUrl);
+            return new TemporaryRedirectAction(finalLoginUrl);
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
@@ -99,12 +99,12 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (getAjaxRequestResolver().isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
-            return HttpAction.status(HttpConstants.UNAUTHORIZED, context);
+            return UnauthorizedAction.INSTANCE;
         } else {
             String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
             redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return HttpAction.redirect(context, redirectionUrl);
+            return new TemporaryRedirectAction(redirectionUrl);
         }
     }
 
@@ -146,7 +146,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "redirectActionBuilder", getRedirectActionBuilder(), "extractor", getCredentialsExtractor(),
+                "redirectionActionBuilder", getRedirectionActionBuilder(), "extractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

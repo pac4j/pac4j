@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.weibo;
 
 import java.util.Arrays;
 
-import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;

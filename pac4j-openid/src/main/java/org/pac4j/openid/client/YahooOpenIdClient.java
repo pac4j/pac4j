@@ -5,7 +5,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.openid.credentials.OpenIdCredentials;
 import org.pac4j.openid.credentials.authenticator.YahooAuthenticator;
 import org.pac4j.openid.credentials.extractor.YahooCredentialsExtractor;
-import org.pac4j.openid.redirect.YahooRedirectActionBuilder;
+import org.pac4j.openid.redirect.YahooRedirectionActionBuilder;
 
 /**
  * <p>This class is the OpenID client to authenticate users with their yahoo account.</p>
@@ -24,7 +24,7 @@ public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials> {
     @Override
     protected void clientInit() {
         this.consumerManager = new ConsumerManager();
-        defaultRedirectActionBuilder(new YahooRedirectActionBuilder(this));
+        defaultRedirectionActionBuilder(new YahooRedirectionActionBuilder(this));
         defaultCredentialsExtractor(new YahooCredentialsExtractor(this));
         defaultAuthenticator(new YahooAuthenticator(this));
     }

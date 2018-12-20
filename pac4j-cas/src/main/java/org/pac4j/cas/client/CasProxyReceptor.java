@@ -4,8 +4,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 
@@ -40,7 +40,7 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials> {
     protected void clientInit() {
         assertNotNull("store", this.store);
 
-        defaultRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        defaultRedirectionActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         defaultCredentialsExtractor(ctx -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             final String proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
@@ -50,7 +50,7 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials> {
 
             if (isBlank(proxyGrantingTicket) || isBlank(proxyGrantingTicketIou)) {
                 logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
-                throw HttpAction.ok(ctx, "");
+                throw new OkAction("");
             }
 
             this.store.set(proxyGrantingTicketIou, proxyGrantingTicket);
@@ -59,7 +59,7 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials> {
             ctx.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
 
             logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
-            throw HttpAction.ok(ctx, "");
+            throw new OkAction("");
         });
         defaultAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }
