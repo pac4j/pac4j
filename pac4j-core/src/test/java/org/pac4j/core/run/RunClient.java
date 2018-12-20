@@ -40,7 +40,7 @@ public abstract class RunClient implements TestsConstants {
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
         final Credentials credentials = client.getCredentials(context);
-        final CommonProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
         logger.debug("userProfile: {}", profile);
         if (profile != null || !canCancel()) {
             verifyProfile(profile);

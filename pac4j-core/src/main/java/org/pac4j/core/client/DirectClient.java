@@ -3,8 +3,8 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 
@@ -43,7 +43,7 @@ public abstract class DirectClient<C extends Credentials> extends BaseClient<C> 
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
+    public final RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         return null;
     }
 }

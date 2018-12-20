@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.Collection;
  * @author Misagh Moayyed
  * @since 1.9.2
  */
-public class RequireAnyAttributeAuthorizer<U extends CommonProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyAttributeAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
     private final String valueToMatch;
 
     public RequireAnyAttributeAuthorizer() {
@@ -48,8 +48,7 @@ public class RequireAnyAttributeAuthorizer<U extends CommonProfile> extends Abst
         return attributeValues.toString().matches(this.valueToMatch);
     }
 
-    public static <U extends CommonProfile> RequireAnyAttributeAuthorizer<U> requireAnyAttribute(String valueToMatch) {
+    public static <U extends UserProfile> RequireAnyAttributeAuthorizer<U> requireAnyAttribute(String valueToMatch) {
         return new RequireAnyAttributeAuthorizer<>(valueToMatch);
     }
-
 }

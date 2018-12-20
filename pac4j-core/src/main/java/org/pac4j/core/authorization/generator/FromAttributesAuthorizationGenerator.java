@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.generator;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -48,13 +48,13 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
     }
 
     @Override
-    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
+    public UserProfile generate(final WebContext context, final UserProfile profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
         return profile;
     }
 
-    private void generateAuth(final CommonProfile profile, final Iterable<String> attributes, final boolean isRole) {
+    private void generateAuth(final UserProfile profile, final Iterable<String> attributes, final boolean isRole) {
         if (attributes == null) {
             return;
         }
@@ -83,7 +83,7 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
 
     }
 
-    private void addRoleOrPermissionToProfile(final CommonProfile profile, final String value, final boolean isRole) {
+    private void addRoleOrPermissionToProfile(final UserProfile profile, final String value, final boolean isRole) {
         if (isRole) {
             profile.addRole(value);
         } else {

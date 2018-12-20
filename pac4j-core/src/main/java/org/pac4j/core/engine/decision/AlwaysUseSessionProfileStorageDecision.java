@@ -3,7 +3,7 @@ package org.pac4j.core.engine.decision;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class AlwaysUseSessionProfileStorageDecision<C extends WebContext> implem
 
     @Override
     public boolean mustSaveProfileInSession(final C context, final List<Client> currentClients,
-                                            final DirectClient directClient, final CommonProfile profile) {
+                                            final DirectClient directClient, final UserProfile profile) {
         return true;
     }
 }

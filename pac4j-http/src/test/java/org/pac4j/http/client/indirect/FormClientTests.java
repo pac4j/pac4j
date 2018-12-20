@@ -128,7 +128,8 @@ public final class FormClientTests implements TestsConstants {
             return profile;
         });
         final MockWebContext context = MockWebContext.create();
-        final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME), context);
+        final CommonProfile profile =
+            (CommonProfile) formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME), context);
         assertEquals(USERNAME, profile.getId());
         assertEquals(CommonProfile.class.getName() + CommonProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));

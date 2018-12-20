@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.ProfileService;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
@@ -32,7 +33,7 @@ public class LoadLinkedUserAuthorizationGenerator extends InitializableObject
     }
 
     @Override
-    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
+    public UserProfile generate(final WebContext context, final UserProfile profile) {
         init();
 
         final CommonProfile linkedProfile = profileService.findByLinkedId(profile.getId());

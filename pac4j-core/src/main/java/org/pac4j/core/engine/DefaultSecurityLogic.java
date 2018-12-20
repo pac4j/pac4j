@@ -20,8 +20,8 @@ import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.matching.MatchingChecker;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.*;
 
@@ -99,7 +99,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
                 final ProfileManager manager = getProfileManager(context);
-                List<CommonProfile> profiles = manager.getAll(loadProfilesFromSession);
+                List<UserProfile> profiles = manager.getAll(loadProfilesFromSession);
                 logger.debug("profiles: {}", profiles);
 
                 // no profile and some current clients
@@ -112,7 +112,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
                             final Credentials credentials = currentClient.getCredentials(context);
                             logger.debug("credentials: {}", credentials);
-                            final CommonProfile profile = currentClient.getUserProfile(credentials, context);
+                            final UserProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
                             if (profile != null) {
                                 final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
@@ -175,7 +175,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param authorizers the authorizers
      * @return a forbidden error
      */
-    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles,
+    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<UserProfile> profiles,
                                    final String authorizers) {
         return HttpAction.forbidden(context);
     }

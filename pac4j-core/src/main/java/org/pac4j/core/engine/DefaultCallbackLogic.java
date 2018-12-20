@@ -13,8 +13,8 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             final Credentials credentials = foundClient.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final CommonProfile profile = foundClient.getUserProfile(credentials, context);
+            final UserProfile profile = foundClient.getUserProfile(credentials, context);
             logger.debug("profile: {}", profile);
             saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
@@ -101,7 +101,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
         return httpActionAdapter.adapt(action.getCode(), context);
     }
 
-    protected void saveUserProfile(final C context, final Config config, final CommonProfile profile,
+    protected void saveUserProfile(final C context, final Config config, final UserProfile profile,
                                    final boolean saveInSession, final boolean multiProfile, final boolean renewSession) {
         final ProfileManager manager = getProfileManager(context);
         if (profile != null) {
