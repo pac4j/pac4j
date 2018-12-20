@@ -10,7 +10,7 @@ title: Release notes&#58;
 - Updated the OpenID Connect/JWT dependencies
 - A client can return any kind of profile (using a custom `AuthorizationGenerator` or `ProfileCreator`) and even a minimal user profile (`UserProfile`)
 - Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. They are only applied to the web context by the appropriate `HttpActionAdapter`. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`
-- Use the 303 "See Other" HTTP action instead of the 302 "Temporary Redirect" HTTP action for any redirection after a POST request
+- Use the 303 "See Other" HTTP action instead of the 302 "Temporary Redirect" HTTP action for any redirection after a POST request in the `DefaultCallbackLogic`
 
 
 **v3.5.0**:
