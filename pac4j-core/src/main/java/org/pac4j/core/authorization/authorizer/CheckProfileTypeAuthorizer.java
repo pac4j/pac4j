@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckProfileTypeAuthorizer<U extends CommonProfile> extends AbstractRequireAnyAuthorizer<Class<U>, U> {
+public class CheckProfileTypeAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<Class<U>, U> {
 
     public CheckProfileTypeAuthorizer() { }
 
@@ -33,15 +33,15 @@ public class CheckProfileTypeAuthorizer<U extends CommonProfile> extends Abstrac
         return profile.getClass().isAssignableFrom(element);
     }
 
-    public static <U extends CommonProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Class<U> ... types) {
+    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Class<U> ... types) {
         return new CheckProfileTypeAuthorizer<>(types);
     }
 
-    public static <U extends CommonProfile> CheckProfileTypeAuthorizer<U> checkProfileType(List<Class<U>> types) {
+    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(List<Class<U>> types) {
         return new CheckProfileTypeAuthorizer<>(types);
     }
 
-    public static <U extends CommonProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Set<Class<U>> types) {
+    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Set<Class<U>> types) {
         return new CheckProfileTypeAuthorizer<>(types);
     }
 

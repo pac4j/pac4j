@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public abstract class AbstractRequireElementAuthorizer<E extends Object, U extends CommonProfile> extends ProfileAuthorizer<U> {
+public abstract class AbstractRequireElementAuthorizer<E extends Object, U extends UserProfile> extends ProfileAuthorizer<U> {
 
     protected Set<E> elements;
 

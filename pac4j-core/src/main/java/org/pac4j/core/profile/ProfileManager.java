@@ -17,7 +17,7 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ProfileManager<U extends CommonProfile> {
+public class ProfileManager<U extends UserProfile> {
 
     private final Authorizer<U> IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer<U>();
 

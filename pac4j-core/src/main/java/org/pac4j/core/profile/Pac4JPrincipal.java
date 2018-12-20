@@ -8,7 +8,7 @@ import org.pac4j.core.util.CommonHelper;
 /**
  * 
  * Default implementation for {@link Principal} based on a pac4j
- * {@link UserProfile}.
+ * {@link BasicUserProfile}.
  * 
  * It determines the name based on the profile's username, and fallbacks to id
  * if it doesn't exist.

@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 import java.util.Set;
@@ -14,7 +14,7 @@ import static org.pac4j.core.context.HttpConstants.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HTTP_METHOD, CommonProfile> {
+public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HTTP_METHOD, UserProfile> {
 
     public CheckHttpMethodAuthorizer() { }
 
@@ -31,7 +31,7 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HTTP
     }
 
     @Override
-    protected boolean check(final WebContext context, final CommonProfile profile, final HTTP_METHOD element) {
+    protected boolean check(final WebContext context, final UserProfile profile, final HTTP_METHOD element) {
         final String requestMethod = context.getRequestMethod();
         return requestMethod.equalsIgnoreCase(element.toString());
     }

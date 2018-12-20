@@ -1,40 +1,25 @@
-package org.pac4j.core.profile;
+package org.pac4j.core.profile.factory;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * For classes that can set the profile manager factory.
  *
  * @author Jerome Leleu
- * @since 2.0.0
+ * @since 4.0.0
  */
-public class ProfileManagerFactoryAware<C extends WebContext> {
-
-    private static final Function<WebContext, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY =
-        webContext -> new ProfileManager(webContext);
+public class ProfileManagerFactoryAware2<C extends WebContext> {
 
     private static final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY2 =
         (webContext, sessionStore)-> new ProfileManager(webContext, sessionStore);
 
-    private Function<C, ProfileManager> profileManagerFactory;
-
     private BiFunction<C, SessionStore<C>, ProfileManager> profileManagerFactory2;
-
-    protected ProfileManager getProfileManager(final C context) {
-        if (profileManagerFactory != null) {
-            return profileManagerFactory.apply(context);
-        } else if (Config.getProfileManagerFactory() != null) {
-            return Config.getProfileManagerFactory().apply(context);
-        } else {
-            return DEFAULT_PROFILE_MANAGER_FACTORY.apply(context);
-        }
-    }
 
     protected ProfileManager getProfileManager(final C context, final SessionStore<C> sessionStore) {
         if (profileManagerFactory2 != null) {
@@ -44,15 +29,6 @@ public class ProfileManagerFactoryAware<C extends WebContext> {
         } else {
             return DEFAULT_PROFILE_MANAGER_FACTORY2.apply(context, (SessionStore<WebContext>) sessionStore);
         }
-    }
-
-    public Function<C, ProfileManager> getProfileManagerFactory() {
-        return profileManagerFactory;
-    }
-
-    public void setProfileManagerFactory(final Function<C, ProfileManager> factory) {
-        CommonHelper.assertNotNull("factory", factory);
-        this.profileManagerFactory = factory;
     }
 
     public BiFunction<C, SessionStore<C>, ProfileManager> getProfileManagerFactory2() {

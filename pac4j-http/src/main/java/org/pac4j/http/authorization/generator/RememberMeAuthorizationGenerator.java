@@ -2,7 +2,7 @@ package org.pac4j.http.authorization.generator;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -25,7 +25,7 @@ public class RememberMeAuthorizationGenerator implements AuthorizationGenerator 
     }
 
     @Override
-    public CommonProfile generate(final WebContext context, final CommonProfile profile) {
+    public UserProfile generate(final WebContext context, final UserProfile profile) {
         final String rmeValue = context.getRequestParameter(rememberMeParameterName);
         if (rememberMeValue.equals(rmeValue)) {
             profile.setRemembered(true);

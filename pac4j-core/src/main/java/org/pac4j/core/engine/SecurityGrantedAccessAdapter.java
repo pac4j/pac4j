@@ -3,7 +3,7 @@ package org.pac4j.core.engine;
 import java.util.Collection;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 /**
  * Success adapter.
@@ -22,5 +22,5 @@ public interface SecurityGrantedAccessAdapter<R, C extends WebContext> {
      * @return an adapted result
      * @throws Exception any exception
      */
-    R adapt(C context, Collection<CommonProfile> profiles, Object... parameters) throws Exception;
+    R adapt(C context, Collection<UserProfile> profiles, Object... parameters) throws Exception;
 }

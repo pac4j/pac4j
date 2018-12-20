@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class ProfileAuthorizer<U extends CommonProfile> implements Authorizer<U> {
+public abstract class ProfileAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
     /**
      * If all profiles are authorized.

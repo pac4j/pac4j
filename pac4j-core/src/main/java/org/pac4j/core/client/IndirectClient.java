@@ -13,7 +13,7 @@ import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
@@ -148,7 +148,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
+    public final RedirectAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
         init();
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }

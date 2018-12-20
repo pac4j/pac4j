@@ -5,7 +5,7 @@ import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class DefaultProfileStorageDecision<C extends WebContext> implements Prof
      */
     @Override
     public boolean mustSaveProfileInSession(final C context, final List<Client> currentClients,
-                                            final DirectClient directClient, final CommonProfile profile) {
+                                            final DirectClient directClient, final UserProfile profile) {
         return false;
     }
 }

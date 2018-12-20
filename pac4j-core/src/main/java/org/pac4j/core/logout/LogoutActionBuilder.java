@@ -1,8 +1,8 @@
 package org.pac4j.core.logout;
 
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
 
 /**
  * The {@link RedirectAction} for logout.
@@ -20,5 +20,5 @@ public interface LogoutActionBuilder {
      * @param targetUrl the target URL after logout
      * @return the redirection
      */
-    RedirectAction getLogoutAction(WebContext context, CommonProfile currentProfile, String targetUrl);
+    RedirectAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
 }

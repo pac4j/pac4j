@@ -13,12 +13,12 @@ import java.util.Locale;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public class CommonProfile extends UserProfile {
+public class CommonProfile extends BasicUserProfile {
 
     private static final long serialVersionUID = -1856159870249261877L;
-    
+
     public CommonProfile() {
-        //default constructor for backwards compatibility
+        this(true);
     }
     
     /**
@@ -26,8 +26,8 @@ public class CommonProfile extends UserProfile {
      * @param canMergeAttributes if true - merge attributes with the same name and collection-type values, if false - overwrite them
      * @since 3.1.0
      */
-    public CommonProfile( boolean canMergeAttributes ) {
-        super( canMergeAttributes );
+    public CommonProfile(final boolean canMergeAttributes) {
+        super(canMergeAttributes);
     }
 
     /**

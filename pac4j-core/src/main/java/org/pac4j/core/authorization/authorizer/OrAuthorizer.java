@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
  * @author Sergey Morgunov
  * @since 3.4.0
  */
-public class OrAuthorizer<U extends CommonProfile> implements Authorizer<U> {
+public class OrAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
     private final List<Authorizer<U>> authorizers;
 
@@ -30,7 +30,7 @@ public class OrAuthorizer<U extends CommonProfile> implements Authorizer<U> {
         return false;
     }
 
-    public static <U extends CommonProfile> OrAuthorizer<U> or(Authorizer<U>... authorizers) {
+    public static <U extends UserProfile> OrAuthorizer<U> or(Authorizer<U>... authorizers) {
         return new OrAuthorizer<>(asList(authorizers));
     }
 }

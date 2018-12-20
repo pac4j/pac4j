@@ -5,7 +5,7 @@ import org.pac4j.core.authorization.authorizer.csrf.*;
 import org.pac4j.core.context.DefaultAuthorizers;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +52,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames,
-        final Map<String, Authorizer> authorizersMap) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizerNames,
+                                final Map<String, Authorizer> authorizersMap) {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (isNotBlank(authorizerNames)) {
@@ -113,7 +113,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return isAuthorized(context, profiles, authorizers);
     }
 
-    protected boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) {
+    protected boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {

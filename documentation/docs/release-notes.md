@@ -8,7 +8,7 @@ title: Release notes&#58;
 - Improved the profile manager configuration
 - Renamed `J2E` components as `JEE`
 - Updated the OpenID Connect/JWT dependencies
-- A client can return any kind of profile (using a custom `AuthorizationGenerator` or `ProfileCreator`)
+- A client can return any kind of profile (using a custom `AuthorizationGenerator` or `ProfileCreator`) and even a minimal user profile (`UserProfile`)
 
 
 **v3.5.0**:
