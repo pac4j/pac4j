@@ -6,16 +6,15 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * A minimal user profile: absolutely required methods have a default behavior, others throw a {@link UnsupportedOperationException}.
+ * A minimal user profile: the {@link #getId()} method must be implemented,
+ * absolutely required methods have a default behavior, others throw a {@link UnsupportedOperationException}.
  *
  * @author Jerome Leleu
  * @since 4.0.0
  */
 public interface UserProfile extends Serializable {
 
-    default String getId() {
-        throw new UnsupportedOperationException("Your user profile must implement the getId method");
-    }
+    String getId();
 
     default String getUsername() {
         return null;
