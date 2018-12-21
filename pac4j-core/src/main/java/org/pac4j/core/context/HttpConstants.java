@@ -18,7 +18,9 @@ public interface HttpConstants {
 
     int FORBIDDEN = 403;
 
-    int TEMP_REDIRECT = 302;
+    int FOUND = 302;
+
+    int SEE_OTHER = 303;
 
     int BAD_REQUEST = 400;
 

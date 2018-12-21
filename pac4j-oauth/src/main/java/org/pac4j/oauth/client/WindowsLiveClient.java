@@ -1,7 +1,7 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.LiveApi;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfileDefinition;
 
@@ -29,7 +29,7 @@ public class WindowsLiveClient extends OAuth20Client {
         configuration.setProfileDefinition(new WindowsLiveProfileDefinition());
         configuration.setScope("wl.basic");
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
-            new TemporaryRedirectAction("https://account.microsoft.com/auth/complete-signout"));
+            new FoundAction("https://account.microsoft.com/auth/complete-signout"));
 
         super.clientInit();
     }

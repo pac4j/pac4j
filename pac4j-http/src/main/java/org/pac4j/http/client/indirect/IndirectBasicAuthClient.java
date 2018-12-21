@@ -3,7 +3,7 @@ package org.pac4j.http.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -48,7 +48,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     protected void clientInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultRedirectionActionBuilder(webContext ->  new TemporaryRedirectAction(computeFinalCallbackUrl(webContext)));
+        defaultRedirectionActionBuilder(webContext ->  new FoundAction(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new BasicAuthExtractor());
     }
 

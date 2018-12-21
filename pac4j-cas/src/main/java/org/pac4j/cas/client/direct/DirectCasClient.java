@@ -12,7 +12,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
@@ -77,7 +77,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials> {
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                         callbackUrl, configuration.isRenew(), false);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
-                throw new TemporaryRedirectAction(redirectionUrl);
+                throw new FoundAction(redirectionUrl);
             }
 
             // clean url from ticket parameter

@@ -1,7 +1,7 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -65,7 +65,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
 
         defaultRedirectionActionBuilder(ctx -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
-            return new TemporaryRedirectAction(finalLoginUrl);
+            return new FoundAction(finalLoginUrl);
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
@@ -104,7 +104,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
             String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
             redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return new TemporaryRedirectAction(redirectionUrl);
+            return new FoundAction(redirectionUrl);
         }
     }
 

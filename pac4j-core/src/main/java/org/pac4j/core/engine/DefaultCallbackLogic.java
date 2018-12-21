@@ -7,12 +7,14 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.SeeOtherAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
@@ -145,7 +147,11 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             redirectUrl = requestedUrl;
         }
         logger.debug("redirectUrl: {}", redirectUrl);
-        return new TemporaryRedirectAction(redirectUrl);
+        if (ContextHelper.isPost(context)) {
+            return new SeeOtherAction(redirectUrl);
+        } else {
+            return new FoundAction(redirectUrl);
+        }
     }
 
     public ClientFinder getClientFinder() {

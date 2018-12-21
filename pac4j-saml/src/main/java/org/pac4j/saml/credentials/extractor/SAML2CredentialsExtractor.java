@@ -7,7 +7,7 @@ import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
@@ -66,7 +66,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
                 throw new OkAction(content);
             } else {
                 final String location = adapter.getRedirectUrl();
-                throw new TemporaryRedirectAction(location);
+                throw new FoundAction(location);
             }
 
         } else {

@@ -8,7 +8,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -58,7 +58,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                     throw ForbiddenAction.INSTANCE;
                 }
 
-                return new TemporaryRedirectAction(logoutRequest.toURI().toString());
+                return new FoundAction(logoutRequest.toURI().toString());
             } catch (final URISyntaxException e) {
                 throw new TechnicalException(e);
             }
