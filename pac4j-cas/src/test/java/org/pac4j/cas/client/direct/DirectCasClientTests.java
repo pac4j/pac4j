@@ -8,7 +8,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -58,7 +58,7 @@ public final class DirectCasClientTests implements TestsConstants {
         final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context));
         assertEquals(302, action.getCode());
         assertEquals(addParameter(LOGIN_URL, CasConfiguration.SERVICE_PARAMETER, CALLBACK_URL),
-            ((TemporaryRedirectAction) action).getLocation());
+            ((FoundAction) action).getLocation());
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
@@ -79,7 +79,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         final String location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
-        return new TemporaryRedirectAction(location);
+        return new FoundAction(location);
     }
 
     protected Map<String, String> buildParams() {

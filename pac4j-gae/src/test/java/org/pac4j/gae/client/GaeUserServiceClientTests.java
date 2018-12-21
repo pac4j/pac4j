@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -63,9 +63,9 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     @Test
     public void testRedirect() {
         final HttpAction action = client.redirect(context);
-        assertEquals(HttpConstants.TEMP_REDIRECT, action.getCode());
+        assertEquals(HttpConstants.FOUND, action.getCode());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
-            Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((TemporaryRedirectAction) action).getLocation());
+            Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((FoundAction) action).getLocation());
     }
 
     @Test

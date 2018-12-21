@@ -3,7 +3,7 @@ package org.pac4j.oauth.client;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.state.StaticOrRandomStateGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -37,7 +37,7 @@ public final class OAuth20ClientTests implements TestsConstants {
         FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         ((StaticOrRandomStateGenerator) client.getConfiguration().getStateGenerator()).setStateData("OK");
-        final TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(MockWebContext.create());
+        final FoundAction action = (FoundAction) client.redirect(MockWebContext.create());
         URL url = new URL(action.getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
     }
@@ -48,11 +48,11 @@ public final class OAuth20ClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         ((StaticOrRandomStateGenerator) client.getConfiguration().getStateGenerator()).setStateData("oldstate");
         final MockWebContext mockWebContext = MockWebContext.create();
-        TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(mockWebContext);
+        FoundAction action = (FoundAction) client.redirect(mockWebContext);
         URL url = new URL(action.getLocation());
         final Map<String, String> stringMap = splitQuery(url);
         assertEquals(stringMap.get("state"), "oldstate");
-        action = (TemporaryRedirectAction) client.redirect(mockWebContext);
+        action = (FoundAction) client.redirect(mockWebContext);
         URL url2 = new URL(action.getLocation());
         final Map<String, String> stringMap2 = splitQuery(url2);
         assertEquals(stringMap2.get("state"), "oldstate");
@@ -62,12 +62,12 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testStateRandom() throws MalformedURLException {
         OAuth20Client client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        TemporaryRedirectAction action = (TemporaryRedirectAction) client.redirect(MockWebContext.create());
+        FoundAction action = (FoundAction) client.redirect(MockWebContext.create());
         URL url = new URL(action.getLocation());
         final Map<String, String> stringMap = splitQuery(url);
         assertNotNull(stringMap.get("state"));
 
-        action = (TemporaryRedirectAction) client.redirect(MockWebContext.create());
+        action = (FoundAction) client.redirect(MockWebContext.create());
         URL url2 = new URL(action.getLocation());
         final Map<String, String> stringMap2 = splitQuery(url2);
         assertNotNull(stringMap2.get("state"));
@@ -87,7 +87,7 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testGetRedirectionGithub() {
-        final TemporaryRedirectAction action = (TemporaryRedirectAction) getClient().redirect(MockWebContext.create());
+        final FoundAction action = (FoundAction) getClient().redirect(MockWebContext.create());
         final String url = action.getLocation();
         assertTrue(url != null && !url.isEmpty());
     }

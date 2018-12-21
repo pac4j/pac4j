@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -55,7 +55,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             final String authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return new TemporaryRedirectAction(authorizationUrl);
+            return new FoundAction(authorizationUrl);
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

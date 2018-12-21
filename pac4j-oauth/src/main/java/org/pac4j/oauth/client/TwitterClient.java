@@ -4,7 +4,7 @@ import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuth10aService;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
@@ -51,7 +51,7 @@ public class TwitterClient extends OAuth10Client {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new TemporaryRedirectAction("https://twitter.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://twitter.com/logout"));
 
         super.clientInit();
     }

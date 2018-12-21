@@ -3,10 +3,7 @@ package org.pac4j.core.http.adapter;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.NoContentAction;
-import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.exception.http.TemporaryRedirectAction;
+import org.pac4j.core.exception.http.*;
 
 /**
  * The HTTP action adapter for the {@link JEEContext}.
@@ -27,8 +24,10 @@ public class JEEHttpActionAdapter implements HttpActionAdapter<Object, JEEContex
                 context.writeResponseContent("");
             } else if (action instanceof OkAction) {
                 context.writeResponseContent(((OkAction) action).getContent());
-            } else if (action instanceof TemporaryRedirectAction) {
-                context.setResponseHeader(HttpConstants.LOCATION_HEADER, ((TemporaryRedirectAction) action).getLocation());
+            } else if (action instanceof FoundAction) {
+                context.setResponseHeader(HttpConstants.LOCATION_HEADER, ((FoundAction) action).getLocation());
+            } else if (action instanceof SeeOtherAction) {
+                context.setResponseHeader(HttpConstants.LOCATION_HEADER, ((SeeOtherAction) action).getLocation());
             }
 
             return null;
