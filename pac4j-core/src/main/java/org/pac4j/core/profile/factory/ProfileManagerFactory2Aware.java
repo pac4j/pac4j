@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
  * @author Jerome Leleu
  * @since 4.0.0
  */
-public class ProfileManagerFactoryAware2<C extends WebContext> {
+public class ProfileManagerFactory2Aware<C extends WebContext> {
 
     private static final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY2 =
         (webContext, sessionStore)-> new ProfileManager(webContext, sessionStore);
