@@ -298,6 +298,8 @@ public class OidcConfiguration extends InitializableObject {
     }
 
     public String getLogoutUrl() {
+        init();
+
         if(logoutUrl == null && getProviderMetadata().getEndSessionEndpointURI() != null) {
             return getProviderMetadata().getEndSessionEndpointURI().toString();
         }
