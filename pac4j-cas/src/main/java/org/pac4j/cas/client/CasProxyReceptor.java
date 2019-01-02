@@ -55,11 +55,8 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials> {
 
             this.store.set(proxyGrantingTicketIou, proxyGrantingTicket);
 
-            ctx.writeResponseContent("<?xml version=\"1.0\"?>");
-            ctx.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
-
             logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
-            throw new OkAction("");
+            throw new OkAction("<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         });
         defaultAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }

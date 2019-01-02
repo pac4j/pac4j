@@ -8,7 +8,7 @@ import org.pac4j.core.context.HttpConstants;
  * @author Jerome Leleu
  * @since 4.0.0
  */
-public class SeeOtherAction extends RedirectionAction {
+public class SeeOtherAction extends RedirectionAction implements WithLocationAction {
 
     private final String location;
 
@@ -17,6 +17,7 @@ public class SeeOtherAction extends RedirectionAction {
         this.location = location;
     }
 
+    @Override
     public String getLocation() {
         return location;
     }
