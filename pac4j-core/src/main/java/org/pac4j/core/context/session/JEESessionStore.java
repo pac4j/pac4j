@@ -21,7 +21,7 @@ public class JEESessionStore implements SessionStore<JEEContext> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected HttpSession getHttpSession(final JEEContext context) {
-        return context.getRequest().getSession();
+        return context.getNativeRequest().getSession();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class JEESessionStore implements SessionStore<JEEContext> {
 
     @Override
     public boolean renewSession(final JEEContext context) {
-        final HttpServletRequest request = context.getRequest();
+        final HttpServletRequest request = context.getNativeRequest();
         final HttpSession session = request.getSession();
         logger.debug("Discard old session: {}", session.getId());
         final Map<String, Object> attributes = new HashMap<>();
