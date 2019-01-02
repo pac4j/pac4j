@@ -59,6 +59,7 @@ public interface PropertiesConstants {
     String OIDC_TYPE = "oidc.type";
     String OIDC_GOOGLE_TYPE = "google";
     String OIDC_AZURE_TYPE = "azure";
+    String OIDC_AZURE_TENANT = "oidc.azure.tenant";
     String OIDC_ID = "oidc.id";
     String OIDC_SECRET = "oidc.secret";
     String OIDC_SCOPE = "oidc.scope";
