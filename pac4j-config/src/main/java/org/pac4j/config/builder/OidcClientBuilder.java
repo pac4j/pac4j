@@ -69,7 +69,12 @@ public class OidcClientBuilder extends AbstractBuilder {
                 final String type = getProperty(OIDC_TYPE, i);
                 final OidcClient oidcClient;
                 if (OIDC_AZURE_TYPE.equalsIgnoreCase(type)) {
-                    oidcClient = new AzureAdClient(new AzureAdOidcConfiguration(configuration));
+                    final AzureAdOidcConfiguration azureAdConfiguration = new AzureAdOidcConfiguration(configuration);
+                    final String tenant = getProperty(OIDC_AZURE_TENANT, i);
+                    if (isNotBlank(tenant)) {
+                        azureAdConfiguration.setTenant(tenant);
+                    }
+                    oidcClient = new AzureAdClient(azureAdConfiguration);
                 } else if (OIDC_GOOGLE_TYPE.equalsIgnoreCase(type)) {
                     oidcClient = new GoogleOidcClient(configuration);
                 } else {
