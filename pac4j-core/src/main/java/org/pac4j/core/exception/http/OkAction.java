@@ -8,7 +8,7 @@ import org.pac4j.core.context.HttpConstants;
  * @author Jerome Leleu
  * @since 4.0.0
  */
-public class OkAction extends RedirectionAction {
+public class OkAction extends RedirectionAction implements WithContentAction {
 
     private final String content;
 
@@ -17,6 +17,7 @@ public class OkAction extends RedirectionAction {
         this.content = content;
     }
 
+    @Override
     public String getContent() {
         return content;
     }

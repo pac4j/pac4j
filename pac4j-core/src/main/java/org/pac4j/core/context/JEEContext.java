@@ -106,45 +106,21 @@ public class JEEContext implements WebContext {
     }
 
     /**
-     * Return the HTTP request.
+     * Return the native HTTP request.
      *
-     * @return the HTTP request
+     * @return the native HTTP request
      */
-    public HttpServletRequest getRequest() {
+    public HttpServletRequest getNativeRequest() {
         return this.request;
     }
 
     /**
-     * Return the HTTP response.
+     * Return the native HTTP response.
      *
-     * @return the HTTP response
+     * @return the native HTTP response
      */
-    public HttpServletResponse getResponse() {
+    public HttpServletResponse getNativeResponse() {
         return this.response;
-    }
-
-    @Override
-    public void writeResponseContent(final String content) {
-        if (content != null) {
-            try {
-                this.response.getWriter().write(content);
-            } catch (final IOException e) {
-                throw new TechnicalException(e);
-            }
-        }
-    }
-
-    @Override
-    public void setResponseStatus(final int code) {
-        if (code < 400) {
-            this.response.setStatus(code);
-        } else {
-            try {
-                this.response.sendError(code);
-            } catch (final IOException e) {
-                throw new TechnicalException(e);
-            }
-        }
     }
 
     @Override
