@@ -10,6 +10,8 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
@@ -72,7 +74,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     @Override
     public final MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
-        final FilesystemMetadataResolver resolver = new FilesystemMetadataResolver(metadataResource.getFile());
+        final AbstractBatchMetadataResolver resolver;
+        if (metadataResource != null) {
+            resolver = new FilesystemMetadataResolver(metadataResource.getFile());
+        } else {
+            final EntityDescriptor md = buildEntityDescriptor();
+            final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+            resolver = new DOMMetadataResolver(entityDescriptorElement);
+        }
         resolver.setRequireValidMetadata(true);
         resolver.setFailFastInitialization(true);
         resolver.setId(resolver.getClass().getCanonicalName());
