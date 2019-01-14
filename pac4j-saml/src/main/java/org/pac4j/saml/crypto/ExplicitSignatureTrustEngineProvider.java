@@ -2,7 +2,7 @@ package org.pac4j.saml.crypto;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.BasicRoleDescriptorResolver;
+import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver;
 import org.opensaml.saml.security.impl.MetadataCredentialResolver;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
@@ -27,7 +27,7 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
     @Override
     public SignatureTrustEngine build() {
         final MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
-        final BasicRoleDescriptorResolver roleResolver = new BasicRoleDescriptorResolver(metadataResolver);
+        final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
 
         final KeyInfoCredentialResolver keyResolver =
                 DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
