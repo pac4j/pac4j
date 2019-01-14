@@ -22,7 +22,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     @Before
     public void setUp() {
         authorizer = new CsrfAuthorizer();
-        authorizer.setOnlyCheckPostRequest(false);
+        authorizer.setCheckAllRequests(true);
     }
 
     @Test
@@ -64,14 +64,21 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     @Test
     public void testNoTokenCheckAll() {
         final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
-        authorizer.setOnlyCheckPostRequest(true);
+        authorizer.setCheckAllRequests(false);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testNoTokenPostRequest() {
+    public void testNoTokenRequest() {
+        internalTestNoTokenRequest(HttpConstants.HTTP_METHOD.POST);
+        internalTestNoTokenRequest(HttpConstants.HTTP_METHOD.PUT);
+        internalTestNoTokenRequest(HttpConstants.HTTP_METHOD.PATCH);
+        internalTestNoTokenRequest(HttpConstants.HTTP_METHOD.DELETE);
+    }
+
+    private void internalTestNoTokenRequest(final HttpConstants.HTTP_METHOD method) {
         final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
-        context.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        context.setRequestMethod(method.name());
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 
