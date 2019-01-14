@@ -62,6 +62,36 @@ public final class ContextHelper implements HttpConstants {
     }
 
     /**
+     * Whether it is a PUT request.
+     *
+     * @param context the web context
+     * @return whether it is a PUT request
+     */
+    public static boolean isPut(final WebContext context) {
+        return HttpConstants.HTTP_METHOD.PUT.name().equalsIgnoreCase(context.getRequestMethod());
+    }
+
+    /**
+     * Whether it is a PATCH request.
+     *
+     * @param context the web context
+     * @return whether it is a PATCH request
+     */
+    public static boolean isPatch(final WebContext context) {
+        return HttpConstants.HTTP_METHOD.PATCH.name().equalsIgnoreCase(context.getRequestMethod());
+    }
+
+    /**
+     * Whether it is a DELETE request.
+     *
+     * @param context the web context
+     * @return whether it is a DELETE request
+     */
+    public static boolean isDelete(final WebContext context) {
+        return HttpConstants.HTTP_METHOD.DELETE.name().equalsIgnoreCase(context.getRequestMethod());
+    }
+
+    /**
      * Whether the request is HTTPS or secure.
      *
      * @param context the current web context
