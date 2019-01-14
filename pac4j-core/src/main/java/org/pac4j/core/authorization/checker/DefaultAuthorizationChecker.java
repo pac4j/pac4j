@@ -23,7 +23,7 @@ import static org.pac4j.core.context.HttpConstants.*;
  */
 public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
-    private final static Logger logger = LoggerFactory.getLogger(DefaultAuthorizationChecker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAuthorizationChecker.class);
 
     final static StrictTransportSecurityHeader STRICT_TRANSPORT_SECURITY_HEADER = new StrictTransportSecurityHeader();
     final static XContentTypeOptionsHeader X_CONTENT_TYPE_OPTIONS_HEADER = new XContentTypeOptionsHeader();
@@ -52,12 +52,18 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizerNames,
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
                                 final Map<String, Authorizer> authorizersMap) {
         final List<Authorizer> authorizers = new ArrayList<>();
+        String authorizerNames = authorizersValue;
+        // the authorizers are not defined, we default to:
+        if (authorizerNames == null) {
+            authorizerNames = DefaultAuthorizers.CSRF + Pac4jConstants.ELEMENT_SEPARATOR + DefaultAuthorizers.SECURITYHEADERS;
+        }
+
         // if we have an authorizer name (which may be a list of authorizer names)
         if (isNotBlank(authorizerNames)) {
-            final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPRATOR);
+            final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
                 final String name = names[i].trim();
@@ -120,7 +126,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             // check authorizations using authorizers: all must be satisfied
             for (Authorizer authorizer : authorizers) {
                 final boolean isAuthorized = authorizer.isAuthorized(context, profiles);
-                logger.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
+                LOGGER.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
                 if (!isAuthorized) {
                     return false;
                 }

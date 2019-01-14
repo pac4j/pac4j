@@ -49,7 +49,18 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testBlankAuthorizerNameAProfile() {
-        assertTrue(checker.isAuthorized(null, profiles, null, null));
+        assertTrue(checker.isAuthorized(null, profiles, "", null));
+    }
+
+    @Test
+    public void testNullAuthorizerNameAProfileGetRequest() {
+        assertTrue(checker.isAuthorized(MockWebContext.create(), profiles, null, null));
+    }
+
+    @Test
+    public void testNullAuthorizerNameAProfilePostRequest() {
+        final MockWebContext context = MockWebContext.create().setRequestMethod("POST");
+        assertFalse(checker.isAuthorized(context, profiles, null, null));
     }
 
     @Test
@@ -90,7 +101,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, new IdAuthorizer());
         authorizers.put(VALUE, new RequireAnyRoleAuthorizer(ROLE));
-        assertTrue(checker.isAuthorized(null, profiles, NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, authorizers));
+        assertTrue(checker.isAuthorized(null, profiles, NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE, authorizers));
     }
 
     @Test
@@ -99,14 +110,14 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, new IdAuthorizer());
         authorizers.put(VALUE, new RequireAnyRoleAuthorizer(ROLE));
-        assertFalse(checker.isAuthorized(null, profiles, NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, authorizers));
+        assertFalse(checker.isAuthorized(null, profiles, NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE, authorizers));
     }
 
     @Test(expected = TechnicalException.class)
     public void testTwoAuthorizerOneDoesNotExist() {
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, new IdAuthorizer());
-        checker.isAuthorized(null, profiles, NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, authorizers);
+        checker.isAuthorized(null, profiles, NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE, authorizers);
     }
 
     @Test(expected = TechnicalException.class)

@@ -12,6 +12,7 @@ title: Release notes&#58;
 - Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. They are only applied to the web context by the appropriate `HttpActionAdapter`. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`. The `setResponseStatus` and `writeResponseContent` methods have been removed from the `WebContext` interface
 - Use the 303 "See Other" HTTP action instead of the 302 "Found" HTTP action for any redirection after a POST request in the `DefaultCallbackLogic`
 - By default, the CSRF check applies on the PUT, PATCH and DELETE requests in addition to the POST requests
+- "csrf,securityheaders" is the default authorizers definition
 
 
 **v3.5.0**:

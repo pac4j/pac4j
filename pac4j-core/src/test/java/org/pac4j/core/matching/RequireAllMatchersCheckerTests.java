@@ -81,7 +81,7 @@ public final class RequireAllMatchersCheckerTests implements TestsConstants {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         matchers.put(VALUE, new NullContextMatcher());
-        assertTrue(checker.matches(MockWebContext.create(), NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, matchers));
+        assertTrue(checker.matches(MockWebContext.create(), NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE, matchers));
     }
 
     @Test
@@ -89,6 +89,6 @@ public final class RequireAllMatchersCheckerTests implements TestsConstants {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());
         matchers.put(VALUE, new AlwaysFalseMatcher());
-        assertFalse(checker.matches(MockWebContext.create(), NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, matchers));
+        assertFalse(checker.matches(MockWebContext.create(), NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE, matchers));
     }
 }
