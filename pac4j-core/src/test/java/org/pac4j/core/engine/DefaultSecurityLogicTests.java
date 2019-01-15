@@ -262,7 +262,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         clients = NAME;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
         multiProfile = true;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "Client not allowed: " + VALUE);
+        call();
+        assertEquals(401, action.getCode());
     }
 
     @Test
@@ -299,6 +300,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME;
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "Client not allowed: " + VALUE);
+        call();
+        assertEquals(401, action.getCode());
     }
 }

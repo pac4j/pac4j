@@ -9,10 +9,8 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
 
 import java.util.List;
 
@@ -45,8 +43,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, FAKE_VALUE);
-        TestsHelper.expectException(() -> finder.find(clients, context, NAME), TechnicalException.class,
-            "No client found for name: " + FAKE_VALUE);
+        assertTrue(finder.find(clients, context, NAME).isEmpty());
     }
 
     @Test
@@ -77,8 +74,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        TestsHelper.expectException(() -> finder.find(clients, context, CLIENT_NAME), TechnicalException.class,
-            "Client not allowed: " + NAME);
+        assertTrue(finder.find(clients, context, CLIENT_NAME).isEmpty());
     }
 
     @Test
@@ -89,8 +85,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        TestsHelper.expectException(() -> finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE), TechnicalException.class,
-            "Client not allowed: " + NAME);
+        assertTrue(finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE).isEmpty());
     }
 
     @Test
@@ -114,8 +109,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> finder.find(clients, context, FAKE_VALUE), TechnicalException.class,
-            "No client found for name: " + FAKE_VALUE);
+        assertTrue(finder.find(clients, context, FAKE_VALUE).isEmpty());
     }
 
     @Test

@@ -4,7 +4,6 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +35,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
         // we check the nullity and not the blankness to allow the blank string to mean no client
         // so no clients parameter -> use the default security ones; clients=blank string -> no clients defined
         logger.debug("Provided clientNames: {}", securityClientNames);
-        if (clientNames == null) {
+        if (securityClientNames == null) {
             securityClientNames = clients.getDefaultSecurityClients();
             logger.debug("Default security clients: {}", securityClientNames);
             // still no clients defined and we only have one client, use it
@@ -53,26 +53,25 @@ public class DefaultSecurityClientFinder implements ClientFinder {
             logger.debug("clientNameOnRequest: {}", clientNameOnRequest);
             if (clientNameOnRequest != null) {
                 // from the request
-                final Client client = clients.findClient(clientNameOnRequest);
-                final String nameFound = client.getName();
-                // if allowed -> return it
-                boolean found = false;
-                for (final String name : names) {
-                    if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, nameFound)) {
-                        result.add(client);
-                        found = true;
-                        break;
+                final Optional<Client> client = clients.findClient(clientNameOnRequest);
+                if (client.isPresent()) {
+                    final String nameFound = client.get().getName();
+                    // if allowed -> return it
+                    for (final String name : names) {
+                        if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, nameFound)) {
+                            result.add(client.get());
+                            break;
+                        }
                     }
-                }
-                if (!found) {
-                    throw new TechnicalException("Client not allowed: " + nameFound);
                 }
             } else {
                 // no client provided, return all
                 for (final String name : names) {
                     // from its name
-                    final Client client = clients.findClient(name);
-                    result.add(client);
+                    final Optional<Client> client = clients.findClient(name);
+                    if (client.isPresent()) {
+                        result.add(client.get());
+                    }
                 }
             }
         }

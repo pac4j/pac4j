@@ -110,8 +110,8 @@ public final class ClientsTests implements TestsConstants {
         } else {
             clients = new Clients(CALLBACK_URL, facebookClient, fakeClient);
         }
-        assertEquals(facebookClient, clients.findClient(MockIndirectClient.class));
-        assertEquals(fakeClient, clients.findClient(MockDirectClient.class));
+        assertEquals(facebookClient, clients.findClient(MockIndirectClient.class).get());
+        assertEquals(fakeClient, clients.findClient(MockDirectClient.class).get());
     }
 
     @Test

@@ -124,8 +124,8 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                     logger.debug("Profile: {}", profile);
                     final String clientName = profile.getClientName();
                     if (clientName != null) {
-                        final Client client = configClients.findClient(clientName);
-                        if (client != null) {
+                        final Optional<Client> client = configClients.findClient(clientName);
+                        if (client.isPresent()) {
                             final String targetUrl;
                             if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
                                 redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS))) {
@@ -133,7 +133,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                             } else {
                                 targetUrl = null;
                             }
-                            final Optional<RedirectionAction> logoutAction = client.getLogoutAction(context, profile, targetUrl);
+                            final Optional<RedirectionAction> logoutAction = client.get().getLogoutAction(context, profile, targetUrl);
                             logger.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {
                                 action = logoutAction.get();
