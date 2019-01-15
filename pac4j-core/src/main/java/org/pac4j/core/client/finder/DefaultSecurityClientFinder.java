@@ -46,7 +46,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
         }
 
         if (CommonHelper.isNotBlank(securityClientNames)) {
-            final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPRATOR));
+            final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
             // if a "client_name" parameter is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
             final String clientNameOnRequest = context.getRequestParameter(clientNameParameter);

@@ -23,7 +23,7 @@ public class RequireAllMatchersChecker implements MatchingChecker {
             final List<Matcher> matchers = new ArrayList<>();
             // we must have matchers
             CommonHelper.assertNotNull("matchersMap", matchersMap);
-            final String[] names = matcherNames.split(Pac4jConstants.ELEMENT_SEPRATOR);
+            final String[] names = matcherNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
                 final String name = names[i];

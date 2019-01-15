@@ -42,7 +42,7 @@ public interface Pac4jConstants {
     String URL = "url";
 
     /* The element (client or authorizer) separator */
-    String ELEMENT_SEPRATOR = ",";
+    String ELEMENT_SEPARATOR = ",";
 
     /* The logout pattern for url */
     String LOGOUT_URL_PATTERN = "logoutUrlPattern";
