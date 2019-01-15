@@ -14,6 +14,8 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OpenID client to authenticate users with UserService on App Engine</p>
  *
@@ -36,7 +38,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
             final String destinationUrl = computeFinalCallbackUrl(ctx);
             final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
                 : service.createLoginURL(destinationUrl, authDomain);
-            return new FoundAction(loginUrl);
+            return Optional.of(new FoundAction(loginUrl));
         });
         defaultCredentialsExtractor(ctx -> {
             final GaeUserCredentials credentials = new GaeUserCredentials();

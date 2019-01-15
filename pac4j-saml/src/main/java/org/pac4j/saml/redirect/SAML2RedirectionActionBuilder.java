@@ -15,6 +15,8 @@ import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
+import java.util.Optional;
+
 /**
  * Redirection action builder for SAML 2.
  *
@@ -35,7 +37,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public RedirectionAction redirect(final WebContext wc) {
+    public Optional<RedirectionAction> redirect(final WebContext wc) {
         final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc);
         final String relayState = this.client.getStateGenerator().generateState(wc);
 
@@ -45,9 +47,9 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
         if (this.client.getConfiguration().getAuthnRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
             final String content = adapter.getOutgoingContent();
-            return new OkAction(content);
+            return Optional.of(new OkAction(content));
         }
         final String location = adapter.getRedirectUrl();
-        return new FoundAction(location);
+        return Optional.of(new FoundAction(location));
     }
 }

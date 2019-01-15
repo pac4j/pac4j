@@ -13,6 +13,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the client to authenticate users through HTTP form.</p>
  * <p>The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is
@@ -65,7 +67,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
 
         defaultRedirectionActionBuilder(ctx -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
-            return new FoundAction(finalLoginUrl);
+            return Optional.of(new FoundAction(finalLoginUrl));
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }

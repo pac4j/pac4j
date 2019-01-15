@@ -13,6 +13,8 @@ import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 
+import java.util.Optional;
+
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -48,7 +50,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     protected void clientInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultRedirectionActionBuilder(webContext ->  new FoundAction(computeFinalCallbackUrl(webContext)));
+        defaultRedirectionActionBuilder(webContext ->  Optional.of(new FoundAction(computeFinalCallbackUrl(webContext))));
         defaultCredentialsExtractor(new BasicAuthExtractor());
     }
 

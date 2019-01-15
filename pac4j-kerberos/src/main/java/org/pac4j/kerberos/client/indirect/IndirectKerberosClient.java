@@ -12,12 +12,15 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 
+import java.util.Optional;
+
 /**
  * @author Vidmantas Zemleris, at Kensu.io
  *
  * @since 2.1.0
  */
 public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> {
+
     public IndirectKerberosClient() {}
 
     public IndirectKerberosClient(final Authenticator authenticator) {
@@ -31,7 +34,7 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> 
 
     @Override
     protected void clientInit() {
-        defaultRedirectionActionBuilder(webContext -> new FoundAction(computeFinalCallbackUrl(webContext)));
+        defaultRedirectionActionBuilder(webContext -> Optional.of(new FoundAction(computeFinalCallbackUrl(webContext))));
         defaultCredentialsExtractor(new KerberosExtractor());
     }
 

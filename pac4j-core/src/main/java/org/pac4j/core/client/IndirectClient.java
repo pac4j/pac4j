@@ -85,14 +85,14 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
      * @return the "redirection" action
      */
     @Override
-    public final RedirectionAction redirect(final WebContext context) {
+    public final Optional<RedirectionAction> redirect(final WebContext context) {
         init();
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning the appropriate action");
-            final RedirectionAction action = redirectionActionBuilder.redirect(context);
+            final Optional<RedirectionAction> action = redirectionActionBuilder.redirect(context);
             cleanRequestedUrl(context);
-            throw ajaxRequestResolver.buildAjaxResponse(action, context);
+            throw ajaxRequestResolver.buildAjaxResponse(action.get(), context);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);

@@ -73,7 +73,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) basicAuthClient.redirect(context);
+        final FoundAction action = (FoundAction) basicAuthClient.redirect(context).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
     }

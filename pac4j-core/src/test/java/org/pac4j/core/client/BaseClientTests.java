@@ -26,7 +26,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) client.redirect(context);
+        final FoundAction action = (FoundAction) client.redirect(context).get();
         final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
         final Credentials credentials = client.getCredentials(context);
@@ -39,7 +39,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) client.redirect(context);
+        final FoundAction action = (FoundAction) client.redirect(context).get();
         final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }

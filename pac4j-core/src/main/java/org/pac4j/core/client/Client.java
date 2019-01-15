@@ -37,9 +37,9 @@ public interface Client<C extends Credentials> {
      * <p>Redirect to the authentication provider (indirect clients).</p>
      *
      * @param context the current web context
-     * @return the redirection to perform
+     * @return the redirection to perform (optional)
      */
-    RedirectionAction redirect(WebContext context);
+    Optional<RedirectionAction> redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at

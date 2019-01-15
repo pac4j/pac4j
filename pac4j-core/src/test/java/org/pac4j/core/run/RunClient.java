@@ -30,7 +30,7 @@ public abstract class RunClient implements TestsConstants {
     public void run() {
         final IndirectClient client = getClient();
         final MockWebContext context = MockWebContext.create();
-        final String url = ((FoundAction) client.redirect(context)).getLocation();
+        final String url = ((FoundAction) client.redirect(context).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
         logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
         if (canCancel()) {
