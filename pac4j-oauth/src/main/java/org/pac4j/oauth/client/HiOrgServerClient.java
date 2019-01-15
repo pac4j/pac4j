@@ -6,6 +6,8 @@ import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerConfiguration;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
 
+import java.util.Optional;
+
 /**
  * This class is the OAuth client to authenticate users in HiOrg-Server.
  *
@@ -42,7 +44,7 @@ public class HiOrgServerClient extends OAuth20Client {
             }
         });
         configuration.setWithState(true);
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction(LOGOUT_URL));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction(LOGOUT_URL)));
 
         super.clientInit();
     }

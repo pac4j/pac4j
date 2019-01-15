@@ -13,6 +13,7 @@ title: Release notes&#58;
 - Use the 303 "See Other" HTTP action instead of the 302 "Found" HTTP action for any redirection after a POST request in the `DefaultCallbackLogic`
 - By default, the CSRF check applies on the PUT, PATCH and DELETE requests in addition to the POST requests
 - "csrf,securityheaders" is the default authorizers definition
+- Use `Optional` whenever it makes sense
 
 
 **v3.5.0**:

@@ -5,6 +5,8 @@ import org.pac4j.oauth.profile.wordpress.WordPressProfileDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 import org.pac4j.scribe.builder.api.WordPressApi20;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in WordPress.</p>
  * <p>It returns a {@link WordPressProfile}.</p>
@@ -29,7 +31,7 @@ public class WordPressClient extends OAuth20Client {
         configuration.setProfileDefinition(new WordPressProfileDefinition());
         configuration.setTokenAsHeader(true);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
-            new FoundAction("https://wordpress.com/wp-login.php?action=logout"));
+            Optional.of(new FoundAction("https://wordpress.com/wp-login.php?action=logout")));
 
         super.clientInit();
     }

@@ -9,6 +9,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in Twitter.</p>
  * <p>You can define if a screen should always been displayed for authorization confirmation by using the
@@ -51,7 +53,7 @@ public class TwitterClient extends OAuth10Client {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://twitter.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction("https://twitter.com/logout")));
 
         super.clientInit();
     }

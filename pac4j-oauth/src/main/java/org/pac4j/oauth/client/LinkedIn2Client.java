@@ -8,6 +8,8 @@ import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
  * <p>It returns a {@link LinkedIn2Profile}.</p>
@@ -49,7 +51,7 @@ public class LinkedIn2Client extends OAuth20Client {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://www.linkedin.com/uas/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction("https://www.linkedin.com/uas/logout")));
 
         super.clientInit();
     }

@@ -17,6 +17,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -144,7 +145,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutActionBuilder((ctx, p, targetUrl) -> new FoundAction(CALLBACK_URL + "?p=" + targetUrl));
+        client.setLogoutActionBuilder((ctx, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();
@@ -163,7 +164,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutActionBuilder((ctx, p, targetUrl) -> new FoundAction(CALLBACK_URL + "?p=" + targetUrl));
+        client.setLogoutActionBuilder((ctx, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();

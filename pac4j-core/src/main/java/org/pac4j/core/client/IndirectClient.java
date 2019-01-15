@@ -19,6 +19,8 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
+
 /**
  * Indirect client: the requested protected URL is saved, the user is redirected to the identity provider for login and
  * back to the application after the sucessful authentication and finally to the originally requested URL.
@@ -142,7 +144,8 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     }
 
     @Override
-    public final RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
+                                                             final String targetUrl) {
         init();
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
