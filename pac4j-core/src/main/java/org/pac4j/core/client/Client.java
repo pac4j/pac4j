@@ -46,9 +46,9 @@ public interface Client<C extends Credentials> {
      * this step.</p>
      *
      * @param context the current web context
-     * @return the credentials
+     * @return the credentials (optional)
      */
-    C getCredentials(WebContext context);
+    Optional<C> getCredentials(WebContext context);
 
     /**
      * Get the user profile based on the provided credentials.

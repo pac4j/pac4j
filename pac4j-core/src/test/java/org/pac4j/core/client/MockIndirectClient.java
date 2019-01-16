@@ -24,7 +24,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials> {
         setName(name);
     }
 
-    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final Credentials credentials,
+    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final Optional<Credentials> credentials,
                               final CommonProfile profile) {
         this(name, redirectAction, () -> credentials, profile);
     }

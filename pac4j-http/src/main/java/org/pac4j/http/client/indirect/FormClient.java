@@ -73,22 +73,22 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<UsernamePasswordCredentials> retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
         final String username = context.getRequestParameter(this.usernameParameter);
-        UsernamePasswordCredentials credentials;
+        final Optional<UsernamePasswordCredentials> credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("usernamePasswordCredentials: {}", credentials);
-            if (credentials == null) {
+            if (!credentials.isPresent()) {
                 throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error",
                     MISSING_FIELD_ERROR);
             }
             // validate credentials
-            getAuthenticator().validate(credentials, context);
+            getAuthenticator().validate(credentials.get(), context);
         } catch (final CredentialsException e) {
             throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error",
                 computeErrorMessage(e));

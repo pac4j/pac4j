@@ -12,6 +12,8 @@ import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * OAuth credentials extractor.
  *
@@ -34,12 +36,12 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
     }
 
     @Override
-    public C extract(final WebContext context) {
+    public Optional<C> extract(final WebContext context) {
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {
             logger.debug("authentication has been cancelled by user");
-            return null;
+            return Optional.empty();
         }
         // check errors
         try {
@@ -69,5 +71,5 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
      * @param context the web context
      * @return the OAuth credentials
      */
-    protected abstract C getOAuthCredentials(final WebContext context);
+    protected abstract Optional<C> getOAuthCredentials(final WebContext context);
 }

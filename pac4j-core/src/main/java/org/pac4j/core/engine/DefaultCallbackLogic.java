@@ -20,6 +20,7 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -89,12 +90,15 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             logger.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            final Credentials credentials = foundClient.getCredentials(context);
+            final Optional<Credentials> credentials = foundClient.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final UserProfile profile = foundClient.getUserProfile(credentials, context);
-            logger.debug("profile: {}", profile);
-            saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
+            if (credentials.isPresent()) {
+                final UserProfile profile = foundClient.getUserProfile(credentials.get(), context);
+                logger.debug("profile: {}", profile);
+                saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
+            }
+
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
 
         } catch (final RuntimeException e) {

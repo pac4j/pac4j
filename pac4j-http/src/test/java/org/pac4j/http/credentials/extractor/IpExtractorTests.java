@@ -6,8 +6,9 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link IpExtractor}.
@@ -26,7 +27,7 @@ public final class IpExtractorTests implements TestsConstants {
     @Test
     public void testRetrieveIpOk() {
         final MockWebContext context = MockWebContext.create().setRemoteAddress(GOOD_IP);
-        final TokenCredentials credentials = extractor.extract(context);
+        final TokenCredentials credentials = extractor.extract(context).get();
         assertEquals(GOOD_IP, credentials.getToken());
     }
 
@@ -37,11 +38,11 @@ public final class IpExtractorTests implements TestsConstants {
         ipExtractor.setProxyIp(LOCALHOST);
         // test for varargs
         ipExtractor.setAlternateIpHeaders("fooBar", HEADER_NAME, "barFoo");
-        final TokenCredentials credentials = ipExtractor.extract(context);
+        final TokenCredentials credentials = ipExtractor.extract(context).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
         ipExtractor.setAlternateIpHeaders(HEADER_NAME);
-        final TokenCredentials credentials2 = ipExtractor.extract(context);
+        final TokenCredentials credentials2 = ipExtractor.extract(context).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
@@ -50,11 +51,11 @@ public final class IpExtractorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         // test for varargs
         final IpExtractor ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
-        final TokenCredentials credentials = ipExtractor.extract(context);
+        final TokenCredentials credentials = ipExtractor.extract(context).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
         final IpExtractor ipExtractor2 = new IpExtractor(HEADER_NAME);
-        final TokenCredentials credentials2 = ipExtractor2.extract(context);
+        final TokenCredentials credentials2 = ipExtractor2.extract(context).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
@@ -67,14 +68,7 @@ public final class IpExtractorTests implements TestsConstants {
     @Test
     public void testNoIp() {
         final MockWebContext context = MockWebContext.create();
-        final TokenCredentials credentials = extractor.extract(context);
-        assertNull(credentials);
-    }
-
-    @Test
-    public void testWrongProxyIp() {
-        final MockWebContext context = MockWebContext.create();
-        final TokenCredentials credentials = extractor.extract(context);
-        assertNull(credentials);
+        final Optional<TokenCredentials> credentials = extractor.extract(context);
+        assertFalse(credentials.isPresent());
     }
 }

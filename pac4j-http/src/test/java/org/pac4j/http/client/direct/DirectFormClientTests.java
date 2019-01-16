@@ -53,22 +53,22 @@ public final class DirectFormClientTests implements TestsConstants {
     public void testGetCredentialsMissingUsername() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)));
+        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)).isPresent());
     }
 
     @Test
     public void testGetCredentialsMissingPassword() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)));
+        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)).isPresent());
     }
 
     @Test
     public void testGetBadCredentials() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)));
+        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)).isPresent());
     }
 
     @Test
@@ -76,7 +76,7 @@ public final class DirectFormClientTests implements TestsConstants {
         final DirectFormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
+                .addRequestParameter(formClient.getPasswordParameter(), USERNAME)).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }

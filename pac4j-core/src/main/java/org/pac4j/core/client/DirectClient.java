@@ -37,7 +37,7 @@ public abstract class DirectClient<C extends Credentials> extends BaseClient<C> 
     }
 
     @Override
-    public final C getCredentials(final WebContext context) {
+    public final Optional<C> getCredentials(final WebContext context) {
         init();
         return retrieveCredentials(context);
     }

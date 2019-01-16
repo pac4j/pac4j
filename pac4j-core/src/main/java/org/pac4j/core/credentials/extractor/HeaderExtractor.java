@@ -5,6 +5,8 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 
+import java.util.Optional;
+
 /**
  * To extract header value.
  *
@@ -53,7 +55,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
@@ -61,7 +63,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         if (header == null) {
             header = context.getRequestHeader(this.headerName.toLowerCase());
             if (header == null) {
-                return null;
+                return Optional.empty();
             }
         }
 
@@ -74,6 +76,6 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         if (trimValue) {
             headerWithoutPrefix = headerWithoutPrefix.trim();
         }
-        return new TokenCredentials(headerWithoutPrefix);
+        return Optional.of(new TokenCredentials(headerWithoutPrefix));
     }
 }

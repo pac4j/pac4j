@@ -112,18 +112,20 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                         if (currentClient instanceof DirectClient) {
                             logger.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final Credentials credentials = currentClient.getCredentials(context);
+                            final Optional<Credentials> credentials = currentClient.getCredentials(context);
                             logger.debug("credentials: {}", credentials);
-                            final UserProfile profile = currentClient.getUserProfile(credentials, context);
-                            logger.debug("profile: {}", profile);
-                            if (profile != null) {
-                                final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
-                                    currentClients, (DirectClient) currentClient, profile);
-                                logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                manager.save(saveProfileInSession, profile, multiProfile);
-                                updated = true;
-                                if (!multiProfile) {
-                                    break;
+                            if (credentials.isPresent()) {
+                                final UserProfile profile = currentClient.getUserProfile(credentials.get(), context);
+                                logger.debug("profile: {}", profile);
+                                if (profile != null) {
+                                    final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
+                                        currentClients, (DirectClient) currentClient, profile);
+                                    logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
+                                    manager.save(saveProfileInSession, profile, multiProfile);
+                                    updated = true;
+                                    if (!multiProfile) {
+                                        break;
+                                    }
                                 }
                             }
                         }

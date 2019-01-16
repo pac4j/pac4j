@@ -107,7 +107,7 @@ public final class FormClientTests implements TestsConstants {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
+                .addRequestParameter(formClient.getPasswordParameter(), USERNAME)).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }

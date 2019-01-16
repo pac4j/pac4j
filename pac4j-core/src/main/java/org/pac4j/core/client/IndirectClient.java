@@ -131,16 +131,16 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
      * @return the credentials
      */
     @Override
-    public final C getCredentials(final WebContext context) {
+    public final Optional<C> getCredentials(final WebContext context) {
         init();
-        final C credentials = retrieveCredentials(context);
+        final Optional<C> optCredentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
-        if (credentials == null) {
+        if (!optCredentials.isPresent()) {
             context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         } else {
             cleanAttemptedAuthentication(context);
         }
-        return credentials;
+        return optCredentials;
     }
 
     @Override

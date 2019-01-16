@@ -50,7 +50,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final UsernamePasswordCredentials credentials = client.getCredentials(context);
+        final UsernamePasswordCredentials credentials = client.getCredentials(context).get();
         final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());
     }
@@ -62,7 +62,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER.toLowerCase(),
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final UsernamePasswordCredentials credentials = client.getCredentials(context);
+        final UsernamePasswordCredentials credentials = client.getCredentials(context).get();
         final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());
     }

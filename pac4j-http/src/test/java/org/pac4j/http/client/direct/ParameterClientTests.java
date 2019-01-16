@@ -59,7 +59,7 @@ public final class ParameterClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.addRequestParameter(PARAMETER_NAME, VALUE);
         context.setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
-        final TokenCredentials credentials = client.getCredentials(context);
+        final TokenCredentials credentials = client.getCredentials(context).get();
         final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
         assertEquals(VALUE, profile.getId());
     }

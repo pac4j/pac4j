@@ -18,6 +18,8 @@ import org.pac4j.saml.logout.impl.SAML2LogoutResponseBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseMessageSender;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
+import java.util.Optional;
+
 /**
  * Credentials extractor of SAML2 credentials.
  *
@@ -49,7 +51,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
     }
 
     @Override
-    public SAML2Credentials extract(final WebContext context) {
+    public Optional<SAML2Credentials> extract(final WebContext context) {
         final boolean logoutEndpoint = context.getRequestParameter(SAML2ServiceProviderMetadataResolver.LOGOUT_ENDPOINT_PARAMETER) != null;
         final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
         if (logoutEndpoint) {
@@ -72,7 +74,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
         } else {
             // SAML authn response
             final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            return credentials;
+            return Optional.ofNullable(credentials);
         }
     }
 }

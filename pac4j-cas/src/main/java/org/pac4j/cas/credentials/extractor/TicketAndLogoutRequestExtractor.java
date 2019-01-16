@@ -16,6 +16,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.zip.Inflater;
 
 /**
@@ -38,7 +39,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
     }
 
     @Override
-    public TokenCredentials extract(final WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         final LogoutHandler logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
@@ -47,7 +48,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             logoutHandler.recordSession(context, ticket);
             final TokenCredentials casCredentials = new TokenCredentials(ticket);
             logger.debug("casCredentials: {}", casCredentials);
-            return casCredentials;
+            return Optional.of(casCredentials);
 
         } else if (isBackLogoutRequest(context)) {
             final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER);
@@ -72,7 +73,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             computeRedirectionToServerIfNecessary(context);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     protected boolean isTokenRequest(final WebContext context) {

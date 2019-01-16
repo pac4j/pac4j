@@ -40,17 +40,19 @@ public abstract class RunClient implements TestsConstants {
         final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final Credentials credentials = client.getCredentials(context);
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
-        logger.debug("userProfile: {}", profile);
-        if (profile != null || !canCancel()) {
-            verifyProfile(profile);
+        final Optional<Credentials> credentials = client.getCredentials(context);
+        if (credentials.isPresent()) {
+            final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials.get(), context);
+            logger.debug("userProfile: {}", profile);
+            if (profile != null || !canCancel()) {
+                verifyProfile(profile);
 
-            logger.warn("## Java serialization");
-            final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
-            byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
-            final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
-            verifyProfile(profile2);
+                logger.warn("## Java serialization");
+                final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+                byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
+                final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
+                verifyProfile(profile2);
+            }
         }
         logger.warn("################");
         logger.warn("Test successful!");

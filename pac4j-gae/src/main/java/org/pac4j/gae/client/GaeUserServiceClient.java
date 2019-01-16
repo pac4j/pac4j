@@ -43,7 +43,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
         defaultCredentialsExtractor(ctx -> {
             final GaeUserCredentials credentials = new GaeUserCredentials();
             credentials.setUser(service.getCurrentUser());
-            return credentials;
+            return Optional.of(credentials);
         });
         defaultAuthenticator((credentials, ctx) -> {
             final User user = credentials.getUser();

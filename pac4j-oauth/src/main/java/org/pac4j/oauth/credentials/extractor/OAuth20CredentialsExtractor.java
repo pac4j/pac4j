@@ -8,6 +8,8 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 
+import java.util.Optional;
+
 /**
  * OAuth 2.0 credentials extractor.
  *
@@ -21,7 +23,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
     }
 
     @Override
-    protected OAuth20Credentials getOAuthCredentials(final WebContext context) {
+    protected Optional<OAuth20Credentials> getOAuthCredentials(final WebContext context) {
         if (configuration.isWithState()) {
 
             final String stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
@@ -47,7 +49,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
         if (codeParameter != null) {
             final String code = OAuthEncoder.decode(codeParameter);
             logger.debug("code: {}", code);
-            return new OAuth20Credentials(code);
+            return Optional.of(new OAuth20Credentials(code));
         } else {
             final String message = "No credential found";
             throw new OAuthCredentialsException(message);

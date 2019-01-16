@@ -70,7 +70,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final GaeUserCredentials credentials = client.getCredentials(context);
+        final GaeUserCredentials credentials = client.getCredentials(context).get();
         final User user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals("", user.getAuthDomain());

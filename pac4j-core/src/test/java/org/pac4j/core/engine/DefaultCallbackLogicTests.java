@@ -25,6 +25,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -115,7 +116,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testDirectClient() {
         request.addParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final MockDirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), new CommonProfile());
+        final MockDirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(directClient));
         TestsHelper.expectException(() -> call(), TechnicalException.class,
             "unable to find one indirect client for the callback: check the callback URL for a client name parameter or" +
@@ -127,7 +128,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         final String originalSessionId = request.getSession().getId();
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
+        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.getClients().init();
         call();
@@ -159,7 +160,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         session.setAttribute(Pac4jConstants.REQUESTED_URL, PAC4J_URL);
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
+        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.getClients().init();
         call();
@@ -183,7 +184,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         final String originalSessionId = request.getSession().getId();
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
+        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
         config.getClients().init();
