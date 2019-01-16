@@ -55,9 +55,9 @@ public interface Client<C extends Credentials> {
      *
      * @param credentials credentials
      * @param context web context
-     * @return the user profile
+     * @return the user profile (optional)
      */
-    UserProfile getUserProfile(C credentials, WebContext context);
+    Optional<UserProfile> getUserProfile(C credentials, WebContext context);
 
     /**
      * <p>Return the logout action (indirect clients).</p>

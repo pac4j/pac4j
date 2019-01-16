@@ -10,12 +10,12 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
 import org.pac4j.kerberos.credentials.authenticator.SunJaasKerberosTicketValidator;
-import org.pac4j.kerberos.profile.KerberosProfile;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
@@ -151,9 +151,9 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         assertTrue(credentials.isPresent());
         System.out.println(credentials.get());
 
-        final KerberosProfile profile = (KerberosProfile) client.getUserProfile(credentials.get(), context);
-        assertNotNull(profile);
-        assertEquals(clientPrincipal, profile.getId());
+        final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context);
+        assertTrue(profile.isPresent());
+        assertEquals(clientPrincipal, profile.get().getId());
     }
 
     private DirectKerberosClient setupDirectKerberosClient() {

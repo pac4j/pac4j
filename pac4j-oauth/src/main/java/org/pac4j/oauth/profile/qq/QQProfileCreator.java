@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.qq;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
@@ -10,6 +11,8 @@ import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
+
+import java.util.Optional;
 
 /**
  * Specific profile creator for Tencent QQ.
@@ -25,8 +28,8 @@ public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
     }
 
     @Override
-    public QQProfile retrieveUserProfileFromToken(WebContext context,
-                                                  OAuth2AccessToken accessToken) {
+    public Optional<UserProfile> retrieveUserProfileFromToken(WebContext context,
+                                                              OAuth2AccessToken accessToken) {
         QQProfileDefinition profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
         String openidUrl = profileDefinition.getOpenidUrl(accessToken, configuration);
         final OAuth20Service service = this.configuration.buildService(context, client, null);
@@ -45,6 +48,6 @@ public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
         final QQProfile profile = profileDefinition.extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         profile.setId(openid);
-        return profile;
+        return Optional.of(profile);
     }
 }

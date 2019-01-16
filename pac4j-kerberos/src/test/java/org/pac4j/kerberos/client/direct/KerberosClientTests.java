@@ -83,7 +83,7 @@ public class KerberosClientTests implements TestsConstants {
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
         assertEquals("garry", profile.getId());
     }
 }

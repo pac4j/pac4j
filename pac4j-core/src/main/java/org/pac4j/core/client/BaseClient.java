@@ -78,19 +78,19 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
     }
 
     @Override
-    public final UserProfile getUserProfile(final C credentials, final WebContext context) {
+    public final Optional<UserProfile> getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
-            return null;
+            return Optional.empty();
         }
 
-        UserProfile profile = retrieveUserProfile(credentials, context);
-        if (profile != null) {
-            profile.setClientName(getName());
+        Optional<UserProfile> profile = retrieveUserProfile(credentials, context);
+        if (profile.isPresent()) {
+            profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile);
+                    profile = authorizationGenerator.generate(context, profile.get());
                 }
             }
         }
@@ -98,14 +98,14 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
     }
 
     /**
-     * Retrieve a user userprofile.
+     * Retrieve a user profile.
      *
      * @param credentials the credentials
      * @param context     the web context
      * @return the user profile
      */
-    protected final UserProfile retrieveUserProfile(final C credentials, final WebContext context) {
-        final UserProfile profile = this.profileCreator.create(credentials, context);
+    protected final Optional<UserProfile> retrieveUserProfile(final C credentials, final WebContext context) {
+        final Optional<UserProfile> profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }

@@ -52,7 +52,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
-        assertNull(client.getUserProfile(null, context));
+        assertFalse(client.getUserProfile(null, context).isPresent());
     }
 
     @Test

@@ -48,7 +48,7 @@ public final class IpClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setRemoteAddress(IP);
         final TokenCredentials credentials = client.getCredentials(context).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
         assertEquals(IP, profile.getId());
     }
 }

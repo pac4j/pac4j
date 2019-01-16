@@ -55,7 +55,7 @@ public final class X509ClientTests implements TestsConstants {
         certs[0] = cert;
         context.setRequestAttribute(X509CredentialsExtractor.CERTIFICATE_REQUEST_ATTRIBUTE, certs);
         final X509Credentials credentials = client.getCredentials(context).get();
-        final X509Profile profile = (X509Profile) client.getUserProfile(credentials, context);
+        final X509Profile profile = (X509Profile) client.getUserProfile(credentials, context).get();
         assertEquals("jerome", profile.getId());
     }
 }

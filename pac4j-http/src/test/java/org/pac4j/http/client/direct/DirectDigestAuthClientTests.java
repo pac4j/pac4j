@@ -54,7 +54,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
 
         final DigestCredentials credentials = client.getCredentials(context).get();
 
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
 
         String ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
         String serverDigest1 = credentials.calculateServerDigest(true, ha1);

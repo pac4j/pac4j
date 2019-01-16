@@ -115,13 +115,13 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                             final Optional<Credentials> credentials = currentClient.getCredentials(context);
                             logger.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
-                                final UserProfile profile = currentClient.getUserProfile(credentials.get(), context);
+                                final Optional<UserProfile> profile = currentClient.getUserProfile(credentials.get(), context);
                                 logger.debug("profile: {}", profile);
-                                if (profile != null) {
+                                if (profile.isPresent()) {
                                     final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
-                                        currentClients, (DirectClient) currentClient, profile);
+                                        currentClients, (DirectClient) currentClient, profile.get());
                                     logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                    manager.save(saveProfileInSession, profile, multiProfile);
+                                    manager.save(saveProfileInSession, profile.get(), multiProfile);
                                     updated = true;
                                     if (!multiProfile) {
                                         break;

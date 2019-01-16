@@ -5,6 +5,8 @@ import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Optional;
+
 /**
  * Default {@link AuthorizationGenerator} implementation for a {@link CasClient} which is able
  * to retrieve the isRemembered status from the CAS response and put it in the profile.
@@ -27,10 +29,10 @@ public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator 
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
-        String rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
-        boolean isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
+        final String rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
+        final boolean isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);
-        return profile;
+        return Optional.of(profile);
     }
 }
