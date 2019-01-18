@@ -22,11 +22,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -45,6 +41,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final CredentialProvider credentialProvider;
     private final String callbackUrl;
     private final SAML2Configuration configuration;
+    private String spMetadata;
 
     public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
@@ -92,6 +89,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             // Initialize metadata provider for our SP and get the XML as a String
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
             final String tempMetadata = metadataGenerator.getMetadata(entity);
+            this.spMetadata = tempMetadata;
             writeServiceProviderMetadataToResource(tempMetadata);
             return metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
         } catch (final Exception e) {
@@ -155,7 +153,13 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     @Override
     public String getMetadata() throws IOException {
-        return FileUtils.readFileToString(configuration.getServiceProviderMetadataResource().getFile(), StandardCharsets.UTF_8);
+        if (configuration.getServiceProviderMetadataResource() != null) {
+            return FileUtils.readFileToString(configuration.getServiceProviderMetadataResource().getFile(), StandardCharsets.UTF_8);
+        } else if (this.spMetadata != null) {
+            return this.spMetadata;
+        }
+        return null;
+
     }
 
     @Override
