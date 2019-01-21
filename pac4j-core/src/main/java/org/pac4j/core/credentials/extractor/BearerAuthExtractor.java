@@ -8,7 +8,7 @@ import org.pac4j.core.credentials.TokenCredentials;
  * To extract an RFC 6750 bearer auth header.
  *
  * @author Graham Leggett
- * @since 4.0.1
+ * @since 3.5.0
  */
 public class BearerAuthExtractor implements CredentialsExtractor<TokenCredentials> {
 

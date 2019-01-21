@@ -16,7 +16,7 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticato
  * This class tests the {@link DirectBearerAuthClient} class.
  *
  * @author Graham Leggett
- * @since 4.0.1
+ * @since 3.5.0
  */
 public final class DirectBearerAuthClientTests implements TestsConstants {
 
@@ -45,7 +45,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         final DirectBearerAuthClient client = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
-            "Bearer " + TOKEN);
+                HttpConstants.BEARER_HEADER_PREFIX + TOKEN);
         final TokenCredentials credentials = client.getCredentials(context);
         final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
         assertEquals(TOKEN, profile.getId());

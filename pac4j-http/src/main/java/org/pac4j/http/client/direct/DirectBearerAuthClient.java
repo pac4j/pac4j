@@ -16,7 +16,7 @@ import org.pac4j.core.profile.creator.ProfileCreator;
  * <p>This class is the client to authenticate users directly through RFC 6750 HTTP bearer authentication.</p>
  *
  * @author Graham Leggett
- * @since 4.0.1
+ * @since 3.5.0
  */
 public class DirectBearerAuthClient extends DirectClient<TokenCredentials> {
 
