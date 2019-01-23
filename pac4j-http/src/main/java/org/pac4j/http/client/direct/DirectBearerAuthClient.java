@@ -46,7 +46,7 @@ public class DirectBearerAuthClient extends DirectClient<TokenCredentials, Commo
     @Override
     protected TokenCredentials retrieveCredentials(final WebContext context) {
         // set the www-authenticate in case of error
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Bearer realm=\"" + realmName + "\"");
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 
         return super.retrieveCredentials(context);
     }
