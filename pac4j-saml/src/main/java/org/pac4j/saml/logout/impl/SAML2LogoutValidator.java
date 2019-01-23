@@ -71,8 +71,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     protected void validateLogoutRequest(final LogoutRequest logoutRequest, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
 
-        // TODO: make it work for SOAP logout requests from Shibboleth
-        //validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
+        validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
 
         // don't check because of CAS v5
         //validateIssueInstant(logoutRequest.getIssueInstant());
