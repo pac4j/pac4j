@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
 - Updated the OpenID Connect/JWT dependencies (v6)
 - Added `DirectBearerAuthClient`
+- Handled the inResponseTo and the RelayState in the logout response (SAML)
 
 **v3.4.0**:
 

@@ -33,7 +33,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
 
     protected final String spLogoutResponseBindingType;
 
-    protected final SAML2LogoutResponseBuilder saml2LogoutResponseBuilder;
+    protected SAML2LogoutResponseBuilder saml2LogoutResponseBuilder;
 
     protected final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
 
@@ -57,7 +57,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
 
             // return a logout response if necessary
             final LogoutResponse logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
-            this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse, null);
+            this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
+                samlContext.getSAMLBindingContext().getRelayState());
 
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
@@ -73,5 +74,13 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
             final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
             return credentials;
         }
+    }
+
+    public SAML2LogoutResponseBuilder getSaml2LogoutResponseBuilder() {
+        return saml2LogoutResponseBuilder;
+    }
+
+    public void setSaml2LogoutResponseBuilder(final SAML2LogoutResponseBuilder saml2LogoutResponseBuilder) {
+        this.saml2LogoutResponseBuilder = saml2LogoutResponseBuilder;
     }
 }

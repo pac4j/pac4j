@@ -1,5 +1,6 @@
 package org.pac4j.saml.profile.impl;
 
+import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -40,7 +41,9 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         final AbstractPac4jDecoder decoder = getDecoder(webContext);
 
         final SAML2MessageContext decodedCtx = new SAML2MessageContext(decoder.getMessageContext());
-        decodedCtx.setMessage(decoder.getMessageContext().getMessage());
+        final SAMLObject message = decoder.getMessageContext().getMessage();
+        decodedCtx.setMessage(message);
+        context.setMessage(message);
         decodedCtx.setSAMLMessageStorage(context.getSAMLMessageStorage());
 
         final SAMLBindingContext bindingContext = decodedCtx.getParent()
@@ -51,7 +54,9 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
         decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext
             .isIntendedDestinationEndpointURIRequired());
-        decodedCtx.getSAMLBindingContext().setRelayState(bindingContext.getRelayState());
+        final String relayState = bindingContext.getRelayState();
+        decodedCtx.getSAMLBindingContext().setRelayState(relayState);
+        context.getSAMLBindingContext().setRelayState(relayState);
 
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
         decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
