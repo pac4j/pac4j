@@ -16,7 +16,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2MessageSender;
-import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
@@ -91,12 +91,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             encoder.prepareContext();
             encoder.encode();
 
-            final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
+            final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
             if (messageStorage != null) {
                 if (request instanceof RequestAbstractType) {
-                    messageStorage.storeMessage(((RequestAbstractType) request).getID(), request);
+                    messageStorage.set(((RequestAbstractType) request).getID(), request);
                 } else if (request instanceof StatusResponseType) {
-                    messageStorage.storeMessage(((StatusResponseType) request).getID(), request);
+                    messageStorage.set(((StatusResponseType) request).getID(), request);
                 }
             }
 

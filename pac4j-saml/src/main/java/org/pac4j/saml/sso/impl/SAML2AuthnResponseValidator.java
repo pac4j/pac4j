@@ -46,7 +46,7 @@ import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
 import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
-import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.util.SAML2Utils;
 
 import java.net.URI;
@@ -189,9 +189,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         validateIssueInstant(response.getIssueInstant());
 
         AuthnRequest request = null;
-        final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
+        final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
         if (messageStorage != null && response.getInResponseTo() != null) {
-            final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
+            final XMLObject xmlObject = messageStorage.get(response.getInResponseTo());
             if (xmlObject == null) {
                 throw new SAMLInResponseToMismatchException("InResponseToField of the Response doesn't correspond to sent message "
                     + response.getInResponseTo());

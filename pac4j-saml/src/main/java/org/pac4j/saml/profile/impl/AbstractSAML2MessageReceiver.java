@@ -44,7 +44,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         final SAMLObject message = decoder.getMessageContext().getMessage();
         decodedCtx.setMessage(message);
         context.setMessage(message);
-        decodedCtx.setSAMLMessageStorage(context.getSAMLMessageStorage());
+        decodedCtx.setSAMLMessageStore(context.getSAMLMessageStore());
 
         final SAMLBindingContext bindingContext = decodedCtx.getParent()
                 .getSubcontext(SAMLBindingContext.class);
