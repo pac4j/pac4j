@@ -1,12 +1,10 @@
 package org.pac4j.core.util;
 
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.example.DummyValue;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -61,38 +59,27 @@ public final class JavaSerializationHelperTests implements TestsConstants {
         JavaSerializationHelper h = new JavaSerializationHelper();
         h.clearTrustedPackages();
         h.clearTrustedClasses();
-        h.addTrustedClass(DummyValue.class);
-
-        final Serializable object = new DummyValue("value1");
-        final byte[] serialized = h.serializeToBytes(object );
-        assertEquals(object , h.unserializeFromBytes(serialized));
+        h.addTrustedClass(SimplePrincipalCollection.class);
+        final SimplePrincipalCollection spc = new SimplePrincipalCollection();
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertEquals(spc, h.unserializeFromBytes(serialized));
     }
 
     @Test
-    public void testTrustedPackageDeserialization() {
+    public void testBytesSerializationTrustedPackage() {
         JavaSerializationHelper h = new JavaSerializationHelper();
         h.clearTrustedPackages();
         h.clearTrustedClasses();
-        h.addTrustedPackage("org.example");
-
-        final Serializable object = new DummyValue("value1");
-        final byte[] serialized = h.serializeToBytes(object );
-        assertEquals(object , h.unserializeFromBytes(serialized));
-    }
-
-    @Test
-    public void testBytesSerializationMadeSecure() {
-        JavaSerializationHelper h = new JavaSerializationHelper();
-        h.getTrustedPackages().add("org.apache");
+        h.addTrustedPackage("org.apache");
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
         final byte[] serialized = h.serializeToBytes(spc);
-        assertNotNull(h.unserializeFromBytes(serialized));
+        assertEquals(spc, h.unserializeFromBytes(serialized));
     }
 
     @Test
-    public void testBytesSerializationMadeSecure2() {
+    public void testBytesSerializationTrustedPackage2() {
         JavaSerializationHelper h = new JavaSerializationHelper();
-        h.addTrustedPackage("org.apache");
+        h.getTrustedPackages().add("org.apache");
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
         final byte[] serialized = h.serializeToBytes(spc);
         assertNotNull(h.unserializeFromBytes(serialized));
