@@ -21,6 +21,7 @@ title: Release notes&#58;
 - Updated the OpenID Connect/JWT dependencies (v6)
 - Added `DirectBearerAuthClient`
 - Handled the inResponseTo and the RelayState in the logout response (SAML)
+- Added `trustedClasses` to the `JavaSerializationHelper`
 
 **v3.4.0**:
 
