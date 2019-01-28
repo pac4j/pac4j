@@ -22,7 +22,7 @@ import org.opensaml.soap.messaging.context.SOAP11Context;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     /** SubjectConfirmations used during assertion evaluation. */
     private List<SubjectConfirmation> subjectConfirmations = new ArrayList<>();
 
-    private SAMLMessageStorage samlMessageStorage;
+    private SAMLMessageStore samlMessageStore;
 
 
     public SAML2MessageContext() {
@@ -214,11 +214,11 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         return this.getSubcontext(SAMLEndpointContext.class, true);
     }
 
-    public final SAMLMessageStorage getSAMLMessageStorage() {
-        return this.samlMessageStorage;
+    public final SAMLMessageStore getSAMLMessageStore() {
+        return this.samlMessageStore;
     }
 
-    public final void setSAMLMessageStorage(final SAMLMessageStorage samlMessageStorage) {
-        this.samlMessageStorage = samlMessageStorage;
+    public final void setSAMLMessageStore(final SAMLMessageStore samlMessageStore) {
+        this.samlMessageStore = samlMessageStore;
     }
 }

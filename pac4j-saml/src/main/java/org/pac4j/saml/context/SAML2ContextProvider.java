@@ -19,7 +19,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
-import org.pac4j.saml.storage.SAMLMessageStorageFactory;
+import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.pac4j.saml.transport.DefaultPac4jSAMLResponse;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.slf4j.Logger;
@@ -49,16 +49,16 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final SAML2MetadataResolver spEntityId;
 
-    protected final SAMLMessageStorageFactory samlMessageStorageFactory;
+    protected final SAMLMessageStoreFactory samlMessageStoreFactory;
 
     public SAML2ContextProvider(final MetadataResolver metadata,
                                 final SAML2MetadataResolver idpEntityId,
                                 final SAML2MetadataResolver spEntityId,
-                                @Nullable final SAMLMessageStorageFactory samlMessageStorageFactory) {
+                                @Nullable final SAMLMessageStoreFactory samlMessageStoreFactory) {
         this.metadata = metadata;
         this.idpEntityId = idpEntityId;
         this.spEntityId = spEntityId;
-        this.samlMessageStorageFactory = samlMessageStorageFactory;
+        this.samlMessageStoreFactory = samlMessageStoreFactory;
     }
 
     @Override
@@ -85,9 +85,9 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         final ProfileRequestContext request = context.getProfileRequestContext();
         request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
 
-        if (this.samlMessageStorageFactory != null) {
-            logger.debug("Creating message storage by {}", this.samlMessageStorageFactory.getClass().getName());
-            context.setSAMLMessageStorage(this.samlMessageStorageFactory.getMessageStorage(webContext));
+        if (this.samlMessageStoreFactory != null) {
+            logger.debug("Creating message store by {}", this.samlMessageStoreFactory.getClass().getName());
+            context.setSAMLMessageStore(this.samlMessageStoreFactory.getMessageStore(webContext));
         }
     }
 
