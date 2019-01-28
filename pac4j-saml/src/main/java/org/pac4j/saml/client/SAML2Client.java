@@ -162,7 +162,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(metadataManager,
                 this.idpMetadataResolver, this.spMetadataResolver,
-                this.configuration.getSamlMessageStorageFactory());
+                this.configuration.getSamlMessageStoreFactory());
     }
 
     protected MetadataResolver initServiceProviderMetadataResolver() {

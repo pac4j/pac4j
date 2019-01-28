@@ -1,4 +1,4 @@
-package org.pac4j.saml.storage;
+package org.pac4j.saml.store;
 
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.context.WebContext;
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedHashMap;
 
 /**
- * Class implements storage of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
+ * Class implements store of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
  * can't be serialized (which could lead to problems during failover), the messages are transformed into SAMLObject
  * which internally marshalls the content into XML during serialization.
  *
@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
  *
  * @author Vladimir Schäfer
  */
-public class HttpSessionStorage implements SAMLMessageStorage {
+public class HttpSessionStore implements SAMLMessageStore {
 
     /**
      * Class logger.
@@ -26,29 +26,29 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
-     * The web context to storage data.
+     * The web context to store data.
      */
     private final WebContext context;
 
     /**
-     * Internal storage for messages, corresponding to the object in session.
+     * Internal store for messages, corresponding to the object in session.
      */
     private LinkedHashMap<String, XMLObject> internalMessages;
 
     /**
-     * Session key for storage of the hashtable.
+     * Session key for storing the hashtable.
      */
     private static final String SAML_STORAGE_KEY = "_springSamlStorageKey";
 
     /**
-     * Creates the storage object. The session is manipulated only once caller tries to store
+     * Creates the store object. The session is manipulated only once caller tries to store
      * or retrieve a message.
      *
      * In case request doesn't already have a started session, it will be created.
      *
      * @param context context to load/store internalMessages from
      */
-    public HttpSessionStorage(final WebContext context) {
+    public HttpSessionStore(final WebContext context) {
         CommonHelper.assertNotNull("context", context);
         this.context = context;
     }
@@ -62,7 +62,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * @param message   message to be stored
      */
     @Override
-    public void storeMessage(final String messageID, final XMLObject message) {
+    public void set(final String messageID, final XMLObject message) {
         log.debug("Storing message {} to session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
         final LinkedHashMap<String, XMLObject> messages = getMessages();
         messages.put(messageID, message);
@@ -84,7 +84,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * @return message found or null
      */
     @Override
-    public XMLObject retrieveMessage(final String messageID) {
+    public XMLObject get(final String messageID) {
         final LinkedHashMap<String, XMLObject> messages = getMessages();
         final XMLObject o = messages.get(messageID);
         if (o == null) {
@@ -100,10 +100,10 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     }
 
     /**
-     * Provides message storage hashtable. Table is lazily initialized when user tries to store or retrieve
+     * Provides message store hashtable. Table is lazily initialized when user tries to store or retrieve
      * the first message.
      *
-     * @return message storage
+     * @return message store
      */
     private LinkedHashMap<String, XMLObject> getMessages() {
         if (internalMessages == null) {
@@ -140,5 +140,10 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      */
     private void updateSession(final LinkedHashMap<String, XMLObject> messages) {
         context.getSessionStore().set(context, SAML_STORAGE_KEY, messages);
+    }
+
+    @Override
+    public void remove(final String key) {
+        set(key, null);
     }
 }
