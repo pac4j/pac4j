@@ -13,13 +13,16 @@ title: Release notes&#58;
 - Use the 303 "See Other" HTTP action instead of the 302 "Found" HTTP action for any redirection after a POST request in the `DefaultCallbackLogic`
 - By default, the CSRF check applies on the PUT, PATCH and DELETE requests in addition to the POST requests
 - "csrf,securityheaders" is the default authorizers definition
+- Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)
 - Use `Optional` wherever it makes sense
-
 
 **v3.5.0**:
 
 - Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
 - Updated the OpenID Connect/JWT dependencies (v6)
+- Added `DirectBearerAuthClient`
+- Handled the inResponseTo and the RelayState in the logout response (SAML)
+- Added `trustedClasses` to the `JavaSerializationHelper`
 
 **v3.4.0**:
 

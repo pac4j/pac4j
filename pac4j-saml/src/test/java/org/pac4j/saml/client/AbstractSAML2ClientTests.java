@@ -2,7 +2,7 @@ package org.pac4j.saml.client;
 
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.storage.HttpSessionStorageFactory;
+import org.pac4j.saml.store.HttpSessionStoreFactory;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -36,7 +36,7 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setForceServiceProviderMetadataGeneration(true);
         cfg.setForceKeystoreGeneration(true);
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
-        cfg.setSamlMessageStorageFactory(new HttpSessionStorageFactory());
+        cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
         final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
         return saml2Client;

@@ -8,7 +8,7 @@ title: Authorizers&#58;
 * either on the authenticated user profile: has the user the appropriate role?
 * or on the web context: can you call this resource in an iframe?
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that this concept of <code>Authorizer</code> has a broader meaning than generally in the security field.</div>
+Notice that this concept of <code>Authorizer</code> has a broader meaning than generally in the security field.
 
 Generally, authorizers are defined in the [security configuration](config.html) of the application.
 
@@ -36,6 +36,8 @@ Most *pac4j* implementations use *pac4j* logics and authorizers and thus the [`D
 - `isFullyAuthenticated` for the `IsFullyAuthenticatedAuthorizer` authorizer
 - `isRemembered` for the `IsRememberedAuthorizer` authorizer
 - `allowAjaxRequests` for a default configuration of the `CorsAuthorizer` authorizer with the `Access-Control-Allow-Origin` header set to `*`.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Since <i>pac4j</i> v4, if no authorizers are defined, the <code>DefaultAuthorizationChecker</code> applies the <b>csrf,securityheaders</b> configuration.</div>
 
 These short names are defined as constants in [`DefaultAuthorizers`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/DefaultAuthorizers.java).
 

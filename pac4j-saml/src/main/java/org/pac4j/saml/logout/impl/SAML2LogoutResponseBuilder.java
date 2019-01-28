@@ -3,10 +3,12 @@ package org.pac4j.saml.logout.impl;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.impl.RequestAbstractTypeImpl;
 import org.opensaml.saml.saml2.core.impl.StatusCodeBuilder;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -52,6 +54,10 @@ public class SAML2LogoutResponseBuilder {
         response.setVersion(SAMLVersion.VERSION_20);
         response.setDestination(ssoService.getLocation());
         response.setStatus(getSuccess());
+        final SAMLObject originalMessage = context.getMessage();
+        if (originalMessage != null && originalMessage instanceof RequestAbstractTypeImpl) {
+            response.setInResponseTo(((RequestAbstractTypeImpl) originalMessage).getID());
+        }
 
         return response;
     }

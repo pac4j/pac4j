@@ -26,8 +26,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
-import org.pac4j.saml.storage.EmptyStorageFactory;
-import org.pac4j.saml.storage.SAMLMessageStorageFactory;
+import org.pac4j.saml.store.EmptyStoreFactory;
+import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -119,7 +119,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private boolean forceKeystoreGeneration;
 
-    private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
+    private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
 
     private boolean authnRequestSigned;
 
@@ -467,12 +467,12 @@ public class SAML2Configuration extends InitializableObject {
         return forceServiceProviderMetadataGeneration;
     }
 
-    public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
-        return samlMessageStorageFactory;
+    public SAMLMessageStoreFactory getSamlMessageStoreFactory() {
+        return samlMessageStoreFactory;
     }
 
-    public void setSamlMessageStorageFactory(final SAMLMessageStorageFactory samlMessageStorageFactory) {
-        this.samlMessageStorageFactory = samlMessageStorageFactory;
+    public void setSamlMessageStoreFactory(final SAMLMessageStoreFactory samlMessageStoreFactory) {
+        this.samlMessageStoreFactory = samlMessageStoreFactory;
     }
 
     public Collection<String> getBlackListedSignatureSigningAlgorithms() {
