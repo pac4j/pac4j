@@ -45,7 +45,39 @@ public final class JavaSerializationHelperTests implements TestsConstants {
     }
 
     @Test
-    public void testBytesSerializationMadeSecure() {
+    public void testBytesSerializationUnsecure2() {
+        JavaSerializationHelper h = new JavaSerializationHelper();
+        h.clearTrustedClasses();
+        h.clearTrustedPackages();
+        final CommonProfile profile = getUserProfile();
+        final byte[] serialized = h.serializeToBytes(profile);
+        assertNull(h.unserializeFromBytes(serialized));
+    }
+
+    @Test
+    public void testBytesSerializationTrustedClass() {
+        JavaSerializationHelper h = new JavaSerializationHelper();
+        h.clearTrustedPackages();
+        h.clearTrustedClasses();
+        h.addTrustedClass(SimplePrincipalCollection.class);
+        final SimplePrincipalCollection spc = new SimplePrincipalCollection();
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertEquals(spc, h.unserializeFromBytes(serialized));
+    }
+
+    @Test
+    public void testBytesSerializationTrustedPackage() {
+        JavaSerializationHelper h = new JavaSerializationHelper();
+        h.clearTrustedPackages();
+        h.clearTrustedClasses();
+        h.addTrustedPackage("org.apache");
+        final SimplePrincipalCollection spc = new SimplePrincipalCollection();
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertEquals(spc, h.unserializeFromBytes(serialized));
+    }
+
+    @Test
+    public void testBytesSerializationTrustedPackage2() {
         JavaSerializationHelper h = new JavaSerializationHelper();
         h.getTrustedPackages().add("org.apache");
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
