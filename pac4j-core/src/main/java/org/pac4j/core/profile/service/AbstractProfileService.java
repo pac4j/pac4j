@@ -245,7 +245,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you " +
                     "want to retrieve");
             }
-            final U profile = (U) javaSerializationHelper.unserializeFromBase64(serializedProfile);
+            final U profile = (U) javaSerializationHelper.deserializeFromBase64(serializedProfile);
             if (profile == null) {
                 throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " +
                     "names you want to retrieve");

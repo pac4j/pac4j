@@ -35,7 +35,7 @@ public final class OidcCredentialsTests implements TestsConstants {
         credentials.setRefreshToken(new RefreshToken(VALUE));
         credentials.setIdToken(JWTParser.parse(ID_TOKEN));
         byte[] result = serializer.serializeToBytes(credentials);
-        final OidcCredentials credentials2 = (OidcCredentials) serializer.unserializeFromBytes(result);
+        final OidcCredentials credentials2 = (OidcCredentials) serializer.deserializeFromBytes(result);
         assertEquals(credentials.getAccessToken(), credentials2.getAccessToken());
         assertEquals(credentials.getRefreshToken(), credentials2.getRefreshToken());
         assertEquals(credentials.getIdToken().getParsedString(), credentials2.getIdToken().getParsedString());

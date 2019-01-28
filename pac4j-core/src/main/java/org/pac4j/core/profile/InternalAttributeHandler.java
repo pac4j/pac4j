@@ -92,7 +92,7 @@ public class InternalAttributeHandler {
                         logger.warn("Unable to parse stringified URI: {}", uri, e);
                     }
                 } else if (sValue.startsWith(PREFIX_SB64)) {
-                    return serializationHelper.unserializeFromBase64(sValue.substring(PREFIX_SB64.length()));
+                    return serializationHelper.deserializeFromBase64(sValue.substring(PREFIX_SB64.length()));
                 }
             }
         }
