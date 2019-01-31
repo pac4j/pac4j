@@ -456,7 +456,7 @@ public class SAML2Configuration extends InitializableObject {
     /**
      * Use {@link #getAuthnContextClassRefs()}.
      *
-     * @return the authn context class refs
+     * @return the authn context class ref
      */
     @Deprecated
     public String getAuthnContextClassRef() {
@@ -469,7 +469,7 @@ public class SAML2Configuration extends InitializableObject {
     /**
      * Use {@link #setAuthnContextClassRefs(List)}.
      *
-     * @param authnContextClassRef the authn context class refs
+     * @param authnContextClassRef the authn context class ref
      */
     @Deprecated
     public void setAuthnContextClassRef(final String authnContextClassRef) {
