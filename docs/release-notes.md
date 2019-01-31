@@ -15,6 +15,8 @@ title: Release notes&#58;
 - "csrf,securityheaders" is the default authorizers definition
 - Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)
 
+**v3.6.0**:
+
 **v3.5.0**:
 
 - Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
