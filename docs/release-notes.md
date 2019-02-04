@@ -16,6 +16,7 @@ title: Release notes&#58;
 - Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)
 
 **v3.6.0**:
+- Multiple authn context class refs can be set in the SAML protocol support
 
 **v3.5.0**:
 
