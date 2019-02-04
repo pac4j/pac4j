@@ -105,7 +105,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
-    private String authnContextClassRef = null;
+    private List<String> authnContextClassRefs = null;
 
     private String nameIdPolicyFormat = null;
 
@@ -439,12 +439,12 @@ public class SAML2Configuration extends InitializableObject {
         this.spLogoutResponseBindingType = spLogoutResponseBindingType;
     }
 
-    public String getAuthnContextClassRef() {
-        return authnContextClassRef;
+    public List<String> getAuthnContextClassRefs() {
+        return authnContextClassRefs;
     }
 
-    public void setAuthnContextClassRef(final String authnContextClassRef) {
-        this.authnContextClassRef = authnContextClassRef;
+    public void setAuthnContextClassRefs(final List<String> authnContextClassRefs) {
+        this.authnContextClassRefs = authnContextClassRefs;
     }
 
     public String getNameIdPolicyFormat() {
