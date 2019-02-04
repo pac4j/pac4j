@@ -53,13 +53,7 @@ import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -105,7 +99,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
-    private String authnContextClassRef = null;
+    private List<String> authnContextClassRefs = null;
 
     private String nameIdPolicyFormat = null;
 
@@ -459,12 +453,35 @@ public class SAML2Configuration extends InitializableObject {
         this.spLogoutResponseBindingType = spLogoutResponseBindingType;
     }
 
+    /**
+     * Use {@link #getAuthnContextClassRefs()}.
+     *
+     * @return the authn context class ref
+     */
+    @Deprecated
     public String getAuthnContextClassRef() {
-        return authnContextClassRef;
+        if (authnContextClassRefs != null && !authnContextClassRefs.isEmpty()) {
+            return authnContextClassRefs.get(0);
+        }
+        return null;
     }
 
+    /**
+     * Use {@link #setAuthnContextClassRefs(List)}.
+     *
+     * @param authnContextClassRef the authn context class ref
+     */
+    @Deprecated
     public void setAuthnContextClassRef(final String authnContextClassRef) {
-        this.authnContextClassRef = authnContextClassRef;
+        this.authnContextClassRefs = Arrays.asList(authnContextClassRef);
+    }
+
+    public List<String> getAuthnContextClassRefs() {
+        return authnContextClassRefs;
+    }
+
+    public void setAuthnContextClassRefs(final List<String> authnContextClassRefs) {
+        this.authnContextClassRefs = authnContextClassRefs;
     }
 
     public String getNameIdPolicyFormat() {
