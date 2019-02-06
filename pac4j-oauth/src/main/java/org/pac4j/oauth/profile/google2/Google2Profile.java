@@ -20,12 +20,7 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public String getEmail() {
-        final List<Google2Email> list = getEmails();
-        if (list != null && !list.isEmpty()) {
-            return list.get(0).getEmail();
-        } else {
-            return null;
-        }
+        return (String) getAttribute(Google2ProfileDefinition.EMAIL);
     }
 
     @Override
@@ -56,14 +51,5 @@ public class Google2Profile extends OAuth20Profile {
     @Override
     public URI getProfileUrl() {
         return (URI) getAttribute(Google2ProfileDefinition.URL);
-    }
-
-    public Date getBirthday() {
-        return (Date) getAttribute(Google2ProfileDefinition.BIRTHDAY);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Google2Email> getEmails() {
-        return (List<Google2Email>) getAttribute(Google2ProfileDefinition.EMAILS);
     }
 }
