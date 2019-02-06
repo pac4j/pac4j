@@ -1,8 +1,6 @@
 package org.pac4j.oauth.profile.google2;
 
 import java.net.URI;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
