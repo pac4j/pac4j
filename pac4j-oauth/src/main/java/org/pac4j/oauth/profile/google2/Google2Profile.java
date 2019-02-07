@@ -1,6 +1,7 @@
 package org.pac4j.oauth.profile.google2;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -19,14 +20,7 @@ public class Google2Profile extends OAuth20Profile {
     private static final long serialVersionUID = -7486869356444327783L;
 
     @Override
-    public String getEmail() {
-        final List<Google2Email> list = getEmails();
-        if (list != null && !list.isEmpty()) {
-            return list.get(0).getEmail();
-        } else {
-            return null;
-        }
-    }
+    public String getEmail() { return (String) getAttribute(Google2ProfileDefinition.EMAIL); }
 
     @Override
     public String getFirstName() {
@@ -58,12 +52,12 @@ public class Google2Profile extends OAuth20Profile {
         return (URI) getAttribute(Google2ProfileDefinition.URL);
     }
 
-    public Date getBirthday() {
-        return (Date) getAttribute(Google2ProfileDefinition.BIRTHDAY);
-    }
+    public Date getBirthday() { return null; }
 
     @SuppressWarnings("unchecked")
     public List<Google2Email> getEmails() {
-        return (List<Google2Email>) getAttribute(Google2ProfileDefinition.EMAILS);
+        Google2Email email = new Google2Email();
+        email.setEmail(getEmail());
+        return Arrays.asList(email);
     }
 }
