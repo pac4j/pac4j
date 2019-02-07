@@ -214,6 +214,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return metadataManager;
     }
 
+    public void destroy() {
+        ((SAML2ServiceProviderMetadataResolver) spMetadataResolver).destroy();
+    }
+
     @Override
     public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
         configuration.findLogoutHandler().renewSession(oldSessionId, context);
