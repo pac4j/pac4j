@@ -55,15 +55,13 @@ public final class RunGoogle2Client extends RunClient {
         final Google2Profile profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(Google2Profile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
-                profile.getTypedId());
+            profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), Google2Profile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
-                Gender.MALE, Locale.ENGLISH,
-                "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
-                "https://plus.google.com/113675986756217860428", null);
-        assertNull(profile.getBirthday());
-        assertTrue(profile.getEmails() != null && profile.getEmails().size() == 1);
-        assertEquals(9, profile.getAttributes().size());
+            Gender.MALE, Locale.ENGLISH,
+            "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
+            "https://plus.google.com/113675986756217860428", null);
+        assertEquals(7, profile.getAttributes().size());
     }
 }
