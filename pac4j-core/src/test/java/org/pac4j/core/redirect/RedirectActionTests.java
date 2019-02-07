@@ -36,4 +36,20 @@ public final class RedirectActionTests implements TestsConstants {
                 "<script type='text/javascript'>document.forms['f'].submit();</script>\n" +
                 "</body>\n</html>\n", s);
     }
+
+    @Test
+    public void testSetters() {
+        RedirectAction action = new RedirectAction();
+        RedirectAction.RedirectType type = RedirectAction.RedirectType.SUCCESS;
+        String location = "some other place";
+        String content = "short content string";
+
+        action.setType( type );
+        action.setLocation( location );
+        action.setContent( content );
+
+        assertEquals( action.getType(), type );
+        assertEquals( action.getLocation(), location );
+        assertEquals( action.getContent(), content );
+    }
 }
