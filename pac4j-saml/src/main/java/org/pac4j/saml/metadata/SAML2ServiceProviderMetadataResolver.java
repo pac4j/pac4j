@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -43,6 +44,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String callbackUrl;
     private final SAML2Configuration configuration;
     private String spMetadata;
+    private MetadataResolver metadataResolver;
 
     public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
@@ -51,6 +53,13 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         this.configuration = configuration;
 
         determineServiceProviderEntityId(callbackUrl);
+    }
+
+    public void destroy() {
+        if (this.metadataResolver instanceof FilesystemMetadataResolver) {
+            ((FilesystemMetadataResolver) this.metadataResolver).destroy();
+            this.metadataResolver = null;
+        }
     }
 
     private void determineServiceProviderEntityId(final String callbackUrl) {
@@ -144,7 +153,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     @Override
     public final MetadataResolver resolve() {
-        return prepareServiceProviderMetadata();
+        if (this.metadataResolver == null) {
+            this.metadataResolver = prepareServiceProviderMetadata();
+        }
+        return this.metadataResolver;
     }
 
     @Override

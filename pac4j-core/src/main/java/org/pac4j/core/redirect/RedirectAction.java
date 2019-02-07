@@ -30,7 +30,7 @@ public class RedirectAction {
 
     private String content;
 
-    private RedirectAction() {}
+    protected RedirectAction() {}
 
     public static RedirectAction redirect(final String location) {
         RedirectAction action = new RedirectAction();
@@ -95,6 +95,18 @@ public class RedirectAction {
 
     public String getContent() {
         return this.content;
+    }
+
+    protected void setType( RedirectType type ) {
+        this.type = type;
+    }
+
+    protected void setLocation( String loc ) {
+        this.location = loc;
+    }
+
+    protected void setContent( String content ) {
+        this.content = content;
     }
 
     @Override
