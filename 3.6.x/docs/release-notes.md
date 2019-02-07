@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v3.6.0**:
 
 - Multiple authn context class refs can be set in the SAML protocol support
+- For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will make the `birthday` attribute return `null` and `emails` attribute resolve a single email from `email` attribute for `Google2Client`.
 
 **v3.5.0**:
 
