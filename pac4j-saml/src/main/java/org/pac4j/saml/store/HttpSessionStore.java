@@ -120,18 +120,18 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @SuppressWarnings("unchecked")
     private LinkedHashMap<String, XMLObject> initializeSession() {
-        LinkedHashMap<String, XMLObject> messages = (LinkedHashMap<String, XMLObject>)
+        Optional<LinkedHashMap<String, XMLObject>> messages = (Optional<LinkedHashMap<String, XMLObject>>)
                 context.getSessionStore().get(context, SAML_STORAGE_KEY);
-        if (messages == null) {
+        if (!messages.isPresent()) {
             synchronized (context) {
-                messages = (LinkedHashMap<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
-                if (messages == null) {
-                    messages = new LinkedHashMap<>();
-                    updateSession(messages);
+                messages = (Optional<LinkedHashMap<String, XMLObject>>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                if (!messages.isPresent()) {
+                    messages = Optional.of(new LinkedHashMap<>());
+                    updateSession(messages.get());
                 }
             }
         }
-        return messages;
+        return messages.get();
     }
 
     /**

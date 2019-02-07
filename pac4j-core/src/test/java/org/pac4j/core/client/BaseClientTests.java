@@ -84,7 +84,8 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
-        assertEquals("true", context.getSessionStore().get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
+        assertEquals("true", context.getSessionStore()
+            .get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
     }
 
     @Test

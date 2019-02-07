@@ -78,13 +78,15 @@ public class ProfileManager<U extends UserProfile> {
                 }
             });
         if (readFromSession) {
-            final Object sessionAttribute = this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES);
-            if  (sessionAttribute instanceof LinkedHashMap) {
-                profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
-            }
-            if (sessionAttribute instanceof CommonProfile) {
-                profiles.put(retrieveClientName((U) sessionAttribute), (U) sessionAttribute);
-            }
+            this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES)
+                .ifPresent(sessionAttribute -> {
+                    if (sessionAttribute instanceof LinkedHashMap) {
+                        profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
+                    }
+                    if (sessionAttribute instanceof CommonProfile) {
+                        profiles.put(retrieveClientName((U) sessionAttribute), (U) sessionAttribute);
+                    }
+                });
         }
 
         removeExpiredProfiles(profiles);

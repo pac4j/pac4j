@@ -14,7 +14,7 @@ public interface Store<K, O> {
      * Get a value by key.
      *
      * @param key the key
-     * @return the object
+     * @return the object (optional)
      */
     Optional<O> get(K key);
 

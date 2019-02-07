@@ -95,8 +95,9 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
             throw ajaxRequestResolver.buildAjaxResponse(action.get(), context);
         }
         // authentication has already been tried -> unauthorized
-        final String attemptedAuth = (String) context.getSessionStore().get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
-        if (CommonHelper.isNotBlank(attemptedAuth)) {
+        final Optional<String> attemptedAuth = (Optional<String>) context.getSessionStore()
+            .get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        if (attemptedAuth.isPresent()) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
             throw UnauthorizedAction.INSTANCE;

@@ -29,7 +29,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
             if (stateParameter.isPresent()) {
                 final String stateSessionAttributeName = this.configuration.getStateSessionAttributeName(client.getName());
-                final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName);
+                final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName).orElse(null);
                 // clean from session after retrieving it
                 context.getSessionStore().set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);

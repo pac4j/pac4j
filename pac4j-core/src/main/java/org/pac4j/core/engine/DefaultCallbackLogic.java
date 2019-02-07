@@ -147,11 +147,11 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final String requestedUrl = (String) context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
+        final Optional<String> requestedUrl = context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
         String redirectUrl = defaultUrl;
-        if (isNotBlank(requestedUrl)) {
+        if (requestedUrl.isPresent()) {
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
-            redirectUrl = requestedUrl;
+            redirectUrl = requestedUrl.get();
         }
         logger.debug("redirectUrl: {}", redirectUrl);
         if (ContextHelper.isPost(context)) {

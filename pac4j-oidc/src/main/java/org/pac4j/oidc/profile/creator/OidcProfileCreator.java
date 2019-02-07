@@ -85,7 +85,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
+                nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE).orElse(null));
             } else {
                 nonce = null;
             }
