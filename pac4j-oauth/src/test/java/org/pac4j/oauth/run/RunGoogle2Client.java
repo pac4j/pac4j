@@ -62,8 +62,7 @@ public final class RunGoogle2Client extends RunClient {
                 Gender.MALE, Locale.ENGLISH,
                 "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                 "https://plus.google.com/113675986756217860428", null);
-        assertNull(profile.getBirthday());
         assertTrue(profile.getEmails() != null && profile.getEmails().size() == 1);
-        assertEquals(9, profile.getAttributes().size());
+        assertEquals(7, profile.getAttributes().size());
     }
 }
