@@ -52,8 +52,10 @@ public class Google2Profile extends OAuth20Profile {
         return (URI) getAttribute(Google2ProfileDefinition.URL);
     }
 
+    @Deprecated
     public Date getBirthday() { return null; }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public List<Google2Email> getEmails() {
         Google2Email email = new Google2Email();
