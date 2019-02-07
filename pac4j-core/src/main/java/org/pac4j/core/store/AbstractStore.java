@@ -3,6 +3,8 @@ package org.pac4j.core.store;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
+import java.util.Optional;
+
 /**
  * Abstract store.
  *
@@ -16,7 +18,7 @@ public abstract class AbstractStore<K, O> extends InitializableObject implements
     }
 
     @Override
-    public O get(final K key) {
+    public Optional<O> get(final K key) {
         CommonHelper.assertNotNull("key", key);
         init();
 
@@ -43,7 +45,7 @@ public abstract class AbstractStore<K, O> extends InitializableObject implements
         internalRemove(key);
     }
 
-    protected abstract O internalGet(final K key);
+    protected abstract Optional<O> internalGet(final K key);
 
     protected abstract void internalSet(final K key, final O value);
 
