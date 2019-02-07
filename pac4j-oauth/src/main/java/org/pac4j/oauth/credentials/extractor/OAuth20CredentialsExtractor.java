@@ -3,7 +3,6 @@ package org.pac4j.oauth.credentials.extractor;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -26,15 +25,15 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
     protected Optional<OAuth20Credentials> getOAuthCredentials(final WebContext context) {
         if (configuration.isWithState()) {
 
-            final String stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
+            final Optional<String> stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 
-            if (CommonHelper.isNotBlank(stateParameter)) {
+            if (stateParameter.isPresent()) {
                 final String stateSessionAttributeName = this.configuration.getStateSessionAttributeName(client.getName());
                 final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName);
                 // clean from session after retrieving it
                 context.getSessionStore().set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
-                if (!stateParameter.equals(sessionState)) {
+                if (!stateParameter.get().equals(sessionState)) {
                     final String message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
                     throw new OAuthCredentialsException(message);
                 }
@@ -45,9 +44,9 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
         }
 
-        final String codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
-        if (codeParameter != null) {
-            final String code = OAuthEncoder.decode(codeParameter);
+        final Optional<String> codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
+        if (codeParameter.isPresent()) {
+            final String code = OAuthEncoder.decode(codeParameter.get());
             logger.debug("code: {}", code);
             return Optional.of(new OAuth20Credentials(code));
         } else {

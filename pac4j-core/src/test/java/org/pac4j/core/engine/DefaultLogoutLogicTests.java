@@ -97,7 +97,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private LinkedHashMap<String, CommonProfile> getProfilesFromRequest() {
-        return (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+        return (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
     }
 
     private LinkedHashMap<String, CommonProfile> getProfilesFromSession() {

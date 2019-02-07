@@ -5,7 +5,6 @@ import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.exception.http.FoundAction;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
@@ -46,8 +45,8 @@ public class TwitterClient extends OAuth10Client {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition(includeEmail));
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String denied = ctx.getRequestParameter("denied");
-            if (CommonHelper.isNotBlank(denied)) {
+            final Optional<String> denied = ctx.getRequestParameter("denied");
+            if (denied.isPresent()) {
                 return true;
             } else {
                 return false;

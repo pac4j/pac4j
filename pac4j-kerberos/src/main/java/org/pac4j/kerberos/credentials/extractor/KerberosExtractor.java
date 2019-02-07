@@ -19,11 +19,12 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
 
     @Override
     public Optional<KerberosCredentials> extract(final WebContext context) {
-        final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
-        if (header == null) {
+        final Optional<String> optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
+        if (!optHeader.isPresent()) {
             return Optional.empty();
         }
 
+        final String header = optHeader.get();
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
             // "Authorization" header do not indicate Kerberos mechanism yet,
             // so the extractor shouldn't throw an exception

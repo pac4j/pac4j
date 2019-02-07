@@ -58,11 +58,11 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     private Optional<String> ipFromHeaders(WebContext context) {
-        String ip;
+        Optional<String> ip;
         for (String header : alternateIpHeaders) {
             ip = context.getRequestHeader(header);
-            if (ip != null && !ip.isEmpty()) {
-                return Optional.of(ip);
+            if (ip.isPresent() && !ip.get().isEmpty()) {
+                return ip;
             }
         }
         return Optional.empty();

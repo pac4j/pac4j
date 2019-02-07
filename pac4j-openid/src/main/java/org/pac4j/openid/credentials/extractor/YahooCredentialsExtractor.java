@@ -35,7 +35,7 @@ public class YahooCredentialsExtractor implements CredentialsExtractor<OpenIdCre
 
     @Override
     public Optional<OpenIdCredentials> extract(final WebContext context) {
-        final String mode = context.getRequestParameter(OPENID_MODE);
+        final String mode = context.getRequestParameter(OPENID_MODE).orElse(null);
         // cancelled authentication
         if (CommonHelper.areEquals(mode, CANCEL_MODE)) {
             logger.debug("authentication cancelled");

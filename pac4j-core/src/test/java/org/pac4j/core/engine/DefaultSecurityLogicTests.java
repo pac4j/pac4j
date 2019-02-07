@@ -191,7 +191,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
         final LinkedHashMap<String, CommonProfile> profiles =
-            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile));
     }
@@ -224,7 +224,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
         final LinkedHashMap<String, CommonProfile> profiles =
-            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(2, profiles.size());
         assertTrue(profiles.containsValue(profile));
         assertTrue(profiles.containsValue(profile2));
@@ -246,7 +246,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
         final LinkedHashMap<String, CommonProfile> profiles =
-            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+            (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile2));
     }

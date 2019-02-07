@@ -77,7 +77,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
-        final String username = context.getRequestParameter(this.usernameParameter);
+        final String username = context.getRequestParameter(this.usernameParameter).orElse(null);
         final Optional<UsernamePasswordCredentials> credentials;
         try {
             // retrieve credentials

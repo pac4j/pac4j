@@ -68,15 +68,15 @@ public class ProfileManager<U extends UserProfile> {
      */
     protected LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
-        final Object request = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
-        if (request != null) {
-            if  (request instanceof LinkedHashMap) {
-                profiles.putAll((LinkedHashMap<String, U>) request);
-            }
-            if (request instanceof CommonProfile) {
-                profiles.put(retrieveClientName((U) request), (U) request);
-            }
-        }
+        this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
+            .ifPresent(request -> {
+                if  (request instanceof LinkedHashMap) {
+                    profiles.putAll((LinkedHashMap<String, U>) request);
+                }
+                if (request instanceof CommonProfile) {
+                    profiles.put(retrieveClientName((U) request), (U) request);
+                }
+            });
         if (readFromSession) {
             final Object sessionAttribute = this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES);
             if  (sessionAttribute instanceof LinkedHashMap) {

@@ -8,10 +8,7 @@ import org.pac4j.core.util.CommonHelper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
@@ -62,13 +59,13 @@ public class JEEContext implements WebContext {
     }
 
     @Override
-    public String getRequestParameter(final String name) {
-        return this.request.getParameter(name);
+    public Optional<String> getRequestParameter(final String name) {
+        return Optional.ofNullable(this.request.getParameter(name));
     }
 
     @Override
-    public Object getRequestAttribute(final String name) {
-        return this.request.getAttribute(name);
+    public Optional getRequestAttribute(final String name) {
+        return Optional.ofNullable(this.request.getAttribute(name));
     }
 
     @Override
@@ -82,17 +79,17 @@ public class JEEContext implements WebContext {
     }
 
     @Override
-    public String getRequestHeader(final String name) {
+    public Optional<String> getRequestHeader(final String name) {
         final Enumeration<String> names = request.getHeaderNames();
         if (names != null) {
             while (names.hasMoreElements()) {
                 final String headerName = names.nextElement();
                 if (headerName != null && headerName.equalsIgnoreCase(name)) {
-                    return this.request.getHeader(headerName);
+                    return Optional.ofNullable(this.request.getHeader(headerName));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

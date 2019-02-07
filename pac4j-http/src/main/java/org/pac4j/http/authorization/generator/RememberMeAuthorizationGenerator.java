@@ -28,7 +28,7 @@ public class RememberMeAuthorizationGenerator implements AuthorizationGenerator 
 
     @Override
     public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
-        final String rmeValue = context.getRequestParameter(rememberMeParameterName);
+        final String rmeValue = context.getRequestParameter(rememberMeParameterName).orElse(null);
         if (rememberMeValue.equals(rmeValue)) {
             profile.setRemembered(true);
         }

@@ -88,10 +88,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             final List<CommonProfile> profiles = manager.getAll(true);
 
             // compute redirection URL
-            final String url = context.getRequestParameter(Pac4jConstants.URL);
+            final Optional<String> url = context.getRequestParameter(Pac4jConstants.URL);
             String redirectUrl = defaultUrl;
-            if (url != null && Pattern.matches(logoutUrlPattern, url)) {
-                redirectUrl = url;
+            if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
+                redirectUrl = url.get();
             }
             logger.debug("redirectUrl: {}", redirectUrl);
             if (redirectUrl != null) {

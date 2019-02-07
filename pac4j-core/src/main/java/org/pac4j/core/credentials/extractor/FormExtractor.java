@@ -24,13 +24,13 @@ public class FormExtractor implements CredentialsExtractor<UsernamePasswordCrede
 
     @Override
     public Optional<UsernamePasswordCredentials> extract(WebContext context) {
-        final String username = context.getRequestParameter(this.usernameParameter);
-        final String password = context.getRequestParameter(this.passwordParameter);
-        if (username == null || password == null) {
+        final Optional<String> username = context.getRequestParameter(this.usernameParameter);
+        final Optional<String> password = context.getRequestParameter(this.passwordParameter);
+        if (!username.isPresent() || !password.isPresent()) {
             return Optional.empty();
         }
 
-        return Optional.of(new UsernamePasswordCredentials(username, password));
+        return Optional.of(new UsernamePasswordCredentials(username.get(), password.get()));
     }
 
     public String getUsernameParameter() {

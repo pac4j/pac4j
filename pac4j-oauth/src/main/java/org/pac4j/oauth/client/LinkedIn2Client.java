@@ -40,8 +40,8 @@ public class LinkedIn2Client extends OAuth20Client {
         configuration.setProfileDefinition(new LinkedIn2ProfileDefinition());
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION).orElse(null);
             // user has denied permissions
             if ("access_denied".equals(error)
                     && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"

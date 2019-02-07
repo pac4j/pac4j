@@ -49,10 +49,10 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
             final OAuthCredentialsException oauthCredentialsException =
                 new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
-                final String value = context.getRequestParameter(key);
-                if (value != null) {
+                final Optional<String> value = context.getRequestParameter(key);
+                if (value.isPresent()) {
                     errorFound = true;
-                    oauthCredentialsException.setErrorMessage(key, value);
+                    oauthCredentialsException.setErrorMessage(key, value.get());
                 }
             }
             if (errorFound) {

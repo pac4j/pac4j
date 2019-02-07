@@ -49,11 +49,11 @@ public class DefaultSecurityClientFinder implements ClientFinder {
             final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
             // if a "client_name" parameter is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
-            final String clientNameOnRequest = context.getRequestParameter(clientNameParameter);
+            final Optional<String> clientNameOnRequest = context.getRequestParameter(clientNameParameter);
             logger.debug("clientNameOnRequest: {}", clientNameOnRequest);
-            if (clientNameOnRequest != null) {
+            if (clientNameOnRequest.isPresent()) {
                 // from the request
-                final Optional<Client> client = clients.findClient(clientNameOnRequest);
+                final Optional<Client> client = clients.findClient(clientNameOnRequest.get());
                 if (client.isPresent()) {
                     final String nameFound = client.get().getName();
                     // if allowed -> return it

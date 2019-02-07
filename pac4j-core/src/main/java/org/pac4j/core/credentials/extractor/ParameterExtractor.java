@@ -41,12 +41,12 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
             throw new CredentialsException("POST requests not supported");
         }
 
-        final String value = context.getRequestParameter(this.parameterName);
-        if (value == null) {
+        final Optional<String> value = context.getRequestParameter(this.parameterName);
+        if (!value.isPresent()) {
             return Optional.empty();
         }
 
-        return Optional.of(new TokenCredentials(value));
+        return Optional.of(new TokenCredentials(value.get()));
     }
 
     @Override
