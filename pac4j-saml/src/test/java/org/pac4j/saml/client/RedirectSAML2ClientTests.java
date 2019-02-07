@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -82,7 +83,8 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testAuthnContextClassRef() {
         final SAML2Client client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        client.getConfiguration().setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
+        client.getConfiguration()
+            .setAuthnContextClassRefs(Arrays.asList("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"));
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final FoundAction action = (FoundAction) client.redirect(context).get();
 
