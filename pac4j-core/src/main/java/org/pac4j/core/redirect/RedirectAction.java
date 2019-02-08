@@ -97,6 +97,18 @@ public class RedirectAction {
         return this.content;
     }
 
+    protected void setType( RedirectType type ) {
+        this.type = type;
+    }
+
+    protected void setLocation( String loc ) {
+        this.location = loc;
+    }
+
+    protected void setContent( String content ) {
+        this.content = content;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "type", type, "location", location, "content", content);
