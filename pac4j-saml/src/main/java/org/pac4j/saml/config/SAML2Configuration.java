@@ -18,6 +18,7 @@ import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
@@ -774,7 +775,7 @@ public class SAML2Configuration extends InitializableObject {
             this.signatureReferenceDigestMethods = new ArrayList<>(
                 config.getSignatureReferenceDigestMethods());
             this.signatureReferenceDigestMethods
-                .remove("http://www.w3.org/2001/04/xmlenc#sha512");
+                .remove(SignatureConstants.ALGO_ID_DIGEST_SHA512);
             LOGGER.info("Bootstrapped Signature Reference Digest Methods");
         }
         if (this.signatureCanonicalizationAlgorithm == null) {
