@@ -21,6 +21,7 @@ title: Release notes&#58;
 - For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will make the `birthday` attribute return `null` and `emails` attribute resolve a single email from `email` attribute for `Google2Client`.
 - Clean shutdown of the `SAML2Client` via the `destroy` method
 - Do not clear the ID Token as a sensitive data in the `OidcProfile`
+- Improve signature and digest methods for SAML metadata
 
 **v3.5.0**:
 
