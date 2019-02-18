@@ -121,4 +121,35 @@ public class OAuthBuilder extends AbstractBuilder {
             clients.add(twitterClient);
         }
     }
+
+    public void tryCreateGenericOAuth2Clients(final List<Client> clients) {
+        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final String id = getProperty(OAUTH2_ID, i);
+            final String secret = getProperty(OAUTH2_SECRET, i);
+
+            if (isNotBlank(id) && isNotBlank(secret)) {
+                final GenericOAuth20Client client = new GenericOAuth20Client();
+                client.setName(concat(client.getName(), i));
+
+                client.setKey(id);
+                client.setSecret(secret);
+
+                client.setAuthUrl(getProperty(OAUTH2_AUTH_URL, i));
+                client.setTokenUrl(getProperty(OAUTH2_TOKEN_URL, i));
+                client.setProfileUrl(getProperty(OAUTH2_PROFILE_URL, i));
+                client.setProfileNodePath(getProperty(OAUTH2_PROFILE_PATH, i));
+                client.setProfileId(getProperty(OAUTH2_PROFILE_ID, i));
+                client.setScope(getProperty(OAUTH2_SCOPE, i));
+
+                if (containsProperty(OAUTH2_WITH_STATE, i)) {
+                    client.setWithState(getPropertyAsBoolean(OAUTH2_WITH_STATE, i));
+                }
+                if (containsProperty(OAUTH2_CLIENT_AUTHENTICATION_METHOD, i)) {
+                    client.setClientAuthenticationMethod(getProperty(OAUTH2_CLIENT_AUTHENTICATION_METHOD, i));
+                }
+
+                clients.add(client);
+            }
+        }
+    }
 }
