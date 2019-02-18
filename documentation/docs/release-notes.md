@@ -22,6 +22,7 @@ title: Release notes&#58;
 - Clean shutdown of the `SAML2Client` via the `destroy` method
 - Do not clear the ID Token as a sensitive data in the `OidcProfile`
 - Improve signature and digest methods for SAML metadata
+- Enhance OAuth 2 generic support
 
 **v3.5.0**:
 
