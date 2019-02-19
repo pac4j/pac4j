@@ -78,22 +78,29 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
         validateIssuerIfItExists(logoutRequest.getIssuer(), context);
 
+        NameID nameId = logoutRequest.getNameID();
         final EncryptedID encryptedID = logoutRequest.getEncryptedID();
         if (encryptedID != null) {
-            decryptEncryptedId(encryptedID, decrypter);
+            nameId = decryptEncryptedId(encryptedID, decrypter);
         }
 
+        String sessionIndex = null;
         final List<SessionIndex> sessionIndexes = logoutRequest.getSessionIndexes();
-        if (sessionIndexes == null || sessionIndexes.size() != 1) {
-            throw new SAMLException("We must have one session index in the logout request");
+        if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
+            final SessionIndex sessionIndexObject = sessionIndexes.get(0);
+            if (sessionIndexObject != null) {
+                sessionIndex = sessionIndexObject.getSessionIndex();
+            }
         }
-        String sessionIndex = sessionIndexes.get(0).getSessionIndex();
 
-        final String bindingUri = context.getSAMLBindingContext().getBindingUri();
-        if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
-            logoutHandler.destroySessionBack(context.getWebContext(), sessionIndex);
-        } else {
-            logoutHandler.destroySessionFront(context.getWebContext(), sessionIndex);
+        final String sloKey = computeSloKey(sessionIndex, nameId);
+        if (sloKey != null) {
+            final String bindingUri = context.getSAMLBindingContext().getBindingUri();
+            if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
+                logoutHandler.destroySessionBack(context.getWebContext(), sloKey);
+            } else {
+                logoutHandler.destroySessionFront(context.getWebContext(), sloKey);
+            }
         }
     }
 
