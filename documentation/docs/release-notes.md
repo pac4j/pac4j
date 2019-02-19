@@ -11,6 +11,7 @@ title: Release notes&#58;
 - Do not clear the ID Token as a sensitive data in the `OidcProfile`
 - Improve signature and digest methods for SAML metadata
 - Enhance OAuth 2 generic support
+- Use the NameID as the fallback of the SessionIndex for the SAML SLO support
 
 **v3.5.0**:
 
