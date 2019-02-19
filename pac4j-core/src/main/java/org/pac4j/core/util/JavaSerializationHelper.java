@@ -90,6 +90,8 @@ public class JavaSerializationHelper {
      *
      * @deprecated use {@link #addTrustedPackages} and {@link #addTrustedClasses}.
      * In later releases this method will return a copy of TrustedPackages with type {@link Set}.
+     *
+     * @return the trusted packages
      */
     public List<String> getTrustedPackages() {
         return trustedPackages;
@@ -97,6 +99,8 @@ public class JavaSerializationHelper {
 
     /**
      * @deprecated use {@link #addTrustedPackages}, {@link #addTrustedPackage} and {@link #clearTrustedPackages}
+     *
+     * @param trustedPackages the trusted packages
      */
     @Deprecated
     public void setTrustedPackages(final List<String> trustedPackages) {
