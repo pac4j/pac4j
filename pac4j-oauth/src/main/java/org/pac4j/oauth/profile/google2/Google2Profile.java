@@ -1,8 +1,8 @@
 package org.pac4j.oauth.profile.google2;
 
 import java.net.URI;
-import java.util.Locale;
 
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -18,7 +18,11 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public String getEmail() {
-        return (String) getAttribute(Google2ProfileDefinition.EMAIL);
+        return (String) getAttribute(CommonProfileDefinition.EMAIL);
+    }
+
+    public Boolean getEmailVerified() {
+        return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED);
     }
 
     @Override
@@ -28,17 +32,12 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(Google2ProfileDefinition.FAMILY_NAME);
+        return (String) getAttribute(CommonProfileDefinition.FAMILY_NAME);
     }
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(Google2ProfileDefinition.DISPLAY_NAME);
-    }
-
-    @Override
-    public Locale getLocale() {
-        return (Locale) getAttribute(Google2ProfileDefinition.LANGUAGE);
+        return (String) getAttribute(Google2ProfileDefinition.NAME);
     }
 
     @Override
@@ -48,6 +47,6 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(Google2ProfileDefinition.URL);
+        return (URI) getAttribute(Google2ProfileDefinition.PROFILE);
     }
 }

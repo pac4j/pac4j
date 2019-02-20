@@ -32,7 +32,7 @@ public final class RunGoogle2Client extends RunClient {
 
     @Override
     protected String getPassword() {
-        return "testpwdscribeup91";
+        return "testpwdscribeup92";
     }
 
     @Override
@@ -62,6 +62,7 @@ public final class RunGoogle2Client extends RunClient {
             Gender.MALE, Locale.ENGLISH,
             "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
             "https://plus.google.com/113675986756217860428", null);
-        assertEquals(7, profile.getAttributes().size());
+        assertTrue(profile.getEmailVerified());
+        assertEquals(10, profile.getAttributes().size());
     }
 }
