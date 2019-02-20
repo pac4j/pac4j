@@ -20,7 +20,7 @@ public class Google2Profile extends OAuth20Profile {
     private static final long serialVersionUID = -7486869356444327783L;
 
     @Override
-    public String getEmail() { return (String) getAttribute(Google2ProfileDefinition.EMAIL); }
+    public String getEmail() { return (String) getAttribute(CommonProfileDefinition.EMAIL); }
 
     public Boolean getEmailVerified() { return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED); }
 

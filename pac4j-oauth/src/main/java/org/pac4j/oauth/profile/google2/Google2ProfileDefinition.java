@@ -31,8 +31,9 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
     public static final String LANGUAGE = "language";
     @Deprecated
     public static final String BIRTHDAY = "birthday";
-
+    @Deprecated
     public static final String EMAIL = "email";
+
     public static final String EMAIL_VERIFIED = "email_verified";
     public static final String GIVEN_NAME = "given_name";
     public static final String NAME = "name";
