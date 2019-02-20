@@ -18,7 +18,7 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public String getEmail() {
-        return (String) getAttribute(Google2ProfileDefinition.EMAIL);
+        return (String) getAttribute(CommonProfileDefinition.EMAIL);
     }
 
     public Boolean getEmailVerified() {

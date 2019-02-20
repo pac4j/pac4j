@@ -19,7 +19,6 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Profile, OAuth20Configuration> {
 
-    public static final String EMAIL = "email";
     public static final String EMAIL_VERIFIED = "email_verified";
     public static final String GIVEN_NAME = "given_name";
     public static final String NAME = "name";
@@ -28,7 +27,7 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
 
     public Google2ProfileDefinition() {
         super(x -> new Google2Profile());
-        primary(CommonProfileDefinition.EMAIL, Converters.STRING);
+        primary(EMAIL, Converters.STRING);
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
         primary(CommonProfileDefinition.FAMILY_NAME, Converters.STRING);
         primary(GENDER, Converters.GENDER);
