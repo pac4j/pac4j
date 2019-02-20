@@ -32,7 +32,7 @@ public class Google2Profile extends OAuth20Profile {
     @Override
     public String getFamilyName() {
         return (String) getAttribute(CommonProfileDefinition.FAMILY_NAME);
-}
+    }
 
     @Override
     public String getDisplayName() {
