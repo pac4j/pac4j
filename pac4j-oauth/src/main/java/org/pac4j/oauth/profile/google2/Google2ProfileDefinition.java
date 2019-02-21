@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
@@ -42,12 +41,8 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
 
     public Google2ProfileDefinition() {
         super(x -> new Google2Profile());
-        primary(CommonProfileDefinition.EMAIL, Converters.STRING);
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
-        primary(CommonProfileDefinition.FAMILY_NAME, Converters.STRING);
-        primary(GENDER, Converters.GENDER);
         primary(GIVEN_NAME, Converters.STRING);
-        primary(LOCALE, Converters.LOCALE);
         primary(NAME, Converters.STRING);
         primary(PICTURE, Converters.URL);
         primary(PROFILE, Converters.URL);
