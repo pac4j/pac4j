@@ -26,25 +26,14 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     }
     
     @Override
-    public HttpAction buildAjaxResponse(WebContext context, RedirectionActionBuilder redirectionActionBuilder) {
-        if (!addRedirectionUrlAsHeader) {
-            if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
-                throw UnauthorizedAction.INSTANCE;
+    public HttpAction buildAjaxResponse(final WebContext context, final RedirectionActionBuilder redirectionActionBuilder) {
+        String url = null;
+        if (addRedirectionUrlAsHeader) {
+            final RedirectionAction action = redirectionActionBuilder.redirect(context);
+            if (action instanceof FoundAction) {
+                url = ((FoundAction) action).getLocation();
             }
-            return new OkAction(generateFacesPartial(null));
-        } else {
-            // fallback to the old behaviour
-            RedirectionAction action = redirectionActionBuilder.redirect(context);
-            return buildAjaxResponse(action, context);
         }
-    }
-    
-    protected HttpAction buildAjaxResponse(final RedirectionAction action, final WebContext context) {
-        if (!(action instanceof FoundAction)) {
-            throw UnauthorizedAction.INSTANCE;
-        }
-    
-        final String url = ((FoundAction) action).getLocation();
 
         if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
             if (CommonHelper.isNotBlank(url)) {
@@ -52,19 +41,16 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             }
             throw UnauthorizedAction.INSTANCE;
         }
-    
-        return new OkAction(generateFacesPartial(url));
-    }
-    
-    private String generateFacesPartial(String url) {
+
         final StringBuilder buffer = new StringBuilder();
         buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
         buffer.append("<partial-response>");
-        if (url != null) {
+        if (CommonHelper.isNotBlank(url)) {
             buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");
         }
         buffer.append("</partial-response>");
-        return buffer.toString();
+
+        return new OkAction(buffer.toString());
     }
     
     public boolean isAddRedirectionUrlAsHeader() {
