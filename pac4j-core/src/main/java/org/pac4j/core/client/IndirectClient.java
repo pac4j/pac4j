@@ -88,7 +88,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning the appropriate action");
-            HttpAction httpAction = ajaxRequestResolver.buildAjaxResponse(context, redirectionActionBuilder);
+            final HttpAction httpAction = ajaxRequestResolver.buildAjaxResponse(context, redirectionActionBuilder);
             cleanRequestedUrl(context);
             throw httpAction;
         }
