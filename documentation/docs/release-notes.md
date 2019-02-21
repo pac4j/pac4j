@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.6.1**:
+
+- Fix Google OAuth support
+
 **v3.6.0**:
 
 - Multiple authn context class refs can be set in the SAML protocol support

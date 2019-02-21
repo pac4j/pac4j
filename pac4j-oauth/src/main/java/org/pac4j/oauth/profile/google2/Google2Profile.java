@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -19,19 +18,11 @@ public class Google2Profile extends OAuth20Profile {
 
     private static final long serialVersionUID = -7486869356444327783L;
 
-    @Override
-    public String getEmail() { return (String) getAttribute(CommonProfileDefinition.EMAIL); }
-
     public Boolean getEmailVerified() { return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED); }
 
     @Override
     public String getFirstName() {
         return (String) getAttribute(Google2ProfileDefinition.GIVEN_NAME);
-    }
-
-    @Override
-    public String getFamilyName() {
-        return (String) getAttribute(CommonProfileDefinition.FAMILY_NAME);
     }
 
     @Override
