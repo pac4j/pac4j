@@ -3,6 +3,8 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.7.0**:
+
 **v3.6.1**:
 
 - Fix Google OAuth support
