@@ -72,6 +72,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             oAuthBuilder.tryCreateFoursquareClient(clients);
             oAuthBuilder.tryCreateWindowsLiveClient(clients);
             oAuthBuilder.tryCreateLinkedInClient(clients);
+            oAuthBuilder.tryCreateGenericOAuth2Clients(clients);
         }
         // pac4j-saml dependency required
         if (hasSaml2Clients()) {

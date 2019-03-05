@@ -95,6 +95,13 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             // the logout URL is callback URL with an extra parameter
             metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
 
+            // Algorithm support
+            metadataGenerator.setBlackListedSignatureSigningAlgorithms(
+                new ArrayList<>(configuration.getBlackListedSignatureSigningAlgorithms())
+            );
+            metadataGenerator.setSignatureAlgorithms(configuration.getSignatureAlgorithms());
+            metadataGenerator.setSignatureReferenceDigestMethods(configuration.getSignatureReferenceDigestMethods());
+
             // Initialize metadata provider for our SP and get the XML as a String
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
             final String tempMetadata = metadataGenerator.getMetadata(entity);

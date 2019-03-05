@@ -33,4 +33,4 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 11) [Third-party extensions](extensions.html)
 
-## 12) [Javadoc](http://www.pac4j.org/apidocs/pac4j/3.5.0/index.html)
+## 12) [Javadoc](http://www.pac4j.org/apidocs/pac4j/3.6.1/index.html)

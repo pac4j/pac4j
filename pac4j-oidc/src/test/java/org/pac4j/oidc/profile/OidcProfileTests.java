@@ -50,7 +50,7 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
         profile.clearSensitiveData();
         assertNull(profile.getAccessToken());
-        assertNull(profile.getIdTokenString());
+        assertNotNull(profile.getIdTokenString());
     }
 
     @Test
