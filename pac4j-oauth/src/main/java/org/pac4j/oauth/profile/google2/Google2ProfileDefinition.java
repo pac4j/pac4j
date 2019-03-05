@@ -10,7 +10,6 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
-
 /**
  * This class is the Google profile definition (using OAuth 2.0 protocol).
  *
@@ -19,23 +18,19 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Profile, OAuth20Configuration> {
 
-    public static final String DISPLAY_NAME = "displayName";
-    public static final String GIVEN_NAME = "name.givenName";
-    public static final String FAMILY_NAME = "name.familyName";
-    public static final String URL = "url";
-    public static final String PICTURE = "image.url";
-    public static final String LANGUAGE = "language";
-    public static final String EMAIL = "email";
+    public static final String EMAIL_VERIFIED = "email_verified";
+    public static final String GIVEN_NAME = "given_name";
+    public static final String NAME = "name";
+    public static final String PICTURE = "picture";
+    public static final String PROFILE = "profile";
 
     public Google2ProfileDefinition() {
         super(x -> new Google2Profile());
-        primary(DISPLAY_NAME, Converters.STRING);
+        primary(EMAIL_VERIFIED, Converters.BOOLEAN);
         primary(GIVEN_NAME, Converters.STRING);
-        primary(FAMILY_NAME, Converters.STRING);
-        primary(URL, Converters.URL);
+        primary(NAME, Converters.STRING);
         primary(PICTURE, Converters.URL);
-        primary(LANGUAGE, Converters.LOCALE);
-        primary(EMAIL, Converters.STRING);
+        primary(PROFILE, Converters.URL);
     }
 
     @Override

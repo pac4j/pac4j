@@ -40,6 +40,17 @@ public interface PropertiesConstants {
     String GOOGLE_SECRET = "google.secret";
     String GOOGLE_SCOPE = "google.scope";
 
+    String OAUTH2_ID = "oauth2.id";
+    String OAUTH2_SECRET = "oauth2.secret";
+    String OAUTH2_AUTH_URL = "oauth2.authUrl";
+    String OAUTH2_TOKEN_URL = "oauth2.tokenUrl";
+    String OAUTH2_PROFILE_URL = "oauth2.profileUrl";
+    String OAUTH2_PROFILE_PATH = "oauth2.profilePath";
+    String OAUTH2_PROFILE_ID = "oauth2.profileId";
+    String OAUTH2_SCOPE = "oauth2.scope";
+    String OAUTH2_WITH_STATE = "oauth2.withState";
+    String OAUTH2_CLIENT_AUTHENTICATION_METHOD = "oauth2.clientAuthenticationMethod";
+
     String AUTHENTICATOR_TEST_TOKEN = "testToken";
     String AUTHENTICATOR_TEST_USERNAME_PASSWORD = "testUsernamePassword";
 

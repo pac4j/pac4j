@@ -8,9 +8,9 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
-import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
@@ -90,9 +90,9 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning the appropriate action");
-            final Optional<RedirectionAction> action = redirectionActionBuilder.redirect(context);
+            final HttpAction httpAction = ajaxRequestResolver.buildAjaxResponse(context, redirectionActionBuilder);
             cleanRequestedUrl(context);
-            throw ajaxRequestResolver.buildAjaxResponse(action.get(), context);
+            throw httpAction;
         }
         // authentication has already been tried -> unauthorized
         final Optional<String> attemptedAuth = (Optional<String>) context.getSessionStore()

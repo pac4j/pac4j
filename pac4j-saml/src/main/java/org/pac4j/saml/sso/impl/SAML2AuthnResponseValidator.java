@@ -114,7 +114,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final Assertion subjectAssertion = context.getSubjectAssertion();
 
         final String sessionIndex = getSessionIndex(subjectAssertion);
-        logoutHandler.recordSession(context.getWebContext(), sessionIndex);
+        final String sloKey = computeSloKey(sessionIndex, nameId);
+        if (sloKey != null) {
+            logoutHandler.recordSession(context.getWebContext(), sloKey);
+        }
 
         final String issuerEntityId = subjectAssertion.getIssuer().getValue();
         final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
