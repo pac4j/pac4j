@@ -97,7 +97,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         // authentication has already been tried -> unauthorized
         final Optional<String> attemptedAuth = (Optional<String>) context.getSessionStore()
             .get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
-        if (attemptedAuth.isPresent()) {
+        if (attemptedAuth.isPresent() && !"".equals(attemptedAuth.get())) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
             throw UnauthorizedAction.INSTANCE;
@@ -108,14 +108,14 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
 
     private void cleanRequestedUrl(final WebContext context) {
         SessionStore<WebContext> sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, Pac4jConstants.REQUESTED_URL) != null) {
+        if (sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent()) {
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
         }
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
         SessionStore<WebContext> sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX) != null) {
+        if (sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent()) {
             sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
         }
     }
