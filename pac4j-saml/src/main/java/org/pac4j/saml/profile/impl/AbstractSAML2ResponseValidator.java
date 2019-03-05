@@ -209,6 +209,16 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    protected String computeSloKey(final String sessionIndex, final NameID nameId) {
+        if (sessionIndex != null) {
+            return sessionIndex;
+        } else if (nameId != null) {
+            return nameId.getValue();
+        }
+
+        return null;
+    }
+
     @Override
     public final void setAcceptedSkew(final int acceptedSkew) {
         this.acceptedSkew = acceptedSkew;

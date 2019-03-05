@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
 
@@ -19,8 +18,7 @@ public class Google2Profile extends OAuth20Profile {
 
     private static final long serialVersionUID = -7486869356444327783L;
 
-    @Override
-    public String getEmail() { return (String) getAttribute(Google2ProfileDefinition.EMAIL); }
+    public Boolean getEmailVerified() { return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED); }
 
     @Override
     public String getFirstName() {
@@ -28,18 +26,8 @@ public class Google2Profile extends OAuth20Profile {
     }
 
     @Override
-    public String getFamilyName() {
-        return (String) getAttribute(Google2ProfileDefinition.FAMILY_NAME);
-    }
-
-    @Override
     public String getDisplayName() {
-        return (String) getAttribute(Google2ProfileDefinition.DISPLAY_NAME);
-    }
-
-    @Override
-    public Locale getLocale() {
-        return (Locale) getAttribute(Google2ProfileDefinition.LANGUAGE);
+        return (String) getAttribute(Google2ProfileDefinition.NAME);
     }
 
     @Override
@@ -49,7 +37,7 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(Google2ProfileDefinition.URL);
+        return (URI) getAttribute(Google2ProfileDefinition.PROFILE);
     }
 
     @Deprecated

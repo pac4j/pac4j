@@ -32,6 +32,9 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
     private String profileUrl;
     private String profilePath;
     private String profileId;
+    private String scope;
+    private boolean withState;
+    private String clientAuthenticationMethod;
     private Verb profileVerb;
     private Map<String, String> profileAttrs;
     private Map<String, String> customParams;
@@ -47,6 +50,10 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
+
+        if (clientAuthenticationMethod != null) {
+            genApi.setClientAuthenticationMethod(clientAuthenticationMethod);
+        }
 
         configuration.setCustomParams(customParams);
 
@@ -74,6 +81,9 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
         }
 
         configuration.setProfileDefinition(profileDefinition);
+
+        configuration.setScope(scope);
+        configuration.setWithState(withState);
 
         super.clientInit();
     }
@@ -151,5 +161,29 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
     public void setProfileId(final String profileId) {
         this.profileId = profileId;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(final String scope) {
+        this.scope = scope;
+    }
+
+    public boolean isWithState() {
+        return withState;
+    }
+
+    public void setWithState(final boolean withState) {
+        this.withState = withState;
+    }
+
+    public String getClientAuthenticationMethod() {
+        return clientAuthenticationMethod;
+    }
+
+    public void setClientAuthenticationMethod(final String clientAuthenticationMethod) {
+        this.clientAuthenticationMethod = clientAuthenticationMethod;
     }
 }
