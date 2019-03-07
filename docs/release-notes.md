@@ -16,6 +16,7 @@ title: Release notes&#58;
 - Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)
 - For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will remove the `birthday` and `emails` attribute for `Google2Client`.
 - For an AJAX request, only generates the redirection URL when requested (`addRedirectionUrlAsHeader` property of the `DefaultAjaxRequestResolver`)
+- Updated the APIs to use `Optional` instead of returning `null`
 
 **v3.7.0**:
 
