@@ -20,6 +20,7 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -89,12 +90,18 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             logger.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            final Credentials credentials = foundClient.getCredentials(context);
+            final Optional<Credentials> credentials = foundClient.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final UserProfile profile = foundClient.getUserProfile(credentials, context);
-            logger.debug("profile: {}", profile);
-            saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
+            if (credentials.isPresent()) {
+                final Optional<UserProfile> profile = foundClient.getUserProfile(credentials.get(), context);
+                logger.debug("profile: {}", profile);
+
+                if (profile.isPresent()) {
+                    saveUserProfile(context, config, profile.get(), saveInSession, multiProfile, renewSession);
+                }
+            }
+
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
 
         } catch (final RuntimeException e) {
@@ -140,11 +147,11 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final String requestedUrl = (String) context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
+        final Optional<String> requestedUrl = context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
         String redirectUrl = defaultUrl;
-        if (isNotBlank(requestedUrl)) {
+        if (requestedUrl.isPresent()) {
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
-            redirectUrl = requestedUrl;
+            redirectUrl = requestedUrl.get();
         }
         logger.debug("redirectUrl: {}", redirectUrl);
         if (ContextHelper.isPost(context)) {

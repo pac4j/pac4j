@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Store data in the JEE web session.
@@ -30,8 +31,8 @@ public class JEESessionStore implements SessionStore<JEEContext> {
     }
 
     @Override
-    public Object get(final JEEContext context, final String key) {
-        return getHttpSession(context).getAttribute(key);
+    public Optional get(final JEEContext context, final String key) {
+        return Optional.ofNullable(getHttpSession(context).getAttribute(key));
     }
 
     @Override
@@ -50,16 +51,16 @@ public class JEESessionStore implements SessionStore<JEEContext> {
     }
 
     @Override
-    public Object getTrackableSession(final JEEContext context) {
-        return getHttpSession(context);
+    public Optional getTrackableSession(final JEEContext context) {
+        return Optional.ofNullable(getHttpSession(context));
     }
 
     @Override
-    public SessionStore<JEEContext> buildFromTrackableSession(final JEEContext context, final Object trackableSession) {
+    public Optional<SessionStore<JEEContext>> buildFromTrackableSession(final JEEContext context, final Object trackableSession) {
         if (trackableSession != null) {
-            return new JEEProvidedSessionStore((HttpSession) trackableSession);
+            return Optional.of(new JEEProvidedSessionStore((HttpSession) trackableSession));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 

@@ -1,11 +1,12 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
+
+import java.util.Optional;
 
 /**
  * Direct client: credentials are passed and authentication occurs for every HTTP request.
@@ -31,18 +32,19 @@ public abstract class DirectClient<C extends Credentials> extends BaseClient<C> 
     protected abstract void clientInit();
 
     @Override
-    public final RedirectionAction redirect(final WebContext context) {
-        throw new TechnicalException("direct clients do not support redirections");
+    public final Optional<RedirectionAction> redirect(final WebContext context) {
+        return Optional.empty();
     }
 
     @Override
-    public final C getCredentials(final WebContext context) {
+    public final Optional<C> getCredentials(final WebContext context) {
         init();
         return retrieveCredentials(context);
     }
 
     @Override
-    public final RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
-        return null;
+    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
+                                                             final String targetUrl) {
+        return Optional.empty();
     }
 }

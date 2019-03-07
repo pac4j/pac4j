@@ -3,6 +3,10 @@ package org.pac4j.core.util;
 import org.junit.Assert;
 import org.pac4j.core.exception.TechnicalException;
 
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * This class is an helper for tests: get a basic web client, parameters from an url, a formatted date, etc.
  *
@@ -28,5 +32,16 @@ public final class TestsHelper {
         final Exception e = expectException(executable);
         Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
         Assert.assertEquals(message, e.getMessage());
+    }
+
+    public static Map<String, String> splitQuery(URL url) {
+        Map<String, String> query_pairs = new LinkedHashMap<>();
+        String query = url.getQuery();
+        String[] pairs = query.split("&", -1);
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            query_pairs.put(CommonHelper.urlEncode(pair.substring(0, idx)), CommonHelper.urlEncode(pair.substring(idx + 1)));
+        }
+        return query_pairs;
     }
 }

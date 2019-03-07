@@ -15,6 +15,7 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.List;
 
@@ -87,10 +88,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             final List<CommonProfile> profiles = manager.getAll(true);
 
             // compute redirection URL
-            final String url = context.getRequestParameter(Pac4jConstants.URL);
+            final Optional<String> url = context.getRequestParameter(Pac4jConstants.URL);
             String redirectUrl = defaultUrl;
-            if (url != null && Pattern.matches(logoutUrlPattern, url)) {
-                redirectUrl = url;
+            if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
+                redirectUrl = url.get();
             }
             logger.debug("redirectUrl: {}", redirectUrl);
             if (redirectUrl != null) {
@@ -123,8 +124,8 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                     logger.debug("Profile: {}", profile);
                     final String clientName = profile.getClientName();
                     if (clientName != null) {
-                        final Client client = configClients.findClient(clientName);
-                        if (client != null) {
+                        final Optional<Client> client = configClients.findClient(clientName);
+                        if (client.isPresent()) {
                             final String targetUrl;
                             if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
                                 redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS))) {
@@ -132,10 +133,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                             } else {
                                 targetUrl = null;
                             }
-                            final RedirectionAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
+                            final Optional<RedirectionAction> logoutAction = client.get().getLogoutAction(context, profile, targetUrl);
                             logger.debug("Logout action: {}", logoutAction);
-                            if (logoutAction != null) {
-                                action = logoutAction;
+                            if (logoutAction.isPresent()) {
+                                action = logoutAction.get();
                                 break;
                             }
                         }

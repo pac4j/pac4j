@@ -25,7 +25,7 @@ public class ProxyGrantingTicketStore implements ProxyGrantingTicketStorage {
 
     @Override
     public String retrieve(final String proxyGrantingTicketIou) {
-        return store.get(proxyGrantingTicketIou);
+        return store.get(proxyGrantingTicketIou).orElse(null);
     }
 
     @Override

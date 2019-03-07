@@ -6,8 +6,9 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 /**
  * To extract basic auth header.
@@ -28,26 +29,18 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
     }
 
     @Override
-    public UsernamePasswordCredentials extract(WebContext context) {
-        final TokenCredentials credentials = this.extractor.extract(context);
-        if (credentials == null) {
-            return null;
-        }
+    public Optional<UsernamePasswordCredentials> extract(final WebContext context) {
+        final Optional<TokenCredentials> optCredentials = this.extractor.extract(context);
+        return optCredentials.map(credentials -> {
 
-        final byte[] decoded = Base64.getDecoder().decode(credentials.getToken());
+            final byte[] decoded = Base64.getDecoder().decode(credentials.getToken());
+            final String token = new String(decoded, StandardCharsets.UTF_8);
 
-        String token;
-        try {
-            token = new String(decoded, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-            throw new CredentialsException("Bad format of the basic auth header");
-        }
-
-        final int delim = token.indexOf(":");
-        if (delim < 0) {
-            throw new CredentialsException("Bad format of the basic auth header");
-        }
-        return new UsernamePasswordCredentials(token.substring(0, delim),
-                token.substring(delim + 1));
+            final int delim = token.indexOf(":");
+            if (delim < 0) {
+                throw new CredentialsException("Bad format of the basic auth header");
+            }
+            return new UsernamePasswordCredentials(token.substring(0, delim), token.substring(delim + 1));
+        });
     }
 }

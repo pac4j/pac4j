@@ -13,6 +13,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -54,7 +56,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     }
 
     @Override
-    public U create(final C credentials, final WebContext context) {
+    public Optional<UserProfile> create(final C credentials, final WebContext context) {
         try {
             final T token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(context, token);
@@ -78,7 +80,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @param accessToken the access token
      * @return the user profile
      */
-    protected U retrieveUserProfileFromToken(final WebContext context, final T accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final T accessToken) {
         final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         final S service = this.configuration.buildService(context, client, null);
@@ -89,7 +91,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
         }
         final U profile = (U) configuration.getProfileDefinition().extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
-        return profile;
+        return Optional.of(profile);
     }
 
     /**

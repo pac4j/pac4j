@@ -1,5 +1,7 @@
 package org.pac4j.core.store;
 
+import java.util.Optional;
+
 /**
  * Store data.
  *
@@ -12,9 +14,9 @@ public interface Store<K, O> {
      * Get a value by key.
      *
      * @param key the key
-     * @return the object
+     * @return the object (optional)
      */
-    O get(K key);
+    Optional<O> get(K key);
 
     /**
      * Set a value by its key.

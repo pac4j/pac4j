@@ -10,6 +10,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -62,7 +63,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
         } else {
             final String currentSessionId = sessionStore.getOrCreateSessionId(context);
             logger.debug("currentSessionId: {}", currentSessionId);
-            final String sessionToKey = (String) store.get(currentSessionId);
+            final String sessionToKey = (String) store.get(currentSessionId).orElse(null);
             logger.debug("-> key: {}", key);
             store.remove(currentSessionId);
 
@@ -92,9 +93,9 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
 
     @Override
     public void destroySessionBack(final C context, final String key) {
-        final Object trackableSession = store.get(key);
+        final Optional trackableSession = store.get(key);
         logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
-        if (trackableSession == null) {
+        if (!trackableSession.isPresent()) {
             logger.error("No trackable session found for back channel logout. Either the session store does not support to track session "
                 + "or it has expired from the store and the store settings must be updated (expired data)");
         } else {
@@ -105,14 +106,14 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final SessionStore<C> newSessionStore = sessionStore.buildFromTrackableSession(context, trackableSession);
-                if (newSessionStore != null) {
+                final Optional<SessionStore<C>> newSessionStore = sessionStore.buildFromTrackableSession(context, trackableSession.get());
+                if (newSessionStore.isPresent()) {
                     logger.debug("newSesionStore: {}", newSessionStore);
-                    final String sessionId = newSessionStore.getOrCreateSessionId(context);
+                    final String sessionId = newSessionStore.get().getOrCreateSessionId(context);
                     logger.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
-                    destroy(context, newSessionStore, "back");
+                    destroy(context, newSessionStore.get(), "back");
                 } else {
                     logger.error("The session store should be able to build a new session store from the tracked session");
                 }
@@ -122,9 +123,10 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
 
     @Override
     public void renewSession(final String oldSessionId, final C context) {
-        final String key = (String) store.get(oldSessionId);
-        logger.debug("oldSessionId: {} -> key: {}", oldSessionId, key);
-        if (key != null) {
+        final Optional optKey = store.get(oldSessionId);
+        logger.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
+        if (optKey.isPresent()) {
+            final String key = (String) optKey.get();
             store.remove(key);
             store.remove(oldSessionId);
             recordSession(context, key);

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 /**
  * Class implements store of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
@@ -84,19 +85,18 @@ public class HttpSessionStore implements SAMLMessageStore {
      * @return message found or null
      */
     @Override
-    public XMLObject get(final String messageID) {
+    public Optional<XMLObject> get(final String messageID) {
         final LinkedHashMap<String, XMLObject> messages = getMessages();
         final XMLObject o = messages.get(messageID);
         if (o == null) {
             log.debug("Message {} not found in session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
-            return null;
+            return Optional.empty();
         }
 
         log.debug("Message {} found in session {}, clearing", messageID, context.getSessionStore().getOrCreateSessionId(context));
         messages.clear();
         updateSession(messages);
-        return o;
-
+        return Optional.of(o);
     }
 
     /**
@@ -120,18 +120,18 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @SuppressWarnings("unchecked")
     private LinkedHashMap<String, XMLObject> initializeSession() {
-        LinkedHashMap<String, XMLObject> messages = (LinkedHashMap<String, XMLObject>)
+        Optional<LinkedHashMap<String, XMLObject>> messages = (Optional<LinkedHashMap<String, XMLObject>>)
                 context.getSessionStore().get(context, SAML_STORAGE_KEY);
-        if (messages == null) {
+        if (!messages.isPresent()) {
             synchronized (context) {
-                messages = (LinkedHashMap<String, XMLObject>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
-                if (messages == null) {
-                    messages = new LinkedHashMap<>();
-                    updateSession(messages);
+                messages = (Optional<LinkedHashMap<String, XMLObject>>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                if (!messages.isPresent()) {
+                    messages = Optional.of(new LinkedHashMap<>());
+                    updateSession(messages.get());
                 }
             }
         }
-        return messages;
+        return messages.get();
     }
 
     /**

@@ -2,6 +2,8 @@ package org.pac4j.core.context.session;
 
 import org.pac4j.core.context.WebContext;
 
+import java.util.Optional;
+
 /**
  * To store data in session.
  *
@@ -23,9 +25,9 @@ public interface SessionStore<C extends WebContext> {
      *
      * @param context the web context
      * @param key the key of the object
-     * @return the object in store
+     * @return the optional object in store
      */
-    Object get(C context, String key);
+    Optional<Object> get(C context, String key);
 
     /**
      * Save an object in the store by its key.
@@ -48,18 +50,18 @@ public interface SessionStore<C extends WebContext> {
      * Get the native session as a trackable object.
      *
      * @param context the web context
-     * @return the trackable object or <code>null</code> if this is not supported
+     * @return the optional trackable object
      */
-    Object getTrackableSession(C context);
+    Optional getTrackableSession(C context);
 
     /**
      * Build a new session store from a trackable session.
      *
      * @param context the web context
      * @param trackableSession the trackable session
-     * @return the new session store or <code>null</code> if this is not supported
+     * @return the optional new session store
      */
-    SessionStore<C> buildFromTrackableSession(C context, Object trackableSession);
+    Optional<SessionStore<C>> buildFromTrackableSession(C context, Object trackableSession);
 
     /**
      * Renew the native session by copying all data to a new one.

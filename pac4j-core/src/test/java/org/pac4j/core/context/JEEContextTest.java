@@ -47,6 +47,6 @@ public final class JEEContextTest implements TestsConstants {
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(headerNames));
         when(request.getHeader(KEY)).thenReturn(VALUE);
         final JEEContext context = new JEEContext(request, response);
-        assertEquals(VALUE, context.getRequestHeader(key));
+        assertEquals(VALUE, context.getRequestHeader(key).get());
     }
 }

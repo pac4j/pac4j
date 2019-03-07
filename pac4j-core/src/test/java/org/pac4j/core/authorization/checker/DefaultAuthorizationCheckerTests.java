@@ -285,7 +285,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
         assertTrue(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF, null));
-        assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
+        assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
 

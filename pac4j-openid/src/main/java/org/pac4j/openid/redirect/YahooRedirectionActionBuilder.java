@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Redirection action builder for Yahoo.
@@ -39,7 +40,7 @@ public class YahooRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public RedirectionAction redirect(final WebContext context) {
+    public Optional<RedirectionAction> redirect(final WebContext context) {
         try {
             // perform discovery on the user-supplied identifier
             final List discoveries = this.client.getConsumerManager().discover(YAHOO_GENERIC_USER_IDENTIFIER);
@@ -63,7 +64,7 @@ public class YahooRedirectionActionBuilder implements RedirectionActionBuilder {
 
             final String redirectionUrl = authRequest.getDestinationUrl(true);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return new FoundAction(redirectionUrl);
+            return Optional.of(new FoundAction(redirectionUrl));
         } catch (final OpenIDException e) {
             throw new TechnicalException("OpenID exception", e);
         }

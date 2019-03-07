@@ -48,8 +48,8 @@ public class FacebookClient extends OAuth20Client {
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            final String errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON).orElse(null);
             // user has denied permissions
             if ("access_denied".equals(error) && "user_denied".equals(errorReason)) {
                 return true;

@@ -5,8 +5,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Test a store.
@@ -22,37 +21,37 @@ public abstract class AbstractStoreTests<S extends Store> implements TestsConsta
     public void testSetRemoveGet() {
         final S store = buildStore();
         store.set(KEY, VALUE);
-        assertEquals(VALUE, store.get(KEY));
+        assertEquals(VALUE, store.get(KEY).get());
         store.remove(KEY);
-        assertNull(store.get(KEY));
+        assertFalse(store.get(KEY).isPresent());
     }
 
     @Test
     public void testSetExpiredGet() {
         final S store = buildStore();
         store.set(KEY, VALUE);
-        assertEquals(VALUE, store.get(KEY));
+        assertEquals(VALUE, store.get(KEY).get());
         try {
             Thread.sleep(2000);
         } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         }
-        assertNull(store.get(KEY));
+        assertFalse(store.get(KEY).isPresent());
     }
 
     @Test
     public void testSetNullValue() {
         final S store = buildStore();
         store.set(KEY, VALUE);
-        assertEquals(VALUE, store.get(KEY));
+        assertEquals(VALUE, store.get(KEY).get());
         store.set(KEY, null);
-        assertNull(store.get(KEY));
+        assertFalse(store.get(KEY).isPresent());
     }
 
     @Test
     public void testMissingObject() {
         final S store = buildStore();
-        assertNull(store.get(KEY));
+        assertFalse(store.get(KEY).isPresent());
     }
 
     @Test

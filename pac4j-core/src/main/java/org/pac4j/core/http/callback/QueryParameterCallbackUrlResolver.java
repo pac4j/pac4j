@@ -40,7 +40,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public boolean matches(final String clientName, final WebContext context) {
-        final String name = context.getRequestParameter(this.clientNameParameter);
+        final String name = context.getRequestParameter(this.clientNameParameter).orElse(null);
         return CommonHelper.areEqualsIgnoreCaseAndTrim(name, clientName);
     }
 

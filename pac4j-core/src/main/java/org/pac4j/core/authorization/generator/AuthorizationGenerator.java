@@ -3,6 +3,8 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Optional;
+
 /**
  * Generate the authorization roles and permissions for this user profile.
  * 
@@ -16,7 +18,7 @@ public interface AuthorizationGenerator {
      *
      * @param context the web context
      * @param profile the user profile for which to generate the authorization information.
-     * @return the updated profile or a new one
+     * @return the updated profile or a new one (optional)
      */
-    UserProfile generate(WebContext context, UserProfile profile);
+    Optional<UserProfile> generate(WebContext context, UserProfile profile);
 }

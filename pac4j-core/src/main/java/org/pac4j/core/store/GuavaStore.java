@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,8 +44,8 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
     }
 
     @Override
-    protected O internalGet(final K key) {
-        return cache.getIfPresent(key);
+    protected Optional<O> internalGet(final K key) {
+        return Optional.ofNullable(cache.getIfPresent(key));
     }
 
     @Override

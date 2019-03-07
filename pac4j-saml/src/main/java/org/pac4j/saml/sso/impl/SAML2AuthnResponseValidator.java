@@ -51,10 +51,7 @@ import org.pac4j.saml.util.SAML2Utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
@@ -194,12 +191,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         AuthnRequest request = null;
         final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
         if (messageStorage != null && response.getInResponseTo() != null) {
-            final XMLObject xmlObject = messageStorage.get(response.getInResponseTo());
-            if (xmlObject == null) {
+            final Optional<XMLObject> xmlObject = messageStorage.get(response.getInResponseTo());
+            if (!xmlObject.isPresent()) {
                 throw new SAMLInResponseToMismatchException("InResponseToField of the Response doesn't correspond to sent message "
                     + response.getInResponseTo());
-            } else if (xmlObject instanceof AuthnRequest) {
-                request = (AuthnRequest) xmlObject;
+            } else if (xmlObject.get() instanceof AuthnRequest) {
+                request = (AuthnRequest) xmlObject.get();
             } else {
                 throw new SAMLInResponseToMismatchException("Sent request was of different type than the expected AuthnRequest "
                     + response.getInResponseTo());

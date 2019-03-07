@@ -9,6 +9,8 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is made to group multiple clients, generally on one callback url.</p>
@@ -21,6 +23,8 @@ import org.pac4j.core.util.InitializableObject;
  */
 @SuppressWarnings({ "unchecked" })
 public class Clients extends InitializableObject {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Clients.class);
 
     private List<Client> clients;
 
@@ -116,16 +120,16 @@ public class Clients extends InitializableObject {
      * @param name name of the client
      * @return the right client
      */
-    public Client findClient(final String name) {
+    public Optional<Client> findClient(final String name) {
         CommonHelper.assertNotBlank("name", name);
         init();
         final String lowerTrimmedName = name.toLowerCase().trim();
         final Client client = _clients.get(lowerTrimmedName);
         if (client != null) {
-            return client;
+            return Optional.of(client);
         }
-        final String message = "No client found for name: " + name;
-        throw new TechnicalException(message);
+        LOGGER.debug("No client found for name: {}", name);
+        return Optional.empty();
     }
 
     /**
@@ -136,18 +140,18 @@ public class Clients extends InitializableObject {
      * @return the right client
      */
     @SuppressWarnings("unchecked")
-    public <C extends Client> C findClient(final Class<C> clazz) {
+    public <C extends Client> Optional<C> findClient(final Class<C> clazz) {
         CommonHelper.assertNotNull("clazz", clazz);
         init();
         if (clazz != null) {
             for (final Client client : getClients()) {
                 if (clazz.isAssignableFrom(client.getClass())) {
-                    return (C) client;
+                    return Optional.of((C) client);
                 }
             }
         }
-        final String message = "No client found for class: " + clazz;
-        throw new TechnicalException(message);
+        LOGGER.debug("No client found for class: {}", clazz);
+        return Optional.empty();
     }
 
     /**

@@ -10,6 +10,7 @@ import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,16 +52,16 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     public void validate(final T credentials, final WebContext context) {
         init();
 
-        CommonProfile profile = this.store.get(credentials);
-        if (profile == null) {
+        Optional<CommonProfile> optProfile = this.store.get(credentials);
+        if (!optProfile.isPresent()) {
             logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
             delegate.validate(credentials, context);
-            profile = credentials.getUserProfile();
+            final CommonProfile profile = credentials.getUserProfile();
             logger.debug("Caching credential. Using profile {}...", profile);
             store.set(credentials, profile);
         } else {
-            credentials.setUserProfile(profile);
-            logger.debug("Found cached credential. Using cached profile {}...", profile);
+            credentials.setUserProfile(optProfile.get());
+            logger.debug("Found cached credential. Using cached profile {}...", optProfile.get());
         }
     }
 
@@ -81,7 +82,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     public boolean isCached(final T credentials) {
-        return this.store.get(credentials) != null;
+        return this.store.get(credentials).isPresent();
     }
 
     public Authenticator<T> getDelegate() {

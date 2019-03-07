@@ -12,6 +12,8 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * Specific {@link AuthorizationGenerator} to Keycloak.
  *
@@ -29,7 +31,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
 
         if (profile instanceof KeycloakOidcProfile) {
             try {
@@ -58,6 +60,6 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
             }
         }
 
-        return profile;
+        return Optional.of(profile);
     }
 }

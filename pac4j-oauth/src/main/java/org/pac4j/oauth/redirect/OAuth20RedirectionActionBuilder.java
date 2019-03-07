@@ -13,6 +13,8 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * OAuth 2.0 redirection action builder.
  *
@@ -35,7 +37,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public RedirectionAction redirect(final WebContext context) {
+    public Optional<RedirectionAction> redirect(final WebContext context) {
         try {
 
             final String state;
@@ -49,7 +51,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             final OAuth20Service service = this.configuration.buildService(context, client, state);
             final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return new FoundAction(authorizationUrl);
+            return Optional.of(new FoundAction(authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
