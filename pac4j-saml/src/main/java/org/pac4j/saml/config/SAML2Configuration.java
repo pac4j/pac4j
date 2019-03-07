@@ -46,6 +46,7 @@ import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -789,7 +790,7 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        try (final PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
+        try (final PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             final PemObject pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
