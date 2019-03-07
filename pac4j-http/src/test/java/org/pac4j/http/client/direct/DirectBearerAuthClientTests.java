@@ -46,9 +46,8 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
                 HttpConstants.BEARER_HEADER_PREFIX + TOKEN);
-        final TokenCredentials credentials = client.getCredentials(context);
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
+        final TokenCredentials credentials = client.getCredentials(context).get();
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
         assertEquals(TOKEN, profile.getId());
     }
-
 }

@@ -14,28 +14,31 @@ import org.pac4j.core.util.CommonHelper;
  * @since 1.8.0
  */
 public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpConstants, Pac4jConstants {
-    
+
     private boolean addRedirectionUrlAsHeader = false;
-    
+
     @Override
     public boolean isAjax(final WebContext context) {
-        final boolean xmlHttpRequest = AJAX_HEADER_VALUE.equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME));
-        final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST));
-        final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST));
+        final boolean xmlHttpRequest = AJAX_HEADER_VALUE
+            .equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
+        final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString()
+            .equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
+        final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString()
+            .equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
-    
+
     @Override
     public HttpAction buildAjaxResponse(final WebContext context, final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            final RedirectionAction action = redirectionActionBuilder.redirect(context);
+            final RedirectionAction action = redirectionActionBuilder.redirect(context).orElse(null);
             if (action instanceof FoundAction) {
                 url = ((FoundAction) action).getLocation();
             }
         }
 
-        if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
+        if (!context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isPresent()) {
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
@@ -52,13 +55,12 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
         return new OkAction(buffer.toString());
     }
-    
+
     public boolean isAddRedirectionUrlAsHeader() {
         return addRedirectionUrlAsHeader;
     }
-    
+
     public void setAddRedirectionUrlAsHeader(boolean addRedirectionUrlAsHeader) {
         this.addRedirectionUrlAsHeader = addRedirectionUrlAsHeader;
     }
-    
 }

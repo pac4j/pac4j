@@ -10,18 +10,18 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
 import org.pac4j.kerberos.credentials.authenticator.SunJaasKerberosTicketValidator;
-import org.pac4j.kerberos.profile.KerberosProfile;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
 /**
@@ -83,7 +83,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
-        assertNull(setupDirectKerberosClient().getCredentials(MockWebContext.create()));
+        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create()).isPresent());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         final MockWebContext context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertNull(setupDirectKerberosClient().getCredentials(context));
+        assertFalse(setupDirectKerberosClient().getCredentials(context).isPresent());
     }
 
     @Test
@@ -147,13 +147,13 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
         // mock web request
         final MockWebContext context = mockWebRequestContext(spnegoWebTicket);
-        final KerberosCredentials credentials = client.getCredentials(context);
-        assertNotNull(credentials);
-        System.out.println(credentials);
+        final Optional<KerberosCredentials> credentials = client.getCredentials(context);
+        assertTrue(credentials.isPresent());
+        System.out.println(credentials.get());
 
-        final KerberosProfile profile = (KerberosProfile) client.getUserProfile(credentials, context);
-        assertNotNull(profile);
-        assertEquals(clientPrincipal, profile.getId());
+        final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context);
+        assertTrue(profile.isPresent());
+        assertEquals(clientPrincipal, profile.get().getId());
     }
 
     private DirectKerberosClient setupDirectKerberosClient() {

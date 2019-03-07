@@ -19,6 +19,7 @@ import org.pac4j.oidc.profile.OidcProfile;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 /**
  * Logout action builder for OpenID Connect.
@@ -38,7 +39,8 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
+                                                       final String targetUrl) {
         final String logoutUrl = configuration.getLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
             try {
@@ -58,13 +60,13 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                     throw ForbiddenAction.INSTANCE;
                 }
 
-                return new FoundAction(logoutRequest.toURI().toString());
+                return Optional.of(new FoundAction(logoutRequest.toURI().toString()));
             } catch (final URISyntaxException e) {
                 throw new TechnicalException(e);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public AjaxRequestResolver getAjaxRequestResolver() {

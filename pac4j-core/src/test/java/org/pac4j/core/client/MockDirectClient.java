@@ -3,6 +3,8 @@ package org.pac4j.core.client;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.util.Optional;
+
 /**
  * Mock a direct client.
  *
@@ -19,7 +21,7 @@ public final class MockDirectClient extends DirectClient<Credentials> {
         this(name, () -> null, null);
     }
 
-    public MockDirectClient(final String name, final Credentials credentials, final CommonProfile profile) {
+    public MockDirectClient(final String name, final Optional<Credentials> credentials, final CommonProfile profile) {
         this(name, () -> credentials, profile);
     }
 

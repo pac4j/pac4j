@@ -4,6 +4,8 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.oauth.profile.strava.StravaProfileDefinition;
 import org.pac4j.scribe.builder.api.StravaApi20;
 
+import java.util.Optional;
+
 /**
  * <p>OAuth20Client for Strava.</p>
  * <p>Use the key as the client_id and secret as the client_secret, both provided by Strava at:
@@ -36,7 +38,7 @@ public class StravaClient extends OAuth20Client {
     protected void clientInit() {
         configuration.setApi(new StravaApi20(approvalPrompt));
         configuration.setProfileDefinition(new StravaProfileDefinition());
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://www.strava.com/session"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction("https://www.strava.com/session")));
 
         super.clientInit();
     }

@@ -12,6 +12,8 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
 
+import java.util.Optional;
+
 /**
  * <p>This class is the client to authenticate users directly through RFC 6750 HTTP bearer authentication.</p>
  *
@@ -43,7 +45,7 @@ public class DirectBearerAuthClient extends DirectClient<TokenCredentials> {
     }
 
     @Override
-    protected TokenCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<TokenCredentials> retrieveCredentials(final WebContext context) {
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 

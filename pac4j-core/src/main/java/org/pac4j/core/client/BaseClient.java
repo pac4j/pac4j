@@ -1,10 +1,6 @@
 package org.pac4j.core.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -60,42 +56,41 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
      * @param context the web context
      * @return the credentials
      */
-    protected C retrieveCredentials(final WebContext context) {
+    protected Optional<C> retrieveCredentials(final WebContext context) {
         try {
-            final C credentials = this.credentialsExtractor.extract(context);
-            if (credentials == null) {
-                return null;
-            }
-            final long t0 = System.currentTimeMillis();
-            try {
-                this.authenticator.validate(credentials, context);
-            } finally {
-                final long t1 = System.currentTimeMillis();
-                logger.debug("Credentials validation took: {} ms", t1 - t0);
-            }
-            return credentials;
+            final Optional<C> optCredentials = this.credentialsExtractor.extract(context);
+            optCredentials.ifPresent(credentials -> {
+                final long t0 = System.currentTimeMillis();
+                try {
+                    this.authenticator.validate(credentials, context);
+                } finally {
+                    final long t1 = System.currentTimeMillis();
+                    logger.debug("Credentials validation took: {} ms", t1 - t0);
+                }
+            });
+            return optCredentials;
         } catch (CredentialsException e) {
             logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve or validate credentials", e);
 
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
-    public final UserProfile getUserProfile(final C credentials, final WebContext context) {
+    public final Optional<UserProfile> getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
-            return null;
+            return Optional.empty();
         }
 
-        UserProfile profile = retrieveUserProfile(credentials, context);
-        if (profile != null) {
-            profile.setClientName(getName());
+        Optional<UserProfile> profile = retrieveUserProfile(credentials, context);
+        if (profile.isPresent()) {
+            profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile);
+                    profile = authorizationGenerator.generate(context, profile.get());
                 }
             }
         }
@@ -103,14 +98,14 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
     }
 
     /**
-     * Retrieve a user userprofile.
+     * Retrieve a user profile.
      *
      * @param credentials the credentials
      * @param context     the web context
      * @return the user profile
      */
-    protected final UserProfile retrieveUserProfile(final C credentials, final WebContext context) {
-        final UserProfile profile = this.profileCreator.create(credentials, context);
+    protected final Optional<UserProfile> retrieveUserProfile(final C credentials, final WebContext context) {
+        final Optional<UserProfile> profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }

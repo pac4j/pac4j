@@ -5,6 +5,7 @@ import org.pac4j.core.profile.UserProfile;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Grant default roles and/or permissions to a user profile.
@@ -38,13 +39,13 @@ public class DefaultRolesPermissionsAuthorizationGenerator implements Authorizat
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
         if (defaultRoles != null) {
             profile.addRoles(defaultRoles);
         }
         if (defaultPermissions != null) {
             profile.addPermissions(defaultPermissions);
         }
-        return profile;
+        return Optional.of(profile);
     }
 }

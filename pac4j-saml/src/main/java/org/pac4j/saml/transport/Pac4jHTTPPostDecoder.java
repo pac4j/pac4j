@@ -32,7 +32,7 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
         final SAML2MessageContext messageContext = new SAML2MessageContext();
 
         if (ContextHelper.isPost(context)) {
-            final String relayState = this.context.getRequestParameter("RelayState");
+            final String relayState = this.context.getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext, relayState);
             final byte[] base64DecodedMessage = this.getBase64DecodedMessage();

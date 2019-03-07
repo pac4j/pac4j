@@ -1,5 +1,6 @@
 package org.pac4j.cas.client;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.pac4j.core.client.IndirectClient;
@@ -43,17 +44,17 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials> {
         defaultRedirectionActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         defaultCredentialsExtractor(ctx -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
-            final String proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+            final Optional<String> proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
-            final String proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+            final Optional<String> proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
-            if (isBlank(proxyGrantingTicket) || isBlank(proxyGrantingTicketIou)) {
+            if (!proxyGrantingTicket.isPresent() || !proxyGrantingTicketIou.isPresent()) {
                 logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
                 throw new OkAction("");
             }
 
-            this.store.set(proxyGrantingTicketIou, proxyGrantingTicket);
+            this.store.set(proxyGrantingTicketIou.get(), proxyGrantingTicket.get());
 
             logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
             throw new OkAction("<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");

@@ -4,6 +4,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.util.Optional;
+
 /**
  * Mock an indirect client.
  *
@@ -22,7 +24,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials> {
         setName(name);
     }
 
-    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final Credentials credentials,
+    public MockIndirectClient(final String name, final RedirectionAction redirectAction, final Optional<Credentials> credentials,
                               final CommonProfile profile) {
         this(name, redirectAction, () -> credentials, profile);
     }
@@ -37,7 +39,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials> {
 
     @Override
     protected void clientInit() {
-        defaultRedirectionActionBuilder(ctx -> redirectAction);
+        defaultRedirectionActionBuilder(ctx -> Optional.of(redirectAction));
         defaultCredentialsExtractor(ctx -> returnCredentials.get());
         defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
         defaultLogoutActionBuilder(getLogoutActionBuilder());

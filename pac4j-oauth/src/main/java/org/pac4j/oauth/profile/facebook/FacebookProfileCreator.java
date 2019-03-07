@@ -7,12 +7,14 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -32,7 +34,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
     }
 
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final WebContext context, final OAuth2AccessToken accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final OAuth2AccessToken accessToken) {
         final OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration> profileDefinition =
             (OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration>) configuration.getProfileDefinition();
         final FacebookConfiguration facebookConfiguration = (FacebookConfiguration) configuration;
@@ -76,7 +78,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
                 logger.error("Cannot get extended token: {} / {}", code, body);
             }
         }
-        return profile;
+        return Optional.of(profile);
     }
 
     /**

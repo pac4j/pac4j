@@ -5,6 +5,8 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 
+import java.util.Optional;
+
 /**
  * To extract header value.
  *
@@ -53,27 +55,27 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-        String header = context.getRequestHeader(this.headerName);
-        if (header == null) {
+        Optional<String> header = context.getRequestHeader(this.headerName);
+        if (!header.isPresent()) {
             header = context.getRequestHeader(this.headerName.toLowerCase());
-            if (header == null) {
-                return null;
+            if (!header.isPresent()) {
+                return Optional.empty();
             }
         }
 
-        if (!header.startsWith(this.prefixHeader)) {
+        if (!header.get().startsWith(this.prefixHeader)) {
             throw new CredentialsException("Wrong prefix for header: " + this.headerName);
         }
 
-        String headerWithoutPrefix = header.substring(this.prefixHeader.length());
+        String headerWithoutPrefix = header.get().substring(this.prefixHeader.length());
 
         if (trimValue) {
             headerWithoutPrefix = headerWithoutPrefix.trim();
         }
-        return new TokenCredentials(headerWithoutPrefix);
+        return Optional.of(new TokenCredentials(headerWithoutPrefix));
     }
 }

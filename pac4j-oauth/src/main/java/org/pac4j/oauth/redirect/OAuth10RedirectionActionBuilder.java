@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -40,7 +41,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public RedirectionAction redirect(final WebContext context) {
+    public Optional<RedirectionAction> redirect(final WebContext context) {
         try {
 
             final OAuth10aService service = this.configuration.buildService(context, client, null);
@@ -55,7 +56,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             final String authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return new FoundAction(authorizationUrl);
+            return Optional.of(new FoundAction(authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

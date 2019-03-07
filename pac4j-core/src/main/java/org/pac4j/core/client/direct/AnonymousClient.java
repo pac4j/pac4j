@@ -4,6 +4,8 @@ import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.AnonymousCredentials;
 import org.pac4j.core.profile.AnonymousProfile;
 
+import java.util.Optional;
+
 /**
  * Anonymous client. Not to be used except for advanced use cases.
  *
@@ -20,7 +22,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
     @Override
     protected void clientInit() {
-        defaultCredentialsExtractor(ctx -> AnonymousCredentials.INSTANCE);
+        defaultCredentialsExtractor(ctx -> Optional.of(AnonymousCredentials.INSTANCE));
         defaultAuthenticator((cred, ctx )-> {
             cred.setUserProfile(AnonymousProfile.INSTANCE);
         });

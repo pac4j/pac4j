@@ -4,6 +4,8 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 
+import java.util.Optional;
+
 /**
  * To extract an RFC 6750 bearer auth header.
  *
@@ -23,7 +25,7 @@ public class BearerAuthExtractor implements CredentialsExtractor<TokenCredential
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
+    public Optional<TokenCredentials> extract(WebContext context) {
         return this.extractor.extract(context);
     }
 }

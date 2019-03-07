@@ -11,15 +11,13 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -78,31 +76,17 @@ public final class OidcRedirectTests implements TestsConstants {
         
         MockWebContext context = MockWebContext.create();
         
-        final FoundAction firstRequestAction = (FoundAction) client.redirect(context);
-        String state = splitQuery(new URL(firstRequestAction.getLocation())).get("state");
+        final FoundAction firstRequestAction = (FoundAction) client.redirect(context).orElse(null);
+        String state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
     
         try {
             //noinspection ThrowableNotThrown
             client.redirect(context);
             fail("Ajax request should throw exception");
         } catch (Exception e) {
-            State stateAfterAjax = (State) context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE);
+            State stateAfterAjax = (State) context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE).orElse(null);
             assertEquals("subsequent ajax request should not override the state in the session store", state, stateAfterAjax.toString());
         }
     
     }
-    
-    static Map<String, String> splitQuery(URL url) {
-        Map<String, String> query_pairs = new LinkedHashMap<>();
-        String query = url.getQuery();
-        String[] pairs = query.split("&", -1);
-        for (String pair : pairs) {
-            int idx = pair.indexOf("=");
-            query_pairs.put(CommonHelper.urlEncode(pair.substring(0, idx)), CommonHelper.urlEncode(pair.substring(idx + 1)));
-        }
-        return query_pairs;
-    }
-    
 }
-
-

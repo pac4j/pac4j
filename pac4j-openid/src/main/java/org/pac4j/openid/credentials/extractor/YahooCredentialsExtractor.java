@@ -10,6 +10,8 @@ import org.pac4j.openid.credentials.OpenIdCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * Credentials extractor for Yahoo.
  *
@@ -32,12 +34,12 @@ public class YahooCredentialsExtractor implements CredentialsExtractor<OpenIdCre
     }
 
     @Override
-    public OpenIdCredentials extract(final WebContext context) {
-        final String mode = context.getRequestParameter(OPENID_MODE);
+    public Optional<OpenIdCredentials> extract(final WebContext context) {
+        final String mode = context.getRequestParameter(OPENID_MODE).orElse(null);
         // cancelled authentication
         if (CommonHelper.areEquals(mode, CANCEL_MODE)) {
             logger.debug("authentication cancelled");
-            return null;
+            return Optional.empty();
         }
 
         // parameters list returned by the provider
@@ -45,11 +47,11 @@ public class YahooCredentialsExtractor implements CredentialsExtractor<OpenIdCre
 
         // retrieve the previously stored discovery information
         final DiscoveryInformation discoveryInformation = (DiscoveryInformation) context
-                .getSessionStore().get(context, this.client.getDiscoveryInformationSessionAttributeName());
+                .getSessionStore().get(context, this.client.getDiscoveryInformationSessionAttributeName()).orElse(null);
 
         // create credentials
         final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList);
         logger.debug("credentials: {}", credentials);
-        return credentials;
+        return Optional.of(credentials);
     }
 }

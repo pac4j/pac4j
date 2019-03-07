@@ -58,7 +58,7 @@ public class WeiboClient extends OAuth20Client {
         configuration.setProfileDefinition(new WeiboProfileDefinition());
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
             if ("access_denied".equals(error)) {
                 return true;
             }

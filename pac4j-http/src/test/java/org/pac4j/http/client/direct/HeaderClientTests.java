@@ -51,8 +51,8 @@ public final class HeaderClientTests implements TestsConstants {
         final HeaderClient client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
-        final TokenCredentials credentials = client.getCredentials(context);
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
+        final TokenCredentials credentials = client.getCredentials(context).get();
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
         assertEquals(VALUE, profile.getId());
     }
 }
