@@ -28,7 +28,7 @@ Understand the main features:
 - [Profile definition](#4-profile-definition)
 - [AJAX requests](#5-ajax-requests)
 - [The `Client` methods](#6-the-client-methods)
-
+- [Originally requested URLs](#7-originally-requested-urls)
 
 ---
 
@@ -170,3 +170,13 @@ The `Client` interface has the following methods:
 {:.striped}
 
 Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder` and `Authenticator`, except for HTTP clients where the `Authenticator` must be defined. Sub-components can of course be changed for various [customizations](customizations.html).
+
+
+---
+
+## 7) Originally requested URLs
+
+An originally requested URL is the URL called before the authenticated process starts: it is restored from the callback URL after the login process has been completed.
+
+It is handled in the `DefaultSecurityLogic` and in the `CallbackSecurityLogic` by the `SavedRequestHandler` component.
+By default, it's a `DefaultSavedRequestHandler` which handles GET and POST requests.
