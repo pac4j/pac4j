@@ -60,18 +60,18 @@
 		<junit.version>4.12</junit.version>
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<logback.version>1.2.3</logback.version>
-		<commons-codec.version>1.11</commons-codec.version>
+		<commons-codec.version>1.12</commons-codec.version>
 		<commons-io.version>2.6</commons-io.version>
-		<guava.version>23.6-jre</guava.version>
-		<nimbus-jose-jwt.version>6.5</nimbus-jose-jwt.version>
-		<spring.version>5.0.2.RELEASE</spring.version>
-		<spring.security.version>5.0.0.RELEASE</spring.security.version>
+		<guava.version>27.0.1-jre</guava.version>
+		<nimbus-jose-jwt.version>7.0.1</nimbus-jose-jwt.version>
+		<spring.version>5.1.5.RELEASE</spring.version>
+		<spring.security.version>5.1.4.RELEASE</spring.security.version>
 		<shiro.version>1.4.0</shiro.version>
         <jbcrypt.version>0.4.1</jbcrypt.version>
-		<mockito.version>2.13.0</mockito.version>
-		<slf4j.version>1.7.25</slf4j.version>
-        <unboundid.version>4.0.3</unboundid.version>
-        <h2.version>1.4.196</h2.version>
+		<mockito.version>2.25.0</mockito.version>
+		<slf4j.version>1.7.26</slf4j.version>
+        <unboundid.version>4.0.9</unboundid.version>
+        <h2.version>1.4.198</h2.version>
 		<java.version>1.8</java.version>
         <jackson.version>2.9.8</jackson.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
@@ -256,7 +256,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -273,7 +273,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.20.1</version>
+				<version>2.22.1</version>
 				<configuration>
 					<includes>
 						<include>**/*Tests.java</include>
@@ -323,7 +323,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>3.8.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -439,7 +439,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>3.1.1</version>
 					<configuration>
 						<archive>
 							<!-- configure plugin to use MANIFEST.MF
@@ -453,7 +453,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.1.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -468,7 +468,7 @@
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>3.5.0</version>
+					<version>4.1.0</version>
 					<extensions>true</extensions>
 					<executions>
 						<execution>
@@ -489,7 +489,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.20.1</version>
+                    <version>2.22.1</version>
                 </plugin>
 			</plugins>
 		</pluginManagement>
