@@ -13,7 +13,8 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.TBSCertificate;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
-import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
@@ -36,12 +37,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
-import sun.security.provider.X509Factory;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -745,13 +742,9 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        final Base64 encoder = new Base64();
-        try (final FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(X509Factory.BEGIN_CERT.getBytes(StandardCharsets.UTF_8));
-            fos.write("\n".getBytes(StandardCharsets.UTF_8));
-            encoder.encode(certificate, fos);
-            fos.write(X509Factory.END_CERT.getBytes(StandardCharsets.UTF_8));
-            fos.flush();
+        try (final PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+            final PemObject pemObject = new PemObject(file.getName(), certificate);
+            pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
