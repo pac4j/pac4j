@@ -35,7 +35,6 @@ public class SAML2ServiceProviderMetadataResolverTest {
     public void resolveServiceProviderMetadata() {
         metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration, "http://localhost",
             new KeyStoreCredentialProvider(configuration));
-        //assertTrue(configuration.getServiceProviderMetadataResource().exists());
         assertNotNull(metadataResolver.resolve());
     }
 }
