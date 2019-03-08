@@ -9,11 +9,12 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
 import org.pac4j.core.engine.decision.ProfileStorageDecision;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
+import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
@@ -58,6 +59,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
 
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+
+    private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -203,9 +206,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected void saveRequestedUrl(final C context, final List<Client> currentClients) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
-            final String requestedUrl = context.getFullRequestURL();
-            logger.debug("requestedUrl: {}", requestedUrl);
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
+            savedRequestHandler.save(context);
         }
     }
 
@@ -272,10 +273,18 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.ajaxRequestResolver = ajaxRequestResolver;
     }
 
+    public SavedRequestHandler getSavedRequestHandler() {
+        return savedRequestHandler;
+    }
+
+    public void setSavedRequestHandler(final SavedRequestHandler savedRequestHandler) {
+        this.savedRequestHandler = savedRequestHandler;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
             "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
-            "errorUrl", getErrorUrl(), "ajaxRequestResolver", this.ajaxRequestResolver);
+            "errorUrl", getErrorUrl(), "ajaxRequestResolver", this.ajaxRequestResolver, "savedRequestHandler", savedRequestHandler);
     }
 }
