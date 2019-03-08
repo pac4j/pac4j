@@ -28,7 +28,7 @@ Understand the main features:
 - [Profile definition](#4-profile-definition)
 - [AJAX requests](#5-ajax-requests)
 - [The `Client` methods](#6-the-client-methods)
-- [Originally requested URLS](#7-originally-requested-urls)
+- [Originally requested URLs](#7-originally-requested-urls)
 
 ---
 

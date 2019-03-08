@@ -7,7 +7,6 @@ import org.pac4j.core.exception.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         final String requestedUrl = context.getFullRequestURL();
         if (ContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
-            final Map<String, String[]> parameters = new HashMap<>();
+            final Map<String, String[]> parameters = context.getRequestParameters();
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL,
                 OkAction.buildFormContentFromUrlAndData(requestedUrl, parameters));
         } else {
@@ -55,7 +54,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
             requestedAction = new FoundAction(defaultUrl);
         }
 
-        LOGGER.debug("requestedAction: {}", requestedAction);
+        LOGGER.debug("requestedAction: {}", requestedAction.getMessage());
         if (ContextHelper.isPost(context)) {
             if (requestedAction instanceof FoundAction) {
                 return new SeeOtherAction(((FoundAction) requestedAction).getLocation());
