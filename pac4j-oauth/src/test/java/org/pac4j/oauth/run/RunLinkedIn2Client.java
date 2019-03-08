@@ -67,8 +67,8 @@ public final class RunLinkedIn2Client extends RunClient {
                 Gender.UNSPECIFIED,
                 null,
                 "https://media.licdn.com/dms/image/C5603AQHfitHQ5I8fcg/profile-displayphoto-shrink_100_100/" +
-                    "0?e=1527703200&v=alpha&t=6Vxlhr64CF5LP_O9_YJwQv8Ar_TZjnZ_4C53xoygjfI",
-                "https://www.linkedin.com/in/test-scribeup-16b0aa48", "Paris Area, France");
+                    "0?e=15",
+                "http://www.linkedin.com/in/test-scribeup-16b0aa48", "Paris Area, France");
         final LinkedIn2Location location = profile.getCompleteLocation();
         assertEquals("Paris Area, France", location.getName());
         assertNull(profile.getMaidenName());
