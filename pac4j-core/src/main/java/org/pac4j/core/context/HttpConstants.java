@@ -22,6 +22,8 @@ public interface HttpConstants {
 
     int SEE_OTHER = 303;
 
+    int TEMPORARY_REDIRECT = 307;
+
     int BAD_REQUEST = 400;
 
     int DEFAULT_HTTP_PORT = 80;
