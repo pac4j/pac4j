@@ -8,6 +8,7 @@ import org.pac4j.core.exception.http.*;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -22,6 +23,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     private static final String FORM_DATA = "<html>\n" +
         "<body>\n" +
         "<form action=\"http://www.pac4j.org/test.html\" name=\"f\" method=\"post\">\n" +
+        "<input type='hidden' name=\"key\" value=\"value\" />\n" +
         "<input value='POST' type='submit' />\n" +
         "</form>\n" +
         "<script type='text/javascript'>document.forms['f'].submit();</script>\n" +
@@ -42,6 +44,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     @Test
     public void testSavePost() {
         final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL).setRequestMethod("POST");
+        context.addRequestParameter(KEY, VALUE);
         handler.save(context);
         final MockSessionStore sessionStore = (MockSessionStore) context.getSessionStore();
         final OkAction action = (OkAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
@@ -102,7 +105,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     public void testRestoreOkAction() {
         final MockWebContext context = MockWebContext.create();
         context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL,
-            OkAction.buildFormContentFromUrlAndData(PAC4J_URL, new HashMap<>()));
+            OkAction.buildFormContentFromUrlAndData(PAC4J_URL, buildParameters()));
         final HttpAction action = handler.restore(context, LOGIN_URL);
         assertTrue(action instanceof OkAction);
         assertEquals(FORM_DATA, ((OkAction) action).getContent());
@@ -114,10 +117,16 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setRequestMethod("POST");
         context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL,
-            OkAction.buildFormContentFromUrlAndData(PAC4J_URL, new HashMap<>()));
+            OkAction.buildFormContentFromUrlAndData(PAC4J_URL, buildParameters()));
         final HttpAction action = handler.restore(context, LOGIN_URL);
         assertTrue(action instanceof TemporaryRedirectAction);
         assertEquals(FORM_DATA, ((TemporaryRedirectAction) action).getContent());
         assertEquals("", context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL).get());
+    }
+
+    private Map<String, String[]> buildParameters() {
+        final Map<String, String[]> parameters = new HashMap<>();
+        parameters.put(KEY, new String[] {VALUE});
+        return parameters;
     }
 }
