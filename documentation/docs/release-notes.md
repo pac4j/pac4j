@@ -5,6 +5,8 @@ title: Release notes&#58;
 
 **v3.7.0**:
 
+- Fix SAML SP metadata signature
+
 **v3.6.1**:
 
 - Fix Google OAuth support
