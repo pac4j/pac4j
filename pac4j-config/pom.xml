@@ -13,7 +13,7 @@
     <name>pac4j configuration</name>
 
     <properties>
-        <hikaricp.version>2.7.6</hikaricp.version>
+        <hikaricp.version>3.3.1</hikaricp.version>
     </properties>
 
     <dependencies>

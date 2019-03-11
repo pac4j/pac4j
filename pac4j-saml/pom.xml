@@ -13,8 +13,8 @@
     <name>pac4j for SAML protocol</name>
 
     <properties>
-        <opensaml.version>3.4.0</opensaml.version>
-        <joda-time.version>2.9.9</joda-time.version>
+        <opensaml.version>3.4.2</opensaml.version>
+        <joda-time.version>2.10.1</joda-time.version>
         <velocity.version>1.7</velocity.version>
         <xmlsectool.version>2.0.0</xmlsectool.version>
         <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
@@ -23,7 +23,7 @@
         <cryptacular.version>1.2.1</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
         <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
-        <httpcore.version>4.4.8</httpcore.version>
+        <httpcore.version>4.4.11</httpcore.version>
     </properties>
 
     <dependencies>
