@@ -7,7 +7,7 @@ title: Release notes&#58;
 
 - Improved the profile manager configuration
 - Renamed `J2E` components as `JEE`
-- Updated the OpenID Connect/JWT dependencies
+- Updated all dependencies
 - A client can return any kind of profile (using a custom `AuthorizationGenerator` or `ProfileCreator`) and even a minimal user profile (`UserProfile`)
 - Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. They are only applied to the web context by the appropriate `HttpActionAdapter`. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`. The `setResponseStatus` and `writeResponseContent` methods have been removed from the `WebContext` interface
 - Use the 303 "See Other" HTTP action instead of the 302 "Found" HTTP action for any redirection after a POST request in the `DefaultCallbackLogic`
