@@ -67,6 +67,8 @@ public class CasConfiguration extends InitializableObject {
     /* Map containing user defined parameters */
     private Map<String, String> customParams = new HashMap<>();
 
+    private String method;
+
     public CasConfiguration() {}
 
     public CasConfiguration(final String loginUrl) {
@@ -361,13 +363,22 @@ public class CasConfiguration extends InitializableObject {
     public void addCustomParam(final String name, final String value) {
         this.customParams.put(name, value);
     }
-    
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(final String method) {
+        this.method = method;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
                 "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
-                this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver);
+                this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver,
+                "method", this.method);
     }
 }

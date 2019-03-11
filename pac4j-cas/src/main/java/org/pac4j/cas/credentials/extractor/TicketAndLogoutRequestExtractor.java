@@ -1,8 +1,11 @@
 package org.pac4j.cas.credentials.extractor;
 
 import java.util.Base64;
+
+import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
@@ -42,7 +45,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
-            final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
+            final String ticket = getArtifactParameter(context);
             logoutHandler.recordSession(context, ticket);
             final TokenCredentials casCredentials = new TokenCredentials(ticket);
             logger.debug("casCredentials: {}", casCredentials);
@@ -75,8 +78,15 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
     }
 
     protected boolean isTokenRequest(final WebContext context) {
-        return ContextHelper.isGet(context)
-                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.TICKET_PARAMETER));
+        return CommonHelper.isNotBlank(getArtifactParameter(context));
+    }
+
+    protected String getArtifactParameter(final WebContext context) {
+        if (configuration.getProtocol() == CasProtocol.SAML) {
+            return context.getRequestParameter(Protocol.SAML11.getArtifactParameterName());
+        } else {
+            return context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
+        }
     }
 
     protected boolean isBackLogoutRequest(final WebContext context) {
