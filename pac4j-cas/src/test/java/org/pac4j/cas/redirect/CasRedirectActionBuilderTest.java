@@ -11,7 +11,8 @@ import org.pac4j.core.util.TestsConstants;
 import static org.junit.Assert.*;
 
 /**
- * Tests
+ * Tests {@link CasRedirectActionBuilder}.
+ *
  * @author Jerome LELEU
  * @since 3.7.0
  */
