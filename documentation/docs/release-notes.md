@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v3.7.0**:
 
 - Fix SAML SP metadata signature
+- CAS improvements: better service requests detection, support of the CAS server `method` parameter
 
 **v3.6.1**:
 
