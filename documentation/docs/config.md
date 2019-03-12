@@ -109,6 +109,7 @@ Here are the properties you can use to define the clients (, password encoders a
 | `linkedin.id`, `linkedin.secret`, `linkedin.fields`, `linkedin.scope` | To define a `LinkedIn2Client` based on the provided properties |
 | `foursquare.id`, `foursquare.secret` | To define a `FoursquareClient` based on the provided properties |
 | `google.id`, `google.secret`, `google.scope` | To define a `Google2Client` based on the provided properties |
+| `oauth2.id`, `oauth2.secret`, `oauth2.authUrl`, `oauth2.tokenUrl`, `oauth2.profileUrl`, `oauth2.profilePath`, `oauth2.profileId`, `oauth2.scope`, `oauth2.withState`, `oauth2.clientAuthenticationMethod` |  To define a `GenericOAuth20Client` based on the provided properties |
 {:.striped}
 
 <p />
