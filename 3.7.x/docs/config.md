@@ -98,7 +98,7 @@ Here are the properties you can use to define the clients (, password encoders a
 | `saml.keystorePassword`, `saml.privateKeyPassword`, `saml.keystorePath`, `saml.identityProviderMetadataPath`, `saml.maximumAuthenticationLifetime`, `saml.serviceProviderEntityId`, `saml.serviceProviderMetadataPath`, `saml.destinationBindingType`, `saml.keystoreAlias` | To define a `SAML2Client` based on the provided properties |
 | `cas.loginUrl`, `cas.protocol` | To define a `CasClient` based on the provided properties |
 | `oidc.type` (`google` or `azure`), `oidc.azure.tenant` (for the AzureAD tenant), `oidc.id`, `oidc.secret`, `oidc.scope`, `oidc.discoveryUri`, `oidc.useNonce`, `oidc.preferredJwsAlgorithm`, `oidc.maxClockSkew`, `oidc.clientAuthenticationMethod`, `oidc.customParamKey1`, `oidc.customParamValue1`, `oidc.customParamKey2`,`oidc.customParamValue2` | To define an OpenID connect client based on the provided properties |
-| `formClient.authenticator`, `formClient.loginUrl`, `formClient.usernameParameter` `formClient.passwordParameter` | To define a `FormClient` based on the provided properties |
+| `formClient.authenticator`, `formClient.loginUrl`, `formClient.usernameParameter`, `formClient.passwordParameter` | To define a `FormClient` based on the provided properties |
 | `indirectBasicAuth.authenticator`, `indirectBasicAuth.realName` | To define an `IndirectBasicAuthClient` based on the provided properties |
 | `facebook.id`, `facebook.secret`, `facebook.scope`, `facebook.fields` | To define a `FacebookClient` based on the provided properties |
 | `twitter.id`, `twitter.secret` | To define a `TwitterClient` based on the provided properties |
@@ -109,6 +109,7 @@ Here are the properties you can use to define the clients (, password encoders a
 | `linkedin.id`, `linkedin.secret`, `linkedin.fields`, `linkedin.scope` | To define a `LinkedIn2Client` based on the provided properties |
 | `foursquare.id`, `foursquare.secret` | To define a `FoursquareClient` based on the provided properties |
 | `google.id`, `google.secret`, `google.scope` | To define a `Google2Client` based on the provided properties |
+| `oauth2.id`, `oauth2.secret`, `oauth2.authUrl`, `oauth2.tokenUrl`, `oauth2.profileUrl`, `oauth2.profilePath`, `oauth2.profileId`, `oauth2.scope`, `oauth2.withState`, `oauth2.clientAuthenticationMethod` |  To define a `GenericOAuth20Client` based on the provided properties |
 {:.striped}
 
 <p />
