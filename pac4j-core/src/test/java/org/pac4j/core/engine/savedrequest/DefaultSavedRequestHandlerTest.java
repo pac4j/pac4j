@@ -1,5 +1,6 @@
 package org.pac4j.core.engine.savedrequest;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
@@ -28,6 +29,11 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         "</html>\n";
 
     private DefaultSavedRequestHandler handler = new DefaultSavedRequestHandler();
+
+    @BeforeClass
+    public static void beforeClass() {
+        RedirectionActionHelper.setUseModernHttpCodes(true);
+    }
 
     @Test
     public void testSaveGet() {
