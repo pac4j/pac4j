@@ -1,6 +1,6 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.oauth.profile.strava.StravaProfileDefinition;
 import org.pac4j.scribe.builder.api.StravaApi20;
 
@@ -38,7 +38,8 @@ public class StravaClient extends OAuth20Client {
     protected void clientInit() {
         configuration.setApi(new StravaApi20(approvalPrompt));
         configuration.setProfileDefinition(new StravaProfileDefinition());
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction("https://www.strava.com/session")));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.strava.com/session")));
 
         super.clientInit();
     }

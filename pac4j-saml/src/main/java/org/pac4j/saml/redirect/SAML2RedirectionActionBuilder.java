@@ -3,9 +3,8 @@ package org.pac4j.saml.redirect;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
@@ -47,9 +46,9 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
         if (this.client.getConfiguration().getAuthnRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
             final String content = adapter.getOutgoingContent();
-            return Optional.of(new OkAction(content));
+            return Optional.of(RedirectionActionHelper.buildFormPostContentAction(wc, content));
         }
         final String location = adapter.getRedirectUrl();
-        return Optional.of(new FoundAction(location));
+        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(wc, location));
     }
 }
