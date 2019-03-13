@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.profile.UserProfile;
 
 /**
@@ -23,7 +23,7 @@ public abstract class AbstractCheckAuthenticationAuthorizer<U extends UserProfil
     @Override
     protected boolean handleError(final WebContext context) {
         if (this.redirectionUrl != null) {
-            throw new FoundAction(this.redirectionUrl);
+            throw RedirectionActionHelper.buildRedirectUrlAction(context, this.redirectionUrl);
         } else {
             return false;
         }

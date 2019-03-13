@@ -1,7 +1,7 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.HiOrgServerApi20;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerConfiguration;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
@@ -44,7 +44,8 @@ public class HiOrgServerClient extends OAuth20Client {
             }
         });
         configuration.setWithState(true);
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction(LOGOUT_URL)));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, LOGOUT_URL)));
 
         super.clientInit();
     }

@@ -1,7 +1,7 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.LinkedInApi20;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
@@ -51,7 +51,8 @@ public class LinkedIn2Client extends OAuth20Client {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional.of(new FoundAction("https://www.linkedin.com/uas/logout")));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.linkedin.com/uas/logout")));
 
         super.clientInit();
     }

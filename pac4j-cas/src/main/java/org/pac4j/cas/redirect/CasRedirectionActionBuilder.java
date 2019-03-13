@@ -6,8 +6,8 @@ import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
         final String redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, configuration.isRenew(), configuration.isGateway());
         logger.debug("redirectionUrl: {}", redirectionUrl);
-        return Optional.of(new FoundAction(redirectionUrl));
+        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, redirectionUrl));
     }
 
     private String getServiceParameter() {

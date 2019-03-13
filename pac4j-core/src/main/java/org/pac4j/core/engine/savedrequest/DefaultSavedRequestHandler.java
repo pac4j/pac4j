@@ -7,7 +7,6 @@ import org.pac4j.core.exception.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -25,9 +24,8 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         final String requestedUrl = context.getFullRequestURL();
         if (ContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
-            final Map<String, String[]> parameters = context.getRequestParameters();
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL,
-                OkAction.buildFormContentFromUrlAndData(requestedUrl, parameters));
+            final String formPost = RedirectionActionHelper.buildFormPostContent(context);
+            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(requestedUrl));
@@ -55,14 +53,10 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         }
 
         LOGGER.debug("requestedAction: {}", requestedAction.getMessage());
-        if (ContextHelper.isPost(context)) {
-            if (requestedAction instanceof FoundAction) {
-                return new SeeOtherAction(((FoundAction) requestedAction).getLocation());
-            } else {
-                return new TemporaryRedirectAction(((OkAction) requestedAction).getContent());
-            }
+        if (requestedAction instanceof FoundAction) {
+            return RedirectionActionHelper.buildRedirectUrlAction(context, ((FoundAction) requestedAction).getLocation());
         } else {
-            return requestedAction;
+            return RedirectionActionHelper.buildFormPostContentAction(context, ((OkAction) requestedAction).getContent());
         }
     }
 }
