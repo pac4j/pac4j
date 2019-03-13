@@ -4,9 +4,9 @@ import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.OidcClient;
@@ -80,7 +80,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         final String location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
-        return Optional.of(new FoundAction(location));
+        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, location));
     }
 
     protected Map<String, String> buildParams() {

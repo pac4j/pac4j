@@ -33,8 +33,8 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         String url = null;
         if (addRedirectionUrlAsHeader) {
             final RedirectionAction action = redirectionActionBuilder.redirect(context).orElse(null);
-            if (action instanceof FoundAction) {
-                url = ((FoundAction) action).getLocation();
+            if (action instanceof WithLocationAction) {
+                url = ((WithLocationAction) action).getLocation();
             }
         }
 
@@ -53,7 +53,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         }
         buffer.append("</partial-response>");
 
-        return new OkAction(buffer.toString());
+        return RedirectionActionHelper.buildFormPostContentAction(context, buffer.toString());
     }
 
     public boolean isAddRedirectionUrlAsHeader() {

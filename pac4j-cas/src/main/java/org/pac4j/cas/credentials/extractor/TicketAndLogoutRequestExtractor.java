@@ -7,7 +7,7 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.exception.http.NoContentAction;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
@@ -147,7 +147,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             buffer.append(CommonUtils.urlEncode(relayStateValue.get()));
             final String redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
-            throw new FoundAction(redirectUrl);
+            throw RedirectionActionHelper.buildRedirectUrlAction(context, redirectUrl);
         }
     }
 }

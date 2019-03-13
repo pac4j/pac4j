@@ -4,9 +4,9 @@ import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -51,7 +51,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             final OAuth20Service service = this.configuration.buildService(context, client, state);
             final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return Optional.of(new FoundAction(authorizationUrl));
+            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

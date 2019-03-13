@@ -8,7 +8,7 @@ import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
@@ -64,7 +64,7 @@ public class YahooRedirectionActionBuilder implements RedirectionActionBuilder {
 
             final String redirectionUrl = authRequest.getDestinationUrl(true);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return Optional.of(new FoundAction(redirectionUrl));
+            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, redirectionUrl));
         } catch (final OpenIDException e) {
             throw new TechnicalException("OpenID exception", e);
         }
