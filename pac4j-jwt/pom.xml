@@ -52,6 +52,11 @@
             <artifactId>pac4j-oauth</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-cas</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- for testing -->
     </dependencies>
 
