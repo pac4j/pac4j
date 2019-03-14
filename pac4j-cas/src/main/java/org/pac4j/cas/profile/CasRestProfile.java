@@ -12,29 +12,28 @@ import org.pac4j.core.profile.CommonProfile;
 public final class CasRestProfile extends CommonProfile {
 
     private static final long serialVersionUID = -1688563185891330018L;
-
-    private String ticketGrantingTicketId;
+    private static final String TGT_KEY = "$tgt_key";
 
     public CasRestProfile() { }
 
     public CasRestProfile(final String ticketGrantingTicketId, final String userName) {
         super();
-        this.ticketGrantingTicketId = ticketGrantingTicketId;
+        addAttribute(TGT_KEY, ticketGrantingTicketId);
         setId(userName);
     }
 
     public String getTicketGrantingTicketId() {
-        return ticketGrantingTicketId;
+        return (String) getAttribute(TGT_KEY);
     }
 
     @Override
     public void clearSensitiveData() {
-        this.ticketGrantingTicketId = null;
+        removeAttribute(TGT_KEY);
     }
 
     @Override
     public int hashCode() {
-        return this.ticketGrantingTicketId.hashCode();
+        return getTicketGrantingTicketId().hashCode();
     }
 
     @Override
@@ -48,6 +47,6 @@ public final class CasRestProfile extends CommonProfile {
         }
 
         return obj == this ||
-                this.ticketGrantingTicketId.equals(((CasRestProfile)obj).ticketGrantingTicketId);
+            getTicketGrantingTicketId().equals(((CasRestProfile)obj).getTicketGrantingTicketId());
     }
 }
