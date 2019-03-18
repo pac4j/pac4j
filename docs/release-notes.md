@@ -18,6 +18,7 @@ title: Release notes&#58;
 - Updated the APIs to use `Optional` instead of returning `null`
 - Use the 303 "See Other" and 307 "Temporary Redirect" HTTP actions after a POST request (`RedirectionActionHelper`)
 - Handles originally requested URLs with POST method
+- Add HTTP POST Simple-Sign protocol implementation
 
 **v3.7.0**:
 
