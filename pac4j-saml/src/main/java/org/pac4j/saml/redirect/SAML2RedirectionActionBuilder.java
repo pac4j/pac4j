@@ -44,7 +44,10 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         this.client.getProfileHandler().send(context, authnRequest, relayState);
 
         final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
-        if (this.client.getConfiguration().getAuthnRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+
+        final String bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
+        if (SAMLConstants.SAML2_POST_BINDING_URI.equalsIgnoreCase(bindingType) ||
+            SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equalsIgnoreCase(bindingType)) {
             final String content = adapter.getOutgoingContent();
             return Optional.of(RedirectionActionHelper.buildFormPostContentAction(wc, content));
         }

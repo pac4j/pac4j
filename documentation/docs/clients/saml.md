@@ -95,6 +95,7 @@ You can define the binding type for the authentication request via the `setAuthn
 ```java
 cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
 // or cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+// or cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI);
 ```
 
 Notice that the SP metadata will define the POST binding for the authentication response and for the IdP logout request.

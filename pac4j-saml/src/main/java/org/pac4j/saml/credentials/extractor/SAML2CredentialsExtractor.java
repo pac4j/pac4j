@@ -51,7 +51,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
 
     @Override
     public Optional<SAML2Credentials> extract(final WebContext context) {
-        final boolean logoutEndpoint = context.getRequestParameter(SAML2ServiceProviderMetadataResolver.LOGOUT_ENDPOINT_PARAMETER) != null;
+        final boolean logoutEndpoint = context.getRequestParameter(SAML2ServiceProviderMetadataResolver.LOGOUT_ENDPOINT_PARAMETER)
+            .isPresent();
         final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
         if (logoutEndpoint) {
             // SAML logout request/response
