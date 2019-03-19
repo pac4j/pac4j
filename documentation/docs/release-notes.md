@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Fix SAML SP metadata signature
 - CAS improvements: better service requests detection, support of the CAS server `method` parameter
 - Fix the `CasRestProfile` with JWT
+- Add HTTP POST Simple-Sign protocol implementation
 
 **v3.6.1**:
 
