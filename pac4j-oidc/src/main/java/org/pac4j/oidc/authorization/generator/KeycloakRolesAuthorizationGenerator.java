@@ -47,11 +47,14 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                 }
 
                 if (clientId != null) {
-                    final JSONObject clientRolesJsonObject = (JSONObject) jwtClaimsSet.getJSONObjectClaim("resource_access").get(clientId);
-                    if (clientRolesJsonObject != null) {
-                        final JSONArray vmsRolesJsonArray = (JSONArray) clientRolesJsonObject.get("roles");
-                        if (vmsRolesJsonArray != null) {
-                            vmsRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                    JSONObject resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
+                    if (resourceAccess != null) {
+                        final JSONObject clientRolesJsonObject = (JSONObject) resourceAccess.get(clientId);
+                        if (clientRolesJsonObject != null) {
+                            final JSONArray clientRolesJsonArray = (JSONArray) clientRolesJsonObject.get("roles");
+                            if (clientRolesJsonArray != null) {
+                                clientRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                            }
                         }
                     }
                 }
