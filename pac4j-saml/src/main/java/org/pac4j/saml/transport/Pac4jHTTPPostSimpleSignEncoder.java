@@ -18,7 +18,7 @@ import java.net.URI;
  * Pac4j implementation for HTTP Post Simple-Sign extending openSAML {@link HTTPPostSimpleSignEncoder}.
  *
  * @author Vincent Marmin
- * @since 4.0.0
+ * @since 3.7.0
  */
 public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
     private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostSimpleSignEncoder.class);
