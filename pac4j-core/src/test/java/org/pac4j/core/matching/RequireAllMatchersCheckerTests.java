@@ -1,6 +1,7 @@
 package org.pac4j.core.matching;
 
 import org.junit.Test;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -52,7 +53,7 @@ public final class RequireAllMatchersCheckerTests implements TestsConstants {
     @Test
     public void testNoExistingMatcher()  {
         TestsHelper.expectException(() -> checker.matches(null, NAME, new HashMap<>()), TechnicalException.class,
-            "matchersMap['" + NAME + "'] cannot be null");
+            "allMatchers['" + NAME + "'] cannot be null");
     }
 
     @Test
@@ -90,5 +91,37 @@ public final class RequireAllMatchersCheckerTests implements TestsConstants {
         matchers.put(NAME, new NullContextMatcher());
         matchers.put(VALUE, new AlwaysFalseMatcher());
         assertFalse(checker.matches(MockWebContext.create(), NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, matchers));
+    }
+
+
+    @Test
+    public void testDefaultGetMatcher() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        assertTrue(checker.matches(MockWebContext.create(), "get", matchers));
+    }
+
+    @Test
+    public void testGetMatcherDefinedAsPost() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        matchers.put("get", new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST));
+        assertTrue(checker.matches(MockWebContext.create().setRequestMethod("post"), "get", matchers));
+    }
+
+    @Test
+    public void testDefaultPostMatcher() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        assertTrue(checker.matches(MockWebContext.create().setRequestMethod("post"), "post", matchers));
+    }
+
+    @Test
+    public void testDefaultPutMatcher() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        assertTrue(checker.matches(MockWebContext.create().setRequestMethod("put"), "put", matchers));
+    }
+
+    @Test
+    public void testDefaultDeleteMatcher() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        assertTrue(checker.matches(MockWebContext.create().setRequestMethod("delete"), "delete", matchers));
     }
 }
