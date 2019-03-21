@@ -9,6 +9,7 @@ title: Release notes&#58;
 - CAS improvements: better service requests detection, support of the CAS server `method` parameter
 - Fix the `CasRestProfile` with JWT
 - Add HTTP POST Simple-Sign protocol implementation
+- Add the `get`, `post`, `put` and `delete` matchers based on the `HttpMethodMatcher` when not defined
 
 **v3.6.1**:
 
