@@ -21,7 +21,6 @@ import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
-import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
@@ -57,8 +56,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
 
     private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
-
-    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
@@ -152,7 +149,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 } else {
                     if (startAuthentication(context, currentClients)) {
                         logger.debug("Starting authentication");
-                        saveRequestedUrl(context, currentClients);
+                        saveRequestedUrl(context, currentClients, config.getClients().getAjaxRequestResolver());
                         action = redirectToIdentityProvider(context, currentClients);
                     } else {
                         logger.debug("unauthorized");
@@ -204,7 +201,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param context the web context
      * @param currentClients the current clients
      */
-    protected void saveRequestedUrl(final C context, final List<Client> currentClients) {
+    protected void saveRequestedUrl(final C context, final List<Client> currentClients, AjaxRequestResolver ajaxRequestResolver) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
             savedRequestHandler.save(context);
         }
@@ -265,14 +262,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.profileStorageDecision = profileStorageDecision;
     }
 
-    public AjaxRequestResolver getAjaxRequestResolver() {
-        return ajaxRequestResolver;
-    }
-
-    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
-        this.ajaxRequestResolver = ajaxRequestResolver;
-    }
-
     public SavedRequestHandler getSavedRequestHandler() {
         return savedRequestHandler;
     }
@@ -285,6 +274,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
             "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
-            "errorUrl", getErrorUrl(), "ajaxRequestResolver", this.ajaxRequestResolver, "savedRequestHandler", savedRequestHandler);
+            "errorUrl", getErrorUrl(), "savedRequestHandler", savedRequestHandler);
     }
 }
