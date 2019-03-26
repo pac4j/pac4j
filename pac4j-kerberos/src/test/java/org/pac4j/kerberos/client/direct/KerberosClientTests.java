@@ -73,6 +73,16 @@ public class KerberosClientTests implements TestsConstants {
     }
 
     @Test
+    public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
+        KerberosCredentials credentials = client.getCredentials(new J2EContext(request, response));
+        assertNull(credentials);
+        verify(response).setHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
+    }
+
+    @Test
     public void testAuthentication() {
         when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null, null, null));
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
