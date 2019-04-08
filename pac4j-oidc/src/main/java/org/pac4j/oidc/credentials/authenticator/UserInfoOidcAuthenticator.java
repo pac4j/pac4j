@@ -11,6 +11,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
@@ -33,19 +34,27 @@ import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
  * @author Rakesh Sarangi
  * @since 3.5.0
  */
-public class UserInfoOidcAuthenticator implements Authenticator<TokenCredentials> {
+public class UserInfoOidcAuthenticator extends InitializableObject implements Authenticator<TokenCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(UserInfoOidcAuthenticator.class);
 
     private OidcConfiguration configuration;
 
-    public UserInfoOidcAuthenticator(OidcConfiguration configuration) {
-        CommonHelper.assertNotNull("configuration", configuration);
+    public UserInfoOidcAuthenticator() {}
+
+    public UserInfoOidcAuthenticator(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }
 
     @Override
+    protected void internalInit() {
+        CommonHelper.assertNotNull("configuration", configuration);
+    }
+
+    @Override
     public void validate(TokenCredentials credentials, WebContext context) {
+        init();
+
         final OidcProfileDefinition profileDefinition = new OidcProfileDefinition();
         final OidcProfile profile = (OidcProfile) profileDefinition.newProfile();
         final BearerAccessToken accessToken = new BearerAccessToken(credentials.getToken());
@@ -87,5 +96,13 @@ public class UserInfoOidcAuthenticator implements Authenticator<TokenCredentials
         } catch (IOException | ParseException | java.text.ParseException | AuthenticationException e) {
             throw new TechnicalException(e);
         }
+    }
+
+    public OidcConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(final OidcConfiguration configuration) {
+        this.configuration = configuration;
     }
 }
