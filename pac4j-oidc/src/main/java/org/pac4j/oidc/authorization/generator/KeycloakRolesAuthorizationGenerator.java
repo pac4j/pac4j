@@ -24,7 +24,9 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakRolesAuthorizationGenerator.class);
 
-    private final String clientId;
+    private String clientId;
+
+    public KeycloakRolesAuthorizationGenerator() {}
 
     public KeycloakRolesAuthorizationGenerator(final String clientId) {
         this.clientId = clientId;
@@ -64,5 +66,13 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
         }
 
         return Optional.of(profile);
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(final String clientId) {
+        this.clientId = clientId;
     }
 }
