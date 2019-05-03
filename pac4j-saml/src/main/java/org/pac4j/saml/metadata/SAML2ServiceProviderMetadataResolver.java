@@ -77,7 +77,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    private MetadataResolver prepareServiceProviderMetadata() {
+    protected MetadataResolver prepareServiceProviderMetadata() {
         try {
             final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
             metadataGenerator.setWantAssertionSigned(configuration.isWantsAssertionsSigned());
