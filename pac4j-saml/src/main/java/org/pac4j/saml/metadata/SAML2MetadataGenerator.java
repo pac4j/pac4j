@@ -108,14 +108,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     @Override
-    public final String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
+    public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
         final Element entityDescriptorElement = this.marshallerFactory
             .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME).marshall(entityDescriptor);
         return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
     @Override
-    public final EntityDescriptor buildEntityDescriptor() {
+    public EntityDescriptor buildEntityDescriptor() {
         final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>)
             this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
         final EntityDescriptor descriptor = builder.buildObject();
@@ -127,7 +127,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return descriptor;
     }
 
-    protected final Extensions generateMetadataExtensions() {
+    protected Extensions generateMetadataExtensions() {
         final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
@@ -159,7 +159,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return extensions;
     }
 
-    protected final SPSSODescriptor buildSPSSODescriptor() {
+    protected SPSSODescriptor buildSPSSODescriptor() {
         final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>)
             this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         final SPSSODescriptor spDescriptor = builder.buildObject();
