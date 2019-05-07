@@ -13,6 +13,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 &bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j) 
 &bull; [Play 2.x](https://github.com/pac4j/play-pac4j)
+&bull; [akka-http](https://github.com/StackVista/akka-http-pac4j)
 
 [Vertx](https://github.com/pac4j/vertx-pac4j)
 &bull; [Spark Java](https://github.com/pac4j/spark-pac4j)
