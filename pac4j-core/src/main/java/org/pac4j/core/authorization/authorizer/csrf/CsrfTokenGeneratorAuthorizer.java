@@ -27,6 +27,8 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
 
     private Boolean secure;
 
+    private Integer maxAge;
+
     public CsrfTokenGeneratorAuthorizer(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;
     }
@@ -50,6 +52,9 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
         }
         if (secure != null) {
             cookie.setSecure(secure.booleanValue());
+        }
+        if (maxAge != null) {
+            cookie.setMaxAge(maxAge.intValue());
         }
         context.addResponseCookie(cookie);
         return true;
@@ -93,6 +98,14 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
 
     public void setSecure(final Boolean secure) {
         this.secure = secure;
+    }
+
+    public Integer getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(Integer maxAge) {
+        this.maxAge = maxAge;
     }
 
     @Override
