@@ -111,6 +111,6 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "csrfTokenGenerator", csrfTokenGenerator, "domain", domain, "path", path,
-            "httpOnly", httpOnly, "secure", secure);
+            "httpOnly", httpOnly, "secure", secure, "maxAge", maxAge);
     }
 }
