@@ -3,10 +3,7 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * <p>Generate the authorization information by inspecting attributes.</p>
@@ -48,10 +45,10 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
-        return profile;
+        return Optional.of(profile);
     }
 
     private void generateAuth(final UserProfile profile, final Iterable<String> attributes, final boolean isRole) {

@@ -13,11 +13,13 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.TBSCertificate;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
-import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
@@ -26,8 +28,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
-import org.pac4j.saml.storage.EmptyStorageFactory;
-import org.pac4j.saml.storage.SAMLMessageStorageFactory;
+import org.pac4j.saml.store.EmptyStoreFactory;
+import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -35,12 +37,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
-import sun.security.provider.X509Factory;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -105,7 +103,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
-    private String authnContextClassRef = null;
+    private List<String> authnContextClassRefs = null;
 
     private String nameIdPolicyFormat = null;
 
@@ -119,7 +117,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private boolean forceKeystoreGeneration;
 
-    private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
+    private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
 
     private boolean authnRequestSigned;
 
@@ -439,12 +437,12 @@ public class SAML2Configuration extends InitializableObject {
         this.spLogoutResponseBindingType = spLogoutResponseBindingType;
     }
 
-    public String getAuthnContextClassRef() {
-        return authnContextClassRef;
+    public List<String> getAuthnContextClassRefs() {
+        return authnContextClassRefs;
     }
 
-    public void setAuthnContextClassRef(final String authnContextClassRef) {
-        this.authnContextClassRef = authnContextClassRef;
+    public void setAuthnContextClassRefs(final List<String> authnContextClassRefs) {
+        this.authnContextClassRefs = authnContextClassRefs;
     }
 
     public String getNameIdPolicyFormat() {
@@ -467,12 +465,12 @@ public class SAML2Configuration extends InitializableObject {
         return forceServiceProviderMetadataGeneration;
     }
 
-    public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
-        return samlMessageStorageFactory;
+    public SAMLMessageStoreFactory getSamlMessageStoreFactory() {
+        return samlMessageStoreFactory;
     }
 
-    public void setSamlMessageStorageFactory(final SAMLMessageStorageFactory samlMessageStorageFactory) {
-        this.samlMessageStorageFactory = samlMessageStorageFactory;
+    public void setSamlMessageStoreFactory(final SAMLMessageStoreFactory samlMessageStoreFactory) {
+        this.samlMessageStoreFactory = samlMessageStoreFactory;
     }
 
     public Collection<String> getBlackListedSignatureSigningAlgorithms() {
@@ -744,13 +742,9 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        final Base64 encoder = new Base64();
-        try (final FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(X509Factory.BEGIN_CERT.getBytes(StandardCharsets.UTF_8));
-            fos.write("\n".getBytes(StandardCharsets.UTF_8));
-            encoder.encode(certificate, fos);
-            fos.write(X509Factory.END_CERT.getBytes(StandardCharsets.UTF_8));
-            fos.flush();
+        try (final PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+            final PemObject pemObject = new PemObject(file.getName(), certificate);
+            pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -774,7 +768,7 @@ public class SAML2Configuration extends InitializableObject {
             this.signatureReferenceDigestMethods = new ArrayList<>(
                 config.getSignatureReferenceDigestMethods());
             this.signatureReferenceDigestMethods
-                .remove("http://www.w3.org/2001/04/xmlenc#sha512");
+                .remove(SignatureConstants.ALGO_ID_DIGEST_SHA512);
             LOGGER.info("Bootstrapped Signature Reference Digest Methods");
         }
         if (this.signatureCanonicalizationAlgorithm == null) {

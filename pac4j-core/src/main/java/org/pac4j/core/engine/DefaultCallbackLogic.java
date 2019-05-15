@@ -7,19 +7,19 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
+import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.SeeOtherAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -34,6 +34,8 @@ import static org.pac4j.core.util.CommonHelper.*;
 public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements CallbackLogic<R, C> {
 
     private ClientFinder clientFinder = new DefaultCallbackClientFinder();
+
+    private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
@@ -89,12 +91,18 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             logger.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            final Credentials credentials = foundClient.getCredentials(context);
+            final Optional<Credentials> credentials = foundClient.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            final UserProfile profile = foundClient.getUserProfile(credentials, context);
-            logger.debug("profile: {}", profile);
-            saveUserProfile(context, config, profile, saveInSession, multiProfile, renewSession);
+            if (credentials.isPresent()) {
+                final Optional<UserProfile> profile = foundClient.getUserProfile(credentials.get(), context);
+                logger.debug("profile: {}", profile);
+
+                if (profile.isPresent()) {
+                    saveUserProfile(context, config, profile.get(), saveInSession, multiProfile, renewSession);
+                }
+            }
+
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
 
         } catch (final RuntimeException e) {
@@ -140,18 +148,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
-        final String requestedUrl = (String) context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
-        String redirectUrl = defaultUrl;
-        if (isNotBlank(requestedUrl)) {
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, null);
-            redirectUrl = requestedUrl;
-        }
-        logger.debug("redirectUrl: {}", redirectUrl);
-        if (ContextHelper.isPost(context)) {
-            return new SeeOtherAction(redirectUrl);
-        } else {
-            return new FoundAction(redirectUrl);
-        }
+        return savedRequestHandler.restore(context, defaultUrl);
     }
 
     public ClientFinder getClientFinder() {
@@ -162,8 +159,17 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
         this.clientFinder = clientFinder;
     }
 
+    public SavedRequestHandler getSavedRequestHandler() {
+        return savedRequestHandler;
+    }
+
+    public void setSavedRequestHandler(final SavedRequestHandler savedRequestHandler) {
+        this.savedRequestHandler = savedRequestHandler;
+    }
+
     @Override
     public String toString() {
-        return toNiceString(this.getClass(), "clientFinder", clientFinder, "errorUrl", getErrorUrl());
+        return toNiceString(this.getClass(), "clientFinder", clientFinder, "errorUrl", getErrorUrl(),
+            "savedRequestHandler", savedRequestHandler);
     }
 }

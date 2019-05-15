@@ -28,7 +28,7 @@ Understand the main features:
 - [Profile definition](#4-profile-definition)
 - [AJAX requests](#5-ajax-requests)
 - [The `Client` methods](#6-the-client-methods)
-
+- [Originally requested URLs](#7-originally-requested-urls)
 
 ---
 
@@ -150,6 +150,8 @@ Though, if the incoming HTTP request is an AJAX one, no redirection will be perf
 
 The HTTP request is considered to be an AJAX one if the value of the `X-Requested-With` header is `XMLHttpRequest` or if the `is_ajax_request` parameter or header is `true`. This is the behaviour of the [`DefaultAjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/ajax/DefaultAjaxRequestResolver.java).
 
+The `DefaultAjaxRequestResolver` will only compute the redirection URL and add it as a header if the `addRedirectionUrlAsHeader` property is set to `true`.
+
 But you can provide your own [`AjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/ajax/AjaxRequestResolver.java) with: `client.setAjaxRequestResolver(myAjaxRequestResolver);`.
 
 
@@ -168,3 +170,13 @@ The `Client` interface has the following methods:
 {:.striped}
 
 Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder` and `Authenticator`, except for HTTP clients where the `Authenticator` must be defined. Sub-components can of course be changed for various [customizations](customizations.html).
+
+
+---
+
+## 7) Originally requested URLs
+
+An originally requested URL is the URL called before the authenticated process starts: it is restored from the callback URL after the login process has been completed.
+
+It is handled in the `DefaultSecurityLogic` and in the `CallbackSecurityLogic` by the `SavedRequestHandler` component.
+By default, it's a `DefaultSavedRequestHandler` which handles GET and POST requests.

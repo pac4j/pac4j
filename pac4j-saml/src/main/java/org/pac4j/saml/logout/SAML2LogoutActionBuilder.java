@@ -3,9 +3,8 @@ package org.pac4j.saml.logout;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.profile.UserProfile;
@@ -18,6 +17,8 @@ import org.pac4j.saml.logout.impl.SAML2LogoutRequestBuilder;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
+
+import java.util.Optional;
 
 /**
  * Logout action builder for SAML 2.
@@ -49,7 +50,8 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public RedirectionAction getLogoutAction(final WebContext context, final UserProfile currentProfile, final String targetUrl) {
+    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
+                                                       final String targetUrl) {
         if (currentProfile instanceof SAML2Profile) {
             final SAML2Profile saml2Profile = (SAML2Profile) currentProfile;
             final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
@@ -64,12 +66,12 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
                 final String content = adapter.getOutgoingContent();
-                return new OkAction(content);
+                return Optional.of(RedirectionActionHelper.buildFormPostContentAction(context, content));
             }
             final String location = adapter.getRedirectUrl();
-            return new FoundAction(location);
+            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, location));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 }

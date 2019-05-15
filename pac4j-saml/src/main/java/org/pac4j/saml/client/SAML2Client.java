@@ -162,7 +162,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(metadataManager,
                 this.idpMetadataResolver, this.spMetadataResolver,
-                this.configuration.getSamlMessageStorageFactory());
+                this.configuration.getSamlMessageStoreFactory());
     }
 
     protected MetadataResolver initServiceProviderMetadataResolver() {
@@ -206,6 +206,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
             throw new TechnicalException("Error initializing manager", e);
         }
         return metadataManager;
+    }
+
+    public void destroy() {
+        ((SAML2ServiceProviderMetadataResolver) spMetadataResolver).destroy();
     }
 
     @Override

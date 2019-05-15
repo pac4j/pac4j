@@ -3,7 +3,7 @@ package org.pac4j.http.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -12,6 +12,8 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
+
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -48,30 +50,31 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     protected void clientInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultRedirectionActionBuilder(webContext ->  new FoundAction(computeFinalCallbackUrl(webContext)));
+        defaultRedirectionActionBuilder(webContext ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
         defaultCredentialsExtractor(new BasicAuthExtractor());
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<UsernamePasswordCredentials> retrieveCredentials(final WebContext context) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
 
-        final UsernamePasswordCredentials credentials;
+        final Optional<UsernamePasswordCredentials> credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("credentials : {}", credentials);
 
-            if (credentials == null) {
+            if (!credentials.isPresent()) {
                 throw UnauthorizedAction.INSTANCE;
             }
 
             // validate credentials
-            getAuthenticator().validate(credentials, context);
+            getAuthenticator().validate(credentials.get(), context);
         } catch (final CredentialsException e) {
             throw UnauthorizedAction.INSTANCE;
         }

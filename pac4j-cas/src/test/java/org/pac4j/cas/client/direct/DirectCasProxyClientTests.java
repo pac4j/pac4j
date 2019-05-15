@@ -62,7 +62,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS20_PROXY);
         final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
-        assertNull(client.getCredentials(MockWebContext.create()));
+        assertFalse(client.getCredentials(MockWebContext.create()).isPresent());
     }
 
     @Test
@@ -80,7 +80,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        final TokenCredentials credentials = client.getCredentials(context);
+        final TokenCredentials credentials = client.getCredentials(context).get();
         assertEquals(TICKET, credentials.getToken());
         final CommonProfile profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);

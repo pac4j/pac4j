@@ -4,6 +4,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -14,23 +15,30 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpConstants, Pac4jConstants {
 
+    private boolean addRedirectionUrlAsHeader = false;
+
     @Override
     public boolean isAjax(final WebContext context) {
-        final boolean xmlHttpRequest = AJAX_HEADER_VALUE.equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME));
-        final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST));
-        final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST));
+        final boolean xmlHttpRequest = AJAX_HEADER_VALUE
+            .equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
+        final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString()
+            .equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
+        final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString()
+            .equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
 
     @Override
-    public HttpAction buildAjaxResponse(final RedirectionAction action, final WebContext context) {
-        if (!(action instanceof FoundAction)) {
-            throw UnauthorizedAction.INSTANCE;
+    public HttpAction buildAjaxResponse(final WebContext context, final RedirectionActionBuilder redirectionActionBuilder) {
+        String url = null;
+        if (addRedirectionUrlAsHeader) {
+            final RedirectionAction action = redirectionActionBuilder.redirect(context).orElse(null);
+            if (action instanceof WithLocationAction) {
+                url = ((WithLocationAction) action).getLocation();
+            }
         }
 
-        final String url = ((FoundAction) action).getLocation();
-
-        if ( CommonHelper.isBlank(context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
+        if (!context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isPresent()) {
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
@@ -40,9 +48,19 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         final StringBuilder buffer = new StringBuilder();
         buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
         buffer.append("<partial-response>");
-        buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");
+        if (CommonHelper.isNotBlank(url)) {
+            buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");
+        }
         buffer.append("</partial-response>");
 
-        return new OkAction(buffer.toString());
+        return RedirectionActionHelper.buildFormPostContentAction(context, buffer.toString());
+    }
+
+    public boolean isAddRedirectionUrlAsHeader() {
+        return addRedirectionUrlAsHeader;
+    }
+
+    public void setAddRedirectionUrlAsHeader(boolean addRedirectionUrlAsHeader) {
+        this.addRedirectionUrlAsHeader = addRedirectionUrlAsHeader;
     }
 }

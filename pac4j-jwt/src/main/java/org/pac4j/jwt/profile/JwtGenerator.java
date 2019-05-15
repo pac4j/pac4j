@@ -8,8 +8,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
@@ -24,8 +22,6 @@ public class JwtGenerator<U extends CommonProfile> {
 
     public static final String INTERNAL_ROLES = "$int_roles";
     public static final String INTERNAL_PERMISSIONS = "$int_perms";
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SignatureConfiguration signatureConfiguration;
 

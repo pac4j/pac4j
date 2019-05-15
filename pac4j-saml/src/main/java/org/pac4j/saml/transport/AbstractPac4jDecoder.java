@@ -1,6 +1,5 @@
 package org.pac4j.saml.transport;
 
-import com.google.common.base.Strings;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.logic.Constraint;
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * Common decoder.
@@ -47,26 +47,27 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
     }
 
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
-        String encodedMessage = null;
+        Optional<String> encodedMessage = Optional.empty();
         for (final String parameter : SAML_PARAMETERS) {
             encodedMessage = this.context.getRequestParameter(parameter);
-            if (CommonHelper.isNotBlank(encodedMessage)) {
+            if (encodedMessage.isPresent()) {
                 break;
             }
         }
-        if (Strings.isNullOrEmpty(encodedMessage)) {
-            encodedMessage = this.context.getRequestContent();
+        if (!encodedMessage.isPresent()) {
+            encodedMessage = Optional.ofNullable(this.context.getRequestContent());
         }
 
-        if (Strings.isNullOrEmpty(encodedMessage)) {
+        if (!encodedMessage.isPresent()) {
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
-            if (encodedMessage.contains("<")) {
+
+            if (encodedMessage.get().contains("<")) {
                 logger.trace("Raw SAML message:\n{}", encodedMessage);
-                return encodedMessage.getBytes(StandardCharsets.UTF_8);
+                return encodedMessage.get().getBytes(StandardCharsets.UTF_8);
             } else {
-                final byte[] decodedBytes = Base64Support.decode(encodedMessage);
+                final byte[] decodedBytes = Base64Support.decode(encodedMessage.get());
                 logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
                 return decodedBytes;
             }

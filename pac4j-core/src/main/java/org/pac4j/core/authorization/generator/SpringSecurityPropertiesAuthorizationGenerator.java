@@ -43,12 +43,12 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
         final String id = profile.getId();
         final List<String> roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {
             profile.addRoles(roles);
         }
-        return profile;
+        return Optional.of(profile);
     }
 }

@@ -11,13 +11,17 @@ import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessag
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.opensaml.saml.saml2.metadata.*;
+import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.Endpoint;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2MessageSender;
-import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
+import org.pac4j.saml.transport.Pac4jHTTPPostSimpleSignEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.pac4j.saml.util.VelocityEngineFactory;
@@ -91,12 +95,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             encoder.prepareContext();
             encoder.encode();
 
-            final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
+            final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
             if (messageStorage != null) {
                 if (request instanceof RequestAbstractType) {
-                    messageStorage.storeMessage(((RequestAbstractType) request).getID(), request);
+                    messageStorage.set(((RequestAbstractType) request).getID(), request);
                 } else if (request instanceof StatusResponseType) {
-                    messageStorage.storeMessage(((StatusResponseType) request).getID(), request);
+                    messageStorage.set(((StatusResponseType) request).getID(), request);
                 }
             }
 
@@ -146,6 +150,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
             final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
             final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(adapter);
+            encoder.setVelocityEngine(velocityEngine);
+            return encoder;
+
+        } else if (SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equals(destinationBindingType)) {
+            final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
+            final Pac4jHTTPPostSimpleSignEncoder encoder = new Pac4jHTTPPostSimpleSignEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
 

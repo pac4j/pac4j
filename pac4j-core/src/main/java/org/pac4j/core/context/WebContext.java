@@ -5,6 +5,7 @@ import org.pac4j.core.exception.TechnicalException;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This interface represents the web context to use HTTP request and session.
@@ -27,7 +28,7 @@ public interface WebContext {
      * @param name name of the parameter
      * @return the request parameter
      */
-    String getRequestParameter(String name);
+    Optional<String> getRequestParameter(String name);
 
     /**
      * Return all request parameters.
@@ -42,7 +43,7 @@ public interface WebContext {
      * @param name the name of the attribute
      * @return the attribute
      */
-    Object getRequestAttribute(String name);
+    Optional getRequestAttribute(String name);
 
     /**
      * Save a request attribute.
@@ -58,7 +59,7 @@ public interface WebContext {
      * @param name name of the header
      * @return the request header
      */
-    String getRequestHeader(String name);
+    Optional<String> getRequestHeader(String name);
 
     /**
      * Return the request method.

@@ -2,13 +2,15 @@ package org.pac4j.scribe.builder.api;
 
 import java.util.Map;
 
+import com.github.scribejava.core.oauth2.bearersignature.BearerSignature;
+import com.github.scribejava.core.oauth2.bearersignature.BearerSignatureURIQueryParameter;
+import com.github.scribejava.core.oauth2.clientauthentication.ClientAuthentication;
+import com.github.scribejava.core.oauth2.clientauthentication.RequestBodyAuthenticationScheme;
 import org.pac4j.oauth.client.WechatClient;
 import org.pac4j.scribe.extractors.WechatJsonExtractor;
 import org.pac4j.scribe.service.WechatService;
 
-import com.github.scribejava.core.builder.api.ClientAuthenticationType;
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.builder.api.OAuth2SignatureType;
 import com.github.scribejava.core.extractors.TokenExtractor;
 import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
@@ -79,18 +81,8 @@ public class WechatApi20 extends DefaultApi20 {
     }
 
     @Override
-    public OAuth2SignatureType getSignatureType() {
-        return OAuth2SignatureType.BEARER_URI_QUERY_PARAMETER;
-    }
-
-    @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         return WechatJsonExtractor.instance();
-    }
-
-    @Override
-    public ClientAuthenticationType getClientAuthenticationType() {
-        return ClientAuthenticationType.REQUEST_BODY;
     }
 
     @Override
@@ -98,6 +90,14 @@ public class WechatApi20 extends DefaultApi20 {
             String state, String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
         return new WechatService(this, apiKey, apiSecret, callback, scope, state, responseType, userAgent, httpClientConfig, httpClient);
     }
+
+    @Override
+    public BearerSignature getBearerSignature() {
+        return BearerSignatureURIQueryParameter.instance();
+    }
+
+    @Override
+    public ClientAuthentication getClientAuthentication() {
+        return RequestBodyAuthenticationScheme.instance();
+    }
 }
-
-

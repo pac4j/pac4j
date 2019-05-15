@@ -9,6 +9,8 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
 
+import java.util.Optional;
+
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -42,7 +44,7 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<UsernamePasswordCredentials> retrieveCredentials(final WebContext context) {
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
 

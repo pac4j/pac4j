@@ -2,10 +2,7 @@ package org.pac4j.core.util;
 
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.Test;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -30,7 +27,7 @@ public final class JavaSerializationHelperTests implements TestsConstants {
     public void testBytesSerialization() {
         final CommonProfile profile = getUserProfile();
         final byte[] serialized = helper.serializeToBytes(profile);
-        final CommonProfile profile2 = (CommonProfile) helper.unserializeFromBytes(serialized);
+        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromBytes(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
@@ -38,35 +35,44 @@ public final class JavaSerializationHelperTests implements TestsConstants {
     @Test
     public void testBytesSerializationUnsecure() {
         JavaSerializationHelper h = new JavaSerializationHelper();
-        h.setTrustedPackages(new ArrayList<>());
+        h.clearTrustedClasses();
+        h.clearTrustedPackages();
         final CommonProfile profile = getUserProfile();
         final byte[] serialized = h.serializeToBytes(profile);
-        assertNull(h.unserializeFromBytes(serialized));
+        assertNull(h.deserializeFromBytes(serialized));
     }
 
     @Test
-    public void testBytesSerializationMadeSecure() {
+    public void testBytesSerializationTrustedClass() {
         JavaSerializationHelper h = new JavaSerializationHelper();
-        h.getTrustedPackages().add("org.apache");
+        h.clearTrustedPackages();
+        h.clearTrustedClasses();
+        h.addTrustedClass(SimplePrincipalCollection.class);
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
         final byte[] serialized = h.serializeToBytes(spc);
-        assertNotNull(h.unserializeFromBytes(serialized));
+        assertEquals(spc, h.deserializeFromBytes(serialized));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testTrustedPackagesModification() {
+        JavaSerializationHelper h = new JavaSerializationHelper();
+        h.getTrustedPackages().add("org.apache");
     }
 
     @Test
-    public void testBytesSerializationUnsecureNullTrustedPackages() {
+    public void testBytesSerializationTrustedPackage() {
         JavaSerializationHelper h = new JavaSerializationHelper();
-        h.setTrustedPackages(null);
-        final CommonProfile profile = getUserProfile();
-        final byte[] serialized = h.serializeToBytes(profile);
-        TestsHelper.expectException(() -> h.unserializeFromBytes(serialized), TechnicalException.class, "trustedPackages cannot be null");
+        h.addTrustedPackage("org.apache");
+        final SimplePrincipalCollection spc = new SimplePrincipalCollection();
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertNotNull(h.deserializeFromBytes(serialized));
     }
 
     @Test
     public void testBase64StringSerialization() {
         final CommonProfile profile = getUserProfile();
         final String serialized = helper.serializeToBase64(profile);
-        final CommonProfile profile2 = (CommonProfile) helper.unserializeFromBase64(serialized);
+        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromBase64(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }

@@ -12,12 +12,14 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the direct client to authenticate users on a CAS server for a web application in a stateless way: when trying to access
@@ -65,19 +67,19 @@ public class DirectCasClient extends DirectClient<TokenCredentials> {
     }
 
     @Override
-    protected TokenCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<TokenCredentials> retrieveCredentials(final WebContext context) {
         init();
         try {
             String callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
-            final TokenCredentials credentials = getCredentialsExtractor().extract(context);
-            if (credentials == null) {
+            final Optional<TokenCredentials> credentials = getCredentialsExtractor().extract(context);
+            if (!credentials.isPresent()) {
                 // redirect to the login page
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                         callbackUrl, configuration.isRenew(), false);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
-                throw new FoundAction(redirectionUrl);
+                throw RedirectionActionHelper.buildRedirectUrlAction(context, redirectionUrl);
             }
 
             // clean url from ticket parameter
@@ -86,12 +88,12 @@ public class DirectCasClient extends DirectClient<TokenCredentials> {
             final CasAuthenticator casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
-            casAuthenticator.validate(credentials, context);
+            casAuthenticator.validate(credentials.get(), context);
 
             return credentials;
         } catch (CredentialsException e) {
             logger.error("Failed to retrieve or validate CAS credentials", e);
-            return null;
+            return Optional.empty();
         }
     }
 

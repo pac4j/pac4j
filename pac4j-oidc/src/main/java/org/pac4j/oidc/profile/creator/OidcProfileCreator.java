@@ -14,8 +14,8 @@ import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -63,7 +64,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     @Override
     @SuppressWarnings("unchecked")
-    public CommonProfile create(final OidcCredentials credentials, final WebContext context) {
+    public Optional<UserProfile> create(final OidcCredentials credentials, final WebContext context) {
         init();
 
         final AccessToken accessToken = credentials.getAccessToken();
@@ -84,7 +85,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
+                nonce = new Nonce((String) context.getSessionStore().get(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE).orElse(null));
             } else {
                 nonce = null;
             }
@@ -133,7 +134,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             // session expiration with token behavior
             profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
 
-            return profile;
+            return Optional.of(profile);
 
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new TechnicalException(e);

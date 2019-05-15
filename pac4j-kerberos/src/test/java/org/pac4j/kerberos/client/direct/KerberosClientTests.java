@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -68,8 +68,18 @@ public class KerberosClientTests implements TestsConstants {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        KerberosCredentials credentials = client.getCredentials(new JEEContext(request, response));
-        assertNull(credentials);
+        final Optional<KerberosCredentials> credentials = client.getCredentials(new JEEContext(request, response));
+        assertFalse(credentials.isPresent());
+    }
+
+    @Test
+    public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
+        final Optional<KerberosCredentials> credentials = client.getCredentials(new JEEContext(request, response));
+        assertFalse(credentials.isPresent());
+        verify(response).setHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
     }
 
     @Test
@@ -79,11 +89,11 @@ public class KerberosClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
-        final KerberosCredentials credentials = client.getCredentials(context);
+        final KerberosCredentials credentials = client.getCredentials(context).get();
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context);
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
         assertEquals("garry", profile.getId());
     }
 }

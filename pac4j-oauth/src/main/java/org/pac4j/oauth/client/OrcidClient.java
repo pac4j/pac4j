@@ -33,8 +33,8 @@ public class OrcidClient extends OAuth20Client {
         configuration.setProfileDefinition(new OrcidProfileDefinition());
         configuration.setTokenAsHeader(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION).orElse(null);
             // user has denied permissions
             if ("access_denied".equals(error) && "User denied access".equals(errorDescription)) {
                 return true;

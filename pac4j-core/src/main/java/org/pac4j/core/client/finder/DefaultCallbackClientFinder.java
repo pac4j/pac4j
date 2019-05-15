@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -42,18 +43,18 @@ public class DefaultCallbackClientFinder implements ClientFinder {
         }
         logger.debug("result: {}", result.stream().map(c -> c.getName()).collect(Collectors.toList()));
 
-        // fallback: we didn't find any client on the URL
-        if (result.isEmpty()) {
-            //  we have a default client, use it
-            if (CommonHelper.isNotBlank(clientNames)) {
-                final Client defaultClient = clients.findClient(clientNames);
+        // fallback: no client found and we have a default client, use it
+        if (result.isEmpty() && CommonHelper.isNotBlank(clientNames)) {
+            final Optional<Client> defaultClient = clients.findClient(clientNames);
+            if (defaultClient.isPresent()) {
                 logger.debug("Defaulting to the configured client: {}", defaultClient);
-                result.add(defaultClient);
-                // or we only have one indirect client, use it
-            } else if (indirectClients.size() == 1){
-                logger.debug("Defaulting to the only client: {}", indirectClients.get(0));
-                result.addAll(indirectClients);
+                result.add(defaultClient.get());
             }
+        }
+        // fallback: no client found and we only have one indirect client, use it
+        if (result.isEmpty() && indirectClients.size() == 1) {
+            logger.debug("Defaulting to the only client: {}", indirectClients.get(0));
+            result.addAll(indirectClients);
         }
 
         return result;

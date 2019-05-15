@@ -5,6 +5,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
+
 /**
  * Save a form remember-me checkbox into the remember-me nature of the profile.
  *
@@ -25,12 +27,12 @@ public class RememberMeAuthorizationGenerator implements AuthorizationGenerator 
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
-        final String rmeValue = context.getRequestParameter(rememberMeParameterName);
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
+        final String rmeValue = context.getRequestParameter(rememberMeParameterName).orElse(null);
         if (rememberMeValue.equals(rmeValue)) {
             profile.setRemembered(true);
         }
-        return profile;
+        return Optional.of(profile);
     }
 
     public String getRememberMeParameterName() {

@@ -1,9 +1,6 @@
 package org.pac4j.oauth.profile.google2;
 
 import java.net.URI;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
 
@@ -18,14 +15,8 @@ public class Google2Profile extends OAuth20Profile {
 
     private static final long serialVersionUID = -7486869356444327783L;
 
-    @Override
-    public String getEmail() {
-        final List<Google2Email> list = getEmails();
-        if (list != null && !list.isEmpty()) {
-            return list.get(0).getEmail();
-        } else {
-            return null;
-        }
+    public Boolean getEmailVerified() {
+        return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED);
     }
 
     @Override
@@ -34,18 +25,8 @@ public class Google2Profile extends OAuth20Profile {
     }
 
     @Override
-    public String getFamilyName() {
-        return (String) getAttribute(Google2ProfileDefinition.FAMILY_NAME);
-    }
-
-    @Override
     public String getDisplayName() {
-        return (String) getAttribute(Google2ProfileDefinition.DISPLAY_NAME);
-    }
-
-    @Override
-    public Locale getLocale() {
-        return (Locale) getAttribute(Google2ProfileDefinition.LANGUAGE);
+        return (String) getAttribute(Google2ProfileDefinition.NAME);
     }
 
     @Override
@@ -55,15 +36,6 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(Google2ProfileDefinition.URL);
-    }
-
-    public Date getBirthday() {
-        return (Date) getAttribute(Google2ProfileDefinition.BIRTHDAY);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Google2Email> getEmails() {
-        return (List<Google2Email>) getAttribute(Google2ProfileDefinition.EMAILS);
+        return (URI) getAttribute(Google2ProfileDefinition.PROFILE);
     }
 }

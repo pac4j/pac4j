@@ -1,10 +1,12 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileCreator;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.pac4j.scribe.builder.api.DropboxApi20;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in DropBox.</p>
@@ -29,7 +31,8 @@ public class DropBoxClient extends OAuth20Client {
         configuration.setApi(DropboxApi20.INSTANCE);
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
 
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://www.dropbox.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.dropbox.com/logout")));
         defaultProfileCreator(new DropBoxProfileCreator(configuration, this));
 
         super.clientInit();

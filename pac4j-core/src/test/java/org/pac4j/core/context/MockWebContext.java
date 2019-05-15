@@ -3,10 +3,7 @@ package org.pac4j.core.context;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.*;
 
 import static org.pac4j.core.context.HttpConstants.*;
 
@@ -128,14 +125,16 @@ public final class MockWebContext implements WebContext {
     }
 
     @Override
-    public Object getRequestAttribute(final String name) { return this.attributes.get(name); }
+    public Optional getRequestAttribute(final String name) {
+        return Optional.ofNullable(this.attributes.get(name));
+    }
 
     @Override
     public void setRequestAttribute(final String name, final Object value) { this.attributes.put(name, value); }
 
     @Override
-    public String getRequestParameter(final String name) {
-        return this.parameters.get(name);
+    public Optional<String> getRequestParameter(final String name) {
+        return Optional.ofNullable(this.parameters.get(name));
     }
 
     public MockWebContext setRemoteAddress(final String ip) {
@@ -144,8 +143,8 @@ public final class MockWebContext implements WebContext {
     }
 
     @Override
-    public String getRequestHeader(final String name) {
-        return this.headers.get(name);
+    public Optional<String> getRequestHeader(final String name) {
+        return Optional.ofNullable(this.headers.get(name));
     }
 
     @Override

@@ -13,7 +13,7 @@
     <name>pac4j for JWT</name>
 
     <properties>
-        <bcprov.version>1.59</bcprov.version>
+        <bcprov.version>1.61</bcprov.version>
     </properties>
 
     <dependencies>
@@ -50,6 +50,11 @@
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-oauth</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-cas</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- for testing -->

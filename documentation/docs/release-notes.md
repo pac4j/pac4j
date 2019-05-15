@@ -7,18 +7,48 @@ title: Release notes&#58;
 
 - Improved the profile manager configuration
 - Renamed `J2E` components as `JEE`
-- Updated the OpenID Connect/JWT dependencies
+- Updated all dependencies
 - A client can return any kind of profile (using a custom `AuthorizationGenerator` or `ProfileCreator`) and even a minimal user profile (`UserProfile`)
 - Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. They are only applied to the web context by the appropriate `HttpActionAdapter`. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`. The `setResponseStatus` and `writeResponseContent` methods have been removed from the `WebContext` interface
-- Use the 303 "See Other" HTTP action instead of the 302 "Found" HTTP action for any redirection after a POST request in the `DefaultCallbackLogic`
 - By default, the CSRF check applies on the PUT, PATCH and DELETE requests in addition to the POST requests
 - "csrf,securityheaders" is the default authorizers definition
+- Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)
+- For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will remove the `birthday` and `emails` attribute for `Google2Client`.
+- For an AJAX request, only generates the redirection URL when requested (`addRedirectionUrlAsHeader` property of the `DefaultAjaxRequestResolver`)
+- Updated the APIs to use `Optional` instead of returning `null`
+- Use the 303 "See Other" and 307 "Temporary Redirect" HTTP actions after a POST request (`RedirectionActionHelper`)
+- Handles originally requested URLs with POST method
+- Add HTTP POST Simple-Sign protocol implementation
 
+**v3.7.0**:
+
+- Fix SAML SP metadata signature
+- CAS improvements: better service requests detection, support of the CAS server `method` parameter
+- Fix the `CasRestProfile` with JWT
+- Add HTTP POST Simple-Sign protocol implementation
+- Add the `get`, `post`, `put` and `delete` matchers based on the `HttpMethodMatcher` when not defined
+
+**v3.6.1**:
+
+- Fix Google OAuth support
+
+**v3.6.0**:
+
+- Multiple authn context class refs can be set in the SAML protocol support
+- For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will make the `birthday` attribute return `null` and `emails` attribute resolve a single email from `email` attribute for `Google2Client`.
+- Clean shutdown of the `SAML2Client` via the `destroy` method
+- Do not clear the ID Token as a sensitive data in the `OidcProfile`
+- Improve signature and digest methods for SAML metadata
+- Enhance OAuth 2 generic support
+- Use the NameID as the fallback of the SessionIndex for the SAML SLO support
 
 **v3.5.0**:
 
 - Added `UserInfoOidcAuthenticator` to authenticate a user based on an access token received from an OpenID Connect login process
 - Updated the OpenID Connect/JWT dependencies (v6)
+- Added `DirectBearerAuthClient`
+- Handled the inResponseTo and the RelayState in the logout response (SAML)
+- Added `trustedClasses` to the `JavaSerializationHelper`
 
 **v3.4.0**:
 

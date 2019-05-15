@@ -1,10 +1,12 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
 import org.pac4j.oauth.profile.paypal.PayPalProfileDefinition;
 import org.pac4j.scribe.builder.api.PayPalApi20;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in PayPal.</p>
@@ -37,7 +39,8 @@ public class PayPalClient extends OAuth20Client {
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
         configuration.setTokenAsHeader(true);
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://www.paypal.com/myaccount/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.paypal.com/myaccount/logout")));
 
         super.clientInit();
     }

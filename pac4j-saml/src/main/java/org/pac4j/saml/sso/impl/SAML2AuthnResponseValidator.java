@@ -46,15 +46,12 @@ import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
 import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
-import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.util.SAML2Utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
@@ -117,7 +114,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final Assertion subjectAssertion = context.getSubjectAssertion();
 
         final String sessionIndex = getSessionIndex(subjectAssertion);
-        logoutHandler.recordSession(context.getWebContext(), sessionIndex);
+        final String sloKey = computeSloKey(sessionIndex, nameId);
+        if (sloKey != null) {
+            logoutHandler.recordSession(context.getWebContext(), sloKey);
+        }
 
         final String issuerEntityId = subjectAssertion.getIssuer().getValue();
         final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
@@ -189,14 +189,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         validateIssueInstant(response.getIssueInstant());
 
         AuthnRequest request = null;
-        final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
+        final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
         if (messageStorage != null && response.getInResponseTo() != null) {
-            final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
-            if (xmlObject == null) {
+            final Optional<XMLObject> xmlObject = messageStorage.get(response.getInResponseTo());
+            if (!xmlObject.isPresent()) {
                 throw new SAMLInResponseToMismatchException("InResponseToField of the Response doesn't correspond to sent message "
                     + response.getInResponseTo());
-            } else if (xmlObject instanceof AuthnRequest) {
-                request = (AuthnRequest) xmlObject;
+            } else if (xmlObject.get() instanceof AuthnRequest) {
+                request = (AuthnRequest) xmlObject.get();
             } else {
                 throw new SAMLInResponseToMismatchException("Sent request was of different type than the expected AuthnRequest "
                     + response.getInResponseTo());

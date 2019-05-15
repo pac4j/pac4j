@@ -1,12 +1,14 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.LinkedInApi20;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
@@ -38,8 +40,8 @@ public class LinkedIn2Client extends OAuth20Client {
         configuration.setProfileDefinition(new LinkedIn2ProfileDefinition());
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
-            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION).orElse(null);
             // user has denied permissions
             if ("access_denied".equals(error)
                     && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
@@ -49,7 +51,8 @@ public class LinkedIn2Client extends OAuth20Client {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://www.linkedin.com/uas/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.linkedin.com/uas/logout")));
 
         super.clientInit();
     }

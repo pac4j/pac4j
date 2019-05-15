@@ -7,6 +7,7 @@ import org.pac4j.kerberos.credentials.KerberosCredentials;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 /**
  * To extract Kerberos headers.
@@ -17,21 +18,22 @@ import java.util.Base64;
 public class KerberosExtractor implements CredentialsExtractor<KerberosCredentials> {
 
     @Override
-    public KerberosCredentials extract(final WebContext context) {
-        final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
-        if (header == null) {
-            return null;
+    public Optional<KerberosCredentials> extract(final WebContext context) {
+        final Optional<String> optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
+        if (!optHeader.isPresent()) {
+            return Optional.empty();
         }
 
+        final String header = optHeader.get();
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
             // "Authorization" header do not indicate Kerberos mechanism yet,
             // so the extractor shouldn't throw an exception
-            return null;
+            return Optional.empty();
         }
 
         byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
         byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
 
-        return new KerberosCredentials(kerberosTicket);
+        return Optional.of(new KerberosCredentials(kerberosTicket));
     }
 }

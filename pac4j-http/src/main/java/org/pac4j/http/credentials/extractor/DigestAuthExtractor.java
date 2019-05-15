@@ -11,6 +11,7 @@ import org.pac4j.http.credentials.DigestCredentials;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 /**
@@ -49,14 +50,13 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * @return the Digest credentials
      */
     @Override
-    public DigestCredentials extract(WebContext context) {
-        final TokenCredentials credentials = this.extractor.extract(context);
-
-        if (credentials == null) {
-            return null;
+    public Optional<DigestCredentials> extract(WebContext context) {
+        final Optional<TokenCredentials> credentials = this.extractor.extract(context);
+        if (!credentials.isPresent()) {
+            return Optional.empty();
         }
 
-        String token = credentials.getToken();
+        String token = credentials.get().getToken();
         Map<String, String> valueMap = parseTokenValue(token);
         String username = valueMap.get("username");
         String response = valueMap.get("response");
@@ -72,7 +72,7 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
         String qop = valueMap.get("qop");
         String method = context.getRequestMethod();
 
-        return new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop);
+        return Optional.of(new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop));
     }
 
     private Map<String, String> parseTokenValue(String token) {

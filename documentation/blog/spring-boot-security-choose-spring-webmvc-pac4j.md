@@ -1,6 +1,6 @@
 ---
 layout: blog
-title: Spring Boot Security&colon; choose spring-webmvc-pac4j over Spring Security
+title: Spring Boot security&colon; choose spring-webmvc-pac4j over Spring Security
 author: Jérôme LELEU
 date: January 2018
 ---

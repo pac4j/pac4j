@@ -3,7 +3,7 @@ package org.pac4j.gae.client;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
@@ -13,6 +13,8 @@ import org.pac4j.gae.profile.GaeUserServiceProfile;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OpenID client to authenticate users with UserService on App Engine</p>
@@ -36,12 +38,12 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
             final String destinationUrl = computeFinalCallbackUrl(ctx);
             final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
                 : service.createLoginURL(destinationUrl, authDomain);
-            return new FoundAction(loginUrl);
+            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, loginUrl));
         });
         defaultCredentialsExtractor(ctx -> {
             final GaeUserCredentials credentials = new GaeUserCredentials();
             credentials.setUser(service.getCurrentUser());
-            return credentials;
+            return Optional.of(credentials);
         });
         defaultAuthenticator((credentials, ctx) -> {
             final User user = credentials.getUser();

@@ -44,7 +44,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     private String bindingType;
 
-    private String authnContextClassRef;
+    private List<String> authnContextClassRefs;
 
     private String nameIdPolicyFormat;
     
@@ -71,7 +71,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         this.forceAuth = cfg.isForceAuth();
         this.comparisonType = getComparisonTypeEnumFromString(cfg.getComparisonType());
         this.bindingType = cfg.getAuthnRequestBindingType();
-        this.authnContextClassRef = cfg.getAuthnContextClassRef();
+        this.authnContextClassRefs = cfg.getAuthnContextClassRefs();
         this.nameIdPolicyFormat = cfg.getNameIdPolicyFormat();
         this.passive = cfg.isPassive();
         this.attributeConsumingServiceIndex = cfg.getAttributeConsumingServiceIndex();
@@ -101,10 +101,9 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             final RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
             authnContext.setComparison(comparisonType);
 
-            if (authnContextClassRef != null) {
-                final AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
-                classRef.setAuthnContextClassRef(authnContextClassRef);
-                authnContext.getAuthnContextClassRefs().add(classRef);
+            if (authnContextClassRefs != null && !authnContextClassRefs.isEmpty()) {
+                final List<AuthnContextClassRef> refs = authnContext.getAuthnContextClassRefs();
+                authnContextClassRefs.forEach(r -> refs.add(buildAuthnContextClassRef(r)));
             }
             request.setRequestedAuthnContext(authnContext);
         }
@@ -147,6 +146,12 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         }
 
         return request;
+    }
+
+    protected AuthnContextClassRef buildAuthnContextClassRef(final String authnContextClassRef) {
+        final AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
+        classRef.setAuthnContextClassRef(authnContextClassRef);
+        return classRef;
     }
 
     @SuppressWarnings("unchecked")

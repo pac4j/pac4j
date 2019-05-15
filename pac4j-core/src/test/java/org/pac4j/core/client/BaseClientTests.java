@@ -10,6 +10,8 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 /**
@@ -23,23 +25,23 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testDirectClient() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) client.redirect(context);
+        final FoundAction action = (FoundAction) client.redirect(context).get();
         final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
-        final Credentials credentials = client.getCredentials(context);
-        assertNull(credentials);
+        final Optional<Credentials> credentials = client.getCredentials(context);
+        assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testIndirectClientWithImmediate() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) client.redirect(context);
+        final FoundAction action = (FoundAction) client.redirect(context).get();
         final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
@@ -47,16 +49,16 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testNullCredentials() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
-        assertNull(client.getUserProfile(null, context));
+        assertFalse(client.getUserProfile(null, context).isPresent());
     }
 
     @Test
     public void testAjaxRequest() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()
                                         .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
@@ -67,7 +69,7 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testAlreadyTried() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         context.getSessionStore().set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
@@ -78,17 +80,18 @@ public final class BaseClientTests implements TestsConstants {
     @Test
     public void testSaveAlreadyTried() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
-        assertEquals("true", context.getSessionStore().get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
+        assertEquals("true", context.getSessionStore()
+            .get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
     }
 
     @Test
     public void testStateParameter() {
         final MockIndirectClient client =
-            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), (Credentials) null, new CommonProfile());
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> client.redirect(context));
     }

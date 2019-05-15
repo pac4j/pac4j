@@ -5,6 +5,7 @@ import org.pac4j.core.context.MockWebContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Mock a session store in memory.
@@ -33,8 +34,8 @@ public class MockSessionStore implements SessionStore<MockWebContext> {
     }
 
     @Override
-    public Object get(final MockWebContext context, final String key) {
-        return store.get(key);
+    public Optional get(final MockWebContext context, final String key) {
+        return Optional.ofNullable(store.get(key));
     }
 
     @Override
@@ -50,13 +51,13 @@ public class MockSessionStore implements SessionStore<MockWebContext> {
     }
 
     @Override
-    public Object getTrackableSession(final MockWebContext context) {
-        return store;
+    public Optional getTrackableSession(final MockWebContext context) {
+        return Optional.of(store);
     }
 
     @Override
-    public SessionStore<MockWebContext> buildFromTrackableSession(final MockWebContext context, final Object trackableSession) {
-        return new MockSessionStore((Map<String, Object>) trackableSession);
+    public Optional<SessionStore<MockWebContext>> buildFromTrackableSession(final MockWebContext context, final Object trackableSession) {
+        return Optional.of(new MockSessionStore((Map<String, Object>) trackableSession));
     }
 
     @Override

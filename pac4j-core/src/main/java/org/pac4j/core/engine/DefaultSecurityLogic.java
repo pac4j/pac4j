@@ -9,18 +9,18 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
 import org.pac4j.core.engine.decision.ProfileStorageDecision;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
+import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.RequireAllMatchersChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
-import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
@@ -57,7 +57,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
 
-    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+    private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
@@ -112,18 +112,20 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                         if (currentClient instanceof DirectClient) {
                             logger.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final Credentials credentials = currentClient.getCredentials(context);
+                            final Optional<Credentials> credentials = currentClient.getCredentials(context);
                             logger.debug("credentials: {}", credentials);
-                            final UserProfile profile = currentClient.getUserProfile(credentials, context);
-                            logger.debug("profile: {}", profile);
-                            if (profile != null) {
-                                final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
-                                    currentClients, (DirectClient) currentClient, profile);
-                                logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                manager.save(saveProfileInSession, profile, multiProfile);
-                                updated = true;
-                                if (!multiProfile) {
-                                    break;
+                            if (credentials.isPresent()) {
+                                final Optional<UserProfile> profile = currentClient.getUserProfile(credentials.get(), context);
+                                logger.debug("profile: {}", profile);
+                                if (profile.isPresent()) {
+                                    final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
+                                        currentClients, (DirectClient) currentClient, profile.get());
+                                    logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
+                                    manager.save(saveProfileInSession, profile.get(), multiProfile);
+                                    updated = true;
+                                    if (!multiProfile) {
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -147,7 +149,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 } else {
                     if (startAuthentication(context, currentClients)) {
                         logger.debug("Starting authentication");
-                        saveRequestedUrl(context, currentClients);
+                        saveRequestedUrl(context, currentClients, config.getClients().getAjaxRequestResolver());
                         action = redirectToIdentityProvider(context, currentClients);
                     } else {
                         logger.debug("unauthorized");
@@ -199,11 +201,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param context the web context
      * @param currentClients the current clients
      */
-    protected void saveRequestedUrl(final C context, final List<Client> currentClients) {
+    protected void saveRequestedUrl(final C context, final List<Client> currentClients, AjaxRequestResolver ajaxRequestResolver) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
-            final String requestedUrl = context.getFullRequestURL();
-            logger.debug("requestedUrl: {}", requestedUrl);
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
+            savedRequestHandler.save(context);
         }
     }
 
@@ -216,7 +216,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
-        return currentClient.redirect(context);
+        return (HttpAction) currentClient.redirect(context).get();
     }
 
     /**
@@ -262,18 +262,18 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.profileStorageDecision = profileStorageDecision;
     }
 
-    public AjaxRequestResolver getAjaxRequestResolver() {
-        return ajaxRequestResolver;
+    public SavedRequestHandler getSavedRequestHandler() {
+        return savedRequestHandler;
     }
 
-    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
-        this.ajaxRequestResolver = ajaxRequestResolver;
+    public void setSavedRequestHandler(final SavedRequestHandler savedRequestHandler) {
+        this.savedRequestHandler = savedRequestHandler;
     }
 
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
             "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
-            "errorUrl", getErrorUrl(), "ajaxRequestResolver", this.ajaxRequestResolver);
+            "errorUrl", getErrorUrl(), "savedRequestHandler", savedRequestHandler);
     }
 }

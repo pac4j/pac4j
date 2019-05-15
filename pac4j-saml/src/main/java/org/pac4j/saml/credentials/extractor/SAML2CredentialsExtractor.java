@@ -6,8 +6,7 @@ import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
@@ -17,6 +16,8 @@ import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseMessageSender;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
+
+import java.util.Optional;
 
 /**
  * Credentials extractor of SAML2 credentials.
@@ -34,7 +35,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
 
     protected final String spLogoutResponseBindingType;
 
-    protected final SAML2LogoutResponseBuilder saml2LogoutResponseBuilder;
+    protected SAML2LogoutResponseBuilder saml2LogoutResponseBuilder;
 
     protected final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
 
@@ -49,8 +50,9 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
     }
 
     @Override
-    public SAML2Credentials extract(final WebContext context) {
-        final boolean logoutEndpoint = context.getRequestParameter(SAML2ServiceProviderMetadataResolver.LOGOUT_ENDPOINT_PARAMETER) != null;
+    public Optional<SAML2Credentials> extract(final WebContext context) {
+        final boolean logoutEndpoint = context.getRequestParameter(SAML2ServiceProviderMetadataResolver.LOGOUT_ENDPOINT_PARAMETER)
+            .isPresent();
         final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
         if (logoutEndpoint) {
             // SAML logout request/response
@@ -58,21 +60,30 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor<SAML2Cred
 
             // return a logout response if necessary
             final LogoutResponse logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
-            this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse, null);
+            this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
+                samlContext.getSAMLBindingContext().getRelayState());
 
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
                 final String content = adapter.getOutgoingContent();
-                throw new OkAction(content);
+                throw RedirectionActionHelper.buildFormPostContentAction(context, content);
             } else {
                 final String location = adapter.getRedirectUrl();
-                throw new FoundAction(location);
+                throw RedirectionActionHelper.buildRedirectUrlAction(context, location);
             }
 
         } else {
             // SAML authn response
             final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            return credentials;
+            return Optional.ofNullable(credentials);
         }
+    }
+
+    public SAML2LogoutResponseBuilder getSaml2LogoutResponseBuilder() {
+        return saml2LogoutResponseBuilder;
+    }
+
+    public void setSaml2LogoutResponseBuilder(final SAML2LogoutResponseBuilder saml2LogoutResponseBuilder) {
+        this.saml2LogoutResponseBuilder = saml2LogoutResponseBuilder;
     }
 }

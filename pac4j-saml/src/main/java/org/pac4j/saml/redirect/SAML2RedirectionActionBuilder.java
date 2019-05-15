@@ -3,9 +3,8 @@ package org.pac4j.saml.redirect;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
@@ -14,6 +13,8 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
+
+import java.util.Optional;
 
 /**
  * Redirection action builder for SAML 2.
@@ -35,7 +36,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public RedirectionAction redirect(final WebContext wc) {
+    public Optional<RedirectionAction> redirect(final WebContext wc) {
         final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc);
         final String relayState = this.client.getStateGenerator().generateState(wc);
 
@@ -43,11 +44,14 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         this.client.getProfileHandler().send(context, authnRequest, relayState);
 
         final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
-        if (this.client.getConfiguration().getAuthnRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+
+        final String bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
+        if (SAMLConstants.SAML2_POST_BINDING_URI.equalsIgnoreCase(bindingType) ||
+            SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equalsIgnoreCase(bindingType)) {
             final String content = adapter.getOutgoingContent();
-            return new OkAction(content);
+            return Optional.of(RedirectionActionHelper.buildFormPostContentAction(wc, content));
         }
         final String location = adapter.getRedirectUrl();
-        return new FoundAction(location);
+        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(wc, location));
     }
 }

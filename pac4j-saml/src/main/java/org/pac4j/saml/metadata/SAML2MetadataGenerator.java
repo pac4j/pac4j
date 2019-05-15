@@ -8,6 +8,7 @@ import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
+import org.opensaml.saml.ext.saml2alg.SigningMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
@@ -24,6 +25,10 @@ import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.security.credential.UsageType;
+import org.opensaml.xmlsec.SignatureSigningConfiguration;
+import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
+import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
+import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
@@ -36,6 +41,7 @@ import org.w3c.dom.Element;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Generates metadata object with standard values and overriden user defined values.
@@ -51,6 +57,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     protected final MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+
+    protected final AlgorithmRegistry globalAlgorithmRegistry = AlgorithmSupport.getGlobalAlgorithmRegistry();
 
     protected CredentialProvider credentialProvider;
 
@@ -72,6 +80,15 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
 
+    protected SignatureSigningConfiguration defaultSignatureSigningConfiguration =
+            DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
+
+    protected List<String> blackListedSignatureSigningAlgorithms = null;
+
+    protected List<String> signatureAlgorithms = null;
+
+    protected List<String> signatureReferenceDigestMethods = null;
+
     @Override
     public final MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
@@ -91,14 +108,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     @Override
-    public final String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
+    public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
         final Element entityDescriptorElement = this.marshallerFactory
             .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME).marshall(entityDescriptor);
         return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
     @Override
-    public final EntityDescriptor buildEntityDescriptor() {
+    public EntityDescriptor buildEntityDescriptor() {
         final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>)
             this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
         final EntityDescriptor descriptor = builder.buildObject();
@@ -110,60 +127,39 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return descriptor;
     }
 
-    protected final Extensions generateMetadataExtensions() {
+    protected Extensions generateMetadataExtensions() {
         final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
         final Extensions extensions = builderExt.buildObject();
+        extensions.getNamespaceManager().registerAttributeName(SigningMethod.TYPE_NAME);
         extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
 
-        final SAMLObjectBuilder<DigestMethod> builder = (SAMLObjectBuilder<DigestMethod>)
+        List<String> filteredSignatureAlgorithms = filterSignatureAlgorithms(getSignatureAlgorithms());
+        List<String> filteredSignatureReferenceDigestMethods = filterSignatureAlgorithms(getSignatureReferenceDigestMethods());
+
+        final SAMLObjectBuilder<SigningMethod> signingMethodBuilder = (SAMLObjectBuilder<SigningMethod>)
+                this.builderFactory.getBuilder(SigningMethod.DEFAULT_ELEMENT_NAME);
+
+        for (String signingMethod : filteredSignatureAlgorithms) {
+            SigningMethod method = signingMethodBuilder.buildObject();
+            method.setAlgorithm(signingMethod);
+            extensions.getUnknownXMLObjects().add(method);
+        }
+
+        final SAMLObjectBuilder<DigestMethod> digestMethodBuilder = (SAMLObjectBuilder<DigestMethod>)
             this.builderFactory.getBuilder(DigestMethod.DEFAULT_ELEMENT_NAME);
 
-        DigestMethod method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmlenc#sha512");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#sha384");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmlenc#sha256");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#sha224");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2000/09/xmldsig#sha1");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
-        extensions.getUnknownXMLObjects().add(method);
-
-        method = builder.buildObject();
-        method.setAlgorithm("http://www.w3.org/2000/09/xmldsig#dsa-sha1");
-        extensions.getUnknownXMLObjects().add(method);
+        for (String digestMethod : filteredSignatureReferenceDigestMethods) {
+            DigestMethod method = digestMethodBuilder.buildObject();
+            method.setAlgorithm(digestMethod);
+            extensions.getUnknownXMLObjects().add(method);
+        }
 
         return extensions;
     }
 
-    protected final SPSSODescriptor buildSPSSODescriptor() {
+    protected SPSSODescriptor buildSPSSODescriptor() {
         final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>)
             this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         final SPSSODescriptor spDescriptor = builder.buildObject();
@@ -196,6 +192,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         spDescriptor.getAssertionConsumerServices()
             .add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_BINDING_URI));
+        spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_REDIRECT_BINDING_URI));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_SOAP11_BINDING_URI));
 
@@ -353,5 +350,52 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public void setRequestedAttributes(final List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes) {
         this.requestedAttributes = requestedAttributes;
+    }
+
+    public List<String> getBlackListedSignatureSigningAlgorithms() {
+        if (blackListedSignatureSigningAlgorithms == null) {
+            this.blackListedSignatureSigningAlgorithms =
+              new ArrayList<>(defaultSignatureSigningConfiguration.getBlacklistedAlgorithms());
+        }
+
+        return blackListedSignatureSigningAlgorithms;
+    }
+
+    public void setBlackListedSignatureSigningAlgorithms(List<String> blackListedSignatureSigningAlgorithms) {
+        this.blackListedSignatureSigningAlgorithms = blackListedSignatureSigningAlgorithms;
+    }
+
+    public List<String> getSignatureAlgorithms() {
+        if (signatureAlgorithms == null) {
+            this.signatureAlgorithms = defaultSignatureSigningConfiguration.getSignatureAlgorithms();
+        }
+
+        return signatureAlgorithms;
+    }
+
+    public void setSignatureAlgorithms(List<String> signatureAlgorithms) {
+        this.signatureAlgorithms = signatureAlgorithms;
+    }
+
+    public List<String> getSignatureReferenceDigestMethods() {
+        if (signatureReferenceDigestMethods == null) {
+            this.signatureReferenceDigestMethods = defaultSignatureSigningConfiguration.getSignatureReferenceDigestMethods();
+        }
+        return signatureReferenceDigestMethods;
+    }
+
+    public void setSignatureReferenceDigestMethods(List<String> signatureReferenceDigestMethods) {
+        this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
+    }
+
+    private List<String> filterForRuntimeSupportedAlgorithms(final List<String> algorithms) {
+        final List<String> filteredAlgorithms = new ArrayList<>(algorithms);
+        return filteredAlgorithms.stream().filter(uri -> globalAlgorithmRegistry.isRuntimeSupported(uri)).collect(Collectors.toList());
+    }
+
+    private List<String> filterSignatureAlgorithms(final List<String> algorithms) {
+        final List<String> filteredAlgorithms = filterForRuntimeSupportedAlgorithms(algorithms);
+        this.signatureAlgorithms.removeAll(this.blackListedSignatureSigningAlgorithms);
+        return filteredAlgorithms;
     }
 }

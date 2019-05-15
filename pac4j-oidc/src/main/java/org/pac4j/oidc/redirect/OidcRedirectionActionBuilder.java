@@ -4,9 +4,9 @@ import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.OidcClient;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -65,7 +66,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public RedirectionAction redirect(final WebContext context) {
+    public Optional<RedirectionAction> redirect(final WebContext context) {
         final Map<String, String> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
@@ -79,7 +80,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         final String location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
-        return new FoundAction(location);
+        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, location));
     }
 
     protected Map<String, String> buildParams() {

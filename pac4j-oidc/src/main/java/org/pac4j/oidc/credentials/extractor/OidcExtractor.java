@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Extract the authorization code on the callback.
@@ -45,7 +42,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
     }
 
     @Override
-    public OidcCredentials extract(final WebContext context) {
+    public Optional<OidcCredentials> extract(final WebContext context) {
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         final Map<String, List<String>> parameters = retrieveParameters(context);
         AuthenticationResponse response;
@@ -58,7 +55,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
         if (response instanceof AuthenticationErrorResponse) {
             logger.error("Bad authentication response, error={}",
                     ((AuthenticationErrorResponse) response).getErrorObject());
-            return null;
+            return Optional.empty();
         }
 
         logger.debug("Authentication response successful");
@@ -68,7 +65,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
         if (state == null) {
             throw new TechnicalException("Missing state parameter");
         }
-        if (!state.equals(context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE))) {
+        if (!state.equals(context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE).orElse(null))) {
             throw new TechnicalException("State parameter is different from the one sent in authentication request. "
                     + "Session expired or possible threat of cross-site request forgery");
         }
@@ -90,7 +87,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
             credentials.setAccessToken(accessToken);
         }
 
-        return credentials;
+        return Optional.of(credentials);
     }
 
     protected Map<String, List<String>> retrieveParameters(final WebContext context) {

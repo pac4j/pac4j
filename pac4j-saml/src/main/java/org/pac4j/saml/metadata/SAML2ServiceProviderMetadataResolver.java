@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -42,6 +43,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String callbackUrl;
     private final SAML2Configuration configuration;
     private String spMetadata;
+    private MetadataResolver metadataResolver;
 
     public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration, final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
@@ -50,6 +52,13 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         this.configuration = configuration;
 
         determineServiceProviderEntityId(callbackUrl);
+    }
+
+    public void destroy() {
+        if (this.metadataResolver instanceof FilesystemMetadataResolver) {
+            ((FilesystemMetadataResolver) this.metadataResolver).destroy();
+            this.metadataResolver = null;
+        }
     }
 
     private void determineServiceProviderEntityId(final String callbackUrl) {
@@ -68,7 +77,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    private MetadataResolver prepareServiceProviderMetadata() {
+    protected MetadataResolver prepareServiceProviderMetadata() {
         try {
             final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
             metadataGenerator.setWantAssertionSigned(configuration.isWantsAssertionsSigned());
@@ -85,6 +94,13 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             final String logoutUrl = CommonHelper.addParameter(callbackUrl, LOGOUT_ENDPOINT_PARAMETER, "true");
             // the logout URL is callback URL with an extra parameter
             metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
+
+            // Algorithm support
+            metadataGenerator.setBlackListedSignatureSigningAlgorithms(
+                new ArrayList<>(configuration.getBlackListedSignatureSigningAlgorithms())
+            );
+            metadataGenerator.setSignatureAlgorithms(configuration.getSignatureAlgorithms());
+            metadataGenerator.setSignatureReferenceDigestMethods(configuration.getSignatureReferenceDigestMethods());
 
             // Initialize metadata provider for our SP and get the XML as a String
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
@@ -143,7 +159,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     @Override
     public final MetadataResolver resolve() {
-        return prepareServiceProviderMetadata();
+        if (this.metadataResolver == null) {
+            this.metadataResolver = prepareServiceProviderMetadata();
+        }
+        return this.metadataResolver;
     }
 
     @Override

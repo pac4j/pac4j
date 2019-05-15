@@ -5,13 +5,11 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.state.StaticOrRandomStateGenerator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -37,7 +35,7 @@ public final class OAuth20ClientTests implements TestsConstants {
         FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         ((StaticOrRandomStateGenerator) client.getConfiguration().getStateGenerator()).setStateData("OK");
-        final FoundAction action = (FoundAction) client.redirect(MockWebContext.create());
+        final FoundAction action = (FoundAction) client.redirect(MockWebContext.create()).get();
         URL url = new URL(action.getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
     }
@@ -48,13 +46,13 @@ public final class OAuth20ClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         ((StaticOrRandomStateGenerator) client.getConfiguration().getStateGenerator()).setStateData("oldstate");
         final MockWebContext mockWebContext = MockWebContext.create();
-        FoundAction action = (FoundAction) client.redirect(mockWebContext);
+        FoundAction action = (FoundAction) client.redirect(mockWebContext).get();
         URL url = new URL(action.getLocation());
-        final Map<String, String> stringMap = splitQuery(url);
+        final Map<String, String> stringMap = TestsHelper.splitQuery(url);
         assertEquals(stringMap.get("state"), "oldstate");
-        action = (FoundAction) client.redirect(mockWebContext);
+        action = (FoundAction) client.redirect(mockWebContext).get();
         URL url2 = new URL(action.getLocation());
-        final Map<String, String> stringMap2 = splitQuery(url2);
+        final Map<String, String> stringMap2 = TestsHelper.splitQuery(url2);
         assertEquals(stringMap2.get("state"), "oldstate");
     }
 
@@ -62,32 +60,21 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testStateRandom() throws MalformedURLException {
         OAuth20Client client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        FoundAction action = (FoundAction) client.redirect(MockWebContext.create());
+        FoundAction action = (FoundAction) client.redirect(MockWebContext.create()).get();
         URL url = new URL(action.getLocation());
-        final Map<String, String> stringMap = splitQuery(url);
+        final Map<String, String> stringMap = TestsHelper.splitQuery(url);
         assertNotNull(stringMap.get("state"));
 
-        action = (FoundAction) client.redirect(MockWebContext.create());
+        action = (FoundAction) client.redirect(MockWebContext.create()).get();
         URL url2 = new URL(action.getLocation());
-        final Map<String, String> stringMap2 = splitQuery(url2);
+        final Map<String, String> stringMap2 = TestsHelper.splitQuery(url2);
         assertNotNull(stringMap2.get("state"));
         assertNotEquals(stringMap.get("state"), stringMap2.get("state"));
     }
 
-    public static Map<String, String> splitQuery(URL url) {
-        Map<String, String> query_pairs = new LinkedHashMap<>();
-        String query = url.getQuery();
-        String[] pairs = query.split("&", -1);
-        for (String pair : pairs) {
-            int idx = pair.indexOf("=");
-            query_pairs.put(CommonHelper.urlEncode(pair.substring(0, idx)), CommonHelper.urlEncode(pair.substring(idx + 1)));
-        }
-        return query_pairs;
-    }
-
     @Test
     public void testGetRedirectionGithub() {
-        final FoundAction action = (FoundAction) getClient().redirect(MockWebContext.create());
+        final FoundAction action = (FoundAction) getClient().redirect(MockWebContext.create()).get();
         final String url = action.getLocation();
         assertTrue(url != null && !url.isEmpty());
     }

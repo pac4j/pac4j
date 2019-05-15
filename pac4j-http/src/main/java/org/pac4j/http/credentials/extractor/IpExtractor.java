@@ -8,6 +8,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * To extract a remote IP address.
@@ -32,10 +33,10 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
-        final String ip;
+    public Optional<TokenCredentials> extract(WebContext context) {
+        final Optional<String> ip;
         if (alternateIpHeaders.isEmpty()) {
-            ip = context.getRemoteAddr();
+            ip = Optional.ofNullable(context.getRemoteAddr());
         } else {
             String requestSourceIp = context.getRemoteAddr();
             if (this.proxyIp.isEmpty()) {
@@ -45,26 +46,26 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
             else if (this.proxyIp.equals(requestSourceIp)) {
                 ip = ipFromHeaders(context);
             } else {
-                ip = null;
+                ip = Optional.empty();
             }
         }
 
-        if (ip == null) {
-            return null;
+        if (!ip.isPresent()) {
+            return Optional.empty();
         }
 
-        return new TokenCredentials(ip);
+        return Optional.of(new TokenCredentials(ip.get()));
     }
 
-    private String ipFromHeaders(WebContext context) {
-        String ip;
+    private Optional<String> ipFromHeaders(WebContext context) {
+        Optional<String> ip;
         for (String header : alternateIpHeaders) {
             ip = context.getRequestHeader(header);
-            if (ip != null && !ip.isEmpty()) {
+            if (ip.isPresent() && !ip.get().isEmpty()) {
                 return ip;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

@@ -62,7 +62,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testRedirect() {
-        final HttpAction action = client.redirect(context);
+        final HttpAction action = client.redirect(context).get();
         assertEquals(HttpConstants.FOUND, action.getCode());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
             Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((FoundAction) action).getLocation());
@@ -70,11 +70,11 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final GaeUserCredentials credentials = client.getCredentials(context);
+        final GaeUserCredentials credentials = client.getCredentials(context).get();
         final User user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals("", user.getAuthDomain());
-        final GaeUserServiceProfile profile = (GaeUserServiceProfile) client.getUserProfile(credentials, context);
+        final GaeUserServiceProfile profile = (GaeUserServiceProfile) client.getUserProfile(credentials, context).get();
         logger.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
         assertEquals(GaeUserServiceProfile.class.getName() + CommonProfile.SEPARATOR + EMAIL, profile.getTypedId());

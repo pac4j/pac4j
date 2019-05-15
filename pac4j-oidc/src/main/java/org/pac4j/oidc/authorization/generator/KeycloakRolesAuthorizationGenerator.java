@@ -12,6 +12,8 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * Specific {@link AuthorizationGenerator} to Keycloak.
  *
@@ -22,14 +24,16 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakRolesAuthorizationGenerator.class);
 
-    private final String clientId;
+    private String clientId;
+
+    public KeycloakRolesAuthorizationGenerator() {}
 
     public KeycloakRolesAuthorizationGenerator(final String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public UserProfile generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
 
         if (profile instanceof KeycloakOidcProfile) {
             try {
@@ -45,11 +49,14 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                 }
 
                 if (clientId != null) {
-                    final JSONObject clientRolesJsonObject = (JSONObject) jwtClaimsSet.getJSONObjectClaim("resource_access").get(clientId);
-                    if (clientRolesJsonObject != null) {
-                        final JSONArray vmsRolesJsonArray = (JSONArray) clientRolesJsonObject.get("roles");
-                        if (vmsRolesJsonArray != null) {
-                            vmsRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                    JSONObject resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
+                    if (resourceAccess != null) {
+                        final JSONObject clientRolesJsonObject = (JSONObject) resourceAccess.get(clientId);
+                        if (clientRolesJsonObject != null) {
+                            final JSONArray clientRolesJsonArray = (JSONArray) clientRolesJsonObject.get("roles");
+                            if (clientRolesJsonArray != null) {
+                                clientRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                            }
                         }
                     }
                 }
@@ -58,6 +65,14 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
             }
         }
 
-        return profile;
+        return Optional.of(profile);
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(final String clientId) {
+        this.clientId = clientId;
     }
 }

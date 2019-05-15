@@ -4,10 +4,11 @@ import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuth10aService;
-import org.pac4j.core.exception.http.FoundAction;
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Twitter.</p>
@@ -44,14 +45,15 @@ public class TwitterClient extends OAuth10Client {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition(includeEmail));
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final String denied = ctx.getRequestParameter("denied");
-            if (CommonHelper.isNotBlank(denied)) {
+            final Optional<String> denied = ctx.getRequestParameter("denied");
+            if (denied.isPresent()) {
                 return true;
             } else {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> new FoundAction("https://twitter.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://twitter.com/logout")));
 
         super.clientInit();
     }

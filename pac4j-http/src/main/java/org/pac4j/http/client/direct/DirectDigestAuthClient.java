@@ -12,6 +12,7 @@ import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP digest auth.</p>
@@ -48,7 +49,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials> {
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    protected DigestCredentials retrieveCredentials(final WebContext context) {
+    protected Optional<DigestCredentials> retrieveCredentials(final WebContext context) {
         // set the www-authenticate in case of error
         final String nonce = calculateNonce();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""

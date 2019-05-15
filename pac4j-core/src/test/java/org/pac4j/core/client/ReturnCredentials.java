@@ -2,6 +2,8 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.credentials.Credentials;
 
+import java.util.Optional;
+
 /**
  * Return a credentials.
  *
@@ -10,5 +12,5 @@ import org.pac4j.core.credentials.Credentials;
  */
 public interface ReturnCredentials {
 
-    Credentials get();
+    Optional<Credentials> get();
 }

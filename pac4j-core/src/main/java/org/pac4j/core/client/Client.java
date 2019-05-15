@@ -5,6 +5,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Optional;
+
 /**
  * <p>This interface is the core class of the library. It represents an authentication mechanism to validate user's credentials and
  * retrieve his user profile.</p>
@@ -32,30 +34,30 @@ public interface Client<C extends Credentials> {
     String getName();
 
     /**
-     * <p>Redirect to the authentication provider for an indirect client.</p>
+     * <p>Redirect to the authentication provider (indirect clients).</p>
      *
      * @param context the current web context
-     * @return the redirection to perform
+     * @return the redirection to perform (optional)
      */
-    RedirectionAction redirect(WebContext context);
+    Optional<RedirectionAction> redirect(WebContext context);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
      * this step.</p>
      *
      * @param context the current web context
-     * @return the credentials
+     * @return the credentials (optional)
      */
-    C getCredentials(WebContext context);
+    Optional<C> getCredentials(WebContext context);
 
     /**
      * Get the user profile based on the provided credentials.
      *
      * @param credentials credentials
      * @param context web context
-     * @return the user profile
+     * @return the user profile (optional)
      */
-    UserProfile getUserProfile(C credentials, WebContext context);
+    Optional<UserProfile> getUserProfile(C credentials, WebContext context);
 
     /**
      * <p>Return the logout action (indirect clients).</p>
@@ -63,7 +65,7 @@ public interface Client<C extends Credentials> {
      * @param context the current web context
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
-     * @return the redirection to perform
+     * @return the redirection to perform (optional)
      */
-    RedirectionAction getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
+    Optional<RedirectionAction> getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl);
 }
