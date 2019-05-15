@@ -231,6 +231,10 @@ public class OidcConfiguration extends InitializableObject {
         this.preferredJwsAlgorithm = preferredJwsAlgorithm;
     }
 
+    public void setPreferredJwsAlgorithm(final String preferredJwsAlgorithm) {
+        this.preferredJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
+    }
+
     public Integer getMaxAge() {
         return maxAge;
     }
