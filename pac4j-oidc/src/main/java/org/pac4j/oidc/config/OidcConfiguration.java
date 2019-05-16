@@ -1,11 +1,12 @@
 package org.pac4j.oidc.config;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.util.DefaultResourceRetriever;
-import com.nimbusds.jose.util.ResourceRetriever;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.auth.*;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
@@ -14,9 +15,12 @@ import org.pac4j.core.state.StaticOrRandomStateGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
+import com.nimbusds.jose.util.ResourceRetriever;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 
 /**
  * OpenID Connect configuration.
