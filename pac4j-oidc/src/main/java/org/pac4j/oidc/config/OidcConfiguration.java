@@ -117,14 +117,8 @@ public class OidcConfiguration extends InitializableObject {
     /** time period advance (in seconds) for considering an access token expired */
     private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
 
-    private TechnicalException responseTypeException;
-
     @Override
     protected void internalInit() {
-        // previous failures
-        if (responseTypeException != null) {
-            throw responseTypeException;
-        }
         // checks
         CommonHelper.assertNotBlank("clientId", getClientId());
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
@@ -303,11 +297,10 @@ public class OidcConfiguration extends InitializableObject {
     }
 
     public void setResponseType(final String responseType) {
-        responseTypeException = null;
         try {
             this.responseType = ResponseType.parse(responseType);
         } catch (ParseException e) {
-            responseTypeException = new TechnicalException("Unrecognised responseType: " + responseType, e);
+            throw new TechnicalException("Unrecognised responseType: " + responseType, e);
         }
     }
 
