@@ -1,13 +1,13 @@
 package org.pac4j.oidc.credentials.authenticator;
 
-import com.nimbusds.oauth2.sdk.*;
-import com.nimbusds.oauth2.sdk.auth.*;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -18,13 +18,23 @@ import org.pac4j.oidc.credentials.OidcCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import com.nimbusds.oauth2.sdk.AuthorizationCode;
+import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.TokenErrorResponse;
+import com.nimbusds.oauth2.sdk.TokenRequest;
+import com.nimbusds.oauth2.sdk.TokenResponse;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
+import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
+import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 /**
  * The OpenID Connect authenticator.
@@ -39,7 +49,8 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
     private static final Collection<ClientAuthenticationMethod> SUPPORTED_METHODS = 
             Arrays.asList(
                     ClientAuthenticationMethod.CLIENT_SECRET_POST, 
-                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
+                    ClientAuthenticationMethod.NONE);
 
     protected OidcConfiguration configuration;
 
@@ -53,39 +64,53 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         this.configuration = configuration;
         this.client = client;
 
-        // check authentication methods
-        final List<ClientAuthenticationMethod> metadataMethods = configuration.findProviderMetadata().getTokenEndpointAuthMethods();
+        final ClientID _clientID = new ClientID(configuration.getClientId());
 
-        final ClientAuthenticationMethod preferredMethod = getPreferredAuthenticationMethod(configuration); 
-        
-        final ClientAuthenticationMethod chosenMethod;
-        if (CommonHelper.isNotEmpty(metadataMethods)) {
-            if (preferredMethod != null) {
-                if (metadataMethods.contains(preferredMethod)) {
-                    chosenMethod = preferredMethod;
+        if (configuration.getSecret() != null) {
+
+            // check authentication methods
+            final List<ClientAuthenticationMethod> metadataMethods = configuration.findProviderMetadata()
+                    .getTokenEndpointAuthMethods();
+
+            final ClientAuthenticationMethod preferredMethod = getPreferredAuthenticationMethod(configuration);
+
+            final ClientAuthenticationMethod chosenMethod;
+            if (CommonHelper.isNotEmpty(metadataMethods)) {
+                if (preferredMethod != null) {
+                    if (metadataMethods.contains(preferredMethod)) {
+                        chosenMethod = preferredMethod;
+                    } else {
+                        throw new TechnicalException(
+                                "Preferred authentication method (" + preferredMethod + ") not supported "
+                                        + "by provider according to provider metadata (" + metadataMethods + ").");
+                    }
                 } else {
-                    throw new TechnicalException(
-                        "Preferred authentication method (" + preferredMethod + ") not supported " + 
-                        "by provider according to provider metadata (" + metadataMethods + ").");
+                    chosenMethod = firstSupportedMethod(metadataMethods);
                 }
             } else {
-                chosenMethod = firstSupportedMethod(metadataMethods);
+                chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
+                logger.info("Provider metadata does not provide Token endpoint authentication methods. Using: {}",
+                        chosenMethod);
             }
+
+            if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(chosenMethod)) {
+                final Secret _secret = new Secret(configuration.getSecret());
+                clientAuthentication = new ClientSecretPost(_clientID, _secret);
+            } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
+                final Secret _secret = new Secret(configuration.getSecret());
+                clientAuthentication = new ClientSecretBasic(_clientID, _secret);
+            } else if (ClientAuthenticationMethod.NONE.equals(chosenMethod)) {
+                clientAuthentication = new ClientNoSecret(_clientID);
+            } else {
+                throw new TechnicalException("Unsupported client authentication method: " + chosenMethod);
+            }
+
         } else {
-            chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
-            logger.info("Provider metadata does not provide Token endpoint authentication methods. Using: {}",
-                    chosenMethod);
+
+            clientAuthentication = new ClientNoSecret(_clientID);
+
         }
 
-        final ClientID _clientID = new ClientID(configuration.getClientId());
-        final Secret _secret = new Secret(configuration.getSecret());
-        if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(chosenMethod)) {
-            clientAuthentication = new ClientSecretPost(_clientID, _secret);
-        } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
-            clientAuthentication = new ClientSecretBasic(_clientID, _secret);
-        } else {
-            throw new TechnicalException("Unsupported client authentication method: " + chosenMethod);
-        }
     }
 
     /**
@@ -168,4 +193,18 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
     public void setClientAuthentication(final ClientAuthentication clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
+
+    public static class ClientNoSecret extends ClientAuthentication {
+
+        protected ClientNoSecret(ClientID clientID) {
+            super(ClientAuthenticationMethod.NONE, clientID);
+        }
+
+        @Override
+        public void applyTo(HTTPRequest request) {
+            // do nothing
+        }
+
+    }
+
 }
