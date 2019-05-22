@@ -1,5 +1,31 @@
 package org.pac4j.saml.config;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -38,28 +64,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
 
-import java.io.*;
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 /**
  * The class is responsible for capturing client settings and passing them around.
  *
@@ -75,12 +79,15 @@ public class SAML2Configuration extends InitializableObject {
     protected static final String CLASSPATH_PREFIX = "classpath:";
     protected static final String FILE_PREFIX = "file:";
     protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
+    protected static final String CERTIFICATES_PREFIX =  "saml-signing-cert";
 
     private Resource keystoreResource;
 
     private String keystorePassword;
 
     private String privateKeyPassword;
+
+    private String certificateNameToAppend;
 
     private Resource identityProviderMetadataResource;
 
@@ -175,11 +182,11 @@ public class SAML2Configuration extends InitializableObject {
     }
 
     protected SAML2Configuration(final String keyStoreAlias, final String keyStoreType,
-                               final Resource keystoreResource, final String keystorePassword,
-                               final String privateKeyPassword, final Resource identityProviderMetadataResource,
-                               final String identityProviderEntityId, final String serviceProviderEntityId,
-                               final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
-                               final String attributeAsId) {
+                                 final Resource keystoreResource, final String keystorePassword,
+                                 final String privateKeyPassword, final Resource identityProviderMetadataResource,
+                                 final String identityProviderEntityId, final String serviceProviderEntityId,
+                                 final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
+                                 final String attributeAsId) {
         this.keyStoreAlias = keyStoreAlias;
         this.keyStoreType = keyStoreType;
         this.keystoreResource = keystoreResource;
@@ -355,6 +362,15 @@ public class SAML2Configuration extends InitializableObject {
     public String getPrivateKeyPassword() {
         return privateKeyPassword;
     }
+
+    public String getCertificateNameToAppend() {
+        return certificateNameToAppend;
+    }
+
+    public void setCertificateNameToAppend(final String certificateNameToAppend) {
+        this.certificateNameToAppend = certificateNameToAppend;
+    }
+
 
     public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
         this.serviceProviderMetadataResource = serviceProviderMetadataResource;
@@ -713,15 +729,32 @@ public class SAML2Configuration extends InitializableObject {
     }
 
     public File getSigningBinaryCertificatePath() throws IOException {
-        return new File(keystoreResource.getFile().getParentFile(), "saml-signing-cert.crt");
+        return new File(keystoreResource.getFile().getParentFile(), getNormalizedCertificateName() + ".crt");
     }
 
     public File getSigningBase64CertificatePath() throws IOException {
-        return new File(keystoreResource.getFile().getParentFile(), "saml-signing-cert.pem");
+        return new File(keystoreResource.getFile().getParentFile(), getNormalizedCertificateName() + ".pem");
     }
 
     public File getSigningKeyFile() throws IOException {
-        return new File(keystoreResource.getFile().getParentFile(), "saml-signing-cert.key");
+        return new File(keystoreResource.getFile().getParentFile(), getNormalizedCertificateName() + ".key");
+    }
+
+    private String normalizedCertificateName;
+
+    /**
+     *  Sanitize String to use it as fileName for Signing Certificate Names
+     */
+    private String getNormalizedCertificateName() {
+        if (this.normalizedCertificateName == null) {
+            StringBuilder certName =  new StringBuilder(CERTIFICATES_PREFIX);
+            if (CommonHelper.isNotBlank(this.certificateNameToAppend)) {
+                certName.append("-");
+                certName.append(this.certificateNameToAppend.replaceAll("[^a-zA-Z0-9-_\\.]", ""));
+            }
+            this.normalizedCertificateName = certName.toString();
+        }
+        return this.normalizedCertificateName;
     }
 
     private static void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
