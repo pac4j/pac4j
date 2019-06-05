@@ -7,7 +7,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <h1><a id="v4.0" href="/docs/index.html">v4.0</a> <small>(MAJOR)</small></h1>
 
-<h2><a id="v3.7" href="http://www.pac4j.org/3.7.x/docs/index.html">v3.7</a> <small>(MINOR)</small>
+<h2><a id="v3.8" href="http://www.pac4j.org/3.8.x/docs/index.html">v3.8</a> <small>(MINOR)</small>
+
+<a id="v3.7" href="http://www.pac4j.org/3.7.x/docs/index.html">v3.7</a> <small>(MINOR)</small>
 
 <a id="v3.6" href="http://www.pac4j.org/3.6.x/docs/index.html">v3.6</a> <small>(MINOR)</small>
 
