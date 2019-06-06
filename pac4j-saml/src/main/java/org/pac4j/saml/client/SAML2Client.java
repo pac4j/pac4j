@@ -81,7 +81,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected SAML2Configuration configuration;
 
     protected StateGenerator stateGenerator = new SAML2StateGenerator(this);
-
+    
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
         CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
@@ -161,7 +161,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
         // Build provider for digital signature validation and encryption
-        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager,
+                this.configuration.isAllSignatureValidationDisabled());
     }
 
     protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
