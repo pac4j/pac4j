@@ -27,6 +27,7 @@ import org.pac4j.saml.client.SAML2Client;
  * /API/SAML2/metadata = saml2MetadataFilter
  * 
  * @author Graham Leggett
+ * @since 3.8.0
  */
 public class Saml2MetadataFilter implements Filter {
 
