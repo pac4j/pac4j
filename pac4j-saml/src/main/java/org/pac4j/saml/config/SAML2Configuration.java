@@ -136,7 +136,7 @@ public class SAML2Configuration extends InitializableObject {
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
-    private boolean wantsAssertionsSigned = true;
+    private boolean wantsAssertionsSigned = false;
 
     private String keyStoreAlias;
 
