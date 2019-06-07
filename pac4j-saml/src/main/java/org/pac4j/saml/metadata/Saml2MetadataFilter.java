@@ -44,7 +44,7 @@ public class Saml2MetadataFilter implements Filter {
             final FilterChain filterChain) throws IOException, ServletException {
 
         CommonHelper.assertNotNull("config", config);
-        CommonHelper.assertNotNull("client", clientName);
+        CommonHelper.assertNotNull("clientName", clientName);
 
         SAML2Client client = (SAML2Client) config.getClients().findClient(this.clientName).get();
         if (client != null) {
