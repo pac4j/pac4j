@@ -115,6 +115,13 @@ But you can force your own entity ID with the `serviceProviderEntityId` paramete
 cfg.setServiceProviderEntityId("http://localhost:8080/callback?extraParameter");
 ```
 
+By SAML specification, the authentication request must not contain a NameQualifier, if the SP entity is in the format nameid-format:entity. However, some IdP require that information to be present. You can force a NameQualifier in the request with the `useNameQualifier` parameter:
+
+```java
+// force NameQualifier in the authn request
+cfg.setUseNameQualifier(true);
+```
+
 To allow the authentication request sent to the identity provider to specify an attribute consuming index:
 
 ```java
@@ -216,8 +223,7 @@ Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files c
 
 ### c) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
 
-ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In the `SAML2Configuration`, you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
-
+ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. For this reason, the parameter `useNameQualifier` in the `SAML2Configuration` must be set to false, which is the default value.
 
 # Integration with various IdPs
 
