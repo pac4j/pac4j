@@ -78,17 +78,17 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test(expected = SAMLException.class)
-    public void testAssertionWithoutSignatureThrowsException() {
+    public void testAuthenticatedResponseAndAssertionWithoutSignatureThrowsException() {
         SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
         SAML2MessageContext context = new SAML2MessageContext();
         SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();
-        peerEntityContext.setAuthenticated(false);
+        peerEntityContext.setAuthenticated(true);
         context.addSubcontext(peerEntityContext);
         validator.validateAssertionSignature(null, context, null);
     }
 
-    @Test
-    public void testAssertionWithoutSignatureDoesNotThrowException() {
+    @Test(expected = SAMLException.class)
+    public void testResponseWithoutSignatureThrowsException() {
         SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
         SAML2MessageContext context = new SAML2MessageContext();
         SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();

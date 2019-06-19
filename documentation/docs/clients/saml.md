@@ -138,10 +138,11 @@ cfg.setSignatureReferenceDigestMethods(...);
 cfg.setSignatureCanonicalizationAlgorithm(...);
 ```
 
-By default, assertions must be signed, but this may be disabled using:
-
+The SAML client always requires assertions to be signed either directly or via the response that contains them. 
+When the assertions need to be processed separate of the response, you can request them to be signed directly using:
+ 
 ```java
-cfg.setWantsAssertionsSigned(false);
+cfg.setWantsAssertionsSigned(true);
 ```
 
 You may also want to enable signing of the authentication requests using:
