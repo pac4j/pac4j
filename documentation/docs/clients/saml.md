@@ -171,11 +171,11 @@ The SAML support handles the HTTP-POST and the HTTP-Redirect bindings for logout
 
 The `SAML2Client` can participate in the central logout and send a logout request to the IdP.
 The binding of this request is controlled by the `spLogoutRequestBindingType` property and
-the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`.
+the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`. 
 
 When calling the IdP, the SAML *pac4j* application locally removes the user profiles and optionally destroys the web session based on the [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java).
 You may use your own logout handler by implementing the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface
-and define it in the SAML configuration.
+and define it in the SAML configuration. By default at the last step of SP initiated logout user will see a blank page. It is possible to customize default *pac4j* behavior using the `postLogoutURL` property of the `SAML2Configuration`.
 
 When called by the IdP, the SAML *pac4j* application also removes the user profiles based on the logout handler and returns a logout response with a binding defined by the `spLogoutResponseBindingType` property (in the `SAML2Configuration`).
 

@@ -156,6 +156,8 @@ public class SAML2Configuration extends InitializableObject {
 
     private LogoutHandler logoutHandler;
 
+    private String postLogoutURL;
+
     public SAML2Configuration() {
     }
 
@@ -607,6 +609,14 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setLogoutHandler(final LogoutHandler logoutHandler) {
         this.logoutHandler = logoutHandler;
+    }
+
+    public String getPostLogoutURL() {
+        return postLogoutURL;
+    }
+
+    public void setPostLogoutURL(String postLogoutURL) {
+        this.postLogoutURL = postLogoutURL;
     }
 
     public LogoutHandler findLogoutHandler() {
