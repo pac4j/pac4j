@@ -3,6 +3,8 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.8.0**:
+
 **v3.7.0**:
 
 - Fix SAML SP metadata signature
