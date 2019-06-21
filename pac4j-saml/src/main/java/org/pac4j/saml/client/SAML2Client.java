@@ -36,6 +36,8 @@ import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.redirect.SAML2RedirectActionBuilder;
+import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
+import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.sso.impl.*;
@@ -82,6 +84,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected StateGenerator stateGenerator = new SAML2StateGenerator(this);
 
+    protected ReplayCacheProvider replayCache;
+
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
         CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
@@ -115,6 +119,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 initServiceProviderMetadataResolver());
         initSAMLContextProvider(metadataManager);
         initSignatureTrustEngineProvider(metadataManager);
+        initSAMLReplayCache();
         initSAMLResponseValidator();
         initSAMLProfileHandler();
         initSAMLLogoutResponseValidator();
@@ -144,7 +149,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected void initSAMLLogoutResponseValidator() {
         this.logoutValidator = new SAML2LogoutValidator(this.signatureTrustEngineProvider,
-            this.decrypter, this.configuration.getLogoutHandler());
+            this.decrypter, this.configuration.getLogoutHandler(), this.replayCache);
         this.logoutValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
@@ -155,7 +160,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.decrypter,
                 this.configuration.getLogoutHandler(),
                 this.configuration.getMaximumAuthenticationLifetime(),
-                this.configuration.isWantsAssertionsSigned());
+                this.configuration.isWantsAssertionsSigned(),
+                this.replayCache);
         this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
@@ -212,6 +218,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
             throw new TechnicalException("Error initializing manager", e);
         }
         return metadataManager;
+    }
+    
+    protected void initSAMLReplayCache() {
+        replayCache = new InMemoryReplayCacheProvider();
     }
 
     public void destroy() {

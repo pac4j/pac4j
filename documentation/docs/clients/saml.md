@@ -76,10 +76,12 @@ Or you can even use the empty constructor and the appropriate setters:
 Finally, you need to declare the `SAML2Client` based on the previous configuration:
 
 ```java
-Saml2Client client = new Saml2Client(cfg);
+SAML2Client client = new SAML2Client(cfg);
 ```
 
 After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/profile/SAML2Profile.java) is returned.
+
+The `SAML2Client` configures a `ReplayCache`, which protects against replay attacks. This `ReplayCache` must keep state between authentications. Therefore a single instance of the `SAML2Client` must be used. If this is not possible, you can override the `initSAMLReplayCache` method to create a custom `ReplayCacheProvider`.
 
 ## 3) Additional configuration:
 

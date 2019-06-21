@@ -5,6 +5,8 @@ title: Release notes&#58;
 
 **v3.8.0**:
 
+- Added replay protectection to the SAML client.
+
 **v3.7.0**:
 
 - Fix SAML SP metadata signature
