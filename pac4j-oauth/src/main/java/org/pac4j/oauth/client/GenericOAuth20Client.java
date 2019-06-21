@@ -118,7 +118,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
                         AbstractAttributeConverter<?> converter = (AbstractAttributeConverter<?>) x.getDeclaredConstructor().newInstance();
                         Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
-                    } catch (Exception e) {
+                    } catch (ReflectiveOperationException e) {
                         LOG.warn("Ignore type which no parameterless constructor:" + x.getName());
                     }
                     return false;

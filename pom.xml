@@ -396,19 +396,19 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.5</version>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>3.1.12</version>
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->
 					<failOnError>true</failOnError>
-					<excludeFilterFile>${basedir}/../findbugs-exclude.xml</excludeFilterFile>
+					<excludeFilterFile>${basedir}/../spotbugs-exclude.xml</excludeFilterFile>
 					<includeTests>true</includeTests>
 				</configuration>
 				<executions>
 					<execution>
-						<id>run-findbugs</id>
+						<id>run-spotbugs</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>check</goal>
