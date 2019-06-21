@@ -36,16 +36,18 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
+import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLAssertionAudienceException;
 import org.pac4j.saml.exceptions.SAMLAssertionConditionException;
 import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
 import org.pac4j.saml.exceptions.SAMLAuthnSessionCriteriaException;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.exceptions.SAMLInResponseToMismatchException;
+import org.pac4j.saml.exceptions.SAMLReplayException;
 import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
-import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
+import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.util.SAML2Utils;
 
@@ -68,13 +70,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     private int maximumAuthenticationLifetime;
 
     private final boolean wantsAssertionsSigned;
-
+    
     public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                        final Decrypter decrypter,
                                        final LogoutHandler logoutHandler,
                                        final int maximumAuthenticationLifetime,
-                                       final boolean wantsAssertionsSigned) {
-        this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, new BasicURLComparator());
+                                       final boolean wantsAssertionsSigned,
+                                       final ReplayCacheProvider replayCache) {
+        this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, replayCache, new BasicURLComparator());
     }
 
     public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
@@ -82,8 +85,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                                        final LogoutHandler logoutHandler,
                                        final int maximumAuthenticationLifetime,
                                        final boolean wantsAssertionsSigned,
+                                       final ReplayCacheProvider replayCache,
                                        final URIComparator uriComparator) {
-        super(engine, decrypter, logoutHandler, uriComparator);
+        super(engine, decrypter, logoutHandler, replayCache, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
@@ -98,6 +102,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
         final Response response = (Response) message;
         final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
+        verifyMessageReplay(context);
         validateSamlProtocolResponse(response, context, engine);
 
         if (decrypter != null) {
@@ -378,6 +383,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         for (final SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
             if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod()) &&
                 isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
+                validateAssertionReplay((Assertion) subject.getParent(), confirmation.getSubjectConfirmationData());
                 NameID nameIDFromConfirmation = confirmation.getNameID();
                 final BaseID baseIDFromConfirmation = confirmation.getBaseID();
                 final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
@@ -465,6 +471,28 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         return true;
+    }
+    
+    /**
+     * Checks that the bearer assertion is not being replayed.
+     * 
+     * @param assertion The Assertion to check
+     * @param data      The SubjectConfirmationData to check the assertion against
+     */
+    protected void validateAssertionReplay(final Assertion assertion, final SubjectConfirmationData data) {
+        if (assertion.getID() == null) {
+            throw new SAMLReplayException("The assertion does not have an ID");
+        }
+
+        if (replayCache == null) {
+            logger.warn("No replay cache specified, skipping replay verification");
+            return;
+        }
+
+        if (!replayCache.get().check(getClass().getName(), assertion.getID(),
+                data.getNotOnOrAfter().getMillis() + acceptedSkew * 1000)) {
+            throw new SAMLReplayException("Rejecting replayed assertion ID '" + assertion.getID() + "'");
+        }
     }
 
     /**
