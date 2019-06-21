@@ -42,11 +42,17 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         final RedirectAction action = client.getRedirectAction(context);
         final String inflated = getInflatedAuthnRequest(action.getLocation());
 
-        assertTrue(inflated.contains(
-                "<saml2:Issuer "
-                        + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
-                        + "NameQualifier=\"http://localhost:8080/callback\" "
-                        + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+        // JDK8 and JDK11 do not produce the same XML (attributes in different order)
+        // something like xmlunit would have been better but may be a bit overkill for just 2 failing tests
+        final String issuerJdk8 = "<saml2:Issuer "
+                + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
+                + "NameQualifier=\"http://localhost:8080/callback\" "
+                + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>";
+        final String issuerJdk11 = "<saml2:Issuer "
+                + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
+                + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
+                + "NameQualifier=\"http://localhost:8080/callback\">http://localhost:8080/callback</saml2:Issuer>";
+        assertTrue(inflated.contains(issuerJdk8) || inflated.contains(issuerJdk11));
     }
 
     @Test
