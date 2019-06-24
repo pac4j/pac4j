@@ -6,6 +6,11 @@ import org.pac4j.saml.exceptions.SAMLException;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
+/**
+ * Default replay cache provider which stores the identifiers in memory. This
+ * implementation will not work in a clustered environment and requires the same
+ * instance is used for all SAML authentications.
+ */
 public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
     private ReplayCache cache;
 
