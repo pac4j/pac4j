@@ -37,6 +37,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testCustomSpEntityIdForRedirectBinding() {
         final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
+        client.getConfiguration().setUseNameQualifier(true);
 
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final RedirectAction action = client.getRedirectAction(context);
@@ -46,6 +47,21 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
                 "<saml2:Issuer "
                         + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
                         + "NameQualifier=\"http://localhost:8080/callback\" "
+                        + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+    }
+
+    @Test
+    public void testStandardSpEntityIdForRedirectBinding() {
+        final SAML2Client client = getClient();
+        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
+
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context);
+        final String inflated = getInflatedAuthnRequest(action.getLocation());
+
+        assertTrue(inflated.contains(
+                "<saml2:Issuer "
+                        + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
                         + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
     }
 
