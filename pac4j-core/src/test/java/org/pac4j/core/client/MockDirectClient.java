@@ -18,7 +18,7 @@ public final class MockDirectClient extends DirectClient<Credentials> {
     private final CommonProfile profile;
 
     public MockDirectClient(final String name) {
-        this(name, () -> null, null);
+        this(name, () -> Optional.empty(), null);
     }
 
     public MockDirectClient(final String name, final Optional<Credentials> credentials, final CommonProfile profile) {
