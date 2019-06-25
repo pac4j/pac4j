@@ -24,6 +24,7 @@ title: Release notes&#58;
 **v3.8.0**:
 
 - QualifiedName must not be included by default in SAML authentication requests
+- Added replay protectection to the SAML client.
 
 **v3.7.0**:
 
