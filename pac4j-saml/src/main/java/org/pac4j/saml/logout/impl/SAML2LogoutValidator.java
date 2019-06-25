@@ -14,6 +14,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
+import org.pac4j.saml.replay.ReplayCacheProvider;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     private String postLogoutURL;
 
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                final LogoutHandler logoutHandler, String postLogoutURL) {
-        super(engine, decrypter, logoutHandler);
+                                final LogoutHandler logoutHandler, String postLogoutURL, final ReplayCacheProvider replayCache) {
+        super(engine, decrypter, logoutHandler, replayCache);
         this.postLogoutURL = postLogoutURL;
     }
 
