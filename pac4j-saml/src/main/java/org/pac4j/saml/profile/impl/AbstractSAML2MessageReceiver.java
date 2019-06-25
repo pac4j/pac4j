@@ -36,7 +36,6 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
 
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
-        context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
         final AbstractPac4jDecoder decoder = getDecoder(webContext);
 

@@ -1,11 +1,14 @@
 package org.pac4j.saml.profile.impl;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.messaging.handler.MessageHandlerException;
+import org.opensaml.saml.common.binding.security.impl.MessageReplaySecurityHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
@@ -26,6 +29,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.*;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
+import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,18 +53,40 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected final Decrypter decrypter;
 
     protected final LogoutHandler logoutHandler;
+    
+    protected final ReplayCacheProvider replayCache;
 
+    /**
+     * @deprecated this constructor does not accept a replay cache, replay protection will be disabled
+     */
+    @Deprecated
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
-                                             final Decrypter decrypter, final LogoutHandler logoutHandler) {
-        this(signatureTrustEngineProvider, decrypter, logoutHandler, new BasicURLComparator());
+            final Decrypter decrypter, final LogoutHandler logoutHandler) {
+        this(signatureTrustEngineProvider, decrypter, logoutHandler, null, new BasicURLComparator());
+    }
+
+    /**
+     * @deprecated this constructor does not accept a replay cache, replay protection will be disabled
+     */
+    @Deprecated
+    protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
+            final Decrypter decrypter, final LogoutHandler logoutHandler, final URIComparator uriComparator) {
+        this(signatureTrustEngineProvider, decrypter, logoutHandler, null, uriComparator);
+    }
+    
+    protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
+                                             final Decrypter decrypter, final LogoutHandler logoutHandler,
+                                             final ReplayCacheProvider replayCache) {
+        this(signatureTrustEngineProvider, decrypter, logoutHandler, replayCache, new BasicURLComparator());
     }
 
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final LogoutHandler logoutHandler,
-                                             final URIComparator uriComparator) {
+                                             final ReplayCacheProvider replayCache, final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = signatureTrustEngineProvider;
         this.decrypter = decrypter;
         this.logoutHandler = logoutHandler;
+        this.replayCache = replayCache;
         this.uriComparator = uriComparator;
     }
 
@@ -181,6 +207,25 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             }
         } catch (final Exception e) {
             throw new SAMLEndpointMismatchException(e);
+        }
+    }
+    
+    protected void verifyMessageReplay(final SAML2MessageContext context) {
+        if (replayCache == null) {
+            logger.warn("No replay cache specified, skipping replay verification");
+            return;
+        }
+
+        try {
+            MessageReplaySecurityHandler messageReplayHandler = new MessageReplaySecurityHandler();
+            messageReplayHandler.setExpires(acceptedSkew * 1000);
+            messageReplayHandler.setReplayCache(replayCache.get());
+            messageReplayHandler.initialize();
+            messageReplayHandler.invoke(context);
+        } catch (ComponentInitializationException e) {
+            throw new SAMLException(e);
+        } catch (MessageHandlerException e) {
+            throw new SAMLReplayException(e);
         }
     }
 
