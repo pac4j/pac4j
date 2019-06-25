@@ -8,6 +8,7 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -24,7 +25,8 @@ public class SAML2DefaultResponseValidatorTests {
     private SAML2AuthnResponseValidator createResponseValidatorWithSigningValidationOf(boolean wantsAssertionsSigned) {
         SAML2SignatureTrustEngineProvider trustEngineProvider = mock(SAML2SignatureTrustEngineProvider.class);
         Decrypter decrypter = mock(Decrypter.class);
-        return new SAML2AuthnResponseValidator(trustEngineProvider, decrypter, null, 0, wantsAssertionsSigned);
+        return new SAML2AuthnResponseValidator(trustEngineProvider, decrypter, null, 0, wantsAssertionsSigned,
+                new InMemoryReplayCacheProvider());
     }
 
     @Test

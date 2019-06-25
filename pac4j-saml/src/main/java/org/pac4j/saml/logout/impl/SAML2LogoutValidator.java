@@ -13,6 +13,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
+import org.pac4j.saml.replay.ReplayCacheProvider;
 
 import java.util.List;
 
@@ -25,9 +26,18 @@ import java.util.List;
  */
 public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
+    /**
+     * @deprecated this constructor does not accept a replay cache, replay protection will be disabled
+     */
+    @Deprecated
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
                                 final LogoutHandler logoutHandler) {
-        super(engine, decrypter, logoutHandler);
+        this(engine, decrypter, logoutHandler, null);
+    }
+
+    public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
+            final LogoutHandler logoutHandler, final ReplayCacheProvider replayCache) {
+        super(engine, decrypter, logoutHandler, replayCache);
     }
 
     /**

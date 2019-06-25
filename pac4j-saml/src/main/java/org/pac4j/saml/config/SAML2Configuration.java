@@ -115,7 +115,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private String nameIdPolicyFormat = null;
 
-    private boolean useNameQualifier = true;
+    private boolean useNameQualifier = false;
 
     private boolean signMetadata;
 

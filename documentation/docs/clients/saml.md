@@ -76,10 +76,12 @@ Or you can even use the empty constructor and the appropriate setters:
 Finally, you need to declare the `SAML2Client` based on the previous configuration:
 
 ```java
-Saml2Client client = new Saml2Client(cfg);
+SAML2Client client = new SAML2Client(cfg);
 ```
 
 After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/profile/SAML2Profile.java) is returned.
+
+The `SAML2Client` configures a `ReplayCache`, which protects against replay attacks. This `ReplayCache` must keep state between authentications. Therefore a single instance of the `SAML2Client` must be used. If this is not possible, you can override the `initSAMLReplayCache` method to create a custom `ReplayCacheProvider`.
 
 ## 3) Additional configuration:
 
@@ -113,6 +115,13 @@ But you can force your own entity ID with the `serviceProviderEntityId` paramete
 ```java
 // custom SP entity ID
 cfg.setServiceProviderEntityId("http://localhost:8080/callback?extraParameter");
+```
+
+By SAML specification, the authentication request must not contain a NameQualifier, if the SP entity is in the format nameid-format:entity. However, some IdP require that information to be present. You can force a NameQualifier in the request with the `useNameQualifier` parameter:
+
+```java
+// force NameQualifier in the authn request
+cfg.setUseNameQualifier(true);
 ```
 
 To allow the authentication request sent to the identity provider to specify an attribute consuming index:
@@ -217,8 +226,7 @@ Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files c
 
 ### c) Disable Name Qualifier for format urn:oasis:names:tc:SAML:2.0:nameid-format:entity
 
-ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In the `SAML2Configuration`, you can use setUseNameQualifier to disable the NameQualifier from SAML Request.
-
+ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. For this reason, the parameter `useNameQualifier` in the `SAML2Configuration` must be set to false, which is the default value.
 
 # Integration with various IdPs
 
