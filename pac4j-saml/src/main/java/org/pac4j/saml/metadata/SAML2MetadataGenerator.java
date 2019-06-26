@@ -66,6 +66,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected String assertionConsumerServiceUrl;
 
+    protected String responseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     protected String singleLogoutServiceUrl;
 
     protected boolean authnRequestSigned = false;
@@ -190,7 +192,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
         int index = 0;
         spDescriptor.getAssertionConsumerServices()
-            .add(getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, this.defaultACSIndex == index));
+            .add(getAssertionConsumerService(responseBindingType, index++, this.defaultACSIndex == index));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_BINDING_URI));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_REDIRECT_BINDING_URI));
@@ -326,6 +328,10 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public final void setAssertionConsumerServiceUrl(final String assertionConsumerServiceUrl) {
         this.assertionConsumerServiceUrl = assertionConsumerServiceUrl;
+    }
+
+    public void setResponseBindingType(String responseBindingType) {
+        this.responseBindingType = responseBindingType;
     }
 
     public final void setSingleLogoutServiceUrl(final String singleLogoutServiceUrl) {

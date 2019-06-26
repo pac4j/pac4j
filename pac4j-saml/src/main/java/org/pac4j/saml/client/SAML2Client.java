@@ -3,6 +3,7 @@ package org.pac4j.saml.client;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 
+import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -39,8 +40,12 @@ import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.redirect.SAML2RedirectActionBuilder;
 import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
 import org.pac4j.saml.replay.ReplayCacheProvider;
+import org.pac4j.saml.profile.api.SAML2MessageReceiver;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
+import org.pac4j.saml.sso.artifact.DefaultSOAPPipelineProvider;
+import org.pac4j.saml.sso.artifact.SAML2ArtifactBindingMessageReceiver;
+import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
 import org.pac4j.saml.sso.impl.*;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
@@ -86,6 +91,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected StateGenerator stateGenerator = new SAML2StateGenerator(this);
 
     protected ReplayCacheProvider replayCache;
+    
+    protected SOAPPipelineProvider soapPipelineProvider;
 
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
@@ -122,6 +129,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLReplayCache();
         initSAMLResponseValidator();
+        initSOAPPipelineProvider();
         initSAMLProfileHandler();
         initSAMLLogoutResponseValidator();
         initSAMLLogoutProfileHandler();
@@ -132,13 +140,28 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         defaultLogoutActionBuilder(new SAML2LogoutActionBuilder<>(this));
     }
 
+    protected void initSOAPPipelineProvider() {
+        this.soapPipelineProvider = new DefaultSOAPPipelineProvider(this);
+    }
+
     protected void initSAMLProfileHandler() {
+        SAML2MessageReceiver messageReceiver;
+        if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_POST_BINDING_URI)) {
+            messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator);
+        } else if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_ARTIFACT_BINDING_URI)) {
+            messageReceiver = new SAML2ArtifactBindingMessageReceiver(this.authnResponseValidator,
+                    this.idpMetadataResolver, this.spMetadataResolver, this.soapPipelineProvider);
+        } else {
+            throw new TechnicalException(
+                    "Unsupported response binding type: " + configuration.getResponseBindingType());
+        }
+        
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getAuthnRequestBindingType(),
                         true,
                         this.configuration.isAuthnRequestSigned()),
-                new SAML2WebSSOMessageReceiver(this.authnResponseValidator));
+                messageReceiver);
     }
 
     protected void initSAMLLogoutProfileHandler() {
@@ -301,5 +324,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     public void setLogoutProfileHandler(final SAML2ProfileHandler<LogoutRequest> logoutProfileHandler) {
         this.logoutProfileHandler = logoutProfileHandler;
+    }
+
+    public ReplayCacheProvider getReplayCache() {
+        return replayCache;
     }
 }
