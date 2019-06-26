@@ -24,6 +24,7 @@ import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
+import org.pac4j.saml.crypto.LogOnlySignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.logout.SAML2LogoutActionBuilder;
@@ -167,8 +168,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
         // Build provider for digital signature validation and encryption
-        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager,
-                this.configuration.isAllSignatureValidationDisabled());
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
+        if (this.configuration.isAllSignatureValidationDisabled()) {
+            this.signatureTrustEngineProvider = new LogOnlySignatureTrustEngineProvider(this.signatureTrustEngineProvider);
+        }
     }
 
     protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
