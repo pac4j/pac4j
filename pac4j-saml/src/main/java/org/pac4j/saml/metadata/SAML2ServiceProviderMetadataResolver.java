@@ -91,6 +91,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             metadataGenerator.setRequestInitiatorLocation(callbackUrl);
             // Assertion consumer service url is the callback URL
             metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
+            metadataGenerator.setResponseBindingType(configuration.getResponseBindingType());
             final String logoutUrl = CommonHelper.addParameter(callbackUrl, LOGOUT_ENDPOINT_PARAMETER, "true");
             // the logout URL is callback URL with an extra parameter
             metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
