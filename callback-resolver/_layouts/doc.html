@@ -1,0 +1,39 @@
+{% include header.html %}
+
+<li><a href="/index.html">HOME</a></li>
+<li><a href="/gettingstarted.html">GETTING STARTED</a></li>
+<li><a href="/implementations.html">IMPLEMENTATIONS</a></li>
+<li class="active"><a href="/docs/alldocs.html">DOCUMENTATION</a></li>
+<li><a href="/contributors.html">CONTRIBUTE</a></li>
+<li><a href="/blog.html">BLOG</a></li>
+<li><a href="/mailing-lists.html">NEED HELP?</a></li>
+</ul>
+</div>
+</div>
+</nav>
+
+<main>
+    <div class="container">
+
+        <div class="title">
+            <h1 class="text-center"><span class="alert alert-doc">{{ page.title }}</span> <strong>
+                {% if page.url contains '1.9.x' %}<a href="/1.9.x/docs/index.html">(v1.9)</a>
+                {% elsif page.url contains '2.0.x' %}<a href="/2.0.x/docs/index.html">(v2.0)</a>
+                {% elsif page.url contains '2.1.x' %}<a href="/2.1.x/docs/index.html">(v2.1)</a>
+                {% elsif page.url contains '2.2.x' %}<a href="/2.2.x/docs/index.html">(v2.2)</a>
+                {% elsif page.url contains '2.3.x' %}<a href="/2.3.x/docs/index.html">(v2.3)</a>
+                {% elsif page.url contains '3.0.x' %}<a href="/3.0.x/docs/index.html">(v3.0)</a>
+                {% elsif page.url contains '3.1.x' %}<a href="/3.1.x/docs/index.html">(v3.1)</a>
+                {% elsif page.url contains '3.2.x' %}<a href="/3.2.x/docs/index.html">(v3.2)</a>
+                {% elsif page.url contains '3.3.x' %}<a href="/3.3.x/docs/index.html">(v3.3)</a>
+                {% elsif page.url contains '3.4.x' %}<a href="/3.4.x/docs/index.html">(v3.4)</a>
+                {% elsif page.url contains '3.5.x' %}<a href="/3.5.x/docs/index.html">(v3.5)</a>
+                {% elsif page.url contains '3.6.x' %}<a href="/3.6.x/docs/index.html">(v3.6)</a>
+                {% elsif page.url contains '3.7.x' %}<a href="/3.6.x/docs/index.html">(v3.7)</a>
+                {% else %}<a href="/docs/index.html">(v4.0)</a>{% endif %}
+            </strong></h1>
+        </div>
+
+        {{ content }}
+
+        {% include footer.html %}
