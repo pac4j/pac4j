@@ -100,7 +100,14 @@ cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
 // or cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI);
 ```
 
-Notice that the SP metadata will define the POST binding for the authentication response and for the IdP logout request.
+You can define the binding type for the authentication response via the `setResponseBindingType` method (defaults to POST):
+
+```java
+cfg.setResponseBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+// or cfg.setResponseBindingType(SAMLConstants.SAML2_ARTIFACT_BINDING_URI);
+```
+
+Notice that the SP metadata will define the POST binding for the IdP logout request.
 
 Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behavior, set the `maximumAuthenticationLifetime` parameter:
 

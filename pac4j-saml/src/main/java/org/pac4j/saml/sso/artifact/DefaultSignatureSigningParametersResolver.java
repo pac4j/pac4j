@@ -13,6 +13,13 @@ import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.SignatureSigningParametersResolver;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 
+/**
+ * A {@link SignatureSigningParametersResolver} that resolves the
+ * {@link SignatureSigningParameters} from the pac4j
+ * {@link SignatureSigningParametersProvider}.
+ * 
+ * @since 3.8.0
+ */
 public class DefaultSignatureSigningParametersResolver implements SignatureSigningParametersResolver {
     private SignatureSigningParametersProvider provider;
 

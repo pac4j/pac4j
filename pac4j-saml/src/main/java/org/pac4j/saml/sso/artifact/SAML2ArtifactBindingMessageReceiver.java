@@ -8,6 +8,11 @@ import org.pac4j.saml.profile.impl.AbstractSAML2MessageReceiver;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
 import org.pac4j.saml.util.Configuration;
 
+/**
+ * A message receiver which fetches the actual artifact using SOAP.
+ * 
+ * @since 3.8.0
+ */
 public class SAML2ArtifactBindingMessageReceiver extends AbstractSAML2MessageReceiver {
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 

@@ -50,6 +50,15 @@ import org.xml.sax.SAXException;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 
+/**
+ * A default implementation of the pipeline factory, which enforces the rules
+ * set by the web SSO profile. To add additional handlers, you can override
+ * {@link #getInboundHandlers()}, {@link #getOutboundPayloadHandlers()} and/or
+ * {@link #getOutboundTransportHandlers()}. To modify the configuration of a
+ * specific handler, override the build method for that handler.
+ * 
+ * @since 3.8.0
+ */
 @SuppressWarnings("unchecked")
 public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFactory<SAMLObject, SAMLObject> {
     protected final SAML2Configuration configuration;

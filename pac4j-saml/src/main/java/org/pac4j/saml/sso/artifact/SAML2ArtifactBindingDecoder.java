@@ -19,6 +19,12 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
 
+/**
+ * Decodes a SAML artifact binding request by fetching the actual artifact via
+ * SOAP.
+ * 
+ * @since 3.8.0
+ */
 public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     private final SAML2MetadataResolver idpMetadataResolver;
 
@@ -52,6 +58,8 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             SAML2MessageContext messageContext = new SAML2MessageContext();
 
             PipelineFactoryHttpSOAPClient<SAMLObject, SAMLObject> soapClient = new PipelineFactoryHttpSOAPClient<SAMLObject, SAMLObject>() {
+                @SuppressWarnings("rawtypes")
+                @Override
                 public void send(String endpoint, InOutOperationContext operationContext)
                         throws SOAPException, SecurityException {
                     super.send(endpoint, operationContext);
@@ -81,7 +89,7 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
         }
     }
 
-    protected void transferContext(InOutOperationContext operationContext, SAML2MessageContext messageContext) {
+    protected void transferContext(InOutOperationContext<?, ?> operationContext, SAML2MessageContext messageContext) {
         messageContext
                 .addSubcontext(operationContext.getInboundMessageContext().getSubcontext(SAMLPeerEntityContext.class));
     }
