@@ -7,6 +7,12 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 
+/**
+ * A simple function that returns the issuer set on the {@link MessageContext}.
+ * This is read from the message in the context.
+ * 
+ * @since 3.8.0
+ */
 @SuppressWarnings("rawtypes")
 public class IssuerFunction implements Function<MessageContext, String> {
     @Override

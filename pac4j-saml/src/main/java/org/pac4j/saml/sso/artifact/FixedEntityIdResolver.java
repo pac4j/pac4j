@@ -9,6 +9,12 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.Resolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 
+/**
+ * A resolver for the entity id specified by the given
+ * {@link SAML2MetadataResolver}.
+ * 
+ * @since 3.8.0
+ */
 public class FixedEntityIdResolver implements Resolver<String, CriteriaSet> {
     private SAML2MetadataResolver metadataResolver;
 
