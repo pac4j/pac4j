@@ -8,6 +8,8 @@ title: Release notes&#58;
 
 - Added replay protectection to the SAML client.
 
+- Fix SAML signature validation w.r.t. WantAssertionsSigned handling. Signing is now always required, even when WantAssertionsSigned is disabled. WantAssertionsSigned now requires explicit signing of the assertions, not the response.
+
 **v3.7.0**:
 
 - Fix SAML SP metadata signature
