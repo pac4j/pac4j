@@ -137,7 +137,8 @@ public class SAML2Configuration extends InitializableObject {
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
-    private boolean wantsAssertionsSigned = true;
+    private boolean wantsAssertionsSigned = false;
+    private boolean allSignatureValidationDisabled = false;
 
     private String keyStoreAlias;
 
@@ -587,6 +588,20 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setSpLogoutRequestSigned(final boolean spLogoutRequestSigned) {
         this.spLogoutRequestSigned = spLogoutRequestSigned;
+    }
+    
+    public boolean isAllSignatureValidationDisabled() {
+        return allSignatureValidationDisabled;
+    }
+    
+    /**
+     * Disables all signature validation. DO NOT ENABLE THIS IN PRODUCTION!
+     * This option is only provided for development purposes.
+     * 
+     * @param allSignatureValidationDisabled
+     */
+    public void setAllSignatureValidationDisabled(boolean allSignatureValidationDisabled) {
+        this.allSignatureValidationDisabled = allSignatureValidationDisabled;
     }
 
     public int getAttributeConsumingServiceIndex() {

@@ -615,8 +615,11 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             final String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
         } else {
-            if (wantsAssertionsSigned(context) && !peerContext.isAuthenticated()) {
-                throw new SAMLSignatureRequiredException("Assertion or response must be signed");
+            if (wantsAssertionsSigned(context)) {
+                throw new SAMLSignatureRequiredException("Assertion must be explicitly signed");
+            }
+            if (!peerContext.isAuthenticated()) {
+                throw new SAMLSignatureRequiredException("Unauthenticated response contains an unsigned assertion");
             }
         }
     }
