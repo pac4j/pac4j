@@ -25,6 +25,7 @@ title: Release notes&#58;
 
 - QualifiedName must not be included by default in SAML authentication requests
 - Added replay protectection to the SAML client.
+- Fix SAML signature validation w.r.t. WantAssertionsSigned handling. Signing is now always required, even when WantAssertionsSigned is disabled. WantAssertionsSigned now requires explicit signing of the assertions, not the response.
 
 **v3.7.0**:
 
