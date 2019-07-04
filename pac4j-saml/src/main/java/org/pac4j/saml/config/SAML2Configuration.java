@@ -107,6 +107,8 @@ public class SAML2Configuration extends InitializableObject {
 
     private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
+    private String responseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     private String spLogoutRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
@@ -457,6 +459,14 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setAuthnRequestBindingType(final String authnRequestBindingType) {
         this.authnRequestBindingType = authnRequestBindingType;
+    }
+
+    public String getResponseBindingType() {
+        return responseBindingType;
+    }
+
+    public void setResponseBindingType(String responseBindingType) {
+        this.responseBindingType = responseBindingType;
     }
 
     public String getSpLogoutRequestBindingType() {
