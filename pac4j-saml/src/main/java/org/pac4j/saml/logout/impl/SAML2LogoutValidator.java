@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.*;
@@ -26,18 +27,21 @@ import java.util.List;
  */
 public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
+    private String postLogoutURL;
+
     /**
      * @deprecated this constructor does not accept a replay cache, replay protection will be disabled
      */
     @Deprecated
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
                                 final LogoutHandler logoutHandler) {
-        this(engine, decrypter, logoutHandler, null);
+        this(engine, decrypter, logoutHandler, null, null);
     }
 
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-            final LogoutHandler logoutHandler, final ReplayCacheProvider replayCache) {
+            final LogoutHandler logoutHandler, final String postLogoutURL, final ReplayCacheProvider replayCache) {
         super(engine, decrypter, logoutHandler, replayCache);
+        this.postLogoutURL = postLogoutURL;
     }
 
     /**
@@ -65,9 +69,13 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
 
-            // nothing to reply to the logout response
-            throw HttpAction.ok(webContext, "");
-
+            if (StringUtils.isNotBlank(postLogoutURL)){
+                // if custom post logout URL is present then redirect to it
+                throw HttpAction.redirect(webContext, postLogoutURL);
+            } else {
+                // nothing to reply to the logout response
+                throw HttpAction.ok(webContext, "");
+            }
         } else {
             throw new SAMLException("Must be a LogoutRequest or LogoutResponse type");
         }
