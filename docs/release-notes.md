@@ -19,10 +19,10 @@ title: Release notes&#58;
 - Use the 303 "See Other" and 307 "Temporary Redirect" HTTP actions after a POST request (`RedirectionActionHelper`)
 - Handles originally requested URLs with POST method
 - Add HTTP POST Simple-Sign protocol implementation
-- Add customizable SAML post Logout URL
 
 **v3.8.0**:
 
+- Add customizable SAML post Logout URL
 - QualifiedName must not be included by default in SAML authentication requests
 - Added replay protectection to the SAML client.
 - Fix SAML signature validation w.r.t. WantAssertionsSigned handling. Signing is now always required, even when WantAssertionsSigned is disabled. WantAssertionsSigned now requires explicit signing of the assertions, not the response.
