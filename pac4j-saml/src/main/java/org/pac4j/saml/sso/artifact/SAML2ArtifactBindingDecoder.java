@@ -7,17 +7,16 @@ import org.opensaml.saml.common.binding.impl.DefaultEndpointResolver;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver;
-import org.opensaml.saml.saml2.binding.decoding.impl.HTTPArtifactDecoder;
 import org.opensaml.saml.saml2.metadata.ArtifactResolutionService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.security.SecurityException;
 import org.opensaml.soap.client.http.PipelineFactoryHttpSOAPClient;
 import org.opensaml.soap.common.SOAPException;
-import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
+import org.pac4j.saml.transport.Pac4jHTTPArtifactDecoder;
 
 /**
  * Decodes a SAML artifact binding request by fetching the actual artifact via
@@ -69,8 +68,8 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
             soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
 
-            HTTPArtifactDecoder artifactDecoder = new HTTPArtifactDecoder();
-            artifactDecoder.setHttpServletRequest(((JEEContext) context).getNativeRequest());
+            final Pac4jHTTPArtifactDecoder artifactDecoder = new Pac4jHTTPArtifactDecoder();
+            artifactDecoder.setWebContext(context);
             artifactDecoder.setSelfEntityIDResolver(new FixedEntityIdResolver(spMetadataResolver));
             artifactDecoder.setRoleDescriptorResolver(roleResolver);
             artifactDecoder.setArtifactEndpointResolver(endpointResolver);
