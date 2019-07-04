@@ -65,7 +65,10 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
             throw new SAMLException("IDP Metadata cannot be null");
         }
 
+        final SAMLPeerEntityContext decodedPeerContext = decodedCtx.getParent()
+                .getSubcontext(SAMLPeerEntityContext.class);
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
+        decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext.isAuthenticated());
 
         decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
         decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
