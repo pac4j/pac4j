@@ -5,8 +5,8 @@ title: Release notes&#58;
 
 **v3.8.0**:
 
+- Add customizable SAML post Logout URL
 - QualifiedName must not be included by default in SAML authentication requests
-
 - Added replay protectection to the SAML client.
 - Added support for the SAML artifact binding for the authentication response.
 - Fix SAML signature validation w.r.t. WantAssertionsSigned handling. Signing is now always required, even when WantAssertionsSigned is disabled. WantAssertionsSigned now requires explicit signing of the assertions, not the response.
