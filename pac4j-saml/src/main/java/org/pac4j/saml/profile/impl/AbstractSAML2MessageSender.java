@@ -63,7 +63,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
 
-        final MessageEncoder encoder = getMessageEncoder(context);
+        final MessageEncoder encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
 
         final SAML2MessageContext outboundContext = new SAML2MessageContext(context);
         outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
@@ -127,7 +127,8 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             handlerDest.initialize();
             handlerDest.invoke(outboundContext);
 
-            if (mustSignRequest(spDescriptor, idpssoDescriptor)) {
+            if (!destinationBindingType.equals(SAMLConstants.SAML2_REDIRECT_BINDING_URI) &&
+                    mustSignRequest(spDescriptor, idpssoDescriptor)) {
                 logger.debug("Signing SAML2 outbound context...");
                 final SAMLOutboundProtocolMessageSigningHandler handler = new
                     SAMLOutboundProtocolMessageSigningHandler();
@@ -143,7 +144,9 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         return isRequestSigned;
     }
 
-    private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
+    private MessageEncoder getMessageEncoder(final SPSSODescriptor spDescriptor,
+            final IDPSSODescriptor idpssoDescriptor,
+            final SAML2MessageContext ctx) {
 
         final Pac4jSAMLResponse adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
 
@@ -160,7 +163,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             return encoder;
 
         } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            return new Pac4jHTTPRedirectDeflateEncoder(adapter, this.isRequestSigned);
+            return new Pac4jHTTPRedirectDeflateEncoder(adapter, mustSignRequest(spDescriptor, idpssoDescriptor));
 
         } else {
             throw new UnsupportedOperationException("Binding type - "
