@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
@@ -24,13 +25,19 @@ import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
+import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
 import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
+import org.opensaml.xmlsec.signature.support.SignatureException;
+import org.opensaml.xmlsec.signature.support.SignatureSupport;
 import org.pac4j.saml.crypto.CredentialProvider;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
@@ -73,6 +80,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected boolean authnRequestSigned = false;
 
     protected boolean wantAssertionSigned = true;
+    
+    protected boolean signMetadata = false;
 
     protected int defaultACSIndex = 0;
 
@@ -90,9 +99,9 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected List<String> signatureAlgorithms = null;
 
     protected List<String> signatureReferenceDigestMethods = null;
-
+    
     @Override
-    public final MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
+    public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
         if (metadataResource != null) {
             resolver = new FilesystemMetadataResolver(metadataResource.getFile());
@@ -126,7 +135,26 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         descriptor.setID(SAML2Utils.generateID());
         descriptor.setExtensions(generateMetadataExtensions());
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
+        if (signMetadata) {
+            signMetadata(descriptor);
+        }
         return descriptor;
+    }
+
+    protected void signMetadata(EntityDescriptor descriptor) {
+        SignatureSigningParameters signingParameters = new SignatureSigningParameters();
+        signingParameters.setKeyInfoGenerator(credentialProvider.getKeyInfoGenerator());
+        signingParameters.setSigningCredential(credentialProvider.getCredential());
+        signingParameters.setSignatureAlgorithm(getSignatureAlgorithms().get(0));
+        signingParameters.setSignatureReferenceDigestMethod(getSignatureReferenceDigestMethods().get(0));
+        signingParameters.setSignatureCanonicalizationAlgorithm(        
+                SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);    
+
+        try {
+            SignatureSupport.signObject(descriptor, signingParameters);
+        } catch (SecurityException | MarshallingException | SignatureException e) {
+            throw new SAMLException(e.getMessage(), e);
+        }
     }
 
     protected Extensions generateMetadataExtensions() {
@@ -226,7 +254,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     }
 
-    protected final Collection<NameIDFormat> buildNameIDFormat() {
+    protected Collection<NameIDFormat> buildNameIDFormat() {
 
         final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
             .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
@@ -276,7 +304,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return logoutService;
     }
 
-    protected final KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
+    protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
         final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>)
             Configuration.getBuilderFactory()
                 .getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
@@ -316,6 +344,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public void setWantAssertionSigned(final boolean wantAssertionSigned) {
         this.wantAssertionSigned = wantAssertionSigned;
+    }
+
+    public boolean isSignMetadata() {
+        return signMetadata;
+    }
+
+    public void setSignMetadata(boolean signMetadata) {
+        this.signMetadata = signMetadata;
     }
 
     public int getDefaultACSIndex() {
