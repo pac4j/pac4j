@@ -176,7 +176,13 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         }
 
         List<Pair<String, String>> queryParams = urlBuilder.getQueryParams();
-        queryParams.clear();
+        // remove the query parameters set below
+        queryParams.removeIf(p ->
+            p.getFirst().equals("SAMLRequest") ||
+            p.getFirst().equals("SAMLResponse") ||
+            p.getFirst().equals("RelayState") ||
+            p.getFirst().equals("SigAlg") ||
+            p.getFirst().equals("Signature"));
 
         SAMLObject outboundMessage = messageContext.getMessage();
 
