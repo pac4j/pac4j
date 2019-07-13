@@ -3,6 +3,7 @@ package org.pac4j.saml.transport;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.util.XMLObjectSupport;
+import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.core.impl.AuthnRequestImpl;
 import org.pac4j.core.context.MockWebContext;
@@ -27,6 +28,13 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
         + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8081/callback</saml2:Issuer><saml2p:NameIDPolicy "
         + "AllowCreate=\"true\"/></saml2p:AuthnRequest>";
 
+    private static final String ENDPOINT_URL_WITH_QUERY_PARAMS = "https://localhost/some/path?" +
+        "qp=0000&" +
+        "SAMLRequest=fakeRequest&" +
+        "RelayState=RelayStateShouldBeRemoved&" +
+        "SigAlg=SigAlgShouldBeRemoved&" +
+        "Signature=SignatureShouldBeRemoved";
+
     @Test
     public void testEncodeDecode() throws Exception {
         final MockWebContext webContext = MockWebContext.create();
@@ -44,5 +52,27 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
         decoder.decode();
 
         assertTrue(decoder.getMessageContext().getMessage() instanceof AuthnRequestImpl);
+    }
+
+    @Test
+    public void testBuildRedirectUrlWithExistingQueryParameters() throws Exception {
+        final MockWebContext webContext = MockWebContext.create();
+
+        final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
+
+        final Pac4jHTTPRedirectDeflateEncoder encoder =
+            new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
+        MessageContext<SAMLObject> messageContext = new MessageContext<>();
+        messageContext.setMessage((SAMLObject) xmlObject);
+
+        String encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        final String redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);
+
+        assertTrue(redirectURL.contains("qp=0000"));
+        assertTrue(redirectURL.contains("SAMLRequest"));
+        assertFalse(redirectURL.contains("SAMLRequest=fakeRequest"));
+        assertFalse(redirectURL.contains("RelayState"));
+        assertFalse(redirectURL.contains("SigAlg"));
+        assertFalse(redirectURL.contains("Signature"));
     }
 }
