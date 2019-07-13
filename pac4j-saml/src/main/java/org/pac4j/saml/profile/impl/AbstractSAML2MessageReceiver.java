@@ -45,8 +45,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         context.setMessage(message);
         decodedCtx.setSAMLMessageStore(context.getSAMLMessageStore());
 
-        final SAMLBindingContext bindingContext = decodedCtx.getParent()
-                .getSubcontext(SAMLBindingContext.class);
+        final SAMLBindingContext bindingContext = decodedCtx.getParent().getSubcontext(SAMLBindingContext.class);
 
         decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
         decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
@@ -66,9 +65,9 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         }
 
         final SAMLPeerEntityContext decodedPeerContext = decodedCtx.getParent()
-                .getSubcontext(SAMLPeerEntityContext.class);
+            .getSubcontext(SAMLPeerEntityContext.class);
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
-        decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext.isAuthenticated());
+        decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext != null && decodedPeerContext.isAuthenticated());
 
         decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
         decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
