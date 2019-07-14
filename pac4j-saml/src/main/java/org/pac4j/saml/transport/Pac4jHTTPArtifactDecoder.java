@@ -731,7 +731,6 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
         return getMessageContext().getMessage();
     }
 
-    /** {@inheritDoc} */
     public synchronized void setWebContext(@Nullable final WebContext webContext) {
         ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
         ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);

@@ -207,7 +207,6 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
         velocityEngine = newVelocityEngine;
     }
 
-    /** {@inheritDoc} */
     public String getBindingURI() {
         return SAMLConstants.SAML2_POST_BINDING_URI;
     }
