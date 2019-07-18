@@ -8,7 +8,6 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import java.io.Serializable;
 import java.util.ArrayList;
