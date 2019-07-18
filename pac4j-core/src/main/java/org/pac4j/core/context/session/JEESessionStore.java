@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Store data in the JEE web session.
@@ -69,8 +70,9 @@ public class JEESessionStore implements SessionStore<JEEContext> {
         final HttpServletRequest request = context.getNativeRequest();
         final HttpSession session = request.getSession();
         logger.debug("Discard old session: {}", session.getId());
-        final Map<String, Object> attributes = new HashMap<>();
-        Collections.list(session.getAttributeNames()).forEach(k -> attributes.put(k, session.getAttribute(k)));
+        final Map<String, Object> attributes = Collections.list(session.getAttributeNames())
+            .stream()
+            .collect(Collectors.toMap(k -> k, session::getAttribute, (a, b) -> b));
         session.invalidate();
         final HttpSession newSession = request.getSession(true);
         logger.debug("And copy all data to the new one: {}", newSession.getId());
