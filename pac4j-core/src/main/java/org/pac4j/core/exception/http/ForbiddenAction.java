@@ -12,7 +12,6 @@ public class ForbiddenAction extends HttpAction {
 
     public static final ForbiddenAction INSTANCE = new ForbiddenAction();
     private static final long serialVersionUID = 6661068865264199225L;
-    private static final long serialVersionUID = 6661068865264199225L;
 
     protected ForbiddenAction() {
         super(HttpConstants.FORBIDDEN);
