@@ -32,10 +32,7 @@ public final class ProfileHelper {
      * @return if the user identifier matches this kind of profile
      */
     public static boolean isTypedIdOf(final String id, final Class<? extends CommonProfile> clazz) {
-        if (id != null && clazz != null) {
-            return id.startsWith(clazz.getName() + CommonProfile.SEPARATOR);
-        }
-        return false;
+        return id != null && clazz != null && id.startsWith(clazz.getName() + CommonProfile.SEPARATOR);
     }
 
     /**

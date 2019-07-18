@@ -71,12 +71,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         try {
 
             // default value
-            final boolean multiProfile;
-            if (inputMultiProfile == null) {
-                multiProfile = false;
-            } else {
-                multiProfile = inputMultiProfile;
-            }
+            final boolean multiProfile = inputMultiProfile != null && inputMultiProfile;
 
             // checks
             assertNotNull("context", context);
