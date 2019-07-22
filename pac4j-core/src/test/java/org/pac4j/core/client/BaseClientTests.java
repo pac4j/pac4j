@@ -28,7 +28,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) client.redirect(context).get();
+        final FoundAction action = (FoundAction) client.getRedirectionAction(context).get();
         final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
         final Optional<Credentials> credentials = client.getCredentials(context);
@@ -41,7 +41,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) client.redirect(context).get();
+        final FoundAction action = (FoundAction) client.getRedirectionAction(context).get();
         final String redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
@@ -62,7 +62,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()
                                         .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
-        final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.redirect(context));
+        final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(context));
         assertEquals(401, e.getCode());
     }
 
@@ -73,7 +73,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         context.getSessionStore().set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
-        final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.redirect(context));
+        final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(context));
         assertEquals(401, e.getCode());
     }
 
@@ -93,6 +93,6 @@ public final class BaseClientTests implements TestsConstants {
         final MockIndirectClient client =
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> client.redirect(context));
+        TestsHelper.expectException(() -> client.getRedirectionAction(context));
     }
 }

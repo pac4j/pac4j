@@ -66,7 +66,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> redirect(final WebContext context) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         final Map<String, String> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);

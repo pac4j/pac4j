@@ -32,7 +32,7 @@ public abstract class DirectClient<C extends Credentials> extends BaseClient<C> 
     protected abstract void clientInit();
 
     @Override
-    public final Optional<RedirectionAction> redirect(final WebContext context) {
+    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         return Optional.empty();
     }
 

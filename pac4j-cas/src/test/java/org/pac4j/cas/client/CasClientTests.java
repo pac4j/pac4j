@@ -111,7 +111,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) casClient.redirect(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
         assertFalse(action.getLocation().indexOf("renew=true") >= 0);
     }
 
@@ -123,7 +123,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         configuration.setRenew(true);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) casClient.redirect(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
         assertTrue(action.getLocation().indexOf("renew=true") >= 0);
     }
 
@@ -134,7 +134,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) casClient.redirect(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
         assertFalse(action.getLocation().indexOf("gateway=true") >= 0);
     }
 
@@ -146,7 +146,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         configuration.setGateway(true);
-        final FoundAction action = (FoundAction) casClient.redirect(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
         assertTrue(action.getLocation().indexOf("gateway=true") >= 0);
         final Optional<TokenCredentials> credentials = casClient.getCredentials(context);
         assertFalse(credentials.isPresent());

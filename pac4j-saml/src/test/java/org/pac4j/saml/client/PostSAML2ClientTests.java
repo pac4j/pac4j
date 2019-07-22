@@ -31,7 +31,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
         client.getConfiguration().setUseNameQualifier(true);
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        final OkAction action = (OkAction) client.redirect(context).get();
+        final OkAction action = (OkAction) client.getRedirectionAction(context).get();
         
         // JDK8 and JDK11 do not produce the same XML (attributes in different order)
         // something like xmlunit would have been better but may be a bit overkill for just 2 failing tests
@@ -52,7 +52,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        final OkAction action = (OkAction) client.redirect(context).get();
+        final OkAction action = (OkAction) client.getRedirectionAction(context).get();
         assertTrue(getDecodedAuthnRequest(action.getContent())
                 .contains("<saml2:Issuer "
                         + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
@@ -64,7 +64,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final SAML2Client client =  getClient();
         client.getConfiguration().setForceAuth(true);
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        final OkAction action = (OkAction) client.redirect(context).get();
+        final OkAction action = (OkAction) client.getRedirectionAction(context).get();
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
 
@@ -73,7 +73,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final SAML2Client client =  getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        final OkAction action = (OkAction) client.redirect(context).get();
+        final OkAction action = (OkAction) client.getRedirectionAction(context).get();
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
 
@@ -82,7 +82,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final SAML2Client client = getClient();
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.getSessionStore().set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        final OkAction action = (OkAction) client.redirect(context).get();
+        final OkAction action = (OkAction) client.getRedirectionAction(context).get();
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 

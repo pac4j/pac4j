@@ -32,7 +32,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     public HttpAction buildAjaxResponse(final WebContext context, final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            final RedirectionAction action = redirectionActionBuilder.redirect(context).orElse(null);
+            final RedirectionAction action = redirectionActionBuilder.getRedirectionAction(context).orElse(null);
             if (action instanceof WithLocationAction) {
                 url = ((WithLocationAction) action).getLocation();
             }

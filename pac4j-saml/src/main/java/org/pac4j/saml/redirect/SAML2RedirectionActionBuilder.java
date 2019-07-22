@@ -36,7 +36,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> redirect(final WebContext wc) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext wc) {
         final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc);
         final String relayState = this.client.getStateGenerator().generateState(wc);
 

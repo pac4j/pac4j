@@ -6,7 +6,7 @@ import org.pac4j.core.exception.http.RedirectionAction;
 import java.util.Optional;
 
 /**
- * Return the "redirection" action to perform.
+ * Return the redirection action to perform.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -19,5 +19,5 @@ public interface RedirectionActionBuilder {
      * @param context the web context
      * @return the "redirection" action (optional)
      */
-    Optional<RedirectionAction> redirect(WebContext context);
+    Optional<RedirectionAction> getRedirectionAction(WebContext context);
 }

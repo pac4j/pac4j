@@ -37,7 +37,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public Optional<RedirectionAction> redirect(final WebContext context) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         try {
 
             final String state;

@@ -9,7 +9,7 @@ title: Release notes&#58;
 - Renamed `J2E` components as `JEE`
 - Updated all dependencies
 - A client can return any kind of profile (using a custom `AuthorizationGenerator` or `ProfileCreator`) and even a minimal user profile (`UserProfile`)
-- Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. They are only applied to the web context by the appropriate `HttpActionAdapter`. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`. The `setResponseStatus` and `writeResponseContent` methods have been removed from the `WebContext` interface
+- HTTP actions are no longer applied automatically to the web context (the `setResponseStatus` and `writeResponseContent` methods have been removed from the `WebContext` interface), an `HttpActionAdapter` must be used for that. Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`. The `redirect` method is renamed as `getRedirectionAction`
 - By default, the CSRF check applies on the PUT, PATCH and DELETE requests in addition to the POST requests
 - "csrf,securityheaders" is the default authorizers definition
 - Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)

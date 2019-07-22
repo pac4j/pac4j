@@ -66,7 +66,7 @@ public final class FormClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) formClient.redirect(context).get();
+        final FoundAction action = (FoundAction) formClient.getRedirectionAction(context).get();
         assertEquals(LOGIN_URL, action.getLocation());
     }
 

@@ -85,7 +85,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
      * @return the "redirection" action
      */
     @Override
-    public final Optional<RedirectionAction> redirect(final WebContext context) {
+    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         init();
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context)) {
@@ -103,7 +103,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
             throw UnauthorizedAction.INSTANCE;
         }
 
-        return redirectionActionBuilder.redirect(context);
+        return redirectionActionBuilder.getRedirectionAction(context);
     }
 
     private void cleanRequestedUrl(final WebContext context) {

@@ -22,7 +22,7 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
     @Test
     public void testRedirect() {
         final CasRedirectionActionBuilder builder = newBuilder(new CasConfiguration());
-        final RedirectionAction action = builder.redirect(MockWebContext.create()).get();
+        final RedirectionAction action = builder.getRedirectionAction(MockWebContext.create()).get();
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
             ((FoundAction) action).getLocation());
@@ -33,7 +33,7 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
         final CasConfiguration config = new CasConfiguration();
         config.setMethod("post");
         final CasRedirectionActionBuilder builder = newBuilder(config);
-        final RedirectionAction action = builder.redirect(MockWebContext.create()).get();
+        final RedirectionAction action = builder.getRedirectionAction(MockWebContext.create()).get();
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?method=post&service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
             ((FoundAction) action).getLocation());
@@ -44,7 +44,7 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
         final CasConfiguration config = new CasConfiguration();
         config.setProtocol(CasProtocol.SAML);
         final CasRedirectionActionBuilder builder = newBuilder(config);
-        final RedirectionAction action = builder.redirect(MockWebContext.create()).get();
+        final RedirectionAction action = builder.getRedirectionAction(MockWebContext.create()).get();
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?TARGET=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
             ((FoundAction) action).getLocation());

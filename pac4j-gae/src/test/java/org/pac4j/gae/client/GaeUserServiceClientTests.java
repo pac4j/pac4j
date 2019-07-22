@@ -57,12 +57,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
         final GaeUserServiceClient localClient = new GaeUserServiceClient();
-        localClient.redirect(context);
+        localClient.getRedirectionAction(context);
     }
 
     @Test
     public void testRedirect() {
-        final HttpAction action = client.redirect(context).get();
+        final HttpAction action = client.getRedirectionAction(context).get();
         assertEquals(HttpConstants.FOUND, action.getCode());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
             Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((FoundAction) action).getLocation());

@@ -76,12 +76,12 @@ public final class OidcRedirectTests implements TestsConstants {
         
         MockWebContext context = MockWebContext.create();
         
-        final FoundAction firstRequestAction = (FoundAction) client.redirect(context).orElse(null);
+        final FoundAction firstRequestAction = (FoundAction) client.getRedirectionAction(context).orElse(null);
         String state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
     
         try {
             //noinspection ThrowableNotThrown
-            client.redirect(context);
+            client.getRedirectionAction(context);
             fail("Ajax request should throw exception");
         } catch (Exception e) {
             State stateAfterAjax = (State) context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE).orElse(null);

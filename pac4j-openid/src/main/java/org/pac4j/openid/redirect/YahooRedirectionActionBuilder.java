@@ -40,7 +40,7 @@ public class YahooRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> redirect(final WebContext context) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         try {
             // perform discovery on the user-supplied identifier
             final List discoveries = this.client.getConsumerManager().discover(YAHOO_GENERIC_USER_IDENTIFIER);

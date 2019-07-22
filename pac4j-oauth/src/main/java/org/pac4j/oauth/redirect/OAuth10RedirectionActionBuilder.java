@@ -41,7 +41,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public Optional<RedirectionAction> redirect(final WebContext context) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         try {
 
             final OAuth10aService service = this.configuration.buildService(context, client, null);
