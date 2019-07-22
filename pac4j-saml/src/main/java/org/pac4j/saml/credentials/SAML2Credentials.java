@@ -1,13 +1,13 @@
 package org.pac4j.saml.credentials;
 
 import org.joda.time.DateTime;
+import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,12 +54,11 @@ public class SAML2Credentials extends Credentials {
             samlAttribute.setFriendlyName(attribute.getFriendlyName());
             samlAttribute.setName(attribute.getName());
             samlAttribute.setNameFormat(attribute.getNameFormat());
-            attribute.getAttributeValues().forEach(xmlObject -> {
-                final Element dom = xmlObject.getDOM();
-                if (dom != null && dom.getTextContent() != null) {
-                    samlAttribute.getAttributeValues().add(dom.getTextContent());
-                }
-            });
+            attribute.getAttributeValues()
+                .stream()
+                .map(XMLObject::getDOM)
+                .filter(dom -> dom != null && dom.getTextContent() != null)
+                .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
             this.attributes.add(samlAttribute);
         });
         this.conditions = new SAMLConditions();
