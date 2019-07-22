@@ -10,6 +10,7 @@ import org.pac4j.core.context.HttpConstants;
  */
 public class SeeOtherAction extends RedirectionAction implements WithLocationAction {
 
+    private static final long serialVersionUID = 6749123580877847389L;
     private final String location;
 
     public SeeOtherAction(final String location) {

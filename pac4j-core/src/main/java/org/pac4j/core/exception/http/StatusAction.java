@@ -8,6 +8,8 @@ package org.pac4j.core.exception.http;
  */
 public class StatusAction extends HttpAction {
 
+    private static final long serialVersionUID = -1512800910066851787L;
+
     public StatusAction(final int code) {
         super(code);
     }

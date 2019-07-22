@@ -10,6 +10,7 @@ import org.pac4j.core.context.HttpConstants;
  */
 public class TemporaryRedirectAction extends RedirectionAction implements WithContentAction {
 
+    private static final long serialVersionUID = 1065181175886203423L;
     private final String content;
 
     public TemporaryRedirectAction(final String content) {

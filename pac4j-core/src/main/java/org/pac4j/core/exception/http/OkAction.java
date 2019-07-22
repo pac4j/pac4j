@@ -10,6 +10,7 @@ import org.pac4j.core.context.HttpConstants;
  */
 public class OkAction extends RedirectionAction implements WithContentAction {
 
+    private static final long serialVersionUID = -8842651379112280831L;
     private final String content;
 
     public OkAction(final String content) {
