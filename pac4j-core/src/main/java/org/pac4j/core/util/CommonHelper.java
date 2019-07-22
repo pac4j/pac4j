@@ -26,10 +26,7 @@ public final class CommonHelper {
      * @return if the String is not blank
      */
     public static boolean isNotBlank(final String s) {
-        if (s == null) {
-            return false;
-        }
-        return s.trim().length() > 0;
+        return s != null && !s.trim().isEmpty();
     }
 
     /**
@@ -63,10 +60,8 @@ public final class CommonHelper {
     public static boolean areEqualsIgnoreCaseAndTrim(final String s1, final String s2) {
         if (s1 == null && s2 == null) {
             return true;
-        } else if (s1 != null && s2 != null) {
-            return s1.trim().equalsIgnoreCase(s2.trim());
         } else {
-            return false;
+            return s1 != null && s2 != null && s1.trim().equalsIgnoreCase(s2.trim());
         }
     }
 

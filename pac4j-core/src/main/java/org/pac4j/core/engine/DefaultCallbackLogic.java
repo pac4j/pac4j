@@ -54,24 +54,9 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             } else {
                 defaultUrl = inputDefaultUrl;
             }
-            final boolean saveInSession;
-            if (inputSaveInSession == null) {
-                saveInSession = true;
-            } else {
-                saveInSession = inputSaveInSession;
-            }
-            final boolean multiProfile;
-            if (inputMultiProfile == null) {
-                multiProfile = false;
-            } else {
-                multiProfile = inputMultiProfile;
-            }
-            final boolean renewSession;
-            if (inputRenewSession == null) {
-                renewSession = true;
-            } else {
-                renewSession = inputRenewSession;
-            }
+            final boolean saveInSession = inputSaveInSession == null || inputSaveInSession;
+            final boolean multiProfile = inputMultiProfile != null && inputMultiProfile;
+            final boolean renewSession = inputRenewSession == null || inputRenewSession;
 
             // checks
             assertNotNull("clientFinder", clientFinder);

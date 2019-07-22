@@ -119,8 +119,8 @@ public class DigestCredentials extends TokenCredentials {
         if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
         if (cnonce != null ? !cnonce.equals(that.cnonce) : that.cnonce != null) return false;
         if (nc != null ? !nc.equals(that.nc) : that.nc != null) return false;
-        if (qop != null ? !qop.equals(that.qop) : that.qop != null) return false;
-        return !(httpMethod != null ? !httpMethod.equals(that.httpMethod) : that.httpMethod != null);
+        return (qop != null? qop.equals(that.qop) : that.qop == null)
+            && !(httpMethod != null ? !httpMethod.equals(that.httpMethod) : that.httpMethod != null);
     }
 
     @Override
