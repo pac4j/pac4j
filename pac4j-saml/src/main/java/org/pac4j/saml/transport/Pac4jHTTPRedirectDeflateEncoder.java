@@ -44,7 +44,7 @@ import java.util.zip.DeflaterOutputStream;
  */
 public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAMLObject> {
 
-    private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPRedirectDeflateEncoder.class);
+    private static final Logger log = LoggerFactory.getLogger(Pac4jHTTPRedirectDeflateEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
     private final boolean isAuthnRequestSigned;

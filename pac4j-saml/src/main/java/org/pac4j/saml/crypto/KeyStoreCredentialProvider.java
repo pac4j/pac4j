@@ -15,7 +15,6 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
-import org.opensaml.security.x509.X509Credential;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
@@ -45,7 +44,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     private final String privateKey;
 
-    public KeyStoreCredentialProvider(final String keyStoreAlias, final String keyStoreType,
+    protected KeyStoreCredentialProvider(final String keyStoreAlias, final String keyStoreType,
                                       final Resource keyStoreResource, final String storePasswd, final String privateKeyPasswd) {
         CommonHelper.assertNotNull("keyStoreResource", keyStoreResource);
         CommonHelper.assertNotBlank("storePasswd", storePasswd);
@@ -66,7 +65,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
                 try {
                     inputStream.close();
                 } catch (final IOException e) {
-                    this.logger.debug("Error closing input stream of keystore", e);
+                    logger.debug("Error closing input stream of keystore", e);
                 }
             }
         }
@@ -81,8 +80,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     @Override
     public KeyInfo getKeyInfo() {
         final Credential serverCredential = getCredential();
-        final KeyInfo keyInfo = generateKeyInfoForCredential(serverCredential);
-        return keyInfo;
+        return generateKeyInfoForCredential(serverCredential);
     }
 
     @Override
@@ -108,8 +106,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             final CriteriaSet cs = new CriteriaSet();
             final EntityIdCriterion criteria = new EntityIdCriterion(this.privateKey);
             cs.add(criteria);
-            final X509Credential creds = (X509Credential) this.credentialResolver.resolveSingle(cs);
-            return creds;
+            return credentialResolver.resolveSingle(cs);
         } catch (final ResolverException e) {
             throw new SAMLException("Can't obtain SP private key", e);
         }

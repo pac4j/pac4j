@@ -17,6 +17,7 @@ import org.opensaml.messaging.pipeline.httpclient.BasicHttpClientMessagePipeline
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipeline;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
 import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.SAMLRuntimeException;
 import org.opensaml.saml.common.binding.impl.CheckMessageVersionHandler;
 import org.opensaml.saml.common.binding.impl.PopulateSignatureSigningParametersHandler;
 import org.opensaml.saml.common.binding.impl.SAMLMetadataLookupHandler;
@@ -113,7 +114,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return handlers;
     }
 
-    protected List<MessageHandler<SAMLObject>> getOutboundTransportHandlers() throws ComponentInitializationException {
+    protected List<MessageHandler<SAMLObject>> getOutboundTransportHandlers()  {
         return new ArrayList<>();
     }
 
@@ -263,7 +264,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
             ret.setOutboundPayloadHandler(toHandlerChain(getOutboundPayloadHandlers()));
             ret.setOutboundTransportHandler(toHandlerChain(getOutboundTransportHandlers()));
         } catch (ComponentInitializationException e) {
-            throw new RuntimeException(e);
+            throw new SAMLRuntimeException(e);
         }
         return ret;
     }

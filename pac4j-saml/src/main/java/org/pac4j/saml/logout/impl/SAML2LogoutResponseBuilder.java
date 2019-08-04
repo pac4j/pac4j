@@ -55,7 +55,7 @@ public class SAML2LogoutResponseBuilder {
         response.setDestination(ssoService.getLocation());
         response.setStatus(getSuccess());
         final SAMLObject originalMessage = context.getMessage();
-        if (originalMessage != null && originalMessage instanceof RequestAbstractTypeImpl) {
+        if (originalMessage instanceof RequestAbstractTypeImpl) {
             response.setInResponseTo(((RequestAbstractTypeImpl) originalMessage).getID());
         }
 

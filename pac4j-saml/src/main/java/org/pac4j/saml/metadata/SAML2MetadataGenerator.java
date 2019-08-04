@@ -1,5 +1,7 @@
 package org.pac4j.saml.metadata;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -45,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -101,7 +104,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected List<String> signatureReferenceDigestMethods = null;
     
     @Override
-    public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
+    public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws IOException, MarshallingException, ComponentInitializationException, ResolverException {
         final AbstractBatchMetadataResolver resolver;
         if (metadataResource != null) {
             resolver = new FilesystemMetadataResolver(metadataResource.getFile());
@@ -119,7 +122,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     @Override
-    public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
+    public String getMetadata(final EntityDescriptor entityDescriptor) throws MarshallingException {
         final Element entityDescriptorElement = this.marshallerFactory
             .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME).marshall(entityDescriptor);
         return SerializeSupport.nodeToString(entityDescriptorElement);

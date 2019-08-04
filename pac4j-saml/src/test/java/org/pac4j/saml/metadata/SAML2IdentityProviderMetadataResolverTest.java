@@ -27,7 +27,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
         MetadataResolver resolver = metadataResolver.resolve();
         CriteriaSet criteria = new CriteriaSet(new EntityIdCriterion("mmoayyed.example.net"));
         final EntityDescriptor entity = resolver.resolveSingle(criteria);
-        assertEquals(entity.getEntityID(), "mmoayyed.example.net");
+        assertEquals("mmoayyed.example.net", entity.getEntityID());
     }
 
     @Test

@@ -17,9 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.WritableResource;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
@@ -122,7 +120,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         metadataGenerator.setSignatureReferenceDigestMethods(configuration.getSignatureReferenceDigestMethods());
     }
 
-    private void writeServiceProviderMetadataToResource(final String tempMetadata) throws Exception {
+    private void writeServiceProviderMetadataToResource(final String tempMetadata) throws IOException, TransformerException {
         final WritableResource metadataResource = configuration.getServiceProviderMetadataResource();
         if (metadataResource != null && CommonHelper.isNotBlank(tempMetadata)) {
             if (metadataResource.exists() && !configuration.isForceServiceProviderMetadataGeneration()) {

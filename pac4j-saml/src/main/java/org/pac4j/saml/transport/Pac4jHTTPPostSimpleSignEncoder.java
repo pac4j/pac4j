@@ -21,7 +21,7 @@ import java.net.URI;
  * @since 3.7.0
  */
 public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
-    private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostSimpleSignEncoder.class);
+    private static final Logger log = LoggerFactory.getLogger(Pac4jHTTPPostSimpleSignEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
 

@@ -218,7 +218,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
         try {
             MessageReplaySecurityHandler messageReplayHandler = new MessageReplaySecurityHandler();
-            messageReplayHandler.setExpires(acceptedSkew * 1000);
+            messageReplayHandler.setExpires((long) acceptedSkew * 1000);
             messageReplayHandler.setReplayCache(replayCache.get());
             messageReplayHandler.initialize();
             messageReplayHandler.invoke(context);
@@ -247,8 +247,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
 
         try {
-            final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
-            return decryptedId;
+            return (NameID) decrypter.decrypt(encryptedId);
         } catch (final DecryptionException e) {
             throw new SAMLNameIdDecryptionException("Decryption of an EncryptedID failed.", e);
         }

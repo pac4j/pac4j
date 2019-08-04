@@ -74,14 +74,12 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
 
     public final SPSSODescriptor getSPSSODescriptor() {
         final SAMLMetadataContext selfContext = getSAMLSelfMetadataContext();
-        final SPSSODescriptor spDescriptor = (SPSSODescriptor) selfContext.getRoleDescriptor();
-        return spDescriptor;
+        return (SPSSODescriptor) selfContext.getRoleDescriptor();
     }
 
     public final IDPSSODescriptor getIDPSSODescriptor() {
         final SAMLMetadataContext peerContext = getSAMLPeerMetadataContext();
-        final IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
-        return idpssoDescriptor;
+        return (IDPSSODescriptor) peerContext.getRoleDescriptor();
     }
     
     public final SingleLogoutService getIDPSingleLogoutService(final String binding) {

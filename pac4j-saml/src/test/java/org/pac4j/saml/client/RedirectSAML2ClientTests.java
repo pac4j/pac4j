@@ -16,12 +16,14 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+import java.net.URI;
 
 import static org.junit.Assert.*;
 
@@ -138,7 +140,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     private String getInflatedAuthnRequest(final String location) {
-        final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), "UTF-8");
+        final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), Charset.forName("UTF-8"));
         final Inflater inflater = new Inflater(true);
         final byte[] decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
         final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);

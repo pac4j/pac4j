@@ -17,6 +17,8 @@ import java.util.Properties;
  */
 public class VelocityEngineFactory {
 
+    private VelocityEngineFactory() {}
+
     public static VelocityEngine getEngine() {
 
         try {
@@ -28,15 +30,9 @@ public class VelocityEngineFactory {
             props.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             props.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, SLF4JLogChute.class.getName());
-
-            final VelocityEngine velocityEngine =
-                    net.shibboleth.utilities.java.support.velocity.VelocityEngine
-                    .newVelocityEngine(props);
-            return velocityEngine;
+            return net.shibboleth.utilities.java.support.velocity.VelocityEngine.newVelocityEngine(props);
         } catch (final Exception e) {
             throw new TechnicalException("Error configuring velocity", e);
         }
-
     }
-
 }

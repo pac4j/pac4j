@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -71,7 +72,7 @@ public final class Configuration {
         ServiceLoader<ConfigurationManager> configurationManagers = ServiceLoader.load(ConfigurationManager.class);
         List<ConfigurationManager> configurationManagerList = new ArrayList();
         configurationManagers.forEach(configurationManagerList::add);
-        if (configurationManagerList.size() > 0) {
+        if (!configurationManagerList.isEmpty()) {
             configurationManagerList.sort(Configuration::compareManagers);
             configurationManagerList.get(0).configure();
         }
@@ -104,6 +105,7 @@ public final class Configuration {
 
                 final StreamResult result = new StreamResult(writer);
                 final TransformerFactory tf = TransformerFactory.newInstance();
+                tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
                 final Transformer transformer = tf.newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");

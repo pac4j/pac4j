@@ -122,11 +122,8 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
      */
     protected XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
         try {
-            XMLObject message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
-            return message;
-        } catch (XMLParserException e) {
-            throw new MessageDecodingException("Error unmarshalling message from input stream", e);
-        } catch (UnmarshallingException e) {
+            return XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
+        } catch (XMLParserException | UnmarshallingException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
         }
     }

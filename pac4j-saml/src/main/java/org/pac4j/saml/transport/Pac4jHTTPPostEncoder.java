@@ -35,7 +35,7 @@ import java.nio.charset.StandardCharsets;
  * @since 1.8
  */
 public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
-    private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
+    private static final Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     /** Default template ID. */
     public static final String DEFAULT_TEMPLATE_ID = "/templates/saml2-post-binding.vm";

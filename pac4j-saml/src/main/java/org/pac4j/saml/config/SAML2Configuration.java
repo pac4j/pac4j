@@ -9,12 +9,11 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.Signature;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.NoSuchFileException;
+import java.security.*;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -670,7 +669,7 @@ public class SAML2Configuration extends InitializableObject {
      * @throws Exception
      */
     private X509Certificate createSelfSignedCert(X500Name dn, String sigName, AlgorithmIdentifier sigAlgID, KeyPair keyPair)
-        throws Exception {
+            throws NoSuchAlgorithmException, InvalidKeyException, IOException, CertificateException, SignatureException, NoSuchProviderException {
         final V3TBSCertificateGenerator certGen = new V3TBSCertificateGenerator();
 
         certGen.setSerialNumber(new ASN1Integer(BigInteger.valueOf(1)));
@@ -793,13 +792,17 @@ public class SAML2Configuration extends InitializableObject {
     }
 
     private static void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
-        if (file.exists()) {
-            final boolean res = file.delete();
-            LOGGER.debug("Deleted file [{}]:{}", file, res);
-        }
         try (final FileOutputStream fos = new FileOutputStream(file)) {
+            if (file.exists()) {
+                final boolean res = file.delete();
+                LOGGER.debug("Deleted file [{}]:{}", file, res);
+            }
             fos.write(certificate);
             fos.flush();
+        } catch (NoSuchFileException | DirectoryNotEmptyException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
         }

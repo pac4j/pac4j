@@ -7,6 +7,7 @@ import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.config.InitializationException;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
+import org.opensaml.saml.common.SAMLRuntimeException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
         try {
             InitializationService.initialize();
         } catch (final InitializationException e) {
-            throw new RuntimeException("Exception initializing OpenSAML", e);
+            throw new SAMLRuntimeException("Exception initializing OpenSAML", e);
         }
 
         ParserPool parserPool = initParserPool();
@@ -45,7 +46,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
             parserPool.setXincludeAware(false);
             parserPool.setIgnoreElementContentWhitespace(true);
 
-            final Map<String, Object> builderAttributes = new HashMap<String, Object>();
+            final Map<String, Object> builderAttributes = new HashMap<>();
             parserPool.setBuilderAttributes(builderAttributes);
 
             final Map<String, Boolean> features = new HashMap<>();
@@ -59,7 +60,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
             parserPool.initialize();
             return parserPool;
         } catch (final ComponentInitializationException e) {
-            throw new RuntimeException("Exception initializing parserPool", e);
+            throw new SAMLRuntimeException("Exception initializing parserPool", e);
         }
     }
 }

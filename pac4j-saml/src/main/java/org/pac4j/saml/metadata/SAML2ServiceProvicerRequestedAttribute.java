@@ -10,10 +10,10 @@ import java.io.Serializable;
 public class SAML2ServiceProvicerRequestedAttribute implements Serializable {
     private static final long serialVersionUID = 1040516205957826527L;
 
-    public String name;
-    public String friendlyName;
-    public String nameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri";
-    public boolean isRequired;
+    private String name;
+    private String friendlyName;
+    private String nameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri";
+    private boolean isRequired;
 
     public SAML2ServiceProvicerRequestedAttribute() {
     }

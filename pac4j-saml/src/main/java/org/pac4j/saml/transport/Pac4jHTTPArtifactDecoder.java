@@ -147,6 +147,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void doDestroy() {
         super.doDestroy();
         parserPool = null;
@@ -160,6 +161,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
 

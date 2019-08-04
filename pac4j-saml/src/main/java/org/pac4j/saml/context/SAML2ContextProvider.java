@@ -41,7 +41,7 @@ import java.util.List;
 public class SAML2ContextProvider implements SAMLContextProvider {
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
-    protected final static Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
     protected final MetadataResolver metadata;
 

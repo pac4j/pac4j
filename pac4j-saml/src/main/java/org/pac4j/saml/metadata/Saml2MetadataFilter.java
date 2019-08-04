@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -36,12 +35,13 @@ public class Saml2MetadataFilter implements Filter {
     private String clientName;
 
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
+            final FilterChain filterChain) throws IOException {
 
         CommonHelper.assertNotNull("config", config);
         CommonHelper.assertNotNull("clientName", clientName);
@@ -58,6 +58,7 @@ public class Saml2MetadataFilter implements Filter {
 
     @Override
     public void destroy() {
+        throw new UnsupportedOperationException();
     }
 
     public Config getConfig() {

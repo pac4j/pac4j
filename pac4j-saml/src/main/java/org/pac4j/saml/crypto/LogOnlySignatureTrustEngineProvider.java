@@ -22,6 +22,8 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
     private static final Logger log = LoggerFactory.getLogger(LogOnlySignatureTrustEngineProvider.class);
 
     private final SAML2SignatureTrustEngineProvider wrapped;
+    private static final String SIGNATURE_ERROR = "Signature validation failed, continuing anyway. Criteria: %s";
+    private static final String SIGNATURE_ERROR_CAUSE = "Signature validation failed, continuing anyway. Criteria: %s cause: %s";
 
     public LogOnlySignatureTrustEngineProvider(final SAML2SignatureTrustEngineProvider wrapped) {
         this.wrapped = wrapped;
@@ -54,11 +56,10 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
         public boolean validate(Signature token, CriteriaSet trustBasisCriteria) throws SecurityException {
             try {
                 if (!wrapped.validate(token, trustBasisCriteria)) {
-                    log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
+                    log.error(String.format(SIGNATURE_ERROR, trustBasisCriteria));
                 }
             } catch (SecurityException e) {
-                log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
-                        + e.getMessage(), e);
+                log.error(String.format(SIGNATURE_ERROR_CAUSE, trustBasisCriteria, e.getMessage()), e);
             }
             return true;
         }
@@ -69,11 +70,10 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
                 Credential candidateCredential) throws SecurityException {
             try {
                 if (!wrapped.validate(signature, content, algorithmURI, trustBasisCriteria, candidateCredential)) {
-                    log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
+                    log.error(String.format(SIGNATURE_ERROR, trustBasisCriteria));
                 }
             } catch (SecurityException e) {
-                log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
-                        + e.getMessage(), e);
+                log.error(String.format(SIGNATURE_ERROR_CAUSE, trustBasisCriteria, e.getMessage()), e);
             }
             return true;
         }
