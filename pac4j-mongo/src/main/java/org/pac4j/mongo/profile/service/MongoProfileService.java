@@ -82,7 +82,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
             final String name = entry.getKey();
             final Object value = entry.getValue();
-            if (ID.equals(name)) {
+            if (getIdAttribute().equals(name)) {
                 id = (String) value;
             } else {
                 doc.append(entry.getKey(), entry.getValue());
@@ -91,14 +91,14 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
         CommonHelper.assertNotNull(ID, id);
         logger.debug("Updating id: {} with doc: {}", id, doc);
-        getCollection().updateOne(eq(ID, id), new Document("$set", doc));
+        getCollection().updateOne(eq(getIdAttribute(), id), new Document("$set", doc));
     }
 
     @Override
     protected void deleteById(final String id) {
 
         logger.debug("Delete id: {}", id);
-        getCollection().deleteOne(eq(ID, id));
+        getCollection().deleteOne(eq(getIdAttribute(), id));
     }
 
     @Override
