@@ -235,11 +235,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 profile.addAttribute(USERNAME, username);
             }
             final Object retrievedId = storageAttributes.get(getIdAttribute());
-            if (retrievedId != null) {
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, retrievedId));
-            } else {
-                throw new TechnicalException("Could not retrieve id"); //Should not happen
-            }
+            assertNotNull(getIdAttribute(), retrievedId);
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, retrievedId));
             if (isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);
             }
