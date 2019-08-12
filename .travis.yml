@@ -9,6 +9,7 @@ dist: trusty
 
 jdk:
   - oraclejdk8
+  - oraclejdk11
 
 cache:
   directories:

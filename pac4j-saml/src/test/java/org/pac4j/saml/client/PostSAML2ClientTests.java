@@ -53,10 +53,15 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final RedirectAction action = client.getRedirectAction(context);
-        assertTrue(getDecodedAuthnRequest(action.getContent())
-                .contains("<saml2:Issuer "
-                        + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
-                        + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>"));
+
+        final String issuerJdk8 = "<saml2:Issuer "
+            + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
+            + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>";
+        final String issuerJdk11 = "<saml2:Issuer "
+            + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
+            + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">http://localhost:8080/cb</saml2:Issuer>";
+        final String decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
+        assertTrue(decodedAuthnRequest.contains(issuerJdk8) || decodedAuthnRequest.contains(issuerJdk11));
     }
 
     @Test

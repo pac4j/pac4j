@@ -65,10 +65,13 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         final RedirectAction action = client.getRedirectAction(context);
         final String inflated = getInflatedAuthnRequest(action.getLocation());
 
-        assertTrue(inflated.contains(
-                "<saml2:Issuer "
-                        + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
-                        + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+        final String issuerJdk8 = "<saml2:Issuer "
+            + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
+            + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>";
+        final String issuerJdk11 = "<saml2:Issuer "
+            + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
+            + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">http://localhost:8080/callback</saml2:Issuer>";
+        assertTrue(inflated.contains(issuerJdk8) || inflated.contains(issuerJdk11));
     }
 
     @Test
