@@ -141,7 +141,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         return buildSAML2Credentials(context);
     }
 
-    protected final SAML2Credentials buildSAML2Credentials(final SAML2MessageContext context) {
+    protected SAML2Credentials buildSAML2Credentials(final SAML2MessageContext context) {
 
         final NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
         final Assertion subjectAssertion = context.getSubjectAssertion();
@@ -212,8 +212,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param context  the context
      * @param engine   the engine
      */
-    protected final void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
-                                                      final SignatureTrustEngine engine) {
+    protected void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
+                                                final SignatureTrustEngine engine) {
 
         validateSuccess(response.getStatus());
 
@@ -283,8 +283,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param engine    the engine
      * @param decrypter the decrypter
      */
-    protected final void validateSamlSSOResponse(final Response response, final SAML2MessageContext context,
-                                                 final SignatureTrustEngine engine, final Decrypter decrypter) {
+    protected void validateSamlSSOResponse(final Response response, final SAML2MessageContext context,
+                                           final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         final List<SAMLException> errors = new ArrayList<>();
         for (final Assertion assertion : response.getAssertions()) {
@@ -324,7 +324,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param response  the response
      * @param decrypter the decrypter
      */
-    protected final void decryptEncryptedAssertions(final Response response, final Decrypter decrypter) {
+    protected void decryptEncryptedAssertions(final Response response, final Decrypter decrypter) {
 
         for (final EncryptedAssertion encryptedAssertion : response.getEncryptedAssertions()) {
             try {
@@ -351,8 +351,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param engine    the engine
      * @param decrypter the decrypter
      */
-    protected final void validateAssertion(final Assertion assertion, final SAML2MessageContext context,
-                                           final SignatureTrustEngine engine, final Decrypter decrypter) {
+    protected void validateAssertion(final Assertion assertion, final SAML2MessageContext context,
+                                     final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         validateIssueInstant(assertion.getIssueInstant());
 
@@ -384,8 +384,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      *                  May be {@code null}, no decryption will be possible then.
      */
     @SuppressWarnings("unchecked")
-    protected final void validateSubject(final Subject subject, final SAML2MessageContext context,
-                                         final Decrypter decrypter) {
+    protected void validateSubject(final Subject subject, final SAML2MessageContext context,
+                                   final Decrypter decrypter) {
         boolean samlIDFound = false;
 
         // Read NameID/BaseID/EncryptedID from the subject. If not present directly in the subject, try to find it in subject confirmations.
@@ -450,8 +450,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param context the context
      * @return true if all Bearer subject checks are passing
      */
-    protected final boolean isValidBearerSubjectConfirmationData(final SubjectConfirmationData data,
-                                                                 final SAML2MessageContext context) {
+    protected boolean isValidBearerSubjectConfirmationData(final SubjectConfirmationData data,
+                                                           final SAML2MessageContext context) {
         if (data == null) {
             logger.debug("SubjectConfirmationData cannot be null for Bearer confirmation");
             return false;
@@ -531,7 +531,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param conditions the conditions
      * @param context    the context
      */
-    protected final void validateAssertionConditions(final Conditions conditions, final SAML2MessageContext context) {
+    protected void validateAssertionConditions(final Conditions conditions, final SAML2MessageContext context) {
 
         if (conditions == null) {
             return;
@@ -555,8 +555,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param audienceRestrictions the audience restrictions
      * @param spEntityId           the sp entity id
      */
-    protected final void validateAudienceRestrictions(final List<AudienceRestriction> audienceRestrictions,
-                                                      final String spEntityId) {
+    protected void validateAudienceRestrictions(final List<AudienceRestriction> audienceRestrictions,
+                                                final String spEntityId) {
 
         if (audienceRestrictions == null || audienceRestrictions.isEmpty()) {
             throw new SAMLAssertionAudienceException("Audience restrictions cannot be null or empty");
@@ -584,8 +584,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param authnStatements the authn statements
      * @param context         the context
      */
-    protected final void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
-                                                          final SAML2MessageContext context) {
+    protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
+                                                    final SAML2MessageContext context) {
 
         for (final AuthnStatement statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
@@ -606,8 +606,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param context   the context
      * @param engine    the engine
      */
-    protected final void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
-                                                    final SignatureTrustEngine engine) {
+    protected void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
+                                              final SignatureTrustEngine engine) {
 
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
 
