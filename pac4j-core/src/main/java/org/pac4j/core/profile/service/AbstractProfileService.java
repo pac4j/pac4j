@@ -230,9 +230,15 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             }
             final Object retrievedUsername = storageAttributes.get(getUsernameAttribute());
             if (retrievedUsername != null) {
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, retrievedUsername));
+                profile.addAttribute(USERNAME, retrievedUsername);
             } else {
-                profile.setId(username);
+                profile.addAttribute(USERNAME, username);
+            }
+            final Object retrievedId = storageAttributes.get(getIdAttribute());
+            if (retrievedId != null) {
+                profile.setId(ProfileHelper.sanitizeIdentifier(profile, retrievedId));
+            } else {
+                throw new TechnicalException("Could not retrieve id"); //Should not happen
             }
             if (isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);
