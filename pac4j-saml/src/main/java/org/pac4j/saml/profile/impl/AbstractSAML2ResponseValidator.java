@@ -95,7 +95,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      *
      * @param status the response status.
      */
-    protected final void validateSuccess(final Status status) {
+    protected void validateSuccess(final Status status) {
         String statusValue = status.getStatusCode().getValue();
         if (!StatusCode.SUCCESS.equals(statusValue)) {
             final StatusMessage statusMessage = status.getStatusMessage();
@@ -106,7 +106,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
-    protected final void validateSignatureIfItExists(final Signature signature, final SAML2MessageContext context,
+    protected void validateSignatureIfItExists(final Signature signature, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
         if (signature != null) {
             final String entityId = context.getSAMLPeerEntityContext().getEntityId();
@@ -122,8 +122,8 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param idpEntityId the idp entity id
      * @param trustEngine the trust engine
      */
-    protected final void validateSignature(final Signature signature, final String idpEntityId,
-                                           final SignatureTrustEngine trustEngine) {
+    protected void validateSignature(final Signature signature, final String idpEntityId,
+                                     final SignatureTrustEngine trustEngine) {
 
         final SAMLSignatureProfileValidator validator = new SAMLSignatureProfileValidator();
         try {
@@ -148,7 +148,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
-    protected final void validateIssuerIfItExists(final Issuer isser, final SAML2MessageContext context) {
+    protected void validateIssuerIfItExists(final Issuer isser, final SAML2MessageContext context) {
         if (isser != null) {
             validateIssuer(isser, context);
         }
@@ -160,7 +160,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param issuer  the issuer
      * @param context the context
      */
-    protected final void validateIssuer(final Issuer issuer, final SAML2MessageContext context) {
+    protected void validateIssuer(final Issuer issuer, final SAML2MessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
             throw new SAMLIssuerException("Issuer type is not entity but " + issuer.getFormat());
         }
@@ -171,17 +171,17 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
-    protected final void validateIssueInstant(final DateTime issueInstant) {
+    protected void validateIssueInstant(final DateTime issueInstant) {
         if (!isIssueInstantValid(issueInstant)) {
             throw new SAMLIssueInstantException("Issue instant is too old or in the future");
         }
     }
 
-    protected final boolean isIssueInstantValid(final DateTime issueInstant) {
+    protected boolean isIssueInstantValid(final DateTime issueInstant) {
         return isDateValid(issueInstant, 0);
     }
 
-    protected final boolean isDateValid(final DateTime issueInstant, final int interval) {
+    protected boolean isDateValid(final DateTime issueInstant, final int interval) {
         final DateTime now = DateTime.now(DateTimeZone.UTC);
 
         final DateTime before = now.plusSeconds(acceptedSkew);
@@ -197,7 +197,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return isDateValid;
     }
 
-    protected final void verifyEndpoint(final Endpoint endpoint, final String destination) {
+    protected void verifyEndpoint(final Endpoint endpoint, final String destination) {
         try {
             if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
                 && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
@@ -237,7 +237,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @return Decrypted ID or {@code null} if any input is {@code null}.
      * @throws SAMLException If the input ID cannot be decrypted.
      */
-    protected final NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
+    protected NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
         if (encryptedId == null) {
             return null;
         }
