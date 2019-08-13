@@ -19,6 +19,10 @@
         <!-- disabling the check for all classes because of a bug in JDK11 <Class name="~.*MongoProfileService"/-->
         <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
     </Match>
+    <!-- JDK10 build fix -->
+    <Match>
+        <Bug pattern="OBL_UNSATISFIED_OBLIGATION" />
+    </Match>
     <Match>
         <Class name="~.*SAML2Credentials"/>
         <Bug code="Se" />
