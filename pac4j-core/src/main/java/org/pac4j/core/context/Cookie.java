@@ -1,5 +1,7 @@
 package org.pac4j.core.context;
 
+import java.util.Date;
+
 import org.pac4j.core.exception.TechnicalException;
 
 /**
@@ -14,6 +16,7 @@ public final class Cookie {
     private String comment;
     private String domain;
     private int maxAge = -1;
+    private Date expiry;
     private String path;
     private boolean secure;
     private boolean isHttpOnly = false;
@@ -72,6 +75,14 @@ public final class Cookie {
 
     public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
+    }
+
+    public Date getExpiry() {
+        return expiry == null ? null : new Date(expiry.getTime());
+    }
+
+    public void setExpiry(Date expiry) {
+        this.expiry = expiry == null ? null : new Date(expiry.getTime());
     }
 
     public String getPath() {
