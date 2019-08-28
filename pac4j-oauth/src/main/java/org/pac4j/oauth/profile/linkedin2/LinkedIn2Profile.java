@@ -51,32 +51,39 @@ public class LinkedIn2Profile extends OAuth20Profile {
     @Override
     public URI getPictureUrl() {
         final LinkedIn2ProfilePicture pp = getProfilePicture();
-        if (pp == null)
+        if (pp == null) {
             return null;
+        }
 
         final DisplayImageTilde displayImageTilde = pp.getDisplayImageTilde();
-        if (displayImageTilde == null)
+        if (displayImageTilde == null) {
             return null;
+        }
 
         final Element[] elements = displayImageTilde.getElements();
-        if (elements == null || elements.length == 0)
+        if (elements == null || elements.length == 0) {
             return null;
+        }
 
         final Element element = elements[0];
-        if (element == null)
+        if (element == null) {
             return null;
+        }
 
         final Identifier[] identifiers = element.getIdentifiers();
-        if (identifiers == null || identifiers.length == 0)
+        if (identifiers == null || identifiers.length == 0) {
             return null;
+        }
 
         final Identifier identifier = identifiers[0];
-        if (identifier == null)
+        if (identifier == null) {
             return null;
+        }
 
         final String identifier2 = identifier.getIdentifier();
-        if (identifier2 == null)
+        if (identifier2 == null) {
             return null;
+        }
 
         return CommonHelper.asURI(identifier2);
     }
@@ -85,20 +92,24 @@ public class LinkedIn2Profile extends OAuth20Profile {
     public String getEmail() {
         final LinkedIn2ProfileEmails pe = getProfileEmails();
 
-        if (pe == null)
+        if (pe == null) {
             return null;
+        }
 
         final Email[] elements = pe.getElements();
-        if (elements == null || elements.length == 0)
+        if (elements == null || elements.length == 0) {
             return null;
+        }
 
         final Email element = elements[0];
-        if (element == null)
+        if (element == null) {
             return null;
+        }
 
         final HandleTilde handleTilde = element.getHandleTilde();
-        if (handleTilde == null)
+        if (handleTilde == null) {
             return null;
+        }
 
         return handleTilde.getEmailAddress();
     }

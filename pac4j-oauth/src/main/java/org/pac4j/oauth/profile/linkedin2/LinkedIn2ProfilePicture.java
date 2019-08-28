@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.util.TokenBuffer;
 /**
  *
  * @author Vassilis Virvilis
- * @since 3.9.0
+ * @since 3.8.0
  */
 public class LinkedIn2ProfilePicture implements Serializable {
     private static final long serialVersionUID = 100L;

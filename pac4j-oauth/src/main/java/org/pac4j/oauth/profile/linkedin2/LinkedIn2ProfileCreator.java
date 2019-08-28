@@ -17,7 +17,7 @@ import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
  *
  * @author Jerome Leleu
  * @author Vassilis Virvilis
- * @since 3.9.0
+ * @since 3.8.0
  */
 public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Profile> {
     private static final String EMAIL_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
@@ -39,8 +39,9 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Prof
         final LinkedIn2Profile profile = profileDefinition.extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
 
-        if (profile == null || !linkedin2Configuration.getScope().contains("r_emailaddress"))
+        if (profile == null || !linkedin2Configuration.getScope().contains("r_emailaddress")) {
             return profile;
+        }
 
         body = sendRequestForData(service, accessToken, EMAIL_URL, profileDefinition.getProfileVerb());
         if (body == null) {
