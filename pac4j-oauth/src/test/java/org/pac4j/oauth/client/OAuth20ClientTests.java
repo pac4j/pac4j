@@ -158,13 +158,6 @@ public final class OAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testMissingFieldsLinkedIn() {
-        final LinkedIn2Client client = getLinkedInClient();
-        client.setFields(null);
-        TestsHelper.initShouldFail(client, "fields cannot be blank");
-    }
-
-    @Test
     public void testMissingFieldsPaypal() {
         final PayPalClient client = new PayPalClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
