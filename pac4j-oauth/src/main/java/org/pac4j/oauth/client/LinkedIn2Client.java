@@ -1,12 +1,13 @@
 package org.pac4j.oauth.client;
 
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileCreator;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import com.github.scribejava.apis.LinkedInApi20;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
@@ -16,6 +17,7 @@ import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
  * <p>More information at https://developer.linkedin.com/documents/profile-api</p>
  *
  * @author Jerome Leleu
+ * @author Vassilis Virvilis
  * @since 1.4.1
  */
 public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
@@ -25,7 +27,7 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
     }
 
     public LinkedIn2Client(final String key, final String secret) {
-        configuration = new LinkedIn2Configuration();
+        this();
         setKey(key);
         setSecret(secret);
     }
@@ -33,7 +35,6 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
     @Override
     protected void clientInit() {
         CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
-        CommonHelper.assertNotBlank("fields", getConfiguration().getFields());
         configuration.setApi(LinkedInApi20.instance());
         configuration.setProfileDefinition(new LinkedIn2ProfileDefinition());
         configuration.setWithState(true);
@@ -41,15 +42,14 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
             final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
             final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
             // user has denied permissions
-            if ("access_denied".equals(error)
-                    && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
-                    .equals(errorDescription))) {
+            if ("access_denied".equals(error) && ("the+user+denied+your+request".equals(errorDescription)
+                    || "the user denied your request".equals(errorDescription))) {
                 return true;
-            } else {
-                return false;
             }
+            return false;
         });
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
+        defaultProfileCreator(new LinkedIn2ProfileCreator(configuration, this));
 
         super.clientInit();
     }
@@ -65,13 +65,5 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
 
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);
-    }
-
-    public String getFields() {
-        return getConfiguration().getFields();
-    }
-
-    public void setFields(final String fields) {
-        getConfiguration().setFields(fields);
     }
 }
