@@ -12,6 +12,7 @@ title: Release notes&#58;
 - Fix SAML signature validation w.r.t. WantAssertionsSigned handling. Signing is now always required, even when WantAssertionsSigned is disabled. WantAssertionsSigned now requires explicit signing of the assertions, not the response.
 - Sign metadata when configured to do so and open up the metadata generation API for customization.
 - Never sign AuthnRequests with XMLSig when using REDIRECT binding, signing is done via the Signature query parameter.
+- Added support for LinkedIn v2 API
 
 **v3.7.0**:
 
