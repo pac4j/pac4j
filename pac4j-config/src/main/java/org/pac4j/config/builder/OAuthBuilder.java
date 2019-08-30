@@ -24,15 +24,11 @@ public class OAuthBuilder extends AbstractBuilder {
         final String id = getProperty(LINKEDIN_ID);
         final String secret = getProperty(LINKEDIN_SECRET);
         final String scope = getProperty(LINKEDIN_SCOPE);
-        final String fields = getProperty(LINKEDIN_FIELDS);
 
         if (isNotBlank(id) && isNotBlank(secret)) {
             final LinkedIn2Client linkedInClient = new LinkedIn2Client(id, secret);
             if (isNotBlank(scope)) {
                 linkedInClient.setScope(scope);
-            }
-            if (isNotBlank(fields)) {
-                linkedInClient.setFields(fields);
             }
             clients.add(linkedInClient);
         }
