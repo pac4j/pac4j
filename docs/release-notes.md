@@ -29,6 +29,7 @@ title: Release notes&#58;
 - Added support for the SAML artifact binding for the authentication response.
 - Sign metadata when configured to do so and open up the metadata generation API for customization.
 - Never sign AuthnRequests with XMLSig when using REDIRECT binding, signing is done via the Signature query parameter.
+- Added support for LinkedIn v2 API
 
 **v3.7.0**:
 
