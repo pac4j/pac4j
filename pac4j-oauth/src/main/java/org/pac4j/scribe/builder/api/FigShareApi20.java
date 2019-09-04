@@ -2,8 +2,6 @@ package org.pac4j.scribe.builder.api;
 
 import java.io.OutputStream;
 
-import org.pac4j.scribe.builder.api.GenericApi20;
-
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;

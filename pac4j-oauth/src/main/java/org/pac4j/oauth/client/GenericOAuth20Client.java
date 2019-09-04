@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -15,7 +16,6 @@ import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;
 import org.pac4j.core.redirect.RedirectAction;
-import org.pac4j.oauth.client.OAuth20Client;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
@@ -136,7 +136,7 @@ public class GenericOAuth20Client<P extends OAuth20Profile> extends OAuth20Clien
                     .filter(x -> AbstractAttributeConverter.class.isAssignableFrom(x) && !Modifier.isAbstract(x.getModifiers()))
                     .toArray(Class[]::new);
                 return converterClasses;
-            } catch (Exception e) {
+            } catch (IllegalAccessException | NoSuchFieldException e) {
                 LOG.warn(e.toString());
             }
         }
@@ -151,7 +151,7 @@ public class GenericOAuth20Client<P extends OAuth20Profile> extends OAuth20Clien
                         AbstractAttributeConverter<?> converter = (AbstractAttributeConverter<?>) x.getDeclaredConstructor().newInstance();
                         Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
-                    } catch (Exception e) {
+                    } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
                         LOG.warn("Ignore type which no parameterless constructor:" + x.getName());
                     }
                     return false;
