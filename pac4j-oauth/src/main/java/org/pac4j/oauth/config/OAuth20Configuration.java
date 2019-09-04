@@ -53,7 +53,8 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        return api.createService(this.key, this.secret, finalCallbackUrl, this.scope, this.responseType, null, this.httpClientConfig, null);
+        return api.createService(this.key, this.secret, finalCallbackUrl, this.scope,
+            this.responseType, null, null, this.httpClientConfig, null);
     }
 
     /**

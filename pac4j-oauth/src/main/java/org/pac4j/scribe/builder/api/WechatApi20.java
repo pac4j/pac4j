@@ -1,5 +1,6 @@
 package org.pac4j.scribe.builder.api;
 
+import java.io.OutputStream;
 import java.util.Map;
 
 import com.github.scribejava.core.oauth2.bearersignature.BearerSignature;
@@ -85,7 +86,8 @@ public class WechatApi20 extends DefaultApi20 {
 
     @Override
     public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope,
-                                        String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+                                                     String responseType, OutputStream debugStream, String userAgent,
+                                                     HttpClientConfig httpClientConfig, HttpClient httpClient) {
         return new WechatService(this, apiKey, apiSecret, callback, defaultScope, responseType, userAgent, httpClientConfig, httpClient);
     }
 
