@@ -60,7 +60,7 @@
 		<junit.version>4.12</junit.version>
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<logback.version>1.2.3</logback.version>
-		<commons-codec.version>1.12</commons-codec.version>
+		<commons-codec.version>1.13</commons-codec.version>
 		<commons-io.version>2.6</commons-io.version>
 		<guava.version>27.0.1-jre</guava.version>
 		<nimbus-jose-jwt.version>7.0.1</nimbus-jose-jwt.version>
