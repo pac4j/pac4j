@@ -32,7 +32,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
         final OAuth10ProfileDefinition<YahooProfile> profileDefinition =
             (OAuth10ProfileDefinition<YahooProfile>) configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);
-        final OAuth10aService service = configuration.buildService(context, client, null);
+        final OAuth10aService service = configuration.buildService(context, client);
         String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);

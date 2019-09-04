@@ -56,15 +56,14 @@ public class OAuthConfiguration<S extends OAuthService, T extends Token> extends
      *
      * @param context the web context
      * @param client the client
-     * @param state a given state
      * @return the OAuth service
      */
-    public S buildService(final WebContext context, final IndirectClient client, final String state) {
+    public S buildService(final WebContext context, final IndirectClient client) {
         init();
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        return getApi().createService(this.key, this.secret, finalCallbackUrl, this.scope, null, state, this.responseType, null,
+        return getApi().createService(this.key, this.secret, finalCallbackUrl, this.scope, null, this.responseType, null,
                 this.httpClientConfig, null);
     }
 

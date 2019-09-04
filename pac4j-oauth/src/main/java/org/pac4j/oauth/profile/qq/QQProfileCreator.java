@@ -32,7 +32,7 @@ public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
                                                               OAuth2AccessToken accessToken) {
         QQProfileDefinition profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
         String openidUrl = profileDefinition.getOpenidUrl(accessToken, configuration);
-        final OAuth20Service service = this.configuration.buildService(context, client, null);
+        final OAuth20Service service = this.configuration.buildService(context, client);
 
         String body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
         String openid = profileDefinition.extractOpenid(body);
