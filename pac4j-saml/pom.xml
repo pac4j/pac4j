@@ -24,7 +24,7 @@
         <cryptacular.version>1.2.1</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
         <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
-        <httpcore.version>4.4.11</httpcore.version>
+        <httpcore.version>4.4.12</httpcore.version>
     </properties>
 
     <dependencyManagement>
