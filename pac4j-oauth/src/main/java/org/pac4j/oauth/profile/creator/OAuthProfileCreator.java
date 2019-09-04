@@ -83,7 +83,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final T accessToken) {
         final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final S service = this.configuration.buildService(context, client, null);
+        final S service = this.configuration.buildService(context, client);
         final String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {

@@ -34,7 +34,7 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Prof
         final LinkedIn2ProfileDefinition profileDefinition = (LinkedIn2ProfileDefinition) configuration.getProfileDefinition();
         final LinkedIn2Configuration linkedin2Configuration = (LinkedIn2Configuration) configuration;
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, linkedin2Configuration);
-        final OAuth20Service service = configuration.buildService(context, client, null);
+        final OAuth20Service service = configuration.buildService(context, client);
         String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);

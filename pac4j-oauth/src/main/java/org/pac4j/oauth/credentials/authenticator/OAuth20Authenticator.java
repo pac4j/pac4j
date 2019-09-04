@@ -31,7 +31,7 @@ public class OAuth20Authenticator extends OAuthAuthenticator<OAuth20Credentials,
         logger.debug("code: {}", code);
         final OAuth2AccessToken accessToken;
         try {
-            accessToken = this.configuration.buildService(context, client, null).getAccessToken(code);
+            accessToken = this.configuration.buildService(context, client).getAccessToken(code);
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }
