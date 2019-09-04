@@ -8,6 +8,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.AttributeConverter;
@@ -24,14 +25,24 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * json resopnse, starting from <code>firstNodePath</code></p>
  *
  * @author Julio Arrebola
+ * @author Vassilis Virvilis
  */
-public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profile, OAuth20Configuration> {
+public class GenericOAuth20ProfileDefinition<P extends OAuth20Profile, C extends OAuth20Configuration>
+        extends OAuth20ProfileDefinition<P, C> {
 
-    private final Map<String,String> profileAttributes = new HashMap<>();
+    private final Map<String, String> profileAttributes = new HashMap<>();
 
     String profileUrl = null;
     Verb profileVerb = null;
     String firstNodePath = null;
+
+    public GenericOAuth20ProfileDefinition() {
+        super();
+    }
+
+    public GenericOAuth20ProfileDefinition(final Function<Object[], P> profileFactory) {
+        super(profileFactory);
+    }
 
     public void setProfileVerb(final Verb value) {
         this.profileVerb = value;
@@ -41,9 +52,8 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
     public Verb getProfileVerb() {
         if (profileVerb != null) {
             return this.profileVerb;
-        } else {
-            return super.getProfileVerb();
         }
+        return super.getProfileVerb();
     }
 
     public void setProfileUrl(final String profileUrl) {
@@ -56,8 +66,8 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
     }
 
     @Override
-    public OAuth20Profile extractUserProfile(final String body) {
-        final OAuth20Profile profile = new OAuth20Profile();
+    public P extractUserProfile(final String body) {
+        final P profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
             if (getProfileId() != null) {

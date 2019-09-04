@@ -6,12 +6,20 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.github.scribejava.core.model.Verb;
-import org.pac4j.core.profile.converter.AbstractAttributeConverter;
-import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
+import com.github.scribejava.core.model.Verb;
+
+import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.converter.AbstractAttributeConverter;
+import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.oauth.client.OAuth20Client;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.OAuth20Profile;
+import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 import org.pac4j.scribe.builder.api.GenericApi20;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +28,13 @@ import org.slf4j.LoggerFactory;
  * <p>This class is a generic OAuth2 client to authenticate users in a standard OAuth2 server.</p>
  * <p>All configuration parameters can be specified setting the corresponding attribute.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.OAuth20Profile}.</p>
+ * <p> GenericOAuth20Client also supports typed profiles and
+ * hooks to override Api, ProfileDefinition, ProfileCreator and LogoutUrl</p>
  *
  * @author Julio Arrebola
+ * @author Vassilis Virvilis
  */
-public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
+public class GenericOAuth20Client<P extends OAuth20Profile> extends OAuth20Client<P> {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericOAuth20Client.class);
 
@@ -40,7 +51,23 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
     private Map<String, String> customParams;
     private Class[] converterClasses;
 
+    private final BiFunction<String, String, ? extends GenericApi20> apiProvider;
+    private final Supplier<? extends GenericOAuth20ProfileDefinition> profileDefinitionProvider;
+    private final BiFunction<OAuth20Configuration, IndirectClient, ? extends OAuth20ProfileCreator<P>> profileCreatorProvider;
+    private final Supplier<String> logoutUrlProvider;
+
+    public GenericOAuth20Client(BiFunction<String, String, ? extends GenericApi20> apiProvider,
+            Supplier<? extends GenericOAuth20ProfileDefinition> profileDefinitionProvider,
+            BiFunction<OAuth20Configuration, IndirectClient, ? extends OAuth20ProfileCreator<P>> profileCreatorProvider,
+            Supplier<String> logoutUrlProvider) {
+        this.apiProvider = apiProvider;
+        this.profileDefinitionProvider = profileDefinitionProvider;
+        this.profileCreatorProvider = profileCreatorProvider;
+        this.logoutUrlProvider = logoutUrlProvider;
+    }
+
     public GenericOAuth20Client() {
+        this(null, null, null, null);
     }
 
     @Override
@@ -48,7 +75,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         LOG.info("InternalInit");
 
-        GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
+        GenericApi20 genApi = apiProvider != null ? apiProvider.apply(authUrl, tokenUrl) : new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
         if (clientAuthenticationMethod != null) {
@@ -57,7 +84,8 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         configuration.setCustomParams(customParams);
 
-        GenericOAuth20ProfileDefinition profileDefinition = new GenericOAuth20ProfileDefinition();
+        GenericOAuth20ProfileDefinition profileDefinition = profileDefinitionProvider != null ? profileDefinitionProvider.get()
+                : new GenericOAuth20ProfileDefinition();
         profileDefinition.setFirstNodePath(profilePath);
         profileDefinition.setProfileVerb(profileVerb);
         profileDefinition.setProfileUrl(profileUrl);
@@ -84,6 +112,11 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         configuration.setScope(scope);
         configuration.setWithState(withState);
+
+        if (profileCreatorProvider != null)
+            defaultProfileCreator(profileCreatorProvider.apply(configuration, this));
+        if (logoutUrlProvider != null)
+            defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect(logoutUrlProvider.get()));
 
         super.clientInit();
     }
@@ -118,7 +151,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
                         AbstractAttributeConverter<?> converter = (AbstractAttributeConverter<?>) x.getDeclaredConstructor().newInstance();
                         Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
-                    } catch (ReflectiveOperationException e) {
+                    } catch (Exception e) {
                         LOG.warn("Ignore type which no parameterless constructor:" + x.getName());
                     }
                     return false;
