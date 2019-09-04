@@ -10,7 +10,6 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 import com.github.scribejava.core.model.Verb;
 
 import org.pac4j.core.client.IndirectClient;
@@ -20,6 +19,7 @@ import org.pac4j.oauth.client.OAuth20Client;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
+import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 import org.pac4j.scribe.builder.api.GenericApi20;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
