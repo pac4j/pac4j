@@ -55,6 +55,7 @@ public final class JwtTests implements TestsConstants {
         assertNotNull(credentials.getUserProfile());
     }
 
+    @Test
     public void testGenerateAuthenticateSub() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
