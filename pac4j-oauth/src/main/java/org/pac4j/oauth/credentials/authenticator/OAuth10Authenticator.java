@@ -46,7 +46,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator<OAuth10Credentials,
         }
         final OAuth1AccessToken accessToken;
         try {
-            accessToken = this.configuration.buildService(context, client, null).getAccessToken(tokenRequest, verifier);
+            accessToken = this.configuration.buildService(context, client).getAccessToken(tokenRequest, verifier);
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }

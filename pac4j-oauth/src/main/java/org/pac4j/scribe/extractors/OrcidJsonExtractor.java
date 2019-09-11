@@ -1,10 +1,9 @@
 package org.pac4j.scribe.extractors;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.extractors.OAuth2AccessTokenJsonExtractor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.scribe.model.OrcidToken;
-
-import java.util.regex.Pattern;
 
 /**
  * This class represents a specific JSON extractor for ORCiD using OAuth protocol version 2. It could be part of the Scribe library.
@@ -13,8 +12,6 @@ import java.util.regex.Pattern;
  * @since 1.6.0
  */
 public class OrcidJsonExtractor extends OAuth2AccessTokenJsonExtractor {
-
-    public static final Pattern ORCID_REGEX = Pattern.compile("\"orcid\"\\s*:\\s*\"(\\S*?)\"");
 
     protected OrcidJsonExtractor() {
     }
@@ -29,9 +26,9 @@ public class OrcidJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     }
 
     @Override
-    protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn,
-                                            String refreshToken, String scope, String response) {
+    protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
+                                            JsonNode response, String rawResponse) {
         return new OrcidToken(accessToken, tokenType, expiresIn, refreshToken, scope,
-                extractParameter(response, ORCID_REGEX, true), response);
+                extractRequiredParameter(response, "orcid", rawResponse).asText(), rawResponse);
     }
 }

@@ -1,5 +1,6 @@
 package org.pac4j.scribe.builder.api;
 
+import java.io.OutputStream;
 import java.util.Map;
 
 import com.github.scribejava.core.oauth2.bearersignature.BearerSignature;
@@ -18,8 +19,6 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import java.io.OutputStream;
-
 
 /**
  * This class represents the OAuth API implementation for Tencent Wechat using OAuth protocol version 2.
@@ -86,9 +85,10 @@ public class WechatApi20 extends DefaultApi20 {
     }
 
     @Override
-    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String scope, OutputStream debugStream,
-            String state, String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
-        return new WechatService(this, apiKey, apiSecret, callback, scope, state, responseType, userAgent, httpClientConfig, httpClient);
+    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope,
+                                                     String responseType, OutputStream debugStream, String userAgent,
+                                                     HttpClientConfig httpClientConfig, HttpClient httpClient) {
+        return new WechatService(this, apiKey, apiSecret, callback, defaultScope, responseType, userAgent, httpClientConfig, httpClient);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.pac4j.oauth.redirect;
 
 import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.oauth.AuthorizationUrlBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -48,8 +49,9 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             } else {
                 state = null;
             }
-            final OAuth20Service service = this.configuration.buildService(context, client, state);
-            final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
+            final OAuth20Service service = this.configuration.buildService(context, client);
+            final String authorizationUrl = new AuthorizationUrlBuilder(service)
+                .state(state).additionalParams(this.configuration.getCustomParams()).build();
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, authorizationUrl));
 

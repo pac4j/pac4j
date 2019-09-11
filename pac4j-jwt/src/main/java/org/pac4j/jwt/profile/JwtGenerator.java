@@ -5,7 +5,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 
@@ -97,7 +96,6 @@ public class JwtGenerator<U extends CommonProfile> {
 
     protected void verifyProfile(final U profile) {
         CommonHelper.assertNotNull("profile", profile);
-        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtClaims.SUBJECT));
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
     }
@@ -105,7 +103,6 @@ public class JwtGenerator<U extends CommonProfile> {
     protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
         // claims builder with subject and issue time
         final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-                .subject(profile.getTypedId())
                 .issueTime(new Date());
 
         if (this.expirationTime != null) {
@@ -119,6 +116,8 @@ public class JwtGenerator<U extends CommonProfile> {
         }
         builder.claim(INTERNAL_ROLES, profile.getRoles());
         builder.claim(INTERNAL_PERMISSIONS, profile.getPermissions());
+
+        builder.subject(profile.getTypedId());
 
         // claims
         return builder.build();

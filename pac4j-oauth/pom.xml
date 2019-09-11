@@ -13,7 +13,7 @@
     <name>pac4j for OAuth protocol</name>
 
     <properties>
-        <scribe.version>6.3.0</scribe.version>
+        <scribe.version>6.8.1</scribe.version>
     </properties>
 
     <dependencies>

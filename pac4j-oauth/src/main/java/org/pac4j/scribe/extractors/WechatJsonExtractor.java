@@ -1,7 +1,6 @@
 package org.pac4j.scribe.extractors;
 
-import java.util.regex.Pattern;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.scribe.model.WechatToken;
 
 import com.github.scribejava.core.extractors.OAuth2AccessTokenJsonExtractor;
@@ -19,9 +18,6 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  */
 public class WechatJsonExtractor extends OAuth2AccessTokenJsonExtractor {
 
-    public static final Pattern OPENID_REGEX = Pattern.compile("\"openid\"\\s*:\\s*\"(\\S*?)\"");
-    public static final Pattern UNION_ID_REGEX = Pattern.compile("\"unionid\"\\s*:\\s*\"(\\S*?)\"");
-
     protected WechatJsonExtractor() {
     }
 
@@ -35,11 +31,11 @@ public class WechatJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     }
 
     @Override
-    protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn,
-                                            String refreshToken, String scope, String response) {
-        String openid = extractParameter(response, OPENID_REGEX, true);
-        String unionid = extractParameter(response, UNION_ID_REGEX, false);
-        WechatToken token = new WechatToken(accessToken, tokenType, expiresIn, refreshToken, scope, response, openid, unionid);
+    protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
+                                            JsonNode response, String rawResponse) {
+        String openid = extractRequiredParameter(response, "openid", rawResponse).asText();
+        String unionid = extractRequiredParameter(response, "unionid", rawResponse).asText();
+        WechatToken token = new WechatToken(accessToken, tokenType, expiresIn, refreshToken, scope, rawResponse, openid, unionid);
         return token;
     }
 }
