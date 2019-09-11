@@ -30,6 +30,7 @@ title: Release notes&#58;
 - Sign metadata when configured to do so and open up the metadata generation API for customization.
 - Never sign AuthnRequests with XMLSig when using REDIRECT binding, signing is done via the Signature query parameter.
 - Added support for LinkedIn v2 API
+- Added support for FigShare 
 
 **v3.7.0**:
 
