@@ -68,7 +68,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         final SAMLPeerEntityContext decodedPeerContext = decodedCtx.getParent()
                 .getSubcontext(SAMLPeerEntityContext.class);
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
-        decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext.isAuthenticated());
+        decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext != null && decodedPeerContext.isAuthenticated());
 
         decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
         decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
