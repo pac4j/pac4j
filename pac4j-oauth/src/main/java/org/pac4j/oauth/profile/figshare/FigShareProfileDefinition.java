@@ -42,9 +42,6 @@ public class FigShareProfileDefinition extends OAuth20ProfileDefinition<FigShare
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
-            for (final String attribute : getSecondaryAttributes()) {
-                convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
-            }
         } else {
             raiseProfileExtractionJsonError(body);
         }
