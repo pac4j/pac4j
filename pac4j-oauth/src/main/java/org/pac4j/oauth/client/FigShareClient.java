@@ -3,7 +3,6 @@ package org.pac4j.oauth.client;
 import java.util.Optional;
 
 import org.pac4j.core.exception.http.RedirectionActionHelper;
-
 import org.pac4j.oauth.profile.figshare.FigShareProfileCreator;
 import org.pac4j.oauth.profile.figshare.FigShareProfileDefinition;
 import org.pac4j.scribe.builder.api.FigShareApi20;

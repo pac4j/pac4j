@@ -1,16 +1,15 @@
 package org.pac4j.oauth.profile.figshare;
 
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.JsonHelper;
+import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 
 /**
  * This class is the FigShare profile definition
