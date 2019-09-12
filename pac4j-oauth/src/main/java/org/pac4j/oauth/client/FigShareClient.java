@@ -1,7 +1,6 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.redirect.RedirectAction;
-
 import org.pac4j.oauth.profile.figshare.FigShareProfile;
 import org.pac4j.oauth.profile.figshare.FigShareProfileCreator;
 import org.pac4j.oauth.profile.figshare.FigShareProfileDefinition;
