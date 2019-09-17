@@ -130,6 +130,12 @@
             <groupId>net.shibboleth.tool</groupId>
             <artifactId>xmlsectool</artifactId>
             <version>${xmlsectool.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
