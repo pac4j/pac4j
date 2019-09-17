@@ -1,5 +1,6 @@
 package org.pac4j.cas.config;
 
+import org.jasig.cas.client.util.PrivateKeyUtils;
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.core.logout.handler.LogoutHandler;
@@ -13,6 +14,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
 import java.nio.charset.StandardCharsets;
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +71,12 @@ public class CasConfiguration extends InitializableObject {
 
     private String method;
 
+    private String privateKeyPath;
+
+    private String privateKeyAlgorithm;
+
+    private PrivateKey privateKey;
+
     public CasConfiguration() {}
 
     public CasConfiguration(final String loginUrl) {
@@ -97,6 +105,16 @@ public class CasConfiguration extends InitializableObject {
         initializeClientConfiguration();
 
         initializeLogoutHandler();
+
+        if (privateKeyPath != null) {
+            final String algo;
+            if (privateKeyAlgorithm != null) {
+                algo = privateKeyAlgorithm;
+            } else {
+                algo = "RSA";
+            }
+            this.privateKey = PrivateKeyUtils.createKey(privateKeyPath, algo);
+        }
     }
 
     protected void initializeClientConfiguration() {
@@ -153,6 +171,12 @@ public class CasConfiguration extends InitializableObject {
         return saml11TicketValidator;
     }
 
+    protected void addPrivateKey(final Cas20ServiceTicketValidator validator) {
+        if (this.privateKey != null) {
+            validator.setPrivateKey(this.privateKey);
+        }
+    }
+
     protected TicketValidator buildCas30ProxyTicketValidator(final WebContext context) {
         final Cas30ProxyTicketValidator cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas30ProxyTicketValidator.setEncoding(this.encoding);
@@ -163,6 +187,7 @@ public class CasConfiguration extends InitializableObject {
             cas30ProxyTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas30ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
+        addPrivateKey(cas30ProxyTicketValidator);
         return cas30ProxyTicketValidator;
     }
 
@@ -174,6 +199,7 @@ public class CasConfiguration extends InitializableObject {
             cas30ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas30ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
+        addPrivateKey(cas30ServiceTicketValidator);
         return cas30ServiceTicketValidator;
     }
 
@@ -187,6 +213,7 @@ public class CasConfiguration extends InitializableObject {
             cas20ProxyTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas20ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
+        addPrivateKey(cas20ProxyTicketValidator);
         return cas20ProxyTicketValidator;
     }
 
@@ -198,6 +225,7 @@ public class CasConfiguration extends InitializableObject {
             cas20ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas20ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
+        addPrivateKey(cas20ServiceTicketValidator);
         return cas20ServiceTicketValidator;
     }
 
@@ -372,6 +400,22 @@ public class CasConfiguration extends InitializableObject {
         this.method = method;
     }
 
+    public String getPrivateKeyPath() {
+        return privateKeyPath;
+    }
+
+    public void setPrivateKeyPath(final String privateKeyPath) {
+        this.privateKeyPath = privateKeyPath;
+    }
+
+    public String getPrivateKeyAlgorithm() {
+        return privateKeyAlgorithm;
+    }
+
+    public void setPrivateKeyAlgorithm(final String privateKeyAlgorithm) {
+        this.privateKeyAlgorithm = privateKeyAlgorithm;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
@@ -379,6 +423,6 @@ public class CasConfiguration extends InitializableObject {
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
                 "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
                 this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver,
-                "method", this.method);
+                "method", this.method, "privateKeyPath", this.privateKeyPath, "privateKeyAlgorithm", this.privateKeyAlgorithm);
     }
 }
