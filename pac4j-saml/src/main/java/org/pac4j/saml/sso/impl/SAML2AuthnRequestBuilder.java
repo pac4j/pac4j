@@ -1,7 +1,6 @@
 
 package org.pac4j.saml.sso.impl;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
@@ -20,6 +19,7 @@ import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
@@ -138,7 +138,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     }
 
     protected final String generateID() {
-        return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
+        return "_".concat(CommonHelper.randomString(39)).toLowerCase();
     }
 
     protected final AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {

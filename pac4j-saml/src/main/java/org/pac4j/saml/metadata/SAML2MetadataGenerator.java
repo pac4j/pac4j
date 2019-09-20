@@ -2,7 +2,6 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
@@ -22,6 +21,7 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
@@ -162,7 +162,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected final String generateEntityDescriptorId() {
         try {
-            return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
+            return "_".concat(CommonHelper.randomString(39)).toLowerCase();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

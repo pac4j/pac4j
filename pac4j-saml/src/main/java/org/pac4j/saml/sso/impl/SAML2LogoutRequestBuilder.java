@@ -1,7 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
 import java.util.Optional;
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -16,6 +15,7 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
@@ -107,7 +107,7 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
     }
 
     protected final String generateID() {
-        return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
+        return "_".concat(CommonHelper.randomString(39)).toLowerCase();
     }
 
     public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
