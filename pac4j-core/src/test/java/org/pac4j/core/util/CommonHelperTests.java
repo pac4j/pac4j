@@ -190,7 +190,15 @@ public final class CommonHelperTests {
 
     @Test
     public void testRandomString() {
-        assertNotNull(CommonHelper.randomString(10));
+        for (int i = 0; i < 128; i++) {
+            internalTestRandomString(i);
+        }
+    }
+
+    private void internalTestRandomString(final int size) {
+        final String s = CommonHelper.randomString(size);
+        assertNotNull(s);
+        assertEquals(size, s.length());
     }
 
     @Test

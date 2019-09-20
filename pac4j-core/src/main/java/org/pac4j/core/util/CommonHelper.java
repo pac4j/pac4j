@@ -230,7 +230,11 @@ public final class CommonHelper {
      * @return the random size
      */
     public static String randomString(final int size) {
-        return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+        StringBuffer sb = new StringBuffer("");
+        while (sb.length() < size) {
+            sb.append(java.util.UUID.randomUUID().toString().replace("-", ""));
+        }
+        return sb.toString().substring(0, size);
     }
 
     /**
