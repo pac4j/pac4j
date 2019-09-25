@@ -20,7 +20,7 @@ title: Release notes&#58;
 - Handles originally requested URLs with POST method
 - Add HTTP POST Simple-Sign protocol implementation
 
-**v3.8.0**:
+**v3.8.2**:
 
 - Add customizable SAML post Logout URL
 - QualifiedName must not be included by default in SAML authentication requests
