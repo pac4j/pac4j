@@ -35,7 +35,7 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
         final CasRedirectionActionBuilder builder = newBuilder(config);
         final RedirectionAction action = builder.getRedirectionAction(MockWebContext.create()).get();
         assertTrue(action instanceof FoundAction);
-        assertEquals(LOGIN_URL + "?method=post&service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
+        assertEquals(LOGIN_URL + "?service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient&method=post",
             ((FoundAction) action).getLocation());
     }
 
