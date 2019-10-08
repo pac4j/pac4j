@@ -54,6 +54,7 @@
 		<module>pac4j-mongo</module>
 		<module>pac4j-couch</module>
 		<module>pac4j-kerberos</module>
+        <module>pac4j-springboot</module>
 	</modules>
 
 	<properties>
