@@ -11,6 +11,7 @@ import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.SessionIndex;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.util.Configuration;
@@ -26,6 +27,8 @@ public class SAML2LogoutRequestBuilder {
 
     private String bindingType;
 
+    private boolean useNameQualifier;
+
     private int issueInstantSkewSeconds = 0;
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
@@ -35,8 +38,9 @@ public class SAML2LogoutRequestBuilder {
      *
      * @param bindingType the binding type
      */
-    public SAML2LogoutRequestBuilder(final String bindingType) {
-        this.bindingType = bindingType;
+    public SAML2LogoutRequestBuilder(final SAML2Configuration cfg) {
+        this.bindingType = cfg.getSpLogoutRequestBindingType();
+        this.useNameQualifier = cfg.isUseNameQualifier();
     }
 
     public LogoutRequest build(final SAML2MessageContext context, final SAML2Profile profile) {
@@ -67,9 +71,12 @@ public class SAML2LogoutRequestBuilder {
         final NameID nameId = nameIdBuilder.buildObject();
         nameId.setValue(profile.getId());
         nameId.setFormat(profile.getSamlNameIdFormat());
-        nameId.setNameQualifier(profile.getSamlNameIdNameQualifier());
-        nameId.setSPNameQualifier(profile.getSamlNameIdSpNameQualifier());
-        nameId.setSPProvidedID(profile.getSamlNameIdSpProviderId());
+        if (this.useNameQualifier) {
+            System.out.println("************************** blah blah");
+            nameId.setNameQualifier(profile.getSamlNameIdNameQualifier());
+            nameId.setSPNameQualifier(profile.getSamlNameIdSpNameQualifier());
+            nameId.setSPProvidedID(profile.getSamlNameIdSpProviderId());
+        }
         request.setNameID(nameId);
         // session index added
         final String sessIdx = profile.getSessionIndex();
