@@ -72,7 +72,6 @@ public class SAML2LogoutRequestBuilder {
         nameId.setValue(profile.getId());
         nameId.setFormat(profile.getSamlNameIdFormat());
         if (this.useNameQualifier) {
-            System.out.println("************************** blah blah");
             nameId.setNameQualifier(profile.getSamlNameIdNameQualifier());
             nameId.setSPNameQualifier(profile.getSamlNameIdSpNameQualifier());
             nameId.setSPProvidedID(profile.getSamlNameIdSpProviderId());
