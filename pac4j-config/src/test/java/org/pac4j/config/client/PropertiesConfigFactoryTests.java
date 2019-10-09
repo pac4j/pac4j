@@ -83,7 +83,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(INDIRECTBASICAUTH_AUTHENTICATOR.concat(".2"), "testUsernamePassword");
 
         properties.put(LDAP_TYPE, "direct");
-        properties.put(LDAP_URL, "ldap://localhost:" + PORT);
+        properties.put(LDAP_URL, "ldap://localhost:" + port);
         properties.put(LDAP_USE_SSL, "false");
         properties.put(LDAP_USE_START_TLS, "false");
         properties.put(LDAP_DN_FORMAT, CN + "=%s," + BASE_PEOPLE_DN);
