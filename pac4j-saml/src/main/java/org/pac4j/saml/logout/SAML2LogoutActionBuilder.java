@@ -41,7 +41,7 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
         this.contextProvider = client.getContextProvider();
         this.configuration = client.getConfiguration();
         this.stateGenerator = client.getStateGenerator();
-        this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(configuration.getSpLogoutRequestBindingType());
+        this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(configuration);
         this.logoutHandler = client.getConfiguration().getLogoutHandler();
     }
 
