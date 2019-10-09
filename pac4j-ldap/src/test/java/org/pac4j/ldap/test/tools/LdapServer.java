@@ -16,7 +16,7 @@ public final class LdapServer implements TestsConstants {
     public final static String BASE_DN = "dc=example,dc=com";
     public final static String BASE_PEOPLE_DN = "ou=people,dc=example,dc=com";
     private final static int PORT = 33389;
-    public static int port = PORT;
+    public final static int port;
     public final static String CN = "cn";
     public final static String SN = "sn";
     public final static String ROLE = "role";
@@ -28,6 +28,8 @@ public final class LdapServer implements TestsConstants {
         System.out.println("Reserved LDAP port: " + sPort);
         if (sPort != null) {
             port = Integer.parseInt(sPort);
+        } else {
+            port = PORT;
         }
     }
 
