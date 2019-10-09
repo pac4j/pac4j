@@ -15,12 +15,21 @@ public final class LdapServer implements TestsConstants {
 
     public final static String BASE_DN = "dc=example,dc=com";
     public final static String BASE_PEOPLE_DN = "ou=people,dc=example,dc=com";
-    public final static int PORT = 33389;
+    private final static int PORT = 33389;
+    public static int port = PORT;
     public final static String CN = "cn";
     public final static String SN = "sn";
     public final static String ROLE = "role";
     public final static String ROLE1 = "role1";
     public final static String ROLE2 = "role2";
+
+    static {
+        final String sPort = System.getProperty("test.ldap.port");
+        System.out.println("Reserved LDAP port: " + sPort);
+        if (sPort != null) {
+            port = Integer.parseInt(sPort);
+        }
+    }
 
     private InMemoryDirectoryServer ds;
 
@@ -30,7 +39,7 @@ public final class LdapServer implements TestsConstants {
             dsConfig.setSchema(null);
             dsConfig.setEnforceAttributeSyntaxCompliance(false);
             dsConfig.setEnforceSingleStructuralObjectClass(false);
-            dsConfig.setListenerConfigs(new InMemoryListenerConfig("myListener", null, PORT, null, null, null));
+            dsConfig.setListenerConfigs(new InMemoryListenerConfig("myListener", null, port, null, null, null));
             dsConfig.addAdditionalBindCredentials(CN + "=" + GOOD_USERNAME + "," + BASE_PEOPLE_DN, PASSWORD);
             dsConfig.addAdditionalBindCredentials(CN + "=" + GOOD_USERNAME2 + "," + BASE_PEOPLE_DN, PASSWORD);
             this.ds = new InMemoryDirectoryServer(dsConfig);
