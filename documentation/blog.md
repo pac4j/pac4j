@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog
 ---
 
+## &bull; September 2019: [A brief history of the security protocols](/blog/a-brief-history-of-the-security-protocols.html)
+
 ## &bull; February 2019: [spring-webmvc-pac4j vs Spring Security: Round 2, REST APIs](/blog/spring-webmvc-pac4j-vs-spring-security-round-2-rest-apis.html)
 
 ## &bull; October 2018: [Why you should choose CAS as your SSO system](/blog/why-you-choose-cas-as-your-sso-system.html)
