@@ -18,7 +18,7 @@ public final class LdapServer implements TestsConstants {
 
     public final static String BASE_DN = "dc=example,dc=com";
     public final static String BASE_PEOPLE_DN = "ou=people,dc=example,dc=com";
-    public static int port;
+    private int port;
     public final static String CN = "cn";
     public final static String SN = "sn";
     public final static String ROLE = "role";
@@ -28,10 +28,9 @@ public final class LdapServer implements TestsConstants {
     private InMemoryDirectoryServer ds;
 
     public void start() {
-        for (int testPort = 33389; testPort < 35000; testPort++) {
+        for (port = 33389; port < 35000; port++) {
             try {
-                port = testPort;
-                startServer(testPort);
+                startServer();
                 return;
             } catch (final LDAPBindException e) {
                 // ignore and try with the next port
@@ -42,7 +41,7 @@ public final class LdapServer implements TestsConstants {
         }
     }
 
-    protected void startServer(final int port) throws LDAPException, LDIFException {
+    protected void startServer() throws LDAPException, LDIFException {
         final InMemoryDirectoryServerConfig dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
         dsConfig.setSchema(null);
         dsConfig.setEnforceAttributeSyntaxCompliance(false);
@@ -65,5 +64,9 @@ public final class LdapServer implements TestsConstants {
 
     public void stop() {
         this.ds.shutDown(true);
+    }
+
+    public int getPort() {
+        return this.port;
     }
 }

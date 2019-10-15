@@ -48,7 +48,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     public void setUp() {
         ldapServer = new LdapServer();
         ldapServer.start();
-        final LdapClient client = new LdapClient();
+        final LdapClient client = new LdapClient(ldapServer.getPort());
         authenticator = client.getAuthenticator();
         connectionFactory = client.getConnectionFactory();
     }
