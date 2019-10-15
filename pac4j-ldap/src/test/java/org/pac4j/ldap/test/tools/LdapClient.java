@@ -22,14 +22,14 @@ public final class LdapClient {
 
     private final Authenticator authenticator;
 
-    public LdapClient() {
+    public LdapClient(final int port) {
         final FormatDnResolver dnResolver = new FormatDnResolver();
         dnResolver.setFormat(LdapServer.CN + "=%s," + LdapServer.BASE_PEOPLE_DN);
 
         final ConnectionConfig connectionConfig = new ConnectionConfig();
         connectionConfig.setConnectTimeout(Duration.ofMillis(500));
         connectionConfig.setResponseTimeout(Duration.ofSeconds(1));
-        connectionConfig.setLdapUrl("ldap://localhost:" + LdapServer.port);
+        connectionConfig.setLdapUrl("ldap://localhost:" + port);
 
         connectionFactory = new DefaultConnectionFactory();
         ((DefaultConnectionFactory) connectionFactory).setConnectionConfig(connectionConfig);
