@@ -3,8 +3,8 @@ package org.pac4j.ldap.test.tools;
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
 import com.unboundid.ldap.listener.InMemoryListenerConfig;
-import com.unboundid.ldap.sdk.LDAPBindException;
 import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldif.LDIFException;
 import org.pac4j.core.util.TestsConstants;
 
@@ -32,9 +32,13 @@ public final class LdapServer implements TestsConstants {
             try {
                 startServer();
                 return;
-            } catch (final LDAPBindException e) {
-                // ignore and try with the next port
-                System.out.println("Port already in use: " + port + ". Trying next one...");
+            } catch (final LDAPException e) {
+                if (e.getResultCode() == ResultCode.LOCAL_ERROR) {
+                    // ignore and try with the next port
+                    System.out.println("Port already in use: " + port + ". Trying next one...");
+                } else {
+                    throw new RuntimeException(e);
+                }
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
