@@ -270,26 +270,6 @@
 					</execution>
 				</executions>
 			</plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>reserve-ports</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>reserve-network-port</goal>
-                        </goals>
-                        <configuration>
-                            <portNames>
-                                <portName>test.ldap.port</portName>
-                            </portNames>
-                            <minPortNumber>33389</minPortNumber>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -299,9 +279,6 @@
                         <include>**/*Test.java</include>
 						<include>**/*Tests.java</include>
 					</includes>
-                    <systemPropertyVariables>
-                        <test.ldap.port>${test.ldap.port}</test.ldap.port>
-                    </systemPropertyVariables>
 				</configuration>
 			</plugin>
             <plugin>
