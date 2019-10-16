@@ -725,7 +725,7 @@ public class SAML2Configuration extends InitializableObject {
 
         final Calendar c = Calendar.getInstance();
         c.setTime(new Date());
-        c.add(Calendar.YEAR, 1);
+        c.add(Calendar.YEAR, 20);
         certGen.setEndDate(new Time(c.getTime()));
 
         certGen.setSignature(sigAlgID);
