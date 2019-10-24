@@ -174,6 +174,10 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         if (isNotBlank(getProperty(TWITTER_ID)) && isNotBlank(getProperty(TWITTER_SECRET))) {
             return true;
         }
+        if (isNotBlank(getProperty(OAUTH2_ID)) && isNotBlank(getProperty(OAUTH2_SECRET)) &&
+                isNotBlank(getProperty(OAUTH2_AUTH_URL)) && isNotBlank(getProperty(OAUTH2_TOKEN_URL))) {
+            return true;
+        }
         return false;
     }
 
