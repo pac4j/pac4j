@@ -2,6 +2,7 @@ package org.pac4j.oidc.config;
 
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
+import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
 
 /**
  * AzureAd OpenID Connect configuration.
@@ -15,6 +16,7 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
     private String tenant;
 
     public AzureAdOidcConfiguration() {
+        this.setResourceRetriever(new AzureAdResourceRetriever());
     }
 
     public AzureAdOidcConfiguration(final OidcConfiguration oidcConfiguration) {
