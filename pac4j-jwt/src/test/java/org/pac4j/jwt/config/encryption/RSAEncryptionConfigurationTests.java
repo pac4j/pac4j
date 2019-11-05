@@ -28,6 +28,7 @@ public final class RSAEncryptionConfigurationTests implements TestsConstants {
     private KeyPair buildKeyPair() {
         try {
             final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(2048);
             return keyGen.generateKeyPair();
         } catch (final NoSuchAlgorithmException e) {
             throw new TechnicalException(e);
