@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.8.3**:
+
+- Upgrade the nimbus-jose-jwt library to version 7.9 because of [CVE-2019-17195](https://connect2id.com/blog/nimbus-jose-jwt-7-9)
+
 **v3.8.2**:
 
 - Add customizable SAML post Logout URL
