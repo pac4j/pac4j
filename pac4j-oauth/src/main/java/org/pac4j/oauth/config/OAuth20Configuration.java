@@ -24,8 +24,6 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
     public static final String STATE_REQUEST_PARAMETER = "state";
 
-    private static final String STATE_SESSION_PARAMETER = "#oauth20StateParameter";
-
     /* Map containing user defined parameters */
     private Map<String, String> customParams = new HashMap<>();
 
@@ -55,16 +53,6 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
         return api.createService(this.key, this.secret, finalCallbackUrl, this.scope,
             this.responseType, null, null, this.httpClientConfig, null);
-    }
-
-    /**
-     * Return the name of the attribute storing the state in session.
-     *
-     * @param clientName the client name
-     * @return the name of the attribute storing the state in session
-     */
-    public String getStateSessionAttributeName(final String clientName) {
-        return clientName + STATE_SESSION_PARAMETER;
     }
 
     public Map<String, String> getCustomParams() {

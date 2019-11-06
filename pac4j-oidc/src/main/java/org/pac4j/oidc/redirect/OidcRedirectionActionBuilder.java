@@ -96,12 +96,12 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
             state = new State();
         }
         params.put(OidcConfiguration.STATE, state.getValue());
-        context.getSessionStore().set(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE, state);
+        context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             final Nonce nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
-            context.getSessionStore().set(context, OidcConfiguration.NONCE_SESSION_ATTRIBUTE, nonce.getValue());
+            context.getSessionStore().set(context, client.getNonceSessionAttributeName(), nonce.getValue());
         }
     }
 

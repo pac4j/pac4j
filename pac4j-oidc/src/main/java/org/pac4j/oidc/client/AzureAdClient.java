@@ -59,7 +59,7 @@ public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
-        defaultProfileCreator(new AzureAdProfileCreator(getConfiguration()));
+        defaultProfileCreator(new AzureAdProfileCreator(getConfiguration(), this));
 
         super.clientInit();
     }
