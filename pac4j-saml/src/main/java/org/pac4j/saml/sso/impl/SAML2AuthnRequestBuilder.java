@@ -23,6 +23,7 @@ import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
@@ -62,12 +63,14 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
+    private final UrlResolver urlResolver;
+
     /**
      * Instantiates a new Saml 2 authn request builder.
      *
      * @param cfg Client configuration.
      */
-    public SAML2AuthnRequestBuilder(final SAML2Configuration cfg) {
+    public SAML2AuthnRequestBuilder(final SAML2Configuration cfg, final UrlResolver urlResolver) {
         this.forceAuth = cfg.isForceAuth();
         this.comparisonType = getComparisonTypeEnumFromString(cfg.getComparisonType());
         this.bindingType = cfg.getAuthnRequestBindingType();
@@ -79,6 +82,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         this.providerName = cfg.getProviderName();
         this.extensions = cfg.getAuthnRequestExtensions();
         this.useNameQualifier = cfg.isUseNameQualifier();
+        this.urlResolver = urlResolver;
     }
 
     @Override
@@ -86,6 +90,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
         final String idx = this.assertionConsumerServiceIndex > 0 ? String.valueOf(assertionConsumerServiceIndex) : null;
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService(idx);
+        assertionConsumerService.setLocation(this.urlResolver.compute(assertionConsumerService.getLocation(), context.getWebContext()));
         return buildAuthnRequest(context, assertionConsumerService, ssoService);
     }
 

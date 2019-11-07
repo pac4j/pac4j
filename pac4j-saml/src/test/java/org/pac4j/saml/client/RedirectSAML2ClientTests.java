@@ -1,7 +1,5 @@
 package org.pac4j.saml.client;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
@@ -12,18 +10,10 @@ import org.pac4j.saml.state.SAML2StateGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
 import static org.junit.Assert.*;
+import static org.pac4j.saml.client.AuthnRequestInflator.getInflatedAuthnRequest;
 
 /**
  * Redirection tests on the {@link SAML2Client}.
@@ -140,22 +130,4 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         return SAMLConstants.SAML2_REDIRECT_BINDING_URI;
     }
 
-    private String getInflatedAuthnRequest(final String location) {
-        final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), "UTF-8");
-        final Inflater inflater = new Inflater(true);
-        final byte[] decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
-        final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
-        final InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        String line;
-        final StringBuilder bldr = new StringBuilder();
-        try {
-            while ((line = reader.readLine()) != null) {
-                bldr.append(line);
-            }
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-        return bldr.toString();
-    }
 }

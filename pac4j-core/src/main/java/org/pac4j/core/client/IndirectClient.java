@@ -49,7 +49,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         // check configuration
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
         if (this.urlResolver == null) {
-            this.urlResolver = new DefaultUrlResolver();
+            this.urlResolver = new DefaultUrlResolver(true);
         }
         if (this.callbackUrlResolver == null) {
             this.callbackUrlResolver = newDefaultCallbackUrlResolver();

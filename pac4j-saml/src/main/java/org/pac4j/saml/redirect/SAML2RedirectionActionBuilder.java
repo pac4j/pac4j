@@ -32,7 +32,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
         final SAML2Configuration cfg = client.getConfiguration();
-        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(cfg);
+        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(cfg, client.getUrlResolver());
     }
 
     @Override
