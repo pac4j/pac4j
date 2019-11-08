@@ -33,19 +33,19 @@ import static org.mockito.Mockito.when;
 public final class OidcRedirectTests implements TestsConstants {
 
     private OidcClient<OidcConfiguration> getClient() throws URISyntaxException {
-    
+
         OIDCProviderMetadata providerMetadata = mock(OIDCProviderMetadata.class);
         when(providerMetadata.getAuthorizationEndpointURI()).thenReturn(new java.net.URI("http://localhost:8080/auth"));
-    
+
         OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("testClient");
         configuration.setSecret("secret");
         configuration.setProviderMetadata(providerMetadata);
-    
+
         final OidcClient<OidcConfiguration> client = new OidcClient<>();
         client.setConfiguration(configuration);
         client.setCallbackUrl(CALLBACK_URL);
-        
+
         return client;
     }
 
@@ -73,20 +73,20 @@ public final class OidcRedirectTests implements TestsConstants {
                 return new StatusAction(401);
             }
         });
-        
+
         MockWebContext context = MockWebContext.create();
-        
+
         final FoundAction firstRequestAction = (FoundAction) client.getRedirectionAction(context).orElse(null);
         String state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
-    
+
         try {
             //noinspection ThrowableNotThrown
             client.getRedirectionAction(context);
             fail("Ajax request should throw exception");
         } catch (Exception e) {
-            State stateAfterAjax = (State) context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE).orElse(null);
+            State stateAfterAjax = (State) context.getSessionStore().get(context, client.getStateSessionAttributeName()).orElse(null);
             assertEquals("subsequent ajax request should not override the state in the session store", state, stateAfterAjax.toString());
         }
-    
+
     }
 }

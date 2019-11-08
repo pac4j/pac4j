@@ -31,7 +31,7 @@ public class KeycloakOidcClient extends OidcClient<KeycloakOidcConfiguration> {
     @Override
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", getConfiguration());
-        final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration());
+        final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 

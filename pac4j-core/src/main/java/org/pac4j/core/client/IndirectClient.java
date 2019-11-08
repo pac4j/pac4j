@@ -30,7 +30,9 @@ import java.util.Optional;
  */
 public abstract class IndirectClient<C extends Credentials> extends BaseClient<C> {
 
-    public final static String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
+    public static final String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
+    private static final String STATE_SESSION_PARAMETER = "$stateSessionParameter";
+    private static final String NONCE_SESSION_PARAMETER = "$nonceSessionParameter";
 
     protected String callbackUrl;
 
@@ -211,6 +213,14 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
 
     public void setLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
         this.logoutActionBuilder = logoutActionBuilder;
+    }
+
+    public String getStateSessionAttributeName() {
+        return getName() + STATE_SESSION_PARAMETER;
+    }
+
+    public String getNonceSessionAttributeName() {
+        return getName() + NONCE_SESSION_PARAMETER;
     }
 
     @Override

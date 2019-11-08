@@ -51,12 +51,6 @@ public class OidcConfiguration extends InitializableObject {
             new ResponseType(ResponseType.Value.CODE, ResponseType.Value.TOKEN),
             new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
 
-    /* state attribute name in session */
-    public static final String STATE_SESSION_ATTRIBUTE = "oidcStateAttribute";
-
-    /* nonce attribute name in session */
-    public static final String NONCE_SESSION_ATTRIBUTE = "oidcNonceAttribute";
-
     /* default max clock skew */
     public static final int DEFAULT_MAX_CLOCK_SKEW = 30;
 

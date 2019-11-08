@@ -65,7 +65,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
         if (state == null) {
             throw new TechnicalException("Missing state parameter");
         }
-        if (!state.equals(context.getSessionStore().get(context, OidcConfiguration.STATE_SESSION_ATTRIBUTE).orElse(null))) {
+        if (!state.equals(context.getSessionStore().get(context, client.getStateSessionAttributeName()).orElse(null))) {
             throw new TechnicalException("State parameter is different from the one sent in authentication request. "
                     + "Session expired or possible threat of cross-site request forgery");
         }
