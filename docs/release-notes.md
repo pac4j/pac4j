@@ -19,6 +19,7 @@ title: Release notes&#58;
 - Use the 303 "See Other" and 307 "Temporary Redirect" HTTP actions after a POST request (`RedirectionActionHelper`)
 - Handles originally requested URLs with POST method
 - Add HTTP POST Simple-Sign protocol implementation
+- Properly handle states and nonces for multiple OIDC clients
 
 **v3.8.3**:
 
