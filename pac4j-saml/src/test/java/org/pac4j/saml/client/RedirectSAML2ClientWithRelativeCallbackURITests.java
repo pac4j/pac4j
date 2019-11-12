@@ -1,7 +1,6 @@
 package org.pac4j.saml.client;
 
 import static org.junit.Assert.assertTrue;
-import static org.pac4j.saml.client.AuthnRequestInflator.getInflatedAuthnRequest;
 
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -30,7 +29,7 @@ public class RedirectSAML2ClientWithRelativeCallbackURITests extends AbstractSAM
         final SAML2Client client = getClient();
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final FoundAction action = (FoundAction) client.getRedirectionAction(context).get();
-        String authnRequest = getInflatedAuthnRequest(action.getLocation());
+        String authnRequest = AuthnRequestInflator.getInflatedAuthnRequest(action.getLocation());
         assertTrue(authnRequest.contains("AssertionConsumerServiceURL=\"http://localhost"+RELATIVE_CALLBACK_URI+"\""));
     }
 }

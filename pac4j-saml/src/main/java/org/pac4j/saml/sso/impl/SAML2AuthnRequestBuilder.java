@@ -90,7 +90,6 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
         final String idx = this.assertionConsumerServiceIndex > 0 ? String.valueOf(assertionConsumerServiceIndex) : null;
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService(idx);
-        assertionConsumerService.setLocation(this.urlResolver.compute(assertionConsumerService.getLocation(), context.getWebContext()));
         return buildAuthnRequest(context, assertionConsumerService, ssoService);
     }
 
@@ -134,7 +133,9 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         if (assertionConsumerServiceIndex >= 0) {
             request.setAssertionConsumerServiceIndex(assertionConsumerServiceIndex);
         } else {
-            request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
+            request.setAssertionConsumerServiceURL(
+                this.urlResolver.compute(assertionConsumerService.getLocation(), context.getWebContext())
+            );
         }
         request.setProtocolBinding(assertionConsumerService.getBinding());
 

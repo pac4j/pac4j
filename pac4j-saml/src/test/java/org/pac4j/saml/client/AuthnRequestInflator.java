@@ -15,6 +15,11 @@ import org.apache.http.client.utils.URLEncodedUtils;
 
 public class AuthnRequestInflator {
 
+    /**
+     * Extracts the AuthnRequest payload from the encoded URL location.
+     * @param location the URL location containing the encoded AuthnRequest payload
+     * @return the plain decoded AuthnRequest payload
+     */
     public static String getInflatedAuthnRequest(final String location) {
         final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), "UTF-8");
         final Inflater inflater = new Inflater(true);
