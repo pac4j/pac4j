@@ -13,6 +13,13 @@ import java.util.zip.InflaterInputStream;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
+/**
+ * Utility class for decoding SAML authentication request payload.
+ * Originally present in class {@link RedirectSAML2ClientTests} and extracted for reuse in other tests. 
+ * 
+ * @author davoustp
+ * @since 4.0.0
+ */
 public class AuthnRequestInflator {
 
     /**
