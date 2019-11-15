@@ -2,6 +2,8 @@ package org.pac4j.core.profile;
 
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
+import org.pac4j.core.client.Client;
+import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -24,6 +26,8 @@ public class ProfileManager<U extends UserProfile> {
     protected final WebContext context;
 
     protected final SessionStore sessionStore;
+
+    protected Config config;
 
     public ProfileManager(final WebContext context) {
         CommonHelper.assertNotNull("context", context);
@@ -89,16 +93,26 @@ public class ProfileManager<U extends UserProfile> {
                 });
         }
 
-        removeExpiredProfiles(profiles);
+        removeOrRenewExpiredProfiles(profiles);
 
         return profiles;
     }
 
-    private void removeExpiredProfiles(LinkedHashMap<String, U> profiles) {
-        for (Iterator<Map.Entry<String, U>> profileIterator = profiles.entrySet().iterator(); profileIterator.hasNext();) {
-            Map.Entry<String, U> entry = profileIterator.next();
-            if (entry.getValue().isExpired()) {
-                profileIterator.remove();
+    protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, U> profiles) {
+        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
+            final String key = entry.getKey();
+            final U profile = entry.getValue();
+            if (profile.isExpired()) {
+                profiles.remove(key);
+                if (config != null && profile.getClientName() != null) {
+                    final Optional<Client> client = config.getClients().findClient(profile.getClientName());
+                    if (client.isPresent()) {
+                        final Optional<U> newProfile = client.get().renewUserProfile(profile, context);
+                        if (newProfile.isPresent()) {
+                            profiles.put(key, newProfile.get());
+                        }
+                    }
+                }
             }
         }
     }
@@ -166,5 +180,13 @@ public class ProfileManager<U extends UserProfile> {
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(final Config config) {
+        this.config = config;
     }
 }
