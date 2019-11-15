@@ -60,6 +60,15 @@ public interface Client<C extends Credentials> {
     Optional<UserProfile> getUserProfile(C credentials, WebContext context);
 
     /**
+     * Renew the user profile.
+     *
+     * @param profile the user profile
+     * @param context the current web context
+     * @return the renewed user profile (optional).
+     */
+    Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context);
+
+    /**
      * <p>Return the logout action (indirect clients).</p>
      *
      * @param context the current web context

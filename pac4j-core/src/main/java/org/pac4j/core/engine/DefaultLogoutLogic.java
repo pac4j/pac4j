@@ -67,6 +67,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
 
             // logic
             final ProfileManager manager = getProfileManager(context);
+            manager.setConfig(config);
             final List<CommonProfile> profiles = manager.getAll(true);
 
             // compute redirection URL

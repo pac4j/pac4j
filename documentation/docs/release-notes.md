@@ -20,6 +20,7 @@ title: Release notes&#58;
 - Handles originally requested URLs with POST method
 - Add HTTP POST Simple-Sign protocol implementation
 - Properly handle states and nonces for multiple OIDC clients
+- A profile can be renewed by its client when it's expired
 
 **v3.8.3**:
 

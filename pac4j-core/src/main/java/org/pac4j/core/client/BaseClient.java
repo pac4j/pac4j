@@ -110,6 +110,11 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         return profile;
     }
 
+    @Override
+    public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context) {
+        return Optional.empty();
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
