@@ -17,8 +17,8 @@ import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.Period;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -41,6 +41,7 @@ import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
+import org.joda.time.DateTime;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
@@ -161,6 +162,12 @@ public class SAML2Configuration extends InitializableObject {
 
     private String postLogoutURL;
 
+    private Period certificateExpirationPeriod = Period.ofYears(20);
+
+    private String certificateSignatureAlg = "SHA1WithRSA";
+
+    private int privateKeySize = 2048;
+
     public SAML2Configuration() {
     }
 
@@ -227,6 +234,30 @@ public class SAML2Configuration extends InitializableObject {
         }
 
         initSignatureSigningConfiguration();
+    }
+
+    public String getCertificateSignatureAlg() {
+        return certificateSignatureAlg;
+    }
+
+    public void setCertificateSignatureAlg(final String certificateSignatureAlg) {
+        this.certificateSignatureAlg = certificateSignatureAlg;
+    }
+
+    public Period getCertificateExpirationPeriod() {
+        return certificateExpirationPeriod;
+    }
+
+    public void setCertificateExpirationPeriod(final Period certificateExpirationPeriod) {
+        this.certificateExpirationPeriod = certificateExpirationPeriod;
+    }
+
+    public int getPrivateKeySize() {
+        return privateKeySize;
+    }
+
+    public void setPrivateKeySize(final int privateKeySize) {
+        this.privateKeySize = privateKeySize;
     }
 
     public List<SAML2ServiceProvicerRequestedAttribute> getRequestedServiceProviderAttributes() {
@@ -669,7 +700,8 @@ public class SAML2Configuration extends InitializableObject {
      * @return an X509Certificate containing the public key in keyPair.
      * @throws Exception
      */
-    private X509Certificate createSelfSignedCert(X500Name dn, String sigName, AlgorithmIdentifier sigAlgID, KeyPair keyPair)
+    private X509Certificate createSelfSignedCert(final X500Name dn, final String sigName,
+                                                 final AlgorithmIdentifier sigAlgID, final KeyPair keyPair)
         throws Exception {
         final V3TBSCertificateGenerator certGen = new V3TBSCertificateGenerator();
 
@@ -679,21 +711,19 @@ public class SAML2Configuration extends InitializableObject {
 
         certGen.setStartDate(new Time(new Date(System.currentTimeMillis() - 1000L)));
 
-        final Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.YEAR, 20);
-        certGen.setEndDate(new Time(c.getTime()));
+        final Date expiration = DateTime.now().plusDays(this.certificateExpirationPeriod.getDays()).toDate();
+        certGen.setEndDate(new Time(expiration));
 
         certGen.setSignature(sigAlgID);
         certGen.setSubjectPublicKeyInfo(SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
 
-        Signature sig = Signature.getInstance(sigName);
+        final Signature sig = Signature.getInstance(sigName);
 
         sig.initSign(keyPair.getPrivate());
 
         sig.update(certGen.generateTBSCertificate().getEncoded(ASN1Encoding.DER));
 
-        TBSCertificate tbsCert = certGen.generateTBSCertificate();
+        final TBSCertificate tbsCert = certGen.generateTBSCertificate();
 
         ASN1EncodableVector v = new ASN1EncodableVector();
 
@@ -727,15 +757,14 @@ public class SAML2Configuration extends InitializableObject {
             ks.load(null, password);
 
             final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(2048);
+            kpg.initialize(this.privateKeySize);
             final KeyPair kp = kpg.genKeyPair();
 
-            final String sigAlgName = "SHA1WithRSA";
             final AlgorithmIdentifier sigAlgID = new AlgorithmIdentifier(PKCSObjectIdentifiers.sha1WithRSAEncryption, DERNull.INSTANCE);
 
             final String dn = InetAddress.getLocalHost().getHostName();
             final PrivateKey signingKey = kp.getPrivate();
-            final X509Certificate certificate = createSelfSignedCert(new X500Name("CN=" + dn), sigAlgName, sigAlgID, kp);
+            final X509Certificate certificate = createSelfSignedCert(new X500Name("CN=" + dn), this.certificateSignatureAlg, sigAlgID, kp);
 
             final char[] keyPassword = this.privateKeyPassword.toCharArray();
             ks.setKeyEntry(this.keyStoreAlias, signingKey, keyPassword, new Certificate[]{certificate});
@@ -782,9 +811,9 @@ public class SAML2Configuration extends InitializableObject {
      */
     private String getNormalizedCertificateName() {
         if (this.normalizedCertificateName == null) {
-            StringBuilder certName =  new StringBuilder(CERTIFICATES_PREFIX);
+            final StringBuilder certName =  new StringBuilder(CERTIFICATES_PREFIX);
             if (CommonHelper.isNotBlank(this.certificateNameToAppend)) {
-                certName.append("-");
+                certName.append('-');
                 certName.append(this.certificateNameToAppend.replaceAll("[^a-zA-Z0-9-_\\.]", ""));
             }
             this.normalizedCertificateName = certName.toString();

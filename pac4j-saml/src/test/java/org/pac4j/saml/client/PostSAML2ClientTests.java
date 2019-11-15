@@ -75,7 +75,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testSetComparisonTypeWithPostBinding() {
-        final SAML2Client client =  getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final OkAction action = (OkAction) client.getRedirectionAction(context).get();
