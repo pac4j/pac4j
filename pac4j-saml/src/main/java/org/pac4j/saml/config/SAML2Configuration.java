@@ -19,6 +19,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -54,6 +55,7 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
@@ -168,6 +170,11 @@ public class SAML2Configuration extends InitializableObject {
 
     private int privateKeySize = 2048;
 
+    private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
+
+    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
+        SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
+    
     public SAML2Configuration() {
     }
 
@@ -234,6 +241,22 @@ public class SAML2Configuration extends InitializableObject {
         }
 
         initSignatureSigningConfiguration();
+    }
+
+    public List<SAML2MetadataContactPerson> getContactPersons() {
+        return contactPersons;
+    }
+
+    public void setContactPersons(final List<SAML2MetadataContactPerson> contactPersons) {
+        this.contactPersons = contactPersons;
+    }
+
+    public List<String> getSupportedProtocols() {
+        return supportedProtocols;
+    }
+
+    public void setSupportedProtocols(final List<String> supportedProtocols) {
+        this.supportedProtocols = supportedProtocols;
     }
 
     public String getCertificateSignatureAlg() {
