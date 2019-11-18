@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -18,13 +19,20 @@ import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
+import org.opensaml.saml.saml2.metadata.Company;
+import org.opensaml.saml.saml2.metadata.ContactPerson;
+import org.opensaml.saml.saml2.metadata.ContactPersonTypeEnumeration;
+import org.opensaml.saml.saml2.metadata.EmailAddress;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.Extensions;
+import org.opensaml.saml.saml2.metadata.GivenName;
 import org.opensaml.saml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.saml.saml2.metadata.SurName;
+import org.opensaml.saml.saml2.metadata.TelephoneNumber;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
@@ -46,8 +54,10 @@ import org.springframework.core.io.Resource;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -99,7 +109,12 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected List<String> signatureAlgorithms = null;
 
     protected List<String> signatureReferenceDigestMethods = null;
-    
+
+    private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
+
+    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
+        SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
+
     @Override
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
@@ -129,7 +144,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public EntityDescriptor buildEntityDescriptor() {
         final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>)
             this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
-        final EntityDescriptor descriptor = builder.buildObject();
+        final EntityDescriptor descriptor = Objects.requireNonNull(builder).buildObject();
         descriptor.setEntityID(this.entityId);
         descriptor.setValidUntil(DateTime.now(DateTimeZone.UTC).plusYears(20));
         descriptor.setID(SAML2Utils.generateID());
@@ -165,26 +180,25 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         extensions.getNamespaceManager().registerAttributeName(SigningMethod.TYPE_NAME);
         extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
 
-        List<String> filteredSignatureAlgorithms = filterSignatureAlgorithms(getSignatureAlgorithms());
-        List<String> filteredSignatureReferenceDigestMethods = filterSignatureAlgorithms(getSignatureReferenceDigestMethods());
-
         final SAMLObjectBuilder<SigningMethod> signingMethodBuilder = (SAMLObjectBuilder<SigningMethod>)
                 this.builderFactory.getBuilder(SigningMethod.DEFAULT_ELEMENT_NAME);
 
-        for (String signingMethod : filteredSignatureAlgorithms) {
-            SigningMethod method = signingMethodBuilder.buildObject();
+        final List<String> filteredSignatureAlgorithms = filterSignatureAlgorithms(getSignatureAlgorithms());
+        filteredSignatureAlgorithms.forEach(signingMethod -> {
+            final SigningMethod method = Objects.requireNonNull(signingMethodBuilder).buildObject();
             method.setAlgorithm(signingMethod);
             extensions.getUnknownXMLObjects().add(method);
-        }
+        });
 
         final SAMLObjectBuilder<DigestMethod> digestMethodBuilder = (SAMLObjectBuilder<DigestMethod>)
             this.builderFactory.getBuilder(DigestMethod.DEFAULT_ELEMENT_NAME);
 
-        for (String digestMethod : filteredSignatureReferenceDigestMethods) {
-            DigestMethod method = digestMethodBuilder.buildObject();
+        final List<String> filteredSignatureReferenceDigestMethods = filterSignatureAlgorithms(getSignatureReferenceDigestMethods());
+        filteredSignatureReferenceDigestMethods.forEach(digestMethod -> {
+            final DigestMethod method = Objects.requireNonNull(digestMethodBuilder).buildObject();
             method.setAlgorithm(digestMethod);
             extensions.getUnknownXMLObjects().add(method);
-        }
+        });
 
         return extensions;
     }
@@ -192,24 +206,22 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected SPSSODescriptor buildSPSSODescriptor() {
         final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>)
             this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
-        final SPSSODescriptor spDescriptor = builder.buildObject();
+        final SPSSODescriptor spDescriptor = Objects.requireNonNull(builder).buildObject();
 
         spDescriptor.setAuthnRequestsSigned(this.authnRequestSigned);
         spDescriptor.setWantAssertionsSigned(this.wantAssertionSigned);
-        spDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
-        spDescriptor.addSupportedProtocol(SAMLConstants.SAML10P_NS);
-        spDescriptor.addSupportedProtocol(SAMLConstants.SAML11P_NS);
+        supportedProtocols.forEach(spDescriptor::addSupportedProtocol);
 
         final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
-        final Extensions extensions = builderExt.buildObject();
+        final Extensions extensions = Objects.requireNonNull(builderExt).buildObject();
         extensions.getNamespaceManager().registerAttributeName(RequestInitiator.DEFAULT_ELEMENT_NAME);
 
         final SAMLObjectBuilder<RequestInitiator> builderReq = (SAMLObjectBuilder<RequestInitiator>)
             this.builderFactory.getBuilder(RequestInitiator.DEFAULT_ELEMENT_NAME);
 
-        final RequestInitiator requestInitiator = builderReq.buildObject();
+        final RequestInitiator requestInitiator = Objects.requireNonNull(builderReq).buildObject();
         requestInitiator.setLocation(this.requestInitiatorLocation);
         requestInitiator.setBinding(RequestInitiator.DEFAULT_ELEMENT_NAME.getNamespaceURI());
 
@@ -245,11 +257,87 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                 requestAttribute.setName(attr.getName());
                 requestAttribute.setFriendlyName(attr.getFriendlyName());
                 requestAttribute.setNameFormat(attr.getNameFormat());
-
+                
                 attributeService.getRequestAttributes().add(requestAttribute);
             }
             spDescriptor.getAttributeConsumingServices().add(attributeService);
         }
+
+        final SAMLObjectBuilder<ContactPerson> contactPersonBuilder =
+            (SAMLObjectBuilder<ContactPerson>) this.builderFactory
+                .getBuilder(ContactPerson.DEFAULT_ELEMENT_NAME);
+        this.contactPersons.forEach(p -> {
+            final ContactPerson person = Objects.requireNonNull(contactPersonBuilder).buildObject();
+            switch (p.getType().toLowerCase()) {
+                case "technical":
+                    person.setType(ContactPersonTypeEnumeration.TECHNICAL);
+                    break;
+                case "administrative":
+                    person.setType(ContactPersonTypeEnumeration.ADMINISTRATIVE);
+                    break;
+                case "billing":
+                    person.setType(ContactPersonTypeEnumeration.BILLING);
+                    break;
+                case "support":
+                    person.setType(ContactPersonTypeEnumeration.SUPPORT);
+                    break;
+                default:
+                    person.setType(ContactPersonTypeEnumeration.OTHER);
+                    break;
+            }
+
+            if (StringUtils.isNotBlank(p.getSurname())) {
+                final SAMLObjectBuilder<SurName> surnameBuilder =
+                    (SAMLObjectBuilder<SurName>) this.builderFactory
+                        .getBuilder(SurName.DEFAULT_ELEMENT_NAME);
+                final SurName surName = Objects.requireNonNull(surnameBuilder).buildObject();
+                surName.setName(p.getSurname());
+                person.setSurName(surName);
+            }
+
+            if (StringUtils.isNotBlank(p.getGivenName())) {
+                final SAMLObjectBuilder<GivenName> givenNameBuilder =
+                    (SAMLObjectBuilder<GivenName>) this.builderFactory
+                        .getBuilder(GivenName.DEFAULT_ELEMENT_NAME);
+                final GivenName givenName = Objects.requireNonNull(givenNameBuilder).buildObject();
+                givenName.setName(p.getGivenName());
+                person.setGivenName(givenName);
+            }
+
+            if (StringUtils.isNotBlank(p.getCompanyName())) {
+                final SAMLObjectBuilder<Company> companyBuilder =
+                    (SAMLObjectBuilder<Company>) this.builderFactory
+                        .getBuilder(Company.DEFAULT_ELEMENT_NAME);
+                final Company company = Objects.requireNonNull(companyBuilder).buildObject();
+                company.setName(p.getCompanyName());
+                person.setCompany(company);
+            }
+
+            if (!p.getEmailAddresses().isEmpty()) {
+                final SAMLObjectBuilder<EmailAddress> emailBuilder =
+                    (SAMLObjectBuilder<EmailAddress>) this.builderFactory
+                        .getBuilder(EmailAddress.DEFAULT_ELEMENT_NAME);
+                p.getEmailAddresses().forEach(email -> {
+                    final EmailAddress emailAddr = Objects.requireNonNull(emailBuilder).buildObject();
+                    emailAddr.setAddress(email);
+                    person.getEmailAddresses().add(emailAddr);
+                });
+            }
+
+            if (!p.getTelephoneNumbers().isEmpty()) {
+                final SAMLObjectBuilder<TelephoneNumber> phoneBuilder =
+                    (SAMLObjectBuilder<TelephoneNumber>) this.builderFactory
+                        .getBuilder(TelephoneNumber.DEFAULT_ELEMENT_NAME);
+                p.getTelephoneNumbers().forEach(ph -> {
+                    final TelephoneNumber phone = Objects.requireNonNull(phoneBuilder).buildObject();
+                    phone.setNumber(ph);
+                    person.getTelephoneNumbers().add(phone);
+                });
+            }
+
+            spDescriptor.getContactPersons().add(person);
+        });
+        
         return spDescriptor;
 
     }
@@ -261,11 +349,11 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         final Collection<NameIDFormat> formats = new ArrayList<>();
 
         if (this.nameIdPolicyFormat != null) {
-            final NameIDFormat nameID = builder.buildObject();
+            final NameIDFormat nameID = Objects.requireNonNull(builder).buildObject();
             nameID.setFormat(this.nameIdPolicyFormat);
             formats.add(nameID);
         } else {
-            final NameIDFormat transientNameID = builder.buildObject();
+            final NameIDFormat transientNameID = Objects.requireNonNull(builder).buildObject();
             transientNameID.setFormat(NameIDType.TRANSIENT);
             formats.add(transientNameID);
             final NameIDFormat persistentNameID = builder.buildObject();
@@ -285,7 +373,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                                                                          final boolean isDefault) {
         final SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
             .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
-        final AssertionConsumerService consumer = builder.buildObject();
+        final AssertionConsumerService consumer = Objects.requireNonNull(builder).buildObject();
         consumer.setLocation(this.assertionConsumerServiceUrl);
         consumer.setBinding(binding);
         if (isDefault) {
@@ -298,7 +386,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected SingleLogoutService getSingleLogoutService(final String binding) {
         final SAMLObjectBuilder<SingleLogoutService> builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
             .getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
-        final SingleLogoutService logoutService = builder.buildObject();
+        final SingleLogoutService logoutService = Objects.requireNonNull(builder).buildObject();
         logoutService.setLocation(this.singleLogoutServiceUrl);
         logoutService.setBinding(binding);
         return logoutService;
@@ -308,7 +396,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>)
             Configuration.getBuilderFactory()
                 .getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
-        final KeyDescriptor descriptor = builder.buildObject();
+        final KeyDescriptor descriptor = Objects.requireNonNull(builder).buildObject();
         descriptor.setUse(type);
         descriptor.setKeyInfo(key);
         return descriptor;
@@ -350,7 +438,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return signMetadata;
     }
 
-    public void setSignMetadata(boolean signMetadata) {
+    public void setSignMetadata(final boolean signMetadata) {
         this.signMetadata = signMetadata;
     }
 
@@ -366,7 +454,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         this.assertionConsumerServiceUrl = assertionConsumerServiceUrl;
     }
 
-    public void setResponseBindingType(String responseBindingType) {
+    public void setResponseBindingType(final String responseBindingType) {
         this.responseBindingType = responseBindingType;
     }
 
@@ -415,7 +503,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return signatureAlgorithms;
     }
 
-    public void setSignatureAlgorithms(List<String> signatureAlgorithms) {
+    public void setSignatureAlgorithms(final List<String> signatureAlgorithms) {
         this.signatureAlgorithms = signatureAlgorithms;
     }
 
@@ -426,8 +514,24 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return signatureReferenceDigestMethods;
     }
 
-    public void setSignatureReferenceDigestMethods(List<String> signatureReferenceDigestMethods) {
+    public void setSignatureReferenceDigestMethods(final List<String> signatureReferenceDigestMethods) {
         this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
+    }
+
+    public List<String> getSupportedProtocols() {
+        return supportedProtocols;
+    }
+
+    public void setSupportedProtocols(final List<String> supportedProtocols) {
+        this.supportedProtocols = supportedProtocols;
+    }
+
+    public List<SAML2MetadataContactPerson> getContactPersons() {
+        return contactPersons;
+    }
+
+    public void setContactPersons(final List<SAML2MetadataContactPerson> contactPersons) {
+        this.contactPersons = contactPersons;
     }
 
     private List<String> filterForRuntimeSupportedAlgorithms(final List<String> algorithms) {

@@ -7,12 +7,14 @@ import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -30,6 +32,16 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
         client.getConfiguration().setUseNameQualifier(true);
+
+        final SAML2MetadataContactPerson person = new SAML2MetadataContactPerson();
+        person.setCompanyName("Pac4j");
+        person.setGivenName("Bob");
+        person.setSurname("Smith");
+        person.setType("technical");
+        person.setEmailAddresses(Collections.singletonList("test@example.org"));
+        person.setTelephoneNumbers(Collections.singletonList("+13476547689"));
+        client.getConfiguration().getContactPersons().add(person);
+        
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final OkAction action = (OkAction) client.getRedirectionAction(context).get();
         
