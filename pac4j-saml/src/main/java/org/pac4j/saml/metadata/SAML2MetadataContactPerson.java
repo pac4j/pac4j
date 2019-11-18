@@ -3,6 +3,13 @@ package org.pac4j.saml.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is {@link SAML2MetadataContactPerson} that allows one to specify
+ * contact information in saml2 metadata generation.
+ *
+ * @author Misagh Moayyed
+ * @since 4.0.0
+ */
 public class SAML2MetadataContactPerson {
     private String givenName;
     private String surname;
