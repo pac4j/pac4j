@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseClient<C extends Credentials> extends InitializableObject implements Client<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    public static final String CREDENTIALS_SUPPLIED_MAP = "credentialsSuppliedMap";
 
     private String name;
 
@@ -62,8 +64,8 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
             final Optional<C> optCredentials = this.credentialsExtractor.extract(context);
             optCredentials.ifPresent(credentials -> {
                 @SuppressWarnings("unchecked")
-                Map<Client<C, U>, C> credentialsSuppliedMap = 
-                    (Map<Client<C, U>, C>) context.getRequestAttribute(CREDENTIALS_SUPPLIED_MAP);
+                Map<Client<C>, C> credentialsSuppliedMap = 
+                    (Map<Client<C>, C>) context.getRequestAttribute(CREDENTIALS_SUPPLIED_MAP);
                 if (credentialsSuppliedMap == null) {
                     credentialsSuppliedMap = new ConcurrentHashMap<>();
                     context.setRequestAttribute(CREDENTIALS_SUPPLIED_MAP, credentialsSuppliedMap);
