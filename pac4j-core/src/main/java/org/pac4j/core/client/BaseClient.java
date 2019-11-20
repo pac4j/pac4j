@@ -1,6 +1,7 @@
 package org.pac4j.core.client;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -60,6 +61,14 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         try {
             final Optional<C> optCredentials = this.credentialsExtractor.extract(context);
             optCredentials.ifPresent(credentials -> {
+                @SuppressWarnings("unchecked")
+                Map<Client<C, U>, C> credentialsSuppliedMap = 
+                    (Map<Client<C, U>, C>) context.getRequestAttribute(CREDENTIALS_SUPPLIED_MAP);
+                if (credentialsSuppliedMap == null) {
+                    credentialsSuppliedMap = new ConcurrentHashMap<>();
+                    context.setRequestAttribute(CREDENTIALS_SUPPLIED_MAP, credentialsSuppliedMap);
+                }
+                credentialsSuppliedMap.put(this, credentials);
                 final long t0 = System.currentTimeMillis();
                 try {
                     this.authenticator.validate(credentials, context);
