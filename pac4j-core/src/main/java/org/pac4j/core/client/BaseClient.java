@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -41,6 +42,8 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements Client<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    public static final String CREDENTIALS_SUPPLIED_MAP = "credentialsSuppliedMap";
 
     private String name;
 
@@ -66,6 +69,14 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             if (credentials == null) {
                 return null;
             }
+            @SuppressWarnings("unchecked")
+            Map<Client<C, U>, C> credentialsSuppliedMap = 
+                (Map<Client<C, U>, C>) context.getRequestAttribute(CREDENTIALS_SUPPLIED_MAP);
+            if (credentialsSuppliedMap == null) {
+                credentialsSuppliedMap = new ConcurrentHashMap<>();
+                context.setRequestAttribute(CREDENTIALS_SUPPLIED_MAP, credentialsSuppliedMap);
+            }
+            credentialsSuppliedMap.put(this, credentials);
             final long t0 = System.currentTimeMillis();
             try {
                 this.authenticator.validate(credentials, context);
