@@ -65,11 +65,11 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
             optCredentials.ifPresent(credentials -> {
                 @SuppressWarnings("unchecked")
                 Optional<Map<Client<C>, C>> optCredentialsSuppliedMap = 
-                    context.getRequestAttribute(CREDENTIALS_SUPPLIED_MAP);
+                        context.getRequestAttribute(CREDENTIALS_SUPPLIED_MAP);
                 
                 Map<Client<C>, C> credentialsSuppliedMap;
                 if (optCredentialsSuppliedMap.isPresent()) {
-                	credentialsSuppliedMap = optCredentialsSuppliedMap.get();
+                    credentialsSuppliedMap = optCredentialsSuppliedMap.get();
                 } else {
                     credentialsSuppliedMap = new ConcurrentHashMap<>();
                     context.setRequestAttribute(CREDENTIALS_SUPPLIED_MAP, credentialsSuppliedMap);
