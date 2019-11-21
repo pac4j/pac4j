@@ -129,17 +129,27 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         final WritableResource metadataResource = configuration.getServiceProviderMetadataResource();
         if (metadataResource != null && CommonHelper.isNotBlank(tempMetadata)) {
             if (metadataResource.exists() && !configuration.isForceServiceProviderMetadataGeneration()) {
-                logger.info("Metadata file already exists at {}.", metadataResource.getFile());
+                logger.info("Metadata file already exists at {}.", metadataResource.getFilename());
             } else {
                 logger.info("Writing sp metadata to {}", metadataResource.getFilename());
-                final File parent = metadataResource.getFile().getParentFile();
-                if (parent != null) {
-                    logger.info("Attempting to create directory structure for: {}", parent.getCanonicalPath());
-                    if (!parent.exists() && !parent.mkdirs()) {
-                        logger.warn("Could not construct the directory structure for SP metadata: {}",
-                            parent.getCanonicalPath());
+                File resourceFile;
+                try {
+                    resourceFile = metadataResource.getFile();
+                    if (resourceFile != null) {
+                        final File parent = resourceFile.getParentFile();
+                        if (parent != null) {
+                            logger.info("Attempting to create directory structure for: {}", parent.getCanonicalPath());
+                            if (!parent.exists() && !parent.mkdirs()) {
+                                logger.warn("Could not construct the directory structure for SP metadata: {}",
+                                       parent.getCanonicalPath());
+                            }   
+                        }
                     }
+                } catch (UnsupportedOperationException e) {
+                    // do nothing since likely a resource that doesn't have a filesystem
+                    logger.warn("no filesystem", e);
                 }
+                
                 final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
