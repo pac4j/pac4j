@@ -13,7 +13,6 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticato
 import static org.junit.Assert.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * This class tests the {@link HeaderClient} class.
