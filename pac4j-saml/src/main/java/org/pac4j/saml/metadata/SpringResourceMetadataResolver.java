@@ -18,7 +18,6 @@
 package org.pac4j.saml.metadata;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Timer;
 
 import javax.annotation.Nonnull;
