@@ -1,6 +1,7 @@
 package org.pac4j.http.client.direct;
 
 import org.junit.Test;
+import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -10,6 +11,9 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
 import static org.junit.Assert.*;
+
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class tests the {@link HeaderClient} class.
@@ -52,6 +56,11 @@ public final class HeaderClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
         final TokenCredentials credentials = client.getCredentials(context);
+        @SuppressWarnings("unchecked")
+		Map<HeaderClient, TokenCredentials> csm = (Map<HeaderClient, TokenCredentials>) context.getRequestAttribute(BaseClient.CREDENTIALS_SUPPLIED_MAP);
+        assertNotNull(csm);
+        TokenCredentials tc = csm.get(client);
+        assertEquals(VALUE, tc.getToken());
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals(VALUE, profile.getId());
     }
