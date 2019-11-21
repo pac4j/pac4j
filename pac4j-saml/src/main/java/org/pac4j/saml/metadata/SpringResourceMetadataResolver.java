@@ -66,8 +66,8 @@ public class SpringResourceMetadataResolver extends AbstractReloadingMetadataRes
      * @throws ResolverException thrown if there is a problem retrieving information about the resource
      */
     public SpringResourceMetadataResolver(Resource metadataResource) throws ResolverException {
-    	super();
-    	setMetadataResource(metadataResource);
+        super();
+        setMetadataResource(metadataResource);
     }
     
     /**
@@ -78,7 +78,8 @@ public class SpringResourceMetadataResolver extends AbstractReloadingMetadataRes
      * 
      * @throws IOException thrown if there is a problem retrieving information about the resource
      */
-    public SpringResourceMetadataResolver(@Nullable Timer backgroundTaskTimer, @Nonnull Resource metadataResource) throws ResolverException {
+    public SpringResourceMetadataResolver(@Nullable Timer backgroundTaskTimer, @Nonnull Resource metadataResource) 
+        throws ResolverException {
         super(backgroundTaskTimer);
         setMetadataResource(metadataResource);
     }
