@@ -57,7 +57,8 @@ public final class HeaderClientTests implements TestsConstants {
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
         final TokenCredentials credentials = client.getCredentials(context);
         @SuppressWarnings("unchecked")
-        Map<HeaderClient, TokenCredentials> csm = (Map<HeaderClient, TokenCredentials>) context.getRequestAttribute(BaseClient.CREDENTIALS_SUPPLIED_MAP);
+        Map<HeaderClient, TokenCredentials> csm = 
+                (Map<HeaderClient, TokenCredentials>) context.getRequestAttribute(BaseClient.CREDENTIALS_SUPPLIED_MAP);
         assertNotNull(csm);
         TokenCredentials tc = csm.get(client);
         assertEquals(VALUE, tc.getToken());
