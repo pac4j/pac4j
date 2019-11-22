@@ -3,6 +3,8 @@ package org.pac4j.saml.metadata;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Nullable;
+
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.filter.MetadataFilter;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
@@ -37,20 +39,20 @@ public class Pac4JFileSystemMetadataResolver implements Pac4JMetadataResolver {
         return delegateResolver.isRequireValidMetadata();
     }
 
-    public Iterable<EntityDescriptor> resolve(CriteriaSet arg0) throws ResolverException {
-        return delegateResolver.resolve(arg0);
+    public Iterable<EntityDescriptor> resolve(CriteriaSet criteriaSet) throws ResolverException {
+        return delegateResolver.resolve(criteriaSet);
     }
 
-    public EntityDescriptor resolveSingle(CriteriaSet arg0) throws ResolverException {
-        return delegateResolver.resolveSingle(arg0);
+    public EntityDescriptor resolveSingle(CriteriaSet criteriaSet) throws ResolverException {
+        return delegateResolver.resolveSingle(criteriaSet);
     }
 
-    public void setMetadataFilter(MetadataFilter arg0) {
-        delegateResolver.setMetadataFilter(arg0);
+    public void setMetadataFilter(@Nullable final MetadataFilter newFilter) {
+        delegateResolver.setMetadataFilter(newFilter);
     }
 
-    public void setRequireValidMetadata(boolean arg0) {
-        delegateResolver.setRequireValidMetadata(arg0);
+    public void setRequireValidMetadata(final boolean requireValidMetadata) {
+        delegateResolver.setRequireValidMetadata(requireValidMetadata);
     }
 
     @Override
