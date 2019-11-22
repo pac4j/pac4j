@@ -698,7 +698,7 @@ public class SAML2Configuration extends InitializableObject {
     public SAML2MetadataResolverFactory getMetadataResolverFactory() {
         return metadataResolverFactory;
     }
-	
+
     public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
         this.metadataResolverFactory = metadataResolverFactory;
     }
