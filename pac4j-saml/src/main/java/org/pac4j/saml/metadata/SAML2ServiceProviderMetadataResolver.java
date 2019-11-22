@@ -135,23 +135,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 logger.info("Metadata resource already exists at {}.", metadataResource);
             } else {
                 logger.info("Writing sp metadata to {}", metadataResource);
-                File resourceFile;
-                try {
-                    resourceFile = metadataResource.getFile();
-                    if (resourceFile != null) {
-                        final File parent = resourceFile.getParentFile();
-                        if (parent != null) {
-                            logger.info("Attempting to create directory structure for: {}", parent.getCanonicalPath());
-                            if (!parent.exists() && !parent.mkdirs()) {
-                                logger.warn("Could not construct the directory structure for SP metadata: {}",
-                                       parent.getCanonicalPath());
-                            }   
-                        }
-                    }
-                } catch (UnsupportedOperationException e) {
-                    // do nothing since likely a resource that doesn't have a filesystem
-                    logger.warn("no filesystem", e);
-                }
+                configuration.getMetadataResolverFactory().getInstance(metadataResource).createParentDirectories();
                 
                 final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
