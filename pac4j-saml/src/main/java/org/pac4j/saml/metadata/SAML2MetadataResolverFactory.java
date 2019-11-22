@@ -5,6 +5,6 @@ import org.springframework.core.io.Resource;
 
 public interface SAML2MetadataResolverFactory {
 
-	MetadataResolver getInstance(Resource metadataResource) throws Exception;
+    MetadataResolver getInstance(Resource metadataResource) throws Exception;
 
 }

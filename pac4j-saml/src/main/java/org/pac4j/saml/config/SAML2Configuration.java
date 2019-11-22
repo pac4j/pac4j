@@ -695,13 +695,13 @@ public class SAML2Configuration extends InitializableObject {
         this.logoutHandler = logoutHandler;
     }
     
-	public SAML2MetadataResolverFactory getMetadataResolverFactory() {
+    public SAML2MetadataResolverFactory getMetadataResolverFactory() {
         return metadataResolverFactory;
-	}
+    }
 	
-	public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
+    public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
         this.metadataResolverFactory = metadataResolverFactory;
-	}
+    }
 
     public String getPostLogoutURL() {
         return postLogoutURL;

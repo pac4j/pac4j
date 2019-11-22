@@ -553,7 +553,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return metadataResolverFactory;
     }
 
-	public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
-		this.metadataResolverFactory = metadataResolverFactory;
-	}
+    public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
+        this.metadataResolverFactory = metadataResolverFactory;
+    }
 }
