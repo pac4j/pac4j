@@ -316,13 +316,17 @@ public class OidcConfiguration extends InitializableObject {
         this.responseMode = responseMode;
     }
 
-    public String getLogoutUrl() {
+    public String findLogoutUrl() {
         init();
 
         if(logoutUrl == null && getProviderMetadata().getEndSessionEndpointURI() != null) {
             return getProviderMetadata().getEndSessionEndpointURI().toString();
         }
         return logoutUrl;
+    }
+
+    public String getLogoutUrl() {
+        return this.logoutUrl;
     }
 
     public void setLogoutUrl(final String logoutUrl) {

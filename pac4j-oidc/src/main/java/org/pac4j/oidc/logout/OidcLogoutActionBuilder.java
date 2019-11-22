@@ -37,7 +37,7 @@ public class OidcLogoutActionBuilder<U extends OidcProfile> implements LogoutAct
 
     @Override
     public RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        final String logoutUrl = configuration.getLogoutUrl();
+        final String logoutUrl = configuration.findLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl)) {
             try {
                 final URI endSessionEndpoint = new URI(logoutUrl);
