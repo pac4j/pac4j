@@ -111,14 +111,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
     
-    private MetadataResolverFactory metadataResolverFactory = new FileMetadataResolverFactory();
+    private SAML2MetadataResolverFactory metadataResolverFactory = new FileMetadataResolverFactory();
 
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
 
     @Override
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
-        final AbstractBatchMetadataResolver resolver;
+        final MetadataResolver resolver;
         if (metadataResource != null) {
             resolver = metadataResolverFactory.getInstance(metadataResource);
         } else {
@@ -127,10 +127,13 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
             resolver = new DOMMetadataResolver(entityDescriptorElement);
         }
         resolver.setRequireValidMetadata(true);
-        resolver.setFailFastInitialization(true);
-        resolver.setId(resolver.getClass().getCanonicalName());
-        resolver.setParserPool(Configuration.getParserPool());
-        resolver.initialize();
+        if (resolver instanceof AbstractBatchMetadataResolver) {
+            AbstractBatchMetadataResolver absResolver = (AbstractBatchMetadataResolver) resolver;
+            absResolver.setFailFastInitialization(true);
+            absResolver.setId(resolver.getClass().getCanonicalName());
+            absResolver.setParserPool(Configuration.getParserPool());
+            absResolver.initialize();
+        }
         return resolver;
     }
 
@@ -546,7 +549,11 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return filteredAlgorithms;
     }
 
-	public void setMetadataResolverFactory(MetadataResolverFactory metadataResolverFactory) {
+    public SAML2MetadataResolverFactory getMetadataResolverFactory() {
+        return metadataResolverFactory;
+    }
+
+	public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
 		this.metadataResolverFactory = metadataResolverFactory;
 	}
 }

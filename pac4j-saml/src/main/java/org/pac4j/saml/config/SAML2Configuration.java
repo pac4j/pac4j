@@ -57,7 +57,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.FileMetadataResolverFactory;
-import org.pac4j.saml.metadata.MetadataResolverFactory;
+import org.pac4j.saml.metadata.SAML2MetadataResolverFactory;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.store.EmptyStoreFactory;
@@ -165,7 +165,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private LogoutHandler logoutHandler;
     
-    private MetadataResolverFactory metadataResolverFactory;
+    private SAML2MetadataResolverFactory metadataResolverFactory;
 
     private String postLogoutURL;
 
@@ -695,11 +695,11 @@ public class SAML2Configuration extends InitializableObject {
         this.logoutHandler = logoutHandler;
     }
     
-	public MetadataResolverFactory getMetadataResolverFactory() {
+	public SAML2MetadataResolverFactory getMetadataResolverFactory() {
         return metadataResolverFactory;
 	}
 	
-	public void setMetadataResolverFactory(MetadataResolverFactory metadataResolverFactory) {
+	public void setMetadataResolverFactory(SAML2MetadataResolverFactory metadataResolverFactory) {
         this.metadataResolverFactory = metadataResolverFactory;
 	}
 

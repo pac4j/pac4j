@@ -132,9 +132,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         final WritableResource metadataResource = configuration.getServiceProviderMetadataResource();
         if (metadataResource != null && CommonHelper.isNotBlank(tempMetadata)) {
             if (metadataResource.exists() && !configuration.isForceServiceProviderMetadataGeneration()) {
-                logger.info("Metadata file already exists at {}.", metadataResource.getFilename());
+                logger.info("Metadata resource already exists at {}.", metadataResource);
             } else {
-                logger.info("Writing sp metadata to {}", metadataResource.getFilename());
+                logger.info("Writing sp metadata to {}", metadataResource);
                 File resourceFile;
                 try {
                     resourceFile = metadataResource.getFile();

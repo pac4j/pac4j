@@ -4,7 +4,7 @@ import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.springframework.core.io.Resource;
 
-public class FileMetadataResolverFactory implements MetadataResolverFactory {
+public class FileMetadataResolverFactory implements SAML2MetadataResolverFactory {
 
 	@Override
 	public AbstractBatchMetadataResolver getInstance(Resource metadataResource) throws Exception {
