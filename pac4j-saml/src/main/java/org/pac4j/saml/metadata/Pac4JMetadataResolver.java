@@ -1,6 +1,8 @@
 package org.pac4j.saml.metadata;
 
-public interface Pac4JMetadataResolver extends org.opensaml.saml.metadata.resolver.MetadataResolver {
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
+
+public interface Pac4JMetadataResolver extends MetadataResolver {
 
     void createParentDirectories() throws Exception;
 
