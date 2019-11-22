@@ -5,8 +5,8 @@ import org.springframework.core.io.Resource;
 public class FileMetadataResolverFactory implements SAML2MetadataResolverFactory {
 
     @Override
-    public MetadataResolver getInstance(Resource metadataResource) throws Exception {
-        return new Pac4jFileSystemMetadataResolver(metadataResource);
+    public Pac4JMetadataResolver getInstance(Resource metadataResource) throws Exception {
+        return new Pac4JFileSystemMetadataResolver(metadataResource);
     }
 
 }

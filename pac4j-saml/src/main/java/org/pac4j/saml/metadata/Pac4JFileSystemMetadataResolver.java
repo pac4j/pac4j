@@ -3,6 +3,7 @@ package org.pac4j.saml.metadata;
 import java.io.File;
 import java.io.IOException;
 
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.filter.MetadataFilter;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -13,13 +14,13 @@ import org.springframework.core.io.Resource;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 
-public class Pac4jFileSystemMetadataResolver implements MetadataResolver {
-    protected static final Logger logger = LoggerFactory.getLogger(Pac4jFileSystemMetadataResolver.class);
+public class Pac4JFileSystemMetadataResolver implements Pac4JMetadataResolver {
+    protected static final Logger logger = LoggerFactory.getLogger(Pac4JFileSystemMetadataResolver.class);
 
-    private org.opensaml.saml.metadata.resolver.MetadataResolver delegateResolver;
+    private MetadataResolver delegateResolver;
     private Resource metadataResource;
 
-    public Pac4jFileSystemMetadataResolver(Resource metadataResource) throws Exception {
+    public Pac4JFileSystemMetadataResolver(Resource metadataResource) throws Exception {
         delegateResolver = new FilesystemMetadataResolver(metadataResource.getFile());
         this.metadataResource = metadataResource;
     }
