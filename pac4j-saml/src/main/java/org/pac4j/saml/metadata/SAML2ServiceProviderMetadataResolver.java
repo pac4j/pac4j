@@ -120,6 +120,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         );
         metadataGenerator.setSignatureAlgorithms(configuration.getSignatureAlgorithms());
         metadataGenerator.setSignatureReferenceDigestMethods(configuration.getSignatureReferenceDigestMethods());
+
+        metadataGenerator.setSupportedProtocols(configuration.getSupportedProtocols());
+        metadataGenerator.setContactPersons(configuration.getContactPersons());
     }
 
     private void writeServiceProviderMetadataToResource(final String tempMetadata) throws Exception {
