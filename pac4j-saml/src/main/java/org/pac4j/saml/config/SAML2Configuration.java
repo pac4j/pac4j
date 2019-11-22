@@ -45,6 +45,7 @@ import org.bouncycastle.util.io.pem.PemWriter;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
@@ -55,6 +56,8 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.FileMetadataResolverFactory;
+import org.pac4j.saml.metadata.MetadataResolverFactory;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.store.EmptyStoreFactory;
@@ -161,6 +164,8 @@ public class SAML2Configuration extends InitializableObject {
     private Map<String, String> mappedAttributes = new LinkedHashMap<>();
 
     private LogoutHandler logoutHandler;
+    
+    private MetadataResolverFactory metadataResolverFactory;
 
     private String postLogoutURL;
 
@@ -689,6 +694,14 @@ public class SAML2Configuration extends InitializableObject {
     public void setLogoutHandler(final LogoutHandler logoutHandler) {
         this.logoutHandler = logoutHandler;
     }
+    
+	public MetadataResolverFactory getMetadataResolverFactory() {
+        return metadataResolverFactory;
+	}
+	
+	public void setMetadataResolverFactory(MetadataResolverFactory metadataResolverFactory) {
+        this.metadataResolverFactory = metadataResolverFactory;
+	}
 
     public String getPostLogoutURL() {
         return postLogoutURL;

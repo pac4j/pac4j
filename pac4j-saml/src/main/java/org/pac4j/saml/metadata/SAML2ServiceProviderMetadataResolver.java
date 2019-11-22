@@ -102,8 +102,11 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         metadataGenerator.setSignMetadata(configuration.isSignMetadata());
         metadataGenerator.setNameIdPolicyFormat(configuration.getNameIdPolicyFormat());
         metadataGenerator.setRequestedAttributes(configuration.getRequestedServiceProviderAttributes());
+        if (configuration.getMetadataResolverFactory() != null) {
+            metadataGenerator.setMetadataResolverFactory(configuration.getMetadataResolverFactory());
+        }
 
-        metadataGenerator.setCredentialProvider(this.credentialProvider);
+        metadataGenerator.setCredentialProvider(this.credentialProvider);       
 
         metadataGenerator.setEntityId(configuration.getServiceProviderEntityId());
         metadataGenerator.setRequestInitiatorLocation(callbackUrl);

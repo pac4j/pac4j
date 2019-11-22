@@ -110,6 +110,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected List<String> signatureReferenceDigestMethods = null;
 
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
+    
+    private MetadataResolverFactory metadataResolverFactory = new FileMetadataResolverFactory();
 
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
@@ -118,7 +120,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
         if (metadataResource != null) {
-            resolver = new SpringResourceMetadataResolver(metadataResource);
+            resolver = metadataResolverFactory.getInstance(metadataResource);
         } else {
             final EntityDescriptor md = buildEntityDescriptor();
             final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
@@ -543,4 +545,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         this.signatureAlgorithms.removeAll(this.blackListedSignatureSigningAlgorithms);
         return filteredAlgorithms;
     }
+
+	public void setMetadataResolverFactory(MetadataResolverFactory metadataResolverFactory) {
+		this.metadataResolverFactory = metadataResolverFactory;
+	}
 }
