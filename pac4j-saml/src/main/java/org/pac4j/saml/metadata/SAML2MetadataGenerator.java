@@ -12,6 +12,13 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.ext.saml2alg.SigningMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
+import org.opensaml.saml.ext.saml2mdui.Description;
+import org.opensaml.saml.ext.saml2mdui.DisplayName;
+import org.opensaml.saml.ext.saml2mdui.InformationURL;
+import org.opensaml.saml.ext.saml2mdui.Keywords;
+import org.opensaml.saml.ext.saml2mdui.Logo;
+import org.opensaml.saml.ext.saml2mdui.PrivacyStatementURL;
+import org.opensaml.saml.ext.saml2mdui.UIInfo;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
@@ -111,6 +118,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected List<String> signatureReferenceDigestMethods = null;
 
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
+
+    private List<SAML2MetadataUIInfo> metadataUIInfos = new ArrayList<>();
 
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
@@ -334,10 +343,80 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                     person.getTelephoneNumbers().add(phone);
                 });
             }
-
+            
             spDescriptor.getContactPersons().add(person);
         });
-        
+
+        if (!metadataUIInfos.isEmpty()) {
+            final SAMLObjectBuilder<UIInfo> uiInfoBuilder =
+                (SAMLObjectBuilder<UIInfo>) this.builderFactory
+                    .getBuilder(UIInfo.DEFAULT_ELEMENT_NAME);
+
+            final UIInfo uiInfo = uiInfoBuilder.buildObject();
+
+            metadataUIInfos.forEach(info -> {
+
+                info.getDescriptions().forEach(desc -> {
+                    final SAMLObjectBuilder<Description> uiBuilder =
+                        (SAMLObjectBuilder<Description>) this.builderFactory
+                            .getBuilder(Description.DEFAULT_ELEMENT_NAME);
+                    final Description description = uiBuilder.buildObject();
+                    description.setValue(desc);
+                    uiInfo.getDescriptions().add(description);
+                });
+
+                info.getDisplayNames().forEach(name -> {
+                    final SAMLObjectBuilder<DisplayName> uiBuilder =
+                        (SAMLObjectBuilder<DisplayName>) this.builderFactory
+                            .getBuilder(DisplayName.DEFAULT_ELEMENT_NAME);
+                    final DisplayName displayName = uiBuilder.buildObject();
+                    displayName.setValue(name);
+                    uiInfo.getDisplayNames().add(displayName);
+                });
+
+                info.getInformationUrls().forEach(url -> {
+                    final SAMLObjectBuilder<InformationURL> uiBuilder =
+                        (SAMLObjectBuilder<InformationURL>) this.builderFactory
+                            .getBuilder(InformationURL.DEFAULT_ELEMENT_NAME);
+                    final InformationURL informationURL = uiBuilder.buildObject();
+                    informationURL.setValue(url);
+                    uiInfo.getInformationURLs().add(informationURL);
+                });
+
+                info.getPrivacyUrls().forEach(privacy -> {
+                    final SAMLObjectBuilder<PrivacyStatementURL> uiBuilder =
+                        (SAMLObjectBuilder<PrivacyStatementURL>) this.builderFactory
+                            .getBuilder(PrivacyStatementURL.DEFAULT_ELEMENT_NAME);
+                    final PrivacyStatementURL privacyStatementURL = uiBuilder.buildObject();
+                    privacyStatementURL.setValue(privacy);
+                    uiInfo.getPrivacyStatementURLs().add(privacyStatementURL);
+                });
+
+                info.getKeywords().forEach(kword -> {
+                    final SAMLObjectBuilder<Keywords> uiBuilder =
+                        (SAMLObjectBuilder<Keywords>) this.builderFactory
+                            .getBuilder(Keywords.DEFAULT_ELEMENT_NAME);
+                    final Keywords keyword = uiBuilder.buildObject();
+                    keyword.setKeywords(new ArrayList<>(org.springframework.util.StringUtils.commaDelimitedListToSet(kword)));
+                    uiInfo.getKeywords().add(keyword);
+                });
+
+                info.getLogos().forEach(lg -> {
+                    final SAMLObjectBuilder<Logo> uiBuilder =
+                        (SAMLObjectBuilder<Logo>) this.builderFactory
+                            .getBuilder(Logo.DEFAULT_ELEMENT_NAME);
+                    final Logo logo = uiBuilder.buildObject();
+                    logo.setURL(lg.getUrl());
+                    logo.setHeight(lg.getHeight());
+                    logo.setWidth(lg.getWidth());
+                    uiInfo.getLogos().add(logo);
+                });
+
+            });
+
+            extensions.getUnknownXMLObjects().add(uiInfo);
+        }
+
         return spDescriptor;
 
     }
@@ -532,6 +611,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     public void setContactPersons(final List<SAML2MetadataContactPerson> contactPersons) {
         this.contactPersons = contactPersons;
+    }
+
+    public List<SAML2MetadataUIInfo> getMetadataUIInfos() {
+        return metadataUIInfos;
+    }
+
+    public void setMetadataUIInfos(final List<SAML2MetadataUIInfo> metadataUIInfos) {
+        this.metadataUIInfos = metadataUIInfos;
     }
 
     private List<String> filterForRuntimeSupportedAlgorithms(final List<String> algorithms) {
