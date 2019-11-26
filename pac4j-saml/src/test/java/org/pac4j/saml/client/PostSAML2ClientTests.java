@@ -8,6 +8,7 @@ import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
+import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -41,6 +42,15 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         person.setEmailAddresses(Collections.singletonList("test@example.org"));
         person.setTelephoneNumbers(Collections.singletonList("+13476547689"));
         client.getConfiguration().getContactPersons().add(person);
+
+        final SAML2MetadataUIInfo uiInfo = new SAML2MetadataUIInfo();
+        uiInfo.setDescriptions(Collections.singletonList("description1"));
+        uiInfo.setDisplayNames(Collections.singletonList("displayName"));
+        uiInfo.setPrivacyUrls(Collections.singletonList("https://pac4j.org"));
+        uiInfo.setInformationUrls(Collections.singletonList("https://pac4j.org"));
+        uiInfo.setKeywords(Collections.singletonList("keyword1,keyword2,keyword3"));
+        uiInfo.setLogos(Collections.singletonList(new SAML2MetadataUIInfo.SAML2MetadataUILogo("https://pac4j.org/logo.png", 16, 16)));
+        client.getConfiguration().getMetadataUIInfos().add(uiInfo);
         
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final OkAction action = (OkAction) client.getRedirectionAction(context).get();

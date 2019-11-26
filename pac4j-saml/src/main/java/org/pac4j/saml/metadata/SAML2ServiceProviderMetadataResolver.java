@@ -22,7 +22,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -123,6 +128,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
         metadataGenerator.setSupportedProtocols(configuration.getSupportedProtocols());
         metadataGenerator.setContactPersons(configuration.getContactPersons());
+        metadataGenerator.setMetadataUIInfos(configuration.getMetadataUIInfos());
     }
 
     private void writeServiceProviderMetadataToResource(final String tempMetadata) throws Exception {

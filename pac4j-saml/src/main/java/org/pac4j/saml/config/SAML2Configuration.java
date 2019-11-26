@@ -56,6 +56,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
+import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
@@ -172,6 +173,8 @@ public class SAML2Configuration extends InitializableObject {
 
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
 
+    private List<SAML2MetadataUIInfo> metadataUIInfos = new ArrayList<>();
+    
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
     
@@ -249,6 +252,14 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setContactPersons(final List<SAML2MetadataContactPerson> contactPersons) {
         this.contactPersons = contactPersons;
+    }
+
+    public List<SAML2MetadataUIInfo> getMetadataUIInfos() {
+        return metadataUIInfos;
+    }
+
+    public void setMetadataUIInfos(final List<SAML2MetadataUIInfo> metadataUIInfos) {
+        this.metadataUIInfos = metadataUIInfos;
     }
 
     public List<String> getSupportedProtocols() {
