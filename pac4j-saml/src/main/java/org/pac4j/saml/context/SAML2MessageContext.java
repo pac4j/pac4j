@@ -95,7 +95,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
             + binding);
     }
 
-    public final SingleSignOnService getIDPSingleSignOnService(final String binding) {
+    public SingleSignOnService getIDPSingleSignOnService(final String binding) {
         final List<SingleSignOnService> services = getIDPSSODescriptor().getSingleSignOnServices();
         for (final SingleSignOnService service : services) {
             if (service.getBinding().equals(binding)) {
@@ -106,11 +106,11 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
                 + binding);
     }
 
-    public final AssertionConsumerService getSPAssertionConsumerService() {
+    public AssertionConsumerService getSPAssertionConsumerService() {
         return getSPAssertionConsumerService(null);
     }
 
-    public final AssertionConsumerService getSPAssertionConsumerService(final String acsIndex) {
+    public AssertionConsumerService getSPAssertionConsumerService(final String acsIndex) {
         final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
         final List<AssertionConsumerService> services = spssoDescriptor.getAssertionConsumerServices();
 

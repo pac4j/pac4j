@@ -24,6 +24,13 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
     }
 
     protected final SAML2Client getClient() {
+        final SAML2Configuration cfg = getSaml2Configuration();
+        final SAML2Client saml2Client = new SAML2Client(cfg);
+        saml2Client.setCallbackUrl(getCallbackUrl());
+        return saml2Client;
+    }
+
+    protected SAML2Configuration getSaml2Configuration() {
         final SAML2Configuration cfg =
                 new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
                         "pac4j-demo-passwd",
@@ -37,9 +44,7 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setForceKeystoreGeneration(true);
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
-        final SAML2Client saml2Client = new SAML2Client(cfg);
-        saml2Client.setCallbackUrl(getCallbackUrl());
-        return saml2Client;
+        return cfg;
     }
 
     protected abstract String getCallbackUrl();
