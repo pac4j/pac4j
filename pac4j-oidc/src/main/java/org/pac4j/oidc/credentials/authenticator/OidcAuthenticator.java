@@ -1,13 +1,14 @@
 package org.pac4j.oidc.credentials.authenticator;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
+import com.nimbusds.oauth2.sdk.*;
+import com.nimbusds.oauth2.sdk.auth.*;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
+import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -18,23 +19,13 @@ import org.pac4j.oidc.credentials.OidcCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nimbusds.oauth2.sdk.AuthorizationCode;
-import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.TokenErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenRequest;
-import com.nimbusds.oauth2.sdk.TokenResponse;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
-import com.nimbusds.oauth2.sdk.auth.Secret;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The OpenID Connect authenticator.
@@ -46,9 +37,9 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcAuthenticator.class);
 
-    private static final Collection<ClientAuthenticationMethod> SUPPORTED_METHODS = 
+    private static final Collection<ClientAuthenticationMethod> SUPPORTED_METHODS =
             Arrays.asList(
-                    ClientAuthenticationMethod.CLIENT_SECRET_POST, 
+                    ClientAuthenticationMethod.CLIENT_SECRET_POST,
                     ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
                     ClientAuthenticationMethod.NONE);
 
@@ -123,28 +114,28 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         if (configurationMethod == null) {
             return null;
         }
-        
+
         if (!SUPPORTED_METHODS.contains(configurationMethod)) {
             throw new TechnicalException("Configured authentication method (" + configurationMethod + ") is not supported.");
         }
-        
+
         return configurationMethod;
     }
 
     /**
      * The first {@link ClientAuthenticationMethod} from the given list of
      * methods that is supported by this implementation.
-     * 
+     *
      * @throws TechnicalException
      *         if none of the provider-supported methods is supported.
      */
     private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
-        Optional<ClientAuthenticationMethod> firstSupported = 
+        Optional<ClientAuthenticationMethod> firstSupported =
             metadataMethods.stream().filter((m) -> SUPPORTED_METHODS.contains(m)).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
         } else {
-            throw new TechnicalException("None of the Token endpoint provider metadata authentication methods are supported: " + 
+            throw new TechnicalException("None of the Token endpoint provider metadata authentication methods are supported: " +
                 metadataMethods);
         }
     }
@@ -159,31 +150,46 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
                 // Token request
                 final TokenRequest request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
                         this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(computedCallbackUrl)));
-                HTTPRequest tokenHttpRequest = request.toHTTPRequest();
-                tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
-                tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());
-
-                final HTTPResponse httpResponse = tokenHttpRequest.send();
-                logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
-                        httpResponse.getContent());
-
-                final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
-                if (response instanceof TokenErrorResponse) {
-                    throw new TechnicalException("Bad token response, error=" + ((TokenErrorResponse) response).getErrorObject());
-                }
-                logger.debug("Token response successful");
-                final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
-
-                // save tokens in credentials
-                final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
-                credentials.setAccessToken(oidcTokens.getAccessToken());
-                credentials.setRefreshToken(oidcTokens.getRefreshToken());
-                credentials.setIdToken(oidcTokens.getIDToken());
-
+                executeTokenRequest(request, credentials);
             } catch (final URISyntaxException | IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
         }
+    }
+
+    public void refresh(final OidcCredentials credentials) {
+        final RefreshToken refreshToken = credentials.getRefreshToken();
+        if (refreshToken != null) {
+            try {
+                final TokenRequest request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
+                    this.clientAuthentication, new RefreshTokenGrant(refreshToken));
+                executeTokenRequest(request, credentials);
+            } catch (final IOException | ParseException e) {
+                throw new TechnicalException(e);
+            }
+        }
+    }
+
+    private void executeTokenRequest(TokenRequest request, OidcCredentials credentials) throws IOException, ParseException {
+        HTTPRequest tokenHttpRequest = request.toHTTPRequest();
+        tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
+        tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());
+
+        final HTTPResponse httpResponse = tokenHttpRequest.send();
+        logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
+            httpResponse.getContent());
+
+        final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
+        if (response instanceof TokenErrorResponse) {
+            throw new TechnicalException("Bad token response, error=" + ((TokenErrorResponse) response).getErrorObject());
+        }
+        logger.debug("Token response successful");
+        final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
+
+        final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
+        credentials.setAccessToken(oidcTokens.getAccessToken());
+        credentials.setRefreshToken(oidcTokens.getRefreshToken());
+        credentials.setIdToken(oidcTokens.getIDToken());
     }
 
     public ClientAuthentication getClientAuthentication() {

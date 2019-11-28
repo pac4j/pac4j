@@ -1,6 +1,9 @@
 package org.pac4j.oidc.client;
 
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -8,8 +11,11 @@ import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.credentials.extractor.OidcExtractor;
 
 import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
+import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.redirect.OidcRedirectionActionBuilder;
+
+import java.util.Optional;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
@@ -58,5 +64,27 @@ public class OidcClient<V extends OidcConfiguration> extends IndirectClient<Oidc
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
             "configuration", configuration);
+    }
+
+    @Override
+    public Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context) {
+        OidcProfile oidcProfile = (OidcProfile)profile;
+        if(!oidcProfile.isRefreshTokenExpired()){
+            Object refreshTokenObject = profile.getAttribute("refresh_token");
+            if(refreshTokenObject != null){
+                RefreshToken refreshToken = (RefreshToken)refreshTokenObject;
+                OidcCredentials credentials = new OidcCredentials();
+                credentials.setRefreshToken(refreshToken);
+                OidcAuthenticator authenticator =  new OidcAuthenticator(getConfiguration(), this);
+                authenticator.refresh(credentials);
+
+                // Create a profile if the refresh grant was successful
+                if(credentials.getAccessToken() != null){
+                    return getUserProfile(credentials, context);
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 }

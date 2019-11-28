@@ -110,6 +110,8 @@ public class ProfileManager<U extends UserProfile> {
                         final Optional<U> newProfile = client.get().renewUserProfile(profile, context);
                         if (newProfile.isPresent()) {
                             profiles.put(key, newProfile.get());
+                            // TODO GET BOOLEANS FROM CONFIG OR MOVE THIS LOGIC ELSEWHERE
+                            save(true, newProfile.get(), false);
                         }
                     }
                 }
