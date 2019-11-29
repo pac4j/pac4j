@@ -174,7 +174,14 @@ public class SAML2Configuration extends InitializableObject {
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
 
     private List<SAML2MetadataUIInfo> metadataUIInfos = new ArrayList<>();
-    
+
+    /**
+     * If {@link #nameIdPolicyFormat} is defined, this setting
+     * will control whether the allow-create flag is used and set.
+     * A {@code null} value will skip setting the allow-create flag altogether.
+     */
+    private Boolean nameIdPolicyAllowCreate = Boolean.TRUE;
+
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
     
@@ -244,6 +251,14 @@ public class SAML2Configuration extends InitializableObject {
         }
 
         initSignatureSigningConfiguration();
+    }
+
+    public Boolean isNameIdPolicyAllowCreate() {
+        return nameIdPolicyAllowCreate;
+    }
+
+    public void setNameIdPolicyAllowCreate(final Boolean nameIdPolicyAllowCreate) {
+        this.nameIdPolicyAllowCreate = nameIdPolicyAllowCreate;
     }
 
     public List<SAML2MetadataContactPerson> getContactPersons() {

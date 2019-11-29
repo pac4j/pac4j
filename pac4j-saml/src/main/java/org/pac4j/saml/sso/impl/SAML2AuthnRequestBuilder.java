@@ -1,12 +1,11 @@
 package org.pac4j.saml.sso.impl;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
-import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
@@ -33,32 +32,13 @@ import org.pac4j.saml.util.SAML2Utils;
  * Build a SAML2 Authn Request from the given {@link MessageContext}.
  *
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @since 1.5.0
  */
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
-
-    private final boolean forceAuth;
-    private final boolean passive;
-
-    private final AuthnContextComparisonTypeEnumeration comparisonType;
-
-    private String bindingType;
-
-    private List<String> authnContextClassRefs;
-
-    private String nameIdPolicyFormat;
-    
-    private boolean useNameQualifier;
+    private final SAML2Configuration configuration;
 
     private int issueInstantSkewSeconds = 0;
-
-    private final int attributeConsumingServiceIndex;
-
-    private final int assertionConsumerServiceIndex;
-
-    private final String providerName;
-
-    private final Supplier<List<XSAny>> extensions;
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
@@ -68,23 +48,15 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
      * @param cfg Client configuration.
      */
     public SAML2AuthnRequestBuilder(final SAML2Configuration cfg) {
-        this.forceAuth = cfg.isForceAuth();
-        this.comparisonType = getComparisonTypeEnumFromString(cfg.getComparisonType());
-        this.bindingType = cfg.getAuthnRequestBindingType();
-        this.authnContextClassRefs = cfg.getAuthnContextClassRefs();
-        this.nameIdPolicyFormat = cfg.getNameIdPolicyFormat();
-        this.passive = cfg.isPassive();
-        this.attributeConsumingServiceIndex = cfg.getAttributeConsumingServiceIndex();
-        this.assertionConsumerServiceIndex = cfg.getAssertionConsumerServiceIndex();
-        this.providerName = cfg.getProviderName();
-        this.extensions = cfg.getAuthnRequestExtensions();
-        this.useNameQualifier = cfg.isUseNameQualifier();
+        this.configuration = cfg;
     }
 
     @Override
     public AuthnRequest build(final SAML2MessageContext context) {
-        final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
-        final String idx = this.assertionConsumerServiceIndex > 0 ? String.valueOf(assertionConsumerServiceIndex) : null;
+        final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.configuration.getAuthnRequestBindingType());
+        final String idx = this.configuration.getAssertionConsumerServiceIndex() > 0
+            ? String.valueOf(this.configuration.getAssertionConsumerServiceIndex())
+            : null;
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService(idx);
         return buildAuthnRequest(context, assertionConsumerService, ssoService);
     }
@@ -97,13 +69,15 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         final SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
             .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
         final AuthnRequest request = builder.buildObject();
+
+        final AuthnContextComparisonTypeEnumeration comparisonType = getComparisonTypeEnumFromString(configuration.getComparisonType());
         if (comparisonType != null) {
             final RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
             authnContext.setComparison(comparisonType);
 
-            if (authnContextClassRefs != null && !authnContextClassRefs.isEmpty()) {
+            if (this.configuration.getAuthnContextClassRefs() != null && !this.configuration.getAuthnContextClassRefs().isEmpty()) {
                 final List<AuthnContextClassRef> refs = authnContext.getAuthnContextClassRefs();
-                authnContextClassRefs.forEach(r -> refs.add(buildAuthnContextClassRef(r)));
+                this.configuration.getAuthnContextClassRefs().forEach(r -> refs.add(buildAuthnContextClassRef(r)));
             }
             request.setRequestedAuthnContext(authnContext);
         }
@@ -114,34 +88,39 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         request.setIssuer(getIssuer(selfContext.getEntityId()));
         request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
-        request.setIsPassive(this.passive);
-        request.setForceAuthn(this.forceAuth);
-        request.setProviderName(this.providerName);
+        request.setIsPassive(this.configuration.isPassive());
+        request.setForceAuthn(this.configuration.isForceAuth());
 
-        if (nameIdPolicyFormat != null) {
+        if (StringUtils.isNotBlank(this.configuration.getProviderName())) {
+            request.setProviderName(this.configuration.getProviderName());
+        }
+
+        if (this.configuration.getNameIdPolicyFormat() != null) {
             final NameIDPolicy nameIdPolicy = new NameIDPolicyBuilder().buildObject();
-            nameIdPolicy.setAllowCreate(true);
-            nameIdPolicy.setFormat(nameIdPolicyFormat);
+            if (this.configuration.isNameIdPolicyAllowCreate() != null) {
+                nameIdPolicy.setAllowCreate(this.configuration.isNameIdPolicyAllowCreate());
+            }
+            nameIdPolicy.setFormat(this.configuration.getNameIdPolicyFormat());
             request.setNameIDPolicy(nameIdPolicy);
         }
 
         request.setDestination(ssoService.getLocation());
-        if (assertionConsumerServiceIndex >= 0) {
-            request.setAssertionConsumerServiceIndex(assertionConsumerServiceIndex);
+        if (this.configuration.getAssertionConsumerServiceIndex()  >= 0) {
+            request.setAssertionConsumerServiceIndex(this.configuration.getAssertionConsumerServiceIndex() );
         } else {
             request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
         }
         request.setProtocolBinding(assertionConsumerService.getBinding());
 
-        if (attributeConsumingServiceIndex >= 0) {
-            request.setAttributeConsumingServiceIndex(attributeConsumingServiceIndex);
+        if (this.configuration.getAssertionConsumerServiceIndex() >= 0) {
+            request.setAttributeConsumingServiceIndex(this.configuration.getAssertionConsumerServiceIndex() );
         }
 
         // Setting extensions if they are defined
-        if (extensions != null) {
-            Extensions extensionsElem = ((SAMLObjectBuilder<Extensions>) this.builderFactory
+        if (this.configuration.getAuthnRequestExtensions() != null) {
+            final Extensions extensionsElem = ((SAMLObjectBuilder<Extensions>) this.builderFactory
                 .getBuilder(Extensions.DEFAULT_ELEMENT_NAME)).buildObject();
-            extensionsElem.getUnknownXMLObjects().addAll(extensions.get());
+            extensionsElem.getUnknownXMLObjects().addAll(this.configuration.getAuthnRequestExtensions() .get());
             request.setExtensions(extensionsElem);
         }
 
@@ -161,13 +140,13 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         final Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         issuer.setFormat(Issuer.ENTITY);
-        if (this.useNameQualifier) {
+        if (this.configuration.isUseNameQualifier()) {
             issuer.setNameQualifier(spEntityId);
         }
         return issuer;
     }
 
-    protected final AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {
+    protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {
         if ("exact".equalsIgnoreCase(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.EXACT;
         }
