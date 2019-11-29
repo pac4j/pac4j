@@ -82,6 +82,9 @@ public final class ProfileManagerTests {
         context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.get(true).isPresent());
         assertFalse(profileManager.isAuthenticated());
+        final LinkedHashMap<String, UserProfile> profiles =
+            (LinkedHashMap<String, UserProfile>) context.getSessionStore().get(context, Pac4jConstants.USER_PROFILES).get();
+        assertEquals(0, profiles.size());
     }
 
     @Test
@@ -98,6 +101,9 @@ public final class ProfileManagerTests {
         context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(profile2, profileManager.get(true).get());
         assertTrue(profileManager.isAuthenticated());
+        final LinkedHashMap<String, UserProfile> profiles =
+            (LinkedHashMap<String, UserProfile>) context.getSessionStore().get(context, Pac4jConstants.USER_PROFILES).get();
+        assertEquals(profile2, profiles.get(CLIENT1));
     }
 
     @Test
@@ -113,6 +119,9 @@ public final class ProfileManagerTests {
         context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.get(true).isPresent());
         assertFalse(profileManager.isAuthenticated());
+        final LinkedHashMap<String, UserProfile> profiles =
+            (LinkedHashMap<String, UserProfile>) context.getSessionStore().get(context, Pac4jConstants.USER_PROFILES).get();
+        assertEquals(0, profiles.size());
     }
 
     @Test
@@ -129,6 +138,9 @@ public final class ProfileManagerTests {
         context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.get(true).isPresent());
         assertFalse(profileManager.isAuthenticated());
+        final LinkedHashMap<String, UserProfile> profiles =
+            (LinkedHashMap<String, UserProfile>) context.getSessionStore().get(context, Pac4jConstants.USER_PROFILES).get();
+        assertEquals(0, profiles.size());
     }
 
     @Test
