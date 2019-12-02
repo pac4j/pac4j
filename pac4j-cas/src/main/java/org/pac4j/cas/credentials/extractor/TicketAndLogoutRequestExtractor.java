@@ -86,10 +86,12 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
 
     protected Optional<String> getArtifactParameter(final WebContext context) {
         if (configuration.getProtocol() == CasProtocol.SAML) {
-            return context.getRequestParameter(Protocol.SAML11.getArtifactParameterName());
-        } else {
-            return context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
+            final Optional<String> optValue = context.getRequestParameter(Protocol.SAML11.getArtifactParameterName());
+            if (optValue.isPresent()) {
+                return optValue;
+            }
         }
+        return context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
     }
 
     protected boolean isBackLogoutRequest(final WebContext context) {
