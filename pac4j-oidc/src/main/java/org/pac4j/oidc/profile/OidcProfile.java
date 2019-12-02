@@ -117,10 +117,14 @@ public class OidcProfile extends AbstractJwtProfile {
     }
 
     public JWT getIdToken() {
-        try {
-            return JWTParser.parse(getIdTokenString());
-        } catch (final ParseException e) {
-            throw new TechnicalException(e);
+        if(getIdTokenString() != null){
+            try {
+                return JWTParser.parse(getIdTokenString());
+            } catch (final ParseException e) {
+                throw new TechnicalException(e);
+            }
+        } else {
+            return null;
         }
     }
 
@@ -149,11 +153,29 @@ public class OidcProfile extends AbstractJwtProfile {
 
     @Override
     public boolean isExpired() {
-        if (getTokenExpirationAdvance() < 0)
+        JWT jwt = this.getIdToken();
+        return isTokenExpired(jwt);
+    }
+
+    public boolean isRefreshTokenExpired(){
+        RefreshToken refreshToken = this.getRefreshToken();
+        if(refreshToken != null){
+            try {
+                JWT jwt = JWTParser.parse(refreshToken.getValue());
+                return isTokenExpired(jwt);
+            } catch (ParseException e) {
+                throw new TechnicalException(e);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(JWT jwt){
+        if (jwt == null || getTokenExpirationAdvance() < 0)
             return false;
         else {
             try {
-                JWT jwt = this.getIdToken();
                 JWTClaimsSet claims = jwt.getJWTClaimsSet();
                 Date expiresOn = claims.getExpirationTime();
 
