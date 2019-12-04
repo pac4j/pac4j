@@ -5,6 +5,10 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
 import net.shibboleth.utilities.java.support.logic.Constraint;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
+
+import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
@@ -18,14 +22,17 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -66,20 +73,19 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
-            MultiValueMap<String, String> paramMap = UriComponentsBuilder.fromUriString("http://dummy.com?" + encodedMessage)
-                    .build().getQueryParams();
-            String newEncodedMessage = null;
+            List<NameValuePair> a = URLEncodedUtils.parse(
+                    encodedMessage.get(),
+                    StandardCharsets.UTF_8);
+            Multimap<String, String>  paramMap = HashMultimap.create();
+            for (NameValuePair p : a) {
+                paramMap.put(p.getName(), p.getValue());
+            }
             for (String parameter : SAML_PARAMETERS) {
-                newEncodedMessage = paramMap.getFirst(parameter);
-                if (newEncodedMessage != null) {
-                    try {
-                        encodedMessage = Optional.of(URLDecoder.decode(newEncodedMessage, StandardCharsets.UTF_8.name()));
-                    } catch (UnsupportedEncodingException e) {
-                        logger.warn("bad decoding:\n{}", e, newEncodedMessage);
-                    }
+                Collection<String> newEncodedMessageCollection = paramMap.get(parameter);
+                if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
+                    encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
                     break;
-                }
-                
+                }                
             }
 
             if (encodedMessage.get().contains("<")) {
