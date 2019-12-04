@@ -66,7 +66,8 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
-            MultiValueMap<String, String> paramMap = UriComponentsBuilder.fromUriString("http://dummy.com?" + encodedMessage).build().getQueryParams();
+            MultiValueMap<String, String> paramMap = UriComponentsBuilder.fromUriString("http://dummy.com?" + encodedMessage)
+                    .build().getQueryParams();
             String newEncodedMessage = null;
             for (String parameter : SAML_PARAMETERS) {
                 newEncodedMessage = paramMap.getFirst(parameter);
