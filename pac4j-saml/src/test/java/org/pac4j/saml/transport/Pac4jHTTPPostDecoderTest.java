@@ -104,7 +104,7 @@ public class Pac4jHTTPPostDecoderTest {
 
         webContext.setRequestContent(message);
 
-        decode(webContext, decoder);
+        decode(decoder);
     }
     
     @Test
@@ -118,7 +118,7 @@ public class Pac4jHTTPPostDecoderTest {
         
         webContext.setRequestContent(message);
 
-        decode(webContext, decoder);
+        decode(decoder);
     }
     
     @Test
@@ -130,10 +130,10 @@ public class Pac4jHTTPPostDecoderTest {
             new Pac4jHTTPPostDecoder(webContext);
         String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
         webContext.addRequestParameter("SAMLResponse", message);
-        decode(webContext, decoder);
+        decode(decoder);
     }
 
-    private void decode(final MockWebContext webContext, final Pac4jHTTPPostDecoder decoder)
+    private void decode(final Pac4jHTTPPostDecoder decoder)
             throws ComponentInitializationException, MessageDecodingException {
         
         decoder.setParserPool(Configuration.getParserPool());
