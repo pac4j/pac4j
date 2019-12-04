@@ -56,9 +56,11 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
 
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         Optional<String> encodedMessage = Optional.empty();
+        boolean isRequestParam = false;
         for (final String parameter : SAML_PARAMETERS) {
             encodedMessage = this.context.getRequestParameter(parameter);
             if (encodedMessage.isPresent()) {
+                isRequestParam = true;
                 break;
             }
         }
@@ -70,19 +72,21 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
-            List<NameValuePair> a = URLEncodedUtils.parse(
-                    encodedMessage.get(),
-                    StandardCharsets.UTF_8);
-            Multimap<String, String>  paramMap = HashMultimap.create();
-            for (NameValuePair p : a) {
-                paramMap.put(p.getName(), p.getValue());
-            }
-            for (String parameter : SAML_PARAMETERS) {
-                Collection<String> newEncodedMessageCollection = paramMap.get(parameter);
-                if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
-                    encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
-                    break;
-                }                
+            if (!isRequestParam) {
+                List<NameValuePair> a = URLEncodedUtils.parse(
+                        encodedMessage.get(),
+                        StandardCharsets.UTF_8);
+                Multimap<String, String>  paramMap = HashMultimap.create();
+                for (NameValuePair p : a) {
+                    paramMap.put(p.getName(), p.getValue());
+                }
+                for (String parameter : SAML_PARAMETERS) {
+                    Collection<String> newEncodedMessageCollection = paramMap.get(parameter);
+                    if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
+                        encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
+                        break;
+                    }                
+                }
             }
 
             if (encodedMessage.get().contains("<")) {

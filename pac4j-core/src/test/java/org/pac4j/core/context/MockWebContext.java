@@ -40,6 +40,8 @@ public final class MockWebContext implements WebContext {
     protected final Collection<Cookie> requestCookies = new LinkedHashSet<>();
 
     protected String path = "";
+    
+    protected String requestContent;
 
     protected String responseContent = "";
 
@@ -257,4 +259,19 @@ public final class MockWebContext implements WebContext {
     public void addResponseCookie(Cookie cookie) {
         this.responseCookies.add(cookie);
     }
+
+    public void setRequestContent(String requestContent) {
+        this.requestContent = requestContent;
+    }
+
+    @Override
+    public String getRequestContent() {
+        if (requestContent == null) {
+            return WebContext.super.getRequestContent();
+        } else {
+            return requestContent;
+        }
+    }
+    
+    
 }
