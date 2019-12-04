@@ -1,6 +1,5 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -61,7 +60,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
