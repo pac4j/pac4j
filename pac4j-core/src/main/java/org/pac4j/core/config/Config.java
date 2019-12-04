@@ -9,7 +9,7 @@ import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.matching.Matcher;
+import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;

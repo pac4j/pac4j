@@ -19,9 +19,9 @@ import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.matching.RequireAllMatchersChecker;
+import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
-import org.pac4j.core.matching.MatchingChecker;
+import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 
@@ -53,7 +53,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private AuthorizationChecker authorizationChecker = new DefaultAuthorizationChecker();
 
-    private MatchingChecker matchingChecker = new RequireAllMatchersChecker();
+    private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
     private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
 

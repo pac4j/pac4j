@@ -1,21 +1,18 @@
-package org.pac4j.core.authorization.authorizer.csrf;
+package org.pac4j.core.matching.matcher.csrf;
 
-import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.List;
-
 /**
- * Authorizer which creates a new CSRF token and adds it as a request attribute and as a cookie (AngularJS).
+ * Matcher which creates a new CSRF token and adds it as a request attribute and as a cookie (AngularJS).
  *
  * @author Jerome Leleu
- * @since 1.8.1
+ * @since 4.0.0
  */
-public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
+public class CsrfTokenMatcher implements Matcher {
 
     private CsrfTokenGenerator csrfTokenGenerator;
 
@@ -29,12 +26,12 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
 
     private Integer maxAge;
 
-    public CsrfTokenGeneratorAuthorizer(final CsrfTokenGenerator csrfTokenGenerator) {
+    public CsrfTokenMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
+    public boolean matches(final WebContext context) {
         CommonHelper.assertNotNull("csrfTokenGenerator", csrfTokenGenerator);
         final String token = csrfTokenGenerator.get(context);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
