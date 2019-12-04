@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -60,6 +61,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -128,7 +130,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
         if (metadataResource != null) {
-            resolver = new FilesystemMetadataResolver(metadataResource.getFile());
+            resolver = createMetadataResolver(metadataResource);
         } else {
             final EntityDescriptor md = buildEntityDescriptor();
             final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
@@ -140,6 +142,10 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         resolver.setParserPool(Configuration.getParserPool());
         resolver.initialize();
         return resolver;
+    }
+    
+    protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
+        return new FilesystemMetadataResolver(metadataResource.getFile());
     }
 
     @Override
