@@ -6,9 +6,12 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
+import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.saml2.core.impl.ResponseImpl;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.saml.util.Configuration;
+
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
 /**
  * Tests {@link Pac4jHTTPPostDecoder}.
@@ -99,14 +102,23 @@ public class Pac4jHTTPPostDecoderTest {
         String message = "SAMLResponse=" + SAML_RESPONSE 
                 + "&RelayState=https%3A%2F%2Flocalhost%3A8443%2Fanzo_authenticate%3Fclient_name%3DGSAML";
 
-
         webContext.setRequestContent(message);
 
-        decoder.setParserPool(Configuration.getParserPool());
-        decoder.initialize();
-        decoder.decode();
+        decode(webContext, decoder);
+    }
+    
+    @Test
+    public void testDecodeBodyNotAsQueryString() throws Exception {
+        final MockWebContext webContext = MockWebContext.create();
 
-        assertTrue(decoder.getMessageContext().getMessage() instanceof ResponseImpl);
+        webContext.setRequestMethod("POST");
+        final Pac4jHTTPPostDecoder decoder =
+            new Pac4jHTTPPostDecoder(webContext);
+        String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
+        
+        webContext.setRequestContent(message);
+
+        decode(webContext, decoder);
     }
     
     @Test
@@ -117,9 +129,13 @@ public class Pac4jHTTPPostDecoderTest {
         final Pac4jHTTPPostDecoder decoder =
             new Pac4jHTTPPostDecoder(webContext);
         String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
-
         webContext.addRequestParameter("SAMLResponse", message);
+        decode(webContext, decoder);
+    }
 
+    private void decode(final MockWebContext webContext, final Pac4jHTTPPostDecoder decoder)
+            throws ComponentInitializationException, MessageDecodingException {
+        
         decoder.setParserPool(Configuration.getParserPool());
         decoder.initialize();
         decoder.decode();
