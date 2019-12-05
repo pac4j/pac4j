@@ -56,39 +56,36 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
 
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         Optional<String> encodedMessage = Optional.empty();
-        boolean isRequestParam = false;
         for (final String parameter : SAML_PARAMETERS) {
             encodedMessage = this.context.getRequestParameter(parameter);
             if (encodedMessage.isPresent()) {
-                isRequestParam = true;
                 break;
             }
         }
         if (!encodedMessage.isPresent()) {
             encodedMessage = Optional.ofNullable(this.context.getRequestContent());
+            // we have a body, it may be the SAML request/response directly
+            // but we also try to parse it as a list key=value where the value is the SAML request/response
+            if (encodedMessage.isPresent()) {
+                final List<NameValuePair> a = URLEncodedUtils.parse(encodedMessage.get(), StandardCharsets.UTF_8);
+                final Multimap<String, String>  paramMap = HashMultimap.create();
+                for (NameValuePair p : a) {
+                    paramMap.put(p.getName(), p.getValue());
+                }
+                for (final String parameter : SAML_PARAMETERS) {
+                    final Collection<String> newEncodedMessageCollection = paramMap.get(parameter);
+                    if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
+                        encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
+                        break;
+                    }
+                }
+            }
         }
 
         if (!encodedMessage.isPresent()) {
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
-            if (!isRequestParam) {
-                List<NameValuePair> a = URLEncodedUtils.parse(
-                        encodedMessage.get(),
-                        StandardCharsets.UTF_8);
-                Multimap<String, String>  paramMap = HashMultimap.create();
-                for (NameValuePair p : a) {
-                    paramMap.put(p.getName(), p.getValue());
-                }
-                for (String parameter : SAML_PARAMETERS) {
-                    Collection<String> newEncodedMessageCollection = paramMap.get(parameter);
-                    if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
-                        encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
-                        break;
-                    }                
-                }
-            }
-
             if (encodedMessage.get().contains("<")) {
                 logger.trace("Raw SAML message:\n{}", encodedMessage);
                 return encodedMessage.get().getBytes(StandardCharsets.UTF_8);
