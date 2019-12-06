@@ -1,4 +1,4 @@
-package org.pac4j.core.matching;
+package org.pac4j.core.matching.matcher;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;

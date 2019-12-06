@@ -1,6 +1,7 @@
-package org.pac4j.core.matching;
+package org.pac4j.core.matching.checker;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.matching.matcher.Matcher;
 
 import java.util.Map;
 

@@ -1,6 +1,5 @@
-package org.pac4j.core.authorization.authorizer.csrf;
+package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;

@@ -1,4 +1,4 @@
-package org.pac4j.core.authorization.authorizer.csrf;
+package org.pac4j.core.matching.matcher.csrf;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;

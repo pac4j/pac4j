@@ -1,11 +1,9 @@
-package org.pac4j.core.authorization.authorizer;
+package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,9 +11,9 @@ import java.util.stream.Collectors;
  * Define how the CORS requests are authorized.
  *
  * @author Jerome Leleu
- * @since 1.9.2
+ * @since 4.0.0
  */
-public class CorsAuthorizer implements Authorizer<UserProfile> {
+public class CorsMatcher implements Matcher {
 
     private String allowOrigin;
 
@@ -30,7 +28,7 @@ public class CorsAuthorizer implements Authorizer<UserProfile> {
     private String allowHeaders;
 
     @Override
-    public boolean isAuthorized(WebContext context, List<UserProfile> profiles) {
+    public boolean matches(final WebContext context) {
         CommonHelper.assertNotBlank("allowOrigin", allowOrigin);
 
         context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, allowOrigin);

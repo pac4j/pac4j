@@ -1,4 +1,4 @@
-package org.pac4j.core.authorization.authorizer.csrf;
+package org.pac4j.core.authorization.authorizer;
 
 import org.junit.Assert;
 import org.junit.Before;

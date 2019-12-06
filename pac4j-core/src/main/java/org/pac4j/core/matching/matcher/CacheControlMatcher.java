@@ -1,20 +1,17 @@
-package org.pac4j.core.authorization.authorizer;
+package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
-
-import java.util.List;
 
 /**
- * Cache control header.
+ * Cache control header matcher.
  *
  * @author Jerome Leleu
- * @since 1.8.1
+ * @since 4.0.0
  */
-public class CacheControlHeader implements Authorizer<UserProfile> {
+public class CacheControlMatcher implements Matcher {
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
+    public boolean matches(final WebContext context) {
         final String url = context.getFullRequestURL().toLowerCase();
         if (!url.endsWith(".css")
                 && !url.endsWith(".js")

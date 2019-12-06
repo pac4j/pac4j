@@ -1,18 +1,15 @@
-package org.pac4j.core.authorization.authorizer;
+package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
-
-import java.util.List;
 
 /**
- * Strict transport security header.
+ * Strict transport security header matcher.
  *
  * @author Jerome Leleu
- * @since 1.8.1
+ * @since 4.0.0
  */
-public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
+public class StrictTransportSecurityMatcher implements Matcher {
 
     /**
      * 6 months in seconds.
@@ -21,14 +18,14 @@ public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
 
     private int maxAge = DEFAULT_MAX_AGE;
 
-    public StrictTransportSecurityHeader() {}
+    public StrictTransportSecurityMatcher() {}
 
-    public StrictTransportSecurityHeader(final int maxAge) {
+    public StrictTransportSecurityMatcher(final int maxAge) {
         this.maxAge = maxAge;
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
+    public boolean matches(final WebContext context) {
         if (ContextHelper.isHttpsOrSecure(context)) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }
