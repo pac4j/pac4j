@@ -4,7 +4,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.matching.matcher.*;
-import org.pac4j.core.matching.matcher.csrf.CsrfTokenMatcher;
+import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.util.CommonHelper;
 
@@ -25,12 +25,12 @@ public class DefaultMatchingChecker implements MatchingChecker {
     private static final Matcher PUT_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.PUT);
     private static final Matcher DELETE_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE);
 
-    static final StrictTransportMatcher STRICT_TRANSPORT_MATCHER = new StrictTransportMatcher();
+    static final StrictTransportSecurityMatcher STRICT_TRANSPORT_MATCHER = new StrictTransportSecurityMatcher();
     static final XContentTypeOptionsMatcher X_CONTENT_TYPE_OPTIONS_MATCHER = new XContentTypeOptionsMatcher();
     static final XFrameOptionsMatcher X_FRAME_OPTIONS_MATCHER = new XFrameOptionsMatcher();
     static final XSSProtectionMatcher XSS_PROTECTION_MATCHER = new XSSProtectionMatcher();
     static final CacheControlMatcher CACHE_CONTROL_MATCHER = new CacheControlMatcher();
-    static final CsrfTokenMatcher CSRF_TOKEN_MATCHER = new CsrfTokenMatcher(new DefaultCsrfTokenGenerator());
+    static final CsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
     static final CorsMatcher CORS_MATCHER = new CorsMatcher();
 
     static {

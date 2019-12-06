@@ -30,13 +30,14 @@ A few matchers are available (but you can of course develop yours):
 In the `DefaultMatchingChecker` class (used by the `DefaultSecurityLogic` class), the following keywords are automatically available for the following matchers:
  
 - the `get`, `post`, `put` and `delete` keywords for the related configurations of the `HttpMethodMatcher` (if they do not already exist)
-- the `hsts` keyword for the `StrictTransportMatcher`
+- the `hsts` keyword for the `StrictTransportSecurityMatcher`
 - the `nosniff` keyword for the `XContentTypeOptionsMatcher`
 - the `noframe` keyword for the `XFrameOptionsMatcher`
 - the `xssprotection` keyword for the `XSSProtectionMatcher`
 - the `nocache` keyword for the `CacheControlMatcher`
 - the `securityheaders` keyword as a shortcut for `hsts,nosniff,noframe,xssprotection,nocache`
-- the `csrfToken` keyword for the `CsrfTokenMatcher`
+- the `csrfToken` keyword for the `CsrfTokenGeneratorMatcher`
+- the `allowAjaxRequests` keyword for a default configuration of the `CorsMatcher` with the `Access-Control-Allow-Origin` header set to `*`.
 - the `none` keyword for no matchers at all.
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Since <i>pac4j</i> v4, if no matchers are defined, the <code>DefaultMatchingChecker</code> applies the <b>securityHeaders,csrfToken</b> configuration.</div>

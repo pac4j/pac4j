@@ -9,7 +9,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 4.0.0
  */
-public class StrictTransportMatcher implements Matcher {
+public class StrictTransportSecurityMatcher implements Matcher {
 
     /**
      * 6 months in seconds.
@@ -18,9 +18,9 @@ public class StrictTransportMatcher implements Matcher {
 
     private int maxAge = DEFAULT_MAX_AGE;
 
-    public StrictTransportMatcher() {}
+    public StrictTransportSecurityMatcher() {}
 
-    public StrictTransportMatcher(final int maxAge) {
+    public StrictTransportSecurityMatcher(final int maxAge) {
         this.maxAge = maxAge;
     }
 

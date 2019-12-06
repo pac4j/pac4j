@@ -27,7 +27,7 @@ Most *pac4j* implementations use *pac4j* logics and authorizers and thus the [`D
 - `isAuthenticated` for the `IsAuthenticatedAuthorizer` authorizer
 - `isFullyAuthenticated` for the `IsFullyAuthenticatedAuthorizer` authorizer
 - `isRemembered` for the `IsRememberedAuthorizer` authorizer
-- `none` for no matchers at all.
+- `none` for no authorizers at all.
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Since <i>pac4j</i> v4, if no authorizers are defined, the <code>DefaultAuthorizationChecker</code> applies the <b>csrfCheck</b> configuration.</div>
 

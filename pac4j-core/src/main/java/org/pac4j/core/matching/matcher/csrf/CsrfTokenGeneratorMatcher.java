@@ -12,7 +12,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 4.0.0
  */
-public class CsrfTokenMatcher implements Matcher {
+public class CsrfTokenGeneratorMatcher implements Matcher {
 
     private CsrfTokenGenerator csrfTokenGenerator;
 
@@ -26,7 +26,7 @@ public class CsrfTokenMatcher implements Matcher {
 
     private Integer maxAge;
 
-    public CsrfTokenMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
+    public CsrfTokenGeneratorMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;
     }
 
