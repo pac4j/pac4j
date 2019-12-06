@@ -5,6 +5,9 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
 import net.shibboleth.utilities.java.support.logic.Constraint;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
@@ -19,9 +22,14 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -56,13 +64,28 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
         }
         if (!encodedMessage.isPresent()) {
             encodedMessage = Optional.ofNullable(this.context.getRequestContent());
+            // we have a body, it may be the SAML request/response directly
+            // but we also try to parse it as a list key=value where the value is the SAML request/response
+            if (encodedMessage.isPresent()) {
+                final List<NameValuePair> a = URLEncodedUtils.parse(encodedMessage.get(), StandardCharsets.UTF_8);
+                final Multimap<String, String>  paramMap = HashMultimap.create();
+                for (NameValuePair p : a) {
+                    paramMap.put(p.getName(), p.getValue());
+                }
+                for (final String parameter : SAML_PARAMETERS) {
+                    final Collection<String> newEncodedMessageCollection = paramMap.get(parameter);
+                    if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
+                        encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
+                        break;
+                    }
+                }
+            }
         }
 
         if (!encodedMessage.isPresent()) {
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
-
             if (encodedMessage.get().contains("<")) {
                 logger.trace("Raw SAML message:\n{}", encodedMessage);
                 return encodedMessage.get().getBytes(StandardCharsets.UTF_8);

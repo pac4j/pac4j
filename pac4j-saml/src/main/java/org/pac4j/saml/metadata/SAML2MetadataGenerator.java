@@ -128,7 +128,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
         if (metadataResource != null) {
-            resolver = new FilesystemMetadataResolver(metadataResource.getFile());
+            resolver = createMetadataResolver(metadataResource);
         } else {
             final EntityDescriptor md = buildEntityDescriptor();
             final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
@@ -140,6 +140,10 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         resolver.setParserPool(Configuration.getParserPool());
         resolver.initialize();
         return resolver;
+    }
+    
+    protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
+        return new FilesystemMetadataResolver(metadataResource.getFile());
     }
 
     @Override
