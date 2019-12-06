@@ -15,7 +15,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ### &#9656; [Roles/permissions](authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
 
-### &#9656; [CORS](authorizers/web-authorizers.html#cors) - [CSRF](authorizers/web-authorizers.html#csrf) - [Security headers](authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
+### &#9656; [CSRF](authorizers/web-authorizers.html#csrf) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
 
 ## 4) [Matchers](matchers.html)
 

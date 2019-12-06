@@ -9,6 +9,8 @@ title: Matchers&#58;
 
 In some cases, you may want to bypass this "security filter" and this can be done using the **matchers** parameter which is generally a list of matcher names. A matcher is generally defined in the [security configuration](config.html).
 
+The matchers can also be used to always apply some logic on the URLs, like adding some security headers.
+
 
 ## 2) Available matchers
 
@@ -25,4 +27,16 @@ A few matchers are available (but you can of course develop yours):
 
 ## 3) Default matchers
 
-In the `RequireAllMatchersChecker` class used by the `DefaultSecurityLogic` class, the `get`, `post`, `put` and `delete` matchers based on the `HttpMethodMatcher` are automatically defined if they do not exist.
+In the `DefaultMatchingChecker` class (used by the `DefaultSecurityLogic` class), the following keywords are automatically available for the following matchers:
+ 
+- the `get`, `post`, `put` and `delete` keywords for the related configurations of the `HttpMethodMatcher` (if they do not already exist)
+- the `hsts` keyword for the `StrictTransportMatcher`
+- the `nosniff` keyword for the `XContentTypeOptionsMatcher`
+- the `noframe` keyword for the `XFrameOptionsMatcher`
+- the `xssprotection` keyword for the `XSSProtectionMatcher`
+- the `nocache` keyword for the `CacheControlMatcher`
+- the `securityheaders` keyword as a shortcut for `hsts,nosniff,noframe,xssprotection,nocache`
+- the `csrfToken` keyword for the `CsrfTokenMatcher`
+- the `none` keyword for no matchers at all.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Since <i>pac4j</i> v4, if no matchers are defined, the <code>DefaultMatchingChecker</code> applies the <b>securityHeaders,csrfToken</b> configuration.</div>

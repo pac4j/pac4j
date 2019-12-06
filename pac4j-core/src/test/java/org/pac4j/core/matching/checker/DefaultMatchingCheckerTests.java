@@ -46,7 +46,16 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testNoMatcherName() {
-        assertTrue(checker.matches(MockWebContext.create(), null, new HashMap<>()));
+        final MockWebContext context = MockWebContext.create();
+        assertTrue(checker.matches(context, null, new HashMap<>()));
+        assertEquals(6, context.getResponseHeaders().size());
+    }
+
+    @Test
+    public void testNoneMatcherName() {
+        final MockWebContext context = MockWebContext.create();
+        assertTrue(checker.matches(context, "  NoNe   ", new HashMap<>()));
+        assertEquals(0, context.getResponseHeaders().size());
     }
 
     @Test
