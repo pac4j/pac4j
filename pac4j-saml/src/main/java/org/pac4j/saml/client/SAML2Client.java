@@ -90,7 +90,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
     protected StateGenerator stateGenerator = new SAML2StateGenerator(this);
 
     protected ReplayCacheProvider replayCache;
-    
+
     protected SOAPPipelineProvider soapPipelineProvider;
 
     static {
@@ -149,7 +149,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
             throw new TechnicalException(
                     "Unsupported response binding type: " + configuration.getResponseBindingType());
         }
-        
+
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getAuthnRequestBindingType(),
@@ -179,7 +179,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
                 this.configuration.getLogoutHandler(),
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.isWantsAssertionsSigned(),
-                this.replayCache);
+                this.replayCache,
+                this.configuration.isAllSignatureValidationDisabled());
         this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
@@ -240,7 +241,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         }
         return metadataManager;
     }
-    
+
     protected void initSAMLReplayCache() {
         replayCache = new InMemoryReplayCacheProvider();
     }

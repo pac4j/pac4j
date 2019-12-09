@@ -70,14 +70,18 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     private int maximumAuthenticationLifetime;
 
     private final boolean wantsAssertionsSigned;
-    
+
+    private final boolean allSignatureValidationDisabled;
+
     public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                        final Decrypter decrypter,
                                        final LogoutHandler logoutHandler,
                                        final int maximumAuthenticationLifetime,
                                        final boolean wantsAssertionsSigned,
-                                       final ReplayCacheProvider replayCache) {
-        this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, replayCache, new BasicURLComparator());
+                                       final ReplayCacheProvider replayCache,
+                                       final boolean allSignatureValidationDisabled) {
+        this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, replayCache,
+            allSignatureValidationDisabled, new BasicURLComparator());
     }
 
     public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
@@ -86,10 +90,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                                        final int maximumAuthenticationLifetime,
                                        final boolean wantsAssertionsSigned,
                                        final ReplayCacheProvider replayCache,
+                                       final boolean allSignatureValidationDisabled,
                                        final URIComparator uriComparator) {
         super(engine, decrypter, logoutHandler, replayCache, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
+        this.allSignatureValidationDisabled = allSignatureValidationDisabled;
     }
 
     @Override
@@ -472,10 +478,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         return true;
     }
-    
+
     /**
      * Checks that the bearer assertion is not being replayed.
-     * 
+     *
      * @param assertion The Assertion to check
      * @param data      The SubjectConfirmationData to check the assertion against
      */
@@ -590,7 +596,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             if (wantsAssertionsSigned(context)) {
                 throw new SAMLSignatureRequiredException("Assertion must be explicitly signed");
             }
-            if (!peerContext.isAuthenticated()) {
+            if (!peerContext.isAuthenticated() && !allSignatureValidationDisabled) {
                 throw new SAMLSignatureRequiredException("Unauthenticated response contains an unsigned assertion");
             }
         }

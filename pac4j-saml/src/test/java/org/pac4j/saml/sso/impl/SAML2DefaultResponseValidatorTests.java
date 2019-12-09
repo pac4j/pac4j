@@ -26,7 +26,7 @@ public class SAML2DefaultResponseValidatorTests {
         SAML2SignatureTrustEngineProvider trustEngineProvider = mock(SAML2SignatureTrustEngineProvider.class);
         Decrypter decrypter = mock(Decrypter.class);
         return new SAML2AuthnResponseValidator(trustEngineProvider, decrypter, null, 0, wantsAssertionsSigned,
-                new InMemoryReplayCacheProvider());
+                new InMemoryReplayCacheProvider(), false);
     }
 
     @Test
