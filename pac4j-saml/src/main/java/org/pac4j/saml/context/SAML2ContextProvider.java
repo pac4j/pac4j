@@ -112,17 +112,18 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         addContext(this.idpEntityId, peerContext, IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
-    protected final void addContext(final SAML2MetadataResolver entityId, final BaseContext parentContext,
+    protected final void addContext(final SAML2MetadataResolver metadata, final BaseContext parentContext,
                                     final QName elementName) {
         final EntityDescriptor entityDescriptor;
         final RoleDescriptor roleDescriptor;
         try {
             final CriteriaSet set = new CriteriaSet();
-            set.add(new EntityIdCriterion(entityId.getEntityId()));
+            final String entityId = metadata.getEntityId();
+            set.add(new EntityIdCriterion(entityId));
 
             entityDescriptor = this.metadata.resolveSingle(set);
             if (entityDescriptor == null) {
-                throw new SAMLException("Cannot find entity " + entityId.getEntityId() + " in metadata provider");
+                throw new SAMLException("Cannot find entity " + entityId + " in metadata provider");
             }
             final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
@@ -134,7 +135,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
             }
 
         } catch (final ResolverException e) {
-            throw new SAMLException("An error occured while getting IDP descriptors", e);
+            throw new SAMLException("An error occurred while getting IDP descriptors", e);
         }
         final SAMLMetadataContext mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);
         mdCtx.setEntityDescriptor(entityDescriptor);
