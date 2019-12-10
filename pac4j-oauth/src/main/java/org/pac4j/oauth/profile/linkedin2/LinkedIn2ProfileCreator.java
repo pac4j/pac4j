@@ -43,7 +43,7 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Prof
         addAccessTokenToProfile(profile, accessToken);
 
         if (profile == null || !linkedin2Configuration.getScope().contains("r_emailaddress")) {
-            return Optional.of(profile);
+            return Optional.ofNullable(profile);
         }
 
         body = sendRequestForData(service, accessToken, EMAIL_URL, profileDefinition.getProfileVerb());

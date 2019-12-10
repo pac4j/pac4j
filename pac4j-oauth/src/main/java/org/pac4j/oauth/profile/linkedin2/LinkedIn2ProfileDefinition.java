@@ -27,18 +27,17 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
     public LinkedIn2ProfileDefinition() {
         super(x -> new LinkedIn2Profile());
         Arrays.stream(new String[] {LOCALIZED_FIRST_NAME, LOCALIZED_LAST_NAME}).forEach(a -> primary(a, Converters.STRING));
-        primary(PROFILE_PICTURE, new JsonConverter<LinkedIn2ProfilePicture>(LinkedIn2ProfilePicture.class));
+        primary(PROFILE_PICTURE, new JsonConverter<>(LinkedIn2ProfilePicture.class));
     }
 
     @Override
     public String getProfileUrl(final OAuth2AccessToken accessToken, final LinkedIn2Configuration configuration) {
-        return "https://api.linkedin.com/v2/me" + "?projection=(id," + LOCALIZED_FIRST_NAME + "," + LOCALIZED_LAST_NAME + ","
-                + PROFILE_PICTURE + "(displayImage~:playableStreams))";
+        return configuration.getProfileUrl();
     }
 
     @Override
     public LinkedIn2Profile extractUserProfile(final String body) {
-        LinkedIn2Profile profile = newProfile();
+        final LinkedIn2Profile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {
             raiseProfileExtractionJsonError(body);
