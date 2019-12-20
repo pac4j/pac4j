@@ -1,5 +1,6 @@
 package org.pac4j.core.http.adapter;
 
+import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -55,5 +56,24 @@ public class JEEHttpActionAdapter implements HttpActionAdapter<Object, JEEContex
         }
 
         throw new TechnicalException("No action provided");
+    }
+
+    /**
+     * Return the best HTTP action adapter: first, the local one if defined or the one from the config if defined
+     * or otherwise the default one.
+     *
+     * @param localAdapter a local adapter
+     * @param config the pac4j config
+     * @return the most appropriate adapter
+     */
+    public static HttpActionAdapter<Object, JEEContext> findBestAdapter(final HttpActionAdapter<Object, JEEContext> localAdapter,
+                                                                        final Config config) {
+        if (localAdapter != null) {
+            return localAdapter;
+        } else if (config.getHttpActionAdapter() != null) {
+            return config.getHttpActionAdapter();
+        } else {
+            return INSTANCE;
+        }
     }
 }
