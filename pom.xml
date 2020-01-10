@@ -63,7 +63,7 @@
 		<logback.version>1.2.3</logback.version>
 		<commons-codec.version>1.14</commons-codec.version>
 		<commons-io.version>2.6</commons-io.version>
-		<guava.version>27.0.1-jre</guava.version>
+		<guava.version>27.1-jre</guava.version>
 		<nimbus-jose-jwt.version>8.4</nimbus-jose-jwt.version>
 		<spring.version>5.2.2.RELEASE</spring.version>
 		<spring.security.version>5.2.1.RELEASE</spring.security.version>
