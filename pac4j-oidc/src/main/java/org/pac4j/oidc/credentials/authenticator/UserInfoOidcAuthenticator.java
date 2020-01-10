@@ -81,7 +81,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
             final UserInfoResponse userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (userInfoResponse instanceof UserInfoErrorResponse) {
                 logger.error("Bad User Info response, error={}",
-                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject().toJSONObject());
                 throw new AuthenticationException();
             } else {
                 final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
