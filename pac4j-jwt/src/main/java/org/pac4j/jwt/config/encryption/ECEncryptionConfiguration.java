@@ -9,6 +9,7 @@ import com.nimbusds.jose.crypto.ECDHDecrypter;
 import com.nimbusds.jose.crypto.ECDHEncrypter;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.jwt.util.JWKHelper;
 
 import java.security.KeyPair;
 import java.security.interfaces.ECPrivateKey;
@@ -99,6 +100,12 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
 
     public void setPrivateKey(final ECPrivateKey privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public void setKeysFromJwk(final String json) {
+        final KeyPair pair = JWKHelper.buildECKeyPairFromJwk(json);
+        this.publicKey = (ECPublicKey) pair.getPublic();
+        this.privateKey = (ECPrivateKey) pair.getPrivate();
     }
 
     @Override

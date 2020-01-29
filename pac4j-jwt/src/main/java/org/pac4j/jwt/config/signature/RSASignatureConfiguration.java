@@ -7,6 +7,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.jwt.util.JWKHelper;
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
@@ -96,6 +97,12 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
 
     public void setPrivateKey(final RSAPrivateKey privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public void setKeysFromJwk(final String json) {
+        final KeyPair pair = JWKHelper.buildRSAKeyPairFromJwk(json);
+        this.publicKey = (RSAPublicKey) pair.getPublic();
+        this.privateKey = (RSAPrivateKey) pair.getPrivate();
     }
 
     @Override
