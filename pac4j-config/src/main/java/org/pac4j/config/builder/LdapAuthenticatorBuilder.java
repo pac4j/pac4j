@@ -82,7 +82,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
             ldapProp.setMinPoolSize(getPropertyAsInteger(LDAP_MIN_POOL_SIZE, i));
         }
         if (containsProperty(LDAP_MAX_POOL_SIZE, i)) {
-            ldapProp.setMinPoolSize(getPropertyAsInteger(LDAP_MAX_POOL_SIZE, i));
+            ldapProp.setMaxPoolSize(getPropertyAsInteger(LDAP_MAX_POOL_SIZE, i));
         }
         if (containsProperty(LDAP_POOL_PASSIVATOR, i)) {
             ldapProp.setPoolPassivator(getProperty(LDAP_POOL_PASSIVATOR, i));
