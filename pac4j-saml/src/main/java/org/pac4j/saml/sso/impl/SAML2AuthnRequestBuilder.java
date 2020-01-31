@@ -112,8 +112,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         }
         request.setProtocolBinding(assertionConsumerService.getBinding());
 
-        if (this.configuration.getAssertionConsumerServiceIndex() >= 0) {
-            request.setAttributeConsumingServiceIndex(this.configuration.getAssertionConsumerServiceIndex() );
+        if (this.configuration.getAttributeConsumingServiceIndex() >= 0) {
+            request.setAttributeConsumingServiceIndex(this.configuration.getAttributeConsumingServiceIndex());
         }
 
         // Setting extensions if they are defined
