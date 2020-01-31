@@ -1,7 +1,16 @@
 package org.pac4j.config.builder;
 
 import org.pac4j.core.client.Client;
-import org.pac4j.oauth.client.*;
+import org.pac4j.oauth.client.DropBoxClient;
+import org.pac4j.oauth.client.FacebookClient;
+import org.pac4j.oauth.client.FoursquareClient;
+import org.pac4j.oauth.client.GenericOAuth20Client;
+import org.pac4j.oauth.client.GitHubClient;
+import org.pac4j.oauth.client.Google2Client;
+import org.pac4j.oauth.client.LinkedIn2Client;
+import org.pac4j.oauth.client.TwitterClient;
+import org.pac4j.oauth.client.WindowsLiveClient;
+import org.pac4j.oauth.client.YahooClient;
 
 import java.util.List;
 import java.util.Map;

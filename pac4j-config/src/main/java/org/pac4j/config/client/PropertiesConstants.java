@@ -30,7 +30,6 @@ public interface PropertiesConstants {
 
     String LINKEDIN_ID = "linkedin.id";
     String LINKEDIN_SECRET = "linkedin.secret";
-    String LINKEDIN_FIELDS = "linkedin.fields";
     String LINKEDIN_SCOPE = "linkedin.scope";
 
     String FOURSQUARE_ID = "foursquare.id";
