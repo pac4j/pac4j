@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.pac4j.springboot.config.FacebookClientAutoConfiguration,\
+  org.pac4j.springboot.config.TwitterClientAutoConfiguration
