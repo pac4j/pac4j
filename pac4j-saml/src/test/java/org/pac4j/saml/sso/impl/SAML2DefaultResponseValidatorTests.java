@@ -17,7 +17,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -49,7 +51,8 @@ public class SAML2DefaultResponseValidatorTests {
                 getResource(SAMPLE_RESPONSE_FILE_NAME).getFile());
         
         final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(
-                Configuration.getParserPool(), new FileReader(file));
+                Configuration.getParserPool(), 
+                new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
 
         Response response = (Response) xmlObject;
         response.setIssueInstant(DateTime.now(DateTimeZone.UTC));
