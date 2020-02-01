@@ -5,7 +5,6 @@ import org.pac4j.config.builder.OAuthBuilder;
 import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 import org.pac4j.oauth.client.GitHubClient;
-import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.springboot.Pac4jConfigurationProperties;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,4 +2,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.pac4j.springboot.config.FacebookClientAutoConfiguration,\
   org.pac4j.springboot.config.TwitterClientAutoConfiguration,\
   org.pac4j.springboot.config.GitHubClientAutoConfiguration,\
-  org.pac4j.springboot.config.GoogleClientAutoConfiguration
+  org.pac4j.springboot.config.GoogleClientAutoConfiguration,\
+  org.pac4j.springboot.config.OAuth20ClientAutoConfiguration
