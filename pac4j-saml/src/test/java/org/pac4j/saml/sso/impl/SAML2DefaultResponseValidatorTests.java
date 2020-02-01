@@ -16,8 +16,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.Collections;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -45,11 +45,11 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test
     public void testAssertionConsumingServiceWithMultipleIDP() throws Exception {
-        InputStream is = SAML2DefaultResponseValidatorTests.class.getClassLoader().
-                getResourceAsStream(SAMPLE_RESPONSE_FILE_NAME);
-
-        final XMLObject xmlObject
-                = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new InputStreamReader(is));
+        File file = new File(SAML2DefaultResponseValidatorTests.class.getClassLoader().
+                getResource(SAMPLE_RESPONSE_FILE_NAME).getFile());
+        
+        final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(
+                Configuration.getParserPool(), new FileReader(file));
 
         Response response = (Response) xmlObject;
         response.setIssueInstant(DateTime.now(DateTimeZone.UTC));
@@ -74,7 +74,6 @@ public class SAML2DefaultResponseValidatorTests {
         request.setParameter("SAMLResponse", Base64Support.encode(os.toByteArray(), Base64Support.UNCHUNKED));
         request.setParameter("RelayState", "TST-2-FZOsWEfjC-IH-h6Xb333DRbu5UPMHqfL");
         WebContext webContext = new JEEContext(request, new MockHttpServletResponse());
-        webContext.getRequestMethod();
         context.setWebContext(webContext);
 
         EntityDescriptor idpDescriptor = mock(EntityDescriptor.class);
@@ -87,7 +86,7 @@ public class SAML2DefaultResponseValidatorTests {
 
         context.getSAMLSelfEntityContext().setEntityId("https://auth.izslt.it");
         context.getSAMLPeerEntityContext().setAuthenticated(true);
-        
+
         AssertionConsumerServiceImpl acs = new AssertionConsumerServiceImpl(
                 response.getDestination(),
                 response.getDestination(),
