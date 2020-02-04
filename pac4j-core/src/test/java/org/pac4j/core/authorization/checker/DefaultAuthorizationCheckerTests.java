@@ -17,8 +17,6 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-import static org.pac4j.core.context.HttpConstants.*;
-
 /**
  * Tests the {@link DefaultAuthorizationChecker}.
  *
@@ -186,7 +184,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfCheckPost() {
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         generator.get(context);
         assertFalse(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF_CHECK, null));
@@ -194,7 +192,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfCheckPostTokenParameter() {
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);

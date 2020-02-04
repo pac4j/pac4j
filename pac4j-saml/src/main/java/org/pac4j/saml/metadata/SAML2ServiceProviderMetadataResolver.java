@@ -94,7 +94,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
             throw new TechnicalException("Unable to generate metadata for service provider", e);
         }
     }
-    
+
     protected SAMLMetadataGenerator buildMetadataGenerator() {
         final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
         fillSAML2MetadataGenerator(metadataGenerator);
@@ -152,7 +152,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 final StreamResult result = new StreamResult(new StringWriter());
                 final StreamSource source = new StreamSource(new StringReader(tempMetadata));
                 transformer.transform(source, result);
-                try (final OutputStream spMetadataOutputStream = metadataResource.getOutputStream()) {
+                try (OutputStream spMetadataOutputStream = metadataResource.getOutputStream()) {
                     spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
                 }
             }

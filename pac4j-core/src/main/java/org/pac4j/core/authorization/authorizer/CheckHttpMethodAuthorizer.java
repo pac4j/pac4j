@@ -1,12 +1,11 @@
 package org.pac4j.core.authorization.authorizer;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
 import java.util.Set;
-
-import static org.pac4j.core.context.HttpConstants.*;
 
 /**
  * Checks the HTTP method.
@@ -14,37 +13,37 @@ import static org.pac4j.core.context.HttpConstants.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HTTP_METHOD, UserProfile> {
+public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HttpConstants.HTTP_METHOD, UserProfile> {
 
     public CheckHttpMethodAuthorizer() { }
 
-    public CheckHttpMethodAuthorizer(final HTTP_METHOD... methods) {
+    public CheckHttpMethodAuthorizer(final HttpConstants.HTTP_METHOD... methods) {
         setElements(methods);
     }
 
-    public CheckHttpMethodAuthorizer(final List<HTTP_METHOD> methods) {
+    public CheckHttpMethodAuthorizer(final List<HttpConstants.HTTP_METHOD> methods) {
         setElements(methods);
     }
 
-    public CheckHttpMethodAuthorizer(final Set<HTTP_METHOD> methods) {
+    public CheckHttpMethodAuthorizer(final Set<HttpConstants.HTTP_METHOD> methods) {
         setElements(methods);
     }
 
     @Override
-    protected boolean check(final WebContext context, final UserProfile profile, final HTTP_METHOD element) {
+    protected boolean check(final WebContext context, final UserProfile profile, final HttpConstants.HTTP_METHOD element) {
         final String requestMethod = context.getRequestMethod();
         return requestMethod.equalsIgnoreCase(element.toString());
     }
 
-    public static CheckHttpMethodAuthorizer checkHttpMethod(HTTP_METHOD... methods) {
+    public static CheckHttpMethodAuthorizer checkHttpMethod(HttpConstants.HTTP_METHOD... methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 
-    public static CheckHttpMethodAuthorizer checkHttpMethod(List<HTTP_METHOD> methods) {
+    public static CheckHttpMethodAuthorizer checkHttpMethod(List<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 
-    public static CheckHttpMethodAuthorizer checkHttpMethod(Set<HTTP_METHOD> methods) {
+    public static CheckHttpMethodAuthorizer checkHttpMethod(Set<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 }

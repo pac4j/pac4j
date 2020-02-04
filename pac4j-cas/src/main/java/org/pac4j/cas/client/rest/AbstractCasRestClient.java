@@ -69,8 +69,7 @@ public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswor
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
-                try (final BufferedReader in =
-                         new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     return new TokenCredentials(in.readLine());
                 }
             }

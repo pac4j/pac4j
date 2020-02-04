@@ -10,8 +10,6 @@ import org.pac4j.core.util.CommonHelper;
 
 import java.util.*;
 
-import static org.pac4j.core.context.HttpConstants.*;
-
 /**
  * Default way to check the matchers (with default matchers).
  *
@@ -36,12 +34,12 @@ public class DefaultMatchingChecker implements MatchingChecker {
     static {
         CORS_MATCHER.setAllowOrigin("*");
         CORS_MATCHER.setAllowCredentials(true);
-        final Set<HTTP_METHOD> methods = new HashSet<>();
-        methods.add(HTTP_METHOD.GET);
-        methods.add(HTTP_METHOD.PUT);
-        methods.add(HTTP_METHOD.POST);
-        methods.add(HTTP_METHOD.DELETE);
-        methods.add(HTTP_METHOD.OPTIONS);
+        final Set<HttpConstants.HTTP_METHOD> methods = new HashSet<>();
+        methods.add(HttpConstants.HTTP_METHOD.GET);
+        methods.add(HttpConstants.HTTP_METHOD.PUT);
+        methods.add(HttpConstants.HTTP_METHOD.POST);
+        methods.add(HttpConstants.HTTP_METHOD.DELETE);
+        methods.add(HttpConstants.HTTP_METHOD.OPTIONS);
         CORS_MATCHER.setAllowMethods(methods);
     }
 

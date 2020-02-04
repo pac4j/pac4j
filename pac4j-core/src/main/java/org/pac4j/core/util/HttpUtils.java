@@ -38,15 +38,15 @@ public final class HttpUtils {
             messageBuilder.append(" ");
             messageBuilder.append(connection.getResponseMessage());
         }
-        try (final InputStreamReader isr = new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(isr)){
+        try (InputStreamReader isr = new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)) {
             String output;
             messageBuilder.append("[");
             while ((output = br.readLine()) != null) {
                 messageBuilder.append(output);
             }
             messageBuilder.append("]");
-        }finally {
+        } finally {
             connection.disconnect();
         }
         return messageBuilder.toString();
@@ -81,8 +81,8 @@ public final class HttpUtils {
     }
 
     public static String readBody(final HttpURLConnection connection) throws IOException {
-        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
-            final BufferedReader br = new BufferedReader(isr)) {
+        try (InputStreamReader isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)) {
             final StringBuilder sb = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null) {

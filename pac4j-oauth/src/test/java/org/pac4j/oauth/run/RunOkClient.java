@@ -33,7 +33,7 @@ public final class RunOkClient extends RunClient {
     /**
      * Real profile locale.
      */
-    private static final java.lang.String TEST_LOCALE = "en";
+    private static final String TEST_LOCALE = "en";
     /**
      * Real profile first name.
      */

@@ -1,13 +1,12 @@
 package org.pac4j.core.matching.matcher;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.pac4j.core.context.HttpConstants.*;
 
 /**
  * Matching on HTTP methods.
@@ -17,11 +16,11 @@ import static org.pac4j.core.context.HttpConstants.*;
  */
 public class HttpMethodMatcher implements Matcher {
 
-    private Set<HTTP_METHOD> methods;
+    private Set<HttpConstants.HTTP_METHOD> methods;
 
     public HttpMethodMatcher() {}
 
-    public HttpMethodMatcher(final HTTP_METHOD... methods) {
+    public HttpMethodMatcher(final HttpConstants.HTTP_METHOD... methods) {
         if (methods != null) {
             this.methods = new HashSet<>(Arrays.asList(methods));
         }
@@ -32,7 +31,7 @@ public class HttpMethodMatcher implements Matcher {
         CommonHelper.assertNotNull("methods", methods);
         final String requestMethod = context.getRequestMethod();
 
-        for (final HTTP_METHOD method : methods) {
+        for (final HttpConstants.HTTP_METHOD method : methods) {
             if (method.name().equalsIgnoreCase(requestMethod)) {
                 return true;
             }
@@ -40,11 +39,11 @@ public class HttpMethodMatcher implements Matcher {
         return false;
     }
 
-    public Set<HTTP_METHOD> getMethods() {
+    public Set<HttpConstants.HTTP_METHOD> getMethods() {
         return methods;
     }
 
-    public void setMethods(final Set<HTTP_METHOD> methods) {
+    public void setMethods(final Set<HttpConstants.HTTP_METHOD> methods) {
         this.methods = methods;
     }
 

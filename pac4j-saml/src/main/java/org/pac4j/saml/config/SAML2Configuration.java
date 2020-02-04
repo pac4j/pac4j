@@ -184,7 +184,7 @@ public class SAML2Configuration extends InitializableObject {
 
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
-    
+
     public SAML2Configuration() {
     }
 
@@ -637,15 +637,15 @@ public class SAML2Configuration extends InitializableObject {
     public void setSpLogoutRequestSigned(final boolean spLogoutRequestSigned) {
         this.spLogoutRequestSigned = spLogoutRequestSigned;
     }
-    
+
     public boolean isAllSignatureValidationDisabled() {
         return allSignatureValidationDisabled;
     }
-    
+
     /**
      * Disables all signature validation. DO NOT ENABLE THIS IN PRODUCTION!
      * This option is only provided for development purposes.
-     * 
+     *
      * @param allSignatureValidationDisabled
      */
     public void setAllSignatureValidationDisabled(boolean allSignatureValidationDisabled) {
@@ -819,7 +819,7 @@ public class SAML2Configuration extends InitializableObject {
             ks.setKeyEntry(this.keyStoreAlias, signingKey, keyPassword, new Certificate[]{certificate});
 
             final File keystoreFile = this.keystoreResource.getFile();
-            try (final FileOutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {
+            try (FileOutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {
                 ks.store(fos, password);
                 fos.flush();
             }
@@ -875,7 +875,7 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        try (final FileOutputStream fos = new FileOutputStream(file)) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(certificate);
             fos.flush();
         } catch (final Exception e) {
@@ -888,7 +888,7 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        try (final PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             final PemObject pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {

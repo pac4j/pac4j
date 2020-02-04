@@ -24,8 +24,8 @@ public class JavaSerializationHelper {
 
     public JavaSerializationHelper() {
         trustedPackages = new HashSet<>();
-        trustedPackages.addAll(Arrays.asList("java.", "javax.", "[Ljava.lang.String", "org.pac4j.", "[Lorg.pac4j.", 
-                "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "[Lcom.nimbusds.", "org.joda.", "net.minidev.json.", 
+        trustedPackages.addAll(Arrays.asList("java.", "javax.", "[Ljava.lang.String", "org.pac4j.", "[Lorg.pac4j.",
+                "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "[Lcom.nimbusds.", "org.joda.", "net.minidev.json.",
                 "org.bson.types."));
         trustedClasses = new HashSet<>();
     }
@@ -48,8 +48,8 @@ public class JavaSerializationHelper {
      */
     public byte[] serializeToBytes(final Serializable o) {
         byte[] bytes = null;
-        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             final ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(o);
             oos.flush();
             bytes = baos.toByteArray();
@@ -77,8 +77,8 @@ public class JavaSerializationHelper {
      */
     public Serializable deserializeFromBytes(final byte[] bytes) {
         Serializable o = null;
-        try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-            final ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+             ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {
             o = (Serializable) ois.readObject();
         } catch (final IOException | ClassNotFoundException e) {
             logger.warn("cannot Java deserialize object", e);
