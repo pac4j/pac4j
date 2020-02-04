@@ -4,6 +4,7 @@ import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -56,7 +57,8 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         decodedCtx.getSAMLBindingContext().setRelayState(relayState);
         context.getSAMLBindingContext().setRelayState(relayState);
 
-        final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
+        final AssertionConsumerService acsService
+                = context.getSPAssertionConsumerService((Response) decodedCtx.getMessage());
         decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
 
         final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();

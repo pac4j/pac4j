@@ -27,10 +27,12 @@ import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.opensaml.saml.saml2.core.Response;
 
 /**
  * Allow to store additional information for SAML processing.
- * 
+ *
  * @author Michael Remond
  * @version 1.5.0
  */
@@ -46,10 +48,9 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     private BaseID baseID;
 
     /** SubjectConfirmations used during assertion evaluation. */
-    private List<SubjectConfirmation> subjectConfirmations = new ArrayList<>();
+    private final List<SubjectConfirmation> subjectConfirmations = new ArrayList<>();
 
     private SAMLMessageStore samlMessageStore;
-
 
     public SAML2MessageContext() {
         super();
@@ -83,7 +84,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         final IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
         return idpssoDescriptor;
     }
-    
+
     public final SingleLogoutService getIDPSingleLogoutService(final String binding) {
         final List<SingleLogoutService> services = getIDPSSODescriptor().getSingleLogoutServices();
         for (final SingleLogoutService service : services) {
@@ -92,7 +93,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
             }
         }
         throw new SAMLException("Identity provider has no single logout service available for the selected profile"
-            + binding);
+                + binding);
     }
 
     public SingleSignOnService getIDPSingleSignOnService(final String binding) {
@@ -107,7 +108,26 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
 
     public AssertionConsumerService getSPAssertionConsumerService() {
-        return getSPAssertionConsumerService(null);
+        final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
+        return getSPAssertionConsumerService(spssoDescriptor, spssoDescriptor.getAssertionConsumerServices());
+    }
+
+    public AssertionConsumerService getSPAssertionConsumerService(final Response response) {
+        final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
+        final List<AssertionConsumerService> services = spssoDescriptor.getAssertionConsumerServices();
+
+        // Get by index
+        if (response != null && StringUtils.isNotEmpty(response.getDestination())) {
+            for (final AssertionConsumerService service : services) {
+                if (response.getDestination().equals(service.getLocation())) {
+                    return service;
+                }
+            }
+            throw new SAMLException("Assertion consumer service with sdestination " + response.getDestination()
+                    + " could not be found for spDescriptor " + spssoDescriptor);
+        }
+
+        return getSPAssertionConsumerService(spssoDescriptor, services);
     }
 
     public AssertionConsumerService getSPAssertionConsumerService(final String acsIndex) {
@@ -124,6 +144,13 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
             throw new SAMLException("Assertion consumer service with index " + acsIndex
                     + " could not be found for spDescriptor " + spssoDescriptor);
         }
+
+        return getSPAssertionConsumerService(spssoDescriptor, services);
+    }
+
+    protected AssertionConsumerService getSPAssertionConsumerService(
+            final SPSSODescriptor spssoDescriptor,
+            final List<AssertionConsumerService> services) {
 
         // Get default
         if (spssoDescriptor.getDefaultAssertionConsumerService() != null) {
@@ -173,7 +200,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     public final BaseID getBaseID() {
         return baseID;
     }
-    
+
     public final void setBaseID(final BaseID baseID) {
         this.baseID = baseID;
     }
@@ -181,7 +208,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     public final List<SubjectConfirmation> getSubjectConfirmations() {
         return subjectConfirmations;
     }
-    
+
     public final SAMLEndpointContext getSAMLPeerEndpointContext() {
         return getSAMLPeerEntityContext().getSubcontext(SAMLEndpointContext.class, true);
     }
