@@ -54,6 +54,7 @@ import org.pac4j.saml.util.SAML2Utils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
@@ -71,30 +72,46 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     private final boolean wantsAssertionsSigned;
 
+    private final boolean wantsResponseSigned;
+
     private final boolean allSignatureValidationDisabled;
 
-    public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
-                                       final Decrypter decrypter,
-                                       final LogoutHandler logoutHandler,
-                                       final int maximumAuthenticationLifetime,
-                                       final boolean wantsAssertionsSigned,
-                                       final ReplayCacheProvider replayCache,
-                                       final boolean allSignatureValidationDisabled) {
-        this(engine, decrypter, logoutHandler, maximumAuthenticationLifetime, wantsAssertionsSigned, replayCache,
-            allSignatureValidationDisabled, new BasicURLComparator());
+    public SAML2AuthnResponseValidator(
+            final SAML2SignatureTrustEngineProvider engine,
+            final Decrypter decrypter,
+            final LogoutHandler logoutHandler,
+            final int maximumAuthenticationLifetime,
+            final boolean wantsAssertionsSigned,
+            final boolean wantsResponseSigned,
+            final ReplayCacheProvider replayCache,
+            final boolean allSignatureValidationDisabled) {
+        this(
+                engine,
+                decrypter,
+                logoutHandler,
+                maximumAuthenticationLifetime,
+                wantsAssertionsSigned,
+                wantsResponseSigned,
+                replayCache,
+                allSignatureValidationDisabled,
+                new BasicURLComparator()
+        );
     }
 
-    public SAML2AuthnResponseValidator(final SAML2SignatureTrustEngineProvider engine,
-                                       final Decrypter decrypter,
-                                       final LogoutHandler logoutHandler,
-                                       final int maximumAuthenticationLifetime,
-                                       final boolean wantsAssertionsSigned,
-                                       final ReplayCacheProvider replayCache,
-                                       final boolean allSignatureValidationDisabled,
-                                       final URIComparator uriComparator) {
+    public SAML2AuthnResponseValidator(
+            final SAML2SignatureTrustEngineProvider engine,
+            final Decrypter decrypter,
+            final LogoutHandler logoutHandler,
+            final int maximumAuthenticationLifetime,
+            final boolean wantsAssertionsSigned,
+            final boolean wantsResponseSigned,
+            final ReplayCacheProvider replayCache,
+            final boolean allSignatureValidationDisabled,
+            final URIComparator uriComparator) {
         super(engine, decrypter, logoutHandler, replayCache, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
+        this.wantsResponseSigned = wantsResponseSigned;
         this.allSignatureValidationDisabled = allSignatureValidationDisabled;
     }
 
@@ -195,6 +212,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         validateSuccess(response.getStatus());
 
+        if (wantsResponseSigned && response.getSignature() == null) {
+            throw new SAMLSignatureValidationException("Signature not found");
+        }
+
         validateSignatureIfItExists(response.getSignature(), context, engine);
 
         validateIssueInstant(response.getIssueInstant());
@@ -221,7 +242,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         validateIssuerIfItExists(response.getIssuer(), context);
     }
-
+    
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
         // Verify endpoint requested in the original request
         final AssertionConsumerService assertionConsumerService = (AssertionConsumerService) context.getSAMLEndpointContext()

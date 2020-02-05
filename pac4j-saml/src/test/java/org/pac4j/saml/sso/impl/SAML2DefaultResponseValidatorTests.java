@@ -123,8 +123,16 @@ public class SAML2DefaultResponseValidatorTests {
         }
         when(trustEngineProvider.build()).thenReturn(engine);
         Decrypter decrypter = mock(Decrypter.class);
-        return new SAML2AuthnResponseValidator(trustEngineProvider, decrypter, logoutHandler, 0, wantsAssertionsSigned,
-                new InMemoryReplayCacheProvider(), false);
+
+        return new SAML2AuthnResponseValidator(
+                trustEngineProvider,
+                decrypter,
+                logoutHandler,
+                0,
+                wantsAssertionsSigned,
+                false,
+                new InMemoryReplayCacheProvider(),
+                false);
     }
 
     @Test
