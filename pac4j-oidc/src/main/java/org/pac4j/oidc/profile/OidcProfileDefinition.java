@@ -5,11 +5,11 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.oidc.profile.converter.OidcLongTimeConverter;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * This class defines the attributes of the OpenID Connect profile: http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
@@ -82,7 +82,7 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
         secondary(TOKEN_EXPIRATION_ADVANCE, Converters.INTEGER);
     }
 
-    public OidcProfileDefinition(final Function<Object[], P> profileFactory) {
+    public OidcProfileDefinition(final ProfileFactory<P> profileFactory) {
         this();
         setProfileFactory(profileFactory);
     }

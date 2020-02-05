@@ -36,6 +36,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  */
 public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements LogoutLogic<R, C> {
 
+    public static final DefaultLogoutLogic INSTANCE = new DefaultLogoutLogic();
+
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,

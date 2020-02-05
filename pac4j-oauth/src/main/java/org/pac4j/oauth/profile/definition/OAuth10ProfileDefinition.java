@@ -1,10 +1,9 @@
 package org.pac4j.oauth.profile.definition;
 
 import com.github.scribejava.core.model.OAuth1Token;
+import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.OAuth10Profile;
-
-import java.util.function.Function;
 
 /**
  * OAuth 1.0 profile definition.
@@ -19,7 +18,7 @@ public abstract class OAuth10ProfileDefinition<P extends OAuth10Profile>
         super();
     }
 
-    public OAuth10ProfileDefinition(final Function<Object[], P> profileFactory) {
+    public OAuth10ProfileDefinition(final ProfileFactory<P> profileFactory) {
         super(profileFactory);
     }
 }

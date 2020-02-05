@@ -4,8 +4,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
-
-import java.util.function.Function;
+import org.pac4j.core.util.FindBest;
 
 /**
  * For classes that can set the profile manager factory.
@@ -15,26 +14,18 @@ import java.util.function.Function;
  */
 public class ProfileManagerFactoryAware<C extends WebContext> {
 
-    private static final Function<WebContext, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY =
-        webContext -> new ProfileManager(webContext);
-
-    private Function<C, ProfileManager> profileManagerFactory;
+    private ProfileManagerFactory profileManagerFactory;
 
     protected ProfileManager getProfileManager(final C context) {
-        if (profileManagerFactory != null) {
-            return profileManagerFactory.apply(context);
-        } else if (Config.getProfileManagerFactory() != null) {
-            return Config.getProfileManagerFactory().apply(context);
-        } else {
-            return DEFAULT_PROFILE_MANAGER_FACTORY.apply(context);
-        }
+        return FindBest.profileManagerFactory(this.profileManagerFactory, Config.INSTANCE, DefaultProfileManagerFactory.INSTANCE)
+            .apply(context);
     }
 
-    public Function<C, ProfileManager> getProfileManagerFactory() {
+    public ProfileManagerFactory getProfileManagerFactory() {
         return profileManagerFactory;
     }
 
-    public void setProfileManagerFactory(final Function<C, ProfileManager> factory) {
+    public void setProfileManagerFactory(final ProfileManagerFactory factory) {
         CommonHelper.assertNotNull("factory", factory);
         this.profileManagerFactory = factory;
     }
