@@ -20,8 +20,8 @@ import org.pac4j.core.profile.factory.ProfileManagerFactory2;
  */
 public class FindBest {
 
-    public static HttpActionAdapter adapter(final HttpActionAdapter localAdapter, final Config config,
-                                            final HttpActionAdapter defaultAdapter) {
+    public static HttpActionAdapter httpActionAdapter(final HttpActionAdapter localAdapter, final Config config,
+                                                      final HttpActionAdapter defaultAdapter) {
         if (localAdapter != null) {
             return localAdapter;
         } else if (config != null && config.getHttpActionAdapter() != null) {
