@@ -119,10 +119,8 @@ public final class Configuration {
     }
     
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
-        try {
-            XMLObject message = XMLObjectSupport.
-                    unmarshallFromReader(Configuration.getParserPool(), new StringReader(obj));
-            return Optional.of(message);
+        try (StringReader reader = new StringReader(obj)) {
+            return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
         } catch (Exception e) {
             logger.error("Error unmarshalling message from input stream", e);
             return Optional.empty();
