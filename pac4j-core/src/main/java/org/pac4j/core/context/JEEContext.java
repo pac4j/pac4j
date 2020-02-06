@@ -31,11 +31,11 @@ public class JEEContext implements WebContext {
      * @param response the current response
      */
     public JEEContext(final HttpServletRequest request, final HttpServletResponse response) {
-        this(request, response, new JEESessionStore());
+        this(request, response, JEESessionStore.INSTANCE);
     }
 
     /**
-     * Build a JEE context from the current HTTP request and response.
+     * Build a JEE context from the current HTTP request and response and from a session store.
      *
      * @param request      the current request
      * @param response     the current response
