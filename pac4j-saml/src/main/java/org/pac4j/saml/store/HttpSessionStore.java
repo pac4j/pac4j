@@ -1,6 +1,5 @@
 package org.pac4j.saml.store;
 
-import java.io.StringReader;
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
@@ -9,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
-import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.pac4j.saml.util.Configuration;
 
 /**
@@ -102,14 +100,7 @@ public class HttpSessionStore implements SAMLMessageStore {
         messages.clear();
         updateSession(messages);
 
-        try {
-            XMLObject message = XMLObjectSupport.unmarshallFromReader(
-                    Configuration.getParserPool(), new StringReader(o));
-            return Optional.of(message);
-        } catch (Exception e) {
-            log.error("Error unmarshalling message from input stream", e);
-            return Optional.empty();
-        }
+        return Configuration.deserializeSamlObject(o);
     }
 
     /**
