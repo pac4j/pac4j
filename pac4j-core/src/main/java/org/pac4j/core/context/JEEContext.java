@@ -24,6 +24,8 @@ public class JEEContext implements WebContext {
 
     private SessionStore<JEEContext> sessionStore;
 
+    private String body;
+
     /**
      * Build a JEE context from the current HTTP request and response.
      *
@@ -213,13 +215,16 @@ public class JEEContext implements WebContext {
 
     @Override
     public String getRequestContent() {
-        try {
-            return request.getReader()
-                          .lines()
-                          .reduce("", (accumulator, actual) -> accumulator.concat(actual));
-        } catch (final IOException e) {
-            throw new TechnicalException(e);
+        if (body == null) {
+            try {
+                body = request.getReader()
+                    .lines()
+                    .reduce("", (accumulator, actual) -> accumulator.concat(actual));
+            } catch (final IOException e) {
+                throw new TechnicalException(e);
+            }
         }
+        return body;
     }
 
     @Override

@@ -179,6 +179,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
                 this.configuration.getLogoutHandler(),
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.isWantsAssertionsSigned(),
+                this.configuration.isWantsResponsesSigned(),
                 this.replayCache,
                 this.configuration.isAllSignatureValidationDisabled());
         this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
