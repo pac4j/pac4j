@@ -54,6 +54,9 @@ import org.pac4j.saml.util.SAML2Utils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 
 /**
@@ -72,7 +75,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     private final boolean wantsAssertionsSigned;
 
-    private final boolean wantsResponseSigned;
+    private final boolean wantsResponsesSigned;
 
     private final boolean allSignatureValidationDisabled;
 
@@ -82,7 +85,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             final LogoutHandler logoutHandler,
             final int maximumAuthenticationLifetime,
             final boolean wantsAssertionsSigned,
-            final boolean wantsResponseSigned,
+            final boolean wantsResponsesSigned,
             final ReplayCacheProvider replayCache,
             final boolean allSignatureValidationDisabled) {
         this(
@@ -91,7 +94,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 logoutHandler,
                 maximumAuthenticationLifetime,
                 wantsAssertionsSigned,
-                wantsResponseSigned,
+                wantsResponsesSigned,
                 replayCache,
                 allSignatureValidationDisabled,
                 new BasicURLComparator()
@@ -104,14 +107,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             final LogoutHandler logoutHandler,
             final int maximumAuthenticationLifetime,
             final boolean wantsAssertionsSigned,
-            final boolean wantsResponseSigned,
+            final boolean wantsResponsesSigned,
             final ReplayCacheProvider replayCache,
             final boolean allSignatureValidationDisabled,
             final URIComparator uriComparator) {
         super(engine, decrypter, logoutHandler, replayCache, uriComparator);
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
-        this.wantsResponseSigned = wantsResponseSigned;
+        this.wantsResponsesSigned = wantsResponsesSigned;
         this.allSignatureValidationDisabled = allSignatureValidationDisabled;
     }
 
@@ -212,8 +215,21 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         validateSuccess(response.getStatus());
 
-        if (wantsResponseSigned && response.getSignature() == null) {
-            throw new SAMLSignatureValidationException("Signature not found");
+        if (wantsResponsesSigned && response.getSignature() == null) {
+            if (logger.isDebugEnabled()) {
+
+                try {
+                    logger.debug(
+                            "Unable to find a signature on the SAML response returned. Pac4j is configured to enforce "
+                            + "signatures on SAML2 responses from identity providers and the returned response\n{}\n"
+                            + "does not contain any signature",
+                            SerializeSupport.prettyPrintXML(XMLObjectSupport.marshall(response)));
+                } catch (MarshallingException e) {
+                    logger.error("Unable to marshall message for logging purposes", e);
+                }
+            }
+
+            throw new SAMLSignatureValidationException("Unable to find a signature on the SAML response returned");
         }
 
         validateSignatureIfItExists(response.getSignature(), context, engine);

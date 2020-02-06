@@ -18,14 +18,17 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -37,6 +40,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -68,7 +72,8 @@ public class SAML2DefaultResponseValidatorTests {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         XMLObjectSupport.marshallToOutputStream(xmlObject, os);
 
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
+        // create response validator enforcing response signature
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, true);
         SAML2MessageContext context = new SAML2MessageContext();
         context.setMessage(response);
 
@@ -107,11 +112,12 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test
     public void testDoesNotWantAssertionsSignedWithNullContext() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, false);
         assertFalse("Expected wantAssertionsSigned == false", validator.wantsAssertionsSigned(null));
     }
 
-    private SAML2AuthnResponseValidator createResponseValidatorWithSigningValidationOf(boolean wantsAssertionsSigned) {
+    private SAML2AuthnResponseValidator createResponseValidatorWithSigningValidationOf(
+            boolean wantsAssertionsSigned, boolean wantsResponsesSigned) {
         SAML2SignatureTrustEngineProvider trustEngineProvider = mock(SAML2SignatureTrustEngineProvider.class);
         LogoutHandler logoutHandler = mock(LogoutHandler.class);
         SignatureTrustEngine engine = mock(SignatureTrustEngine.class);
@@ -130,20 +136,20 @@ public class SAML2DefaultResponseValidatorTests {
                 logoutHandler,
                 0,
                 wantsAssertionsSigned,
-                false,
+                wantsResponsesSigned,
                 new InMemoryReplayCacheProvider(),
                 false);
     }
 
     @Test
     public void testWantsAssertionsSignedWithNullContext() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true, false);
         assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(null));
     }
 
     @Test
     public void testDoesNotWantAssertionsSignedWithNullSPSSODescriptor() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, false);
         SAML2MessageContext context = new SAML2MessageContext();
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
         assertFalse("Expected wantAssertionsSigned == false", validator.wantsAssertionsSigned(context));
@@ -151,7 +157,7 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test
     public void testWantsAssertionsSignedWithNullSPSSODescriptor() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true, false);
         SAML2MessageContext context = new SAML2MessageContext();
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
         assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(context));
@@ -159,7 +165,7 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test
     public void testDoesNotWantAssertionsSignedWithValidSPSSODescriptor() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, false);
         SAML2MessageContext context = new SAML2MessageContext();
 
         SAMLMetadataContext samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
@@ -173,7 +179,7 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test
     public void testWantsAssertionsSignedWithValidSPSSODescriptor() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true, false);
         SAML2MessageContext context = new SAML2MessageContext();
 
         SAMLMetadataContext samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
@@ -187,7 +193,7 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test(expected = SAMLException.class)
     public void testAuthenticatedResponseAndAssertionWithoutSignatureThrowsException() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(true, false);
         SAML2MessageContext context = new SAML2MessageContext();
         SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(true);
@@ -197,12 +203,33 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test(expected = SAMLException.class)
     public void testResponseWithoutSignatureThrowsException() {
-        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false);
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, false);
         SAML2MessageContext context = new SAML2MessageContext();
         SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(false);
         context.addSubcontext(peerEntityContext);
         validator.validateAssertionSignature(null, context, null);
         // expected no exceptions
+    }
+    
+    @Test(expected = SAMLSignatureValidationException.class)
+    public void testNotSignedAuthenticatedResponseThrowsException() 
+            throws FileNotFoundException, XMLParserException, UnmarshallingException {
+        File file = new File(SAML2DefaultResponseValidatorTests.class.getClassLoader().
+                getResource(SAMPLE_RESPONSE_FILE_NAME).getFile());
+        
+        final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(
+                Configuration.getParserPool(), 
+                new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
+
+        Response response = (Response) xmlObject;
+        response.setSignature(null);
+        
+        SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, true);
+        SAML2MessageContext context = new SAML2MessageContext();
+        SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();
+        peerEntityContext.setAuthenticated(true);
+        context.addSubcontext(peerEntityContext);
+        validator.validateSamlProtocolResponse(response, context, null);
     }
 }

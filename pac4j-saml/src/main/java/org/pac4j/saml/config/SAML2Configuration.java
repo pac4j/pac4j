@@ -143,7 +143,7 @@ public class SAML2Configuration extends InitializableObject {
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
     private boolean wantsAssertionsSigned = false;
-    private boolean wantsResponseSigned = false;
+    private boolean wantsResponsesSigned = false;
     private boolean allSignatureValidationDisabled = false;
 
     private String keyStoreAlias;
@@ -623,12 +623,12 @@ public class SAML2Configuration extends InitializableObject {
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
-    public boolean isWantsResponseSigned() {
-        return wantsResponseSigned;
+    public boolean isWantsResponsesSigned() {
+        return wantsResponsesSigned;
     }
 
-    public void setWantsResponseSigned(final boolean wantsResponseSigned) {
-        this.wantsResponseSigned = wantsResponseSigned;
+    public void setWantsResponsesSigned(final boolean wantsResponsesSigned) {
+        this.wantsResponsesSigned = wantsResponsesSigned;
     }
 
     public boolean isAuthnRequestSigned() {
