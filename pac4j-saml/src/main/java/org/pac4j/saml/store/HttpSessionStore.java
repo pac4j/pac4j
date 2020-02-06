@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import org.pac4j.saml.util.Configuration;
 
 /**
  * Class implements store of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
@@ -34,7 +35,7 @@ public class HttpSessionStore implements SAMLMessageStore {
     /**
      * Internal store for messages, corresponding to the object in session.
      */
-    private LinkedHashMap<String, XMLObject> internalMessages;
+    private LinkedHashMap<String, String> internalMessages;
 
     /**
      * Session key for storing the hashtable.
@@ -65,8 +66,8 @@ public class HttpSessionStore implements SAMLMessageStore {
     @Override
     public void set(final String messageID, final XMLObject message) {
         log.debug("Storing message {} to session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
-        final LinkedHashMap<String, XMLObject> messages = getMessages();
-        messages.put(messageID, message);
+        final LinkedHashMap<String, String> messages = getMessages();
+        messages.put(messageID, Configuration.serializeSamlObject(message).toString());
         updateSession(messages);
     }
 
@@ -86,17 +87,20 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @Override
     public Optional<XMLObject> get(final String messageID) {
-        final LinkedHashMap<String, XMLObject> messages = getMessages();
-        final XMLObject o = messages.get(messageID);
+        final LinkedHashMap<String, String> messages = getMessages();
+        final String o = messages.get(messageID);
         if (o == null) {
-            log.debug("Message {} not found in session {}", messageID, context.getSessionStore().getOrCreateSessionId(context));
+            log.debug("Message {} not found in session {}",
+                    messageID, context.getSessionStore().getOrCreateSessionId(context));
             return Optional.empty();
         }
 
-        log.debug("Message {} found in session {}, clearing", messageID, context.getSessionStore().getOrCreateSessionId(context));
+        log.debug("Message {} found in session {}, clearing",
+                messageID, context.getSessionStore().getOrCreateSessionId(context));
         messages.clear();
         updateSession(messages);
-        return Optional.of(o);
+
+        return Configuration.deserializeSamlObject(o);
     }
 
     /**
@@ -105,7 +109,7 @@ public class HttpSessionStore implements SAMLMessageStore {
      *
      * @return message store
      */
-    private LinkedHashMap<String, XMLObject> getMessages() {
+    private LinkedHashMap<String, String> getMessages() {
         if (internalMessages == null) {
             internalMessages = initializeSession();
         }
@@ -119,12 +123,13 @@ public class HttpSessionStore implements SAMLMessageStore {
      * Method synchronizes on session object to prevent two threads from overwriting each others hashtable.
      */
     @SuppressWarnings("unchecked")
-    private LinkedHashMap<String, XMLObject> initializeSession() {
-        Optional<LinkedHashMap<String, XMLObject>> messages = (Optional<LinkedHashMap<String, XMLObject>>)
+    private LinkedHashMap<String, String> initializeSession() {
+        Optional<LinkedHashMap<String, String>> messages = (Optional<LinkedHashMap<String, String>>)
                 context.getSessionStore().get(context, SAML_STORAGE_KEY);
         if (!messages.isPresent()) {
             synchronized (context) {
-                messages = (Optional<LinkedHashMap<String, XMLObject>>) context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                messages = (Optional<LinkedHashMap<String, String>>) context.
+                        getSessionStore().get(context, SAML_STORAGE_KEY);
                 if (!messages.isPresent()) {
                     messages = Optional.of(new LinkedHashMap<>());
                     updateSession(messages.get());
@@ -138,7 +143,7 @@ public class HttpSessionStore implements SAMLMessageStore {
      * Updates session with the internalMessages key. Some application servers require session value to be updated
      * in order to replicate the session across nodes or persist it correctly.
      */
-    private void updateSession(final LinkedHashMap<String, XMLObject> messages) {
+    private void updateSession(final LinkedHashMap<String, String> messages) {
         context.getSessionStore().set(context, SAML_STORAGE_KEY, messages);
     }
 

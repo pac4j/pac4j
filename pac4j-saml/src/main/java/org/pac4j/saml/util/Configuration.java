@@ -1,5 +1,6 @@
 package org.pac4j.saml.util;
 
+import java.io.StringReader;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -20,9 +21,11 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 import javax.annotation.Priority;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 
 /**
  * OpenSAML configuration bean to bootstrap the parser pool.
@@ -113,5 +116,14 @@ public final class Configuration {
             throw new SAMLException(e.getMessage(), e);
         }
         return writer;
+    }
+    
+    public static Optional<XMLObject> deserializeSamlObject(final String obj) {
+        try (StringReader reader = new StringReader(obj)) {
+            return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
+        } catch (Exception e) {
+            logger.error("Error unmarshalling message from input stream", e);
+            return Optional.empty();
+        }
     }
 }
