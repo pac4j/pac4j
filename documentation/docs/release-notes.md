@@ -22,6 +22,7 @@ title: Release notes&#58;
 - Properly handle states and nonces for multiple OIDC clients
 - A profile can be renewed by its client when it's expired
 - Most web authorizers are now matchers. The default matchers are "securityHeaders,csrfToken" and the default authorizer is "csrfCheck". Use "none" for no matcher or authorizer
+- Use the `FindBest` utility class to find the best adapter, logic...
 
 **v3.8.3**:
 

@@ -49,6 +49,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  */
 public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements SecurityLogic<R, C> {
 
+    public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
+
     private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 
     private AuthorizationChecker authorizationChecker = new DefaultAuthorizationChecker();

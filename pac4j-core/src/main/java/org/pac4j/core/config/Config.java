@@ -3,14 +3,14 @@ package org.pac4j.core.config;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.matcher.Matcher;
-import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
+import org.pac4j.core.profile.factory.ProfileManagerFactory2;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * The default configuration with clients, authorizers, matchers, etc.
@@ -29,10 +27,12 @@ import java.util.function.Function;
  */
 public class Config {
 
+    public static final Config INSTANCE = new Config();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
-    private static Function<WebContext, ProfileManager> profileManagerFactory;
-    private static BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2;
+    private ProfileManagerFactory profileManagerFactory;
+    private ProfileManagerFactory2 profileManagerFactory2;
 
     protected Clients clients;
 
@@ -193,36 +193,34 @@ public class Config {
         this.logoutLogic = logoutLogic;
     }
 
-    public static Function<WebContext, ProfileManager> getProfileManagerFactory() {
-        return profileManagerFactory;
+    public static ProfileManagerFactory getProfileManagerFactory() {
+        return INSTANCE.profileManagerFactory;
     }
 
-    public static void setProfileManagerFactory(final String name, final Function<WebContext, ProfileManager> profileManagerFactory) {
+    public static void setProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
         CommonHelper.assertNotNull("profileManagerFactory", profileManagerFactory);
         LOGGER.info("Setting Config.profileManagerFactory: {}", name);
-        Config.profileManagerFactory = profileManagerFactory;
+        INSTANCE.profileManagerFactory = profileManagerFactory;
     }
 
-    public static void defaultProfileManagerFactory(final String name, final Function<WebContext, ProfileManager> profileManagerFactory) {
-        if (Config.profileManagerFactory == null) {
+    public static void defaultProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
+        if (INSTANCE.profileManagerFactory == null) {
             setProfileManagerFactory(name, profileManagerFactory);
         }
     }
 
-    public static BiFunction<WebContext, SessionStore, ProfileManager> getProfileManagerFactory2() {
-        return profileManagerFactory2;
+    public static ProfileManagerFactory2 getProfileManagerFactory2() {
+        return INSTANCE.profileManagerFactory2;
     }
 
-    public static void setProfileManagerFactory2(final String name,
-                                                 final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
+    public static void setProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
         CommonHelper.assertNotNull("profileManagerFactory2", profileManagerFactory2);
         LOGGER.info("Setting Config.profileManagerFactory2: {}", name);
-        Config.profileManagerFactory2 = profileManagerFactory2;
+        INSTANCE.profileManagerFactory2 = profileManagerFactory2;
     }
 
-    public static void defaultProfileManagerFactory2(final String name,
-                                                     final BiFunction<WebContext, SessionStore, ProfileManager> profileManagerFactory2) {
-        if (Config.profileManagerFactory2 == null) {
+    public static void defaultProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
+        if (INSTANCE.profileManagerFactory2 == null) {
             setProfileManagerFactory2(name, profileManagerFactory2);
         }
     }

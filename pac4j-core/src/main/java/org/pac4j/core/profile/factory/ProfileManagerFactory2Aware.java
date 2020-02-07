@@ -5,8 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
-
-import java.util.function.BiFunction;
+import org.pac4j.core.util.FindBest;
 
 /**
  * For classes that can set the profile manager factory.
@@ -16,26 +15,18 @@ import java.util.function.BiFunction;
  */
 public class ProfileManagerFactory2Aware<C extends WebContext> {
 
-    private static final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY2 =
-        (webContext, sessionStore)-> new ProfileManager(webContext, sessionStore);
-
-    private BiFunction<C, SessionStore<C>, ProfileManager> profileManagerFactory2;
+    private ProfileManagerFactory2 profileManagerFactory2;
 
     protected ProfileManager getProfileManager(final C context, final SessionStore<C> sessionStore) {
-        if (profileManagerFactory2 != null) {
-            return profileManagerFactory2.apply(context, sessionStore);
-        } else if (Config.getProfileManagerFactory2() != null) {
-            return Config.getProfileManagerFactory2().apply(context, sessionStore);
-        } else {
-            return DEFAULT_PROFILE_MANAGER_FACTORY2.apply(context, (SessionStore<WebContext>) sessionStore);
-        }
+        return FindBest.profileManagerFactory2(this.profileManagerFactory2, Config.INSTANCE, DefaultProfileManagerFactory2.INSTANCE)
+            .apply(context, sessionStore);
     }
 
-    public BiFunction<C, SessionStore<C>, ProfileManager> getProfileManagerFactory2() {
+    public ProfileManagerFactory2 getProfileManagerFactory2() {
         return profileManagerFactory2;
     }
 
-    public void setProfileManagerFactory2(final BiFunction<C, SessionStore<C>, ProfileManager> factory) {
+    public void setProfileManagerFactory2(final ProfileManagerFactory2 factory) {
         CommonHelper.assertNotNull("factory", factory);
         this.profileManagerFactory2 = factory;
     }

@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
  */
 public class JEESessionStore implements SessionStore<JEEContext> {
 
+    public static final JEESessionStore INSTANCE = new JEESessionStore();
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected HttpSession getHttpSession(final JEEContext context) {

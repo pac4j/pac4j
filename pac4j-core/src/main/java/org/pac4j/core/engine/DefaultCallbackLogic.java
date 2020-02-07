@@ -33,6 +33,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  */
 public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements CallbackLogic<R, C> {
 
+    public static final DefaultCallbackLogic INSTANCE = new DefaultCallbackLogic();
+
     private ClientFinder clientFinder = new DefaultCallbackClientFinder();
 
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();

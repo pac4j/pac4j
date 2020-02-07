@@ -1,10 +1,9 @@
 package org.pac4j.oauth.profile.definition;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.OAuth20Profile;
-
-import java.util.function.Function;
 
 /**
  * OAuth 2.0 profile definition.
@@ -19,7 +18,7 @@ public abstract class OAuth20ProfileDefinition<P extends OAuth20Profile, C exten
         super();
     }
 
-    public OAuth20ProfileDefinition(final Function<Object[], P> profileFactory) {
+    public OAuth20ProfileDefinition(final ProfileFactory<P> profileFactory) {
         super(profileFactory);
     }
 }

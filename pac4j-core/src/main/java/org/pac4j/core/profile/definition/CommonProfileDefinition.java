@@ -3,8 +3,7 @@ package org.pac4j.core.profile.definition;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
-
-import java.util.function.Function;
+import org.pac4j.core.profile.factory.ProfileFactory;
 
 /**
  * Profile definition with the common attributes.
@@ -41,7 +40,7 @@ public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDef
         primary(Pac4jConstants.USERNAME, Converters.STRING);
     }
 
-    public CommonProfileDefinition(final Function<Object[], P> profileFactory) {
+    public CommonProfileDefinition(final ProfileFactory<P> profileFactory) {
         this();
         setProfileFactory(profileFactory);
     }

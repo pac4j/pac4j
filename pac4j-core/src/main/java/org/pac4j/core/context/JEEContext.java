@@ -33,11 +33,11 @@ public class JEEContext implements WebContext {
      * @param response the current response
      */
     public JEEContext(final HttpServletRequest request, final HttpServletResponse response) {
-        this(request, response, new JEESessionStore());
+        this(request, response, JEESessionStore.INSTANCE);
     }
 
     /**
-     * Build a JEE context from the current HTTP request and response.
+     * Build a JEE context from the current HTTP request and response and from a session store.
      *
      * @param request      the current request
      * @param response     the current response
@@ -46,13 +46,10 @@ public class JEEContext implements WebContext {
     public JEEContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<JEEContext> sessionStore) {
         CommonHelper.assertNotNull("request", request);
         CommonHelper.assertNotNull("response", response);
+        CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.request = request;
         this.response = response;
-        if (sessionStore == null) {
-            this.sessionStore = new JEESessionStore();
-        } else {
-            this.sessionStore = sessionStore;
-        }
+        this.sessionStore = sessionStore;
     }
 
     @Override

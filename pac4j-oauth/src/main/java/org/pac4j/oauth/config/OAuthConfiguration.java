@@ -9,8 +9,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import java.util.function.Function;
-
 /**
  * The base OAuth configuration.
  *
@@ -33,7 +31,7 @@ public abstract class OAuthConfiguration<S extends OAuthService, T extends Token
 
     protected String scope;
 
-    protected Function<WebContext, Boolean> hasBeenCancelledFactory = ctx -> false;
+    protected HasBeenCancelledFactory hasBeenCancelledFactory = ctx -> false;
 
     protected OAuthProfileDefinition profileDefinition;
 
@@ -89,11 +87,11 @@ public abstract class OAuthConfiguration<S extends OAuthService, T extends Token
         this.scope = scope;
     }
 
-    public Function<WebContext, Boolean> getHasBeenCancelledFactory() {
+    public HasBeenCancelledFactory getHasBeenCancelledFactory() {
         return hasBeenCancelledFactory;
     }
 
-    public void setHasBeenCancelledFactory(final Function<WebContext, Boolean> hasBeenCancelledFactory) {
+    public void setHasBeenCancelledFactory(final HasBeenCancelledFactory hasBeenCancelledFactory) {
         this.hasBeenCancelledFactory = hasBeenCancelledFactory;
     }
 

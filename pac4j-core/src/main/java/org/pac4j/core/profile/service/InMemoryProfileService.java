@@ -2,13 +2,13 @@ package org.pac4j.core.profile.service;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 public class InMemoryProfileService<U extends CommonProfile> extends AbstractProfileService<U>  {
 
     public Map<String,Map<String,Object>> profiles;
-    public Function<Object[], U> profileFactory;
+    public ProfileFactory<U> profileFactory;
 
-    public InMemoryProfileService(final Function<Object[], U> profileFactory) {
+    public InMemoryProfileService(final ProfileFactory<U> profileFactory) {
         this(new HashMap<>(), profileFactory);
     }
 
-    public InMemoryProfileService(final Map<String,Map<String,Object>> profiles, final Function<Object[], U> profileFactory) {
+    public InMemoryProfileService(final Map<String,Map<String,Object>> profiles, final ProfileFactory<U> profileFactory) {
         this.profiles = profiles;
         this.profileFactory = profileFactory;
     }
