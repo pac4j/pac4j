@@ -7,14 +7,14 @@ title: MongoDB
 
 ## 1) Dependency
 
-You need to use the following module: `pac4j-mongodb`.
+You need to use the following module: `pac4j-mongo`.
 
 **Example (Maven dependency):**
 
 ```xml
 <dependency>
     <groupId>org.pac4j</groupId>
-    <artifactId>pac4j-mongodb</artifactId>
+    <artifactId>pac4j-mongo</artifactId>
     <version>${pac4j.version}</version>
 </dependency>
 ```
