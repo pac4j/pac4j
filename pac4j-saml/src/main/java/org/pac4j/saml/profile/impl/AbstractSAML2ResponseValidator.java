@@ -53,27 +53,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected final Decrypter decrypter;
 
     protected final LogoutHandler logoutHandler;
-    
+
     protected final ReplayCacheProvider replayCache;
 
-    /**
-     * @deprecated this constructor does not accept a replay cache, replay protection will be disabled
-     */
-    @Deprecated
-    protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
-            final Decrypter decrypter, final LogoutHandler logoutHandler) {
-        this(signatureTrustEngineProvider, decrypter, logoutHandler, null, new BasicURLComparator());
-    }
-
-    /**
-     * @deprecated this constructor does not accept a replay cache, replay protection will be disabled
-     */
-    @Deprecated
-    protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
-            final Decrypter decrypter, final LogoutHandler logoutHandler, final URIComparator uriComparator) {
-        this(signatureTrustEngineProvider, decrypter, logoutHandler, null, uriComparator);
-    }
-    
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final LogoutHandler logoutHandler,
                                              final ReplayCacheProvider replayCache) {
@@ -209,7 +191,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLEndpointMismatchException(e);
         }
     }
-    
+
     protected void verifyMessageReplay(final SAML2MessageContext context) {
         if (replayCache == null) {
             logger.warn("No replay cache specified, skipping replay verification");
