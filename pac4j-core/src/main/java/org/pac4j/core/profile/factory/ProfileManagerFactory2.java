@@ -13,4 +13,6 @@ import java.util.function.BiFunction;
  * @since 4.0.0
  */
 public interface ProfileManagerFactory2 extends BiFunction<WebContext, SessionStore, ProfileManager> {
+
+    ProfileManagerFactory2 DEFAULT = (context, store) -> new ProfileManager(context, store);
 }

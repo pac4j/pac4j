@@ -205,7 +205,11 @@ public class Config {
 
     public static void defaultProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
         if (INSTANCE.profileManagerFactory == null) {
-            setProfileManagerFactory(name, profileManagerFactory);
+            synchronized (INSTANCE) {
+                if (INSTANCE.profileManagerFactory == null) {
+                    setProfileManagerFactory(name, profileManagerFactory);
+                }
+            }
         }
     }
 
@@ -221,7 +225,11 @@ public class Config {
 
     public static void defaultProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
         if (INSTANCE.profileManagerFactory2 == null) {
-            setProfileManagerFactory2(name, profileManagerFactory2);
+            synchronized (INSTANCE) {
+                if (INSTANCE.profileManagerFactory2 == null) {
+                    setProfileManagerFactory2(name, profileManagerFactory2);
+                }
+            }
         }
     }
 }

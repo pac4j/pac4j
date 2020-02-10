@@ -12,4 +12,6 @@ import java.util.function.Function;
  * @since 4.0.0
  */
 public interface ProfileManagerFactory extends Function<WebContext, ProfileManager> {
+
+    ProfileManagerFactory DEFAULT = context -> new ProfileManager(context);
 }

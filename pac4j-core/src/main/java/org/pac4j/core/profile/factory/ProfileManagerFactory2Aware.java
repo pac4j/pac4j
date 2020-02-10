@@ -18,7 +18,7 @@ public class ProfileManagerFactory2Aware<C extends WebContext> {
     private ProfileManagerFactory2 profileManagerFactory2;
 
     protected ProfileManager getProfileManager(final C context, final SessionStore<C> sessionStore) {
-        return FindBest.profileManagerFactory2(this.profileManagerFactory2, Config.INSTANCE, DefaultProfileManagerFactory2.INSTANCE)
+        return FindBest.profileManagerFactory2(this.profileManagerFactory2, Config.INSTANCE, ProfileManagerFactory2.DEFAULT)
             .apply(context, sessionStore);
     }
 
