@@ -22,7 +22,7 @@ public class PathMatcher implements Matcher {
     private final Set<String> excludedPaths = new HashSet<>();
     private final Set<Pattern> excludedPatterns = new HashSet<>();
 
-    private boolean warned = false;
+    private static boolean warned;
 
     public PathMatcher() {}
 

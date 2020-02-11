@@ -16,7 +16,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
     public static final AnonymousClient INSTANCE = new AnonymousClient();
 
-    private boolean warned = false;
+    private static boolean warned;
 
     public AnonymousClient() {
         if (!warned) {
