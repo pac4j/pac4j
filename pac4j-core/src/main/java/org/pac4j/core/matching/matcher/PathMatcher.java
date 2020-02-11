@@ -18,9 +18,11 @@ import java.util.regex.Pattern;
  * @since 2.0.0
  */
 public class PathMatcher implements Matcher {
-    private final static Logger logger = LoggerFactory.getLogger(PathMatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(PathMatcher.class);
     private final Set<String> excludedPaths = new HashSet<>();
     private final Set<Pattern> excludedPatterns = new HashSet<>();
+
+    private boolean warned = false;
 
     public PathMatcher() {}
 
@@ -60,8 +62,11 @@ public class PathMatcher implements Matcher {
      */
     public PathMatcher excludeRegex(final String regex) {
         CommonHelper.assertNotBlank("regex", regex);
-        logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression " +
+        if (!warned) {
+            logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression " +
                 "to avoid any security issues!");
+            warned = true;
+        }
 
         if (!regex.startsWith("^") || !regex.endsWith("$")) {
             throw new TechnicalException("Your regular expression: '" + regex + "' must start with a ^ and end with a $ " +

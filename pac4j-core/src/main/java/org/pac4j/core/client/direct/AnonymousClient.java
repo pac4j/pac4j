@@ -14,10 +14,15 @@ import java.util.Optional;
  */
 public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
-    public final static AnonymousClient INSTANCE = new AnonymousClient();
+    public static final AnonymousClient INSTANCE = new AnonymousClient();
+
+    private boolean warned = false;
 
     public AnonymousClient() {
-        logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issue!");
+        if (!warned) {
+            logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issue!");
+            warned = true;
+        }
     }
 
     @Override
