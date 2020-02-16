@@ -13,7 +13,7 @@
     <name>pac4j for OpenID Connect protocol</name>
 
     <properties>
-        <oauth-oidc-sdk.version>6.23</oauth-oidc-sdk.version>
+        <oauth-oidc-sdk.version>7.0</oauth-oidc-sdk.version>
     </properties>
 
     <dependencies>
