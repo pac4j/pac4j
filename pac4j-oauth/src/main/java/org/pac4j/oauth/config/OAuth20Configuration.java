@@ -5,9 +5,9 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.state.StateGenerator;
+import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.state.StaticOrRandomStateGenerator;
+import org.pac4j.core.util.generator.RandomValueGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
     private boolean withState;
 
-    private StateGenerator stateGenerator = new StaticOrRandomStateGenerator();
+    private ValueGenerator stateGenerator = new RandomValueGenerator();
 
     private DefaultApi20 api;
 
@@ -71,11 +71,11 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
         this.withState = withState;
     }
 
-    public StateGenerator getStateGenerator() {
+    public ValueGenerator getStateGenerator() {
         return stateGenerator;
     }
 
-    public void setStateGenerator(final StateGenerator stateGenerator) {
+    public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
     }

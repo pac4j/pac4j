@@ -9,6 +9,7 @@ import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.core.util.generator.StaticValueGenerator;
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.ECSignatureConfiguration;
@@ -116,14 +117,24 @@ public final class JwtTests implements TestsConstants {
         authenticator.setExpirationTime(expDate);
         assertNull(authenticator.validateToken(token));
     }
-    
+
     @Test
     public void testPlainJwtNoSubject() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final String token = generator.generate(new HashMap<>());
         JwtAuthenticator authenticator = new JwtAuthenticator();
         TestsHelper.expectException(() -> authenticator.validateToken(token), TechnicalException.class,
-            "JWT must contain a subject ('sub' claim)");
+            "The JWT must contain a subject or an id must be generated via the identifierGenerator");
+    }
+
+    @Test
+    public void testPlainJwtNoSubjectButIdentifierGenerator() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        final String token = generator.generate(new HashMap<>());
+        JwtAuthenticator authenticator = new JwtAuthenticator();
+        authenticator.setIdentifierGenerator(new StaticValueGenerator(VALUE));
+        final CommonProfile profile = authenticator.validateToken(token);
+        assertEquals(VALUE, profile.getId());
     }
 
     @Test

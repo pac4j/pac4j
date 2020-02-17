@@ -4,9 +4,9 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
-import org.pac4j.core.state.StaticOrRandomStateGenerator;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.core.util.generator.StaticValueGenerator;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,7 +34,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testState() throws MalformedURLException {
         FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        ((StaticOrRandomStateGenerator) client.getConfiguration().getStateGenerator()).setStateData("OK");
+        client.getConfiguration().setStateGenerator(new StaticValueGenerator("OK"));
         final FoundAction action = (FoundAction) client.getRedirectionAction(MockWebContext.create()).get();
         URL url = new URL(action.getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
@@ -44,7 +44,7 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testSetState() throws MalformedURLException {
         FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        ((StaticOrRandomStateGenerator) client.getConfiguration().getStateGenerator()).setStateData("oldstate");
+        client.getConfiguration().setStateGenerator(new StaticValueGenerator("oldstate"));
         final MockWebContext mockWebContext = MockWebContext.create();
         FoundAction action = (FoundAction) client.getRedirectionAction(mockWebContext).get();
         URL url = new URL(action.getLocation());

@@ -10,8 +10,8 @@ import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.state.StateGenerator;
-import org.pac4j.core.state.StaticOrRandomStateGenerator;
+import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -103,7 +103,7 @@ public class OidcConfiguration extends InitializableObject {
 
     private boolean withState;
 
-    private StateGenerator stateGenerator = new StaticOrRandomStateGenerator();
+    private ValueGenerator stateGenerator = new RandomValueGenerator();
 
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
     private boolean expireSessionWithToken = false;
@@ -351,11 +351,11 @@ public class OidcConfiguration extends InitializableObject {
         this.tokenExpirationAdvance = tokenExpirationAdvance;
     }
 
-    public StateGenerator getStateGenerator() {
+    public ValueGenerator getStateGenerator() {
         return stateGenerator;
     }
 
-    public void setStateGenerator(final StateGenerator stateGenerator) {
+    public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
     }

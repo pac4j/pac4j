@@ -21,6 +21,7 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
+import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
@@ -60,7 +61,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
     private Date expirationTime;
-    
+
+    private ValueGenerator identifierGenerator;
+
     public JwtAuthenticator() {}
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
@@ -215,7 +218,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                 }
             }
 
-            createJwtProfile(credentials, jwt);
+            createJwtProfile(credentials, jwt, context);
 
         } catch (final ParseException e) {
             throw new CredentialsException("Cannot decrypt / verify JWT", e);
@@ -223,11 +226,16 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     @SuppressWarnings("unchecked")
-    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
+    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt, final WebContext context) throws ParseException {
         final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
-        final String subject = claimSet.getSubject();
+        String subject = claimSet.getSubject();
         if (subject == null) {
-            throw new TechnicalException("JWT must contain a subject ('sub' claim)");
+            if (identifierGenerator != null) {
+                subject = identifierGenerator.generateValue(context);
+            }
+            if (subject == null) {
+                throw new TechnicalException("The JWT must contain a subject or an id must be generated via the identifierGenerator");
+            }
         }
 
         final Date expTime = claimSet.getExpirationTime();
@@ -314,9 +322,18 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         return new Date(expirationTime.getTime());
     }
 
+    public ValueGenerator getIdentifierGenerator() {
+        return identifierGenerator;
+    }
+
+    public void setIdentifierGenerator(final ValueGenerator identifierGenerator) {
+        this.identifierGenerator = identifierGenerator;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
-            "encryptionConfigurations", encryptionConfigurations, "realmName", this.realmName);
+            "encryptionConfigurations", encryptionConfigurations, "realmName", this.realmName,
+            "identifierGenerator", this.identifierGenerator);
     }
 }

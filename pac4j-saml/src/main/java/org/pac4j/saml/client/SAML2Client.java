@@ -12,7 +12,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.state.StateGenerator;
+import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ContextProvider;
@@ -87,7 +87,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
 
     protected SAML2Configuration configuration;
 
-    protected StateGenerator stateGenerator = new SAML2StateGenerator(this);
+    protected ValueGenerator stateGenerator = new SAML2StateGenerator(this);
 
     protected ReplayCacheProvider replayCache;
 
@@ -300,11 +300,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         return signatureTrustEngineProvider;
     }
 
-    public StateGenerator getStateGenerator() {
+    public ValueGenerator getStateGenerator() {
         return stateGenerator;
     }
 
-    public void setStateGenerator(final StateGenerator stateGenerator) {
+    public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
     }

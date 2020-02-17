@@ -1,7 +1,7 @@
 package org.pac4j.saml.state;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.state.StateGenerator;
+import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 3.3.0
  */
-public class SAML2StateGenerator implements StateGenerator {
+public class SAML2StateGenerator implements ValueGenerator {
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
@@ -23,7 +23,7 @@ public class SAML2StateGenerator implements StateGenerator {
     }
 
     @Override
-    public String generateState(final WebContext webContext) {
+    public String generateValue(final WebContext webContext) {
         final Optional<String> relayState = (Optional<String>) webContext.getSessionStore().get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
         if (relayState.isPresent()) {
