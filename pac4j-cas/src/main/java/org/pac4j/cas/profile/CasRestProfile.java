@@ -28,7 +28,7 @@ public final class CasRestProfile extends CommonProfile {
     }
 
     @Override
-    public void clearSensitiveData() {
+    public void removeLoginData() {
         removeAttribute(TGT_KEY);
     }
 

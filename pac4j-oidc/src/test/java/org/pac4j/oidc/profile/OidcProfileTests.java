@@ -43,14 +43,14 @@ public final class OidcProfileTests implements TestsConstants {
     }
 
     @Test
-    public void testClearProfile() {
+    public void testRemoveLoginData() {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken());
         profile.setIdTokenString(ID);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        profile.clearSensitiveData();
+        profile.removeLoginData();
         assertNull(profile.getAccessToken());
-        assertNotNull(profile.getIdTokenString());
+        assertNull(profile.getIdTokenString());
     }
 
     @Test
@@ -130,7 +130,7 @@ public final class OidcProfileTests implements TestsConstants {
     public void testReadWriteObjectNullTokens() {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
-        profile.clearSensitiveData();
+        profile.removeLoginData();
 
         byte[] result = serializer.serializeToBytes(profile);
         profile = (OidcProfile) serializer.deserializeFromBytes(result);

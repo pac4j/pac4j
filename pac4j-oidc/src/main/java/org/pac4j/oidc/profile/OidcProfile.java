@@ -137,7 +137,8 @@ public class OidcProfile extends AbstractJwtProfile {
     }
 
     @Override
-    public void clearSensitiveData() {
+    public void removeLoginData() {
+        removeAttribute(OidcProfileDefinition.ID_TOKEN);
         removeAttribute(OidcProfileDefinition.ACCESS_TOKEN);
         removeAttribute(OidcProfileDefinition.REFRESH_TOKEN);
     }

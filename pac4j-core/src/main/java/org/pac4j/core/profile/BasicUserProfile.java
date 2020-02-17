@@ -43,11 +43,11 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     private String linkedId;
 
     private final boolean canAttributesBeMerged;
-    
+
     public BasicUserProfile() {
         this(true);
     }
-    
+
     /**
      * Create a profile with possibility to merge attributes with the same name and collection-type values.
      * @param canAttributesBeMerged if true - merge attributes with the same name and collection-type values, if false - overwrite them
@@ -146,7 +146,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
 
     /**
      * Add an attribute.
-     * 
+     *
      * If existing attribute value is collection and the new value is collection - merge the collections
      *
      * @param key key of the attribute
@@ -451,7 +451,11 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         this.linkedId = (String) in.readObject();
     }
 
-    public void clearSensitiveData() {
+    /**
+     * Remove the specific data retrieved during the login process
+     * to only keep the user attributes, roles and permissions.
+     */
+    public void removeLoginData() {
         // No-op. Allow subtypes to specify which state should be cleared out.
     }
 

@@ -23,6 +23,7 @@ title: Release notes&#58;
 - A profile can be renewed by its client when it's expired
 - Most web authorizers are now matchers. The default matchers are "securityHeaders,csrfToken" and the default authorizer is "csrfCheck". Use "none" for no matcher or authorizer
 - Use the `FindBest` utility class to find the best adapter, logic...
+- REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 
 **v3.8.3**:
 
@@ -38,7 +39,7 @@ title: Release notes&#58;
 - Sign metadata when configured to do so and open up the metadata generation API for customization.
 - Never sign AuthnRequests with XMLSig when using REDIRECT binding, signing is done via the Signature query parameter.
 - Added support for LinkedIn v2 API
-- Added support for FigShare 
+- Added support for FigShare
 
 **v3.7.0**:
 

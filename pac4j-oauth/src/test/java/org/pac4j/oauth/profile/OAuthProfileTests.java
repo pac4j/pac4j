@@ -23,7 +23,7 @@ public final class OAuthProfileTests implements TestsConstants {
         DropBoxProfile profile = new DropBoxProfile();
         profile.setAccessToken(VALUE);
         profile.setAccessSecret(VALUE);
-        profile.clearSensitiveData();
+        profile.removeLoginData();
         assertNull(profile.getAccessToken());
         assertNull(profile.getAccessSecret());
     }
@@ -32,7 +32,7 @@ public final class OAuthProfileTests implements TestsConstants {
     public void testClearGitHubProfile() {
         GitHubProfile profile = new GitHubProfile();
         profile.setAccessToken("testToken");
-        profile.clearSensitiveData();
+        profile.removeLoginData();
         assertNull(profile.getAccessToken());
     }
 
