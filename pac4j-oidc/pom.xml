@@ -14,7 +14,7 @@
 
     <properties>
         <oauth-oidc-sdk.version>7.0</oauth-oidc-sdk.version>
-        <javax.mail.version>1.6.1</javax.mail.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
     </properties>
 
     <dependencies>
