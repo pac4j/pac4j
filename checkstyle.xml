@@ -5,10 +5,10 @@
   <module name="NewlineAtEndOfFile">
     <property name="lineSeparator" value="lf"/>
   </module>
+  <module name="LineLength">
+    <property name="max" value="140"/>
+  </module>
   <module name="TreeWalker">
-    <module name="LineLength">
-      <property name="max" value="140"/>
-    </module>
     <module name="Indentation">
       <property name="basicOffset" value="4"/>
       <property name="arrayInitIndent" value="8"/>
