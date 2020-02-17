@@ -109,16 +109,17 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     }
 
     private void cleanRequestedUrl(final WebContext context) {
-        SessionStore<WebContext> sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent()) {
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
-        }
+        cleanSessionData(context, Pac4jConstants.REQUESTED_URL);
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
+        cleanSessionData(context, ATTEMPTED_AUTHENTICATION_SUFFIX);
+    }
+
+    private void cleanSessionData(final WebContext context, final String key) {
         SessionStore<WebContext> sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent()) {
-            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+        if (sessionStore.get(context, getName() + key).isPresent()) {
+            sessionStore.set(context, getName() + key, "");
         }
     }
 
