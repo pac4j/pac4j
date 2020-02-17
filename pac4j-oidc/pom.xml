@@ -13,7 +13,8 @@
     <name>pac4j for OpenID Connect protocol</name>
 
     <properties>
-        <oauth-oidc-sdk.version>6.23</oauth-oidc-sdk.version>
+        <oauth-oidc-sdk.version>7.0</oauth-oidc-sdk.version>
+        <javax.mail.version>1.6.1</javax.mail.version>
     </properties>
 
     <dependencies>
@@ -39,6 +40,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax.mail.version}</version>
         </dependency>
         <!-- for testing -->
         <dependency>

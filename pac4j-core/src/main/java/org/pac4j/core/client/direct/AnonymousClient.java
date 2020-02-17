@@ -20,7 +20,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
     public AnonymousClient() {
         if (!warned) {
-            logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issue!");
+            logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issues!");
             warned = true;
         }
     }
