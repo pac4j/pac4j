@@ -1,6 +1,6 @@
 package org.pac4j.core.credentials;
 
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.CommonHelper;
 
 /**

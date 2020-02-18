@@ -1,6 +1,6 @@
 package org.pac4j.core.http.callback;
 
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;

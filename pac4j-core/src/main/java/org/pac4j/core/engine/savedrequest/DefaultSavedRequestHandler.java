@@ -1,7 +1,7 @@
 package org.pac4j.core.engine.savedrequest;
 
 import org.pac4j.core.context.ContextHelper;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 import org.slf4j.Logger;

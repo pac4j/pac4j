@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;

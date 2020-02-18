@@ -1,7 +1,7 @@
 package org.pac4j.sql.test.tools;
 
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;

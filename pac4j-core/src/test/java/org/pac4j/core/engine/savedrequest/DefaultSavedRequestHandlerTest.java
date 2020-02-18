@@ -3,7 +3,7 @@ package org.pac4j.core.engine.savedrequest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.util.TestsConstants;

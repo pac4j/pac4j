@@ -1,6 +1,6 @@
 package org.pac4j.core.profile;
 
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.net.URI;
@@ -19,7 +19,7 @@ public class CommonProfile extends BasicUserProfile {
     public CommonProfile() {
         this(true);
     }
-    
+
     /**
      * Create a profile with possibility to merge attributes with the same name and collection-type values
      * @param canMergeAttributes if true - merge attributes with the same name and collection-type values, if false - overwrite them

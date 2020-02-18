@@ -1,7 +1,7 @@
 package org.pac4j.core.matching.checker;
 
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.matching.matcher.*;
 import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;

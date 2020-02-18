@@ -3,7 +3,7 @@ package org.pac4j.core.http.callback;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.util.TestsConstants;
 

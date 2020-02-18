@@ -6,6 +6,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.DefaultMatchers;
 import org.pac4j.core.matching.matcher.HttpMethodMatcher;
 import org.pac4j.core.matching.matcher.Matcher;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 

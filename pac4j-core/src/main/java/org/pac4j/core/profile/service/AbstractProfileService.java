@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static org.pac4j.core.context.Pac4jConstants.*;
+import static org.pac4j.core.util.Pac4jConstants.*;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.*;
 

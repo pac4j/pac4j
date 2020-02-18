@@ -11,6 +11,7 @@ import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.BasicUserProfile;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.*;

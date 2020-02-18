@@ -2,7 +2,7 @@ package org.pac4j.cas.client.rest;
 
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 import org.pac4j.core.util.CommonHelper;
 

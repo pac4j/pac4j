@@ -1,4 +1,4 @@
-package org.pac4j.core.context;
+package org.pac4j.core.util;
 
 /**
  * Common constants.

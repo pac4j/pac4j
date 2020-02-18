@@ -1,6 +1,6 @@
 package org.pac4j.core.profile.definition;
 
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.factory.ProfileFactory;

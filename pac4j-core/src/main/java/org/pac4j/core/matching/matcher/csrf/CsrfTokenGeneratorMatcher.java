@@ -1,7 +1,7 @@
 package org.pac4j.core.matching.matcher.csrf;
 
 import org.pac4j.core.context.Cookie;
-import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.util.CommonHelper;
