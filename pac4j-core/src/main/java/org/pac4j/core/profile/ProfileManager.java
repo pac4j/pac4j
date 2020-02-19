@@ -10,6 +10,8 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -22,6 +24,8 @@ import java.util.*;
 public class ProfileManager<U extends UserProfile> {
 
     private final Authorizer<U> IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer<U>();
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final WebContext context;
 
@@ -109,9 +113,13 @@ public class ProfileManager<U extends UserProfile> {
                 if (config != null && profile.getClientName() != null) {
                     final Optional<Client> client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
-                        final Optional<U> newProfile = client.get().renewUserProfile(profile, context);
-                        if (newProfile.isPresent()) {
-                            profiles.put(key, newProfile.get());
+                        try {
+                            final Optional<U> newProfile = client.get().renewUserProfile(profile, context);
+                            if (newProfile.isPresent()) {
+                                profiles.put(key, newProfile.get());
+                            }
+                        } catch (final RuntimeException e) {
+                            logger.error("Unable to renew the user profile for key: {}", key, e);
                         }
                     }
                 }
