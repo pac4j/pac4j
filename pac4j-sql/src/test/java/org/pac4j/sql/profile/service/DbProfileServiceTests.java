@@ -150,6 +150,37 @@ public final class DbProfileServiceTests implements TestsConstants {
         assertEquals(0, results3.size());
     }
 
+    @Test
+    public void testChangeUserAndPasswordAttributes() {
+        alterTableChangeColumnName(USERNAME, ALT_USER_ATT);
+        alterTableChangeColumnName(PASSWORD, ALT_PASS_ATT);
+        final DbProfileService dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
+        dbProfileService.setPasswordAttribute(ALT_PASS_ATT);
+        dbProfileService.setUsernameAttribute(ALT_USER_ATT);
+        final DbProfile profile = new DbProfile();
+        profile.setId("" + DB_ID);
+        profile.setLinkedId(DB_LINKED_ID);
+        profile.addAttribute(USERNAME, DB_USER);
+        // create
+        dbProfileService.create(profile, DB_PASS);
+        // check credentials
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
+        dbProfileService.validate(credentials, null);
+        assertNotNull(credentials.getUserProfile());
+
+        // clean up
+        dbProfileService.remove((DbProfile) credentials.getUserProfile());
+        alterTableChangeColumnName(ALT_USER_ATT, USERNAME);
+        alterTableChangeColumnName(ALT_PASS_ATT, PASSWORD);
+    }
+
+    private void alterTableChangeColumnName(String from, String to) {
+        final DBI dbi = new DBI(ds);
+        try (Handle h = dbi.open()) {
+            h.execute("alter table users rename column " + from + " to " + to);
+        }
+    }
+
     private List<Map<String, Object>> getData(final int id) {
         final DBI dbi = new DBI(ds);
         Handle h = null;

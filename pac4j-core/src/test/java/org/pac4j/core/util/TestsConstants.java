@@ -37,6 +37,9 @@ public interface TestsConstants {
     String PATH = "/tmp/path";
     String EMAIL = "test@example.com";
     String TICKET = "ST-1-454s54f44ez4x54cx54vds6f46-cas000";
+    String ALT_USER_ATT = "altUserAttribute";
+    String ALT_PASS_ATT = "altPassAttribute";
+
 
     //Digest components
     String DIGEST_RESPONSE = "0353b452a373c2bf9dbff4e0abaf3be7";

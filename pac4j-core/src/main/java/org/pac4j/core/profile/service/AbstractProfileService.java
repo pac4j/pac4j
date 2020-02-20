@@ -283,7 +283,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
         final List<String> attributesToRead = defineAttributesToRead();
         // + password to check
-        attributesToRead.add(PASSWORD);
+        attributesToRead.add(getPasswordAttribute());
 
         try {
             final List<Map<String, Object>> listAttributes = read(attributesToRead, getUsernameAttribute(), username);
