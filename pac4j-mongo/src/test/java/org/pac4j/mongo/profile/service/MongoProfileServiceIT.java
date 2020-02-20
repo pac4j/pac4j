@@ -196,6 +196,25 @@ public final class MongoProfileServiceIT implements TestsConstants {
         assertEquals(0, results3.size());
     }
 
+    @Test
+    public void testChangeUserAndPasswordAttributes() {
+        final MongoProfileService mongoProfileService = new MongoProfileService(getClient(), MongoServer.PASSWORD_ENCODER);
+        mongoProfileService.setUsernameAttribute(ALT_USER_ATT);
+        mongoProfileService.setPasswordAttribute(ALT_PASS_ATT);
+        final ObjectId objectId = new ObjectId();
+        final MongoProfile profile = new MongoProfile();
+        profile.setId(MONGO_ID);
+        profile.setLinkedId(MONGO_LINKEDID);
+        profile.addAttribute(USERNAME, MONGO_USER);
+        profile.addAttribute(FIRSTNAME, objectId);
+        // create
+        mongoProfileService.create(profile, MONGO_PASS);
+        // check credentials
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
+        mongoProfileService.validate(credentials, null);
+        assertNotNull(credentials.getUserProfile());
+    }
+
     private List<Map<String, Object>> getData(final MongoProfileService service, final String id) {
         return service.read(null, ID, id);
     }
