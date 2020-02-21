@@ -23,38 +23,38 @@ public class JEESessionStore implements SessionStore<JEEContext> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected HttpSession getHttpSession(final JEEContext context) {
+    protected HttpSession getNativeSession(final JEEContext context) {
         return context.getNativeRequest().getSession();
     }
 
     @Override
     public String getOrCreateSessionId(final JEEContext context) {
-        return getHttpSession(context).getId();
+        return getNativeSession(context).getId();
     }
 
     @Override
     public Optional get(final JEEContext context, final String key) {
-        return Optional.ofNullable(getHttpSession(context).getAttribute(key));
+        return Optional.ofNullable(getNativeSession(context).getAttribute(key));
     }
 
     @Override
     public void set(final JEEContext context, final String key, final Object value) {
         if (value == null) {
-            getHttpSession(context).removeAttribute(key);
+            getNativeSession(context).removeAttribute(key);
         } else {
-            getHttpSession(context).setAttribute(key, value);
+            getNativeSession(context).setAttribute(key, value);
         }
     }
 
     @Override
     public boolean destroySession(final JEEContext context) {
-        getHttpSession(context).invalidate();
+        getNativeSession(context).invalidate();
         return true;
     }
 
     @Override
     public Optional getTrackableSession(final JEEContext context) {
-        return Optional.ofNullable(getHttpSession(context));
+        return Optional.ofNullable(getNativeSession(context));
     }
 
     @Override

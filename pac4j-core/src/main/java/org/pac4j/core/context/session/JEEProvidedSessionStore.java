@@ -21,7 +21,7 @@ class JEEProvidedSessionStore extends JEESessionStore {
     }
 
     @Override
-    protected HttpSession getHttpSession(final JEEContext context) {
+    protected HttpSession getNativeSession(final JEEContext context) {
         return session;
     }
 }
