@@ -94,6 +94,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.oidc</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.oidc</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.oidc.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>

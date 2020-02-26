@@ -67,6 +67,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.cas</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.cas</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.cas.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>

@@ -59,6 +59,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.sql</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.sql</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.sql.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>

@@ -121,6 +121,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.config</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.config</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.config.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>

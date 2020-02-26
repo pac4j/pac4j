@@ -74,6 +74,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.openid</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.openid</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.openid.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
