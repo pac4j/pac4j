@@ -235,6 +235,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.saml</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.saml2</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.saml.*;version=${project.version}</Export-Package>
                         <Import-Package>org.joda.time;version="[1.6,3)",*</Import-Package>
