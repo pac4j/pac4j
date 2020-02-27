@@ -97,6 +97,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.kerberos</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.kerberos</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.kerberos.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>

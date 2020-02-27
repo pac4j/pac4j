@@ -65,6 +65,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>pac4j.mongo</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.mongo</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.mongo.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
