@@ -45,6 +45,7 @@ import org.bouncycastle.util.io.pem.PemWriter;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
@@ -175,6 +176,8 @@ public class SAML2Configuration extends InitializableObject {
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
 
     private List<SAML2MetadataUIInfo> metadataUIInfos = new ArrayList<>();
+
+    private String issuerFormat = Issuer.ENTITY;
 
     /**
      * If {@link #nameIdPolicyFormat} is defined, this setting
@@ -931,5 +934,13 @@ public class SAML2Configuration extends InitializableObject {
                 .getSignatureCanonicalizationAlgorithm();
             LOGGER.info("Bootstrapped Canonicalization Algorithm");
         }
+    }
+
+    public String getIssuerFormat() {
+        return issuerFormat;
+    }
+
+    public void setIssuerFormat(final String issuerFormat) {
+        this.issuerFormat = issuerFormat;
     }
 }
