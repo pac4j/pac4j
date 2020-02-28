@@ -7,6 +7,7 @@ While most *pac4j* security libraries provide the same features, there are diffe
 
 Here are the main features categories:
 
+- [version](./version.html)
 - [configuration](./config.html)
 - [security filtering and callback/logout endpoints](./filters.html)
 - [web components](./webcomponents.html)
@@ -23,7 +24,7 @@ Here are the main features categories:
     border: 0
   }
 </style>
-  
+
 <table>
     <tr>
         <td><img src="/img/green_check.png" /></td>
