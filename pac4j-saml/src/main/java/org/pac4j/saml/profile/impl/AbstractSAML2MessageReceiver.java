@@ -10,6 +10,7 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2MessageReceiver;
@@ -47,8 +48,8 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         context.getMessageContext().setMessage(message);
         decodedCtx.setSAMLMessageStore(context.getSAMLMessageStore());
 
-        final SAMLBindingContext bindingContext = decodedCtx.getMessageContext().getParent().getSubcontext(SAMLBindingContext.class);
-
+        final SAMLBindingContext bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
+        CommonHelper.assertNotNull("SAMLBindingContext", bindingContext);
         decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
         decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
         decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
@@ -59,7 +60,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         context.getSAMLBindingContext().setRelayState(relayState);
 
         final AssertionConsumerService acsService
-                = context.getSPAssertionConsumerService((Response) decodedCtx.getMessageContext().getMessage());
+            = context.getSPAssertionConsumerService((Response) decodedCtx.getMessageContext().getMessage());
         decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
 
         final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
@@ -67,8 +68,9 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
             throw new SAMLException("IDP Metadata cannot be null");
         }
 
-        final SAMLPeerEntityContext decodedPeerContext = decodedCtx.getMessageContext().getParent()
-            .getSubcontext(SAMLPeerEntityContext.class);
+        final SAMLPeerEntityContext decodedPeerContext = decoder.getMessageContext().getSubcontext(SAMLPeerEntityContext.class);
+        CommonHelper.assertNotNull("SAMLPeerEntityContext", bindingContext);
+
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
         decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext != null && decodedPeerContext.isAuthenticated());
 
