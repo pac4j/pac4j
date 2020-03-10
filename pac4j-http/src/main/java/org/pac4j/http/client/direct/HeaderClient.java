@@ -62,7 +62,7 @@ public class HeaderClient extends DirectClient<TokenCredentials> {
         return headerName;
     }
 
-    public void setHeaderName(String headerName) {
+    public void setHeaderName(final String headerName) {
         this.headerName = headerName;
     }
 
@@ -70,7 +70,7 @@ public class HeaderClient extends DirectClient<TokenCredentials> {
         return prefixHeader;
     }
 
-    public void setPrefixHeader(String prefixHeader) {
+    public void setPrefixHeader(final String prefixHeader) {
         this.prefixHeader = prefixHeader;
     }
 

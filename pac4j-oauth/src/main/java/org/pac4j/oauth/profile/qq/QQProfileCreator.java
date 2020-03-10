@@ -28,14 +28,14 @@ public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
     }
 
     @Override
-    public Optional<UserProfile> retrieveUserProfileFromToken(WebContext context,
-                                                              OAuth2AccessToken accessToken) {
-        QQProfileDefinition profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
-        String openidUrl = profileDefinition.getOpenidUrl(accessToken, configuration);
+    public Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context,
+                                                              final OAuth2AccessToken accessToken) {
+        final QQProfileDefinition profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
+        final String openidUrl = profileDefinition.getOpenidUrl(accessToken, configuration);
         final OAuth20Service service = this.configuration.buildService(context, client);
 
         String body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
-        String openid = profileDefinition.extractOpenid(body);
+        final String openid = profileDefinition.extractOpenid(body);
 
         String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         profileUrl = CommonHelper.addParameter(profileUrl, "openid", openid);

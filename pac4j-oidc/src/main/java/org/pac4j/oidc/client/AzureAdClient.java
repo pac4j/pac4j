@@ -69,7 +69,7 @@ public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
         return new PathParameterCallbackUrlResolver();
     }
 
-    public String getAccessTokenFromRefreshToken(AzureAdProfile azureAdProfile) {
+    public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
         CommonHelper.assertTrue(CommonHelper.isNotBlank(getConfiguration().getTenant()),
             "Tenant must be defined. Update your config.");
         HttpURLConnection connection = null;
@@ -90,7 +90,7 @@ public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
             if (responseCode != 200) {
                 throw new TechnicalException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
             }
-            String body = HttpUtils.readBody(connection);
+            final String body = HttpUtils.readBody(connection);
             final Map<String, Object> res = objectMapper.readValue(body, typeRef);
             return (String)res.get("access_token");
         } catch (final IOException e) {

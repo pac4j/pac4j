@@ -51,12 +51,12 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
     }
     
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, HiOrgServerConfiguration configuration) {
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final HiOrgServerConfiguration configuration) {
         return BASE_URL;
     }
     
     @Override
-    public HiOrgServerProfile extractUserProfile(String body) {
+    public HiOrgServerProfile extractUserProfile(final String body) {
         final HiOrgServerProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
@@ -75,12 +75,12 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         return profile;
     }
     
-    protected void extractRoles(HiOrgServerProfile profile) {
+    protected void extractRoles(final HiOrgServerProfile profile) {
         final Integer rolesAsInt = profile.getRolesAsInteger();
-        Set<String> roles = new HashSet<>();
+        final Set<String> roles = new HashSet<>();
         for (int i = 0; i <= 10; i++) {
-            int groupId = (int) Math.pow(2, i);
-            boolean isGroupSet = (rolesAsInt & groupId) == groupId;
+            final int groupId = (int) Math.pow(2, i);
+            final boolean isGroupSet = (rolesAsInt & groupId) == groupId;
             if (isGroupSet) {
                 logger.debug("Extracted role " + groupId);
                 roles.add(String.valueOf(groupId));

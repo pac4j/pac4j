@@ -42,7 +42,7 @@ public final class JEEContextTest implements TestsConstants {
     }
 
     private void internalTestGetHeader(final String key) {
-        HashSet<String> headerNames = new HashSet<>();
+        final HashSet<String> headerNames = new HashSet<>();
         headerNames.add(KEY);
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(headerNames));
         when(request.getHeader(KEY)).thenReturn(VALUE);

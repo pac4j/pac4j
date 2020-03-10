@@ -39,7 +39,7 @@ public final class FacebookEvent implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -47,7 +47,7 @@ public final class FacebookEvent implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -55,7 +55,7 @@ public final class FacebookEvent implements Serializable {
         return newDate(startTime);
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(final Date startTime) {
         this.startTime = newDate(startTime);
     }
 
@@ -63,7 +63,7 @@ public final class FacebookEvent implements Serializable {
         return newDate(endTime);
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(final Date endTime) {
         this.endTime = newDate(endTime);
     }
 
@@ -71,7 +71,7 @@ public final class FacebookEvent implements Serializable {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(final String location) {
         this.location = location;
     }
 
@@ -79,7 +79,7 @@ public final class FacebookEvent implements Serializable {
         return rsvpStatus;
     }
 
-    public void setRsvpStatus(String rsvpStatus) {
+    public void setRsvpStatus(final String rsvpStatus) {
         this.rsvpStatus = rsvpStatus;
     }
 }

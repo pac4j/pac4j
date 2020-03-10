@@ -24,8 +24,9 @@ public class OrcidApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
-            Map<String, String> additionalParams) {
+    public String getAuthorizationUrl(final String responseType, final String apiKey, String callback,
+                                      final String scope, final String state,
+                                      final Map<String, String> additionalParams) {
         if (callback != null && !callback.endsWith("#show_login")) {
             callback = callback + "#show_login";
         }

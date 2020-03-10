@@ -18,19 +18,19 @@ import org.pac4j.saml.metadata.SAML2MetadataResolver;
 public class FixedEntityIdResolver implements Resolver<String, CriteriaSet> {
     private SAML2MetadataResolver metadataResolver;
 
-    public FixedEntityIdResolver(SAML2MetadataResolver metadataResolver) {
+    public FixedEntityIdResolver(final SAML2MetadataResolver metadataResolver) {
         this.metadataResolver = metadataResolver;
     }
 
     @Override
     @Nonnull
-    public Iterable<String> resolve(@Nullable CriteriaSet criteria) {
+    public Iterable<String> resolve(@Nullable final CriteriaSet criteria) {
         return Collections.singletonList(metadataResolver.getEntityId());
     }
 
     @Override
     @Nullable
-    public String resolveSingle(@Nullable CriteriaSet criteria) {
+    public String resolveSingle(@Nullable final CriteriaSet criteria) {
         return metadataResolver.getEntityId();
     }
 }

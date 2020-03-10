@@ -23,7 +23,7 @@ public class FoursquareUserFriendGroup implements Serializable {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(final int count) {
         this.count = count;
     }
 
@@ -31,7 +31,7 @@ public class FoursquareUserFriendGroup implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -39,7 +39,7 @@ public class FoursquareUserFriendGroup implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -47,7 +47,7 @@ public class FoursquareUserFriendGroup implements Serializable {
         return friends;
     }
 
-    public void setFriends(List<FoursquareUserFriend> friends) {
+    public void setFriends(final List<FoursquareUserFriend> friends) {
         this.friends = friends;
     }
 }

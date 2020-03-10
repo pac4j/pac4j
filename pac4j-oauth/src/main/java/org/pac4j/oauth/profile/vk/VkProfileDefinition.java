@@ -72,10 +72,10 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkC
     @Override
     public VkProfile extractUserProfile(final String body) {
         final VkProfile profile = newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            ArrayNode array = (ArrayNode) json.get("response");
-            JsonNode userNode = array.get(0);
+            final ArrayNode array = (ArrayNode) json.get("response");
+            final JsonNode userNode = array.get(0);
             if (userNode == null) {
                 raiseProfileExtractionJsonError(body, "response");
             }

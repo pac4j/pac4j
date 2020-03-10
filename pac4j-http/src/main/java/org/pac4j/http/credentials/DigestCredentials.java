@@ -65,7 +65,7 @@ public class DigestCredentials extends TokenCredentials {
      * @return digest value. This value must match the client "response" value in the Authorization http header
      * for a successful digest authentication
      */
-    public String calculateServerDigest(boolean passwordAlreadyEncoded, String password) {
+    public String calculateServerDigest(final boolean passwordAlreadyEncoded, final String password) {
         return generateDigest(passwordAlreadyEncoded, username,
                 realm, password, httpMethod, uri, qop, nonce, nc, cnonce);
     }
@@ -75,12 +75,12 @@ public class DigestCredentials extends TokenCredentials {
      *
      * @return digest token
      */
-    private String generateDigest(boolean passwordAlreadyEncoded, String username,
-                                 String realm, String password, String httpMethod, String uri, String qop,
-                                 String nonce, String nc, String cnonce) {
-        String ha1;
-        String a2 = httpMethod + ":" + uri;
-        String ha2 = CredentialUtil.encryptMD5(a2);
+    private String generateDigest(final boolean passwordAlreadyEncoded, final String username,
+                                  final String realm, final String password, final String httpMethod, final String uri, final String qop,
+                                  final String nonce, final String nc, final String cnonce) {
+        final String ha1;
+        final String a2 = httpMethod + ":" + uri;
+        final String ha2 = CredentialUtil.encryptMD5(a2);
 
         if (passwordAlreadyEncoded) {
             ha1 = password;
@@ -88,7 +88,7 @@ public class DigestCredentials extends TokenCredentials {
             ha1 = CredentialUtil.encryptMD5(username + ":" + realm + ":" +password);
         }
 
-        String digest;
+        final String digest;
 
         if (qop == null) {
             digest = CredentialUtil.encryptMD5(ha1, nonce + ":" + ha2);
@@ -106,7 +106,7 @@ public class DigestCredentials extends TokenCredentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;

@@ -94,7 +94,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
         }
         if (!matchers.isEmpty()) {
             // check matching using matchers: all must be satisfied
-            for (Matcher matcher : matchers) {
+            for (final Matcher matcher : matchers) {
                 if (!matcher.matches(context)) {
                     return false;
                 }

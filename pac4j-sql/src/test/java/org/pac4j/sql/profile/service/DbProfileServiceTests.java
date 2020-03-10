@@ -174,9 +174,9 @@ public final class DbProfileServiceTests implements TestsConstants {
         alterTableChangeColumnName(ALT_PASS_ATT, PASSWORD);
     }
 
-    private void alterTableChangeColumnName(String from, String to) {
+    private void alterTableChangeColumnName(final String from, final String to) {
         final DBI dbi = new DBI(ds);
-        try (Handle h = dbi.open()) {
+        try ( Handle h = dbi.open()) {
             h.execute("alter table users rename column " + from + " to " + to);
         }
     }

@@ -22,7 +22,7 @@ public class X509CredentialsExtractor implements CredentialsExtractor<X509Creden
     private static final Logger logger = LoggerFactory.getLogger(X509CredentialsExtractor.class);
 
     @Override
-    public Optional<X509Credentials> extract(WebContext context) {
+    public Optional<X509Credentials> extract(final WebContext context) {
         final Optional<X509Certificate[]> certificates =
             (Optional<X509Certificate[]>) context.getRequestAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 

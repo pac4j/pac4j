@@ -46,7 +46,7 @@ public class Saml2MetadataFilter implements Filter {
         CommonHelper.assertNotNull("config", config);
         CommonHelper.assertNotNull("clientName", clientName);
 
-        SAML2Client client = (SAML2Client) config.getClients().findClient(this.clientName).get();
+        final SAML2Client client = (SAML2Client) config.getClients().findClient(this.clientName).get();
         if (client != null) {
             client.init();
             servletResponse.getWriter().write(client.getServiceProviderMetadataResolver().getMetadata());
@@ -72,7 +72,7 @@ public class Saml2MetadataFilter implements Filter {
         return clientName;
     }
 
-    public void setClientName(String clientName) {
+    public void setClientName(final String clientName) {
         this.clientName = clientName;
     }
 

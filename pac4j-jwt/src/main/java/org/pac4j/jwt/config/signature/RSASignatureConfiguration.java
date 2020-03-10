@@ -54,7 +54,7 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
     }
 
     @Override
-    public SignedJWT sign(JWTClaimsSet claims) {
+    public SignedJWT sign(final JWTClaimsSet claims) {
         init();
         CommonHelper.assertNotNull("privateKey", privateKey);
 

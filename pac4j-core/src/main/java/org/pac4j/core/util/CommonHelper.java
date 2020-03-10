@@ -271,9 +271,9 @@ public final class CommonHelper {
         if (str == null || open == null || close == null) {
             return null;
         }
-        int start = str.indexOf(open);
+        final int start = str.indexOf(open);
         if (start != INDEX_NOT_FOUND) {
-            int end = str.indexOf(close, start + open.length());
+            final int end = str.indexOf(close, start + open.length());
             if (end != INDEX_NOT_FOUND) {
                 return str.substring(start + open.length(), end);
             }
@@ -288,7 +288,7 @@ public final class CommonHelper {
         if (separator == null) {
             return EMPTY;
         }
-        int pos = str.indexOf(separator);
+        final int pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
             return EMPTY;
         }
@@ -302,7 +302,7 @@ public final class CommonHelper {
         if (separator.length() == 0) {
             return EMPTY;
         }
-        int pos = str.indexOf(separator);
+        final int pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
             return str;
         }
@@ -329,7 +329,7 @@ public final class CommonHelper {
             synchronized (constructorsCache) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
-                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 
                     if (tccl == null) {
                         constructor = Class.forName(name).getDeclaredConstructor();

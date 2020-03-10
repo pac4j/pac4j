@@ -27,22 +27,22 @@ public final class CouchServer implements TestsConstants {
     public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
 
     public CouchDbConnector start() {
-        InMemoryCouchDb couchDbClient = new InMemoryCouchDb();
+        final InMemoryCouchDb couchDbClient = new InMemoryCouchDb();
         couchDbClient.createDatabase("users");
-        StdHttpClient stdHttpClient = new StdHttpClient(couchDbClient);
-        StdCouchDbInstance stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
-        StdCouchDbConnector couchDbConnector = new StdCouchDbConnector("users", stdCouchDbInstance);
+        final StdHttpClient stdHttpClient = new StdHttpClient(couchDbClient);
+        final StdCouchDbInstance stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
+        final StdCouchDbConnector couchDbConnector = new StdCouchDbConnector("users", stdCouchDbInstance);
 
         couchDbConnector.createDatabaseIfNotExists();
 
         // uploading design doc:
-        String designDocString = "{\"_id\":\"_design/pac4j\",\"language\":\"javascript\",\"views\":{\"by_username\":{\"map\":\""
+        final String designDocString = "{\"_id\":\"_design/pac4j\",\"language\":\"javascript\",\"views\":{\"by_username\":{\"map\":\""
             + "function(doc){if (doc.username) emit(doc.username, doc);}\"},\"by_linkedid\":{\"map\":\"function(doc) {"
             + "if (doc.linkedid) emit(doc.linkedid, doc);}\"}}}";
-        ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
         try {
             couchDbConnector.create(objectMapper.readTree(designDocString));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return null;
         }

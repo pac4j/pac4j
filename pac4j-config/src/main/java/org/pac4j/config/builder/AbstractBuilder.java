@@ -35,7 +35,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
         this.authenticators = authenticators;
     }
 
-    protected String concat(final String value, int num) {
+    protected String concat(final String value, final int num) {
         return value.concat(num == 0 ? "" : "." + num);
     }
 

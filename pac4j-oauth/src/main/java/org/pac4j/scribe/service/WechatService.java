@@ -40,28 +40,30 @@ public class WechatService extends OAuth20Service {
      * @param httpClient  the HTTP client
      * 
      */
-    public WechatService(DefaultApi20 api, String apiKey, String apiSecret, String callback, String scope,
-            String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+    public WechatService(final DefaultApi20 api, final String apiKey, final String apiSecret,
+                         final String callback, final String scope,
+                         final String responseType, final String userAgent,
+                         final HttpClientConfig httpClientConfig, final HttpClient httpClient) {
         super(api, apiKey, apiSecret, callback, scope, responseType, null, userAgent, httpClientConfig, httpClient);
         this.apiKey = apiKey;
         this.apiSecrect = apiSecret;
     }
 
     @Override
-    public <R> Future<R> execute(OAuthRequest request, OAuthAsyncRequestCallback<R> callback,
-                                 OAuthRequest.ResponseConverter<R> converter) {
-        OAuthRequest authRequest = addClientAuthentication(request);
+    public <R> Future<R> execute(final OAuthRequest request, final OAuthAsyncRequestCallback<R> callback,
+                                 final OAuthRequest.ResponseConverter<R> converter) {
+        final OAuthRequest authRequest = addClientAuthentication(request);
         return super.execute(authRequest, callback, converter);
     }
 
     @Override
-    public Response execute(OAuthRequest request)
+    public Response execute(final OAuthRequest request)
         throws InterruptedException, ExecutionException, IOException {
-        OAuthRequest authRequest = addClientAuthentication(request);
+        final OAuthRequest authRequest = addClientAuthentication(request);
         return super.execute(authRequest);
     }
 
-    private OAuthRequest addClientAuthentication(OAuthRequest request) {
+    private OAuthRequest addClientAuthentication(final OAuthRequest request) {
         request.addParameter(WechatApi20.APPID, this.apiKey);
         request.addParameter(WechatApi20.SECRET, this.apiSecrect);
         return request;

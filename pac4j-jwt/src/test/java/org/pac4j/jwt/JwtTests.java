@@ -85,33 +85,33 @@ public final class JwtTests implements TestsConstants {
     @Test
     public void testPlainJwtNotExpired() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
-        Map<String, Object> claims = new HashMap<>();
+        final Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaims.SUBJECT, ID);
         claims.put(JwtClaims.EXPIRATION_TIME, tomorrow());
         final String token = generator.generate(claims);
-        JwtAuthenticator authenticator = new JwtAuthenticator();
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
         assertNotNull(authenticator.validateToken(token));
     }
 
     @Test
     public void testPlainJwtExpired() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
-        Map<String, Object> claims = new HashMap<>();
+        final Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaims.SUBJECT, ID);
         claims.put(JwtClaims.EXPIRATION_TIME, yesterday());
         final String token = generator.generate(claims);
-        JwtAuthenticator authenticator = new JwtAuthenticator();
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
         assertNull(authenticator.validateToken(token));
     }
 
     @Test
     public void testPlainJwtExpiredByAuthenticator() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
-        Map<String, Object> claims = new HashMap<>();
+        final Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaims.SUBJECT, ID);
         claims.put(JwtClaims.EXPIRATION_TIME, tomorrow());
         final String token = generator.generate(claims);
-        JwtAuthenticator authenticator = new JwtAuthenticator();
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
         final Date expDate = new Date();
         expDate.setHours(-1);
         authenticator.setExpirationTime(expDate);
@@ -122,7 +122,7 @@ public final class JwtTests implements TestsConstants {
     public void testPlainJwtNoSubject() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final String token = generator.generate(new HashMap<>());
-        JwtAuthenticator authenticator = new JwtAuthenticator();
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
         TestsHelper.expectException(() -> authenticator.validateToken(token), TechnicalException.class,
             "The JWT must contain a subject or an id must be generated via the identifierGenerator");
     }
@@ -131,7 +131,7 @@ public final class JwtTests implements TestsConstants {
     public void testPlainJwtNoSubjectButIdentifierGenerator() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final String token = generator.generate(new HashMap<>());
-        JwtAuthenticator authenticator = new JwtAuthenticator();
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
         authenticator.setIdentifierGenerator(new StaticValueGenerator(VALUE));
         final CommonProfile profile = authenticator.validateToken(token);
         assertEquals(VALUE, profile.getId());
@@ -192,13 +192,13 @@ public final class JwtTests implements TestsConstants {
 
     private Date tomorrow() {
         final Date now = new Date();
-        long tomorrow = now.getTime() + 24 * 3600 * 1000;
+        final long tomorrow = now.getTime() + 24 * 3600 * 1000;
         return new Date(tomorrow);
     }
 
     private Date yesterday() {
         final Date now = new Date();
-        long tomorrow = now.getTime() - 24 * 3600 * 1000;
+        final long tomorrow = now.getTime() - 24 * 3600 * 1000;
         return new Date(tomorrow);
     }
 
@@ -290,12 +290,12 @@ public final class JwtTests implements TestsConstants {
         assertEquals(PERMISSIONS, profile2.getPermissions());
     }
 
-    private CommonProfile assertToken(FacebookProfile profile, String token) {
+    private CommonProfile assertToken(final FacebookProfile profile, final String token) {
         return assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET)));
     }
 
-    private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
+    private CommonProfile assertToken(final FacebookProfile profile, final String token, final JwtAuthenticator authenticator) {
         final TokenCredentials credentials = new TokenCredentials(token);
         authenticator.validate(credentials, null);
         final CommonProfile profile2 = credentials.getUserProfile();

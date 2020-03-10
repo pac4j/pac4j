@@ -19,7 +19,7 @@ public final class ConfigBuilder {
         try {
             logger.info("Build the configuration from factory: {}", factoryName);
             
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             final Class<ConfigFactory> clazz;
             if (tccl == null) {
                 clazz = (Class<ConfigFactory>) Class.forName(factoryName);

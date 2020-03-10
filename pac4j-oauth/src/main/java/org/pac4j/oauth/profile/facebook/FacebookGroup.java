@@ -22,7 +22,7 @@ public final class FacebookGroup implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -30,7 +30,7 @@ public final class FacebookGroup implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -38,7 +38,7 @@ public final class FacebookGroup implements Serializable {
         return privacy;
     }
 
-    public void setPrivacy(String privacy) {
+    public void setPrivacy(final String privacy) {
         this.privacy = privacy;
     }
 }

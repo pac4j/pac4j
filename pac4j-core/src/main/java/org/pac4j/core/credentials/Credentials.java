@@ -20,7 +20,7 @@ public abstract class Credentials implements Serializable {
         return userProfile;
     }
 
-    public void setUserProfile(CommonProfile userProfile) {
+    public void setUserProfile(final CommonProfile userProfile) {
         this.userProfile = userProfile;
     }
 

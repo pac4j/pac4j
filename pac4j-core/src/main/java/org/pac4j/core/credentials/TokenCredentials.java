@@ -14,7 +14,7 @@ public class TokenCredentials extends Credentials {
 
     private String token;
 
-    public TokenCredentials(String token) {
+    public TokenCredentials(final String token) {
         this.token = token;
     }
 
@@ -23,7 +23,7 @@ public class TokenCredentials extends Credentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

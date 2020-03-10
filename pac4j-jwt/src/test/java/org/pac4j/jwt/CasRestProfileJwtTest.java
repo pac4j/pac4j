@@ -34,7 +34,7 @@ public class CasRestProfileJwtTest implements TestsConstants {
         final CasRestProfile casRestProfile = new CasRestProfile(TGT_ID, USERNAME);
         assertNotNull(casRestProfile.getTicketGrantingTicketId());
 
-        String token = generator.generate(casRestProfile);
+        final String token = generator.generate(casRestProfile);
         final JwtAuthenticator jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
             new SecretEncryptionConfiguration(encryptionSecret, JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256));
         jwtAuthenticator.setExpirationTime(DateTime.now().plusMinutes(5).toDate());

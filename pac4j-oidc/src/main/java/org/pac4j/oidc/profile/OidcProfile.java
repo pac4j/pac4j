@@ -144,27 +144,27 @@ public class OidcProfile extends AbstractJwtProfile {
     }
 
     public int getTokenExpirationAdvance() {
-        Object tokenExpirationAdvance = getAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE);
+        final Object tokenExpirationAdvance = getAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE);
         return tokenExpirationAdvance != null ? (int) tokenExpirationAdvance : -1;
     }
 
-    public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
+    public void setTokenExpirationAdvance(final int tokenExpirationAdvance) {
         addAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE, tokenExpirationAdvance);
     }
 
     @Override
     public boolean isExpired() {
-        JWT jwt = this.getIdToken();
+        final JWT jwt = this.getIdToken();
         return isTokenExpired(jwt);
     }
 
     public boolean isRefreshTokenExpired(){
-        RefreshToken refreshToken = this.getRefreshToken();
+        final RefreshToken refreshToken = this.getRefreshToken();
         if(refreshToken != null){
             try {
-                JWT jwt = JWTParser.parse(refreshToken.getValue());
+                final JWT jwt = JWTParser.parse(refreshToken.getValue());
                 return isTokenExpired(jwt);
-            } catch (ParseException e) {
+            } catch (final ParseException e) {
                 throw new TechnicalException(e);
             }
         } else {
@@ -172,19 +172,19 @@ public class OidcProfile extends AbstractJwtProfile {
         }
     }
 
-    private boolean isTokenExpired(JWT jwt){
+    private boolean isTokenExpired(final JWT jwt){
         if (jwt == null || getTokenExpirationAdvance() < 0)
             return false;
         else {
             try {
-                JWTClaimsSet claims = jwt.getJWTClaimsSet();
-                Date expiresOn = claims.getExpirationTime();
+                final JWTClaimsSet claims = jwt.getJWTClaimsSet();
+                final Date expiresOn = claims.getExpirationTime();
 
-                Calendar now = Calendar.getInstance();
+                final Calendar now = Calendar.getInstance();
                 now.add( Calendar.SECOND, getTokenExpirationAdvance() );
 
                 return expiresOn.before(now.getTime());
-            } catch (ParseException e) {
+            } catch (final ParseException e) {
                 throw new TechnicalException(e);
             }
         }

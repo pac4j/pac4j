@@ -18,14 +18,14 @@ import java.util.Optional;
  * @since 3.1.0
  */
 public class WechatProfileCreator extends OAuth20ProfileCreator<WechatProfile> {
-    public WechatProfileCreator(OAuth20Configuration configuration,
-                                IndirectClient client) {
+    public WechatProfileCreator(final OAuth20Configuration configuration,
+                                final IndirectClient client) {
         super(configuration, client);
     }
 
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(WebContext context,
-                                                                 OAuth2AccessToken accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context,
+                                                                 final OAuth2AccessToken accessToken) {
         final WechatToken token = (WechatToken) accessToken;
         final Optional<UserProfile> profile = super.retrieveUserProfileFromToken(context, token);
         ((WechatProfile) profile.get()).setId(token.getOpenid());

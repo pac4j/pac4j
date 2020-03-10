@@ -21,7 +21,7 @@ public class FigShareProfileCreator extends OAuth20ProfileCreator<FigShareProfil
     }
 
     @Override
-    protected void signRequest(OAuth20Service service, OAuth2AccessToken accessToken, OAuthRequest request) {
+    protected void signRequest(final OAuth20Service service, final OAuth2AccessToken accessToken, final OAuthRequest request) {
         super.signRequest(service, accessToken, request);
         request.addParameter(OAuthConstants.ACCESS_TOKEN, accessToken.getAccessToken());
     }

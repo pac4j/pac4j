@@ -36,7 +36,7 @@ public class StrictTransportSecurityMatcher implements Matcher {
         return maxAge;
     }
 
-    public void setMaxAge(int maxAge) {
+    public void setMaxAge(final int maxAge) {
         this.maxAge = maxAge;
     }
 }

@@ -21,7 +21,7 @@ public class FoursquareUserContact implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -29,7 +29,7 @@ public class FoursquareUserContact implements Serializable {
         return twitter;
     }
 
-    public void setTwitter(String twitter) {
+    public void setTwitter(final String twitter) {
         this.twitter = twitter;
     }
 
@@ -37,7 +37,7 @@ public class FoursquareUserContact implements Serializable {
         return facebook;
     }
 
-    public void setFacebook(String facebook) {
+    public void setFacebook(final String facebook) {
         this.facebook = facebook;
     }
 }

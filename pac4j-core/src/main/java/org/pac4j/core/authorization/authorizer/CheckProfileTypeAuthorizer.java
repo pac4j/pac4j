@@ -33,15 +33,15 @@ public class CheckProfileTypeAuthorizer<U extends UserProfile> extends AbstractR
         return profile.getClass().isAssignableFrom(element);
     }
 
-    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Class<U> ... types) {
+    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(final Class<U> ... types) {
         return new CheckProfileTypeAuthorizer<>(types);
     }
 
-    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(List<Class<U>> types) {
+    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(final List<Class<U>> types) {
         return new CheckProfileTypeAuthorizer<>(types);
     }
 
-    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(Set<Class<U>> types) {
+    public static <U extends UserProfile> CheckProfileTypeAuthorizer<U> checkProfileType(final Set<Class<U>> types) {
         return new CheckProfileTypeAuthorizer<>(types);
     }
 

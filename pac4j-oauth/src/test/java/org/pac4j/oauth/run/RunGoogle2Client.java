@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public final class RunGoogle2Client extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunGoogle2Client().run();
     }
 
@@ -51,7 +51,7 @@ public final class RunGoogle2Client extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final Google2Profile profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(Google2Profile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",

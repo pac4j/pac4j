@@ -20,7 +20,8 @@ public class KerberosTicketValidation {
     private final GSSContext gssContext;
     private final String servicePrincipal;
 
-    public KerberosTicketValidation(String username, String servicePrincipal, byte[] responseToken, GSSContext gssContext) {
+    public KerberosTicketValidation(final String username, final String servicePrincipal,
+                                    final byte[] responseToken, final GSSContext gssContext) {
         this.username = username;
         this.servicePrincipal = servicePrincipal;
         if (responseToken != null) {

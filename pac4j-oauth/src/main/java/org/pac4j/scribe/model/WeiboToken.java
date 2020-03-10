@@ -14,7 +14,7 @@ public class WeiboToken extends OAuth2AccessToken {
     private static final long serialVersionUID = 1489916603771001585L;
     private String uid;
 
-    public WeiboToken(OAuth2AccessToken accessToken, String uid) {
+    public WeiboToken(final OAuth2AccessToken accessToken, final String uid) {
         super(accessToken.getAccessToken(), accessToken.getTokenType(), accessToken.getExpiresIn(),
             accessToken.getRefreshToken(), accessToken.getScope(),
             accessToken.getRawResponse());
@@ -26,17 +26,17 @@ public class WeiboToken extends OAuth2AccessToken {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(final String uid) {
         this.uid = uid;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof WeiboToken)) return false;
         if (!super.equals(o)) return false;
 
-        WeiboToken that = (WeiboToken) o;
+        final WeiboToken that = (WeiboToken) o;
 
         return uid != null ? uid.equals(that.uid) : that.uid == null;
     }

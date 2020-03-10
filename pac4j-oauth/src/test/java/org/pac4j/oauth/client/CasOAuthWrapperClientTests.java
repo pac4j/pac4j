@@ -30,7 +30,7 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
         attributes.put(KEY, VALUE);
         attributes.put(NAME, TOKEN);
         final StringWriter writer = new StringWriter();
-        try (JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(writer)) {
+        try ( JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(writer)) {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField("id", ID);
             jsonGenerator.writeArrayFieldStart("attributes");

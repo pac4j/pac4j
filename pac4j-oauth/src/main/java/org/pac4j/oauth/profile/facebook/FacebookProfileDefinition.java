@@ -132,10 +132,10 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
      */
     public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final FacebookConfiguration configuration) {
         try {
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            final Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            final SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secret_key);
-            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
+            final String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
                 .getBytes(StandardCharsets.UTF_8)));
             final String computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return computedUrl;

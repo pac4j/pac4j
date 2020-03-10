@@ -11,11 +11,9 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.Resolver;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.security.IdentifierGenerationStrategy;
-import net.shibboleth.utilities.java.support.security.SecureRandomIdentifierGenerationStrategy;
+import net.shibboleth.utilities.java.support.security.impl.SecureRandomIdentifierGenerationStrategy;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.joda.time.DateTime;
-import org.joda.time.chrono.ISOChronology;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallingException;
@@ -36,11 +34,19 @@ import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.soap.SAMLSOAPClientContextBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.config.SAMLConfigurationSupport;
-import org.opensaml.saml.criterion.*;
+import org.opensaml.saml.criterion.ArtifactCriterion;
+import org.opensaml.saml.criterion.EndpointCriterion;
+import org.opensaml.saml.criterion.EntityRoleCriterion;
+import org.opensaml.saml.criterion.ProtocolCriterion;
+import org.opensaml.saml.criterion.RoleDescriptorCriterion;
 import org.opensaml.saml.metadata.resolver.RoleDescriptorResolver;
 import org.opensaml.saml.saml2.binding.artifact.SAML2Artifact;
 import org.opensaml.saml.saml2.binding.artifact.SAML2ArtifactBuilderFactory;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.Artifact;
+import org.opensaml.saml.saml2.core.ArtifactResolve;
+import org.opensaml.saml.saml2.core.ArtifactResponse;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.metadata.ArtifactResolutionService;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.security.SecurityException;
@@ -56,6 +62,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 /**
  * Decoder for the artifact binding: it's like the original {@link org.opensaml.saml.saml2.binding.decoding.impl.HTTPArtifactDecoder}
  * but using a web context instead of the JEE HTTP servlet request.
@@ -63,57 +72,95 @@ import javax.xml.namespace.QName;
  * @author Jerome LELEU
  * @since 3.8.0
  */
-public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject> implements SAMLMessageDecoder {
+public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements SAMLMessageDecoder {
 
-    /** Class logger. */
-    @Nonnull private final Logger log = LoggerFactory.getLogger(Pac4jHTTPArtifactDecoder.class);
+    /**
+     * Class logger.
+     */
+    @Nonnull
+    private final Logger log = LoggerFactory.getLogger(Pac4jHTTPArtifactDecoder.class);
 
-    /** The web context */
+    /**
+     * The web context
+     */
     private WebContext webContext;
 
-    /** Used to log protocol messages. */
+    /**
+     * Used to log protocol messages.
+     */
     private Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
 
-    /** Parser pool used to deserialize the message. */
+    /**
+     * Parser pool used to deserialize the message.
+     */
     private ParserPool parserPool;
 
-    /** Optional {@link BindingDescriptor} to inject into {@link SAMLBindingContext} created. */
-    @Nullable private BindingDescriptor bindingDescriptor;
+    /**
+     * Optional {@link BindingDescriptor} to inject into {@link SAMLBindingContext} created.
+     */
+    @Nullable
+    private BindingDescriptor bindingDescriptor;
 
-    /** SAML 2 artifact builder factory. */
+    /**
+     * SAML 2 artifact builder factory.
+     */
     @NonnullAfterInit
     private SAML2ArtifactBuilderFactory artifactBuilderFactory;
 
-    /** Resolver for ArtifactResolutionService endpoints. **/
-    @NonnullAfterInit private EndpointResolver<ArtifactResolutionService> artifactEndpointResolver;
+    /**
+     * Resolver for ArtifactResolutionService endpoints.
+     **/
+    @NonnullAfterInit
+    private EndpointResolver<ArtifactResolutionService> artifactEndpointResolver;
 
-    /** Role descriptor resolver. */
-    @NonnullAfterInit private RoleDescriptorResolver roleDescriptorResolver;
+    /**
+     * Role descriptor resolver.
+     */
+    @NonnullAfterInit
+    private RoleDescriptorResolver roleDescriptorResolver;
 
-    /** The peer entity role QName. */
-    @NonnullAfterInit private QName peerEntityRole;
+    /**
+     * The peer entity role QName.
+     */
+    @NonnullAfterInit
+    private QName peerEntityRole;
 
-    /** Resolver for the self entityID, based on the peer entity data. */
-    @NonnullAfterInit private Resolver<String, CriteriaSet> selfEntityIDResolver;
+    /**
+     * Resolver for the self entityID, based on the peer entity data.
+     */
+    @NonnullAfterInit
+    private Resolver<String, CriteriaSet> selfEntityIDResolver;
 
-    /** SOAP client. */
+    /**
+     * SOAP client.
+     */
     private SOAPClient soapClient;
 
-    /** The SOAP client message pipeline name. */
+    /**
+     * The SOAP client message pipeline name.
+     */
     private String soapPipelineName;
 
-    /** SOAP client security configuration profile ID. */
+    /**
+     * SOAP client security configuration profile ID.
+     */
     private String soapClientSecurityConfigurationProfileId;
 
-    /** Identifier generation strategy. */
+    /**
+     * Identifier generation strategy.
+     */
     private IdentifierGenerationStrategy idStrategy;
 
-    /** Constructor. */
+    /**
+     * Constructor.
+     */
     public Pac4jHTTPArtifactDecoder() {
         parserPool = XMLObjectProviderRegistrySupport.getParserPool();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void decode() throws MessageDecodingException {
         log.debug("Beginning to decode message from WebContext");
 
@@ -124,6 +171,38 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
         logDecodedMessage();
 
         log.debug("Successfully decoded message from WebContext.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void doDestroy() {
+        super.doDestroy();
+        parserPool = null;
+        bindingDescriptor = null;
+        artifactBuilderFactory = null;
+        artifactEndpointResolver = null;
+        roleDescriptorResolver = null;
+        peerEntityRole = null;
+        soapClient = null;
+        idStrategy = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void doDecode() throws MessageDecodingException {
+        final MessageContext messageContext = new MessageContext();
+
+        final String relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
+        log.debug("Decoded SAML relay state of: {}", relayState);
+        SAMLBindingSupport.setRelayState(messageContext, relayState);
+
+        processArtifact(messageContext, webContext);
+
+        populateBindingContext(messageContext);
+
+        setMessageContext(messageContext);
     }
 
     /**
@@ -146,20 +225,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
         parserPool = pool;
     }
 
-    /** {@inheritDoc} */
-    protected void doDestroy() {
-        super.doDestroy();
-        parserPool = null;
-        bindingDescriptor = null;
-        artifactBuilderFactory = null;
-        artifactEndpointResolver = null;
-        roleDescriptorResolver = null;
-        peerEntityRole = null;
-        soapClient = null;
-        idStrategy = null;
-    }
-
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
 
@@ -206,7 +274,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return Returns the identifier generation strategy
      */
-    @NonnullAfterInit public IdentifierGenerationStrategy getIdentifierGenerationStrategy() {
+    @NonnullAfterInit
+    public IdentifierGenerationStrategy getIdentifierGenerationStrategy() {
         return idStrategy;
     }
 
@@ -226,7 +295,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the resolver
      */
-    @NonnullAfterInit public Resolver<String,CriteriaSet> getSelfEntityIDResolver() {
+    @NonnullAfterInit
+    public Resolver<String, CriteriaSet> getSelfEntityIDResolver() {
         return selfEntityIDResolver;
     }
 
@@ -246,14 +316,15 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the peer entity role
      */
-    @NonnullAfterInit public QName getPeerEntityRole() {
+    @NonnullAfterInit
+    public QName getPeerEntityRole() {
         return peerEntityRole;
     }
 
     /**
      * Set the peer entity role {@link QName}.
      *
-     * @param role  the peer entity role
+     * @param role the peer entity role
      */
     public void setPeerEntityRole(@Nonnull final QName role) {
         ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
@@ -266,7 +337,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the endpoint resolver
      */
-    @NonnullAfterInit public EndpointResolver<ArtifactResolutionService> getArtifactEndpointResolver() {
+    @NonnullAfterInit
+    public EndpointResolver<ArtifactResolutionService> getArtifactEndpointResolver() {
         return artifactEndpointResolver;
     }
 
@@ -290,7 +362,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the role descriptor resolver
      */
-    @NonnullAfterInit public RoleDescriptorResolver getRoleDescriptorResolver() {
+    @NonnullAfterInit
+    public RoleDescriptorResolver getRoleDescriptorResolver() {
         return roleDescriptorResolver;
     }
 
@@ -314,7 +387,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the artifact builder factory in use
      */
-    @NonnullAfterInit public SAML2ArtifactBuilderFactory getArtifactBuilderFactory() {
+    @NonnullAfterInit
+    public SAML2ArtifactBuilderFactory getArtifactBuilderFactory() {
         return artifactBuilderFactory;
     }
 
@@ -334,7 +408,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the SOAP client
      */
-    @NonnullAfterInit public SOAPClient getSOAPClient() {
+    @NonnullAfterInit
+    public SOAPClient getSOAPClient() {
         return soapClient;
     }
 
@@ -355,7 +430,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the pipeline name, or null
      */
-    @Nullable public String getSOAPPipelineName() {
+    @Nullable
+    public String getSOAPPipelineName() {
         return soapPipelineName;
     }
 
@@ -376,7 +452,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return the client security configuration profile ID, or null
      */
-    @Nullable public String getSOAPClientSecurityConfigurationProfileId() {
+    @Nullable
+    public String getSOAPClientSecurityConfigurationProfileId() {
         return soapClientSecurityConfigurationProfileId;
     }
 
@@ -385,12 +462,16 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @param profileId the profile ID, or null
      */
-    @Nonnull public void setSOAPClientSecurityConfigurationProfileId(@Nullable final String profileId) {
+    @Nonnull
+    public void setSOAPClientSecurityConfigurationProfileId(@Nullable final String profileId) {
         soapClientSecurityConfigurationProfileId = StringSupport.trimOrNull(profileId);
     }
 
-    /** {@inheritDoc} */
-    @Nonnull @NotEmpty
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @NotEmpty
     public String getBindingURI() {
         return SAMLConstants.SAML2_ARTIFACT_BINDING_URI;
     }
@@ -400,7 +481,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @return binding descriptor
      */
-    @Nullable public BindingDescriptor getBindingDescriptor() {
+    @Nullable
+    public BindingDescriptor getBindingDescriptor() {
         return bindingDescriptor;
     }
 
@@ -415,28 +497,12 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
         bindingDescriptor = descriptor;
     }
 
-    /** {@inheritDoc} */
-    protected void doDecode() throws MessageDecodingException {
-        final MessageContext<SAMLObject> messageContext = new MessageContext<>();
-
-        final String relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
-        log.debug("Decoded SAML relay state of: {}", relayState);
-        SAMLBindingSupport.setRelayState(messageContext, relayState);
-
-        processArtifact(messageContext, webContext);
-
-        populateBindingContext(messageContext);
-
-        setMessageContext(messageContext);
-    }
-
     /**
      * Process the incoming artifact by decoding the artifacts, dereferencing it from the artifact issuer and
      * storing the resulting protocol message in the message context.
      *
      * @param messageContext the message context being processed
-     * @param webContext the web context
-     *
+     * @param webContext     the web context
      * @throws MessageDecodingException thrown if there is a problem decoding or dereferencing the artifact
      */
     private void processArtifact(final MessageContext messageContext, final WebContext webContext)
@@ -471,22 +537,23 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
     /**
      * De-reference the supplied artifact into the corresponding SAML protocol message.
      *
-     * @param artifact the artifact to de-reference
+     * @param artifact           the artifact to de-reference
      * @param peerRoleDescriptor the peer RoleDescriptor
-     * @param ars the peer's artifact resolution service endpoint
+     * @param ars                the peer's artifact resolution service endpoint
      * @return the de-referenced artifact
      * @throws MessageDecodingException if there is fatal error, or if the artifact was not successfully resolved
      */
-    @Nonnull private SAMLObject dereferenceArtifact(@Nonnull final SAML2Artifact artifact,
-                                                    @Nonnull final RoleDescriptor peerRoleDescriptor,
-                                                    @Nonnull final ArtifactResolutionService ars)
+    @Nonnull
+    private SAMLObject dereferenceArtifact(@Nonnull final SAML2Artifact artifact,
+                                           @Nonnull final RoleDescriptor peerRoleDescriptor,
+                                           @Nonnull final ArtifactResolutionService ars)
         throws MessageDecodingException {
 
         try {
             final String selfEntityID = resolveSelfEntityID(peerRoleDescriptor);
 
             // TODO can assume/enforce response as ArtifactResponse here?
-            final InOutOperationContext<SAMLObject, ArtifactResolve> opContext = new SAMLSOAPClientContextBuilder()
+            final InOutOperationContext opContext = new SAMLSOAPClientContextBuilder()
                 .setOutboundMessage(buildArtifactResolveRequestMessage(
                     artifact, ars.getLocation(), selfEntityID))
                 .setProtocol(SAMLConstants.SAML20P_NS)
@@ -498,7 +565,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
 
             log.trace("Executing ArtifactResolve over SOAP 1.1 binding to endpoint: {}", ars.getLocation());
             soapClient.send(ars.getLocation(), opContext);
-            final SAMLObject response = opContext.getInboundMessageContext().getMessage();
+            final SAMLObject response = (SAMLObject) opContext.getInboundMessageContext().getMessage();
             if (response instanceof ArtifactResponse) {
                 return validateAndExtractResponseMessage((ArtifactResponse) response);
             } else {
@@ -517,7 +584,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * @return the SAML protocol message
      * @throws MessageDecodingException if the protocol message was not sent or there was a non-success status response
      */
-    @Nonnull private SAMLObject validateAndExtractResponseMessage(@Nonnull final ArtifactResponse artifactResponse)
+    @Nonnull
+    private SAMLObject validateAndExtractResponseMessage(@Nonnull final ArtifactResponse artifactResponse)
         throws MessageDecodingException {
         if (artifactResponse.getStatus() == null
             || artifactResponse.getStatus().getStatusCode() == null
@@ -525,7 +593,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
 
             throw new MessageDecodingException("ArtifactResponse included no StatusCode, could not validate");
 
-        } else if (!StatusCode.SUCCESS.equals(artifactResponse.getStatus().getStatusCode().getValue())){
+        } else if (!StatusCode.SUCCESS.equals(artifactResponse.getStatus().getStatusCode().getValue())) {
             throw new MessageDecodingException("ArtifactResponse carried non-success StatusCode: "
                 + artifactResponse.getStatus().getStatusCode().getValue());
         }
@@ -540,25 +608,30 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
     /**
      * Build the SAML protocol message for artifact resolution.
      *
-     * @param artifact the artifact being de-referenced
-     * @param endpoint the peer artifact resolution service endpoint
+     * @param artifact     the artifact being de-referenced
+     * @param endpoint     the peer artifact resolution service endpoint
      * @param selfEntityID the entityID of this party, the issuer of the protocol request message
      * @return the SAML protocol message for artifact resolution
      */
-    @Nonnull private ArtifactResolve buildArtifactResolveRequestMessage(@Nonnull final SAML2Artifact artifact,
-                                                                        @Nonnull final String endpoint,
-                                                                        @Nonnull final String selfEntityID) {
+    @Nonnull
+    private ArtifactResolve buildArtifactResolveRequestMessage(@Nonnull final SAML2Artifact artifact,
+                                                               @Nonnull final String endpoint,
+                                                               @Nonnull final String selfEntityID) {
 
         final ArtifactResolve request =
             (ArtifactResolve) XMLObjectSupport.buildXMLObject(ArtifactResolve.DEFAULT_ELEMENT_NAME);
 
         final Artifact requestArtifact = (Artifact) XMLObjectSupport.buildXMLObject(Artifact.DEFAULT_ELEMENT_NAME);
-        requestArtifact.setArtifact(Base64Support.encode(artifact.getArtifactBytes(), false));
+        try {
+            requestArtifact.setValue(Base64Support.encode(artifact.getArtifactBytes(), false));
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
         request.setArtifact(requestArtifact);
 
         request.setID(idStrategy.generateIdentifier(true));
         request.setDestination(endpoint);
-        request.setIssueInstant(new DateTime(ISOChronology.getInstanceUTC()));
+        request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         request.setIssuer(buildIssuer(selfEntityID));
 
         return request;
@@ -570,9 +643,10 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * @param peerRoleDescriptor the peer RoleDescriptor
      * @return the resolved self entityID
      * @throws MessageDecodingException if there was a fatal error during resolution,
-     *          or the entityID could not be resolved
+     *                                  or the entityID could not be resolved
      */
-    @Nonnull private String resolveSelfEntityID(@Nonnull final RoleDescriptor peerRoleDescriptor)
+    @Nonnull
+    private String resolveSelfEntityID(@Nonnull final RoleDescriptor peerRoleDescriptor)
         throws MessageDecodingException {
 
         final CriteriaSet criteria = new CriteriaSet(new RoleDescriptorCriterion(peerRoleDescriptor));
@@ -594,7 +668,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * @param selfEntityID the entity ID of the protocol message issuer (this entity)
      * @return the Issuer element
      */
-    @Nonnull private Issuer buildIssuer(@Nonnull final String selfEntityID) {
+    @Nonnull
+    private Issuer buildIssuer(@Nonnull final String selfEntityID) {
         final Issuer issuer = (Issuer) XMLObjectSupport.buildXMLObject(Issuer.DEFAULT_ELEMENT_NAME);
         issuer.setValue(selfEntityID);
         return issuer;
@@ -603,14 +678,15 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
     /**
      * Resolve the artifact resolution endpoint of the peer who issued the artifact.
      *
-     * @param artifact the artifact
+     * @param artifact           the artifact
      * @param peerRoleDescriptor the peer RoleDescriptor
      * @return the peer artifact resolution service endpoint
      * @throws MessageDecodingException if there is a fatal error resolving the endpoint,
-     *          or the endpoint could not be resolved
+     *                                  or the endpoint could not be resolved
      */
-    @Nonnull private ArtifactResolutionService resolveArtifactEndpoint(@Nonnull final SAML2Artifact artifact,
-                                                                       @Nonnull final RoleDescriptor peerRoleDescriptor)
+    @Nonnull
+    private ArtifactResolutionService resolveArtifactEndpoint(@Nonnull final SAML2Artifact artifact,
+                                                              @Nonnull final RoleDescriptor peerRoleDescriptor)
         throws MessageDecodingException {
 
         final RoleDescriptorCriterion roleDescriptorCriterion = new RoleDescriptorCriterion(peerRoleDescriptor);
@@ -622,7 +698,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
         arsTemplate.setBinding(SAMLConstants.SAML2_SOAP11_BINDING_URI);
 
         if (artifact instanceof SAMLSourceLocationArtifact) {
-            arsTemplate.setLocation(((SAMLSourceLocationArtifact)artifact).getSourceLocation());
+            arsTemplate.setLocation(((SAMLSourceLocationArtifact) artifact).getSourceLocation());
         }
 
         final Integer endpointIndex = SAMLBindingSupport.convertSAML2ArtifactEndpointIndex(artifact.getEndpointIndex());
@@ -651,9 +727,10 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * @param artifact the artifact to process
      * @return the peer RoleDescriptor
      * @throws MessageDecodingException if there was a fatal error resolving the role descriptor,
-     *          or the descriptor could not be resolved
+     *                                  or the descriptor could not be resolved
      */
-    @Nonnull private RoleDescriptor resolvePeerRoleDescriptor(@Nonnull final SAML2Artifact artifact)
+    @Nonnull
+    private RoleDescriptor resolvePeerRoleDescriptor(@Nonnull final SAML2Artifact artifact)
         throws MessageDecodingException {
 
         final CriteriaSet criteriaSet = new CriteriaSet(
@@ -678,15 +755,20 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * @return the decoded artifact instance
      * @throws MessageDecodingException if the encoded artifact could not be decoded
      */
-    @Nonnull private SAML2Artifact parseArtifact(@Nonnull final String encodedArtifact)
+    @Nonnull
+    private SAML2Artifact parseArtifact(@Nonnull final String encodedArtifact)
         throws MessageDecodingException {
 
         //TODO not sure if this handles well bad input.  Determine if can throw an unchecked and handle here.
-        final  SAML2Artifact artifact = artifactBuilderFactory.buildArtifact(encodedArtifact);
-        if (artifact == null) {
-            throw new MessageDecodingException("Could not build SAML2Artifact instance from encoded artifact");
+        try {
+            final SAML2Artifact artifact = artifactBuilderFactory.buildArtifact(encodedArtifact);
+            if (artifact == null) {
+                throw new MessageDecodingException("Could not build SAML2Artifact instance from encoded artifact");
+            }
+            return artifact;
+        } catch (final Exception e) {
+            throw new MessageDecodingException(e);
         }
-        return artifact;
     }
 
     /**
@@ -694,7 +776,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      *
      * @param messageContext the current message context
      */
-    protected void populateBindingContext(final MessageContext<SAMLObject> messageContext) {
+    protected void populateBindingContext(final MessageContext messageContext) {
         final SAMLBindingContext bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
         bindingContext.setBindingUri(getBindingURI());
         bindingContext.setBindingDescriptor(bindingDescriptor);
@@ -706,7 +788,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * Log the decoded message to the protocol message logger.
      */
     protected void logDecodedMessage() {
-        if (protocolMessageLog.isDebugEnabled() ){
+        if (protocolMessageLog.isDebugEnabled()) {
             final XMLObject message = getMessageToLog();
             if (message == null) {
                 log.warn("Decoded message was null, nothing to log");
@@ -728,7 +810,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder<SAMLObject>
      * @return the XMLObject message considered to be the protocol message for logging purposes
      */
     protected XMLObject getMessageToLog() {
-        return getMessageContext().getMessage();
+        return (XMLObject) getMessageContext().getMessage();
     }
 
     public synchronized void setWebContext(@Nullable final WebContext webContext) {

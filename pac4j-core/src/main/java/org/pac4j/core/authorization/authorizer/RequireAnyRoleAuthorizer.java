@@ -33,15 +33,15 @@ public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractReq
         return profileRoles.contains(element);
     }
 
-    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(String ... roles) {
+    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(final String ... roles) {
         return new RequireAnyRoleAuthorizer<>(roles);
     }
 
-    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(List<String> roles) {
+    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(final List<String> roles) {
         return new RequireAnyRoleAuthorizer<>(roles);
     }
 
-    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(Set<String> roles) {
+    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(final Set<String> roles) {
         return new RequireAnyRoleAuthorizer<>(roles);
     }
 }

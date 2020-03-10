@@ -86,7 +86,7 @@ public final class DirectFormClientTests implements TestsConstants {
     public void testGetUserProfile() {
         final DirectFormClient formClient = getFormClient();
         formClient.setProfileCreator((credentials, context) -> {
-            String username = credentials.getUsername();
+            final String username = credentials.getUsername();
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);

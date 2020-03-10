@@ -21,7 +21,7 @@ public class OAuth10Credentials extends OAuthCredentials {
 
     private OAuth1AccessToken accessToken;
 
-    public OAuth10Credentials(OAuth1RequestToken requestToken, String token, String verifier) {
+    public OAuth10Credentials(final OAuth1RequestToken requestToken, final String token, final String verifier) {
         this.requestToken = requestToken;
         this.token = token;
         this.verifier = verifier;
@@ -48,11 +48,11 @@ public class OAuth10Credentials extends OAuthCredentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OAuth10Credentials that = (OAuth10Credentials) o;
+        final OAuth10Credentials that = (OAuth10Credentials) o;
 
         if (requestToken != null ? !requestToken.equals(that.requestToken) : that.requestToken != null) return false;
         if (token != null ? !token.equals(that.token) : that.token != null) return false;

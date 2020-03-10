@@ -58,11 +58,11 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
         return tenant;
     }
 
-    public void setTenant(String tenant) {
+    public void setTenant(final String tenant) {
         this.tenant = tenant;
     }
 
-    public String makeOauth2TokenRequest(String refreshToken) {
+    public String makeOauth2TokenRequest(final String refreshToken) {
         final String payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
             + "&" + HttpUtils.encodeQueryParam("client_secret",this.getSecret())
             + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")

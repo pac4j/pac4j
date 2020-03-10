@@ -102,7 +102,7 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
      * @param tag json reference
      * @param converter converter
      */
-    public void profileAttribute(final String name, String tag, final AttributeConverter<? extends Object> converter) {
+    public void profileAttribute(final String name, final String tag, final AttributeConverter<? extends Object> converter) {
         profileAttributes.put(name, tag);
         if (converter != null) {
             getConverters().put(name, converter);

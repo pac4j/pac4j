@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public final class RunWordPressClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunWordPressClient().run();
     }
 
@@ -44,7 +44,7 @@ public final class RunWordPressClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final WordPressProfile profile = (WordPressProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("35944437", profile.getId());

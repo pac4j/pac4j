@@ -32,7 +32,7 @@ public class TwitterClient extends OAuth10Client {
         this(key, secret, false);
     }
 
-    public TwitterClient(final String key, final String secret, boolean includeEmail) {
+    public TwitterClient(final String key, final String secret, final boolean includeEmail) {
         setKey(key);
         setSecret(secret);
         this.includeEmail = includeEmail;

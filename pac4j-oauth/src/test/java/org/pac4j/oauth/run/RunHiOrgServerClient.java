@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public class RunHiOrgServerClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunHiOrgServerClient().run();
     }
 
@@ -44,7 +44,7 @@ public class RunHiOrgServerClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final HiOrgServerProfile profile = (HiOrgServerProfile) userProfile;
         assertEquals("1a396c7895f10eac304a81eef63ca0e2", profile.getId());
         assertEquals("doej", profile.getUsername().toLowerCase());

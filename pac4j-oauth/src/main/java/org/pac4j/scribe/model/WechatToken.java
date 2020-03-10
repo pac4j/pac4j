@@ -19,9 +19,9 @@ public class WechatToken extends OAuth2AccessToken {
     private String openid;
     private String unionid;
 
-    public WechatToken(String accessToken, String tokenType, Integer expiresIn,
-                       String refreshToken, String scope, String rawResponse,
-                       String openid, String unionid) {
+    public WechatToken(final String accessToken, final String tokenType, final Integer expiresIn,
+                       final String refreshToken, final String scope, final String rawResponse,
+                       final String openid, final String unionid) {
         super(accessToken, tokenType, expiresIn, refreshToken, scope, rawResponse);
         this.openid = openid;
         this.unionid = unionid;
@@ -31,7 +31,7 @@ public class WechatToken extends OAuth2AccessToken {
         return openid;
     }
 
-    public void setOpenid(String openid) {
+    public void setOpenid(final String openid) {
         this.openid = openid;
     }
 
@@ -39,17 +39,17 @@ public class WechatToken extends OAuth2AccessToken {
         return unionid;
     }
 
-    public void setUnionid(String unionid) {
+    public void setUnionid(final String unionid) {
         this.unionid = unionid;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        WechatToken that = (WechatToken) o;
+        final WechatToken that = (WechatToken) o;
 
         if (openid != null ? !openid.equals(that.openid) : that.openid != null) return false;
         return unionid != null ? unionid.equals(that.unionid) : that.unionid == null;

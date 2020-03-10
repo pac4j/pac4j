@@ -26,7 +26,7 @@ public class VkProfile extends OAuth20Profile {
 
     @Override
     public String getUsername() {
-        String domain = getDomain();
+        final String domain = getDomain();
         if (domain != null && !domain.isEmpty())
             return domain;
         return getId();

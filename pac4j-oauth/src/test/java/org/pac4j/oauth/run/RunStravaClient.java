@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  */
 public final class RunStravaClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunStravaClient().run();
     }
 
@@ -43,7 +43,7 @@ public final class RunStravaClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final StravaProfile profile = (StravaProfile) userProfile;
         assertEquals("7319316", profile.getId());
         assertEquals(Gender.MALE, profile.getGender());

@@ -25,7 +25,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         return headerName;
     }
 
-    public void setHeaderName(String headerName) {
+    public void setHeaderName(final String headerName) {
         this.headerName = headerName;
     }
 
@@ -33,7 +33,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         return prefixHeader;
     }
 
-    public void setPrefixHeader(String prefixHeader) {
+    public void setPrefixHeader(final String prefixHeader) {
         this.prefixHeader = prefixHeader;
     }
 
@@ -41,7 +41,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
         return trimValue;
     }
 
-    public void setTrimValue(boolean trimValue) {
+    public void setTrimValue(final boolean trimValue) {
         this.trimValue = trimValue;
     }
 

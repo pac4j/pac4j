@@ -129,9 +129,9 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
 
     private void assertGetCredentialsFailsWithAuthRequired(
-        IndirectKerberosClient kerbClient,
-        MockWebContext context,
-        String expectedMsg) {
+        final IndirectKerberosClient kerbClient,
+        final MockWebContext context,
+        final String expectedMsg) {
         try {
             kerbClient.getCredentials(context);
             fail("should throw HttpAction");
@@ -142,8 +142,8 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         }
     }
 
-    private void checkWithGoodTicket(Client<KerberosCredentials> client) throws Exception {
-        String spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
+    private void checkWithGoodTicket(final Client<KerberosCredentials> client) throws Exception {
+        final String spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
 
         // mock web request
         final MockWebContext context = mockWebRequestContext(spnegoWebTicket);
@@ -161,20 +161,20 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     }
 
     private IndirectKerberosClient setupIndirectKerberosClient() {
-        IndirectKerberosClient client = new IndirectKerberosClient(new KerberosAuthenticator(getKerberosValidator()));
+        final IndirectKerberosClient client = new IndirectKerberosClient(new KerberosAuthenticator(getKerberosValidator()));
         client.setCallbackUrl("http://dummy.com/");
         return client;
     }
 
     private SunJaasKerberosTicketValidator getKerberosValidator() {
-        SunJaasKerberosTicketValidator validator = new SunJaasKerberosTicketValidator();
+        final SunJaasKerberosTicketValidator validator = new SunJaasKerberosTicketValidator();
         validator.setServicePrincipal(servicePrincipal);
         validator.setKeyTabLocation(new FileSystemResource(serviceKeytabFile));
         validator.setDebug(true);
         return validator;
     }
 
-    private MockWebContext mockWebRequestContext(String spnegoWebTicket) {
+    private MockWebContext mockWebRequestContext(final String spnegoWebTicket) {
         System.out.println("spnegoWebTicket:" + spnegoWebTicket);
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + spnegoWebTicket);

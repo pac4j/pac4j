@@ -81,7 +81,7 @@ public final class CasRestClientIT implements TestsConstants {
         internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 0);
     }
 
-    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) {
+    private void internalTestRestBasic(final CasRestBasicAuthClient client, final int nbAttributes) {
         final MockWebContext context = MockWebContext.create();
         final String token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));

@@ -69,7 +69,7 @@ public final class JsonHelper {
     public static Object getElement(final JsonNode json, final String name) {
         if (json != null && name != null) {
             JsonNode node = json;
-            for (String nodeName : name.split("\\.")) {
+            for (final String nodeName : name.split("\\.")) {
                 if (node != null) {
                     if (nodeName.matches("\\d+")) {
                         node = node.get(Integer.parseInt(nodeName));

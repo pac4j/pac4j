@@ -46,7 +46,7 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
 
             try {
                 // encrypted jwt
-                EncryptedJWT encryptedJwt = new EncryptedJWT(header, jwt.getJWTClaimsSet());
+                final EncryptedJWT encryptedJwt = new EncryptedJWT(header, jwt.getJWTClaimsSet());
 
                 // Perform encryption
                 encryptedJwt.encrypt(buildEncrypter());

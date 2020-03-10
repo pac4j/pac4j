@@ -33,7 +33,7 @@ public final class Cookie {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -41,7 +41,7 @@ public final class Cookie {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
@@ -49,7 +49,7 @@ public final class Cookie {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(final int version) {
         this.version = version;
     }
 
@@ -57,7 +57,7 @@ public final class Cookie {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(final String comment) {
         this.comment = comment;
     }
 
@@ -65,7 +65,7 @@ public final class Cookie {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(final String domain) {
         this.domain = domain;
     }
 
@@ -73,7 +73,7 @@ public final class Cookie {
         return maxAge;
     }
 
-    public void setMaxAge(int maxAge) {
+    public void setMaxAge(final int maxAge) {
         this.maxAge = maxAge;
     }
 
@@ -81,7 +81,7 @@ public final class Cookie {
         return expiry == null ? null : new Date(expiry.getTime());
     }
 
-    public void setExpiry(Date expiry) {
+    public void setExpiry(final Date expiry) {
         this.expiry = expiry == null ? null : new Date(expiry.getTime());
     }
 
@@ -89,7 +89,7 @@ public final class Cookie {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 
@@ -97,7 +97,7 @@ public final class Cookie {
         return secure;
     }
 
-    public void setSecure(boolean secure) {
+    public void setSecure(final boolean secure) {
         this.secure = secure;
     }
 
@@ -106,7 +106,7 @@ public final class Cookie {
         return isHttpOnly;
     }
 
-    public void setHttpOnly(boolean httpOnly) {
+    public void setHttpOnly(final boolean httpOnly) {
         isHttpOnly = httpOnly;
     }
 }

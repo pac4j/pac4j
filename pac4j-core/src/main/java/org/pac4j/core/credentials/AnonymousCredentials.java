@@ -13,7 +13,7 @@ public final class AnonymousCredentials extends Credentials {
     public final static AnonymousCredentials INSTANCE = new AnonymousCredentials();
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o instanceof AnonymousCredentials) {
             return true;
         }

@@ -48,7 +48,7 @@ public class RequireAnyAttributeAuthorizer<U extends UserProfile> extends Abstra
         return attributeValues.toString().matches(this.valueToMatch);
     }
 
-    public static <U extends UserProfile> RequireAnyAttributeAuthorizer<U> requireAnyAttribute(String valueToMatch) {
+    public static <U extends UserProfile> RequireAnyAttributeAuthorizer<U> requireAnyAttribute(final String valueToMatch) {
         return new RequireAnyAttributeAuthorizer<>(valueToMatch);
     }
 }

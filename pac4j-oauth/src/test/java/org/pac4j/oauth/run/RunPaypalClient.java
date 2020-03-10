@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  */
 public final class RunPaypalClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunPaypalClient().run();
     }
 
@@ -46,7 +46,7 @@ public final class RunPaypalClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final PayPalProfile profile = (PayPalProfile) userProfile;
         assertEquals("YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getId());
         assertEquals(PayPalProfile.class.getName() + CommonProfile.SEPARATOR

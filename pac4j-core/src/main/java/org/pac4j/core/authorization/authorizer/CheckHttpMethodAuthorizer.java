@@ -35,15 +35,15 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
         return requestMethod.equalsIgnoreCase(element.toString());
     }
 
-    public static CheckHttpMethodAuthorizer checkHttpMethod(HttpConstants.HTTP_METHOD... methods) {
+    public static CheckHttpMethodAuthorizer checkHttpMethod(final HttpConstants.HTTP_METHOD... methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 
-    public static CheckHttpMethodAuthorizer checkHttpMethod(List<HttpConstants.HTTP_METHOD> methods) {
+    public static CheckHttpMethodAuthorizer checkHttpMethod(final List<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 
-    public static CheckHttpMethodAuthorizer checkHttpMethod(Set<HttpConstants.HTTP_METHOD> methods) {
+    public static CheckHttpMethodAuthorizer checkHttpMethod(final Set<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 }

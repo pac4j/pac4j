@@ -28,21 +28,21 @@ public class KerberosAuthenticator implements Authenticator<KerberosCredentials>
      * @param ticketValidator The ticket validator used to validate the Kerberos ticket.
      * @since 2.1.0
      */
-    public KerberosAuthenticator(KerberosTicketValidator ticketValidator) {
+    public KerberosAuthenticator(final KerberosTicketValidator ticketValidator) {
         CommonHelper.assertNotNull("ticketValidator", ticketValidator);
         this.ticketValidator = ticketValidator;
     }
 
     @Override
-    public void validate(KerberosCredentials credentials, WebContext context) {
+    public void validate(final KerberosCredentials credentials, final WebContext context) {
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
-        KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
+        final KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
 
-        String subject = ticketValidation.username();
+        final String subject = ticketValidation.username();
         logger.debug("Succesfully validated " + subject);
 
-        KerberosProfile profile = new KerberosProfile(ticketValidation.getGssContext());
+        final KerberosProfile profile = new KerberosProfile(ticketValidation.getGssContext());
         profile.setId(subject);
         credentials.setUserProfile(profile);
     }

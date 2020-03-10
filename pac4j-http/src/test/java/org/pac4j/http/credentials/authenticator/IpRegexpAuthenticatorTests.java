@@ -26,7 +26,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
         final TokenCredentials credentials = new TokenCredentials(GOOD_IP);
-        IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
+        final IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
         authenticator.validate(credentials, null);
     }
 

@@ -34,12 +34,12 @@ public final class TestsHelper {
         Assert.assertEquals(message, e.getMessage());
     }
 
-    public static Map<String, String> splitQuery(URL url) {
-        Map<String, String> query_pairs = new LinkedHashMap<>();
-        String query = url.getQuery();
-        String[] pairs = query.split("&", -1);
-        for (String pair : pairs) {
-            int idx = pair.indexOf("=");
+    public static Map<String, String> splitQuery(final URL url) {
+        final Map<String, String> query_pairs = new LinkedHashMap<>();
+        final String query = url.getQuery();
+        final String[] pairs = query.split("&", -1);
+        for (final String pair : pairs) {
+            final int idx = pair.indexOf("=");
             query_pairs.put(CommonHelper.urlEncode(pair.substring(0, idx)), CommonHelper.urlEncode(pair.substring(idx + 1)));
         }
         return query_pairs;

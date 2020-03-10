@@ -56,8 +56,9 @@ public class WechatApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
-            Map<String, String> additionalParams) {
+    public String getAuthorizationUrl(final String responseType, final String apiKey,
+                                      final String callback, final String scope, final String state,
+                                      final Map<String, String> additionalParams) {
         String authorizationUrl = super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
         authorizationUrl = authorizationUrl.replace(OAuthConstants.CLIENT_ID, APPID);
         if (scope != null && scope.contains(
@@ -85,9 +86,9 @@ public class WechatApi20 extends DefaultApi20 {
     }
 
     @Override
-    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope,
-                                                     String responseType, OutputStream debugStream, String userAgent,
-                                                     HttpClientConfig httpClientConfig, HttpClient httpClient) {
+    public OAuth20Service createService(final String apiKey, final String apiSecret, final String callback, final String defaultScope,
+                                        final String responseType, final OutputStream debugStream, final String userAgent,
+                                        final HttpClientConfig httpClientConfig, final HttpClient httpClient) {
         return new WechatService(this, apiKey, apiSecret, callback, defaultScope, responseType, userAgent, httpClientConfig, httpClient);
     }
 

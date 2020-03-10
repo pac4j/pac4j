@@ -74,7 +74,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {
             // check authorizations using authorizers: all must be satisfied
-            for (Authorizer authorizer : authorizers) {
+            for (final Authorizer authorizer : authorizers) {
                 final boolean isAuthorized = authorizer.isAuthorized(context, profiles);
                 LOGGER.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
                 if (!isAuthorized) {

@@ -25,7 +25,7 @@ public class BearerAuthExtractor implements CredentialsExtractor<TokenCredential
     }
 
     @Override
-    public Optional<TokenCredentials> extract(WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         return this.extractor.extract(context);
     }
 }

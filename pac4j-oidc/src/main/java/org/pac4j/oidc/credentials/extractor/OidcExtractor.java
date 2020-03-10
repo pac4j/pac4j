@@ -45,7 +45,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
     public Optional<OidcCredentials> extract(final WebContext context) {
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         final Map<String, List<String>> parameters = retrieveParameters(context);
-        AuthenticationResponse response;
+        final AuthenticationResponse response;
         try {
             response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
         } catch (final URISyntaxException | ParseException e) {
@@ -59,7 +59,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
         }
 
         logger.debug("Authentication response successful");
-        AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) response;
+        final AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) response;
 
         final State state = successResponse.getState();
         if (state == null) {

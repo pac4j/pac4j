@@ -63,28 +63,28 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void testGetSecretInitializedWithByteArray(){
-        byte[] rndBytes = new byte[32];
+        final byte[] rndBytes = new byte[32];
         new SecureRandom().nextBytes(rndBytes);
-        String secret = new String(rndBytes,UTF_8);
+        final String secret = new String(rndBytes,UTF_8);
         assertEquals(new SecretSignatureConfiguration(rndBytes).getSecret(),secret);
     }
 
     @Test
     public void testSecretBase64(){
-        byte[] rndBytes = new byte[32];
+        final byte[] rndBytes = new byte[32];
         new SecureRandom().nextBytes(rndBytes);
-        SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration();
-        String base64Secret = Base64.encode(rndBytes).toString();
+        final SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration();
+        final String base64Secret = Base64.encode(rndBytes).toString();
         secretSignatureConfiguration.setSecretBase64(base64Secret);
         assertEquals(base64Secret,secretSignatureConfiguration.getSecretBase64());
     }
 
     @Test
     public void testSecretBytes(){
-        byte[] rndBytes = new byte[32];
+        final byte[] rndBytes = new byte[32];
         new SecureRandom().nextBytes(rndBytes);
-        SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration();
-        String base64Secret = Base64.encode(rndBytes).toString();
+        final SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration();
+        final String base64Secret = Base64.encode(rndBytes).toString();
         secretSignatureConfiguration.setSecretBytes(rndBytes);
         assertEquals(base64Secret,secretSignatureConfiguration.getSecretBase64());
         assertTrue(Arrays.equals(secretSignatureConfiguration.getSecretBytes(),rndBytes));
@@ -92,7 +92,7 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void testSignVerifyBase64() throws JOSEException {
-        SecretSignatureConfiguration config = new SecretSignatureConfiguration();
+        final SecretSignatureConfiguration config = new SecretSignatureConfiguration();
         config.setSecretBase64(BASE64_512_BIT_SIG_SECRET);
         final JWTClaimsSet claims = new JWTClaimsSet.Builder().subject(VALUE).build();
         final SignedJWT signedJwt = config.sign(claims);

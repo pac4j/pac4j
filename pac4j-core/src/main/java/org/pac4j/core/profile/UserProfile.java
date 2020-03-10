@@ -20,19 +20,19 @@ public interface UserProfile extends Serializable {
         return null;
     }
 
-    default Object getAttribute(String name) {
+    default Object getAttribute(final String name) {
         throw new UnsupportedOperationException("Your user profile must implement the getAttribute method");
     }
 
-    default boolean containsAttribute(String name) {
+    default boolean containsAttribute(final String name) {
         throw new UnsupportedOperationException("Your user profile must implement the containsAttribute method");
     }
 
-    default void addRole(String role) {
+    default void addRole(final String role) {
         throw new UnsupportedOperationException("Your user profile must implement the addRole method");
     }
 
-    default void addRoles(Collection<String> roles) {
+    default void addRoles(final Collection<String> roles) {
         throw new UnsupportedOperationException("Your user profile must implement the addRoles method");
     }
 
@@ -40,11 +40,11 @@ public interface UserProfile extends Serializable {
         throw new UnsupportedOperationException("Your user profile must implement the getRoles method");
     }
 
-    default void addPermission(String permission) {
+    default void addPermission(final String permission) {
         throw new UnsupportedOperationException("Your user profile must implement the addPermission method");
     }
 
-    default void addPermissions(Collection<String> permissions) {
+    default void addPermissions(final Collection<String> permissions) {
         throw new UnsupportedOperationException("Your user profile must implement the addPermissions method");
     }
 
@@ -56,13 +56,13 @@ public interface UserProfile extends Serializable {
         throw new UnsupportedOperationException("Your user profile must implement the isRemembered method");
     }
 
-    default void setRemembered(boolean rme) {}
+    default void setRemembered(final boolean rme) {}
 
     default String getClientName() {
         return null;
     }
 
-    default void setClientName(String clientName) {}
+    default void setClientName(final String clientName) {}
 
     default boolean isExpired() {
         return false;

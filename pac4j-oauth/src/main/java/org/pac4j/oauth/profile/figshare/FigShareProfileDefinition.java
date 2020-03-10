@@ -26,7 +26,7 @@ public class FigShareProfileDefinition extends OAuth20ProfileDefinition<FigShare
     }
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
         return "https://api.figshare.com/v2/account";
     }
 

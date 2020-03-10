@@ -109,7 +109,7 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
      * {@link OidcConfiguration}, or <code>null</code> meaning that the a
      * provider-supported method should be chosen.
      */
-    private static ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
+    private static ClientAuthenticationMethod getPreferredAuthenticationMethod(final OidcConfiguration config) {
         final ClientAuthenticationMethod configurationMethod = config.getClientAuthenticationMethod();
         if (configurationMethod == null) {
             return null;
@@ -130,7 +130,7 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
      *         if none of the provider-supported methods is supported.
      */
     private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
-        Optional<ClientAuthenticationMethod> firstSupported =
+        final Optional<ClientAuthenticationMethod> firstSupported =
             metadataMethods.stream().filter((m) -> SUPPORTED_METHODS.contains(m)).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
@@ -170,8 +170,8 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         }
     }
 
-    private void executeTokenRequest(TokenRequest request, OidcCredentials credentials) throws IOException, ParseException {
-        HTTPRequest tokenHttpRequest = request.toHTTPRequest();
+    private void executeTokenRequest(final TokenRequest request, final OidcCredentials credentials) throws IOException, ParseException {
+        final HTTPRequest tokenHttpRequest = request.toHTTPRequest();
         tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
         tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());
 
@@ -202,12 +202,12 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 
     public static class ClientNoSecret extends ClientAuthentication {
 
-        protected ClientNoSecret(ClientID clientID) {
+        protected ClientNoSecret(final ClientID clientID) {
             super(ClientAuthenticationMethod.NONE, clientID);
         }
 
         @Override
-        public void applyTo(HTTPRequest request) {
+        public void applyTo(final HTTPRequest request) {
             // do nothing
         }
 

@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public final class RunWindowsLiveClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunWindowsLiveClient().run();
     }
 
@@ -45,7 +45,7 @@ public final class RunWindowsLiveClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
         assertEquals("416c383b220392d8", profile.getId());
         assertEquals(WindowsLiveProfile.class.getName() + CommonProfile.SEPARATOR + "416c383b220392d8",

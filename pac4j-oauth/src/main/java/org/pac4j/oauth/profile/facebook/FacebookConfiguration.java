@@ -33,7 +33,7 @@ public class FacebookConfiguration extends OAuth20Configuration {
         return fields;
     }
 
-    public void setFields(String fields) {
+    public void setFields(final String fields) {
         this.fields = fields;
     }
 
@@ -41,7 +41,7 @@ public class FacebookConfiguration extends OAuth20Configuration {
         return limit;
     }
 
-    public void setLimit(int limit) {
+    public void setLimit(final int limit) {
         this.limit = limit;
     }
 
@@ -49,7 +49,7 @@ public class FacebookConfiguration extends OAuth20Configuration {
         return requiresExtendedToken;
     }
 
-    public void setRequiresExtendedToken(boolean requiresExtendedToken) {
+    public void setRequiresExtendedToken(final boolean requiresExtendedToken) {
         this.requiresExtendedToken = requiresExtendedToken;
     }
 
@@ -57,7 +57,7 @@ public class FacebookConfiguration extends OAuth20Configuration {
         return useAppsecretProof;
     }
 
-    public void setUseAppsecretProof(boolean useAppsecretProof) {
+    public void setUseAppsecretProof(final boolean useAppsecretProof) {
         this.useAppsecretProof = useAppsecretProof;
     }
 }

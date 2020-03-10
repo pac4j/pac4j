@@ -106,7 +106,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
         logger.debug("Reading key / value: {} / {}", key, value);
         final List<Map<String, Object>> listAttributes = new ArrayList<>();
-        try (MongoCursor<Document> cursor = getCollection().find(eq(key, value)).iterator()) {
+        try ( MongoCursor<Document> cursor = getCollection().find(eq(key, value)).iterator()) {
             int i = 0;
             while (cursor.hasNext() && i <= 2) {
                 final Document result = cursor.next();

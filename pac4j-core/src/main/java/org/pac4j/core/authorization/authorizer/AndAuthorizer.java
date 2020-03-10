@@ -18,19 +18,19 @@ public class AndAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
     private final List<Authorizer<U>> authorizers;
 
-    public AndAuthorizer(List<Authorizer<U>> authorizers) {
+    public AndAuthorizer(final List<Authorizer<U>> authorizers) {
         this.authorizers = authorizers;
     }
 
     @Override
-    public boolean isAuthorized(WebContext context, List<U> profiles) {
-        for (Authorizer<U> authorizer : authorizers) {
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
+        for (final Authorizer<U> authorizer : authorizers) {
             if (!authorizer.isAuthorized(context, profiles)) return false;
         }
         return true;
     }
 
-    public static <U extends UserProfile> Authorizer<U> and(Authorizer<U>... authorizers) {
+    public static <U extends UserProfile> Authorizer<U> and(final Authorizer<U>... authorizers) {
         return new AndAuthorizer<>(asList(authorizers));
     }
 

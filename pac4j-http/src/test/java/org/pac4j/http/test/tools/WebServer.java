@@ -37,7 +37,7 @@ public class WebServer extends NanoHTTPD {
     }
 
     @Override
-    public Response serve(IHTTPSession session) {
+    public Response serve(final IHTTPSession session) {
         String r = null;
         final List<String> parameterList = session.getParameters().get("r");
         if (parameterList != null && parameterList.size() > 0) {

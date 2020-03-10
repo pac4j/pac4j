@@ -28,7 +28,7 @@ public class PayPalAddress implements Serializable {
         return streetAddress;
     }
 
-    public void setStreetAddress(String streetAddress) {
+    public void setStreetAddress(final String streetAddress) {
         this.streetAddress = streetAddress;
     }
 
@@ -36,7 +36,7 @@ public class PayPalAddress implements Serializable {
         return locality;
     }
 
-    public void setLocality(String locality) {
+    public void setLocality(final String locality) {
         this.locality = locality;
     }
 
@@ -44,7 +44,7 @@ public class PayPalAddress implements Serializable {
         return postalCode;
     }
 
-    public void setPostalCode(String postalCode) {
+    public void setPostalCode(final String postalCode) {
         this.postalCode = postalCode;
     }
 
@@ -52,7 +52,7 @@ public class PayPalAddress implements Serializable {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(final String country) {
         this.country = country;
     }
 }

@@ -111,7 +111,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         try {
             queryString = AuthenticationRequest.parse(params.entrySet().stream().collect(
                 Collectors.toMap(Map.Entry::getKey, e -> Collections.singletonList(e.getValue())))).toQueryString();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new TechnicalException(e);
         }
         return configuration.getProviderMetadata().getAuthorizationEndpointURI().toString() + "?" + queryString;

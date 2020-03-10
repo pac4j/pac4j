@@ -47,8 +47,8 @@ public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfil
     }
 
     @Override
-    public OrcidProfile extractUserProfile(String body) {
-        OrcidProfile profile = newProfile();
+    public OrcidProfile extractUserProfile(final String body) {
+        final OrcidProfile profile = newProfile();
         if (body == null || body.isEmpty()) {
             raiseProfileExtractionError(body);
         }

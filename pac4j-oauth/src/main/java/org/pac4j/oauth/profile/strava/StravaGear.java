@@ -25,7 +25,7 @@ public class StravaGear implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -33,7 +33,7 @@ public class StravaGear implements Serializable {
         return primary;
     }
 
-    public void setPrimary(Boolean primary) {
+    public void setPrimary(final Boolean primary) {
         this.primary = primary;
     }
 
@@ -41,7 +41,7 @@ public class StravaGear implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -49,7 +49,7 @@ public class StravaGear implements Serializable {
         return resourceState;
     }
 
-    public void setResourceState(Integer resourceState) {
+    public void setResourceState(final Integer resourceState) {
         this.resourceState = resourceState;
     }
 
@@ -57,7 +57,7 @@ public class StravaGear implements Serializable {
         return distance;
     }
 
-    public void setDistance(Long distance) {
+    public void setDistance(final Long distance) {
         this.distance = distance;
     }
 }

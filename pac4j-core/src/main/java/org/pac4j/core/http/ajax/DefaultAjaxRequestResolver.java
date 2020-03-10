@@ -60,7 +60,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         return addRedirectionUrlAsHeader;
     }
 
-    public void setAddRedirectionUrlAsHeader(boolean addRedirectionUrlAsHeader) {
+    public void setAddRedirectionUrlAsHeader(final boolean addRedirectionUrlAsHeader) {
         this.addRedirectionUrlAsHeader = addRedirectionUrlAsHeader;
     }
 }

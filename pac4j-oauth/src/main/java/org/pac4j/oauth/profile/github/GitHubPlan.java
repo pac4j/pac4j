@@ -27,7 +27,7 @@ public final class GitHubPlan implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -35,7 +35,7 @@ public final class GitHubPlan implements Serializable {
         return collaborators;
     }
 
-    public void setCollaborators(Integer collaborators) {
+    public void setCollaborators(final Integer collaborators) {
         this.collaborators = collaborators;
     }
 
@@ -43,7 +43,7 @@ public final class GitHubPlan implements Serializable {
         return space;
     }
 
-    public void setSpace(Integer space) {
+    public void setSpace(final Integer space) {
         this.space = space;
     }
 
@@ -51,7 +51,7 @@ public final class GitHubPlan implements Serializable {
         return privateRepos;
     }
 
-    public void setPrivateRepos(Integer privateRepos) {
+    public void setPrivateRepos(final Integer privateRepos) {
         this.privateRepos = privateRepos;
     }
 }

@@ -30,7 +30,7 @@ public final class YahooDisclosure implements Serializable {
         return acceptance;
     }
 
-    public void setAcceptance(String acceptance) {
+    public void setAcceptance(final String acceptance) {
         this.acceptance = acceptance;
     }
 
@@ -38,7 +38,7 @@ public final class YahooDisclosure implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -46,7 +46,7 @@ public final class YahooDisclosure implements Serializable {
         return newDate(seen);
     }
 
-    public void setSeen(Date seen) {
+    public void setSeen(final Date seen) {
         this.seen = newDate(seen);
     }
 
@@ -54,7 +54,7 @@ public final class YahooDisclosure implements Serializable {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 }

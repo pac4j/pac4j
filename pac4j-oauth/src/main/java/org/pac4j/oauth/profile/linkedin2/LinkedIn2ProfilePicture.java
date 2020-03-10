@@ -30,7 +30,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return count;
             }
 
-            public void setCount(int count) {
+            public void setCount(final int count) {
                 this.count = count;
             }
 
@@ -38,7 +38,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return start;
             }
 
-            public void setStart(int start) {
+            public void setStart(final int start) {
                 this.start = start;
             }
 
@@ -46,7 +46,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return deepCopy(links);
             }
 
-            public void setLinks(String[] links) {
+            public void setLinks(final String[] links) {
                 this.links = deepCopy(links);
             }
 
@@ -75,7 +75,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return width;
                         }
 
-                        public void setWidth(int width) {
+                        public void setWidth(final int width) {
                             this.width = width;
                         }
 
@@ -83,7 +83,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return height;
                         }
 
-                        public void setHeight(int height) {
+                        public void setHeight(final int height) {
                             this.height = height;
                         }
 
@@ -106,7 +106,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return uom;
                         }
 
-                        public void setUom(String uom) {
+                        public void setUom(final String uom) {
                             this.uom = uom;
                         }
 
@@ -127,7 +127,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return widthAspect;
                         }
 
-                        public void setWidthAspect(double widthAspect) {
+                        public void setWidthAspect(final double widthAspect) {
                             this.widthAspect = widthAspect;
                         }
 
@@ -135,7 +135,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return heightAspect;
                         }
 
-                        public void setHeightAspect(double heightAspect) {
+                        public void setHeightAspect(final double heightAspect) {
                             this.heightAspect = heightAspect;
                         }
 
@@ -143,7 +143,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return formatted;
                         }
 
-                        public void setFormatted(String formatted) {
+                        public void setFormatted(final String formatted) {
                             this.formatted = formatted;
                         }
 
@@ -164,7 +164,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return name;
                         }
 
-                        public void setName(String name) {
+                        public void setName(final String name) {
                             this.name = name;
                         }
 
@@ -172,7 +172,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                             return type;
                         }
 
-                        public void setType(String type) {
+                        public void setType(final String type) {
                             this.type = type;
                         }
 
@@ -193,7 +193,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                         return storageSize;
                     }
 
-                    public void setStorageSize(Size storageSize) {
+                    public void setStorageSize(final Size storageSize) {
                         this.storageSize = storageSize;
                     }
 
@@ -201,7 +201,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                         return storageAspectRatio;
                     }
 
-                    public void setStorageAspectRatio(AspectRatio storageAspectRatio) {
+                    public void setStorageAspectRatio(final AspectRatio storageAspectRatio) {
                         this.storageAspectRatio = storageAspectRatio;
                     }
 
@@ -209,7 +209,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                         return mediaType;
                     }
 
-                    public void setMediaType(String mediaType) {
+                    public void setMediaType(final String mediaType) {
                         this.mediaType = mediaType;
                     }
 
@@ -217,7 +217,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                         return rawCodecSpec;
                     }
 
-                    public void setRawCodecSpec(RawCodecSpec rawCodecSpec) {
+                    public void setRawCodecSpec(final RawCodecSpec rawCodecSpec) {
                         this.rawCodecSpec = rawCodecSpec;
                     }
 
@@ -225,7 +225,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                         return displaySize;
                     }
 
-                    public void setDisplaySize(DisplaySize displaySize) {
+                    public void setDisplaySize(final DisplaySize displaySize) {
                         this.displaySize = displaySize;
                     }
 
@@ -233,7 +233,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                         return displayAspectRatio;
                     }
 
-                    public void setDisplayAspectRatio(AspectRatio displayAspectRatio) {
+                    public void setDisplayAspectRatio(final AspectRatio displayAspectRatio) {
                         this.displayAspectRatio = displayAspectRatio;
                     }
 
@@ -255,7 +255,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return stillImage;
                 }
 
-                public void setStillImage(StillImage stillImage) {
+                public void setStillImage(final StillImage stillImage) {
                     this.stillImage = stillImage;
                 }
 
@@ -279,7 +279,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return identifier;
                 }
 
-                public void setIdentifier(String identifier) {
+                public void setIdentifier(final String identifier) {
                     this.identifier = identifier;
                 }
 
@@ -287,7 +287,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return file;
                 }
 
-                public void setFile(String file) {
+                public void setFile(final String file) {
                     this.file = file;
                 }
 
@@ -295,7 +295,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return index;
                 }
 
-                public void setIndex(int index) {
+                public void setIndex(final int index) {
                     this.index = index;
                 }
 
@@ -303,7 +303,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return mediaType;
                 }
 
-                public void setMediaType(String mediaType) {
+                public void setMediaType(final String mediaType) {
                     this.mediaType = mediaType;
                 }
 
@@ -311,7 +311,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return identifierType;
                 }
 
-                public void setIdentifierType(String identifierType) {
+                public void setIdentifierType(final String identifierType) {
                     this.identifierType = identifierType;
                 }
 
@@ -319,7 +319,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     return identifierExpiresInSeconds;
                 }
 
-                public void setIdentifierExpiresInSeconds(int identifierExpiresInSeconds) {
+                public void setIdentifierExpiresInSeconds(final int identifierExpiresInSeconds) {
                     this.identifierExpiresInSeconds = identifierExpiresInSeconds;
                 }
 
@@ -340,7 +340,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return artifact;
             }
 
-            public void setArtifact(String artifact) {
+            public void setArtifact(final String artifact) {
                 this.artifact = artifact;
             }
 
@@ -348,7 +348,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return authorizationMethod;
             }
 
-            public void setAuthorizationMethod(String authorizationMethod) {
+            public void setAuthorizationMethod(final String authorizationMethod) {
                 this.authorizationMethod = authorizationMethod;
             }
 
@@ -356,7 +356,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return data;
             }
 
-            public void setData(Data data) {
+            public void setData(final Data data) {
                 this.data = data;
             }
 
@@ -364,7 +364,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                 return deepCopy(identifiers);
             }
 
-            public void setIdentifiers(Identifier[] identifiers) {
+            public void setIdentifiers(final Identifier[] identifiers) {
                 this.identifiers = deepCopy(identifiers);
             }
 
@@ -382,7 +382,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
             return paging;
         }
 
-        public void setPaging(Paging paging) {
+        public void setPaging(final Paging paging) {
             this.paging = paging;
         }
 
@@ -390,7 +390,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
             return deepCopy(elements);
         }
 
-        public void setElements(Element[] elements) {
+        public void setElements(final Element[] elements) {
             this.elements = deepCopy(elements);
         }
 
@@ -408,7 +408,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
         return displayImage;
     }
 
-    public void setDisplayImage(String displayImage) {
+    public void setDisplayImage(final String displayImage) {
         this.displayImage = displayImage;
     }
 
@@ -416,7 +416,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
         return displayImageTilde;
     }
 
-    public void setDisplayImageTilde(DisplayImageTilde displayImageTilde) {
+    public void setDisplayImageTilde(final DisplayImageTilde displayImageTilde) {
         this.displayImageTilde = displayImageTilde;
     }
 
@@ -425,7 +425,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
         return String.format("{displayImage: %s, displayImage~: %s}", displayImage, displayImageTilde);
     }
 
-    public static <T> T[] deepCopy(T[] array) {
+    public static <T> T[] deepCopy(final T[] array) {
         final ObjectMapper mapper = new ObjectMapper();
         // per https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects
         // per https://stackoverflow.com/questions/49903859/deep-copy-using-jackson-string-or-jsonnode
@@ -433,7 +433,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
         try {
             mapper.writeValue(tb, array);
             return (T[]) mapper.readValue(tb.asParser(), array.getClass());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return null;
         }
     }

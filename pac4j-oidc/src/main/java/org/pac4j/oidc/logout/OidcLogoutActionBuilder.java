@@ -47,7 +47,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                 final URI endSessionEndpoint = new URI(logoutUrl);
                 final JWT idToken = ((OidcProfile) currentProfile).getIdToken();
 
-                LogoutRequest logoutRequest;
+                final LogoutRequest logoutRequest;
                 if (CommonHelper.isNotBlank(targetUrl)) {
                     logoutRequest = new LogoutRequest(endSessionEndpoint, idToken, new URI(targetUrl), null);
                 } else {

@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  */
 public class RunBitbucketClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunBitbucketClient().run();
     }
 
@@ -35,7 +35,7 @@ public class RunBitbucketClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        BitbucketClient client = new BitbucketClient();
+        final BitbucketClient client = new BitbucketClient();
         client.setKey("bjEt8BMpLwFDqZUvp6");
         client.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
         client.setCallbackUrl(PAC4J_BASE_URL);
@@ -43,8 +43,8 @@ public class RunBitbucketClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
-        BitbucketProfile profile = (BitbucketProfile) userProfile;
+    protected void verifyProfile(final CommonProfile userProfile) {
+        final BitbucketProfile profile = (BitbucketProfile) userProfile;
         assertEquals("testscribeup", profile.getId());
         assertEquals(BitbucketProfile.class.getName() + CommonProfile.SEPARATOR + "testscribeup", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), BitbucketProfile.class));

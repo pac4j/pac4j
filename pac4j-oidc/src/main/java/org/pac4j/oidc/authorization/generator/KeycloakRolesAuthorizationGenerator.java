@@ -49,7 +49,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                 }
 
                 if (clientId != null) {
-                    JSONObject resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
+                    final JSONObject resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
                     if (resourceAccess != null) {
                         final JSONObject clientRolesJsonObject = (JSONObject) resourceAccess.get(clientId);
                         if (clientRolesJsonObject != null) {

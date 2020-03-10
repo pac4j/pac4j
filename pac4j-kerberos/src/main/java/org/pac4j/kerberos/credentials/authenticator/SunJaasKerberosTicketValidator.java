@@ -41,11 +41,11 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     private boolean debug = false;
 
     @Override
-    public KerberosTicketValidation validateTicket(byte[] token) {
+    public KerberosTicketValidation validateTicket(final byte[] token) {
         init();
         try {
             return Subject.doAs(this.serviceSubject, new KerberosValidateAction(token));
-        } catch (PrivilegedActionException e) {
+        } catch (final PrivilegedActionException e) {
             throw new BadCredentialsException("Kerberos validation not successful", e);
         }
     }
@@ -64,12 +64,12 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             if (keyTabLocationAsString.startsWith("file:")) {
                 keyTabLocationAsString = keyTabLocationAsString.substring(5);
             }
-            LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
+            final LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
                 this.debug);
-            Set<Principal> princ = new HashSet<>(1);
+            final Set<Principal> princ = new HashSet<>(1);
             princ.add(new KerberosPrincipal(this.servicePrincipal));
-            Subject sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
-            LoginContext lc = new LoginContext("", sub, null, loginConfig);
+            final Subject sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
+            final LoginContext lc = new LoginContext("", sub, null, loginConfig);
             lc.login();
             this.serviceSubject = lc.getSubject();
         } catch (final LoginException | IOException e) {
@@ -85,7 +85,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
      * @param servicePrincipal service principal to use
      * @see #setKeyTabLocation(Resource)
      */
-    public void setServicePrincipal(String servicePrincipal) {
+    public void setServicePrincipal(final String servicePrincipal) {
         this.servicePrincipal = servicePrincipal;
     }
 
@@ -102,7 +102,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
      *
      * @param keyTabLocation The location where the keytab resides
      */
-    public void setKeyTabLocation(Resource keyTabLocation) {
+    public void setKeyTabLocation(final Resource keyTabLocation) {
         this.keyTabLocation = keyTabLocation;
     }
 
@@ -111,7 +111,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
      *
      * @param debug default is false
      */
-    public void setDebug(boolean debug) {
+    public void setDebug(final boolean debug) {
         this.debug = debug;
     }
 
@@ -123,7 +123,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
      *
      * @param holdOnToGSSContext true if should hold on to context
      */
-    public void setHoldOnToGSSContext(boolean holdOnToGSSContext) {
+    public void setHoldOnToGSSContext(final boolean holdOnToGSSContext) {
         this.holdOnToGSSContext = holdOnToGSSContext;
     }
 
@@ -134,7 +134,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     private class KerberosValidateAction implements PrivilegedExceptionAction<KerberosTicketValidation> {
         byte[] kerberosTicket;
 
-        public KerberosValidateAction(byte[] kerberosTicket) {
+        public KerberosValidateAction(final byte[] kerberosTicket) {
             this.kerberosTicket = kerberosTicket;
         }
 
@@ -142,7 +142,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
         public KerberosTicketValidation run() throws Exception {
             byte[] responseToken = new byte[0];
             GSSName gssName = null;
-            GSSContext context = GSSManager.getInstance().createContext((GSSCredential) null);
+            final GSSContext context = GSSManager.getInstance().createContext((GSSCredential) null);
             boolean first = true;
             while (!context.isEstablished()) {
                 if (first) {
@@ -171,15 +171,15 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
         private String servicePrincipalName;
         private boolean debug;
 
-        public LoginConfig(String keyTabLocation, String servicePrincipalName, boolean debug) {
+        public LoginConfig(final String keyTabLocation, final String servicePrincipalName, final boolean debug) {
             this.keyTabLocation = keyTabLocation;
             this.servicePrincipalName = servicePrincipalName;
             this.debug = debug;
         }
 
         @Override
-        public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
-            HashMap<String, String> options = new HashMap<>();
+        public AppConfigurationEntry[] getAppConfigurationEntry(final String name) {
+            final HashMap<String, String> options = new HashMap<>();
             options.put("useKeyTab", "true");
             options.put("keyTab", this.keyTabLocation);
             options.put("principal", this.servicePrincipalName);
@@ -196,7 +196,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
     }
 
-    private static byte[] tweakJdkRegression(byte[] token) throws GSSException {
+    private static byte[] tweakJdkRegression(final byte[] token) throws GSSException {
 
 //      Due to regression in 8u40/8u45 described in
 //      https://bugs.openjdk.java.net/browse/JDK-8078439
@@ -228,7 +228,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             return token;
         }
 
-        int[] toCheck = new int[]{0x06, 0x09, 0x2A, 0x86, 0x48, 0x82, 0xF7, 0x12, 0x01, 0x02, 0x02, 0x06, 0x09, 0x2A,
+        final int[] toCheck = new int[]{0x06, 0x09, 0x2A, 0x86, 0x48, 0x82, 0xF7, 0x12, 0x01, 0x02, 0x02, 0x06, 0x09, 0x2A,
             0x86, 0x48, 0x86, 0xF7, 0x12, 0x01, 0x02, 0x02};
 
         for (int i = 0; i < 22; i++) {
@@ -237,7 +237,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             }
         }
 
-        byte[] nt = new byte[token.length];
+        final byte[] nt = new byte[token.length];
         System.arraycopy(token, 0, nt, 0, 24);
         System.arraycopy(token, 35, nt, 24, 11);
         System.arraycopy(token, 24, nt, 35, 11);

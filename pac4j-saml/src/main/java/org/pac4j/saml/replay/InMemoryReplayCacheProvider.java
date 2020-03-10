@@ -16,14 +16,14 @@ public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
 
     public InMemoryReplayCacheProvider() {
         try {
-            MemoryStorageService storageService = new MemoryStorageService();
+            final MemoryStorageService storageService = new MemoryStorageService();
             storageService.setId("pac4j-replay-storage");
             storageService.initialize();
 
             cache = new ReplayCache();
             cache.setStorage(storageService);
             cache.initialize();
-        } catch (ComponentInitializationException e) {
+        } catch (final ComponentInitializationException e) {
             throw new SAMLException(e);
         }
     }

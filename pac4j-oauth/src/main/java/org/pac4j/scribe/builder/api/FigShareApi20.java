@@ -17,13 +17,15 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 */
 public class FigShareApi20 extends DefaultApi20 {
     public static class Service extends OAuth20Service {
-        public Service(DefaultApi20 api, String apiKey, String apiSecret, String callback, String defaultScope, String responseType,
-                OutputStream debugStream, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+        public Service(final DefaultApi20 api, final String apiKey, final String apiSecret,
+                       final String callback, final String defaultScope, final String responseType,
+                       final OutputStream debugStream, final String userAgent,
+                       final HttpClientConfig httpClientConfig, final HttpClient httpClient) {
             super(api, apiKey, apiSecret, callback, defaultScope, responseType, debugStream, userAgent, httpClientConfig, httpClient);
         }
 
         @Override
-        protected OAuthRequest createAccessTokenRequest(AccessTokenRequestParams params) {
+        protected OAuthRequest createAccessTokenRequest(final AccessTokenRequestParams params) {
             final OAuthRequest request = super.createAccessTokenRequest(params);
             request.addParameter(OAuthConstants.CLIENT_ID, getApiKey());
             request.addParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
@@ -32,8 +34,10 @@ public class FigShareApi20 extends DefaultApi20 {
     }
 
     @Override
-    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope, String responseType,
-            OutputStream debugStream, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+    public OAuth20Service createService(final String apiKey, final String apiSecret, final String callback,
+                                        final String defaultScope, final String responseType,
+                                        final OutputStream debugStream, final String userAgent,
+                                        final HttpClientConfig httpClientConfig, final HttpClient httpClient) {
         return new Service(this, apiKey, apiSecret, callback, defaultScope, responseType, debugStream, userAgent, httpClientConfig,
                 httpClient);
     }

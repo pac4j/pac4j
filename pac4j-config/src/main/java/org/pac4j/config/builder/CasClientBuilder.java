@@ -27,7 +27,7 @@ public class CasClientBuilder extends AbstractBuilder {
             final String loginUrl = getProperty(CAS_LOGIN_URL, i);
             final String protocol = getProperty(CAS_PROTOCOL, i);
             if (isNotBlank(loginUrl)) {
-                CasConfiguration configuration = new CasConfiguration();
+                final CasConfiguration configuration = new CasConfiguration();
                 final CasClient casClient = new CasClient(configuration);
                 configuration.setLoginUrl(loginUrl);
                 if (isNotBlank(protocol)) {

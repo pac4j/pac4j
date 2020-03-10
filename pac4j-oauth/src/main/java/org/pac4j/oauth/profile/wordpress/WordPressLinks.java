@@ -22,7 +22,7 @@ public final class WordPressLinks implements Serializable {
         return self;
     }
 
-    public void setSelf(String self) {
+    public void setSelf(final String self) {
         this.self = self;
     }
 
@@ -30,7 +30,7 @@ public final class WordPressLinks implements Serializable {
         return help;
     }
 
-    public void setHelp(String help) {
+    public void setHelp(final String help) {
         this.help = help;
     }
 
@@ -38,7 +38,7 @@ public final class WordPressLinks implements Serializable {
         return site;
     }
 
-    public void setSite(String site) {
+    public void setSite(final String site) {
         this.site = site;
     }
 }

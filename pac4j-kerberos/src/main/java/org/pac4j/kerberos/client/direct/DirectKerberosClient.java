@@ -37,7 +37,7 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials> {
     }
 
     @Override
-    protected Optional<KerberosCredentials> retrieveCredentials(WebContext context) {
+    protected Optional<KerberosCredentials> retrieveCredentials(final WebContext context) {
         // Set the WWW-Authenticate: Negotiate header in case no credentials are found
         // to trigger the SPNEGO process by replying with 401 Unauthorized
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");

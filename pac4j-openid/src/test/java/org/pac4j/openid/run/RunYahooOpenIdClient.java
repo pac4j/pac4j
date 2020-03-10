@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class RunYahooOpenIdClient  extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunYahooOpenIdClient().run();
     }
 
@@ -42,7 +42,7 @@ public class RunYahooOpenIdClient  extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final YahooOpenIdProfile profile = (YahooOpenIdProfile) userProfile;
         assertNotNull(profile);
         final String id = "mnsYAxIag.AfFGVrKZckRIVkvVYLEYRM4Q--#02050";

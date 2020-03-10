@@ -33,7 +33,7 @@ public final class YahooAddress implements Serializable {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -41,7 +41,7 @@ public final class YahooAddress implements Serializable {
         return current;
     }
 
-    public void setCurrent(Boolean current) {
+    public void setCurrent(final Boolean current) {
         this.current = current;
     }
 
@@ -49,7 +49,7 @@ public final class YahooAddress implements Serializable {
         return country;
     }
 
-    public void setCountry(Locale country) {
+    public void setCountry(final Locale country) {
         this.country = country;
     }
 
@@ -57,7 +57,7 @@ public final class YahooAddress implements Serializable {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(final String state) {
         this.state = state;
     }
 
@@ -65,7 +65,7 @@ public final class YahooAddress implements Serializable {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(final String city) {
         this.city = city;
     }
 
@@ -73,7 +73,7 @@ public final class YahooAddress implements Serializable {
         return postalCode;
     }
 
-    public void setPostalCode(String postalCode) {
+    public void setPostalCode(final String postalCode) {
         this.postalCode = postalCode;
     }
 
@@ -81,7 +81,7 @@ public final class YahooAddress implements Serializable {
         return street;
     }
 
-    public void setStreet(String street) {
+    public void setStreet(final String street) {
         this.street = street;
     }
 
@@ -89,7 +89,7 @@ public final class YahooAddress implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 }

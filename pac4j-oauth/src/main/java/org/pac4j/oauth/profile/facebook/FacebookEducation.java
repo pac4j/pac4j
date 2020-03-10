@@ -27,7 +27,7 @@ public final class FacebookEducation implements Serializable {
         return school;
     }
 
-    public void setSchool(FacebookObject school) {
+    public void setSchool(final FacebookObject school) {
         this.school = school;
     }
 
@@ -35,7 +35,7 @@ public final class FacebookEducation implements Serializable {
         return degree;
     }
 
-    public void setDegree(FacebookObject degree) {
+    public void setDegree(final FacebookObject degree) {
         this.degree = degree;
     }
 
@@ -43,7 +43,7 @@ public final class FacebookEducation implements Serializable {
         return year;
     }
 
-    public void setYear(FacebookObject year) {
+    public void setYear(final FacebookObject year) {
         this.year = year;
     }
 
@@ -51,7 +51,7 @@ public final class FacebookEducation implements Serializable {
         return concentration;
     }
 
-    public void setConcentration(List<FacebookObject> concentration) {
+    public void setConcentration(final List<FacebookObject> concentration) {
         this.concentration = concentration;
     }
 
@@ -59,7 +59,7 @@ public final class FacebookEducation implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 }

@@ -13,19 +13,20 @@ public class OrcidToken extends OAuth2AccessToken {
     private static final long serialVersionUID = 3129683748679852572L;
     private String orcid;
 
-    public OrcidToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope, String orcid, 
-        String response) {
+    public OrcidToken(final String accessToken, final String tokenType, final Integer expiresIn,
+                      final String refreshToken, final String scope, final String orcid,
+                      final String response) {
         super(accessToken, tokenType, expiresIn, refreshToken, scope, response);
         setOrcid(orcid);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        OrcidToken that = (OrcidToken) o;
+        final OrcidToken that = (OrcidToken) o;
 
         return !(orcid != null ? !orcid.equals(that.orcid) : that.orcid != null);
     }
@@ -41,7 +42,7 @@ public class OrcidToken extends OAuth2AccessToken {
         return orcid;
     }
 
-    public void setOrcid(String orcid) {
+    public void setOrcid(final String orcid) {
         this.orcid = orcid;
     }
 }

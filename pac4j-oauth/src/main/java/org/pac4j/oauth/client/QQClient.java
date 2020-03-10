@@ -78,7 +78,7 @@ public class QQClient extends OAuth20Client {
     private String getOAuthScope() {
         StringBuilder builder = null;
         if (scopes != null) {
-            for (QQScope value : scopes) {
+            for (final QQScope value : scopes) {
                 if (builder == null) {
                     builder = new StringBuilder();
                 } else {
@@ -97,11 +97,11 @@ public class QQClient extends OAuth20Client {
         return scopes;
     }
 
-    public void setScopes(List<QQScope> scopes) {
+    public void setScopes(final List<QQScope> scopes) {
         this.scopes = scopes;
     }
 
-    public void addScope(QQScope scopes) {
+    public void addScope(final QQScope scopes) {
         if (this.scopes == null)
             this.scopes = new ArrayList<>();
         this.scopes.add(scopes);

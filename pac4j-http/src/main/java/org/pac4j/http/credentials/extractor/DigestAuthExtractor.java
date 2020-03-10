@@ -50,40 +50,40 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * @return the Digest credentials
      */
     @Override
-    public Optional<DigestCredentials> extract(WebContext context) {
+    public Optional<DigestCredentials> extract(final WebContext context) {
         final Optional<TokenCredentials> credentials = this.extractor.extract(context);
         if (!credentials.isPresent()) {
             return Optional.empty();
         }
 
-        String token = credentials.get().getToken();
-        Map<String, String> valueMap = parseTokenValue(token);
-        String username = valueMap.get("username");
-        String response = valueMap.get("response");
+        final String token = credentials.get().getToken();
+        final Map<String, String> valueMap = parseTokenValue(token);
+        final String username = valueMap.get("username");
+        final String response = valueMap.get("response");
 
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
             throw new CredentialsException("Bad format of the digest auth header");
         }
-        String realm = valueMap.get("realm");
-        String nonce = valueMap.get("nonce");
-        String uri = valueMap.get("uri");
-        String cnonce = valueMap.get("cnonce");
-        String nc = valueMap.get("nc");
-        String qop = valueMap.get("qop");
-        String method = context.getRequestMethod();
+        final String realm = valueMap.get("realm");
+        final String nonce = valueMap.get("nonce");
+        final String uri = valueMap.get("uri");
+        final String cnonce = valueMap.get("cnonce");
+        final String nc = valueMap.get("nc");
+        final String qop = valueMap.get("qop");
+        final String method = context.getRequestMethod();
 
         return Optional.of(new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop));
     }
 
-    private Map<String, String> parseTokenValue(String token) {
-        StringTokenizer tokenizer = new StringTokenizer(token, ", ");
+    private Map<String, String> parseTokenValue(final String token) {
+        final StringTokenizer tokenizer = new StringTokenizer(token, ", ");
         String keyval;
-        Map map = new HashMap<String, String>();
+        final Map map = new HashMap<String, String>();
         while (tokenizer.hasMoreElements()) {
             keyval = tokenizer.nextToken();
             if (keyval.contains("=")) {
-                String key = keyval.substring(0, keyval.indexOf("="));
-                String value = keyval.substring(keyval.indexOf("=") + 1);
+                final String key = keyval.substring(0, keyval.indexOf("="));
+                final String value = keyval.substring(keyval.indexOf("=") + 1);
                 map.put(key.trim(), value.replaceAll("\"", "").trim());
             }
         }

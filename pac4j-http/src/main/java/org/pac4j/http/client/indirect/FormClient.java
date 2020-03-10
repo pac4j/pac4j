@@ -97,7 +97,8 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
         return credentials;
     }
 
-    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage) {
+    protected HttpAction handleInvalidCredentials(final WebContext context, final String username,
+                                                  final String message, final String errorMessage) {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (getAjaxRequestResolver().isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");

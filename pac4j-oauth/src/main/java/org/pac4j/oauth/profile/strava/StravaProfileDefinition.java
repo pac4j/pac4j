@@ -75,7 +75,7 @@ public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProf
     }
 
     @Override
-    public StravaProfile extractUserProfile(String body) {
+    public StravaProfile extractUserProfile(final String body) {
         final StravaProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

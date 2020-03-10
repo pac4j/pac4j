@@ -16,8 +16,9 @@ import org.pac4j.core.util.CommonHelper;
 public class PayPalApi20 extends DefaultApi20 {
 
     @Override
-    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
-            Map<String, String> additionalParams) {
+    public String getAuthorizationUrl(final String responseType, final String apiKey,
+                                      final String callback, final String scope, final String state,
+                                      Map<String, String> additionalParams) {
         CommonHelper.assertNotBlank("callback", callback,
             "Must provide a valid url as callback. PayPal does not support OOB");
         

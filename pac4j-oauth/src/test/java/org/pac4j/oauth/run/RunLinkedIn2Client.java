@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  */
 public final class RunLinkedIn2Client extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunLinkedIn2Client().run();
     }
 
@@ -49,7 +49,7 @@ public final class RunLinkedIn2Client extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final LinkedIn2Profile profile = (LinkedIn2Profile) userProfile;
         assertEquals("X_0RQBLXtJ", profile.getId());
         assertEquals(LinkedIn2Profile.class.getName() + CommonProfile.SEPARATOR + "X_0RQBLXtJ",

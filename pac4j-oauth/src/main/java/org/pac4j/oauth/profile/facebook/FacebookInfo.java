@@ -32,7 +32,7 @@ public final class FacebookInfo implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -40,7 +40,7 @@ public final class FacebookInfo implements Serializable {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(final String category) {
         this.category = category;
     }
 
@@ -48,7 +48,7 @@ public final class FacebookInfo implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -56,7 +56,7 @@ public final class FacebookInfo implements Serializable {
         return newDate(createdTime);
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(final Date createdTime) {
         this.createdTime = newDate(createdTime);
     }
 }

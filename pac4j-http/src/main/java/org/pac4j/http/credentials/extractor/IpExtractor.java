@@ -28,17 +28,17 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     public IpExtractor() {}
 
-    public IpExtractor(String... alternateIpHeaders) {
+    public IpExtractor(final String... alternateIpHeaders) {
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
     @Override
-    public Optional<TokenCredentials> extract(WebContext context) {
+    public Optional<TokenCredentials> extract(final WebContext context) {
         final Optional<String> ip;
         if (alternateIpHeaders.isEmpty()) {
             ip = Optional.ofNullable(context.getRemoteAddr());
         } else {
-            String requestSourceIp = context.getRemoteAddr();
+            final String requestSourceIp = context.getRemoteAddr();
             if (this.proxyIp.isEmpty()) {
                 ip = ipFromHeaders(context);
             }
@@ -57,9 +57,9 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
         return Optional.of(new TokenCredentials(ip.get()));
     }
 
-    private Optional<String> ipFromHeaders(WebContext context) {
+    private Optional<String> ipFromHeaders(final WebContext context) {
         Optional<String> ip;
-        for (String header : alternateIpHeaders) {
+        for (final String header : alternateIpHeaders) {
             ip = context.getRequestHeader(header);
             if (ip.isPresent() && !ip.get().isEmpty()) {
                 return ip;
@@ -81,7 +81,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
      *               Setting {@code null} or {@code ""} (empty string) disabled the proxy IP check.
      * @since 2.1.0
      */
-    public void setProxyIp(String proxyIp) {
+    public void setProxyIp(final String proxyIp) {
         this.proxyIp = proxyIp == null ? "" : proxyIp;
     }
 

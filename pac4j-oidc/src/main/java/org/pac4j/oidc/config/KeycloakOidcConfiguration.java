@@ -33,7 +33,7 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
         return realm;
     }
 
-    public void setRealm(String realm) {
+    public void setRealm(final String realm) {
         this.realm = realm;
     }
 
@@ -41,7 +41,7 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
         return baseUri;
     }
 
-    public void setBaseUri(String baseUri) {
+    public void setBaseUri(final String baseUri) {
         this.baseUri = baseUri;
     }
 

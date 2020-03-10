@@ -16,11 +16,11 @@ public class FacebookObject implements Serializable {
 
     private String name;
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 

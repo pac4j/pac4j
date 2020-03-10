@@ -48,7 +48,7 @@ public final class FacebookPhoto implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -56,7 +56,7 @@ public final class FacebookPhoto implements Serializable {
         return from;
     }
 
-    public void setFrom(FacebookObject from) {
+    public void setFrom(final FacebookObject from) {
         this.from = from;
     }
 
@@ -64,7 +64,7 @@ public final class FacebookPhoto implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -72,7 +72,7 @@ public final class FacebookPhoto implements Serializable {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
@@ -80,7 +80,7 @@ public final class FacebookPhoto implements Serializable {
         return coverPhoto;
     }
 
-    public void setCoverPhoto(String coverPhoto) {
+    public void setCoverPhoto(final String coverPhoto) {
         this.coverPhoto = coverPhoto;
     }
 
@@ -88,7 +88,7 @@ public final class FacebookPhoto implements Serializable {
         return privacy;
     }
 
-    public void setPrivacy(String privacy) {
+    public void setPrivacy(final String privacy) {
         this.privacy = privacy;
     }
 
@@ -96,7 +96,7 @@ public final class FacebookPhoto implements Serializable {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(final Integer count) {
         this.count = count;
     }
 
@@ -104,7 +104,7 @@ public final class FacebookPhoto implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -112,7 +112,7 @@ public final class FacebookPhoto implements Serializable {
         return newDate(createdTime);
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(final Date createdTime) {
         this.createdTime = newDate(createdTime);
     }
 
@@ -120,7 +120,7 @@ public final class FacebookPhoto implements Serializable {
         return newDate(updatedTime);
     }
 
-    public void setUpdatedTime(Date updatedTime) {
+    public void setUpdatedTime(final Date updatedTime) {
         this.updatedTime = newDate(updatedTime);
     }
 
@@ -128,7 +128,7 @@ public final class FacebookPhoto implements Serializable {
         return canUpload;
     }
 
-    public void setCanUpload(Boolean canUpload) {
+    public void setCanUpload(final Boolean canUpload) {
         this.canUpload = canUpload;
     }
 }

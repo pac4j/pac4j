@@ -195,7 +195,7 @@ public class OidcConfiguration extends InitializableObject {
         return customParams;
     }
 
-    public String getCustomParam(String name) {
+    public String getCustomParam(final String name) {
         return customParams.get(name);
     }
 
@@ -297,7 +297,7 @@ public class OidcConfiguration extends InitializableObject {
     public void setResponseType(final String responseType) {
         try {
             this.responseType = ResponseType.parse(responseType);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new TechnicalException("Unrecognised responseType: " + responseType, e);
         }
     }
@@ -339,7 +339,7 @@ public class OidcConfiguration extends InitializableObject {
         return expireSessionWithToken;
     }
 
-    public void setExpireSessionWithToken(boolean expireSessionWithToken) {
+    public void setExpireSessionWithToken(final boolean expireSessionWithToken) {
         this.expireSessionWithToken = expireSessionWithToken;
     }
 
@@ -347,7 +347,7 @@ public class OidcConfiguration extends InitializableObject {
         return isExpireSessionWithToken() ? tokenExpirationAdvance : -1;
     }
 
-    public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
+    public void setTokenExpirationAdvance(final int tokenExpirationAdvance) {
         this.tokenExpirationAdvance = tokenExpirationAdvance;
     }
 

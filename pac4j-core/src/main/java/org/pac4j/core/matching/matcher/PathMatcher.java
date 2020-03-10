@@ -91,7 +91,7 @@ public class PathMatcher implements Matcher {
             return false;
         }
 
-        for (Pattern pattern : excludedPatterns) {
+        for (final Pattern pattern : excludedPatterns) {
             if (pattern.matcher(path).matches()) {
                 return false;
             }
@@ -108,12 +108,12 @@ public class PathMatcher implements Matcher {
         return excludedPatterns;
     }
 
-    public void setExcludedPaths(Collection<String> paths) {
+    public void setExcludedPaths(final Collection<String> paths) {
         excludedPaths.clear();
         paths.forEach(path -> excludePath(path));
     }
 
-    public void setExcludedPatterns(Collection<String> regularExpressions) {
+    public void setExcludedPatterns(final Collection<String> regularExpressions) {
         excludedPatterns.clear();
         regularExpressions.forEach(regex -> excludeRegex(regex));
     }
@@ -128,7 +128,7 @@ public class PathMatcher implements Matcher {
         excludeRegex(regularExpression);
     }
 
-    private static void validatePath(String path) {
+    private static void validatePath(final String path) {
         CommonHelper.assertNotBlank("path", path);
         if (!path.startsWith("/")) {
             throw new TechnicalException("Excluded path must begin with a /");

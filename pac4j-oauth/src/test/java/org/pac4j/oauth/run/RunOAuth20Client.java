@@ -15,7 +15,7 @@ import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
  */
 public final class RunOAuth20Client extends RunGithubClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunOAuth20Client().run();
     }
 

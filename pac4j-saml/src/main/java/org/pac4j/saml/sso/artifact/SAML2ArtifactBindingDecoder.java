@@ -2,7 +2,6 @@ package org.pac4j.saml.sso.artifact;
 
 import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.decoder.MessageDecodingException;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.impl.DefaultEndpointResolver;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -17,6 +16,8 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
 import org.pac4j.saml.transport.Pac4jHTTPArtifactDecoder;
+
+import java.util.Objects;
 
 /**
  * Decodes a SAML artifact binding request by fetching the actual artifact via
@@ -40,26 +41,26 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     }
 
     @Override
-    public String getBindingURI(SAML2MessageContext messageContext) {
+    public String getBindingURI(final SAML2MessageContext messageContext) {
         return SAMLConstants.SAML2_ARTIFACT_BINDING_URI;
     }
 
     @Override
     protected void doDecode() throws MessageDecodingException {
         try {
-            DefaultEndpointResolver<ArtifactResolutionService> endpointResolver = new DefaultEndpointResolver<>();
+            final DefaultEndpointResolver<ArtifactResolutionService> endpointResolver = new DefaultEndpointResolver<>();
             endpointResolver.initialize();
 
-            PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(
+            final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(
                     idpMetadataResolver.resolve());
             roleResolver.initialize();
 
-            SAML2MessageContext messageContext = new SAML2MessageContext();
+            final SAML2MessageContext messageContext = new SAML2MessageContext();
 
-            PipelineFactoryHttpSOAPClient<SAMLObject, SAMLObject> soapClient = new PipelineFactoryHttpSOAPClient<SAMLObject, SAMLObject>() {
+            final PipelineFactoryHttpSOAPClient soapClient = new PipelineFactoryHttpSOAPClient() {
                 @SuppressWarnings("rawtypes")
                 @Override
-                public void send(String endpoint, InOutOperationContext operationContext)
+                public void send(final String endpoint, final InOutOperationContext operationContext)
                         throws SOAPException, SecurityException {
                     super.send(endpoint, operationContext);
                     transferContext(operationContext, messageContext);
@@ -79,17 +80,18 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             artifactDecoder.initialize();
             artifactDecoder.decode();
 
-            messageContext.setMessage(artifactDecoder.getMessageContext().getMessage());
+            messageContext.getMessageContext().setMessage(artifactDecoder.getMessageContext().getMessage());
 
             this.populateBindingContext(messageContext);
-            this.setMessageContext(messageContext);
-        } catch (Exception e) {
+            this.setMessageContext(messageContext.getMessageContext());
+        } catch (final Exception e) {
             throw new MessageDecodingException(e);
         }
     }
 
-    protected void transferContext(InOutOperationContext<?, ?> operationContext, SAML2MessageContext messageContext) {
-        messageContext
-                .addSubcontext(operationContext.getInboundMessageContext().getSubcontext(SAMLPeerEntityContext.class));
+    protected void transferContext(final InOutOperationContext operationContext, final SAML2MessageContext messageContext) {
+        messageContext.getMessageContext()
+                .addSubcontext(Objects.requireNonNull(Objects.requireNonNull(operationContext.getInboundMessageContext())
+                    .getSubcontext(SAMLPeerEntityContext.class)));
     }
 }

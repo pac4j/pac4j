@@ -72,7 +72,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testRedirectionUrl() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        MockWebContext context = MockWebContext.create();
+        final MockWebContext context = MockWebContext.create();
         final FoundAction action = (FoundAction) basicAuthClient.getRedirectionAction(context).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
@@ -127,8 +127,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     }
 
     private void verifyGetCredentialsFailsWithAuthenticationRequired(
-            IndirectBasicAuthClient basicAuthClient,
-            MockWebContext context) {
+        final IndirectBasicAuthClient basicAuthClient,
+        final MockWebContext context) {
         try {
             basicAuthClient.getCredentials(context);
             fail("should throw HttpAction");
@@ -139,8 +139,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         }
     }
 
-    private MockWebContext getContextWithAuthorizationHeader(String value) {
-        MockWebContext context = MockWebContext.create();
+    private MockWebContext getContextWithAuthorizationHeader(final String value) {
+        final MockWebContext context = MockWebContext.create();
         return context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, value);
     }
 }

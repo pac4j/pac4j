@@ -52,7 +52,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public void validate(TokenCredentials credentials, WebContext context) {
+    public void validate(final TokenCredentials credentials, final WebContext context) {
         init();
 
         final OidcProfileDefinition profileDefinition = new OidcProfileDefinition();
@@ -70,7 +70,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
         credentials.setUserProfile(profile);
     }
 
-    private JWTClaimsSet fetchOidcProfile(BearerAccessToken accessToken) {
+    private JWTClaimsSet fetchOidcProfile(final BearerAccessToken accessToken) {
         final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
             accessToken);
         final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
@@ -93,7 +93,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
                 }
                 return userInfoClaimsSet;
             }
-        } catch (IOException | ParseException | java.text.ParseException | AuthenticationException e) {
+        } catch (final IOException | ParseException | java.text.ParseException | AuthenticationException e) {
             throw new TechnicalException(e);
         }
     }

@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  */
 public final class RunTwitterClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunTwitterClient().run();
     }
 
@@ -51,7 +51,7 @@ public final class RunTwitterClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final TwitterProfile profile = (TwitterProfile) userProfile;
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getName() + CommonProfile.SEPARATOR + "488358057", profile.getTypedId());

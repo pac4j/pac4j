@@ -25,11 +25,12 @@ public class WeiboJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     }
 
     @Override
-    protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
-                                            JsonNode response, String rawResponse) {
-        OAuth2AccessToken token = super.createToken(accessToken, tokenType, expiresIn, refreshToken,
+    protected OAuth2AccessToken createToken(final String accessToken, final String tokenType,
+                                            final Integer expiresIn, final String refreshToken, final String scope,
+                                            final JsonNode response, final String rawResponse) {
+        final OAuth2AccessToken token = super.createToken(accessToken, tokenType, expiresIn, refreshToken,
             scope, response, rawResponse);
-        String uid = extractRequiredParameter(response, "uid", rawResponse).asText();
+        final String uid = extractRequiredParameter(response, "uid", rawResponse).asText();
         if (uid == null || "".equals(uid)) {
             throw new OAuthException(
                 "There is no required UID in the response of the AssessToken endpoint.");

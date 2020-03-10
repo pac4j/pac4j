@@ -47,7 +47,7 @@ public final class RunOkClient extends RunClient {
      */
     private static final String TEST_PROFILE_PICTURE_URL = "";
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunOkClient().run();
     }
 
@@ -72,7 +72,7 @@ public final class RunOkClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final OkProfile profile = (OkProfile) userProfile;
         assertEquals(TEST_PROFILE_ID, profile.getId());
         assertEquals(OkProfile.class.getName() + CommonProfile.SEPARATOR + TEST_PROFILE_ID,

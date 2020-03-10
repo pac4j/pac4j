@@ -52,7 +52,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     public void validate(final T credentials, final WebContext context) {
         init();
 
-        Optional<CommonProfile> optProfile = this.store.get(credentials);
+        final Optional<CommonProfile> optProfile = this.store.get(credentials);
         if (!optProfile.isPresent()) {
             logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
             delegate.validate(credentials, context);

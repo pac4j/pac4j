@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
  */
 public class RunGithubClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunGithubClient().run();
     }
 
@@ -48,7 +48,7 @@ public class RunGithubClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final GitHubProfile profile = (GitHubProfile) userProfile;
         assertEquals("1412558", profile.getId());
         assertEquals(GitHubProfile.class.getName() + CommonProfile.SEPARATOR + "1412558", profile.getTypedId());

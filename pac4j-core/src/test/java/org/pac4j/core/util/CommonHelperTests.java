@@ -152,31 +152,31 @@ public final class CommonHelperTests {
 
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_null() {
-        String var = null;
+        final String var = null;
         CommonHelper.assertNotBlank("var", var);
     }
 
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_empty() {
-        String var = " ";
+        final String var = " ";
         CommonHelper.assertNotBlank("var", var);
     }
 
     @Test
     public void testAssertNotBlank_notBlank() {
-        String var = "contents";
+        final String var = "contents";
         CommonHelper.assertNotBlank("var", var);
     }
 
     @Test(expected = TechnicalException.class)
     public void testAssertNotNull_null() {
-        String var = null;
+        final String var = null;
         CommonHelper.assertNotNull("var", var);
     }
 
     @Test
     public void testAssertNotNull_notBlank() {
-        String var = "contents";
+        final String var = "contents";
         CommonHelper.assertNotNull("var", var);
     }
 
@@ -233,7 +233,7 @@ public final class CommonHelperTests {
 
     @Test
     public void testGetConstructorOK() throws Exception {
-        Constructor constructor = CommonHelper.getConstructor(CommonProfile.class.getName());
+        final Constructor constructor = CommonHelper.getConstructor(CommonProfile.class.getName());
         final CommonProfile profile = (CommonProfile) constructor.newInstance();
         assertNotNull(profile);
     }

@@ -45,7 +45,7 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testNoValuesSet() {
-        MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
         final Clients clients = new Clients(facebookClient);
         clients.init();
         assertNull(facebookClient.getCallbackUrl());
@@ -57,7 +57,7 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testValuesSet() {
-        MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
         final Clients clients = new Clients(facebookClient);
         final AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
         final UrlResolver urlResolver = new DefaultUrlResolver();

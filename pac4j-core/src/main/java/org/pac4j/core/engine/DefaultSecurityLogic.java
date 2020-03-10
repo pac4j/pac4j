@@ -69,7 +69,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
         logger.debug("=== SECURITY ===");
 
-        HttpAction action;
+        final HttpAction action;
         try {
 
             // default value
@@ -199,7 +199,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param context the web context
      * @param currentClients the current clients
      */
-    protected void saveRequestedUrl(final C context, final List<Client> currentClients, AjaxRequestResolver ajaxRequestResolver) {
+    protected void saveRequestedUrl(final C context, final List<Client> currentClients, final AjaxRequestResolver ajaxRequestResolver) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
             savedRequestHandler.save(context);
         }

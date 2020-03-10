@@ -48,7 +48,7 @@ public class ParameterClient extends DirectClient<TokenCredentials> {
         return parameterName;
     }
 
-    public void setParameterName(String parameterName) {
+    public void setParameterName(final String parameterName) {
         this.parameterName = parameterName;
     }
 
@@ -56,7 +56,7 @@ public class ParameterClient extends DirectClient<TokenCredentials> {
         return supportGetRequest;
     }
 
-    public void setSupportGetRequest(boolean supportGetRequest) {
+    public void setSupportGetRequest(final boolean supportGetRequest) {
         this.supportGetRequest = supportGetRequest;
     }
 
@@ -64,7 +64,7 @@ public class ParameterClient extends DirectClient<TokenCredentials> {
         return supportPostRequest;
     }
 
-    public void setSupportPostRequest(boolean supportPostRequest) {
+    public void setSupportPostRequest(final boolean supportPostRequest) {
         this.supportPostRequest = supportPostRequest;
     }
 

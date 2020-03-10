@@ -18,19 +18,19 @@ public class OrAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
     private final List<Authorizer<U>> authorizers;
 
-    public OrAuthorizer(List<Authorizer<U>> authorizers) {
+    public OrAuthorizer(final List<Authorizer<U>> authorizers) {
         this.authorizers = authorizers;
     }
 
     @Override
-    public boolean isAuthorized(WebContext context, List<U> profiles) {
-        for (Authorizer<U> authorizer : authorizers) {
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
+        for (final Authorizer<U> authorizer : authorizers) {
             if (authorizer.isAuthorized(context, profiles)) return true;
         }
         return false;
     }
 
-    public static <U extends UserProfile> OrAuthorizer<U> or(Authorizer<U>... authorizers) {
+    public static <U extends UserProfile> OrAuthorizer<U> or(final Authorizer<U>... authorizers) {
         return new OrAuthorizer<>(asList(authorizers));
     }
 }

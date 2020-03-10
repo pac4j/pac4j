@@ -21,7 +21,7 @@ public class DefaultUrlResolver implements UrlResolver {
     }
 
     @Override
-    public String compute(final String url, WebContext context) {
+    public String compute(final String url, final WebContext context) {
         if (this.completeRelativeUrl) {
 
             final boolean relativeUrl = url != null

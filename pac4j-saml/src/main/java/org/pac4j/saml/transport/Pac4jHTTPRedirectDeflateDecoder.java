@@ -34,10 +34,10 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
             final byte[] base64DecodedMessage = this.getBase64DecodedMessage();
             final InputStream inflatedMessage = inflate(base64DecodedMessage);
             final SAMLObject inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
-            messageContext.setMessage(inboundMessage);
+            messageContext.getMessageContext().setMessage(inboundMessage);
             logger.debug("Decoded SAML message");
             this.populateBindingContext(messageContext);
-            this.setMessageContext(messageContext);
+            this.setMessageContext(messageContext.getMessageContext());
         } else {
             throw new MessageDecodingException("This message decoder only supports the HTTP-Redirect method");
         }
@@ -61,7 +61,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
         try {
-            byte[] buffer = new byte[1000];
+            final byte[] buffer = new byte[1000];
             int length;
             while ((length = iis.read(buffer)) > 0) {
                 baos.write(buffer, 0, length);

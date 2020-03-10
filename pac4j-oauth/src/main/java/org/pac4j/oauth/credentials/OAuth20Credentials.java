@@ -21,7 +21,7 @@ public class OAuth20Credentials extends OAuthCredentials {
      *
      * @param code       the authorization code
      */
-    public OAuth20Credentials(String code) {
+    public OAuth20Credentials(final String code) {
         this.code = code;
     }
 
@@ -30,11 +30,11 @@ public class OAuth20Credentials extends OAuthCredentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OAuth20Credentials that = (OAuth20Credentials) o;
+        final OAuth20Credentials that = (OAuth20Credentials) o;
 
         return code != null ? code.equals(that.code) : that.code == null;
 

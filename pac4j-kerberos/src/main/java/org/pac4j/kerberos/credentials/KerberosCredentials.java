@@ -18,7 +18,7 @@ public class KerberosCredentials extends Credentials {
      */
     private static final long serialVersionUID = -4264156105410684508L;
 
-    public KerberosCredentials(byte[] kerberosTicket) {
+    public KerberosCredentials(final byte[] kerberosTicket) {
         this.kerberosTicket = kerberosTicket.clone();
     }
 
@@ -36,13 +36,13 @@ public class KerberosCredentials extends Credentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
 
-        KerberosCredentials that = (KerberosCredentials) o;
+        final KerberosCredentials that = (KerberosCredentials) o;
 
         return !(kerberosTicket != null ? !getTicketAsString(kerberosTicket).equals(getTicketAsString(that.kerberosTicket))
             : that.kerberosTicket != null);
@@ -53,7 +53,7 @@ public class KerberosCredentials extends Credentials {
         return kerberosTicket != null ? getTicketAsString(kerberosTicket).hashCode() : 0;
     }
 
-    private String getTicketAsString(byte[] kerberosTicket) {
+    private String getTicketAsString(final byte[] kerberosTicket) {
         return new String(kerberosTicket, StandardCharsets.UTF_8);
     }
 }

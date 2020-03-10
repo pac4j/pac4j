@@ -84,10 +84,10 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
             res.putAll(attributes);
             couchDbConnector.update(res);
             logger.debug("Updating id: {} with attributes: {}", id, attributes);
-        } catch (DocumentNotFoundException e) {
+        } catch (final DocumentNotFoundException e) {
             logger.debug("Insert doc (not found by update(): {}", attributes);
             couchDbConnector.create(attributes);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("Unexpected IO CouchDB Exception", e);
         }
     }
@@ -100,9 +100,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
             final JsonNode oldDoc = objectMapper.readTree(oldDocStream);
             final String rev = oldDoc.get("_rev").asText();
             couchDbConnector.delete(id, rev);
-        } catch (DocumentNotFoundException e) {
+        } catch (final DocumentNotFoundException e) {
             logger.debug("id {} is not in the database", id);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("Unexpected IO CouchDB Exception", e);
         }
     }
@@ -127,9 +127,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
                 final InputStream oldDocStream = couchDbConnector.getAsStream(value);
                 final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
                 listAttributes.add(populateAttributes(res, names));
-            } catch (DocumentNotFoundException e) {
+            } catch (final DocumentNotFoundException e) {
                 logger.debug("Document id {} not found", value);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 logger.error("Unexpected IO CouchDB Exception", e);
             }
         }
@@ -140,13 +140,13 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
                     .viewName("by_"+key)
                     .key(value);
             final ViewResult result = couchDbConnector.queryView(query);
-            for (ViewResult.Row row : result.getRows()) {
+            for (final ViewResult.Row row : result.getRows()) {
                 final String stringValue = row.getValue();
                 Map<String, Object> res = null;
                 try {
                     res = objectMapper.readValue(stringValue, typeRef);
                     listAttributes.add(populateAttributes(res, names));
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     logger.error("Unexpected IO CouchDB Exception", e);
                 }
             }

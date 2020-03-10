@@ -110,23 +110,23 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return this.getClass().getName() + SEPARATOR + this.id;
     }
 
-    private void addAttributeToMap(final Map<String, Object> map, final String key, Object value)
+    private void addAttributeToMap(final Map<String, Object> map, final String key, final Object value)
     {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
-            Object valueForMap = getValueForMap(map, key, ProfileHelper.getInternalAttributeHandler().prepare(value));
+            final Object valueForMap = getValueForMap(map, key, ProfileHelper.getInternalAttributeHandler().prepare(value));
             map.put(key, valueForMap);
         }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Object getValueForMap(final Map<String, Object> map, final String key, Object preparedValue) {
+    private Object getValueForMap(final Map<String, Object> map, final String key, final Object preparedValue) {
         // support multiple attribute values (e.g. roles can be received as separate attributes and require merging)
         // https://github.com/pac4j/pac4j/issues/1145
         if (canMergeAttributes(map, key, preparedValue))
         {
-            Collection existingCollection = (Collection) map.get(key);
-            Collection newCollection = (Collection) preparedValue;
+            final Collection existingCollection = (Collection) map.get(key);
+            final Collection newCollection = (Collection) preparedValue;
             return mergeCollectionAttributes(existingCollection, newCollection);
         } else
         {
@@ -134,12 +134,12 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         }
     }
 
-    private boolean canMergeAttributes(final Map<String, Object> map, final String key, Object preparedValue)
+    private boolean canMergeAttributes(final Map<String, Object> map, final String key, final Object preparedValue)
     {
         return this.canAttributesBeMerged && preparedValue instanceof Collection && map.get(key) instanceof Collection;
     }
 
-    private <T> Collection<T> mergeCollectionAttributes(Collection<T> existingCollection, Collection<T> newCollection)
+    private <T> Collection<T> mergeCollectionAttributes(final Collection<T> existingCollection, final Collection<T> newCollection)
     {
         return Streams.concat(existingCollection.stream(), newCollection.stream()).collect(Collectors.toList());
     }
@@ -152,7 +152,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key key of the attribute
      * @param value value of the attribute
      */
-    public void addAttribute(final String key, Object value) {
+    public void addAttribute(final String key, final Object value) {
         addAttributeToMap(this.attributes, key, value);
     }
 
@@ -162,7 +162,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key the attribute key
      * @param value the attribute value
      */
-    public void addAuthenticationAttribute(final String key, Object value) {
+    public void addAuthenticationAttribute(final String key, final Object value) {
         addAttributeToMap(this.authenticationAttributes, key, value);
     }
 
@@ -185,7 +185,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @param attributeMap the authentication attributes
      */
-    public void addAuthenticationAttributes(Map<String, Object> attributeMap) {
+    public void addAuthenticationAttributes(final Map<String, Object> attributeMap) {
         if (attributeMap != null) {
             for (final Map.Entry<String, Object> entry : attributeMap.entrySet()) {
                 addAuthenticationAttribute(entry.getKey(), entry.getValue());
@@ -230,9 +230,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return getAttributeMap(this.authenticationAttributes);
     }
 
-    private static Map<String, Object> getAttributeMap(Map<String, Object> attributeMap) {
+    private static Map<String, Object> getAttributeMap(final Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
-        for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
+        for (final Map.Entry<String, Object> entries : attributeMap.entrySet()) {
             final String key = entries.getKey();
             final Object value = ProfileHelper.getInternalAttributeHandler().restore(attributeMap.get(key));
             newAttributes.put(key, value);
@@ -312,7 +312,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return getAttributeByType(name, clazz, attribute);
     }
 
-    private <T> T getAttributeByType(String name, Class<T> clazz, Object attribute) {
+    private <T> T getAttributeByType(final String name, final Class<T> clazz, final Object attribute) {
 
         if (attribute == null) {
             return null;
@@ -359,7 +359,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return new LinkedHashSet<>(this.roles);
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(final Set<String> roles) {
         CommonHelper.assertNotNull("roles", roles);
         this.roles = roles;
     }
@@ -395,7 +395,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return new LinkedHashSet<>(this.permissions);
     }
 
-    public void setPermissions(Set<String> permissions) {
+    public void setPermissions(final Set<String> permissions) {
         CommonHelper.assertNotNull("permissions", permissions);
         this.permissions = permissions;
     }

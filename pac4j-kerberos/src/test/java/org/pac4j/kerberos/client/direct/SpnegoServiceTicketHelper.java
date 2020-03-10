@@ -34,24 +34,24 @@ class SpnegoServiceTicketHelper {
         private Principal clientPrincipal;
         private String serviceName;
 
-        public KerberosClientExceptionAction(Principal clientPrincipal, String serviceName) {
+        public KerberosClientExceptionAction(final Principal clientPrincipal, final String serviceName) {
             this.clientPrincipal = clientPrincipal;
             this.serviceName = serviceName;
         }
 
         @Override
         public byte[] run() throws GSSException {
-            GSSManager gssManager = GSSManager.getInstance();
+            final GSSManager gssManager = GSSManager.getInstance();
 
-            GSSName gssService = gssManager.createName(serviceName, GSSName.NT_HOSTBASED_SERVICE);
-            Oid oid = new Oid(JGSS_KERBEROS_TICKET_OID);
-            GSSName gssClient = gssManager.createName(clientPrincipal.getName(), GSSName.NT_USER_NAME);
-            GSSCredential credentials =
+            final GSSName gssService = gssManager.createName(serviceName, GSSName.NT_HOSTBASED_SERVICE);
+            final Oid oid = new Oid(JGSS_KERBEROS_TICKET_OID);
+            final GSSName gssClient = gssManager.createName(clientPrincipal.getName(), GSSName.NT_USER_NAME);
+            final GSSCredential credentials =
                 gssManager.createCredential(
                     gssClient, GSSCredential.DEFAULT_LIFETIME, oid, GSSCredential.INITIATE_ONLY
                 );
 
-            GSSContext secContext =
+            final GSSContext secContext =
                 gssManager.createContext(
                     gssService, oid, credentials, GSSContext.DEFAULT_LIFETIME
                 );
@@ -59,8 +59,8 @@ class SpnegoServiceTicketHelper {
             secContext.requestMutualAuth(false);
             secContext.requestCredDeleg(false);
 
-            byte[] token = new byte[0];
-            byte[] returnedToken = secContext.initSecContext(token, 0, token.length);
+            final byte[] token = new byte[0];
+            final byte[] returnedToken = secContext.initSecContext(token, 0, token.length);
 
             secContext.dispose();
 
@@ -68,22 +68,23 @@ class SpnegoServiceTicketHelper {
         }
     }
 
-    public static String getGSSTicket(String clientPrincipal, String clientPassword, String serviceName) throws Exception {
-        Subject clientSubject = JaasKrbUtil.loginUsingPassword(clientPrincipal, clientPassword);
+    public static String getGSSTicket(final String clientPrincipal, final String clientPassword,
+                                      final String serviceName) throws Exception {
+        final Subject clientSubject = JaasKrbUtil.loginUsingPassword(clientPrincipal, clientPassword);
 
-        Set<Principal> clientPrincipals = clientSubject.getPrincipals();
+        final Set<Principal> clientPrincipals = clientSubject.getPrincipals();
         assertFalse(clientPrincipals.isEmpty());
 
         // Get the TGT
-        Set<KerberosTicket> privateCredentials = clientSubject.getPrivateCredentials(KerberosTicket.class);
+        final Set<KerberosTicket> privateCredentials = clientSubject.getPrivateCredentials(KerberosTicket.class);
         assertFalse(privateCredentials.isEmpty());
-        KerberosTicket tgt = privateCredentials.iterator().next();
+        final KerberosTicket tgt = privateCredentials.iterator().next();
         assertNotNull(tgt);
 
         // Get the service ticket
-        KerberosClientExceptionAction action =
+        final KerberosClientExceptionAction action =
             new KerberosClientExceptionAction(clientPrincipals.iterator().next(), serviceName);
-        byte[] ticketBytes = Subject.doAs(clientSubject, action);
+        final byte[] ticketBytes = Subject.doAs(clientSubject, action);
         assertNotNull(ticketBytes);
 
         return new String(Base64.getEncoder().encode(ticketBytes), StandardCharsets.UTF_8);

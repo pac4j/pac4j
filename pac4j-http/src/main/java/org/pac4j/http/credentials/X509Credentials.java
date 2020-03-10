@@ -27,10 +27,10 @@ public class X509Credentials extends Credentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        X509Credentials that = (X509Credentials) o;
+        final X509Credentials that = (X509Credentials) o;
         return Objects.equals(certificate, that.certificate);
     }
 

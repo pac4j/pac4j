@@ -31,7 +31,7 @@ public class AzureAdIdTokenValidator extends IDTokenValidator {
     public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce) throws BadJOSEException, JOSEException {
         try {
             if (originalIssuer.contains("%7Btenantid%7D")) {
-                Object tid = idToken.getJWTClaimsSet().getClaim("tid");
+                final Object tid = idToken.getJWTClaimsSet().getClaim("tid");
                 if (tid == null) {
                     throw new BadJWTException("ID token does not contain the 'tid' claim");
                 }
@@ -39,7 +39,7 @@ public class AzureAdIdTokenValidator extends IDTokenValidator {
                         base.getClientID(), base.getJWSKeySelector(), base.getJWEKeySelector());
                 base.setMaxClockSkew(getMaxClockSkew());
             }
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new BadJWTException(e.getMessage(), e);
         }
         return base.validate(idToken, expectedNonce);

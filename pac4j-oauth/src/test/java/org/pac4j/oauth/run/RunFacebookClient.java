@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public final class RunFacebookClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunFacebookClient().run();
     }
 

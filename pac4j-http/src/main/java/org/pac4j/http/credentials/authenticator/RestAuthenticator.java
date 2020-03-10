@@ -104,7 +104,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openPostConnection(new URL(url), headers);
-            int code = connection.getResponseCode();
+            final int code = connection.getResponseCode();
             if (code == 200) {
                 logger.debug("Authentication success for username: {}", username);
                 return HttpUtils.readBody(connection);

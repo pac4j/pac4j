@@ -21,7 +21,7 @@ public final class YahooInterest implements Serializable {
         return declaredInterests;
     }
 
-    public void setDeclaredInterests(List<String> declaredInterests) {
+    public void setDeclaredInterests(final List<String> declaredInterests) {
         this.declaredInterests = declaredInterests;
     }
 
@@ -29,7 +29,7 @@ public final class YahooInterest implements Serializable {
         return interestCategory;
     }
 
-    public void setInterestCategory(String interestCategory) {
+    public void setInterestCategory(final String interestCategory) {
         this.interestCategory = interestCategory;
     }
 }

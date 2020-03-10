@@ -57,7 +57,7 @@ public class RunKeycloakOidcClient extends RunClient {
         configuration.setSecret(SECRET_VALUE);
         configuration.setBaseUri(AUTH_URL);
         configuration.setRealm(REALM_VALUE);
-        KeycloakOidcClient client = new KeycloakOidcClient(configuration);
+        final KeycloakOidcClient client = new KeycloakOidcClient(configuration);
         client.setCallbackUrl(CALLBACK_VALUE);
 
         return client;

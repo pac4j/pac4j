@@ -97,7 +97,7 @@ public final class ProfileHelperTests implements TestsConstants {
         assertEquals(notOnOrAfterTime, restoredProfile.getAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE));
 
         assertEquals("IssuerId", restoredProfile.getAuthenticationAttribute(ISSUER_ID));
-        List<String> context = (List<String>) restoredProfile.getAuthenticationAttribute(AUTHN_CONTEXT);
+        final List<String> context = (List<String>) restoredProfile.getAuthenticationAttribute(AUTHN_CONTEXT);
         assertThat(context, CoreMatchers.hasItem("ContextItem1"));
         assertThat(context, CoreMatchers.hasItem("ContextItem2"));
         assertEquals("NameIdFormat", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_FORMAT));
@@ -130,7 +130,7 @@ public final class ProfileHelperTests implements TestsConstants {
         assertEquals(notOnOrAfterTime, restoredProfile.getAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE));
 
         assertEquals("IssuerId", restoredProfile.getAuthenticationAttribute(ISSUER_ID));
-        List<String> context = (List<String>) restoredProfile.getAuthenticationAttribute(AUTHN_CONTEXT);
+        final List<String> context = (List<String>) restoredProfile.getAuthenticationAttribute(AUTHN_CONTEXT);
         assertThat(context, CoreMatchers.hasItem("ContextItem1"));
         assertThat(context, CoreMatchers.hasItem("ContextItem2"));
         assertEquals("NameIdFormat", restoredProfile.getAuthenticationAttribute(SAML_NAME_ID_FORMAT));

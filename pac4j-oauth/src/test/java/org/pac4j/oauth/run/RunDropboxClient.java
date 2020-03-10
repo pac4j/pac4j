@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public final class RunDropboxClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunDropboxClient().run();
     }
 
@@ -45,7 +45,7 @@ public final class RunDropboxClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
         assertEquals("dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU", profile.getId());
         assertEquals(DropBoxProfile.class.getName() + CommonProfile.SEPARATOR + "dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU",

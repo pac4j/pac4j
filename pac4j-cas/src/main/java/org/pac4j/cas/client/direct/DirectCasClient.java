@@ -91,7 +91,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials> {
             casAuthenticator.validate(credentials.get(), context);
 
             return credentials;
-        } catch (CredentialsException e) {
+        } catch (final CredentialsException e) {
             logger.error("Failed to retrieve or validate CAS credentials", e);
             return Optional.empty();
         }

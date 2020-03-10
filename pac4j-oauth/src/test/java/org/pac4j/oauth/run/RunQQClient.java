@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
  */
 public final class RunQQClient extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 //        System.setProperty("http.proxyHost", "127.0.0.1");
 //        System.setProperty("https.proxyHost", "127.0.0.1");
 //        System.setProperty("http.proxyPort", "8888");
@@ -61,7 +61,7 @@ public final class RunQQClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final QQProfile profile = (QQProfile) userProfile;
         assertEquals("8585AB16822E1437050D63C27D277991", profile.getId());
         assertEquals(QQProfile.class.getName() + CommonProfile.SEPARATOR + "8585AB16822E1437050D63C27D277991",

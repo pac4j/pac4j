@@ -78,7 +78,7 @@ public class JwtGenerator<U extends CommonProfile> {
      * @return the JWT
      */
     protected String internalGenerate(final JWTClaimsSet claimsSet) {
-        JWT jwt;
+        final JWT jwt;
         // signature?
         if (signatureConfiguration == null) {
             jwt = new PlainJWT(claimsSet);

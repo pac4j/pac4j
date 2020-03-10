@@ -72,10 +72,10 @@ public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProf
 
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
         if (accessToken instanceof WechatToken) {
-            WechatToken token = (WechatToken) accessToken;
-            String profileUrl;
+            final WechatToken token = (WechatToken) accessToken;
+            final String profileUrl;
             if (WechatClient.WechatScope.SNSAPI_BASE.toString().equalsIgnoreCase(token.getScope())) {
                 profileUrl = "https://api.weixin.qq.com/sns/auth?openid=" + token.getOpenid();
             } else {
@@ -88,13 +88,13 @@ public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProf
     }
 
     @Override
-    public WechatProfile extractUserProfile(String body) {
+    public WechatProfile extractUserProfile(final String body) {
         final WechatProfile profile = new WechatProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            Integer errcode = (Integer) JsonHelper.getElement(json, "errcode");
+            final Integer errcode = (Integer) JsonHelper.getElement(json, "errcode");
             if (errcode != null && errcode > 0) {
-                Object errmsg = JsonHelper.getElement(json, "errmsg");
+                final Object errmsg = JsonHelper.getElement(json, "errmsg");
                 throw new OAuthException(
                     errmsg != null ? errmsg.toString() : "error code " + errcode);
             }

@@ -70,18 +70,18 @@ public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAu
         primary(YEAR, new DateConverter("yyyy"));
     }
 
-    public String getOpenidUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getOpenidUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
         return "https://graph.qq.com/oauth2.0/me";
     }
 
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
         return "https://graph.qq.com/user/get_user_info";
     }
 
     @Override
-    public QQProfile extractUserProfile(String body) {
+    public QQProfile extractUserProfile(final String body) {
         final QQProfile profile = new QQProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
@@ -95,13 +95,13 @@ public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAu
         return profile;
     }
 
-    public String extractOpenid(String body) {
-        String openid = extractParameter(body, OPENID_REGEX, true);
+    public String extractOpenid(final String body) {
+        final String openid = extractParameter(body, OPENID_REGEX, true);
         return openid;
     }
 
-    protected static String extractParameter(String response, Pattern regexPattern,
-                                             boolean required)
+    protected static String extractParameter(final String response, final Pattern regexPattern,
+                                             final boolean required)
         throws OAuthException {
         final Matcher matcher = regexPattern.matcher(response);
         if (matcher.find()) {

@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  */
 public final class RunYahooClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunYahooClient().run();
     }
 
@@ -49,7 +49,7 @@ public final class RunYahooClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
         assertEquals(YahooProfile.class.getName() + CommonProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",

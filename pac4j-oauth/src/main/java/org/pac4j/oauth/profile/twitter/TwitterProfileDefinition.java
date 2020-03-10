@@ -67,7 +67,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
         this(false);
     }
 
-    public TwitterProfileDefinition(boolean includeEmail) {
+    public TwitterProfileDefinition(final boolean includeEmail) {
         super(x -> new TwitterProfile());
         Arrays.stream(new String[] {DESCRIPTION, EMAIL, NAME, SCREEN_NAME, TIME_ZONE})
                 .forEach(a -> primary(a, Converters.STRING));

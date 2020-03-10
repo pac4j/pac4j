@@ -158,18 +158,18 @@ public final class FromAttributesAuthorizationGeneratorTests {
         generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
-        for(String value : ATTRIB_ARRAY) {
+        for(final String value : ATTRIB_ARRAY) {
             assertTrue(roles.contains(value));
         }
-        for(String value : ATTRIB_LIST) {
+        for(final String value : ATTRIB_LIST) {
             assertTrue(roles.contains(value));
         }
         final Set<String> permissions = this.profile.getPermissions();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
-        for(String value : ATTRIB_ARRAY) {
+        for(final String value : ATTRIB_ARRAY) {
             assertTrue(permissions.contains(value));
         }
-        for(String value : ATTRIB_LIST) {
+        for(final String value : ATTRIB_LIST) {
             assertTrue(permissions.contains(value));
         }
     }

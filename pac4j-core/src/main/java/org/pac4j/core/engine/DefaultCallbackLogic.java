@@ -46,7 +46,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
 
         logger.debug("=== CALLBACK ===");
 
-        HttpAction action;
+        final HttpAction action;
         try {
 
             // default values

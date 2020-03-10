@@ -3,8 +3,22 @@ package org.pac4j.core.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,8 +39,8 @@ public class JavaSerializationHelper {
     public JavaSerializationHelper() {
         trustedPackages = new HashSet<>();
         trustedPackages.addAll(Arrays.asList("java.", "javax.", "[Ljava.lang.String", "org.pac4j.", "[Lorg.pac4j.",
-                "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "[Lcom.nimbusds.", "org.joda.", "net.minidev.json.",
-                "org.bson.types.", "[Ljava.lang.StackTraceElement"));
+            "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "[Lcom.nimbusds.", "org.joda.", "net.minidev.json.",
+            "org.bson.types.", "[Ljava.lang.StackTraceElement"));
         trustedClasses = new HashSet<>();
     }
 
@@ -163,7 +177,7 @@ public class JavaSerializationHelper {
         }
 
         @Override
-        protected Class<?> resolveProxyClass(String[] interfaces) throws ClassNotFoundException {
+        protected Class<?> resolveProxyClass(final String[] interfaces) throws ClassNotFoundException {
             throw new ClassNotFoundException("Wont resolve proxy classes at all.");
         }
     }

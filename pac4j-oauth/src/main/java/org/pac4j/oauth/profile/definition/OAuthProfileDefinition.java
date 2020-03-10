@@ -58,7 +58,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      * @param body the request body that the user profile should be have been extracted from
      * @param missingNode the name of a JSON node that was found missing. may be omitted
      */
-    protected void raiseProfileExtractionJsonError(String body, String missingNode) {
+    protected void raiseProfileExtractionJsonError(final String body, final String missingNode) {
         logger.error("Unable to extract user profile as no JSON node '{}' was found in body: {}", missingNode, body);
         throw new TechnicalException("No JSON node '" + missingNode + "' to extract user profile from");
     }
@@ -68,7 +68,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      *
      * @param body the request body that the user profile should have been extracted from
      */
-    protected void raiseProfileExtractionJsonError(String body) {
+    protected void raiseProfileExtractionJsonError(final String body) {
         logger.error("Unable to extract user profile as no JSON node was found in body: {}", body);
         throw new TechnicalException("No JSON node to extract user profile from");
     }
@@ -78,7 +78,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      *
      * @param body the request body that the user profile should have been extracted from
      */
-    protected void raiseProfileExtractionError(String body) {
+    protected void raiseProfileExtractionError(final String body) {
         logger.error("Unable to extract user profile from body: {}", body);
         throw new TechnicalException("Unable to extract user profile");
     }

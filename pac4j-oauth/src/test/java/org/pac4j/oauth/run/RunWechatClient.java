@@ -22,7 +22,7 @@ public final class RunWechatClient extends RunClient {
 
     public static final boolean QRCODE = false;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 //        System.setProperty("http.proxyHost", "127.0.0.1");
 //        System.setProperty("https.proxyHost", "127.0.0.1");
 //        System.setProperty("http.proxyPort", "8888");
@@ -78,9 +78,9 @@ public final class RunWechatClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final WechatProfile profile = (WechatProfile) userProfile;
-        String openid;
+        final String openid;
         // Note: different apiKey get the same user's uid differently, headimgurl may also be different.
         if (QRCODE) {
             openid = "ofrPB1XEft_igz1Ms-QeOcev-SZQ";
@@ -92,7 +92,7 @@ public final class RunWechatClient extends RunClient {
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WechatProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
-        String pictureUrl;
+        final String pictureUrl;
         if (QRCODE)
             pictureUrl = "http://thirdwx.qlogo.cn/mmopen/vi_32/" +
                 "Q0j4TwGTfTIeoXSyFb6PBH1zZ9rqFxRj2Y4nCrfBs3VociatoRttyDTVGkT60xh1JDnYsR84ywqJk3h5RO4YxIw/132";

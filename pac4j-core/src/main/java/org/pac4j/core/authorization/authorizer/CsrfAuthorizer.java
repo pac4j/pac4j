@@ -53,7 +53,7 @@ public class CsrfAuthorizer implements Authorizer<UserProfile> {
         return parameterName;
     }
 
-    public void setParameterName(String parameterName) {
+    public void setParameterName(final String parameterName) {
         this.parameterName = parameterName;
     }
 
@@ -61,7 +61,7 @@ public class CsrfAuthorizer implements Authorizer<UserProfile> {
         return headerName;
     }
 
-    public void setHeaderName(String headerName) {
+    public void setHeaderName(final String headerName) {
         this.headerName = headerName;
     }
 

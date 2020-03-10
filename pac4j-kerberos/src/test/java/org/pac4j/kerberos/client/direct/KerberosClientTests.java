@@ -65,8 +65,8 @@ public class KerberosClientTests implements TestsConstants {
 
     @Test
     public void testMissingKerberosHeader() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        final HttpServletRequest request = mock(HttpServletRequest.class);
+        final HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
         final Optional<KerberosCredentials> credentials = client.getCredentials(new JEEContext(request, response));
         assertFalse(credentials.isPresent());
@@ -74,8 +74,8 @@ public class KerberosClientTests implements TestsConstants {
 
     @Test
     public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        final HttpServletRequest request = mock(HttpServletRequest.class);
+        final HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
         final Optional<KerberosCredentials> credentials = client.getCredentials(new JEEContext(request, response));
         assertFalse(credentials.isPresent());

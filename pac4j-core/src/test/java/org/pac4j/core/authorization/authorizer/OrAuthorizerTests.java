@@ -27,7 +27,7 @@ public class OrAuthorizerTests {
 
     @Before
     public void setUp() {
-        CommonProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         profile.addRole("profile_role");
         profile.addPermission("profile_permission");
         profiles.add(profile);

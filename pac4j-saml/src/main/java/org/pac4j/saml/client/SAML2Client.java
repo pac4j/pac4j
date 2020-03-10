@@ -139,7 +139,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
     }
 
     protected void initSAMLProfileHandler() {
-        SAML2MessageReceiver messageReceiver;
+        final SAML2MessageReceiver messageReceiver;
         if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_POST_BINDING_URI)) {
             messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator);
         } else if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_ARTIFACT_BINDING_URI)) {

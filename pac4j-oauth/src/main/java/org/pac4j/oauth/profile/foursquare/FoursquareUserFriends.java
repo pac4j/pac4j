@@ -21,7 +21,7 @@ public class FoursquareUserFriends implements Serializable {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(final int count) {
         this.count = count;
     }
 
@@ -29,7 +29,7 @@ public class FoursquareUserFriends implements Serializable {
         return groups;
     }
 
-    public void setGroups(List<FoursquareUserFriendGroup> groups) {
+    public void setGroups(final List<FoursquareUserFriendGroup> groups) {
         this.groups = groups;
     }
 }

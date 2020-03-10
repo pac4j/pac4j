@@ -23,7 +23,7 @@ public final class FacebookPicture implements Serializable {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
@@ -31,7 +31,7 @@ public final class FacebookPicture implements Serializable {
         return isSilhouette;
     }
 
-    public void setSilhouette(Boolean silhouette) {
+    public void setSilhouette(final Boolean silhouette) {
         isSilhouette = silhouette;
     }
 }

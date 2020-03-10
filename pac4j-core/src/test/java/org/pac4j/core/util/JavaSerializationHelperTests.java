@@ -35,7 +35,7 @@ public final class JavaSerializationHelperTests implements TestsConstants {
 
     @Test
     public void testBytesSerializationUnsecure() {
-        JavaSerializationHelper h = new JavaSerializationHelper();
+        final JavaSerializationHelper h = new JavaSerializationHelper();
         h.clearTrustedClasses();
         h.clearTrustedPackages();
         final CommonProfile profile = getUserProfile();
@@ -45,7 +45,7 @@ public final class JavaSerializationHelperTests implements TestsConstants {
 
     @Test
     public void testBytesSerializationTrustedClass() {
-        JavaSerializationHelper h = new JavaSerializationHelper();
+        final JavaSerializationHelper h = new JavaSerializationHelper();
         h.clearTrustedPackages();
         h.clearTrustedClasses();
         h.addTrustedClass(SimplePrincipalCollection.class);
@@ -56,13 +56,13 @@ public final class JavaSerializationHelperTests implements TestsConstants {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testTrustedPackagesModification() {
-        JavaSerializationHelper h = new JavaSerializationHelper();
+        final JavaSerializationHelper h = new JavaSerializationHelper();
         h.getTrustedPackages().add("org.apache");
     }
 
     @Test
     public void testBytesSerializationTrustedPackage() {
-        JavaSerializationHelper h = new JavaSerializationHelper();
+        final JavaSerializationHelper h = new JavaSerializationHelper();
         h.addTrustedPackage("org.apache");
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
         final byte[] serialized = h.serializeToBytes(spc);

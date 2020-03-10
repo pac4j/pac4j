@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 public final class RunCasOAuthWrapperClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunCasOAuthWrapperClient().run();
     }
 
@@ -45,7 +45,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) userProfile;
         assertEquals(getLogin(), profile.getId());
         assertEquals(CasOAuthWrapperProfile.class.getName() + CommonProfile.SEPARATOR + getLogin(),

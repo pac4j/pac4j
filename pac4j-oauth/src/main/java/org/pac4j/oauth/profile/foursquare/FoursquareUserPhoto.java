@@ -23,7 +23,7 @@ public class FoursquareUserPhoto implements Serializable {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
+    public void setPrefix(final String prefix) {
         this.prefix = prefix;
     }
 
@@ -31,7 +31,7 @@ public class FoursquareUserPhoto implements Serializable {
         return suffix;
     }
 
-    public void setSuffix(String suffix) {
+    public void setSuffix(final String suffix) {
         this.suffix = suffix;
     }
 }

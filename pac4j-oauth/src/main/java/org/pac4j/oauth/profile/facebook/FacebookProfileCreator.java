@@ -69,7 +69,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
                 final OAuth2AccessToken extendedAccessToken;
                 try {
                     extendedAccessToken = ((DefaultApi20) configuration.getApi()).getAccessTokenExtractor().extract(response);
-                } catch (IOException | OAuthException ex) {
+                } catch (final IOException | OAuthException ex) {
                     throw new HttpCommunicationException("Error extracting token: " + ex.getMessage());
                 }
                 logger.debug("Extended token: {}", extendedAccessToken);

@@ -63,9 +63,9 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials> {
      * Based on current time including nanoseconds
      */
     private String calculateNonce() {
-        LocalDateTime time = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss.SSS");
-        String fmtTime = formatter.format(time);
+        final LocalDateTime time = LocalDateTime.now();
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss.SSS");
+        final String fmtTime = formatter.format(time);
         return CredentialUtil.encryptMD5(fmtTime + CommonHelper.randomString(10));
     }
 

@@ -28,7 +28,7 @@ public class AndAuthorizerTests {
 
     @Before
     public void setUp() {
-        CommonProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         profile.setId("profile_id");
         profile.addRole("profile_role");
         profile.addPermission("profile_permission");

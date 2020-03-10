@@ -48,7 +48,7 @@ public abstract class RunClient implements TestsConstants {
                 verifyProfile(profile.get());
                 logger.warn("## Java serialization");
                 final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
-                byte[] bytes = javaSerializationHelper.serializeToBytes(profile.get());
+                final byte[] bytes = javaSerializationHelper.serializeToBytes(profile.get());
                 final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.deserializeFromBytes(bytes);
                 verifyProfile(profile2);
             }

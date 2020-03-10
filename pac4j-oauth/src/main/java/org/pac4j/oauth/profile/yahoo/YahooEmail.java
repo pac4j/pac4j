@@ -24,7 +24,7 @@ public final class YahooEmail implements Serializable {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -32,7 +32,7 @@ public final class YahooEmail implements Serializable {
         return primary;
     }
 
-    public void setPrimary(Boolean primary) {
+    public void setPrimary(final Boolean primary) {
         this.primary = primary;
     }
 
@@ -40,7 +40,7 @@ public final class YahooEmail implements Serializable {
         return handle;
     }
 
-    public void setHandle(String handle) {
+    public void setHandle(final String handle) {
         this.handle = handle;
     }
 
@@ -48,7 +48,7 @@ public final class YahooEmail implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 }

@@ -66,7 +66,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
             }
 
-            try (InputStream in = this.idpMetadataResource.getInputStream()) {
+            try ( InputStream in = this.idpMetadataResource.getInputStream()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
                 final Element metadataRoot = inCommonMDDoc.getDocumentElement();
                 idpMetadataProvider = new DOMMetadataResolver(metadataRoot);

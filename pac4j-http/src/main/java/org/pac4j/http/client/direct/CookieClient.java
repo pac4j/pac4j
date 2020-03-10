@@ -34,7 +34,7 @@ public class CookieClient extends DirectClient<TokenCredentials> {
         return cookieName;
     }
 
-    public void setCookieName(String cookieName) {
+    public void setCookieName(final String cookieName) {
         this.cookieName = cookieName;
     }
 }

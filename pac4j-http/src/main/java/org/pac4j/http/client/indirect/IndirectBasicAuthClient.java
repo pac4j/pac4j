@@ -86,7 +86,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
         return realmName;
     }
 
-    public void setRealmName(String realmName) {
+    public void setRealmName(final String realmName) {
         this.realmName = realmName;
     }
 

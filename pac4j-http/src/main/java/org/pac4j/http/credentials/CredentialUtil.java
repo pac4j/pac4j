@@ -24,9 +24,9 @@ public final class CredentialUtil {
      * @param data data
      * @return MD5(data)
      */
-    public static String encryptMD5(String data) {
+    public static String encryptMD5(final String data) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
+            final MessageDigest digest = MessageDigest.getInstance("MD5");
             return copyValueOf(Hex.encodeHex(digest.digest(data.getBytes(StandardCharsets.UTF_8))));
         } catch (final NoSuchAlgorithmException ex) {
             throw new TechnicalException("Failed to instantiate an MD5 algorithm", ex);
@@ -40,7 +40,7 @@ public final class CredentialUtil {
      * @param secret secret
      * @return H(concat(secret, ":", data));
      */
-    public static String encryptMD5(String secret, String data) {
+    public static String encryptMD5(final String secret, final String data) {
         return encryptMD5(secret + ":" + data);
     }
 }

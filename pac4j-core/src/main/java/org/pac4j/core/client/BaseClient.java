@@ -69,7 +69,7 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
                 }
             });
             return optCredentials;
-        } catch (CredentialsException e) {
+        } catch (final CredentialsException e) {
             logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve or validate credentials", e);
 

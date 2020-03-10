@@ -17,7 +17,7 @@ public class GaeUserCredentials extends Credentials {
 
     private User user;
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -26,7 +26,7 @@ public class GaeUserCredentials extends Credentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

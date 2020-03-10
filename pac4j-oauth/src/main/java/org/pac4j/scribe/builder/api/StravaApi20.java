@@ -29,7 +29,7 @@ public final class StravaApi20 extends DefaultApi20 {
      */
     private String approvalPrompt;
 
-    public StravaApi20(String approvalPrompt) {
+    public StravaApi20(final String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;
     }
 
@@ -44,8 +44,9 @@ public final class StravaApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
-            Map<String, String> additionalParams) {
+    public String getAuthorizationUrl(final String responseType, final String apiKey,
+                                      final String callback, final String scope, final String state,
+                                      Map<String, String> additionalParams) {
         CommonHelper.assertNotBlank("callback", callback, "Must provide a valid callback url.");
         
         if (additionalParams == null) {

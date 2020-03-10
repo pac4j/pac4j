@@ -24,7 +24,7 @@ public final class YahooImage implements Serializable {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(final String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -32,7 +32,7 @@ public final class YahooImage implements Serializable {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(final Integer width) {
         this.width = width;
     }
 
@@ -40,7 +40,7 @@ public final class YahooImage implements Serializable {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(final Integer height) {
         this.height = height;
     }
 
@@ -48,7 +48,7 @@ public final class YahooImage implements Serializable {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(final String size) {
         this.size = size;
     }
 }

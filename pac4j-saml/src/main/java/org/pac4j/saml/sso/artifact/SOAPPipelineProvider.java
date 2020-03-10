@@ -2,7 +2,6 @@ package org.pac4j.saml.sso.artifact;
 
 import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
-import org.opensaml.saml.common.SAMLObject;
 
 /**
  * Provider for the components required to perform SOAP calls for
@@ -21,5 +20,5 @@ public interface SOAPPipelineProvider {
      *         {@code PipelineFactoryHttpSOAPClient} to process incoming and
      *         outgoing messages.
      */
-    HttpClientMessagePipelineFactory<SAMLObject, SAMLObject> getPipelineFactory();
+    HttpClientMessagePipelineFactory getPipelineFactory();
 }

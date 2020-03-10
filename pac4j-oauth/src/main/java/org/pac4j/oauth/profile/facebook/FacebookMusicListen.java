@@ -41,7 +41,7 @@ public final class FacebookMusicListen implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -49,7 +49,7 @@ public final class FacebookMusicListen implements Serializable {
         return from;
     }
 
-    public void setFrom(FacebookObject from) {
+    public void setFrom(final FacebookObject from) {
         this.from = from;
     }
 
@@ -57,7 +57,7 @@ public final class FacebookMusicListen implements Serializable {
         return newDate(startTime);
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(final Date startTime) {
         this.startTime = newDate(startTime);
     }
 
@@ -65,7 +65,7 @@ public final class FacebookMusicListen implements Serializable {
         return newDate(endTime);
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(final Date endTime) {
         this.endTime = newDate(endTime);
     }
 
@@ -73,7 +73,7 @@ public final class FacebookMusicListen implements Serializable {
         return newDate(publishTime);
     }
 
-    public void setPublishTime(Date publishTime) {
+    public void setPublishTime(final Date publishTime) {
         this.publishTime = newDate(publishTime);
     }
 
@@ -81,7 +81,7 @@ public final class FacebookMusicListen implements Serializable {
         return application;
     }
 
-    public void setApplication(FacebookApplication application) {
+    public void setApplication(final FacebookApplication application) {
         this.application = application;
     }
 
@@ -89,7 +89,7 @@ public final class FacebookMusicListen implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -97,7 +97,7 @@ public final class FacebookMusicListen implements Serializable {
         return noFeedStory;
     }
 
-    public void setNoFeedStory(Boolean noFeedStory) {
+    public void setNoFeedStory(final Boolean noFeedStory) {
         this.noFeedStory = noFeedStory;
     }
 
@@ -105,7 +105,7 @@ public final class FacebookMusicListen implements Serializable {
         return song;
     }
 
-    public void setSong(FacebookMusicData song) {
+    public void setSong(final FacebookMusicData song) {
         this.song = song;
     }
 
@@ -113,7 +113,7 @@ public final class FacebookMusicListen implements Serializable {
         return musician;
     }
 
-    public void setMusician(FacebookMusicData musician) {
+    public void setMusician(final FacebookMusicData musician) {
         this.musician = musician;
     }
 
@@ -121,7 +121,7 @@ public final class FacebookMusicListen implements Serializable {
         return radioStation;
     }
 
-    public void setRadioStation(FacebookMusicData radioStation) {
+    public void setRadioStation(final FacebookMusicData radioStation) {
         this.radioStation = radioStation;
     }
 }

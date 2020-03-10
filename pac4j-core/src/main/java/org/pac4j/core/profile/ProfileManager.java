@@ -172,7 +172,7 @@ public class ProfileManager<U extends UserProfile> {
         return clientName;
     }
 
-    protected void saveAll(LinkedHashMap<String, U> profiles, final boolean saveInSession) {
+    protected void saveAll(final LinkedHashMap<String, U> profiles, final boolean saveInSession) {
         if (saveInSession) {
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, profiles);
         }

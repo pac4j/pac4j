@@ -63,7 +63,7 @@ public class WechatClient extends OAuth20Client {
             scopes.add(WechatScope.SNSAPI_BASE);
         }
         if (scopes != null) {
-            for (WechatScope value : scopes) {
+            for (final WechatScope value : scopes) {
                 if (builder == null) {
                     builder = new StringBuilder();
                 } else {
@@ -79,11 +79,11 @@ public class WechatClient extends OAuth20Client {
         return scopes;
     }
 
-    public void setScopes(List<WechatScope> scopes) {
+    public void setScopes(final List<WechatScope> scopes) {
         this.scopes = scopes;
     }
 
-    public void addScope(WechatScope scopes) {
+    public void addScope(final WechatScope scopes) {
         if (this.scopes == null)
             this.scopes = new ArrayList<>();
         this.scopes.add(scopes);

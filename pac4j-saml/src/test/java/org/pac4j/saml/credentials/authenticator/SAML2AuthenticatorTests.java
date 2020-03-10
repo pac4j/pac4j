@@ -1,6 +1,5 @@
 package org.pac4j.saml.credentials.authenticator;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -14,6 +13,8 @@ import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,8 +46,8 @@ public class SAML2AuthenticatorTests {
         nameid.setSPProvidedID("pac4j");
 
         final Conditions conditions = conditionsBuilder.buildObject();
-        conditions.setNotBefore(DateTime.now());
-        conditions.setNotOnOrAfter(DateTime.now());
+        conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
 
         final List<String> contexts = new ArrayList<>();
         contexts.add("cas-context");

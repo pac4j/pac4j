@@ -35,15 +35,15 @@ public class RequireAllPermissionsAuthorizer<U extends UserProfile> extends Abst
         return profilePermissions.contains(element);
     }
 
-    public static <U extends UserProfile> RequireAllPermissionsAuthorizer<U> requireAllPermissions(String ... permissions) {
+    public static <U extends UserProfile> RequireAllPermissionsAuthorizer<U> requireAllPermissions(final String ... permissions) {
         return new RequireAllPermissionsAuthorizer<>(permissions);
     }
 
-    public static <U extends UserProfile> RequireAllPermissionsAuthorizer<U> requireAllPermissions(List<String> permissions) {
+    public static <U extends UserProfile> RequireAllPermissionsAuthorizer<U> requireAllPermissions(final List<String> permissions) {
         return new RequireAllPermissionsAuthorizer<>(permissions);
     }
 
-    public static <U extends UserProfile> RequireAllPermissionsAuthorizer<U> requireAllPermissions(Set<String> permissions) {
+    public static <U extends UserProfile> RequireAllPermissionsAuthorizer<U> requireAllPermissions(final Set<String> permissions) {
         return new RequireAllPermissionsAuthorizer<>(permissions);
     }
 }

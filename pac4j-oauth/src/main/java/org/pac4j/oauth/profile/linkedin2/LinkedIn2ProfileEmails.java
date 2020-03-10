@@ -25,7 +25,7 @@ public class LinkedIn2ProfileEmails implements Serializable {
                 return emailAddress;
             }
 
-            public void setEmailAddress(String emailAddress) {
+            public void setEmailAddress(final String emailAddress) {
                 this.emailAddress = emailAddress;
             }
 
@@ -43,7 +43,7 @@ public class LinkedIn2ProfileEmails implements Serializable {
             return handle;
         }
 
-        public void setHandle(String handle) {
+        public void setHandle(final String handle) {
             this.handle = handle;
         }
 
@@ -51,7 +51,7 @@ public class LinkedIn2ProfileEmails implements Serializable {
             return handleTilde;
         }
 
-        public void setHandleTilde(HandleTilde handleTilde) {
+        public void setHandleTilde(final HandleTilde handleTilde) {
             this.handleTilde = handleTilde;
         }
 
@@ -67,7 +67,7 @@ public class LinkedIn2ProfileEmails implements Serializable {
         return LinkedIn2ProfilePicture.deepCopy(elements);
     }
 
-    public void setElements(Email[] elements) {
+    public void setElements(final Email[] elements) {
         this.elements = LinkedIn2ProfilePicture.deepCopy(elements);
     }
 

@@ -26,8 +26,8 @@ public class GenericOAuth20ClientTest {
 
     @Test
     public void setProfileAttrs() throws Exception {
-        GenericOAuth20Client client = new GenericOAuth20Client();
-        Map map = new HashMap();
+        final GenericOAuth20Client client = new GenericOAuth20Client();
+        final Map map = new HashMap();
         map.put(AGE, "Integer|age");
         //map.put("creation_time", "Date:|creation_time");
         map.put(IS_ADMIN, "Boolean|is_admin");
@@ -39,13 +39,13 @@ public class GenericOAuth20ClientTest {
         client.setProfileAttrs(map);
         client.setCallbackUrl(CALLBACK_URL);
         client.init();
-        Field configurationField = OAuth20Client.class.getDeclaredField("configuration");
+        final Field configurationField = OAuth20Client.class.getDeclaredField("configuration");
         configurationField.setAccessible(true);
-        OAuth20Configuration configuration = (OAuth20Configuration) configurationField.get(client);
-        GenericOAuth20ProfileDefinition profileDefinition = (GenericOAuth20ProfileDefinition) configuration.getProfileDefinition();
-        Method getConverters = ProfileDefinition.class.getDeclaredMethod("getConverters");
+        final OAuth20Configuration configuration = (OAuth20Configuration) configurationField.get(client);
+        final GenericOAuth20ProfileDefinition profileDefinition = (GenericOAuth20ProfileDefinition) configuration.getProfileDefinition();
+        final Method getConverters = ProfileDefinition.class.getDeclaredMethod("getConverters");
         getConverters.setAccessible(true);
-        Map<String, AttributeConverter<?>> converters = (Map<String, AttributeConverter<?>>) getConverters.invoke(profileDefinition);
+        final Map<String, AttributeConverter<?>> converters = (Map<String, AttributeConverter<?>>) getConverters.invoke(profileDefinition);
         assertTrue(converters.get(AGE) instanceof IntegerConverter);
         assertTrue(converters.get(IS_ADMIN) instanceof BooleanConverter);
         assertTrue(converters.get(BG_COLOR) instanceof ColorConverter);

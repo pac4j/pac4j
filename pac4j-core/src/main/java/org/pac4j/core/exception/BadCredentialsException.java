@@ -18,7 +18,7 @@ public class BadCredentialsException extends CredentialsException {
         super(t);
     }
 
-    public BadCredentialsException(String message, Throwable t) {
+    public BadCredentialsException(final String message, final Throwable t) {
         super(message, t);
     }
 }

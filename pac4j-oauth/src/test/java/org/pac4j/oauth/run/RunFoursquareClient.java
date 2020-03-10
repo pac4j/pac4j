@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 public class RunFoursquareClient extends RunClient {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new RunFoursquareClient().run();
     }
 
@@ -42,7 +42,7 @@ public class RunFoursquareClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final FoursquareProfile profile = (FoursquareProfile) userProfile;
         assertEquals("81827700", profile.getId());
         assertEquals(FoursquareProfile.class.getName() + CommonProfile.SEPARATOR + "81827700", profile.getTypedId());

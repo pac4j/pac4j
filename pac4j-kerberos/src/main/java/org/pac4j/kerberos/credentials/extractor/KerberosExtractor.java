@@ -31,8 +31,8 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
             return Optional.empty();
         }
 
-        byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
-        byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
+        final byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
+        final byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
 
         return Optional.of(new KerberosCredentials(kerberosTicket));
     }

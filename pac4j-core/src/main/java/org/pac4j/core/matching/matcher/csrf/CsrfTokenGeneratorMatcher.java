@@ -101,7 +101,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
         return maxAge;
     }
 
-    public void setMaxAge(Integer maxAge) {
+    public void setMaxAge(final Integer maxAge) {
         this.maxAge = maxAge;
     }
 

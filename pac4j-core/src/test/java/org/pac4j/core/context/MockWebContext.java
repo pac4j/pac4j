@@ -178,11 +178,11 @@ public final class MockWebContext implements WebContext {
         return serverPort;
     }
 
-    public void setServerName(String serverName) {
+    public void setServerName(final String serverName) {
         this.serverName = serverName;
     }
 
-    public void setServerPort(int serverPort) {
+    public void setServerPort(final int serverPort) {
         this.serverPort = serverPort;
     }
 
@@ -213,7 +213,7 @@ public final class MockWebContext implements WebContext {
         }
     }
 
-    public MockWebContext setFullRequestURL(String fullRequestURL) {
+    public MockWebContext setFullRequestURL(final String fullRequestURL) {
         this.fullRequestURL = fullRequestURL;
         return this;
     }
@@ -256,11 +256,11 @@ public final class MockWebContext implements WebContext {
     public void setResponseContentType(final String content) {}
 
     @Override
-    public void addResponseCookie(Cookie cookie) {
+    public void addResponseCookie(final Cookie cookie) {
         this.responseCookies.add(cookie);
     }
 
-    public void setRequestContent(String requestContent) {
+    public void setRequestContent(final String requestContent) {
         this.requestContent = requestContent;
     }
 

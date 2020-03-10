@@ -65,7 +65,7 @@ public final class FormClientTests implements TestsConstants {
     @Test
     public void testRedirectionUrl() {
         final FormClient formClient = getFormClient();
-        MockWebContext context = MockWebContext.create();
+        final MockWebContext context = MockWebContext.create();
         final FoundAction action = (FoundAction) formClient.getRedirectionAction(context).get();
         assertEquals(LOGIN_URL, action.getLocation());
     }
@@ -118,7 +118,7 @@ public final class FormClientTests implements TestsConstants {
     public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
         formClient.setProfileCreator((credentials, context) -> {
-            String username = credentials.getUsername();
+            final String username = credentials.getUsername();
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);

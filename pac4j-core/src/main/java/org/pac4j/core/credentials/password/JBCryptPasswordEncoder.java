@@ -54,7 +54,7 @@ public class JBCryptPasswordEncoder implements PasswordEncoder {
      *            the salt to hash with (perhaps generated using {@link BCrypt#gensalt()})
      * @see BCrypt
      */
-    public void setSalt(String salt) {
+    public void setSalt(final String salt) {
         this.salt = salt;
     }
 }

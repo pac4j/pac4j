@@ -21,7 +21,7 @@ public class JEEHttpActionAdapter implements HttpActionAdapter<Object, JEEContex
     @Override
     public Object adapt(final HttpAction action, final JEEContext context) {
         if (action != null) {
-            int code = action.getCode();
+            final int code = action.getCode();
             final HttpServletResponse response = context.getNativeResponse();
 
             if (code < 400) {

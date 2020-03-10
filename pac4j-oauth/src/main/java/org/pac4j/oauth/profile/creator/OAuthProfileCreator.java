@@ -103,7 +103,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @param verb        method used to request data
      * @return the user data response
      */
-    protected String sendRequestForData(final S service, final T accessToken, final String dataUrl, Verb verb) {
+    protected String sendRequestForData(final S service, final T accessToken, final String dataUrl, final Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final OAuthRequest request = createOAuthRequest(dataUrl, verb);
@@ -111,7 +111,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
         final String body;
         final int code;
         try {
-            Response response = service.execute(request);
+            final Response response = service.execute(request);
             code = response.getCode();
             body = response.getBody();
         } catch (final IOException | InterruptedException | ExecutionException e) {

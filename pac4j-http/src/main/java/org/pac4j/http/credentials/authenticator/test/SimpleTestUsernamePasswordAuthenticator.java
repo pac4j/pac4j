@@ -21,8 +21,8 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator<Us
         if (credentials == null) {
             throw new CredentialsException("No credential");
         }
-        String username = credentials.getUsername();
-        String password = credentials.getPassword();
+        final String username = credentials.getUsername();
+        final String password = credentials.getPassword();
         if (CommonHelper.isBlank(username)) {
             throw new CredentialsException("Username cannot be blank");
         }

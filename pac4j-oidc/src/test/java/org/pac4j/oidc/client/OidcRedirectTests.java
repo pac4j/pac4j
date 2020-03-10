@@ -34,10 +34,10 @@ public final class OidcRedirectTests implements TestsConstants {
 
     private OidcClient<OidcConfiguration> getClient() throws URISyntaxException {
 
-        OIDCProviderMetadata providerMetadata = mock(OIDCProviderMetadata.class);
+        final OIDCProviderMetadata providerMetadata = mock(OIDCProviderMetadata.class);
         when(providerMetadata.getAuthorizationEndpointURI()).thenReturn(new java.net.URI("http://localhost:8080/auth"));
 
-        OidcConfiguration configuration = new OidcConfiguration();
+        final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("testClient");
         configuration.setSecret("secret");
         configuration.setProviderMetadata(providerMetadata);
@@ -52,12 +52,12 @@ public final class OidcRedirectTests implements TestsConstants {
     @Ignore
     @Test
     public void testAjaxRequestAfterStandardRequestShouldNotOverrideState() throws MalformedURLException, URISyntaxException {
-        OidcClient client = getClient();
+        final OidcClient client = getClient();
         client.setCallbackUrl(CALLBACK_URL);
         client.setAjaxRequestResolver(new AjaxRequestResolver() {
             boolean first = true;
             @Override
-            public boolean isAjax(WebContext context) {
+            public boolean isAjax(final WebContext context) {
                 /*
                  * Considers that the first request is not ajax, all the subsequent ones are
                  */
@@ -69,22 +69,22 @@ public final class OidcRedirectTests implements TestsConstants {
                 }
             }
             @Override
-            public HttpAction buildAjaxResponse(WebContext context, RedirectionActionBuilder redirectionActionBuilder) {
+            public HttpAction buildAjaxResponse(final WebContext context, final RedirectionActionBuilder redirectionActionBuilder) {
                 return new StatusAction(401);
             }
         });
 
-        MockWebContext context = MockWebContext.create();
+        final MockWebContext context = MockWebContext.create();
 
         final FoundAction firstRequestAction = (FoundAction) client.getRedirectionAction(context).orElse(null);
-        String state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
+        final String state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
 
         try {
             //noinspection ThrowableNotThrown
             client.getRedirectionAction(context);
             fail("Ajax request should throw exception");
-        } catch (Exception e) {
-            State stateAfterAjax = (State) context.getSessionStore().get(context, client.getStateSessionAttributeName()).orElse(null);
+        } catch (final Exception e) {
+            final State stateAfterAjax = (State) context.getSessionStore().get(context, client.getStateSessionAttributeName()).orElse(null);
             assertEquals("subsequent ajax request should not override the state in the session store", state, stateAfterAjax.toString());
         }
 

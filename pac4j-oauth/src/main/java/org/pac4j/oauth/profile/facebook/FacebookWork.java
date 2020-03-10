@@ -38,7 +38,7 @@ public final class FacebookWork implements Serializable {
         return employer;
     }
 
-    public void setEmployer(FacebookObject employer) {
+    public void setEmployer(final FacebookObject employer) {
         this.employer = employer;
     }
 
@@ -46,7 +46,7 @@ public final class FacebookWork implements Serializable {
         return location;
     }
 
-    public void setLocation(FacebookObject location) {
+    public void setLocation(final FacebookObject location) {
         this.location = location;
     }
 
@@ -54,7 +54,7 @@ public final class FacebookWork implements Serializable {
         return position;
     }
 
-    public void setPosition(FacebookObject position) {
+    public void setPosition(final FacebookObject position) {
         this.position = position;
     }
 
@@ -62,7 +62,7 @@ public final class FacebookWork implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -70,7 +70,7 @@ public final class FacebookWork implements Serializable {
         return newDate(startDate);
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(final Date startDate) {
         this.startDate = newDate(startDate);
     }
 
@@ -78,7 +78,7 @@ public final class FacebookWork implements Serializable {
         return newDate(endDate);
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(final Date endDate) {
         this.endDate = newDate(endDate);
     }
 }

@@ -117,7 +117,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     }
 
     private void cleanSessionData(final WebContext context, final String key) {
-        SessionStore<WebContext> sessionStore = context.getSessionStore();
+        final SessionStore<WebContext> sessionStore = context.getSessionStore();
         if (sessionStore.get(context, getName() + key).isPresent()) {
             sessionStore.set(context, getName() + key, "");
         }

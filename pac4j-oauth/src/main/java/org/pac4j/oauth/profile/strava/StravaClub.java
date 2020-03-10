@@ -26,7 +26,7 @@ public class StravaClub implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -34,7 +34,7 @@ public class StravaClub implements Serializable {
         return resourceState;
     }
 
-    public void setResourceState(Integer resourceState) {
+    public void setResourceState(final Integer resourceState) {
         this.resourceState = resourceState;
     }
 
@@ -42,7 +42,7 @@ public class StravaClub implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -50,7 +50,7 @@ public class StravaClub implements Serializable {
         return profileMedium;
     }
 
-    public void setProfileMedium(String profileMedium) {
+    public void setProfileMedium(final String profileMedium) {
         this.profileMedium = profileMedium;
     }
 
@@ -58,7 +58,7 @@ public class StravaClub implements Serializable {
         return profile;
     }
 
-    public void setProfile(String profile) {
+    public void setProfile(final String profile) {
         this.profile = profile;
     }
 }

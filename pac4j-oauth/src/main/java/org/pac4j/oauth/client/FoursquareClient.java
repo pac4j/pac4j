@@ -21,7 +21,7 @@ public class FoursquareClient extends OAuth20Client {
 
     public FoursquareClient() {}
 
-    public FoursquareClient(String key, String secret) {
+    public FoursquareClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }

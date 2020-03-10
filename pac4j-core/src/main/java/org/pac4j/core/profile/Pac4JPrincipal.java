@@ -21,7 +21,7 @@ public class Pac4JPrincipal implements Principal {
     private final String name;
 
     public Pac4JPrincipal(final UserProfile profile) {
-        String username = profile.getUsername();
+        final String username = profile.getUsername();
         if (CommonHelper.isNotBlank(username)) {
             this.name = username;
         } else {
@@ -40,7 +40,7 @@ public class Pac4JPrincipal implements Principal {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

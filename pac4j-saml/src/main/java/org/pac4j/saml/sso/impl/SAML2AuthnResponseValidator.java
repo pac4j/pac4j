@@ -1,9 +1,8 @@
 package org.pac4j.saml.sso.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
-import org.joda.time.DateTime;
+import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
@@ -53,6 +52,9 @@ import org.pac4j.saml.util.SAML2Utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.util.Configuration;
@@ -119,7 +121,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     @Override
     public Credentials validate(final SAML2MessageContext context) {
 
-        final SAMLObject message = context.getMessage();
+        final SAMLObject message = (SAMLObject) context.getMessageContext().getMessage();
 
         if (!(message instanceof Response)) {
             throw new SAMLException("Must be a Response type");
@@ -153,7 +155,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final List<String> authnContexts = new ArrayList<>();
         for (final AuthnStatement authnStatement : authnStatements) {
             if (authnStatement.getAuthnContext().getAuthnContextClassRef() != null) {
-                authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+                authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getURI());
             }
         }
 
@@ -187,9 +189,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @return the sessionIndex if found in the assertion
      */
     protected String getSessionIndex(final Assertion subjectAssertion) {
-        List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
+        final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
         if (authnStatements != null && authnStatements.size() > 0) {
-            AuthnStatement statement = authnStatements.get(0);
+            final AuthnStatement statement = authnStatements.get(0);
             if (statement != null) {
                 return statement.getSessionIndex();
             }
@@ -479,7 +481,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return false;
         }
 
-        if (data.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
+        final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        final boolean expired = data.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
+
+        if (expired) {
             logger.debug("SubjectConfirmationData notOnOrAfter is too old");
             return false;
         }
@@ -504,7 +509,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                     return false;
                 }
             }
-        } catch (URISyntaxException use) {
+        } catch (final URISyntaxException use) {
             logger.error("Unable to check SubjectConfirmationData recipient, a URI has invalid syntax.", use);
             return false;
         }
@@ -528,8 +533,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return;
         }
 
-        if (!replayCache.get().check(getClass().getName(), assertion.getID(),
-                data.getNotOnOrAfter().getMillis() + acceptedSkew * 1000)) {
+        final Instant expires = Instant.ofEpochMilli(data.getNotOnOrAfter().toEpochMilli() + acceptedSkew * 1000);
+        if (!replayCache.get().check(getClass().getName(), assertion.getID(), expires)) {
             throw new SAMLReplayException("Rejecting replayed assertion ID '" + assertion.getID() + "'");
         }
     }
@@ -548,12 +553,19 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return;
         }
 
-        if (conditions.getNotBefore() != null && conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {
-            throw new SAMLAssertionConditionException("Assertion condition notBefore is not valid");
+        final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        if (conditions.getNotBefore() != null) {
+            final boolean expired = conditions.getNotBefore().minusSeconds(acceptedSkew).isAfter(now);
+            if (expired) {
+                throw new SAMLAssertionConditionException("Assertion condition notBefore is not valid");
+            }
         }
 
-        if (conditions.getNotOnOrAfter() != null && conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
-            throw new SAMLAssertionConditionException("Assertion condition notOnOrAfter is not valid");
+        if (conditions.getNotOnOrAfter() != null) {
+            final boolean expired = conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
+            if (expired) {
+                throw new SAMLAssertionConditionException("Assertion condition notOnOrAfter is not valid");
+            }
         }
 
         final String entityId = context.getSAMLSelfEntityContext().getEntityId();
@@ -577,7 +589,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         for (final AudienceRestriction audienceRestriction : audienceRestrictions) {
             if (audienceRestriction.getAudiences() != null) {
                 for (final Audience audience : audienceRestriction.getAudiences()) {
-                    audienceUris.add(audience.getAudienceURI());
+                    audienceUris.add(audience.getURI());
                 }
             }
         }
@@ -598,12 +610,16 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
             final SAML2MessageContext context) {
 
+        final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
         for (final AuthnStatement statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
                 throw new SAMLAuthnInstantException("Authentication issue instant is too old or in the future");
             }
-            if (statement.getSessionNotOnOrAfter() != null && statement.getSessionNotOnOrAfter().isBeforeNow()) {
-                throw new SAMLAuthnSessionCriteriaException("Authentication session between IDP and subject has ended");
+            if (statement.getSessionNotOnOrAfter() != null) {
+                final boolean expired = statement.getSessionNotOnOrAfter().isBefore(now);
+                if (expired) {
+                    throw new SAMLAuthnSessionCriteriaException("Authentication session between IDP and subject has ended");
+                }
             }
             // TODO implement authnContext validation
         }
@@ -636,18 +652,18 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     }
 
     @VisibleForTesting
-    Boolean wantsAssertionsSigned(SAML2MessageContext context) {
+    Boolean wantsAssertionsSigned(final SAML2MessageContext context) {
         if (context == null) {
             return wantsAssertionsSigned;
         }
-        SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
+        final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
         if (spDescriptor == null) {
             return wantsAssertionsSigned;
         }
         return spDescriptor.getWantAssertionsSigned();
     }
 
-    private boolean isAuthnInstantValid(final DateTime authnInstant) {
+    private boolean isAuthnInstantValid(final Instant authnInstant) {
         return isDateValid(authnInstant, this.maximumAuthenticationLifetime);
     }
 

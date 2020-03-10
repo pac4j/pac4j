@@ -103,7 +103,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
             credentials.setUserProfile(profile);
         } catch (final TicketValidationException e) {
-            String message = "cannot validate CAS ticket: " + ticket;
+            final String message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);
         }
     }

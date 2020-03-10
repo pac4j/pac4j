@@ -54,7 +54,7 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Prof
         try {
             final LinkedIn2ProfileEmails profileEmails = JsonHelper.getMapper().readValue(body, LinkedIn2ProfileEmails.class);
             profile.addAttribute(LinkedIn2ProfileDefinition.PROFILE_EMAILS, profileEmails);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error(e.getMessage(), e);
         }
         return Optional.of(profile);

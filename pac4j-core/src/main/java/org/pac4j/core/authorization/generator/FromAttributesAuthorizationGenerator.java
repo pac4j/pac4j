@@ -65,11 +65,11 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
                         addRoleOrPermissionToProfile(profile, st.nextToken(), isRole);
                     }
                 } else if (value.getClass().isArray() && value.getClass().getComponentType().isAssignableFrom(String.class)) {
-                    for (Object item : (Object[]) value) {
+                    for (final Object item : (Object[]) value) {
                         addRoleOrPermissionToProfile(profile, item.toString(), isRole);
                     }
                 } else if (Collection.class.isAssignableFrom(value.getClass())) {
-                    for (Object item : (Collection<?>) value) {
+                    for (final Object item : (Collection<?>) value) {
                         if (item.getClass().isAssignableFrom(String.class)) {
                             addRoleOrPermissionToProfile(profile, item.toString(), isRole);
                         }

@@ -26,8 +26,9 @@ public class OrcidJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     }
 
     @Override
-    protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
-                                            JsonNode response, String rawResponse) {
+    protected OAuth2AccessToken createToken(final String accessToken, final String tokenType,
+                                            final Integer expiresIn, final String refreshToken, final String scope,
+                                            final JsonNode response, final String rawResponse) {
         return new OrcidToken(accessToken, tokenType, expiresIn, refreshToken, scope,
                 extractRequiredParameter(response, "orcid", rawResponse).asText(), rawResponse);
     }

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
  */
 public final class RunWeiboClient extends RunClient {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 //        System.setProperty("http.proxyHost", "127.0.0.1");
 //        System.setProperty("https.proxyHost", "127.0.0.1");
 //        System.setProperty("http.proxyPort", "8888");
@@ -62,7 +62,7 @@ public final class RunWeiboClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(CommonProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final WeiboProfile profile = (WeiboProfile) userProfile;
         assertEquals("6591860688", profile.getId());
         assertEquals(WeiboProfile.class.getName() + CommonProfile.SEPARATOR + "6591860688",
