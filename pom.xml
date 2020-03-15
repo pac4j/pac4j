@@ -89,6 +89,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-config</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-oauth</artifactId>
 				<version>${project.version}</version>
 			</dependency>
