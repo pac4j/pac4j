@@ -21,13 +21,14 @@ public class JwtGenerator<U extends CommonProfile> {
 
     public static final String INTERNAL_ROLES = "$int_roles";
     public static final String INTERNAL_PERMISSIONS = "$int_perms";
+    public static final String INTERNAL_LINKEDID = "$int_linkid";
 
     private SignatureConfiguration signatureConfiguration;
 
     private EncryptionConfiguration encryptionConfiguration;
 
     private Date expirationTime;
-    
+
     public JwtGenerator() {}
 
     public JwtGenerator(final SignatureConfiguration signatureConfiguration) {
@@ -98,6 +99,7 @@ public class JwtGenerator<U extends CommonProfile> {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
+        CommonHelper.assertNull(INTERNAL_LINKEDID, profile.getAttribute(INTERNAL_LINKEDID));
     }
 
     protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
@@ -108,7 +110,7 @@ public class JwtGenerator<U extends CommonProfile> {
         if (this.expirationTime != null) {
             builder.expirationTime(this.expirationTime);
         }
-        
+
         // add attributes
         final Map<String, Object> attributes = profile.getAttributes();
         for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -116,6 +118,7 @@ public class JwtGenerator<U extends CommonProfile> {
         }
         builder.claim(INTERNAL_ROLES, profile.getRoles());
         builder.claim(INTERNAL_PERMISSIONS, profile.getPermissions());
+        builder.claim(INTERNAL_LINKEDID, profile.getLinkedId());
 
         builder.subject(profile.getTypedId());
 

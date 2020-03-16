@@ -258,6 +258,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
         final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
+        final String linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
+        attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
 
         final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes, null);
 
@@ -266,6 +268,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         }
         if (permissions != null) {
             profile.addPermissions(permissions);
+        }
+        if (linkedId != null) {
+            profile.setLinkedId(linkedId);
         }
         credentials.setUserProfile(profile);
     }
