@@ -10,6 +10,7 @@ import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -37,8 +38,6 @@ import java.util.ArrayList;
  * @since 1.7
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
-
-    public static final String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
 
     protected static final Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
 
@@ -115,7 +114,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         // Assertion consumer service url is the callback URL
         metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
         metadataGenerator.setResponseBindingType(configuration.getResponseBindingType());
-        final String logoutUrl = CommonHelper.addParameter(callbackUrl, LOGOUT_ENDPOINT_PARAMETER, "true");
+        final String logoutUrl = CommonHelper.addParameter(callbackUrl, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
         // the logout URL is callback URL with an extra parameter
         metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
 

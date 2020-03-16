@@ -4,6 +4,8 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+
 /**
  * Specific profile creator for Azure.
  *
@@ -18,8 +20,11 @@ public class AzureAdProfileCreator extends OidcProfileCreator {
 
     @Override
     protected void internalInit() {
+        assertNotNull("configuration", configuration);
 
-        tokenValidator = new AzureAdTokenValidator(configuration);
+        if (configuration.getTokenValidator() == null) {
+            configuration.setTokenValidator(new AzureAdTokenValidator(configuration));
+        }
 
         defaultProfileDefinition(new AzureAdProfileDefinition());
 

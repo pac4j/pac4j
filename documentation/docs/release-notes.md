@@ -22,6 +22,7 @@ title: Release notes&#58;
 - A profile can be renewed by its client when it's expired
 - Most web authorizers are now matchers. The default matchers are "securityHeaders,csrfToken" and the default authorizer is "csrfCheck". Use "none" for no matcher or authorizer
 - Use the `FindBest` utility class to find the best adapter, logic...
+- Support for the OIDC back-channel and front-channel logouts
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 
 **v3.8.3**:

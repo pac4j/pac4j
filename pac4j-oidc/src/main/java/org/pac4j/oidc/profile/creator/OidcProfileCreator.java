@@ -19,6 +19,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * OpenID Connect profile creator.
@@ -48,8 +50,6 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     protected OidcClient client;
 
-    protected TokenValidator tokenValidator;
-
     public OidcProfileCreator(final OidcConfiguration configuration, final OidcClient client) {
         this.configuration = configuration;
         this.client = client;
@@ -58,10 +58,6 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     @Override
     protected void internalInit() {
         assertNotNull("configuration", configuration);
-
-        if (tokenValidator == null) {
-            tokenValidator = new TokenValidator(configuration);
-        }
 
         defaultProfileDefinition(new OidcProfileDefinition<>());
     }
@@ -94,7 +90,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 nonce = null;
             }
             // Check ID Token
-            final IDTokenClaimsSet claimsSet = this.tokenValidator.validate(idToken, nonce);
+            final IDTokenClaimsSet claimsSet = configuration.findTokenValidator().validate(idToken, nonce);
             assertNotNull("claimsSet", claimsSet);
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, claimsSet.getSubject()));
 
@@ -137,6 +133,12 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             // session expiration with token behavior
             profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
+
+            // keep the session ID if provided
+            final String sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+            if (isNotBlank(sid)) {
+                configuration.findLogoutHandler().recordSession(context, sid);
+            }
 
             return Optional.of(profile);
 
