@@ -13,7 +13,7 @@
     <name>pac4j for Spring Boot</name>
 
     <properties>
-        <springboot.version>2.2.4.RELEASE</springboot.version>
+        <springboot.version>2.2.5.RELEASE</springboot.version>
     </properties>
 
     <dependencyManagement>
