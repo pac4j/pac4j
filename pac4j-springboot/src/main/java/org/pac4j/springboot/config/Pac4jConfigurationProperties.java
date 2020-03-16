@@ -5,6 +5,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The pac4j configuration and callback URL.
+ *
+ * @author Misagh Moayyed
+ * @since 4.0.0
+ */
 @ConfigurationProperties(prefix = "pac4j", ignoreUnknownFields = false)
 public class Pac4jConfigurationProperties {
     private Map<String, String> properties = new LinkedHashMap<>();

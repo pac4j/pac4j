@@ -8,6 +8,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * The configuration class for Spring.
+ *
+ * @author Misagh Moayyed
+ * @since 4.0.0
+ */
 @Configuration(value = "ConfigAutoConfiguration", proxyBeanMethods = false)
 @EnableConfigurationProperties(Pac4jConfigurationProperties.class)
 public class ConfigAutoConfiguration {
