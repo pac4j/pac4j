@@ -23,6 +23,7 @@ title: Release notes&#58;
 - Most web authorizers are now matchers. The default matchers are "securityHeaders,csrfToken" and the default authorizer is "csrfCheck". Use "none" for no matcher or authorizer
 - Use the `FindBest` utility class to find the best adapter, logic...
 - Support for the OIDC back-channel and front-channel logouts
+- Load the profiles in the `ProfileManager` (from the session or not) like in the `DefaultSecurityLogic` via the `getLikeDefaultSecurityLogic` and `getAllLikeDefaultSecurityLogic` methods
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 
 **v3.8.3**:
