@@ -124,6 +124,7 @@ As you can read on the release notes, there are many other smaller improvements 
 - Properly handle states and nonces for multiple OIDC clients
 - A profile can be renewed by its client when it's expired
 - Support for the OIDC back-channel and front-channel logouts
+- Load the profiles in the `ProfileManager` (from the session or not) like in the `DefaultSecurityLogic` via the `getLikeDefaultSecurityLogic` and `getAllLikeDefaultSecurityLogic` methods
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 
 ## Enjoy *pac4j* v4!
