@@ -123,6 +123,7 @@ As you can read on the release notes, there are many other smaller improvements 
 - Add HTTP POST Simple-Sign protocol implementation
 - Properly handle states and nonces for multiple OIDC clients
 - A profile can be renewed by its client when it's expired
+- Support for the OIDC back-channel and front-channel logouts
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 
 ## Enjoy *pac4j* v4!
