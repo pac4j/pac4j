@@ -106,7 +106,8 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final Optional<SessionStore<C>> newSessionStore = sessionStore.buildFromTrackableSession(context, trackableSession.get());
+                final Optional<SessionStore<C>> newSessionStore = sessionStore
+                    .buildFromTrackableSession(context, ((Optional) trackableSession.get()).orElse(null));
                 if (newSessionStore.isPresent()) {
                     logger.debug("newSesionStore: {}", newSessionStore);
                     final String sessionId = newSessionStore.get().getOrCreateSessionId(context);

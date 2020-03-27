@@ -232,4 +232,15 @@ public class Config {
             }
         }
     }
+
+    public static void setConfig(final Config config) {
+        INSTANCE.setClients(config.getClients());
+        INSTANCE.setAuthorizers(config.getAuthorizers());
+        INSTANCE.setMatchers(config.getMatchers());
+        INSTANCE.setSessionStore(config.getSessionStore());
+        INSTANCE.setHttpActionAdapter(config.getHttpActionAdapter());
+        INSTANCE.setSecurityLogic(config.getSecurityLogic());
+        INSTANCE.setCallbackLogic(config.getCallbackLogic());
+        INSTANCE.setLogoutLogic(config.getLogoutLogic());
+    }
 }

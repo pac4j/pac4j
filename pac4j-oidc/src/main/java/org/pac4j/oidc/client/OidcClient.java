@@ -87,4 +87,9 @@ public class OidcClient<V extends OidcConfiguration> extends IndirectClient<Oidc
 
         return Optional.empty();
     }
+
+    @Override
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
+        configuration.findLogoutHandler().renewSession(oldSessionId, context);
+    }
 }

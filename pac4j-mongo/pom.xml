@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>4.0.0-RC4-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-mongo</artifactId>
@@ -13,7 +13,7 @@
     <name>pac4j for MongoDB</name>
 
     <properties>
-        <mongo-driver.version>3.12.1</mongo-driver.version>
+        <mongo-driver.version>3.12.2</mongo-driver.version>
         <flapdoodle.version>2.2.0</flapdoodle.version>
     </properties>
 

@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog
 ---
 
+## &bull; February 2020: [pac4j v4 is coming](/blog/pac4j_v4_is_coming.html)
+
 ## &bull; September 2019: [A brief history of the security protocols](/blog/a-brief-history-of-the-security-protocols.html)
 
 ## &bull; February 2019: [spring-webmvc-pac4j vs Spring Security: Round 2, REST APIs](/blog/spring-webmvc-pac4j-vs-spring-security-round-2-rest-apis.html)

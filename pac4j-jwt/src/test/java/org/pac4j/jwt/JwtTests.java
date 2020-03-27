@@ -158,6 +158,16 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testGenerateAuthenticateWithoutEncryption() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
+        final FacebookProfile profile = createProfile();
+        profile.setLinkedId(VALUE);
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+        assertEquals(VALUE, profile.getLinkedId());
+    }
+
+    @Test
     public void testDoubleGenerateAuthenticate() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));

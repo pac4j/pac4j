@@ -81,4 +81,10 @@ public interface Pac4jConstants {
     String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
 
     String DEFAULT_REALM_NAME = "authentication required";
+
+    String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
+
+    String OIDC_CLAIM_SESSIONID = "sid";
+
+    String LOAD_PROFILES_FROM_SESSION = "pac4jLoadProfilesFromSession";
 }

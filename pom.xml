@@ -12,7 +12,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>4.0.0-RC4-SNAPSHOT</version>
+	<version>4.0.0-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -46,6 +46,7 @@
 		<module>pac4j-openid</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
+        <module>pac4j-saml-opensamlv3</module>
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
@@ -64,17 +65,17 @@
 		<commons-codec.version>1.14</commons-codec.version>
 		<commons-io.version>2.6</commons-io.version>
 		<guava.version>28.2-jre</guava.version>
-		<nimbus-jose-jwt.version>8.8</nimbus-jose-jwt.version>
-		<spring.version>5.2.4.RELEASE</spring.version>
-		<spring.security.version>5.2.2.RELEASE</spring.security.version>
-		<shiro.version>1.5.1</shiro.version>
+		<nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
+		<spring.version>5.2.5.RELEASE</spring.version>
+		<spring.security.version>5.3.0.RELEASE</spring.security.version>
+		<shiro.version>1.5.2</shiro.version>
         <jbcrypt.version>0.4.1</jbcrypt.version>
-		<mockito.version>3.3.0</mockito.version>
+		<mockito.version>3.3.3</mockito.version>
 		<slf4j.version>1.7.30</slf4j.version>
-        <unboundid.version>5.0.0</unboundid.version>
+        <unboundid.version>5.0.1</unboundid.version>
         <h2.version>1.4.200</h2.version>
 		<java.version>1.8</java.version>
-        <jackson.version>2.10.2</jackson.version>
+        <jackson.version>2.10.3</jackson.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -85,6 +86,11 @@
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -386,7 +392,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -399,7 +405,7 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>3.1.12.2</version>
+				<version>4.0.0</version>
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->
@@ -455,7 +461,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.1.1</version>
+					<version>3.2.0</version>
 					<configuration>
 						<source>${java.version}</source>
 						<doclint>none</doclint>
@@ -464,7 +470,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.1.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

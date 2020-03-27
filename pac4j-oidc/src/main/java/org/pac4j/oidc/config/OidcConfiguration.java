@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.CommonHelper;
@@ -23,6 +25,7 @@ import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
  * OpenID Connect configuration.
@@ -111,6 +114,10 @@ public class OidcConfiguration extends InitializableObject {
     /** time period advance (in seconds) for considering an access token expired */
     private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
 
+    private LogoutHandler logoutHandler;
+
+    private TokenValidator tokenValidator;
+
     @Override
     protected void internalInit() {
         // checks
@@ -140,6 +147,9 @@ public class OidcConfiguration extends InitializableObject {
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
+        }
+        if (this.logoutHandler == null) {
+            this.logoutHandler = new DefaultLogoutHandler();
         }
     }
 
@@ -360,6 +370,31 @@ public class OidcConfiguration extends InitializableObject {
         this.stateGenerator = stateGenerator;
     }
 
+    public LogoutHandler findLogoutHandler() {
+        init();
+
+        return logoutHandler;
+    }
+
+    public void setLogoutHandler(final LogoutHandler logoutHandler) {
+        this.logoutHandler = logoutHandler;
+    }
+
+    public TokenValidator getTokenValidator() {
+        return tokenValidator;
+    }
+
+    public void setTokenValidator(final TokenValidator tokenValidator) {
+        this.tokenValidator = tokenValidator;
+    }
+
+    public TokenValidator findTokenValidator() {
+        if (this.tokenValidator == null) {
+            setTokenValidator(new TokenValidator(this));
+        }
+        return tokenValidator;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -368,6 +403,7 @@ public class OidcConfiguration extends InitializableObject {
             "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
-            "withState", withState, "stateGenerator", stateGenerator);
+            "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
+            "tokenValidator", tokenValidator);
     }
 }

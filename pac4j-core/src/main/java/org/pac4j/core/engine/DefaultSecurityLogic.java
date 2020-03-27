@@ -24,6 +24,7 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.*;
 
@@ -97,6 +98,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
                 final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
+                context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, loadProfilesFromSession);
                 final ProfileManager manager = getProfileManager(context);
                 manager.setConfig(config);
                 List<UserProfile> profiles = manager.getAll(loadProfilesFromSession);

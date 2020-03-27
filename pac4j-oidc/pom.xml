@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>4.0.0-RC4-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-oidc</artifactId>
@@ -13,7 +13,7 @@
     <name>pac4j for OpenID Connect protocol</name>
 
     <properties>
-        <oauth-oidc-sdk.version>7.1.1</oauth-oidc-sdk.version>
+        <oauth-oidc-sdk.version>7.3</oauth-oidc-sdk.version>
         <javax.mail.version>1.6.2</javax.mail.version>
     </properties>
 
