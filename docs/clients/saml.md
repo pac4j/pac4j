@@ -9,7 +9,7 @@ It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 
 
 ## 1) Dependency
 
-You need to use the following module: `pac4j-saml`.
+You need to use the following module: `pac4j-saml` (it requires the JDK 11 and is built on OpenSAML >= v4) or `pac4j-saml-opensamlv3` (it only requires the JDK 8 and is built on OpenSAML v3).
 
 **Example (Maven dependency):**
 
@@ -23,7 +23,7 @@ You need to use the following module: `pac4j-saml`.
 
 ## 2) Basic configuration
 
-The [`SAML2Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2Client.java) 
+The [`SAML2Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2Client.java)
 must be used to login with a SAML 2 identity provider.
 
 First, if you don't have one, you need to generate a keystore for all signature and encryption operations:
@@ -116,7 +116,7 @@ Once you have an authenticated web session on the Identity Provider, usually it 
 client.setMaximumAuthenticationLifetime(600);
 ```
 
-By default, the entity ID of your application (the Service Provider) will be equals to the [callback url](clients.html#the-callback-url). 
+By default, the entity ID of your application (the Service Provider) will be equals to the [callback url](clients.html#the-callback-url).
 But you can force your own entity ID with the `serviceProviderEntityId` parameter:
 
 ```java
@@ -154,9 +154,9 @@ cfg.setSignatureReferenceDigestMethods(...);
 cfg.setSignatureCanonicalizationAlgorithm(...);
 ```
 
-The SAML client always requires assertions to be signed either directly or via the response that contains them. 
+The SAML client always requires assertions to be signed either directly or via the response that contains them.
 When the assertions need to be processed separate of the response, you can request them to be signed directly using:
- 
+
 ```java
 cfg.setWantsAssertionsSigned(true);
 ```
@@ -167,8 +167,8 @@ You may also want to enable signing of the authentication requests using:
 cfg.setAuthnRequestSigned(true);
 ```
 
-The final result will be determined based on the IdP metadata and the configuration above. 
-The IdP metadata will always be chosen in favor of the *pac4j* configuration, so if you need to purely rely on *pac4j*, you need to modify the metadata. 
+The final result will be determined based on the IdP metadata and the configuration above.
+The IdP metadata will always be chosen in favor of the *pac4j* configuration, so if you need to purely rely on *pac4j*, you need to modify the metadata.
 
 You can generate the SP metadata in two ways:
 - either programmatically using the `SAML2Client`: `String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();`
@@ -181,7 +181,7 @@ The SAML support handles the HTTP-POST and the HTTP-Redirect bindings for logout
 
 The `SAML2Client` can participate in the central logout and send a logout request to the IdP.
 The binding of this request is controlled by the `spLogoutRequestBindingType` property and
-the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`. 
+the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`.
 
 When calling the IdP, the SAML *pac4j* application locally removes the user profiles and optionally destroys the web session based on the [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java).
 You may use your own logout handler by implementing the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface
@@ -207,7 +207,7 @@ You must follow these rules to successfully authenticate using Microsoft ADFS 2.
 
 ### a) Maximum authentication time
 
-*pac4j* has the default maximum time set to 1 hour while ADFS has it set to 8 hours. Therefore it can happen that ADFS 
+*pac4j* has the default maximum time set to 1 hour while ADFS has it set to 8 hours. Therefore it can happen that ADFS
 sends an assertion which is still valid on ADFS side but evaluated as invalid on the *pac4j* side.
 
 You can see the following error message: `org.pac4j.saml.exceptions.SAMLException: Authentication issue instant is too old or in the future`
@@ -219,7 +219,7 @@ There are two possibilities how to make the values equal:
 
 ### b) Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
 
-You must install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK 
+You must install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK
 running *pac4j*. If you don't do it, you may encounter errors like this:
 
 ```
@@ -277,7 +277,7 @@ SimpleSAMLphp exposes his IdP metadata on `http://idp-domain/simplesamlphp/saml2
 
 ```xml
  <?xml version="1.0"?>
-<md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"> 
+<md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 	<md:EntityDescriptor entityID="http://idp-domain/simplesamlphp/saml2/idp/metadata.php">
 	  <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 	    <md:KeyDescriptor use="signing">
