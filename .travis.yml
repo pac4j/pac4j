@@ -8,7 +8,6 @@ script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/set
 dist: trusty
 
 jdk:
-  - oraclejdk8
   - openjdk11
 
 cache:
