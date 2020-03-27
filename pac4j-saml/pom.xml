@@ -13,7 +13,7 @@
     <name>pac4j for SAML protocol (JDK 11, OpenSAML >= v4)</name>
 
     <properties>
-        <opensaml.version>3.4.5</opensaml.version>
+        <opensaml.version>4.0.0</opensaml.version>
         <joda-time.version>2.10.5</joda-time.version>
         <velocity.version>1.7</velocity.version>
         <xmlsectool.version>2.0.0</xmlsectool.version>

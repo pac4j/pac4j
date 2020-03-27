@@ -1,18 +1,22 @@
 package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
+import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.binding.security.impl.MessageReplaySecurityHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.EncryptedID;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.NameIDType;
+import org.opensaml.saml.saml2.core.Status;
+import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.StatusMessage;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -27,11 +31,22 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.exceptions.*;
+import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
+import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.exceptions.SAMLIssueInstantException;
+import org.pac4j.saml.exceptions.SAMLIssuerException;
+import org.pac4j.saml.exceptions.SAMLNameIdDecryptionException;
+import org.pac4j.saml.exceptions.SAMLReplayException;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 /**
  * The abstract class for all SAML response validators.
@@ -43,9 +58,6 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /* maximum skew in seconds between SP and IDP clocks */
-    protected int acceptedSkew = 120;
-
     protected final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
     protected final URIComparator uriComparator;
@@ -55,6 +67,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected final LogoutHandler logoutHandler;
 
     protected final ReplayCacheProvider replayCache;
+
+    /* maximum skew in seconds between SP and IDP clocks */
+    protected int acceptedSkew = 120;
 
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final LogoutHandler logoutHandler,
@@ -82,7 +97,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         if (!StatusCode.SUCCESS.equals(statusValue)) {
             final StatusMessage statusMessage = status.getStatusMessage();
             if (statusMessage != null) {
-                statusValue += " / " + statusMessage.getMessage();
+                statusValue += " / " + statusMessage.getValue();
             }
             throw new SAMLException("Response is not success ; actual " + statusValue);
         }
@@ -153,28 +168,26 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
-    protected void validateIssueInstant(final DateTime issueInstant) {
+    protected void validateIssueInstant(final Instant issueInstant) {
         if (!isIssueInstantValid(issueInstant)) {
             throw new SAMLIssueInstantException("Issue instant is too old or in the future");
         }
     }
 
-    protected boolean isIssueInstantValid(final DateTime issueInstant) {
+    protected boolean isIssueInstantValid(final Instant issueInstant) {
         return isDateValid(issueInstant, 0);
     }
 
-    protected boolean isDateValid(final DateTime issueInstant, final int interval) {
-        final DateTime now = DateTime.now(DateTimeZone.UTC);
+    protected boolean isDateValid(final Instant issueInstant, final int interval) {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime before = now.plusSeconds(acceptedSkew);
+        final ZonedDateTime after = now.minusSeconds(acceptedSkew + interval);
 
-        final DateTime before = now.plusSeconds(acceptedSkew);
-        final DateTime after = now.minusSeconds(acceptedSkew + interval);
-
-        final DateTime issueInstanceUtc = issueInstant.toDateTime(DateTimeZone.UTC);
+        final ZonedDateTime issueInstanceUtc = ZonedDateTime.ofInstant(issueInstant, ZoneOffset.UTC);
 
         final boolean isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {
-            logger.warn("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstanceUtc.getZone()),
-                after.toDateTime(issueInstanceUtc.getZone()), issueInstanceUtc);
+            logger.warn("interval={},before={},after={},issueInstant={}", interval, before, after, issueInstanceUtc);
         }
         return isDateValid;
     }
@@ -199,14 +212,14 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
 
         try {
-            MessageReplaySecurityHandler messageReplayHandler = new MessageReplaySecurityHandler();
-            messageReplayHandler.setExpires(acceptedSkew * 1000);
+            final MessageReplaySecurityHandler messageReplayHandler = new MessageReplaySecurityHandler();
+            messageReplayHandler.setExpires(Duration.ofMillis(acceptedSkew * 1000));
             messageReplayHandler.setReplayCache(replayCache.get());
             messageReplayHandler.initialize();
-            messageReplayHandler.invoke(context);
-        } catch (ComponentInitializationException e) {
+            messageReplayHandler.invoke(context.getMessageContext());
+        } catch (final ComponentInitializationException e) {
             throw new SAMLException(e);
-        } catch (MessageHandlerException e) {
+        } catch (final MessageHandlerException e) {
             throw new SAMLReplayException(e);
         }
     }

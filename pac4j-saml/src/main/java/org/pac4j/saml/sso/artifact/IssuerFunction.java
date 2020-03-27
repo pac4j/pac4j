@@ -16,11 +16,11 @@ import org.opensaml.saml.saml2.core.StatusResponseType;
 @SuppressWarnings("rawtypes")
 public class IssuerFunction implements Function<MessageContext, String> {
     @Override
-    public String apply(MessageContext context) {
+    public String apply(final MessageContext context) {
         if (context == null) {
             return null;
         }
-        SAMLObject message = (SAMLObject) context.getMessage();
+        final SAMLObject message = (SAMLObject) context.getMessage();
         Issuer issuer = null;
         if (message instanceof RequestAbstractType) {
             issuer = ((RequestAbstractType) message).getIssuer();

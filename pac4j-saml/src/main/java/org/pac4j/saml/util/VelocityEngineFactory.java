@@ -1,7 +1,6 @@
 
 package org.pac4j.saml.util;
 
-import net.shibboleth.utilities.java.support.velocity.SLF4JLogChute;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.pac4j.core.exception.TechnicalException;
@@ -25,9 +24,7 @@ public class VelocityEngineFactory {
                     new Properties();
             props.putAll(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
             props.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
-            props.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-            props.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, SLF4JLogChute.class.getName());
 
             final VelocityEngine velocityEngine =
                     net.shibboleth.utilities.java.support.velocity.VelocityEngine

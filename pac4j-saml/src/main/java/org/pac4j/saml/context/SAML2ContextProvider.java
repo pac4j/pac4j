@@ -91,9 +91,9 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         }
     }
 
-    protected MessageContext<Pac4jSAMLResponse> prepareOutboundMessageContext(final WebContext webContext) {
+    protected MessageContext prepareOutboundMessageContext(final WebContext webContext) {
         final Pac4jSAMLResponse outTransport = new DefaultPac4jSAMLResponse(webContext);
-        final MessageContext<Pac4jSAMLResponse> outCtx = new MessageContext<>();
+        final MessageContext outCtx = new MessageContext();
         outCtx.setMessage(outTransport);
         return outCtx;
     }

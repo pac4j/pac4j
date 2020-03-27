@@ -35,7 +35,7 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
     private static class LogOnlySignatureTrustEngine implements TrustedCredentialTrustEngine<Signature>, SignatureTrustEngine {
         private SignatureTrustEngine wrapped;
         
-        public LogOnlySignatureTrustEngine(SignatureTrustEngine wrapped) {
+        public LogOnlySignatureTrustEngine(final SignatureTrustEngine wrapped) {
             log.error("SIGNATURE VALIDATION DISABLED, DO NOT USE THIS ON PRODUCTION");
             this.wrapped = wrapped;
         }
@@ -51,12 +51,12 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
         }
         
         @Override
-        public boolean validate(Signature token, CriteriaSet trustBasisCriteria) throws SecurityException {
+        public boolean validate(final Signature token, final CriteriaSet trustBasisCriteria) throws SecurityException {
             try {
                 if (!wrapped.validate(token, trustBasisCriteria)) {
                     log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
                 }
-            } catch (SecurityException e) {
+            } catch (final SecurityException e) {
                 log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
                         + e.getMessage(), e);
             }
@@ -65,13 +65,14 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
 
 
         @Override
-        public boolean validate(byte[] signature, byte[] content, String algorithmURI, CriteriaSet trustBasisCriteria,
-                Credential candidateCredential) throws SecurityException {
+        public boolean validate(final byte[] signature, final byte[] content, final String algorithmURI,
+                                final CriteriaSet trustBasisCriteria,
+                                final Credential candidateCredential) throws SecurityException {
             try {
                 if (!wrapped.validate(signature, content, algorithmURI, trustBasisCriteria, candidateCredential)) {
                     log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
                 }
-            } catch (SecurityException e) {
+            } catch (final SecurityException e) {
                 log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
                         + e.getMessage(), e);
             }

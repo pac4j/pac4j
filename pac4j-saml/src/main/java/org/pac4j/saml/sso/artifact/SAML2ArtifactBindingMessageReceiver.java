@@ -32,7 +32,7 @@ public class SAML2ArtifactBindingMessageReceiver extends AbstractSAML2MessageRec
     }
 
     @Override
-    protected AbstractPac4jDecoder getDecoder(WebContext webContext) {
+    protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
         final SAML2ArtifactBindingDecoder decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
                 spMetadataResolver, soapPipelineProvider);
         try {

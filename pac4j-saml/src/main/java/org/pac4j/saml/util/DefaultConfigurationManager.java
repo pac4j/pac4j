@@ -29,14 +29,14 @@ public class DefaultConfigurationManager implements ConfigurationManager {
             throw new RuntimeException("Exception initializing OpenSAML", e);
         }
 
-        ParserPool parserPool = initParserPool();
+        final ParserPool parserPool = initParserPool();
         registry.setParserPool(parserPool);
     }
 
     private static ParserPool initParserPool() {
 
         try {
-            BasicParserPool parserPool = new BasicParserPool();
+            final BasicParserPool parserPool = new BasicParserPool();
             parserPool.setMaxPoolSize(100);
             parserPool.setCoalescing(true);
             parserPool.setIgnoreComments(true);

@@ -2,7 +2,6 @@ package org.pac4j.saml.sso.artifact;
 
 import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
-import org.opensaml.saml.common.SAMLObject;
 import org.pac4j.saml.client.SAML2Client;
 
 /**
@@ -24,7 +23,7 @@ public class DefaultSOAPPipelineProvider implements SOAPPipelineProvider {
     }
 
     @Override
-    public HttpClientMessagePipelineFactory<SAMLObject, SAMLObject> getPipelineFactory() {
+    public HttpClientMessagePipelineFactory getPipelineFactory() {
         return new DefaultSOAPPipelineFactory(client.getConfiguration(), client.getIdentityProviderMetadataResolver(),
                 client.getServiceProviderMetadataResolver(), client.getSignatureSigningParametersProvider(),
                 client.getSignatureTrustEngineProvider(), client.getReplayCache());

@@ -1,10 +1,10 @@
 package org.pac4j.saml.sso.impl;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -86,7 +86,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
         request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
-        request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
+        request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(this.issueInstantSkewSeconds).toInstant());
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIsPassive(this.configuration.isPassive());
         request.setForceAuthn(this.configuration.isForceAuth());
@@ -129,7 +129,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     protected AuthnContextClassRef buildAuthnContextClassRef(final String authnContextClassRef) {
         final AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
-        classRef.setAuthnContextClassRef(authnContextClassRef);
+        classRef.setURI(authnContextClassRef);
         return classRef;
     }
 

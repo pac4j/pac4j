@@ -1,6 +1,5 @@
 package org.pac4j.saml.credentials;
 
-import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
@@ -10,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +63,8 @@ public class SAML2Credentials extends Credentials {
             this.attributes.add(samlAttribute);
         });
         this.conditions = new SAMLConditions();
-        this.conditions.setNotBefore(conditions.getNotBefore());
-        this.conditions.setNotOnOrAfter(conditions.getNotOnOrAfter());
+        this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
+        this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
         this.authnContexts = authnContexts;
 
         logger.info("Constructed SAML2 credentials: {}", this);
@@ -86,7 +87,7 @@ public class SAML2Credentials extends Credentials {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -250,22 +251,22 @@ public class SAML2Credentials extends Credentials {
 
     public static class SAMLConditions implements Serializable {
         private static final long serialVersionUID = -8966585574672014553L;
-        private DateTime notBefore;
-        private DateTime notOnOrAfter;
+        private ZonedDateTime notBefore;
+        private ZonedDateTime notOnOrAfter;
 
-        public DateTime getNotBefore() {
+        public ZonedDateTime getNotBefore() {
             return notBefore;
         }
 
-        public void setNotBefore(final DateTime notBefore) {
+        public void setNotBefore(final ZonedDateTime notBefore) {
             this.notBefore = notBefore;
         }
 
-        public DateTime getNotOnOrAfter() {
+        public ZonedDateTime getNotOnOrAfter() {
             return notOnOrAfter;
         }
 
-        public void setNotOnOrAfter(final DateTime notOnOrAfter) {
+        public void setNotOnOrAfter(final ZonedDateTime notOnOrAfter) {
             this.notOnOrAfter = notOnOrAfter;
         }
 

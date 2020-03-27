@@ -1,7 +1,5 @@
 package org.pac4j.saml.logout.impl;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -14,6 +12,9 @@ import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
+
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 /**
  * Build a SAML2 logout response.
@@ -50,11 +51,11 @@ public class SAML2LogoutResponseBuilder {
 
         response.setID(SAML2Utils.generateID());
         response.setIssuer(getIssuer(selfContext.getEntityId()));
-        response.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
+        response.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(this.issueInstantSkewSeconds).toInstant());
         response.setVersion(SAMLVersion.VERSION_20);
         response.setDestination(ssoService.getLocation());
         response.setStatus(getSuccess());
-        final SAMLObject originalMessage = context.getMessage();
+        final SAMLObject originalMessage = (SAMLObject) context.getMessageContext().getMessage();
         if (originalMessage != null && originalMessage instanceof RequestAbstractTypeImpl) {
             response.setInResponseTo(((RequestAbstractTypeImpl) originalMessage).getID());
         }
@@ -66,7 +67,7 @@ public class SAML2LogoutResponseBuilder {
         final SAMLObjectBuilder<Status> statusBuilder = (SAMLObjectBuilder<Status>) this.builderFactory
             .getBuilder(Status.DEFAULT_ELEMENT_NAME);
         final Status status = statusBuilder.buildObject();
-        StatusCode statusCode = new StatusCodeBuilder().buildObject();
+        final StatusCode statusCode = new StatusCodeBuilder().buildObject();
         statusCode.setValue(StatusCode.SUCCESS);
         status.setStatusCode(statusCode);
         return status;

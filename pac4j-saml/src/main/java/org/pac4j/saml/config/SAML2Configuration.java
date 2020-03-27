@@ -530,7 +530,7 @@ public class SAML2Configuration extends InitializableObject {
         return responseBindingType;
     }
 
-    public void setResponseBindingType(String responseBindingType) {
+    public void setResponseBindingType(final String responseBindingType) {
         this.responseBindingType = responseBindingType;
     }
 
@@ -660,7 +660,7 @@ public class SAML2Configuration extends InitializableObject {
      *
      * @param allSignatureValidationDisabled
      */
-    public void setAllSignatureValidationDisabled(boolean allSignatureValidationDisabled) {
+    public void setAllSignatureValidationDisabled(final boolean allSignatureValidationDisabled) {
         this.allSignatureValidationDisabled = allSignatureValidationDisabled;
     }
 
@@ -676,7 +676,7 @@ public class SAML2Configuration extends InitializableObject {
         return providerName;
     }
 
-    public void setProviderName(String providerName) {
+    public void setProviderName(final String providerName) {
         this.providerName = providerName;
     }
 
@@ -684,7 +684,7 @@ public class SAML2Configuration extends InitializableObject {
         return authnRequestExtensions;
     }
 
-    public void setAuthnRequestExtensions(Supplier<List<XSAny>> authnRequestExtensions) {
+    public void setAuthnRequestExtensions(final Supplier<List<XSAny>> authnRequestExtensions) {
         this.authnRequestExtensions = authnRequestExtensions;
     }
 
@@ -692,7 +692,7 @@ public class SAML2Configuration extends InitializableObject {
         return attributeAsId;
     }
 
-    public void setAttributeAsId(String attributeAsId) {
+    public void setAttributeAsId(final String attributeAsId) {
         this.attributeAsId = attributeAsId;
     }
 
@@ -700,7 +700,7 @@ public class SAML2Configuration extends InitializableObject {
         return useNameQualifier;
     }
 
-    public void setUseNameQualifier(boolean useNameQualifier) {
+    public void setUseNameQualifier(final boolean useNameQualifier) {
         this.useNameQualifier = useNameQualifier;
     }
 
@@ -732,7 +732,7 @@ public class SAML2Configuration extends InitializableObject {
         return postLogoutURL;
     }
 
-    public void setPostLogoutURL(String postLogoutURL) {
+    public void setPostLogoutURL(final String postLogoutURL) {
         this.postLogoutURL = postLogoutURL;
     }
 
@@ -786,7 +786,7 @@ public class SAML2Configuration extends InitializableObject {
 
         final TBSCertificate tbsCert = certGen.generateTBSCertificate();
 
-        ASN1EncodableVector v = new ASN1EncodableVector();
+        final ASN1EncodableVector v = new ASN1EncodableVector();
 
         v.add(tbsCert);
         v.add(sigAlgID);
@@ -887,7 +887,7 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        try (FileOutputStream fos = new FileOutputStream(file)) {
+        try ( FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(certificate);
             fos.flush();
         } catch (final Exception e) {
@@ -900,7 +900,7 @@ public class SAML2Configuration extends InitializableObject {
             final boolean res = file.delete();
             LOGGER.debug("Deleted file [{}]:{}", file, res);
         }
-        try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        try ( PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             final PemObject pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {

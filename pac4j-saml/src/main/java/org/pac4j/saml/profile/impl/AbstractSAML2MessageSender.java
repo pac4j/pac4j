@@ -2,6 +2,7 @@ package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.apache.velocity.app.VelocityEngine;
+import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
 import org.opensaml.saml.common.SAMLObject;
@@ -65,21 +66,22 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
         final MessageEncoder encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
 
-        final SAML2MessageContext outboundContext = new SAML2MessageContext(context);
-        outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
+        final SAML2MessageContext outboundContext = new SAML2MessageContext();
+        outboundContext.setMessageContext(context.getMessageContext());
+        outboundContext.getProfileRequestContext().setProfileId(outboundContext.getProfileRequestContext().getProfileId());
 
         outboundContext.getProfileRequestContext().setInboundMessageContext(
             context.getProfileRequestContext().getInboundMessageContext());
         outboundContext.getProfileRequestContext().setOutboundMessageContext(
             context.getProfileRequestContext().getOutboundMessageContext());
 
-        outboundContext.setMessage(request);
+        outboundContext.getMessageContext().setMessage(request);
         outboundContext.getSAMLEndpointContext().setEndpoint(acsService);
-        outboundContext.getSAMLPeerEndpointContext().setEndpoint(getEndpoint(context));
+        outboundContext.getSAMLPeerEndpointContext().setEndpoint(getEndpoint(outboundContext));
 
-        outboundContext.getSAMLPeerEntityContext().setRole(context.getSAMLPeerEntityContext().getRole());
-        outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());
-        outboundContext.getSAMLProtocolContext().setProtocol(context.getSAMLProtocolContext().getProtocol());
+        outboundContext.getSAMLPeerEntityContext().setRole(outboundContext.getSAMLPeerEntityContext().getRole());
+        outboundContext.getSAMLPeerEntityContext().setEntityId(outboundContext.getSAMLPeerEntityContext().getEntityId());
+        outboundContext.getSAMLProtocolContext().setProtocol(outboundContext.getSAMLProtocolContext().getProtocol());
         outboundContext.getSecurityParametersContext()
             .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(spDescriptor));
 
@@ -88,9 +90,10 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
 
         try {
-            invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, outboundContext);
+            final MessageContext messageContext = outboundContext.getMessageContext();
+            invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, messageContext);
 
-            encoder.setMessageContext(outboundContext);
+            encoder.setMessageContext(messageContext);
             encoder.initialize();
             encoder.prepareContext();
             encoder.encode();
@@ -115,17 +118,17 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
     protected final void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                        final IDPSSODescriptor idpssoDescriptor,
-                                                       final SAML2MessageContext outboundContext) {
+                                                       final MessageContext messageContext) {
         try {
             final EndpointURLSchemeSecurityHandler handlerEnd =
                 new EndpointURLSchemeSecurityHandler();
             handlerEnd.initialize();
-            handlerEnd.invoke(outboundContext);
+            handlerEnd.invoke(messageContext);
 
             final SAMLOutboundDestinationHandler handlerDest =
                 new SAMLOutboundDestinationHandler();
             handlerDest.initialize();
-            handlerDest.invoke(outboundContext);
+            handlerDest.invoke(messageContext);
 
             if (!destinationBindingType.equals(SAMLConstants.SAML2_REDIRECT_BINDING_URI) &&
                     mustSignRequest(spDescriptor, idpssoDescriptor)) {
@@ -133,7 +136,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                 final SAMLOutboundProtocolMessageSigningHandler handler = new
                     SAMLOutboundProtocolMessageSigningHandler();
                 handler.setSignErrorResponses(this.signErrorResponses);
-                handler.invoke(outboundContext);
+                handler.invoke(messageContext);
             }
         } catch (final Exception e) {
             throw new SAMLException(e);

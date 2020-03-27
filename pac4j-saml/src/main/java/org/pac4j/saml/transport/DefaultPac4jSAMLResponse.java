@@ -74,7 +74,7 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
 
     private static class Pac4jServletOutputStreamWriter extends OutputStreamWriter {
         private final ByteArrayOutputStream outputStream;
-        public Pac4jServletOutputStreamWriter(ByteArrayOutputStream out) {
+        public Pac4jServletOutputStreamWriter(final ByteArrayOutputStream out) {
             super(out, StandardCharsets.UTF_8);
             outputStream = out;
         }

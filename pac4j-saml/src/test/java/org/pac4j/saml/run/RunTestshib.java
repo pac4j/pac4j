@@ -68,7 +68,7 @@ public class RunTestshib extends RunClient {
     }
 
     @Override
-    protected void populateContextWithUrl(final MockWebContext context, String url) {
+    protected void populateContextWithUrl(final MockWebContext context, final String url) {
         super.populateContextWithUrl(context, url);
         context.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
     }
