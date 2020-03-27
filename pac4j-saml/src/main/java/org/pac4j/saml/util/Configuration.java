@@ -50,14 +50,14 @@ public final class Configuration {
         bootstrap();
     }
 
-    private static int compareManagers(Object obj1, Object obj2) {
+    private static int compareManagers(final Object obj1, final Object obj2) {
         int p1 = 100;
         int p2 = 100;
-        Priority p1a = obj1.getClass().getAnnotation(Priority.class);
+        final Priority p1a = obj1.getClass().getAnnotation(Priority.class);
         if (p1a != null) {
             p1 = p1a.value();
         }
-        Priority p2a = obj2.getClass().getAnnotation(Priority.class);
+        final Priority p2a = obj2.getClass().getAnnotation(Priority.class);
         if (p2a != null) {
             p2 = p2a.value();
         }
@@ -71,8 +71,8 @@ public final class Configuration {
     }
 
     private static void bootstrap() {
-        ServiceLoader<ConfigurationManager> configurationManagers = ServiceLoader.load(ConfigurationManager.class);
-        List<ConfigurationManager> configurationManagerList = new ArrayList();
+        final ServiceLoader<ConfigurationManager> configurationManagers = ServiceLoader.load(ConfigurationManager.class);
+        final List<ConfigurationManager> configurationManagerList = new ArrayList();
         configurationManagers.forEach(configurationManagerList::add);
         if (configurationManagerList.size() > 0) {
             configurationManagerList.sort(Configuration::compareManagers);
@@ -119,9 +119,9 @@ public final class Configuration {
     }
     
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
-        try (StringReader reader = new StringReader(obj)) {
+        try ( StringReader reader = new StringReader(obj)) {
             return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Error unmarshalling message from input stream", e);
             return Optional.empty();
         }

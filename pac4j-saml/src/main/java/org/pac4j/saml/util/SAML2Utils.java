@@ -55,11 +55,11 @@ public final class SAML2Utils implements HttpConstants {
         }
         
         try {
-            URI normalizedUri1 = normalizePortNumbersInUri(uri1);
-            URI normalizedUri2 = normalizePortNumbersInUri(uri2);
-            boolean eq = normalizedUri1.equals(normalizedUri2);
+            final URI normalizedUri1 = normalizePortNumbersInUri(uri1);
+            final URI normalizedUri2 = normalizePortNumbersInUri(uri2);
+            final boolean eq = normalizedUri1.equals(normalizedUri2);
             return eq;
-        } catch (URISyntaxException use) {
+        } catch (final URISyntaxException use) {
             logger.error("Cannot compare 2 URIs.", use);
             return false;    
         }

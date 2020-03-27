@@ -17,15 +17,15 @@ public class SAML2IdentityProviderMetadataResolverTest {
 
     @Before
     public void setUp() {
-        SAML2Configuration configuration = new SAML2Configuration();
+        final SAML2Configuration configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
     }
 
     @Test
     public void resolveMetadataEntityId() throws Exception {
-        MetadataResolver resolver = metadataResolver.resolve();
-        CriteriaSet criteria = new CriteriaSet(new EntityIdCriterion("mmoayyed.example.net"));
+        final MetadataResolver resolver = metadataResolver.resolve();
+        final CriteriaSet criteria = new CriteriaSet(new EntityIdCriterion("mmoayyed.example.net"));
         final EntityDescriptor entity = resolver.resolveSingle(criteria);
         assertEquals(entity.getEntityID(), "mmoayyed.example.net");
     }

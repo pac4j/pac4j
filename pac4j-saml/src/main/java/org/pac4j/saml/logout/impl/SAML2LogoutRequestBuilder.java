@@ -1,7 +1,5 @@
 package org.pac4j.saml.logout.impl;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
@@ -17,13 +15,18 @@ import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 /**
  * Build a SAML2 Logout Request
- * 
+ *
  * @author Matthieu Taggiasco
  * @since 2.0.0
  */
 public class SAML2LogoutRequestBuilder {
+
+    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     private String bindingType;
 
@@ -31,12 +34,8 @@ public class SAML2LogoutRequestBuilder {
 
     private int issueInstantSkewSeconds = 0;
 
-    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-
     /**
      * Instantiates a new Saml 2 logout request builder.
-     *
-     * @param bindingType the binding type
      */
     public SAML2LogoutRequestBuilder(final SAML2Configuration cfg) {
         this.bindingType = cfg.getSpLogoutRequestBindingType();
@@ -61,7 +60,7 @@ public class SAML2LogoutRequestBuilder {
 
         request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
-        request.setIssueInstant(DateTime.now(DateTimeZone.UTC).plusSeconds(this.issueInstantSkewSeconds));
+        request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(this.issueInstantSkewSeconds).toInstant());
         request.setVersion(SAMLVersion.VERSION_20);
         request.setDestination(ssoService.getLocation());
 
@@ -82,7 +81,7 @@ public class SAML2LogoutRequestBuilder {
         final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
             .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
         final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
-        sessionIdx.setSessionIndex(sessIdx);
+        sessionIdx.setValue(sessIdx);
         request.getSessionIndexes().add(sessionIdx);
 
         return request;
@@ -91,7 +90,7 @@ public class SAML2LogoutRequestBuilder {
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {
         final SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
-                .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
+            .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
         final Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         return issuer;

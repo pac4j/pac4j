@@ -1,8 +1,8 @@
 package org.pac4j.saml.context;
 
+import org.apache.commons.lang.StringUtils;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
 import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
@@ -12,6 +12,7 @@ import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
+import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -27,8 +28,6 @@ import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
-import org.opensaml.saml.saml2.core.Response;
 
 /**
  * Allow to store additional information for SAML processing.
@@ -36,19 +35,24 @@ import org.opensaml.saml.saml2.core.Response;
  * @author Michael Remond
  * @version 1.5.0
  */
-@SuppressWarnings("rawtypes")
-public class SAML2MessageContext extends MessageContext<SAMLObject> {
+public class SAML2MessageContext {
+
+    /**
+     * SubjectConfirmations used during assertion evaluation.
+     */
+    private final List<SubjectConfirmation> subjectConfirmations = new ArrayList<>();
+
+    private MessageContext messageContext = new MessageContext();
 
     private WebContext webContext;
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
 
-    /** BaseID retrieved either from the Subject or from a SubjectConfirmation */
+    /**
+     * BaseID retrieved either from the Subject or from a SubjectConfirmation
+     */
     private BaseID baseID;
-
-    /** SubjectConfirmations used during assertion evaluation. */
-    private final List<SubjectConfirmation> subjectConfirmations = new ArrayList<>();
 
     private SAMLMessageStore samlMessageStore;
 
@@ -56,9 +60,12 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         super();
     }
 
-    public SAML2MessageContext(final MessageContext<SAMLObject> ctx) {
-        this();
-        super.setParent(ctx);
+    public MessageContext getMessageContext() {
+        return messageContext;
+    }
+
+    public void setMessageContext(final MessageContext messageContext) {
+        this.messageContext = messageContext;
     }
 
     public WebContext getWebContext() {
@@ -71,6 +78,10 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
 
     public final Assertion getSubjectAssertion() {
         return this.subjectAssertion;
+    }
+
+    public final void setSubjectAssertion(final Assertion subjectAssertion) {
+        this.subjectAssertion = subjectAssertion;
     }
 
     public final SPSSODescriptor getSPSSODescriptor() {
@@ -93,7 +104,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
             }
         }
         throw new SAMLException("Identity provider has no single logout service available for the selected profile"
-                + binding);
+            + binding);
     }
 
     public SingleSignOnService getIDPSingleSignOnService(final String binding) {
@@ -104,7 +115,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
             }
         }
         throw new SAMLException("Identity provider has no single sign on service available for the selected profile"
-                + binding);
+            + binding);
     }
 
     public AssertionConsumerService getSPAssertionConsumerService() {
@@ -124,7 +135,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
                 }
             }
             throw new SAMLException("Assertion consumer service with sdestination " + response.getDestination()
-                    + " could not be found for spDescriptor " + spssoDescriptor);
+                + " could not be found for spDescriptor " + spssoDescriptor);
         }
 
         return getSPAssertionConsumerService(spssoDescriptor, services);
@@ -142,15 +153,15 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
                 }
             }
             throw new SAMLException("Assertion consumer service with index " + acsIndex
-                    + " could not be found for spDescriptor " + spssoDescriptor);
+                + " could not be found for spDescriptor " + spssoDescriptor);
         }
 
         return getSPAssertionConsumerService(spssoDescriptor, services);
     }
 
     protected AssertionConsumerService getSPAssertionConsumerService(
-            final SPSSODescriptor spssoDescriptor,
-            final List<AssertionConsumerService> services) {
+        final SPSSODescriptor spssoDescriptor,
+        final List<AssertionConsumerService> services) {
 
         // Get default
         if (spssoDescriptor.getDefaultAssertionConsumerService() != null) {
@@ -166,15 +177,15 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
 
     public final ProfileRequestContext getProfileRequestContext() {
-        return this.getSubcontext(ProfileRequestContext.class, true);
+        return getMessageContext().getSubcontext(ProfileRequestContext.class, true);
     }
 
     public final SAMLSelfEntityContext getSAMLSelfEntityContext() {
-        return this.getSubcontext(SAMLSelfEntityContext.class, true);
+        return getMessageContext().getSubcontext(SAMLSelfEntityContext.class, true);
     }
 
     public final SOAP11Context getSOAP11Context() {
-        return this.getSubcontext(SOAP11Context.class, true);
+        return getMessageContext().getSubcontext(SOAP11Context.class, true);
     }
 
     public final SAMLMetadataContext getSAMLSelfMetadataContext() {
@@ -186,15 +197,11 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
 
     public final SAMLPeerEntityContext getSAMLPeerEntityContext() {
-        return this.getSubcontext(SAMLPeerEntityContext.class, true);
+        return getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true);
     }
 
     public final SAMLSubjectNameIdentifierContext getSAMLSubjectNameIdentifierContext() {
-        return this.getSubcontext(SAMLSubjectNameIdentifierContext.class, true);
-    }
-
-    public final void setSubjectAssertion(final Assertion subjectAssertion) {
-        this.subjectAssertion = subjectAssertion;
+        return getMessageContext().getSubcontext(SAMLSubjectNameIdentifierContext.class, true);
     }
 
     public final BaseID getBaseID() {
@@ -218,11 +225,11 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
 
     public final SAMLBindingContext getSAMLBindingContext() {
-        return this.getSubcontext(SAMLBindingContext.class, true);
+        return getMessageContext().getSubcontext(SAMLBindingContext.class, true);
     }
 
     public final SecurityParametersContext getSecurityParametersContext() {
-        return this.getSubcontext(SecurityParametersContext.class, true);
+        return getMessageContext().getSubcontext(SecurityParametersContext.class, true);
     }
 
     public final SAMLProtocolContext getSAMLSelfProtocolContext() {
@@ -230,7 +237,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
 
     public final SAMLProtocolContext getSAMLProtocolContext() {
-        return this.getSubcontext(SAMLProtocolContext.class, true);
+        return getMessageContext().getSubcontext(SAMLProtocolContext.class, true);
     }
 
     public final Pac4jSAMLResponse getProfileRequestContextOutboundMessageTransportResponse() {
@@ -238,7 +245,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
 
     public final SAMLEndpointContext getSAMLEndpointContext() {
-        return this.getSubcontext(SAMLEndpointContext.class, true);
+        return getMessageContext().getSubcontext(SAMLEndpointContext.class, true);
     }
 
     public final SAMLMessageStore getSAMLMessageStore() {

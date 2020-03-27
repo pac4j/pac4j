@@ -13,7 +13,6 @@ import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.decoder.AbstractMessageDecoder;
 import org.opensaml.messaging.decoder.MessageDecodingException;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.pac4j.core.context.WebContext;
@@ -38,7 +37,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 3.4.0
  */
-public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLObject> {
+public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
 
     static final String[] SAML_PARAMETERS = {"SAMLRequest", "SAMLResponse", "logoutRequest"};
 
@@ -69,7 +68,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
             if (encodedMessage.isPresent()) {
                 final List<NameValuePair> a = URLEncodedUtils.parse(encodedMessage.get(), StandardCharsets.UTF_8);
                 final Multimap<String, String>  paramMap = HashMultimap.create();
-                for (NameValuePair p : a) {
+                for (final NameValuePair p : a) {
                     paramMap.put(p.getName(), p.getValue());
                 }
                 for (final String parameter : SAML_PARAMETERS) {
@@ -90,9 +89,14 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
                 logger.trace("Raw SAML message:\n{}", encodedMessage);
                 return encodedMessage.get().getBytes(StandardCharsets.UTF_8);
             } else {
-                final byte[] decodedBytes = Base64Support.decode(encodedMessage.get());
-                logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
-                return decodedBytes;
+
+                try {
+                    final byte[] decodedBytes = Base64Support.decode(encodedMessage.get());
+                    logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
+                    return decodedBytes;
+                } catch (final Exception e) {
+                    throw new MessageDecodingException(e);
+                }
             }
         }
     }
@@ -120,10 +124,10 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
      * @param messageContext the current message context
      */
     protected void populateBindingContext(final SAML2MessageContext messageContext) {
-        SAMLBindingContext bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
+        final SAMLBindingContext bindingContext = messageContext.getMessageContext().getSubcontext(SAMLBindingContext.class, true);
         bindingContext.setBindingUri(getBindingURI(messageContext));
         bindingContext.setHasBindingSignature(false);
-        bindingContext.setIntendedDestinationEndpointURIRequired(SAMLBindingSupport.isMessageSigned(messageContext));
+        bindingContext.setIntendedDestinationEndpointURIRequired(SAMLBindingSupport.isMessageSigned(messageContext.getMessageContext()));
     }
 
     /**
@@ -143,13 +147,13 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder<SAMLOb
      *
      * @throws MessageDecodingException thrown if there is a problem deserializing and unmarshalling the message
      */
-    protected XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
+    protected XMLObject unmarshallMessage(final InputStream messageStream) throws MessageDecodingException {
         try {
-            XMLObject message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
+            final XMLObject message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
             return message;
-        } catch (XMLParserException e) {
+        } catch (final XMLParserException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
-        } catch (UnmarshallingException e) {
+        } catch (final UnmarshallingException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
         }
     }

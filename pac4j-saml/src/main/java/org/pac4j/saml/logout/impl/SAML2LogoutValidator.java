@@ -30,7 +30,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     private String postLogoutURL;
 
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                final LogoutHandler logoutHandler, String postLogoutURL, final ReplayCacheProvider replayCache) {
+                                final LogoutHandler logoutHandler, final String postLogoutURL, final ReplayCacheProvider replayCache) {
         super(engine, decrypter, logoutHandler, replayCache);
         this.postLogoutURL = postLogoutURL;
     }
@@ -42,8 +42,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      */
     @Override
     public Credentials validate(final SAML2MessageContext context) {
-
-        final SAMLObject message = context.getMessage();
+        final SAMLObject message = (SAMLObject) context.getMessageContext().getMessage();
 
         // IDP-initiated
         if (message instanceof LogoutRequest) {
@@ -99,7 +98,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
             final SessionIndex sessionIndexObject = sessionIndexes.get(0);
             if (sessionIndexObject != null) {
-                sessionIndex = sessionIndexObject.getSessionIndex();
+                sessionIndex = sessionIndexObject.getValue();
             }
         }
 

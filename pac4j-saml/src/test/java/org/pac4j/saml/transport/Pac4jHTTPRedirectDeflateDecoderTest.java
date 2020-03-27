@@ -43,7 +43,7 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
 
         final Pac4jHTTPRedirectDeflateEncoder encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
-        String message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        final String message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
 
         webContext.addRequestParameter("SAMLResponse", message);
         final Pac4jHTTPRedirectDeflateDecoder decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
@@ -62,10 +62,10 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
 
         final Pac4jHTTPRedirectDeflateEncoder encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
-        MessageContext<SAMLObject> messageContext = new MessageContext<>();
+        final MessageContext messageContext = new MessageContext();
         messageContext.setMessage((SAMLObject) xmlObject);
 
-        String encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        final String encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
         final String redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);
 
         assertTrue(redirectURL.contains("qp=0000"));

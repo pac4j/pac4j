@@ -1,7 +1,6 @@
 package org.pac4j.saml.credentials;
 
 import org.apache.commons.lang.SerializationUtils;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -10,6 +9,8 @@ import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.saml.util.Configuration;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +41,8 @@ public class SAML2CredentialsSerializationTests {
         assertNotNull(conditionsBuilder);
 
         final Conditions conditions = conditionsBuilder.buildObject();
-        conditions.setNotBefore(DateTime.now());
-        conditions.setNotOnOrAfter(DateTime.now());
+        conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
 
         final List<String> contexts = new ArrayList<>();
         contexts.add("cas-context");

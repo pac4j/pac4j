@@ -99,7 +99,7 @@ public class Pac4jHTTPPostDecoderTest {
         webContext.setRequestMethod("POST");
         final Pac4jHTTPPostDecoder decoder =
             new Pac4jHTTPPostDecoder(webContext);
-        String message = "SAMLResponse=" + SAML_RESPONSE 
+        final String message = "SAMLResponse=" + SAML_RESPONSE
                 + "&RelayState=https%3A%2F%2Flocalhost%3A8443%2Fanzo_authenticate%3Fclient_name%3DGSAML";
 
         webContext.setRequestContent(message);
@@ -114,7 +114,7 @@ public class Pac4jHTTPPostDecoderTest {
         webContext.setRequestMethod("POST");
         final Pac4jHTTPPostDecoder decoder =
             new Pac4jHTTPPostDecoder(webContext);
-        String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
+        final String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
         
         webContext.setRequestContent(message);
 
@@ -128,7 +128,7 @@ public class Pac4jHTTPPostDecoderTest {
         webContext.setRequestMethod("POST");
         final Pac4jHTTPPostDecoder decoder =
             new Pac4jHTTPPostDecoder(webContext);
-        String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
+        final String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
         webContext.addRequestParameter("SAMLResponse", message);
         decode(decoder);
     }

@@ -4,7 +4,6 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
 import org.apache.velocity.VelocityContext;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncodingException;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.BindingException;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostSimpleSignEncoder;
@@ -38,16 +37,16 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
      * @throws MessageEncodingException throw if no relying party endpoint is available
      */
     @Override
-    protected URI getEndpointURL(MessageContext<SAMLObject> messageContext) throws MessageEncodingException {
+    protected URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
         try {
             return SAMLBindingSupport.getEndpointURL(messageContext);
-        } catch (BindingException e) {
+        } catch (final BindingException e) {
             throw new MessageEncodingException("Could not obtain message endpoint URL", e);
         }
     }
 
     @Override
-    protected void postEncode(final MessageContext<SAMLObject> messageContext, final String endpointURL) throws MessageEncodingException {
+    protected void postEncode(final MessageContext messageContext, final String endpointURL) throws MessageEncodingException {
         log.debug("Invoking Velocity template to create POST body");
 
         try {
@@ -60,7 +59,7 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
             final OutputStreamWriter out = responseAdapter.getOutputStreamWriter();
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", velocityContext, out);
             out.flush();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new MessageEncodingException("Error creating output document", e);
         }
     }

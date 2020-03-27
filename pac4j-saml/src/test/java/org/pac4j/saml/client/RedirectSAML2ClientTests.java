@@ -141,7 +141,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     private String getInflatedAuthnRequest(final String location) {
-        final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), "UTF-8");
+        final List<NameValuePair> pairs = URLEncodedUtils.parse(java.net.URI.create(location), StandardCharsets.UTF_8);
         final Inflater inflater = new Inflater(true);
         final byte[] decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
         final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);

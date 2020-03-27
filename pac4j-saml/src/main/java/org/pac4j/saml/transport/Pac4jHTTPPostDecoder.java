@@ -34,25 +34,25 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
         if (ContextHelper.isPost(context)) {
             final String relayState = this.context.getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
-            SAMLBindingSupport.setRelayState(messageContext, relayState);
+            SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
             final byte[] base64DecodedMessage = this.getBase64DecodedMessage();
             final XMLObject xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
             final SAMLObject inboundMessage;
             if (xmlObject instanceof Envelope) {
-                Envelope soapMessage = (Envelope) xmlObject;
+                final Envelope soapMessage = (Envelope) xmlObject;
                 messageContext.getSOAP11Context().setEnvelope(soapMessage);
                 try {
-                    new SAMLSOAPDecoderBodyHandler().invoke(messageContext);
+                    new SAMLSOAPDecoderBodyHandler().invoke(messageContext.getMessageContext());
                 } catch (final MessageHandlerException e) {
                     throw new MessageDecodingException("Cannot decode SOAP envelope", e);
                 }
             } else {
                 inboundMessage = (SAMLObject) xmlObject;
-                messageContext.setMessage(inboundMessage);
+                messageContext.getMessageContext().setMessage(inboundMessage);
             }
             logger.debug("Decoded SAML message");
             this.populateBindingContext(messageContext);
-            this.setMessageContext(messageContext);
+            this.setMessageContext(messageContext.getMessageContext());
 
         } else {
             throw new MessageDecodingException("This message decoder only supports the HTTP POST method");
