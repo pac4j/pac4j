@@ -28,7 +28,7 @@ title: Implementations comparison for the default logics&#58;
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
     </tr>
     <tr>
-        <td>j2e-pac4j</td>
+        <td>jee-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>

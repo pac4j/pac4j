@@ -30,7 +30,7 @@ title: Implementations comparison for the profile management&#58;
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
-        <td>j2e-pac4j</td>
+        <td>jee-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
         <td><img src="/img/green_check.png" /><br />by injection thanks to the <code class="highlighter-rouge">Pac4jProducer</code></td>
         <td><img src="/img/red_cross.png" /></td>
