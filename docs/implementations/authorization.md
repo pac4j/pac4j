@@ -26,7 +26,7 @@ title: Implementations comparison for the authorization checks&#58;
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
-        <td>j2e-pac4j</td>
+        <td>jee-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/red_cross.png" /></td>
     </tr>

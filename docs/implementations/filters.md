@@ -30,7 +30,7 @@ title: Implementations comparison for the filter and endpoints&#58;
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutController</code></td>
     </tr>
     <tr>
-        <td>j2e-pac4j</td>
+        <td>jee-pac4j</td>
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>

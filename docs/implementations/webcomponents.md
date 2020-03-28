@@ -23,27 +23,27 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ESessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ENoHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
-        <td>j2e-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ESessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ENoHttpActionAdapter.INSTANCE</code></td>
+        <td>jee-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroSessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ENoHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ESessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2ENoHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
