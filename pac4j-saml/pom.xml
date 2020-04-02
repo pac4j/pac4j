@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.0</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j for SAML protocol (JDK 11, OpenSAML >= v4)</name>
+    <name>pac4j for SAML protocol (JDK 11, OpenSAML &gt;= v4)</name>
 
     <properties>
         <opensaml.version>4.0.0</opensaml.version>
