@@ -37,9 +37,6 @@ Thus, the `setResponseStatus` and `writeResponseContent` methods have been remov
 Multiple HTTP actions (inheriting from `HttpAction`) have been created to handle the necessary HTTP actions. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`.
 The `redirect` method of the `Client` interface is renamed as `getRedirectionAction`.
 
-Nonetheless, some operations are still performed on the web context like adding a cookie (`addResponseCookie` method).
-In the final release, these operations should be delayed until the `HttpActionAdapter` kicks in.
-
 ### 3) `Optional`
 
 The APIs have been changed in many places to return `Optional`  when the returned value could be `null`.
@@ -126,5 +123,6 @@ As you can read on the release notes, there are many other smaller improvements 
 - Support for the OIDC back-channel and front-channel logouts
 - Load the profiles in the `ProfileManager` (from the session or not) like in the `DefaultSecurityLogic` via the `getLikeDefaultSecurityLogic` and `getAllLikeDefaultSecurityLogic` methods
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
+- The `pac4j-saml` module is saved as the legacy `pac4j-saml-opensamlv3` module and upgraded to JDK 11 and OpenSAML v4
 
 ## Enjoy *pac4j* v4!

@@ -25,6 +25,7 @@ title: Release notes&#58;
 - Support for the OIDC back-channel and front-channel logouts
 - Load the profiles in the `ProfileManager` (from the session or not) like in the `DefaultSecurityLogic` via the `getLikeDefaultSecurityLogic` and `getAllLikeDefaultSecurityLogic` methods
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
+- The `pac4j-saml` module is saved as the legacy `pac4j-saml-opensamlv3` module and upgraded to JDK 11 and OpenSAML v4
 
 **v3.8.3**:
 
@@ -130,41 +131,5 @@ title: Release notes&#58;
 - In the `J2EContext`, header names are checked in a case-insensitive way
 - Supports the `javax.faces.partial.ajax` parameter for AJAX requests
 - If only one client is defined in the configuration, it is used as a fallback on the security and callback endpoints
-
-**v2.3.1**:
-
-- Saving the profile in session can be disabled on the callback endpoint
-
-**v2.2.1**:
-
-- Improve SAML support: fix generated binding, handle AttributeConsumingServiceIndex in authentication request, add capability to add authentication-related attributes to the user profile with specific attributes added to the profile...
-
-**v2.1.0**:
-
-- Added Kerberos support
-- Removed Stormpath support
-- The password encoders and LDAP/SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
-- Supports CouchDB for authentication and user management
-- REST API `Authenticator`
-- In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
-- Allow passive authentication for SAML
-
-**v2.0.0**:
-
-- All clients are built using sub-components (`RedirectActionBuilder`, `CredentialsExtractor` , `Authenticator`, `ProfileCreator` and `LogoutActionBuilder`): the `IndirectClientV2` and `DirectClientV2` are renamed as `IndirectClient` and `DirectClient` (and the existing `IndirectClient` and `DirectClient` components are removed)
-- The  `LdapProfileService`, `DbProfileService` and `MongoProfileService` replace the deprecated `LDapAuthenticator`, `DbAuthenticator` and `MongoAuthenticator` to validate username/password and create, update or delete users in a LDAP, in a relational database and in a MongoDB database
-- A user profile can be linked to another user profile
-- The `LogoutLogic` (formerly `ApplicationLogoutLogic`) handles the application and identity provider logout
-- The `WebContext` directly relies on the `SessionStore` whose capabilities are upgraded to handle back-channel logout
-- The `AuthorizationGenerator` takes the `WebContext` as input and can return a new built profile
-- Using Spring framework `Resource` components for SAML files/URLs
-- The session renewal is properly handled by clients (and especially CAS)
-- Caches are backed via a `Store` component
-- Upgrade the OAuth support with Scribe v3.3 and rebuild all clients on the generic `OAuth10Client` and `OAuth20Client`
-- User profiles are simple POJOs, the `AttributesDefinition` is replaced by the `ProfileDefinition`
-- CAS specificities (Kryo serialization, `toString` service ticket validation) are handled via the `InternalAttributeHandler`
-- Authenticators may throw the checked `CredentialsException`
-- Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
-- Added new matcher `PathMatcher` and deprecated `ExcludedPathMatcher`
 
 [&#9656; Older versions...](release-notes-older.html)

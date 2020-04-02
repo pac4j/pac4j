@@ -49,7 +49,7 @@ title: Implementations comparison for the web components&#58;
         <td>play-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayWebContext</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayCacheSessionStore</code> to use the Play Cache, <code class="highlighter-rouge">PlayCookieSessionStore</code> to use the Play session cookie</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlaytHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
