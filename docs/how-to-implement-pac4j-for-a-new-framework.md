@@ -45,7 +45,7 @@ In your framework, you will need to create:
 1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for JEE environment where you can already use the existing `JEEContext`.
 Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session management
 
-2) optionally a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
+2) a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
 
 
 ### A) Secure an URL
@@ -69,39 +69,37 @@ The logic to secure an URL is defined by the `SecurityLogic` interface and its d
     protected final void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                         final FilterChain filterChain) throws IOException, ServletException {
 
-        assertNotNull("securityLogic", securityLogic);
+        final Config config = getSharedConfig();
 
-        final Config config = getConfig();
-        assertNotNull("config", config);
-        final J2EContext context = new J2EContext(request, response, config.getSessionStore());
+        final SessionStore<JEEContext> bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
+        final HttpActionAdapter<Object, JEEContext> bestAdapter = FindBest.httpActionAdapter(null, config, JEEHttpActionAdapter.INSTANCE);
+        final SecurityLogic<Object, JEEContext> bestLogic = FindBest.securityLogic(securityLogic, config, DefaultSecurityLogic.INSTANCE);
 
-        securityLogic.perform(context, config, (ctx, profiles, parameters) -> {
+        final JEEContext context = new JEEContext(request, response, bestSessionStore);
+        bestLogic.perform(context, config, (ctx, profiles, parameters) -> {
             // if no profiles are loaded, pac4j is not concerned with this request
             filterChain.doFilter(profiles.isEmpty() ? request : new Pac4JHttpServletRequestWrapper(request, profiles), response);
             return null;
-        }, J2ENopHttpActionAdapter.INSTANCE, clients, authorizers, matchers, multiProfile);
+        }, bestAdapter, clients, authorizers, matchers, multiProfile);
     }
 ```
 
 - In Play:
 
 ```java
-    public CompletionStage<Result> internalCall(final Context ctx, final String clients, final String authorizers, final String matchers, final boolean multiProfile) throws Throwable {
+    protected CompletionStage<Result> internalCall(final Http.Request req, final PlayWebContext webContext, final String clients, final String authorizers, final String matchers, final boolean multiProfile) throws Throwable {
 
-        assertNotNull("securityLogic", securityLogic);
+        final HttpActionAdapter<Result, PlayWebContext> bestAdapter = FindBest.httpActionAdapter(null, config, PlayHttpActionAdapter.INSTANCE);
+        final SecurityLogic<CompletionStage<Result>, PlayWebContext> bestLogic = FindBest.securityLogic(securityLogic, config, DefaultSecurityLogic.INSTANCE);
 
-        assertNotNull("config", config);
-        final PlayWebContext playWebContext = new PlayWebContext(ctx, sessionStore);
-        final HttpActionAdapter<Result, WebContext> actionAdapter = config.getHttpActionAdapter();
-        assertNotNull("actionAdapter", actionAdapter);
-        final HttpActionAdapter<CompletionStage<Result>, PlayWebContext> actionAdapterWrapper = (code, webCtx) -> CompletableFuture.completedFuture(actionAdapter.adapt(code, webCtx));
 
-        return securityLogic.perform(playWebContext, config, (webCtx, profiles, parameters) -> {
+        final HttpActionAdapter<CompletionStage<Result>, PlayWebContext> actionAdapterWrapper = (action, webCtx) -> CompletableFuture.completedFuture(bestAdapter.adapt(action, webCtx));
+        return bestLogic.perform(webContext, config, (webCtx, profiles, parameters) -> {
 	            // when called from Scala
 	            if (delegate == null) {
 	                return CompletableFuture.completedFuture(null);
 	            } else {
-	                return delegate.call(ctx);
+	                return delegate.call(webCtx.supplementRequest(req));
 	            }
             }, actionAdapterWrapper, clients, authorizers, matchers, multiProfile);
     }
@@ -126,27 +124,28 @@ In your framework, you must define the appropriate "controller" to reply to an H
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException {
 
-        assertNotNull("callbackLogic", callbackLogic);
+        final Config config = getSharedConfig();
 
-        final Config config = getConfig();
-        assertNotNull("config", config);
-        final J2EContext context = new J2EContext(request, response, config.getSessionStore());
+        final SessionStore<JEEContext> bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
+        final HttpActionAdapter<Object, JEEContext> bestAdapter = FindBest.httpActionAdapter(null, config, JEEHttpActionAdapter.INSTANCE);
+        final CallbackLogic<Object, JEEContext> bestLogic = FindBest.callbackLogic(callbackLogic, config, DefaultCallbackLogic.INSTANCE);
 
-        callbackLogic.perform(context, config, J2ENopHttpActionAdapter.INSTANCE, this.defaultUrl, this.saveInSession, this.multiProfile, this.renewSession, this.defaultClient);
+        final JEEContext context = new JEEContext(request, response, bestSessionStore);
+        bestLogic.perform(context, config, bestAdapter, this.defaultUrl, this.saveInSession, this.multiProfile, this.renewSession, this.defaultClient);
     }
 ```
 
 - In Play:
 
 ```java
-    public CompletionStage<Result> callback() {
+    public CompletionStage<Result> callback(final Http.Request request) {
 
-        assertNotNull("callbackLogic", callbackLogic);
+        final HttpActionAdapter<Result, PlayWebContext> bestAdapter = FindBest.httpActionAdapter(null, config, PlayHttpActionAdapter.INSTANCE);
+        final CallbackLogic<Result, PlayWebContext> bestLogic = FindBest.callbackLogic(callbackLogic, config, DefaultCallbackLogic.INSTANCE);
 
-        assertNotNull("config", config);
-        final PlayWebContext playWebContext = new PlayWebContext(ctx(), playSessionStore);
-
-        return CompletableFuture.supplyAsync(() -> callbackLogic.perform(playWebContext, config, config.getHttpActionAdapter(), this.defaultUrl, this.saveInSession, this.multiProfile, false, this.defaultClient), ec.current());
+        final PlayWebContext playWebContext = new PlayWebContext(request, playSessionStore);
+        return CompletableFuture.supplyAsync(() -> bestLogic.perform(playWebContext, config, bestAdapter,
+                this.defaultUrl, this.saveInSession, this.multiProfile, this.renewSession, this.defaultClient), ec.current());
     }
 ```
 
@@ -171,27 +170,27 @@ In your framework, you must define the appropriate "controller" to reply to an H
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException {
 
-        assertNotNull("logoutLogic", logoutLogic);
+        final Config config = getSharedConfig();
 
-        final Config config = getConfig();
-        assertNotNull("config", config);
-        final J2EContext context = new J2EContext(request, response, config.getSessionStore());
+        final SessionStore<JEEContext> bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
+        final HttpActionAdapter<Object, JEEContext> bestAdapter = FindBest.httpActionAdapter(null, config, JEEHttpActionAdapter.INSTANCE);
+        final LogoutLogic<Object, JEEContext> bestLogic = FindBest.logoutLogic(logoutLogic, config, DefaultLogoutLogic.INSTANCE);
 
-        logoutLogic.perform(context, config, J2ENopHttpActionAdapter.INSTANCE, this.defaultUrl, this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout);
+        final JEEContext context = new JEEContext(request, response, bestSessionStore);
+        bestLogic.perform(context, config, bestAdapter, this.defaultUrl, this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout);
     }
 ```
 
 - In Play:
 
 ```java
-    public CompletionStage<Result> logout() {
+    public CompletionStage<Result> logout(final Http.Request request) {
 
-        assertNotNull("logoutLogic", logoutLogic);
+        final HttpActionAdapter<Result, PlayWebContext> bestAdapter = FindBest.httpActionAdapter(null, config, PlayHttpActionAdapter.INSTANCE);
+        final LogoutLogic<Result, PlayWebContext> bestLogic = FindBest.logoutLogic(logoutLogic, config, DefaultLogoutLogic.INSTANCE);
 
-        assertNotNull("config", config);
-        final PlayWebContext playWebContext = new PlayWebContext(ctx(), playSessionStore);
-
-        return CompletableFuture.supplyAsync(() -> logoutLogic.perform(playWebContext, config, config.getHttpActionAdapter(), this.defaultUrl,
+        final PlayWebContext playWebContext = new PlayWebContext(request, playSessionStore);
+        return CompletableFuture.supplyAsync(() -> bestLogic.perform(playWebContext, config, bestAdapter, this.defaultUrl,
                 this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout), ec.current());
     }
 ```

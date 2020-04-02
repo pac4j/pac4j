@@ -20,14 +20,14 @@ title: The Team
 <div class="clear"></div>
 
 <div class="bio">
-    <div><a href="https://github.com/victornoel"><img src="https://avatars2.githubusercontent.com/u/160975?s=100" /></a></div>
-    <div><i>Victor Noël</i><br />&#9656; Core committer, Dropwizard and JAX-RS maintainer</div>
+    <div><a href="https://github.com/ldaley"><img src="https://avatars3.githubusercontent.com/u/17825?s=100" /></a></div>
+    <div><i>Luke Daley</i><br />&#9656; Ratpack maintainer</div>
 </div>
 <div class="clear"></div>
 
 <div class="bio">
-    <div><a href="https://github.com/ldaley"><img src="https://avatars3.githubusercontent.com/u/17825?s=100" /></a></div>
-    <div><i>Luke Daley</i><br />&#9656; Ratpack maintainer</div>
+    <div><a href="https://github.com/victornoel"><img src="https://avatars2.githubusercontent.com/u/160975?s=100" /></a></div>
+    <div><i>Victor Noël</i><br />&#9656; Core committer, Dropwizard and JAX-RS maintainer, inactive</div>
 </div>
 <div class="clear"></div>
 
