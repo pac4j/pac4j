@@ -77,8 +77,8 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>CAS</td>
-        <td></td>
-        <td></td>
+         <td><img src="/img/red_cross.png" /></td>
+         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>

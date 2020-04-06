@@ -14,8 +14,6 @@ title: Implementations comparison for configuration&#58;
     }
 </style>
 
-When using dependency injection, the configuration can be defined via source code or XML context files (Spring).
-
 <table class="centered">
     <tr>
         <th>Implementation</th>
@@ -24,28 +22,28 @@ When using dependency injection, the configuration can be defined via source cod
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /></td>
+        <td><img src="/img/green_check.png" />using the <code class="highlighter-rouge">pac4j-springboot</code> module for a Spring Boot webapp</td>
+        <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
         <td>jee-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">ConfigFactory</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">ConfigFactory</code> servlet parameter or via dependency injection (using Spring/Guice)</td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
         <td><img src="/img/green_check.png" /><br />using .ini files</td>
-        <td><img src="/img/green_check.png" /></td>
+        <td><img src="/img/green_check.png" />via dependency injection (using Spring)</td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /></td>
+        <td><img src="/img/green_check.png" />using the <code class="highlighter-rouge">pac4j-springboot</code> module for a Spring Boot webapp</td>
+        <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
         <td>play-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /></td>
+        <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
@@ -78,9 +76,9 @@ When using dependency injection, the configuration can be defined via source cod
         <td><img src="/img/green_check.png" /></td>
     </tr>
     <tr>
-        <td>CAS</td>
+        <td>CAS (authentication delegation)</td>
         <td><img src="/img/green_check.png" /></td>
-        <td><img src="/img/red_cross.png" /><br />it was possible in older versions of CAS and by customization</td>
+        <td><img src="/img/green_check.png" /><br />via customization</td>
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>

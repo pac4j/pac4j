@@ -23,33 +23,33 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>jee-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
@@ -89,9 +89,9 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>CAS</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
