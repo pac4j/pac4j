@@ -17,39 +17,39 @@ title: Implementations comparison for the web components&#58;
 <table class="centered">
     <tr>
         <th>Implementation</th>
-        <th>The <code class="highlighter-rouge">WebContext</code></th>
-        <th>The <code class="highlighter-rouge">SessionStore</code></th>
-        <th>The <code class="highlighter-rouge">HTTPActionAdapater</code></th>
+        <th>The default <code class="highlighter-rouge">WebContext</code></th>
+        <th>The default <code class="highlighter-rouge">SessionStore</code></th>
+        <th>The default <code class="highlighter-rouge">HttpActionAdapter</code></th>
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>jee-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroSessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroSessionStore.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayWebContext</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayCacheSessionStore</code> to use the Play Cache, <code class="highlighter-rouge">PlayCookieSessionStore</code> to use the Play session cookie</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
@@ -89,9 +89,9 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>CAS</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code> or <code class="highlighter-rouge">DistributedJEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>

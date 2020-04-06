@@ -26,14 +26,14 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>jee-pac4j</td>
-        <td>4</td>
+        <td><font size="+2">4</font></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
         <td><font size="+2">4</font></td>    </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td>4</td>
+        <td><font size="+2">4</font></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
