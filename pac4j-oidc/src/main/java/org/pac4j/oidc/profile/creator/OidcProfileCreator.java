@@ -42,7 +42,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileCreator extends ProfileDefinitionAware implements ProfileCreator<OidcCredentials> {
+public class OidcProfileCreator<P extends OidcProfile> extends ProfileDefinitionAware<P> implements ProfileCreator<OidcCredentials> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
