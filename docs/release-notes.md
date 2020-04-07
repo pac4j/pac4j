@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.0.1**:
+
+- Added missing type parameters for Scala
+
 **v4.0.0**:
 
 - Improved the profile manager configuration
