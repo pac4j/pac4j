@@ -4,12 +4,12 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 
 import java.util.Optional;
@@ -68,9 +68,9 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             assertNotNull("configClients", configClients);
 
             // logic
-            final ProfileManager manager = getProfileManager(context);
+            final ProfileManager<UserProfile> manager = getProfileManager(context);
             manager.setConfig(config);
-            final List<CommonProfile> profiles = manager.getAll(true);
+            final List<UserProfile> profiles = manager.getAll(true);
 
             // compute redirection URL
             final Optional<String> url = context.getRequestParameter(Pac4jConstants.URL);
@@ -105,7 +105,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             // central logout
             if (centralLogout) {
                 logger.debug("Performing central logout");
-                for (final CommonProfile profile : profiles) {
+                for (final UserProfile profile : profiles) {
                     logger.debug("Profile: {}", profile);
                     final String clientName = profile.getClientName();
                     if (clientName != null) {
