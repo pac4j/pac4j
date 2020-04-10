@@ -5,8 +5,9 @@ title: Release notes&#58;
 
 **v4.0.1**:
 
-- Added missing type parameters for Scala
+- Remove the type parameter of the `ProfileManager`
 - Add setters on `Color`
+- Pull the `pac4j-saml-opensamlv3` dependency instead of the `pac4j-saml` dependency
 
 **v4.0.0**:
 
