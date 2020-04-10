@@ -99,7 +99,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                 final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
                 context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, loadProfilesFromSession);
-                final ProfileManager<UserProfile> manager = getProfileManager(context);
+                final ProfileManager manager = getProfileManager(context);
                 manager.setConfig(config);
                 List<UserProfile> profiles = manager.getAll(loadProfilesFromSession);
                 logger.debug("profiles: {}", profiles);

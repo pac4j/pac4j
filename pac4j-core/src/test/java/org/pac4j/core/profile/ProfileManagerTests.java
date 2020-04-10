@@ -304,7 +304,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, profile1);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, profile2, false);
-        final List<CommonProfile> profiles = profileManager.getAll(true);
+        final List<UserProfile> profiles = profileManager.getAll(true);
         assertEquals(1, profiles.size());
         assertEquals(profile2, profiles.get(0));
     }
@@ -315,7 +315,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT2, profile2);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, profile3, false);
-        final List<CommonProfile> profiles = profileManager.getAll(true);
+        final List<UserProfile> profiles = profileManager.getAll(true);
         assertEquals(1, profiles.size());
         assertEquals(profile3, profiles.get(0));
     }
@@ -325,7 +325,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, profile1);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, profile2, true);
-        final List<CommonProfile> profiles = profileManager.getAll(true);
+        final List<UserProfile> profiles = profileManager.getAll(true);
         assertEquals(2, profiles.size());
         assertEquals(profile1, profiles.get(0));
         assertEquals(profile2, profiles.get(1));
@@ -337,7 +337,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT2, profile2);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, profile3, true);
-        final List<CommonProfile> profiles = profileManager.getAll(true);
+        final List<UserProfile> profiles = profileManager.getAll(true);
         assertEquals(2, profiles.size());
         assertEquals(profile2, profiles.get(0));
         assertEquals(profile3, profiles.get(1));
