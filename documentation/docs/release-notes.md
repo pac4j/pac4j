@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v4.0.1**:
 
 - Added missing type parameters for Scala
+- Add setters on `Color`
 
 **v4.0.0**:
 

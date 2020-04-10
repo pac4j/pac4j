@@ -4,6 +4,7 @@ import com.nimbusds.jose.EncryptionMethod;
 import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.TestsConstants;
@@ -22,6 +23,8 @@ import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import com.nimbusds.jose.JWSAlgorithm;
+import org.pac4j.oauth.profile.twitter.TwitterProfile;
+import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -80,6 +83,15 @@ public final class JwtTests implements TestsConstants {
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token, new JwtAuthenticator());
+    }
+
+    @Test
+    public void testTwitterProfileJwt() {
+        final JwtGenerator<TwitterProfile> generator = new JwtGenerator<>();
+        final TwitterProfile profile = new TwitterProfile();
+        profile.addAttribute(TwitterProfileDefinition.PROFILE_LINK_COLOR, new Color(1, 2, 3));
+        final String token = generator.generate(profile);
+        assertNotNull(token);
     }
 
     @Test
