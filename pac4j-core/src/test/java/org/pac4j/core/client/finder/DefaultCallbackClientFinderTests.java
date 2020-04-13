@@ -3,6 +3,7 @@ package org.pac4j.core.client.finder;
 import org.junit.Test;
 import org.pac4j.core.client.*;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.http.callback.PathParameterCallbackUrlResolver;
 import org.pac4j.core.util.TestsConstants;
@@ -29,7 +30,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "facebook   ");
         final ClientFinder finder = new DefaultCallbackClientFinder();
-        final List<Client> result = finder.find(clients, context, null);
+        final List<Client<? extends Credentials>> result = finder.find(clients, context, null);
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
     }
@@ -42,7 +43,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         clients.init();
         final MockWebContext context = MockWebContext.create().setPath("/   AZURE   ");
         final ClientFinder finder = new DefaultCallbackClientFinder();
-        final List<Client> result = finder.find(clients, context, null);
+        final List<Client<? extends Credentials>> result = finder.find(clients, context, null);
         assertEquals(1, result.size());
         assertEquals(azure, result.get(0));
     }
@@ -56,7 +57,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "basicauth");
         final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
-        final List<Client> result = finder.find(clients, context, "Facebook");
+        final List<Client<? extends Credentials>> result = finder.find(clients, context, "Facebook");
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
     }
@@ -70,7 +71,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "Twitter");
         final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
-        final List<Client> result = finder.find(clients, context, "Twitter");
+        final List<Client<? extends Credentials>> result = finder.find(clients, context, "Twitter");
         assertEquals(1, result.size());
         assertEquals(twitter, result.get(0));
     }
@@ -82,7 +83,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final Clients clients = new Clients(CALLBACK_URL, twitter, facebook);
         clients.init();
         final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
-        final List<Client> result = finder.find(clients, MockWebContext.create(), "Facebook");
+        final List<Client<? extends Credentials>> result = finder.find(clients, MockWebContext.create(), "Facebook");
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
     }
@@ -93,7 +94,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final Clients clients = new Clients(CALLBACK_URL, facebook);
         clients.init();
         final DefaultCallbackClientFinder finder = new DefaultCallbackClientFinder();
-        final List<Client> result = finder.find(clients, MockWebContext.create(), null);
+        final List<Client<? extends Credentials>> result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
     }

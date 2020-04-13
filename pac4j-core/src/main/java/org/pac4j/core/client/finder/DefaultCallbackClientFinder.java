@@ -4,6 +4,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,10 @@ public class DefaultCallbackClientFinder implements ClientFinder {
     public DefaultCallbackClientFinder() {}
 
     @Override
-    public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
+    public List<Client<? extends Credentials>> find(final Clients clients, final WebContext context, final String clientNames) {
 
-        final List<Client> result = new ArrayList<>();
-        final List<Client> indirectClients = new ArrayList<>();
+        final List<Client<? extends Credentials>> result = new ArrayList<>();
+        final List<Client<? extends Credentials>> indirectClients = new ArrayList<>();
 
         for (final Client client : clients.findAllClients()) {
             if (client instanceof IndirectClient) {

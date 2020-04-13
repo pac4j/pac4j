@@ -70,7 +70,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             assertNotNull("clients", clients);
 
             // logic
-            final List<Client> foundClients = clientFinder.find(clients, context, client);
+            final List<Client<? extends Credentials>> foundClients = clientFinder.find(clients, context, client);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
                     + " or ensure that your configuration defaults to one indirect client");

@@ -93,7 +93,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             if (matchingChecker.matches(context, matchers, config.getMatchers())) {
 
                 logger.debug("clients: {}", clients);
-                final List<Client> currentClients = clientFinder.find(configClients, context, clients);
+                final List<Client<? extends Credentials>> currentClients = clientFinder.find(configClients, context, clients);
                 logger.debug("currentClients: {}", currentClients);
 
                 final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
@@ -179,8 +179,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param authorizers the authorizers
      * @return a forbidden error
      */
-    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<UserProfile> profiles,
-                                   final String authorizers) {
+    protected HttpAction forbidden(final C context, final List<Client<? extends Credentials>> currentClients,
+                                   final List<UserProfile> profiles, final String authorizers) {
         return ForbiddenAction.INSTANCE;
     }
 
@@ -191,7 +191,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      * @return whether we must start a login process
      */
-    protected boolean startAuthentication(final C context, final List<Client> currentClients) {
+    protected boolean startAuthentication(final C context, final List<Client<? extends Credentials>> currentClients) {
         return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClient;
     }
 
@@ -201,7 +201,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param context the web context
      * @param currentClients the current clients
      */
-    protected void saveRequestedUrl(final C context, final List<Client> currentClients, AjaxRequestResolver ajaxRequestResolver) {
+    protected void saveRequestedUrl(final C context, final List<Client<? extends Credentials>> currentClients,
+                                    final AjaxRequestResolver ajaxRequestResolver) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
             savedRequestHandler.save(context);
         }
@@ -214,7 +215,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      * @return the performed redirection
      */
-    protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) {
+    protected HttpAction redirectToIdentityProvider(final C context, final List<Client<? extends Credentials>> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
         return (HttpAction) currentClient.getRedirectionAction(context).get();
     }
@@ -226,7 +227,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      * @return an unauthorized error
      */
-    protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
+    protected HttpAction unauthorized(final C context, final List<Client<? extends Credentials>> currentClients) {
         return UnauthorizedAction.INSTANCE;
     }
 

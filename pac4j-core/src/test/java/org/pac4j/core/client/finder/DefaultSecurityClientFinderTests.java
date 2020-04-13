@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.MockWebContext;
@@ -28,7 +29,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
 
     @Test
     public void testBlankClientName() {
-        final List<Client> currentClients = finder.find(new Clients(), MockWebContext.create(), "  ");
+        final List<Client<? extends Credentials>> currentClients = finder.find(new Clients(), MockWebContext.create(), "  ");
         assertEquals(0, currentClients.size());
     }
 
@@ -61,7 +62,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, parameterName);
-        final List<Client> currentClients = finder.find(clients, context, names);
+        final List<Client<? extends Credentials>> currentClients = finder.find(clients, context, names);
         assertEquals(1, currentClients.size());
         assertEquals(client, currentClients.get(0));
     }
@@ -96,7 +97,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        final List<Client> currentClients = finder.find(clients, context, CLIENT_NAME);
+        final List<Client<? extends Credentials>> currentClients = finder.find(clients, context, CLIENT_NAME);
         assertEquals(1, currentClients.size());
         assertEquals(client2, currentClients.get(0));
     }
@@ -139,7 +140,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        final List<Client> currentClients = finder.find(clients, context, names);
+        final List<Client<? extends Credentials>> currentClients = finder.find(clients, context, names);
         assertEquals(2, currentClients.size());
         assertEquals(client2, currentClients.get(0));
         assertEquals(client1, currentClients.get(1));
@@ -153,7 +154,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         clients.setDefaultSecurityClients(CLIENT_NAME);
-        final List<Client> result = finder.find(clients, MockWebContext.create(), null);
+        final List<Client<? extends Credentials>> result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
         assertEquals(client2, result.get(0));
     }
@@ -163,7 +164,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1);
-        final List<Client> result = finder.find(clients, MockWebContext.create(), null);
+        final List<Client<? extends Credentials>> result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
         assertEquals(client1, result.get(0));
     }
@@ -173,7 +174,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1);
-        final List<Client> result = finder.find(clients, MockWebContext.create(), "");
+        final List<Client<? extends Credentials>> result = finder.find(clients, MockWebContext.create(), "");
         assertEquals(0, result.size());
     }
 }
