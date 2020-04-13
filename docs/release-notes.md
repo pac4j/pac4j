@@ -5,7 +5,7 @@ title: Release notes&#58;
 
 **v4.0.1**:
 
-- Remove the type parameter of the `ProfileManager`
+- Remove the type parameter of the `ProfileManager` and it for the return type of the `ClientFinder`
 - Add setters on `Color`
 - Pull the `pac4j-saml-opensamlv3` dependency instead of the `pac4j-saml` dependency
 
