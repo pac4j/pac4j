@@ -3,6 +3,7 @@ package org.pac4j.core.logout.handler;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.factory.ProfileManagerFactory2Aware;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
@@ -78,7 +79,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
 
     protected void destroy(final C context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final ProfileManager manager = getProfileManager(context, sessionStore);
+        final ProfileManager<UserProfile> manager = getProfileManager(context, sessionStore);
         manager.logout();
         logger.debug("destroy the user profiles");
         // and optionally the web session

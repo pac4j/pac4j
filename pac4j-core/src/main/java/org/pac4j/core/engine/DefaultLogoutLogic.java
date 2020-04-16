@@ -68,7 +68,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             assertNotNull("configClients", configClients);
 
             // logic
-            final ProfileManager manager = getProfileManager(context);
+            final ProfileManager<UserProfile> manager = getProfileManager(context);
             manager.setConfig(config);
             final List<UserProfile> profiles = manager.getAll(true);
 

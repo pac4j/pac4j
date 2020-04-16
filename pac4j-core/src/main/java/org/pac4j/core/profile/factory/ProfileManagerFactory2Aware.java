@@ -4,6 +4,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.FindBest;
 
@@ -17,7 +18,7 @@ public class ProfileManagerFactory2Aware<C extends WebContext> {
 
     private ProfileManagerFactory2 profileManagerFactory2;
 
-    protected ProfileManager getProfileManager(final C context, final SessionStore<C> sessionStore) {
+    protected ProfileManager<UserProfile> getProfileManager(final C context, final SessionStore<C> sessionStore) {
         return FindBest.profileManagerFactory2(this.profileManagerFactory2, Config.INSTANCE, ProfileManagerFactory2.DEFAULT)
             .apply(context, sessionStore);
     }
