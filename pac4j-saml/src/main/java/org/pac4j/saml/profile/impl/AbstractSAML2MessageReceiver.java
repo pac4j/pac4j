@@ -4,7 +4,6 @@ import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;

@@ -12,7 +12,6 @@ import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
-import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
