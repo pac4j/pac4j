@@ -25,7 +25,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSecurityClientFinder.class);
 
-    private String clientNameParameter = Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER;
+    private String clientNameParameter = Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER;
 
     @Override
     public List<Client<? extends Credentials>> find(final Clients clients, final WebContext context, final String clientNames) {
@@ -48,13 +48,25 @@ public class DefaultSecurityClientFinder implements ClientFinder {
 
         if (CommonHelper.isNotBlank(securityClientNames)) {
             final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
-            // if a "client_name" parameter is provided on the request, get the client
+            Optional<String> clientOnRequest = context.getRequestParameter(clientNameParameter);
+            // @Deprecated
+            // if we use the default clientNameParameter and we haven't found any value, we also try the old clientNameParameter
+            if (!clientOnRequest.isPresent() && Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER.equals(clientNameParameter)) {
+                clientOnRequest = context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER);
+                // we have a value, use it and output a warning requesting migration
+                if (clientOnRequest.isPresent()) {
+                    logger.warn("!!MIGRATION REQUIRED!! To force a client for security, use the '{}' parameter. "
+                        + "The '{}' parameter will no longer be used as a fallback",
+                        clientNameParameter, Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER);
+                }
+            }
+
+            // if a client is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
-            final Optional<String> clientNameOnRequest = context.getRequestParameter(clientNameParameter);
-            logger.debug("clientNameOnRequest: {}", clientNameOnRequest);
-            if (clientNameOnRequest.isPresent()) {
+            logger.debug("clientNameOnRequest: {}", clientOnRequest);
+            if (clientOnRequest.isPresent()) {
                 // from the request
-                final Optional<Client> client = clients.findClient(clientNameOnRequest.get());
+                final Optional<Client> client = clients.findClient(clientOnRequest.get());
                 if (client.isPresent()) {
                     final String nameFound = client.get().getName();
                     // if allowed -> return it

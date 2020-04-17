@@ -1,6 +1,9 @@
 package org.pac4j.core.client.finder;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
@@ -23,9 +26,26 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class DefaultSecurityClientFinderTests implements TestsConstants {
+@RunWith(Parameterized.class)
+public final class DefaultSecurityClientFinderTests implements TestsConstants, Pac4jConstants {
 
-    private final DefaultSecurityClientFinder finder = new DefaultSecurityClientFinder();
+    private DefaultSecurityClientFinder finder;
+
+    @Parameterized.Parameter
+    public String clientNameParameter;
+
+    @Parameterized.Parameters
+    public static Object[] data() {
+        return new Object[] {null, "custom" , DEFAULT_FORCE_CLIENT_PARAMETER};
+    }
+
+    @Before
+    public void setUp() {
+        finder = new DefaultSecurityClientFinder();
+        if (clientNameParameter != null) {
+            finder.setClientNameParameter(clientNameParameter);
+        }
+    }
 
     @Test
     public void testBlankClientName() {
@@ -43,8 +63,16 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         final MockIndirectClient client =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client);
-        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, FAKE_VALUE);
+        final WebContext context = MockWebContext.create().addRequestParameter(getClientNameParameter(), FAKE_VALUE);
         assertTrue(finder.find(clients, context, NAME).isEmpty());
+    }
+
+    protected String getClientNameParameter() {
+        if (clientNameParameter != null) {
+            return clientNameParameter;
+        } else {
+            return DEFAULT_CLIENT_NAME_PARAMETER;
+        }
     }
 
     @Test
@@ -61,7 +89,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         final MockIndirectClient client =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client);
-        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, parameterName);
+        final WebContext context = MockWebContext.create().addRequestParameter(getClientNameParameter(), parameterName);
         final List<Client<? extends Credentials>> currentClients = finder.find(clients, context, names);
         assertEquals(1, currentClients.size());
         assertEquals(client, currentClients.get(0));
@@ -74,7 +102,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         final MockIndirectClient client2 =
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
-        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        final WebContext context = MockWebContext.create().addRequestParameter(getClientNameParameter(), NAME);
         assertTrue(finder.find(clients, context, CLIENT_NAME).isEmpty());
     }
 
@@ -85,7 +113,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants {
         final MockIndirectClient client2 =
             new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
-        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        final WebContext context = MockWebContext.create().addRequestParameter(getClientNameParameter(), NAME);
         assertTrue(finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE).isEmpty());
     }
 
