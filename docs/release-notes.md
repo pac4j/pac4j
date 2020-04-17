@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Add the type parameter for the `Client` in the return type of the `ClientFinder`
 - Add setters on `Color`
 - Pull the `pac4j-saml-opensamlv3` dependency instead of the `pac4j-saml` dependency
+- Remove the retrieval of one `CommonProfile` in request or session via the `ProfileManager`
 
 **v4.0.0**:
 
