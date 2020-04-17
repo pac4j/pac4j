@@ -49,7 +49,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
         if (CommonHelper.isNotBlank(securityClientNames)) {
             final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
             Optional<String> clientOnRequest = context.getRequestParameter(clientNameParameter);
-            // @Deprecated
+            // @Deprecated in v4.0.1
             // if we use the default clientNameParameter and we haven't found any value, we also try the old clientNameParameter
             if (!clientOnRequest.isPresent() && Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER.equals(clientNameParameter)) {
                 clientOnRequest = context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER);
