@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Add setters on `Color`
 - Pull the `pac4j-saml-opensamlv3` dependency instead of the `pac4j-saml` dependency
 - Remove the retrieval of one `CommonProfile` in request or session via the `ProfileManager`
+- The default client name parameter used for security has a new value (`force_client`) to avoid conflicting with the default client name parameter (`client_name`) used on the callback (the old value is still used as a fallback, but will be removed)
 
 **v4.0.0**:
 
