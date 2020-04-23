@@ -20,7 +20,6 @@ import org.opensaml.saml.ext.saml2mdui.UIInfo;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
@@ -74,9 +73,9 @@ import java.util.stream.Collectors;
  * @since 1.5.0
  */
 @SuppressWarnings("unchecked")
-public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
+public abstract class BaseSAML2MetadataGenerator implements SAMLMetadataGenerator {
 
-    protected static final Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
+    protected static final Logger logger = LoggerFactory.getLogger(BaseSAML2MetadataGenerator.class);
 
     protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
@@ -97,7 +96,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected boolean authnRequestSigned = false;
 
     protected boolean wantAssertionSigned = true;
-    
+
     protected boolean signMetadata = false;
 
     protected int defaultACSIndex = 0;
@@ -109,7 +108,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
 
     protected SignatureSigningConfiguration defaultSignatureSigningConfiguration =
-            DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
+        DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 
     protected List<String> blackListedSignatureSigningAlgorithms = null;
 
@@ -141,10 +140,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         resolver.initialize();
         return resolver;
     }
-    
-    protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
-        return new FilesystemMetadataResolver(metadataResource.getFile());
-    }
+
+    protected abstract AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception;
 
     @Override
     public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
@@ -175,8 +172,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         signingParameters.setSigningCredential(credentialProvider.getCredential());
         signingParameters.setSignatureAlgorithm(getSignatureAlgorithms().get(0));
         signingParameters.setSignatureReferenceDigestMethod(getSignatureReferenceDigestMethods().get(0));
-        signingParameters.setSignatureCanonicalizationAlgorithm(        
-                SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);    
+        signingParameters.setSignatureCanonicalizationAlgorithm(
+            SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
         try {
             SignatureSupport.signObject(descriptor, signingParameters);
@@ -194,7 +191,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
 
         final SAMLObjectBuilder<SigningMethod> signingMethodBuilder = (SAMLObjectBuilder<SigningMethod>)
-                this.builderFactory.getBuilder(SigningMethod.DEFAULT_ELEMENT_NAME);
+            this.builderFactory.getBuilder(SigningMethod.DEFAULT_ELEMENT_NAME);
 
         final List<String> filteredSignatureAlgorithms = filterSignatureAlgorithms(getSignatureAlgorithms());
         filteredSignatureAlgorithms.forEach(signingMethod -> {
@@ -270,7 +267,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                 requestAttribute.setName(attr.getName());
                 requestAttribute.setFriendlyName(attr.getFriendlyName());
                 requestAttribute.setNameFormat(attr.getNameFormat());
-                
+
                 attributeService.getRequestedAttributes().add(requestAttribute);
             }
             spDescriptor.getAttributeConsumingServices().add(attributeService);
@@ -347,7 +344,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                     person.getTelephoneNumbers().add(phone);
                 });
             }
-            
+
             spDescriptor.getContactPersons().add(person);
         });
 
@@ -453,7 +450,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
-                                                                         final boolean isDefault) {
+                                                                   final boolean isDefault) {
         final SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
             .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
         final AssertionConsumerService consumer = Objects.requireNonNull(builder).buildObject();
@@ -568,7 +565,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public List<String> getBlackListedSignatureSigningAlgorithms() {
         if (blackListedSignatureSigningAlgorithms == null) {
             this.blackListedSignatureSigningAlgorithms =
-              new ArrayList<>(defaultSignatureSigningConfiguration.getBlacklistedAlgorithms());
+                new ArrayList<>(defaultSignatureSigningConfiguration.getBlacklistedAlgorithms());
         }
 
         return blackListedSignatureSigningAlgorithms;

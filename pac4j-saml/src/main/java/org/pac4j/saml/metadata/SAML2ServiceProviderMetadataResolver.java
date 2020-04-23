@@ -95,12 +95,12 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     }
 
     protected SAMLMetadataGenerator buildMetadataGenerator() {
-        final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
+        final SAML2FileSystemMetadataGenerator metadataGenerator = new SAML2FileSystemMetadataGenerator();
         fillSAML2MetadataGenerator(metadataGenerator);
         return metadataGenerator;
     }
 
-    protected void fillSAML2MetadataGenerator(final SAML2MetadataGenerator metadataGenerator) {
+    protected void fillSAML2MetadataGenerator(final SAML2FileSystemMetadataGenerator metadataGenerator) {
         metadataGenerator.setWantAssertionSigned(configuration.isWantsAssertionsSigned());
         metadataGenerator.setAuthnRequestSigned(configuration.isAuthnRequestSigned());
         metadataGenerator.setSignMetadata(configuration.isSignMetadata());
