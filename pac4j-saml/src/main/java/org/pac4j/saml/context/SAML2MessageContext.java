@@ -12,7 +12,7 @@ import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
-import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -123,7 +123,7 @@ public class SAML2MessageContext {
         return getSPAssertionConsumerService(spssoDescriptor, spssoDescriptor.getAssertionConsumerServices());
     }
 
-    public AssertionConsumerService getSPAssertionConsumerService(final Response response) {
+    public AssertionConsumerService getSPAssertionConsumerService(final StatusResponseType response) {
         final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
         final List<AssertionConsumerService> services = spssoDescriptor.getAssertionConsumerServices();
 
@@ -134,7 +134,7 @@ public class SAML2MessageContext {
                     return service;
                 }
             }
-            throw new SAMLException("Assertion consumer service with sdestination " + response.getDestination()
+            throw new SAMLException("Assertion consumer service with destination " + response.getDestination()
                 + " could not be found for spDescriptor " + spssoDescriptor);
         }
 
