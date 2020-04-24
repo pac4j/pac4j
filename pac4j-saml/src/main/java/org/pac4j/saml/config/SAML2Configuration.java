@@ -1,48 +1,6 @@
 package org.pac4j.saml.config;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x509.TBSCertificate;
-import org.bouncycastle.asn1.x509.Time;
-import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
-import org.joda.time.DateTime;
+import org.apache.http.client.HttpClient;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.Issuer;
@@ -55,12 +13,19 @@ import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.saml.crypto.CredentialProvider;
+import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
+import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
+import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
+import org.pac4j.saml.util.SAML2HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -68,6 +33,16 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
+
+import java.net.MalformedURLException;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * The class is responsible for capturing client settings and passing them around.
@@ -78,67 +53,39 @@ import org.springframework.core.io.WritableResource;
  */
 public class SAML2Configuration extends InitializableObject {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2Configuration.class);
-
     protected static final String RESOURCE_PREFIX = "resource:";
     protected static final String CLASSPATH_PREFIX = "classpath:";
     protected static final String FILE_PREFIX = "file:";
     protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
-    protected static final String CERTIFICATES_PREFIX =  "saml-signing-cert";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2Configuration.class);
+    private final List<SAML2ServiceProvicerRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
     private Resource keystoreResource;
-
     private String keystorePassword;
-
     private String privateKeyPassword;
-
     private String certificateNameToAppend;
-
     private Resource identityProviderMetadataResource;
-
     private String identityProviderEntityId;
-
     private String serviceProviderEntityId;
-
     private int maximumAuthenticationLifetime = 3600;
-
     private int acceptedSkew = 300;
-
     private boolean forceAuth = false;
     private boolean passive = false;
-
     private String comparisonType = null;
-
     private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
-
     private String responseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
-
     private String spLogoutRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
-
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
-
     private List<String> authnContextClassRefs = null;
-
     private String nameIdPolicyFormat = null;
-
     private boolean useNameQualifier = false;
-
     private boolean signMetadata;
-
     private WritableResource serviceProviderMetadataResource;
-
     private boolean forceServiceProviderMetadataGeneration;
-
     private boolean forceKeystoreGeneration;
-
     private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
-
     private boolean authnRequestSigned;
-
     private boolean spLogoutRequestSigned;
-
-    private final List<SAML2ServiceProvicerRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
-
     private Collection<String> blackListedSignatureSigningAlgorithms;
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
@@ -179,6 +126,8 @@ public class SAML2Configuration extends InitializableObject {
 
     private String issuerFormat = Issuer.ENTITY;
 
+    private HttpClient httpClient;
+    
     /**
      * If {@link #nameIdPolicyFormat} is defined, this setting
      * will control whether the allow-create flag is used and set.
@@ -233,6 +182,34 @@ public class SAML2Configuration extends InitializableObject {
         this.attributeAsId = attributeAsId;
     }
 
+    protected static UrlResource newUrlResource(final String url) {
+        try {
+            return new UrlResource(url);
+        } catch (final MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    private static Resource mapPathToResource(final String path) {
+        CommonHelper.assertNotBlank("path", path);
+        try {
+            if (path.startsWith(RESOURCE_PREFIX)) {
+                return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
+            } else if (path.startsWith(CLASSPATH_PREFIX)) {
+                return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
+            } else if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
+                return newUrlResource(path);
+            } else if (path.startsWith(FILE_PREFIX)) {
+                return new FileSystemResource(path.substring(FILE_PREFIX.length()));
+            } else if (path.startsWith("http")) {
+                return new UrlResource(path);
+            }
+            return new FileSystemResource(path);
+        } catch (final Exception e) {
+            throw new TechnicalException(e);
+        }
+    }
+
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("keystoreResource", this.keystoreResource);
@@ -242,11 +219,15 @@ public class SAML2Configuration extends InitializableObject {
 
         if (!this.keystoreResource.exists() || this.forceKeystoreGeneration) {
             if (this.keystoreResource instanceof WritableResource) {
-                LOGGER.warn("Provided keystoreResource does not exist or keystore generation is forced. Creating one for: {}",
-                    this.keystoreResource);
-                createKeystore();
+                LOGGER.warn("Provided keystore does not exist or generation is forced. Creating one for/via: {}", this.keystoreResource);
+
+                if (keystoreResource instanceof UrlResource) {
+                    new SAML2HttpUrlKeystoreGenerator(this).generate();
+                } else if (keystoreResource instanceof FileSystemResource) {
+                    new SAML2FileSystemKeystoreGenerator(this).generate();
+                }
             } else {
-                throw new TechnicalException("Provided keystoreResource does not exist and cannot be created");
+                throw new TechnicalException("Provided keystore does not exist and cannot be created");
             }
         }
 
@@ -317,10 +298,6 @@ public class SAML2Configuration extends InitializableObject {
         return requestedServiceProviderAttributes;
     }
 
-    public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
-        this.identityProviderMetadataResource = identityProviderMetadataResource;
-    }
-
     public void setIdentityProviderMetadataResourceFilepath(final String path) {
         this.identityProviderMetadataResource = new FileSystemResource(path);
     }
@@ -353,29 +330,6 @@ public class SAML2Configuration extends InitializableObject {
         this.forceKeystoreGeneration = forceKeystoreGeneration;
     }
 
-    protected static UrlResource newUrlResource(final String url) {
-        try {
-            return new UrlResource(url);
-        } catch (final MalformedURLException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    protected static Resource mapPathToResource(final String path) {
-        CommonHelper.assertNotBlank("path", path);
-        if (path.startsWith(RESOURCE_PREFIX)) {
-            return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
-        } else if (path.startsWith(CLASSPATH_PREFIX)) {
-            return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
-        } else if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
-            return newUrlResource(path);
-        } else if (path.startsWith(FILE_PREFIX)) {
-            return new FileSystemResource(path.substring(FILE_PREFIX.length()));
-        } else {
-            return new FileSystemResource(path);
-        }
-    }
-
     public int getAcceptedSkew() {
         return acceptedSkew;
     }
@@ -388,12 +342,16 @@ public class SAML2Configuration extends InitializableObject {
         return this.identityProviderMetadataResource;
     }
 
-    public void setIdentityProviderEntityId(final String identityProviderEntityId) {
-        this.identityProviderEntityId = identityProviderEntityId;
+    public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
+        this.identityProviderMetadataResource = identityProviderMetadataResource;
     }
 
     public String getIdentityProviderEntityId() {
         return identityProviderEntityId;
+    }
+
+    public void setIdentityProviderEntityId(final String identityProviderEntityId) {
+        this.identityProviderEntityId = identityProviderEntityId;
     }
 
     public void setKeystoreAlias(final String keyStoreAlias) {
@@ -402,10 +360,6 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setKeystoreType(final String keyStoreType) {
         this.keyStoreType = keyStoreType;
-    }
-
-    public void setKeystoreResource(final Resource keystoreResource) {
-        this.keystoreResource = keystoreResource;
     }
 
     public void setKeystoreResourceFilepath(final String path) {
@@ -424,14 +378,6 @@ public class SAML2Configuration extends InitializableObject {
         this.keystoreResource = mapPathToResource(path);
     }
 
-    public void setKeystorePassword(final String keystorePassword) {
-        this.keystorePassword = keystorePassword;
-    }
-
-    public void setPrivateKeyPassword(final String privateKeyPassword) {
-        this.privateKeyPassword = privateKeyPassword;
-    }
-
     public String getKeyStoreAlias() {
         return keyStoreAlias;
     }
@@ -444,12 +390,24 @@ public class SAML2Configuration extends InitializableObject {
         return keystoreResource;
     }
 
+    public void setKeystoreResource(final Resource keystoreResource) {
+        this.keystoreResource = keystoreResource;
+    }
+
     public String getKeystorePassword() {
         return keystorePassword;
     }
 
+    public void setKeystorePassword(final String keystorePassword) {
+        this.keystorePassword = keystorePassword;
+    }
+
     public String getPrivateKeyPassword() {
         return privateKeyPassword;
+    }
+
+    public void setPrivateKeyPassword(final String privateKeyPassword) {
+        this.privateKeyPassword = privateKeyPassword;
     }
 
     public String getCertificateNameToAppend() {
@@ -458,11 +416,6 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setCertificateNameToAppend(final String certificateNameToAppend) {
         this.certificateNameToAppend = certificateNameToAppend;
-    }
-
-
-    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
-        this.serviceProviderMetadataResource = serviceProviderMetadataResource;
     }
 
     public void setServiceProviderMetadataResourceFilepath(final String path) {
@@ -478,20 +431,20 @@ public class SAML2Configuration extends InitializableObject {
         }
     }
 
-    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
-        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
-    }
-
     public WritableResource getServiceProviderMetadataResource() {
         return serviceProviderMetadataResource;
     }
 
-    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
-        this.serviceProviderEntityId = serviceProviderEntityId;
+    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
+        this.serviceProviderMetadataResource = serviceProviderMetadataResource;
     }
 
     public String getServiceProviderEntityId() {
         return serviceProviderEntityId;
+    }
+
+    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
+        this.serviceProviderEntityId = serviceProviderEntityId;
     }
 
     public boolean isPassive() {
@@ -576,6 +529,10 @@ public class SAML2Configuration extends InitializableObject {
 
     public boolean isForceServiceProviderMetadataGeneration() {
         return forceServiceProviderMetadataGeneration;
+    }
+
+    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
+        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
     }
 
     public SAMLMessageStoreFactory getSamlMessageStoreFactory() {
@@ -751,163 +708,6 @@ public class SAML2Configuration extends InitializableObject {
         init();
     }
 
-    /**
-     * Generate a self-signed certificate for dn using the provided signature algorithm and key pair.
-     *
-     * @param dn       X.500 name to associate with certificate issuer/subject.
-     * @param sigName  name of the signature algorithm to use.
-     * @param sigAlgID algorithm ID associated with the signature algorithm name.
-     * @param keyPair  the key pair to associate with the certificate.
-     * @return an X509Certificate containing the public key in keyPair.
-     * @throws Exception
-     */
-    private X509Certificate createSelfSignedCert(final X500Name dn, final String sigName,
-                                                 final AlgorithmIdentifier sigAlgID, final KeyPair keyPair)
-        throws Exception {
-        final V3TBSCertificateGenerator certGen = new V3TBSCertificateGenerator();
-
-        certGen.setSerialNumber(new ASN1Integer(BigInteger.valueOf(1)));
-        certGen.setIssuer(dn);
-        certGen.setSubject(dn);
-
-        certGen.setStartDate(new Time(new Date(System.currentTimeMillis() - 1000L)));
-
-        final Date expiration = DateTime.now().plusDays(this.certificateExpirationPeriod.getDays()).toDate();
-        certGen.setEndDate(new Time(expiration));
-
-        certGen.setSignature(sigAlgID);
-        certGen.setSubjectPublicKeyInfo(SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
-
-        final Signature sig = Signature.getInstance(sigName);
-
-        sig.initSign(keyPair.getPrivate());
-
-        sig.update(certGen.generateTBSCertificate().getEncoded(ASN1Encoding.DER));
-
-        final TBSCertificate tbsCert = certGen.generateTBSCertificate();
-
-        final ASN1EncodableVector v = new ASN1EncodableVector();
-
-        v.add(tbsCert);
-        v.add(sigAlgID);
-        v.add(new DERBitString(sig.sign()));
-
-        final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X.509")
-            .generateCertificate(new ByteArrayInputStream(new DERSequence(v).getEncoded(ASN1Encoding.DER)));
-
-        // check the certificate - this will confirm the encoded sig algorithm ID is correct.
-        cert.verify(keyPair.getPublic());
-
-        return cert;
-    }
-
-    private void createKeystore() {
-        try {
-            if (CommonHelper.isBlank(this.keyStoreAlias)) {
-                this.keyStoreAlias = getClass().getSimpleName();
-                LOGGER.warn("Using keystore alias {}", this.keyStoreAlias);
-            }
-
-            if (CommonHelper.isBlank(this.keyStoreType)) {
-                this.keyStoreType = KeyStore.getDefaultType();
-                LOGGER.warn("Using keystore type {}", this.keyStoreType);
-            }
-
-            final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
-            final char[] password = this.keystorePassword.toCharArray();
-            ks.load(null, password);
-
-            final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(this.privateKeySize);
-            final KeyPair kp = kpg.genKeyPair();
-
-            final AlgorithmIdentifier sigAlgID = new AlgorithmIdentifier(PKCSObjectIdentifiers.sha1WithRSAEncryption, DERNull.INSTANCE);
-
-            final String dn = InetAddress.getLocalHost().getHostName();
-            final PrivateKey signingKey = kp.getPrivate();
-            final X509Certificate certificate = createSelfSignedCert(new X500Name("CN=" + dn), this.certificateSignatureAlg, sigAlgID, kp);
-
-            final char[] keyPassword = this.privateKeyPassword.toCharArray();
-            ks.setKeyEntry(this.keyStoreAlias, signingKey, keyPassword, new Certificate[]{certificate});
-
-            final File keystoreFile = this.keystoreResource.getFile();
-            try (FileOutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {
-                ks.store(fos, password);
-                fos.flush();
-            }
-
-            final File signingCertEncoded = getSigningBase64CertificatePath();
-            writeEncodedCertificateToFile(signingCertEncoded, certificate.getEncoded());
-
-            final File signingCertBinary = getSigningBinaryCertificatePath();
-            writeBinaryCertificateToFile(signingCertBinary, certificate.getEncoded());
-
-            final File signingKeyEncoded = getSigningKeyFile();
-            writeEncodedCertificateToFile(signingKeyEncoded, signingKey.getEncoded());
-
-            LOGGER.info("Created keystore {} with key alias {} ",
-                keystoreResource.getFile().getCanonicalPath(),
-                ks.aliases().nextElement());
-        } catch (final Exception e) {
-            throw new SAMLException("Could not create keystore", e);
-        }
-    }
-
-    public File getSigningBinaryCertificatePath() throws IOException {
-        return new File(keystoreResource.getFile().getParentFile(), getNormalizedCertificateName() + ".crt");
-    }
-
-    public File getSigningBase64CertificatePath() throws IOException {
-        return new File(keystoreResource.getFile().getParentFile(), getNormalizedCertificateName() + ".pem");
-    }
-
-    public File getSigningKeyFile() throws IOException {
-        return new File(keystoreResource.getFile().getParentFile(), getNormalizedCertificateName() + ".key");
-    }
-
-    private String normalizedCertificateName;
-
-    /**
-     *  Sanitize String to use it as fileName for Signing Certificate Names
-     */
-    private String getNormalizedCertificateName() {
-        if (this.normalizedCertificateName == null) {
-            final StringBuilder certName =  new StringBuilder(CERTIFICATES_PREFIX);
-            if (CommonHelper.isNotBlank(this.certificateNameToAppend)) {
-                certName.append('-');
-                certName.append(this.certificateNameToAppend.replaceAll("[^a-zA-Z0-9-_\\.]", ""));
-            }
-            this.normalizedCertificateName = certName.toString();
-        }
-        return this.normalizedCertificateName;
-    }
-
-    private static void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
-        if (file.exists()) {
-            final boolean res = file.delete();
-            LOGGER.debug("Deleted file [{}]:{}", file, res);
-        }
-        try ( FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(certificate);
-            fos.flush();
-        } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-    }
-
-    private static void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
-        if (file.exists()) {
-            final boolean res = file.delete();
-            LOGGER.debug("Deleted file [{}]:{}", file, res);
-        }
-        try ( PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            final PemObject pemObject = new PemObject(file.getName(), certificate);
-            pemWriter.writeObject(pemObject);
-        } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-    }
-
     private void initSignatureSigningConfiguration() {
         // Bootstrap signature signing configuration if not manually set
         final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
@@ -942,5 +742,58 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setIssuerFormat(final String issuerFormat) {
         this.issuerFormat = issuerFormat;
+    }
+
+    public HttpClient getHttpClient() {
+        if (httpClient == null) {
+            httpClient = new SAML2HttpClientBuilder().get();
+        }
+        return httpClient;
+    }
+
+    public void setHttpClient(final HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    public BaseSAML2MetadataGenerator getMetadataGenerator(final String callbackUrl,
+                                                           final CredentialProvider credentialProvider) {
+        try {
+            final String resourcePath = serviceProviderMetadataResource.toString();
+            final Resource resource = mapPathToResource(resourcePath);
+
+            final BaseSAML2MetadataGenerator metadataGenerator = resource instanceof UrlResource
+                ? new SAML2HttpUrlMetadataGenerator(resourcePath, getHttpClient())
+                : new SAML2FileSystemMetadataGenerator();
+
+            metadataGenerator.setWantAssertionSigned(isWantsAssertionsSigned());
+            metadataGenerator.setAuthnRequestSigned(isAuthnRequestSigned());
+            metadataGenerator.setSignMetadata(isSignMetadata());
+            metadataGenerator.setNameIdPolicyFormat(getNameIdPolicyFormat());
+            metadataGenerator.setRequestedAttributes(getRequestedServiceProviderAttributes());
+            metadataGenerator.setCredentialProvider(credentialProvider);
+
+            metadataGenerator.setEntityId(getServiceProviderEntityId());
+            metadataGenerator.setRequestInitiatorLocation(callbackUrl);
+            // Assertion consumer service url is the callback URL
+            metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
+            metadataGenerator.setResponseBindingType(getResponseBindingType());
+            final String logoutUrl = CommonHelper.addParameter(callbackUrl, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
+            // the logout URL is callback URL with an extra parameter
+            metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
+
+            // Algorithm support
+            metadataGenerator.setBlackListedSignatureSigningAlgorithms(
+                new ArrayList<>(getBlackListedSignatureSigningAlgorithms())
+            );
+            metadataGenerator.setSignatureAlgorithms(getSignatureAlgorithms());
+            metadataGenerator.setSignatureReferenceDigestMethods(getSignatureReferenceDigestMethods());
+
+            metadataGenerator.setSupportedProtocols(getSupportedProtocols());
+            metadataGenerator.setContactPersons(getContactPersons());
+            metadataGenerator.setMetadataUIInfos(getMetadataUIInfos());
+            return metadataGenerator;
+        } catch (final Exception e) {
+            throw new TechnicalException(e);
+        }
     }
 }
