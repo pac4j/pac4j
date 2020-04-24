@@ -9,7 +9,7 @@ import org.pac4j.scribe.builder.api.FigShareApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in FigShare (using OAuth 2.0 protocol).</p>
- * <p>It returns a {@link com.biovista.org.pac4j.oauth.profile.figshare.FigShareProfile}.</p>
+ * <p>It returns a {@link FigShareProfileDefinition}.</p>
  * <p>More information at https://docs.figshare.com/old_docs/oauth/</p>
  *
  * @author Vassilis Virivilis
