@@ -6,6 +6,7 @@ import org.apache.http.entity.ContentType;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
+import org.pac4j.saml.util.SAML2HttpClientBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.FileUrlResource;
@@ -13,6 +14,7 @@ import org.springframework.core.io.Resource;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.*;
@@ -21,7 +23,12 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     private static SAML2Configuration initializeConfiguration(final Resource serviceProviderMetadataResource,
                                                               final String keystorePath) {
+        SAML2HttpClientBuilder httpClient = new SAML2HttpClientBuilder();
+        httpClient.setConnectionTimeout(Duration.ofSeconds(1));
+        httpClient.setSocketTimeout(Duration.ofSeconds(1));
+
         final SAML2Configuration config = new SAML2Configuration();
+        config.setHttpClient(httpClient.build());
         config.setKeystorePath(keystorePath);
         config.setKeystorePassword("pac4j");
         config.setPrivateKeyPassword("pac4j");
@@ -56,13 +63,18 @@ public class SAML2ServiceProviderMetadataResolverTest {
                     .withStatus(200)
                     .withHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType())
                     .withBody(restBody)));
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/saml"))
+                .willReturn(aResponse().withStatus(200)));
 
+        final String keystore = IOUtils.toString(
+            new ClassPathResource("dummy-keystore.txt").getInputStream(), StandardCharsets.UTF_8);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/keystore"))
-                .willReturn(aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType())
-                    .withBody(restBody)));
+                .willReturn(aResponse().withStatus(200).withBody(keystore)));
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/keystore"))
+                .willReturn(aResponse().withStatus(200)));
         
         try {
             wireMockServer.start();

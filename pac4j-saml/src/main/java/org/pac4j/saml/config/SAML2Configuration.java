@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
@@ -203,13 +202,10 @@ public class SAML2Configuration extends InitializableObject {
                 return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
             }
             if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
-                return new FileUrlResource(new URL(path));
+                return new UrlResource(new URL(path));
             }
             if (path.startsWith(FILE_PREFIX)) {
                 return new FileSystemResource(path.substring(FILE_PREFIX.length()));
-            }
-            if (path.startsWith("http")) {
-                return new UrlResource(path);
             }
             return new FileSystemResource(path);
         } catch (final Exception e) {
@@ -238,13 +234,10 @@ public class SAML2Configuration extends InitializableObject {
     }
 
     public SAML2KeystoreGenerator getKeystoreGenerator() {
-        if (keystoreResource instanceof FileUrlResource) {
+        if (keystoreResource instanceof UrlResource) {
             return new SAML2HttpUrlKeystoreGenerator(this);
         }
-        if (keystoreResource instanceof FileSystemResource) {
-            return new SAML2FileSystemKeystoreGenerator(this);
-        }
-        throw new TechnicalException("Provided keystore does not exist and cannot be created");
+        return new SAML2FileSystemKeystoreGenerator(this);
     }
 
     public Boolean isNameIdPolicyAllowCreate() {
@@ -767,11 +760,8 @@ public class SAML2Configuration extends InitializableObject {
     public BaseSAML2MetadataGenerator getMetadataGenerator(final String callbackUrl,
                                                            final CredentialProvider credentialProvider) {
         try {
-            final String resourcePath = serviceProviderMetadataResource.toString();
-            final Resource resource = mapPathToResource(resourcePath);
-
-            final BaseSAML2MetadataGenerator metadataGenerator = resource instanceof UrlResource
-                ? new SAML2HttpUrlMetadataGenerator(resourcePath, getHttpClient())
+            final BaseSAML2MetadataGenerator metadataGenerator = serviceProviderMetadataResource instanceof UrlResource
+                ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
                 : new SAML2FileSystemMetadataGenerator();
 
             metadataGenerator.setWantAssertionSigned(isWantsAssertionsSigned());

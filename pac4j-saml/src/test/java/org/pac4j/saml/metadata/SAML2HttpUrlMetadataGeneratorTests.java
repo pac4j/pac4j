@@ -1,11 +1,9 @@
 package org.pac4j.saml.metadata;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
-import org.junit.Rule;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
@@ -18,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -29,9 +28,6 @@ import static org.junit.Assert.*;
  * @author Misagh Moayyed
  */
 public class SAML2HttpUrlMetadataGeneratorTests {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8089);
-
     private static SAML2Configuration initialConfiguration() throws MalformedURLException {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
@@ -63,7 +59,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
         try {
             final SAML2Configuration configuration = initialConfiguration();
             final SAMLMetadataGenerator metadataGenerator =
-                new SAML2HttpUrlMetadataGenerator("http://localhost:8088/saml", new SAML2HttpClientBuilder().build());
+                new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8088/saml"), new SAML2HttpClientBuilder().build());
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
             assertNotNull(entity);
             final String metadata = metadataGenerator.getMetadata(entity);
@@ -89,7 +85,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
         try {
             final SAML2Configuration configuration = initialConfiguration();
             final SAMLMetadataGenerator metadataGenerator =
-                new SAML2HttpUrlMetadataGenerator("http://localhost:8087/saml", new SAML2HttpClientBuilder().build());
+                new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8087/saml"), new SAML2HttpClientBuilder().build());
             final MetadataResolver resolver = metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
             assertNotNull(resolver);
 
