@@ -41,7 +41,7 @@ import java.util.Date;
 public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerator {
     protected static final String CERTIFICATES_PREFIX = "saml-signing-cert";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseSAML2KeystoreGenerator.class);
+    protected final Logger logger = LoggerFactory.getLogger(BaseSAML2KeystoreGenerator.class);
 
     protected final SAML2Configuration saml2Configuration;
 
@@ -50,16 +50,21 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     }
 
     @Override
+    public boolean shouldGenerate() {
+        return saml2Configuration.isForceKeystoreGeneration();
+    }
+
+    @Override
     public void generate() {
         try {
             if (CommonHelper.isBlank(saml2Configuration.getKeyStoreAlias())) {
                 saml2Configuration.setKeystoreAlias(getClass().getSimpleName());
-                LOGGER.warn("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
+                logger.warn("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
             }
 
             if (CommonHelper.isBlank(saml2Configuration.getKeyStoreType())) {
                 saml2Configuration.setKeystoreType(KeyStore.getDefaultType());
-                LOGGER.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
+                logger.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
             }
 
             final KeyStore ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
@@ -80,7 +85,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
             ks.setKeyEntry(saml2Configuration.getKeyStoreAlias(), signingKey, keyPassword, new Certificate[]{certificate});
 
             store(ks, certificate, signingKey);
-            LOGGER.info("Created keystore {} with key alias {}",
+            logger.info("Created keystore {} with key alias {}",
                 saml2Configuration.getKeystoreResource(),
                 ks.aliases().nextElement());
         } catch (final Exception e) {
@@ -89,7 +94,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     }
 
     protected abstract void store(KeyStore ks, X509Certificate certificate,
-                                  PrivateKey privateKey) throws Exception ;
+                                  PrivateKey privateKey) throws Exception;
 
     /**
      * Generate a self-signed certificate for dn using the provided signature algorithm and key pair.

@@ -1,5 +1,7 @@
 package org.pac4j.saml.metadata.keystore;
 
+import java.io.InputStream;
+
 /**
  * This is {@link SAML2KeystoreGenerator}.
  *
@@ -7,4 +9,9 @@ package org.pac4j.saml.metadata.keystore;
  */
 public interface SAML2KeystoreGenerator {
     void generate();
+
+    boolean shouldGenerate();
+
+    InputStream retrieve() throws Exception;
+
 }

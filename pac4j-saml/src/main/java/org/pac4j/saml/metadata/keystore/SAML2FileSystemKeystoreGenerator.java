@@ -4,12 +4,12 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
@@ -25,37 +25,48 @@ import java.util.regex.Pattern;
  */
 public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator {
     private static final Pattern NORMALIZE_PATTERN = Pattern.compile("[^a-zA-Z0-9-_\\.]");
-    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2FileSystemKeystoreGenerator.class);
 
     public SAML2FileSystemKeystoreGenerator(final SAML2Configuration configuration) {
         super(configuration);
     }
 
-    private static void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
+    private void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
             final boolean res = file.delete();
-            LOGGER.debug("Deleted file [{}]:{}", file, res);
+            logger.debug("Deleted file [{}]:{}", file, res);
         }
         try (PemWriter pemWriter = new PemWriter(
             new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             final PemObject pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 
-    private static void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
+    private void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
             final boolean res = file.delete();
-            LOGGER.debug("Deleted file [{}]:{}", file, res);
+            logger.debug("Deleted file [{}]:{}", file, res);
         }
         try (OutputStream fos = new FileOutputStream(file)) {
             fos.write(certificate);
             fos.flush();
         } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public boolean shouldGenerate() {
+        final Resource keystoreFile = saml2Configuration.getKeystoreResource();
+        return !keystoreFile.exists() || super.shouldGenerate();
+    }
+
+    @Override
+    public InputStream retrieve() throws Exception {
+        logger.debug("Retrieving keystore from {}", saml2Configuration.getKeystoreResource());
+        return saml2Configuration.getKeystoreResource().getInputStream();
     }
 
     @Override

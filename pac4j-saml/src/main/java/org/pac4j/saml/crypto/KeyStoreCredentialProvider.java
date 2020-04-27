@@ -16,7 +16,6 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -42,7 +41,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     private final String privateKeyAlias;
 
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
-        try (InputStream inputStream = configuration.getKeystoreResource().getInputStream()) {
+        try (InputStream inputStream = configuration.getKeystoreGenerator().retrieve()) {
             final String keyStoreType = configuration.getKeyStoreType() == null
                 ? DEFAULT_KEYSTORE_TYPE
                 : configuration.getKeyStoreType();
@@ -51,15 +50,17 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             final Map<String, String> passwords = new HashMap<>();
             passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());
             this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             throw new SAMLException("Error loading keystore", e);
         }
     }
 
     private static KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
         try {
+            logger.debug("Loading keystore with type {}", keyStoreType);
             final KeyStore ks = KeyStore.getInstance(keyStoreType);
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
+            logger.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
             return ks;
         } catch (final Exception e) {
             throw new SAMLException("Error loading keystore", e);

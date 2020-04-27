@@ -23,6 +23,7 @@ import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
+import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.pac4j.saml.util.SAML2HttpClientBuilder;
@@ -30,11 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.WritableResource;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,7 +130,7 @@ public class SAML2Configuration extends InitializableObject {
     private String issuerFormat = Issuer.ENTITY;
 
     private HttpClient httpClient;
-    
+
     /**
      * If {@link #nameIdPolicyFormat} is defined, this setting
      * will control whether the allow-create flag is used and set.
@@ -195,13 +198,17 @@ public class SAML2Configuration extends InitializableObject {
         try {
             if (path.startsWith(RESOURCE_PREFIX)) {
                 return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
-            } else if (path.startsWith(CLASSPATH_PREFIX)) {
+            }
+            if (path.startsWith(CLASSPATH_PREFIX)) {
                 return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
-            } else if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
-                return newUrlResource(path);
-            } else if (path.startsWith(FILE_PREFIX)) {
+            }
+            if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
+                return new FileUrlResource(new URL(path));
+            }
+            if (path.startsWith(FILE_PREFIX)) {
                 return new FileSystemResource(path.substring(FILE_PREFIX.length()));
-            } else if (path.startsWith("http")) {
+            }
+            if (path.startsWith("http")) {
                 return new UrlResource(path);
             }
             return new FileSystemResource(path);
@@ -217,18 +224,10 @@ public class SAML2Configuration extends InitializableObject {
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
         CommonHelper.assertNotNull("identityProviderMetadataResource", this.identityProviderMetadataResource);
 
-        if (!this.keystoreResource.exists() || this.forceKeystoreGeneration) {
-            if (this.keystoreResource instanceof WritableResource) {
-                LOGGER.warn("Provided keystore does not exist or generation is forced. Creating one for/via: {}", this.keystoreResource);
-
-                if (keystoreResource instanceof UrlResource) {
-                    new SAML2HttpUrlKeystoreGenerator(this).generate();
-                } else if (keystoreResource instanceof FileSystemResource) {
-                    new SAML2FileSystemKeystoreGenerator(this).generate();
-                }
-            } else {
-                throw new TechnicalException("Provided keystore does not exist and cannot be created");
-            }
+        final SAML2KeystoreGenerator keystoreGenerator = getKeystoreGenerator();
+        if (keystoreGenerator.shouldGenerate()) {
+            LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
+            keystoreGenerator.generate();
         }
 
         if (logoutHandler == null) {
@@ -236,6 +235,16 @@ public class SAML2Configuration extends InitializableObject {
         }
 
         initSignatureSigningConfiguration();
+    }
+
+    public SAML2KeystoreGenerator getKeystoreGenerator() {
+        if (keystoreResource instanceof FileUrlResource) {
+            return new SAML2HttpUrlKeystoreGenerator(this);
+        }
+        if (keystoreResource instanceof FileSystemResource) {
+            return new SAML2FileSystemKeystoreGenerator(this);
+        }
+        throw new TechnicalException("Provided keystore does not exist and cannot be created");
     }
 
     public Boolean isNameIdPolicyAllowCreate() {
@@ -371,7 +380,7 @@ public class SAML2Configuration extends InitializableObject {
     }
 
     public void setKeystoreResourceUrl(final String url) {
-        this.keystoreResource = newUrlResource(url);
+        this.keystoreResource = mapPathToResource(url);
     }
 
     public void setKeystorePath(final String path) {
