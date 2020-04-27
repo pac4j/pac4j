@@ -22,12 +22,18 @@ public class SAML2HttpClientBuilder {
     private int maxConnectionsTotal = 3;
     private CredentialsProvider credentialsProvider;
 
-    public HttpClient get() {
+    public HttpClient build() {
         try {
             final Pac4jHttpClientBuilder builder = new Pac4jHttpClientBuilder();
+            builder.resetDefaults();
+
+            if (this.connectionTimeout != null) {
+                builder.setConnectionTimeout(this.connectionTimeout);
+            }
             builder.setUseSystemProperties(this.useSystemProperties);
-            builder.setConnectionTimeout(this.connectionTimeout);
-            builder.setSocketTimeout(this.socketTimeout);
+            if (this.socketTimeout != null) {
+                builder.setSocketTimeout(this.socketTimeout);
+            }
             builder.setHttpFollowRedirects(this.followRedirects);
             builder.setMaxConnectionsTotal(this.maxConnectionsTotal);
             builder.setConnectionCloseAfterResponse(this.closeConnectionAfterResponse);
@@ -96,7 +102,7 @@ public class SAML2HttpClientBuilder {
     public void setCredentialsProvider(final CredentialsProvider credentialsProvider) {
         this.credentialsProvider = credentialsProvider;
     }
-    
+
     private static class Pac4jHttpClientBuilder extends HttpClientBuilder {
         @Override
         protected org.apache.http.impl.client.HttpClientBuilder getApacheBuilder() {

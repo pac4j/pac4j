@@ -80,7 +80,7 @@ public class SAML2Configuration extends InitializableObject {
     private String nameIdPolicyFormat = null;
     private boolean useNameQualifier = false;
     private boolean signMetadata;
-    private WritableResource serviceProviderMetadataResource;
+    private Resource serviceProviderMetadataResource;
     private boolean forceServiceProviderMetadataGeneration;
     private boolean forceKeystoreGeneration;
     private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
@@ -431,11 +431,11 @@ public class SAML2Configuration extends InitializableObject {
         }
     }
 
-    public WritableResource getServiceProviderMetadataResource() {
+    public Resource getServiceProviderMetadataResource() {
         return serviceProviderMetadataResource;
     }
 
-    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
+    public void setServiceProviderMetadataResource(final Resource serviceProviderMetadataResource) {
         this.serviceProviderMetadataResource = serviceProviderMetadataResource;
     }
 
@@ -746,7 +746,7 @@ public class SAML2Configuration extends InitializableObject {
 
     public HttpClient getHttpClient() {
         if (httpClient == null) {
-            httpClient = new SAML2HttpClientBuilder().get();
+            httpClient = new SAML2HttpClientBuilder().build();
         }
         return httpClient;
     }

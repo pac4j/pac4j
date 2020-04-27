@@ -9,12 +9,11 @@ import org.apache.http.entity.StringEntity;
 import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.HTTPMetadataResolver;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.WritableResource;
 
 import java.time.Duration;
 
 /**
- * Generates metadata object with standard values and overriden user defined values.
+ * Generates metadata object with standard values and overridden user defined values.
  *
  * @author Michael Remond
  * @since 1.5.0
@@ -48,18 +47,25 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
     }
 
     @Override
-    public void storeMetadata(final String metadata, final WritableResource resource, final boolean force) throws Exception {
+    public boolean storeMetadata(final String metadata, final Resource resource, final boolean force) throws Exception {
         final HttpPost httpPost = new HttpPost(this.metadataUrl);
+        httpPost.addHeader("Accept", ContentType.APPLICATION_XML.getMimeType());
+        httpPost.addHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType());
         httpPost.setEntity(new StringEntity(metadata, ContentType.APPLICATION_XML));
         final HttpResponse response = httpClient.execute(httpPost);
         if (response != null) {
             final int code = response.getStatusLine().getStatusCode();
             if (code == HttpStatus.SC_NOT_IMPLEMENTED) {
                 logger.info("Storing metadata is not supported/implemented by {}", metadataUrl);
-            } else if (code == HttpStatus.SC_OK || code == HttpStatus.SC_CREATED) {
+                return false;
+            }
+            if (code == HttpStatus.SC_OK || code == HttpStatus.SC_CREATED) {
                 logger.info("Successfully submitted metadata to {}", metadataUrl);
+                return true;
             }
         }
+        logger.error("Unable to store metadata successfully via {}", resource);
+        return false;
     }
 
     public String getMetadataUrl() {

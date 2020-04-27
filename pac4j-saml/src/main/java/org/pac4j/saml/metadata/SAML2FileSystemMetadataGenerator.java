@@ -31,10 +31,14 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
     }
 
     @Override
-    public void storeMetadata(final String metadata, final WritableResource metadataResource, final boolean force) throws Exception {
+    public boolean storeMetadata(final String metadata, final Resource metadataResource, final boolean force) throws Exception {
         if (metadataResource == null || CommonHelper.isBlank(metadata)) {
             logger.info("No metadata or resource is provided");
-            return;
+            return false;
+        }
+        if (!(metadataResource instanceof WritableResource)) {
+            logger.error("Unable to store metadata, as resource is not writable");
+            return false;
         }
 
         if (metadataResource.exists() && !force) {
@@ -54,9 +58,13 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
             final StreamResult result = new StreamResult(new StringWriter());
             final StreamSource source = new StreamSource(new StringReader(metadata));
             transformer.transform(source, result);
-            try (OutputStream spMetadataOutputStream = metadataResource.getOutputStream()) {
+
+            final WritableResource destination = WritableResource.class.cast(metadataResource);
+            try (OutputStream spMetadataOutputStream = destination.getOutputStream()) {
                 spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
             }
+            return destination.exists();
         }
+        return false;
     }
 }
