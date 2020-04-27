@@ -577,7 +577,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAMLMetadataGenerato
 
     public List<String> getSignatureAlgorithms() {
         if (signatureAlgorithms == null) {
-            this.signatureAlgorithms = defaultSignatureSigningConfiguration.getSignatureAlgorithms();
+            this.signatureAlgorithms = new ArrayList<>(defaultSignatureSigningConfiguration.getSignatureAlgorithms());
         }
 
         return signatureAlgorithms;
@@ -624,12 +624,17 @@ public abstract class BaseSAML2MetadataGenerator implements SAMLMetadataGenerato
 
     private List<String> filterForRuntimeSupportedAlgorithms(final List<String> algorithms) {
         final List<String> filteredAlgorithms = new ArrayList<>(algorithms);
-        return filteredAlgorithms.stream().filter(uri -> globalAlgorithmRegistry.isRuntimeSupported(uri)).collect(Collectors.toList());
+        return filteredAlgorithms
+            .stream()
+            .filter(uri -> Objects.requireNonNull(globalAlgorithmRegistry).isRuntimeSupported(uri))
+            .collect(Collectors.toList());
     }
 
     private List<String> filterSignatureAlgorithms(final List<String> algorithms) {
         final List<String> filteredAlgorithms = filterForRuntimeSupportedAlgorithms(algorithms);
-        this.signatureAlgorithms.removeAll(this.blackListedSignatureSigningAlgorithms);
+        if (blackListedSignatureSigningAlgorithms != null) {
+            filteredAlgorithms.removeAll(this.blackListedSignatureSigningAlgorithms);
+        }
         return filteredAlgorithms;
     }
 }
