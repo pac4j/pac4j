@@ -54,12 +54,12 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         try {
             if (CommonHelper.isBlank(saml2Configuration.getKeyStoreAlias())) {
                 saml2Configuration.setKeystoreAlias(getClass().getSimpleName());
-                LOGGER.warn("Using keystore alias {}", saml2Configuration.getKeyStoreAlias());
+                LOGGER.warn("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
             }
 
             if (CommonHelper.isBlank(saml2Configuration.getKeyStoreType())) {
                 saml2Configuration.setKeystoreType(KeyStore.getDefaultType());
-                LOGGER.warn("Using keystore type {}", saml2Configuration.getKeyStoreType());
+                LOGGER.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
             }
 
             final KeyStore ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
@@ -77,7 +77,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
 
             final char[] keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
             final PrivateKey signingKey = kp.getPrivate();
-            ks.setKeyEntry(saml2Configuration.getKeystorePassword(), signingKey, keyPassword, new Certificate[]{certificate});
+            ks.setKeyEntry(saml2Configuration.getKeyStoreAlias(), signingKey, keyPassword, new Certificate[]{certificate});
 
             store(ks, certificate, signingKey);
             LOGGER.info("Created keystore {} with key alias {}",
