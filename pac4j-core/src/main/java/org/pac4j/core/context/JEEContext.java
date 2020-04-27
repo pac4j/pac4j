@@ -200,10 +200,14 @@ public class JEEContext implements WebContext {
      */
     @Override
     public String getPath() {
-        final String fullPath = request.getRequestURI();
+        String fullPath = request.getRequestURI();
         // it shouldn't be null, but in case it is, it's better to return empty string
         if (fullPath == null) {
             return "";
+        }
+        // very strange use case
+        if (fullPath.startsWith("//")) {
+            fullPath = fullPath.substring(1);
         }
         final String context = request.getContextPath();
         // this one shouldn't be null either, but in case it is, then let's consider it is empty
