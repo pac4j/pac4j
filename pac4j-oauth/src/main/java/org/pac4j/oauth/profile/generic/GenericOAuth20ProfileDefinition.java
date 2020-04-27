@@ -32,7 +32,7 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
     private String profileUrl = null;
     private Verb profileVerb = null;
     private String firstNodePath = null;
-    
+
     public void setProfileVerb(final Verb value) {
         this.profileVerb = value;
     }
@@ -60,9 +60,7 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
         final OAuth20Profile profile = new OAuth20Profile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
-            if (getProfileId() != null) {
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, getProfileId())));
-            }
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, getProfileId())));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
