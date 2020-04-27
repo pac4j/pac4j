@@ -46,9 +46,9 @@ public class GenericOAuth20Client extends OAuth20Client {
     @Override
     protected void clientInit() {
 
-        LOG.info("InternalInit");
+        LOG.debug("Initializing oauth client...");
 
-        GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
+        final GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
         if (clientAuthenticationMethod != null) {
@@ -64,6 +64,8 @@ public class GenericOAuth20Client extends OAuth20Client {
 
         if (profileId != null) {
             profileDefinition.setProfileId(profileId);
+        } else {
+            profileDefinition.setProfileId("id");
         }
         if (profileAttrs != null) {
             for (Map.Entry<String, String> entry : profileAttrs.entrySet()) {
@@ -75,13 +77,12 @@ public class GenericOAuth20Client extends OAuth20Client {
                 } else if (tokens.length == 1) {
                     profileDefinition.profileAttribute(key, value, null);
                 } else {
-                    LOG.warn("Ignored incorrect attribute value expressions:" + value);
+                    LOG.warn("Ignored incorrect attribute value expressions: {}", value);
                 }
             }
         }
 
         configuration.setProfileDefinition(profileDefinition);
-
         configuration.setScope(scope);
         configuration.setWithState(withState);
 
