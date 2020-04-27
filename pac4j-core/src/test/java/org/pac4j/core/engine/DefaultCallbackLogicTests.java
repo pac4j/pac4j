@@ -159,7 +159,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     private void internalTestCallbackWithOriginallyRequestedUrl(final int code) {
         HttpSession session = request.getSession();
         final String originalSessionId = session.getId();
-        session.setAttribute(Pac4jConstants.REQUESTED_URL, PAC4J_URL);
+        session.setAttribute(Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
