@@ -19,9 +19,9 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 /**
  * <p>This class is the user profile for generic OAuth2 with appropriate getters.</p>
- * <p>The map of <code>profileAttributes</code> is intended to replate the primary/secondary attributes where
+ * <p>The map of <code>profileAttributes</code> is intended to replace the primary/secondary attributes where
  * the key is the name of the attribute and the value is the path to obtain that attribute from the
- * json resopnse, starting from <code>firstNodePath</code></p>
+ * json response starting from <code>firstNodePath</code></p>
  *
  * @author Julio Arrebola
  */
@@ -29,10 +29,10 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
 
     private final Map<String,String> profileAttributes = new HashMap<>();
 
-    String profileUrl = null;
-    Verb profileVerb = null;
-    String firstNodePath = null;
-
+    private String profileUrl = null;
+    private Verb profileVerb = null;
+    private String firstNodePath = null;
+    
     public void setProfileVerb(final Verb value) {
         this.profileVerb = value;
     }
