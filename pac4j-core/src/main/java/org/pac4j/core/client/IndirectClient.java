@@ -100,6 +100,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         final Optional<String> attemptedAuth = (Optional<String>) context.getSessionStore()
             .get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (attemptedAuth.isPresent() && !"".equals(attemptedAuth.get())) {
+            logger.debug("authentication already attempted -> 401");
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
             throw UnauthorizedAction.INSTANCE;
@@ -109,10 +110,12 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     }
 
     private void cleanRequestedUrl(final WebContext context) {
+        logger.debug("clean requested URL");
         cleanSessionData(context, Pac4jConstants.REQUESTED_URL);
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
+        logger.debug("clean authentication attempt");
         cleanSessionData(context, ATTEMPTED_AUTHENTICATION_SUFFIX);
     }
 
@@ -140,6 +143,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
         final Optional<C> optCredentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent()) {
+            logger.debug("no credentials -> remember the authentication attempt");
             context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         } else {
             cleanAttemptedAuthentication(context);
