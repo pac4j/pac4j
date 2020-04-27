@@ -10,6 +10,7 @@ title: Release notes&#58;
 - Pull the `pac4j-saml-opensamlv3` dependency instead of the `pac4j-saml` dependency
 - Remove deprecated behaviors: the retrieval of one `CommonProfile` in request or session via the `ProfileManager` and the retrieval of a `String` as the requested URL
 - The default client name parameter used for security has a new value (`force_client`) to avoid conflicting with the default client name parameter (`client_name`) used on the callback (the old value is still used as a fallback, but will be removed)
+- Handle a strange use case for the `JEEContext` where the `request.getRequestURI()` returns a path starting by a double slash
 
 **v4.0.0**:
 
