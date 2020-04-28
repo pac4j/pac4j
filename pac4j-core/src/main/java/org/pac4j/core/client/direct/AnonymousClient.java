@@ -7,7 +7,7 @@ import org.pac4j.core.profile.AnonymousProfile;
 import java.util.Optional;
 
 /**
- * Anonymous client. Not to be used except for advanced use cases.
+ * Anonymous client.
  *
  * @author Jerome Leleu
  * @since 1.8.1
@@ -20,7 +20,8 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
     public AnonymousClient() {
         if (!warned) {
-            logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issues!");
+            logger.warn("Be careful when using the 'AnonymousClient': an 'AnonymousProfile' is always returned "
+                + "and the access is always granted by the \"security filter\". You may want to use an additional 'Authorizer'.");
             warned = true;
         }
     }
