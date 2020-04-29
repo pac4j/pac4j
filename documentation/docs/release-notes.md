@@ -11,6 +11,8 @@ title: Release notes&#58;
 - Remove deprecated behaviors: the retrieval of one `CommonProfile` in request or session via the `ProfileManager` and the retrieval of a `String` as the requested URL
 - The default client name parameter used for security has a new value (`force_client`) to avoid conflicting with the default client name parameter (`client_name`) used on the callback (the old value is still used as a fallback, but will be removed)
 - Allow `pac4j-saml` to store and generate SAML metadata and keystores using a REST API and provide options for extensibility so custom components can be designed and injected to manage metadata artifacts externally. 
+- Handle a strange use case for the `JEEContext` where the `request.getRequestURI()` returns a path starting by a double slash
+- Can return an `AnonymousProfile` when the authentication fails or is cancelled ("silent login")
 
 **v4.0.0**:
 

@@ -55,9 +55,8 @@ public class DefaultSecurityClientFinder implements ClientFinder {
                 clientOnRequest = context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER);
                 // we have a value, use it and output a warning requesting migration
                 if (clientOnRequest.isPresent()) {
-                    logger.warn("!!MIGRATION REQUIRED!! To force a client for security, use the '{}' parameter. "
-                        + "The '{}' parameter will no longer be used as a fallback",
-                        clientNameParameter, Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER);
+                    logger.warn("Migration required: use the 'force_client' parameter instead of the 'client_name' parameter "
+                        + "to force a client for security. URL: {}", context.getFullRequestURL());
                 }
             }
 

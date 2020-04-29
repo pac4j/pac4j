@@ -8,6 +8,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -50,6 +51,10 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
+    private boolean forceAnonymousProfileWhenNotAuthenticated = false;
+
+    private static boolean warned;
+
     /**
      * Retrieve the credentials.
      *
@@ -82,7 +87,12 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
-            return Optional.empty();
+            if (forceAnonymousProfileWhenNotAuthenticated) {
+                logger.debug("force anonymous profile");
+                return Optional.of(AnonymousProfile.INSTANCE);
+            } else {
+                return Optional.empty();
+            }
         }
 
         Optional<UserProfile> profile = retrieveUserProfile(credentials, context);
@@ -220,10 +230,25 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         this.customProperties =  customProperties;
     }
 
+    public boolean isForceAnonymousProfileWhenNotAuthenticated() {
+        return forceAnonymousProfileWhenNotAuthenticated;
+    }
+
+    public void setForceAnonymousProfileWhenNotAuthenticated(final boolean forceAnonymousProfileWhenNotAuthenticated) {
+        if (!warned && forceAnonymousProfileWhenNotAuthenticated) {
+            logger.warn("Be careful when using the 'setForceAnonymousProfileWhenNotAuthenticated(true)' method: an 'AnonymousProfile' "
+                + "is returned when the authentication fails or is cancelled and the access is granted for the whole session. "
+                + "You certainly need to define additional 'Authorizer's to secure your web resources.");
+            warned = true;
+        }
+        this.forceAnonymousProfileWhenNotAuthenticated = forceAnonymousProfileWhenNotAuthenticated;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
             "authenticator", this.authenticator, "profileCreator", this.profileCreator,
-            "authorizationGenerators", authorizationGenerators, "customProperties", customProperties);
+            "authorizationGenerators", authorizationGenerators, "customProperties", customProperties,
+            "forceAnonymousProfileWhenNotAuthenticated", forceAnonymousProfileWhenNotAuthenticated);
     }
 }

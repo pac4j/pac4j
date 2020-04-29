@@ -49,6 +49,7 @@ public class PathMatcher implements Matcher {
      * @return this path matcher
      */
     public PathMatcher excludeBranch(final String path) {
+        warn();
         validatePath(path);
         excludedPatterns.add(Pattern.compile("^" + path + "(/.*)?$"));
         return this;
@@ -61,12 +62,8 @@ public class PathMatcher implements Matcher {
      * @return this path matcher
      */
     public PathMatcher excludeRegex(final String regex) {
+        warn();
         CommonHelper.assertNotBlank("regex", regex);
-        if (!warned) {
-            logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression " +
-                "to avoid any security issues!");
-            warned = true;
-        }
 
         if (!regex.startsWith("^") || !regex.endsWith("$")) {
             throw new TechnicalException("Your regular expression: '" + regex + "' must start with a ^ and end with a $ " +
@@ -75,6 +72,14 @@ public class PathMatcher implements Matcher {
 
         excludedPatterns.add(Pattern.compile(regex));
         return this;
+    }
+
+    protected void warn() {
+        if (!warned) {
+            logger.warn("Be careful when using the 'excludeBranch' or 'excludeRegex' methods. "
+                + "They use regular expressions and their definitions may be error prone. You could exclude more URLs than expected.");
+            warned = true;
+        }
     }
 
     @Override

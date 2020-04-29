@@ -6,6 +6,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -53,6 +54,17 @@ public final class BaseClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
         assertFalse(client.getUserProfile(null, context).isPresent());
+    }
+
+    @Test
+    public void testNullCredentialsButForceAnonymous() {
+        final MockIndirectClient client =
+            new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        client.setForceAnonymousProfileWhenNotAuthenticated(true);
+        client.setForceAnonymousProfileWhenNotAuthenticated(true);
+        final MockWebContext context = MockWebContext.create();
+        client.setCallbackUrl(CALLBACK_URL);
+        assertEquals(AnonymousProfile.INSTANCE, client.getUserProfile(null, context).get());
     }
 
     @Test
