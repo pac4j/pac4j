@@ -8,10 +8,10 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
-    private boolean forceAnonymousProfileWhenNotAuthenticated = false;
+    private ProfileFactory<UserProfile> profileFactoryWhenNotAuthenticated;
 
     private static boolean warned;
 
@@ -87,9 +87,10 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
-            if (forceAnonymousProfileWhenNotAuthenticated) {
-                logger.debug("force anonymous profile");
-                return Optional.of(AnonymousProfile.INSTANCE);
+            if (profileFactoryWhenNotAuthenticated != null) {
+                final UserProfile customProfile = profileFactoryWhenNotAuthenticated.apply(new Object[] {context});
+                logger.debug("force custom profile when not authenticated: {}", customProfile);
+                return Optional.ofNullable(customProfile);
             } else {
                 return Optional.empty();
             }
@@ -230,18 +231,18 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         this.customProperties =  customProperties;
     }
 
-    public boolean isForceAnonymousProfileWhenNotAuthenticated() {
-        return forceAnonymousProfileWhenNotAuthenticated;
+    public ProfileFactory<UserProfile> getProfileFactoryWhenNotAuthenticated() {
+        return profileFactoryWhenNotAuthenticated;
     }
 
-    public void setForceAnonymousProfileWhenNotAuthenticated(final boolean forceAnonymousProfileWhenNotAuthenticated) {
-        if (!warned && forceAnonymousProfileWhenNotAuthenticated) {
-            logger.warn("Be careful when using the 'setForceAnonymousProfileWhenNotAuthenticated(true)' method: an 'AnonymousProfile' "
+    public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory<UserProfile> profileFactoryWhenNotAuthenticated) {
+        if (!warned) {
+            logger.warn("Be careful when using the 'setProfileFactoryWhenNotAuthenticated' method: a custom profile "
                 + "is returned when the authentication fails or is cancelled and the access is granted for the whole session. "
                 + "You certainly need to define additional 'Authorizer's to secure your web resources.");
             warned = true;
         }
-        this.forceAnonymousProfileWhenNotAuthenticated = forceAnonymousProfileWhenNotAuthenticated;
+        this.profileFactoryWhenNotAuthenticated = profileFactoryWhenNotAuthenticated;
     }
 
     @Override
@@ -249,6 +250,6 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
             "authenticator", this.authenticator, "profileCreator", this.profileCreator,
             "authorizationGenerators", authorizationGenerators, "customProperties", customProperties,
-            "forceAnonymousProfileWhenNotAuthenticated", forceAnonymousProfileWhenNotAuthenticated);
+            "profileFactoryWhenNotAuthenticated", profileFactoryWhenNotAuthenticated);
     }
 }

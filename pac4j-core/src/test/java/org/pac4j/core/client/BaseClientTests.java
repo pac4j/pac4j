@@ -60,8 +60,8 @@ public final class BaseClientTests implements TestsConstants {
     public void testNullCredentialsButForceAnonymous() {
         final MockIndirectClient client =
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        client.setForceAnonymousProfileWhenNotAuthenticated(true);
-        client.setForceAnonymousProfileWhenNotAuthenticated(true);
+        client.setProfileFactoryWhenNotAuthenticated(p -> AnonymousProfile.INSTANCE);
+        client.setProfileFactoryWhenNotAuthenticated(p -> AnonymousProfile.INSTANCE);
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
         assertEquals(AnonymousProfile.INSTANCE, client.getUserProfile(null, context).get());
