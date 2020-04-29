@@ -15,10 +15,13 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
+import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
 import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
 import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
+import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
@@ -56,44 +59,87 @@ import java.util.function.Supplier;
 public class SAML2Configuration extends InitializableObject {
 
     protected static final String RESOURCE_PREFIX = "resource:";
+
     protected static final String CLASSPATH_PREFIX = "classpath:";
+
     protected static final String FILE_PREFIX = "file:";
+
     protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2Configuration.class);
+
     private final List<SAML2ServiceProvicerRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
+
+    private String callbackUrl;
+
     private Resource keystoreResource;
+
     private String keystorePassword;
+
     private String privateKeyPassword;
+
     private String certificateNameToAppend;
+
     private Resource identityProviderMetadataResource;
+
     private String identityProviderEntityId;
+
     private String serviceProviderEntityId;
+
     private int maximumAuthenticationLifetime = 3600;
+
     private int acceptedSkew = 300;
+
     private boolean forceAuth = false;
+
     private boolean passive = false;
+
     private String comparisonType = null;
+
     private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     private String responseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     private String spLogoutRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     private List<String> authnContextClassRefs = null;
+
     private String nameIdPolicyFormat = null;
+
     private boolean useNameQualifier = false;
+
     private boolean signMetadata;
+
     private Resource serviceProviderMetadataResource;
+
     private boolean forceServiceProviderMetadataGeneration;
+
     private boolean forceKeystoreGeneration;
+
     private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
+
+    private SAML2KeystoreGenerator keystoreGenerator;
+
+    private SAML2MetadataGenerator metadataGenerator;
+
     private boolean authnRequestSigned;
+
     private boolean spLogoutRequestSigned;
+
     private Collection<String> blackListedSignatureSigningAlgorithms;
+
     private List<String> signatureAlgorithms;
+
     private List<String> signatureReferenceDigestMethods;
+
     private String signatureCanonicalizationAlgorithm;
+
     private boolean wantsAssertionsSigned = false;
+
     private boolean wantsResponsesSigned = false;
+
     private boolean allSignatureValidationDisabled = false;
 
     private String keyStoreAlias;
@@ -213,6 +259,23 @@ public class SAML2Configuration extends InitializableObject {
         }
     }
 
+    public void setCallbackUrl(final String callbackUrl) {
+        this.callbackUrl = callbackUrl;
+        try {
+            if (CommonHelper.isBlank(getServiceProviderEntityId())) {
+                final URL url = new URL(callbackUrl);
+                if (url.getQuery() != null) {
+                    setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), ""));
+                } else {
+                    setServiceProviderEntityId(url.toString());
+                }
+            }
+            LOGGER.info("Using service provider entity ID {}", getServiceProviderEntityId());
+        } catch (final Exception e) {
+            throw new SAMLException(e);
+        }
+    }
+
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("keystoreResource", this.keystoreResource);
@@ -234,10 +297,17 @@ public class SAML2Configuration extends InitializableObject {
     }
 
     public SAML2KeystoreGenerator getKeystoreGenerator() {
-        if (keystoreResource instanceof UrlResource) {
-            return new SAML2HttpUrlKeystoreGenerator(this);
+        if (keystoreGenerator == null) {
+            if (keystoreResource instanceof UrlResource) {
+                return new SAML2HttpUrlKeystoreGenerator(this);
+            }
+            return new SAML2FileSystemKeystoreGenerator(this);
         }
-        return new SAML2FileSystemKeystoreGenerator(this);
+        return this.keystoreGenerator;
+    }
+
+    public void setKeystoreGenerator(final SAML2KeystoreGenerator keystoreGenerator) {
+        this.keystoreGenerator = keystoreGenerator;
     }
 
     public Boolean isNameIdPolicyAllowCreate() {
@@ -757,42 +827,58 @@ public class SAML2Configuration extends InitializableObject {
         this.httpClient = httpClient;
     }
 
-    public BaseSAML2MetadataGenerator getMetadataGenerator(final String callbackUrl,
-                                                           final CredentialProvider credentialProvider) {
+    public CredentialProvider getCredentialProvider() {
+        return new KeyStoreCredentialProvider(this);
+    }
+
+    public SAML2MetadataGenerator toMetadataGenerator() {
         try {
-            final BaseSAML2MetadataGenerator metadataGenerator = serviceProviderMetadataResource instanceof UrlResource
-                ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
-                : new SAML2FileSystemMetadataGenerator();
+            final SAML2MetadataGenerator instance = getMetadataGenerator();
+            if (instance instanceof BaseSAML2MetadataGenerator) {
+                final BaseSAML2MetadataGenerator generator = (BaseSAML2MetadataGenerator) instance;
+                generator.setWantAssertionSigned(isWantsAssertionsSigned());
+                generator.setAuthnRequestSigned(isAuthnRequestSigned());
+                generator.setSignMetadata(isSignMetadata());
+                generator.setNameIdPolicyFormat(getNameIdPolicyFormat());
+                generator.setRequestedAttributes(getRequestedServiceProviderAttributes());
+                generator.setCredentialProvider(getCredentialProvider());
 
-            metadataGenerator.setWantAssertionSigned(isWantsAssertionsSigned());
-            metadataGenerator.setAuthnRequestSigned(isAuthnRequestSigned());
-            metadataGenerator.setSignMetadata(isSignMetadata());
-            metadataGenerator.setNameIdPolicyFormat(getNameIdPolicyFormat());
-            metadataGenerator.setRequestedAttributes(getRequestedServiceProviderAttributes());
-            metadataGenerator.setCredentialProvider(credentialProvider);
+                generator.setEntityId(getServiceProviderEntityId());
+                generator.setRequestInitiatorLocation(callbackUrl);
+                // Assertion consumer service url is the callback URL
+                generator.setAssertionConsumerServiceUrl(callbackUrl);
+                generator.setResponseBindingType(getResponseBindingType());
+                final String logoutUrl = CommonHelper.addParameter(callbackUrl,
+                    Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
+                // the logout URL is callback URL with an extra parameter
+                generator.setSingleLogoutServiceUrl(logoutUrl);
 
-            metadataGenerator.setEntityId(getServiceProviderEntityId());
-            metadataGenerator.setRequestInitiatorLocation(callbackUrl);
-            // Assertion consumer service url is the callback URL
-            metadataGenerator.setAssertionConsumerServiceUrl(callbackUrl);
-            metadataGenerator.setResponseBindingType(getResponseBindingType());
-            final String logoutUrl = CommonHelper.addParameter(callbackUrl, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
-            // the logout URL is callback URL with an extra parameter
-            metadataGenerator.setSingleLogoutServiceUrl(logoutUrl);
+                generator.setBlackListedSignatureSigningAlgorithms(
+                    new ArrayList<>(getBlackListedSignatureSigningAlgorithms())
+                );
+                generator.setSignatureAlgorithms(getSignatureAlgorithms());
+                generator.setSignatureReferenceDigestMethods(getSignatureReferenceDigestMethods());
 
-            // Algorithm support
-            metadataGenerator.setBlackListedSignatureSigningAlgorithms(
-                new ArrayList<>(getBlackListedSignatureSigningAlgorithms())
-            );
-            metadataGenerator.setSignatureAlgorithms(getSignatureAlgorithms());
-            metadataGenerator.setSignatureReferenceDigestMethods(getSignatureReferenceDigestMethods());
-
-            metadataGenerator.setSupportedProtocols(getSupportedProtocols());
-            metadataGenerator.setContactPersons(getContactPersons());
-            metadataGenerator.setMetadataUIInfos(getMetadataUIInfos());
-            return metadataGenerator;
+                generator.setSupportedProtocols(getSupportedProtocols());
+                generator.setContactPersons(getContactPersons());
+                generator.setMetadataUIInfos(getMetadataUIInfos());
+            }
+            return instance;
         } catch (final Exception e) {
             throw new TechnicalException(e);
         }
+    }
+
+    protected SAML2MetadataGenerator getMetadataGenerator() throws Exception {
+        if (this.metadataGenerator == null) {
+            return serviceProviderMetadataResource instanceof UrlResource
+                ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
+                : new SAML2FileSystemMetadataGenerator();
+        }
+        return this.metadataGenerator;
+    }
+
+    public void setMetadataGenerator(final SAML2MetadataGenerator metadataGenerator) {
+        this.metadataGenerator = metadataGenerator;
     }
 }

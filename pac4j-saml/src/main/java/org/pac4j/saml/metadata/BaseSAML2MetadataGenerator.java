@@ -67,13 +67,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Generates metadata object with standard values and overriden user defined values.
+ * Generates metadata object with standard values and overridden user defined values.
  *
- * @author Michael Remond
- * @since 1.5.0
+ * @author Misagh Moayyed
+ * @since 4.0.1
  */
 @SuppressWarnings("unchecked")
-public abstract class BaseSAML2MetadataGenerator implements SAMLMetadataGenerator {
+public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerator {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseSAML2MetadataGenerator.class);
 

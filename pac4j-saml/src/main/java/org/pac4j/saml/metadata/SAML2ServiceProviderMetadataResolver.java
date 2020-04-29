@@ -7,14 +7,10 @@ import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
 
 /**
  * @author Misagh Moayyed
@@ -25,15 +21,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     protected static final Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
 
     protected final SAML2Configuration configuration;
-    protected final BaseSAML2MetadataGenerator metadataGenerator;
-
     private MetadataResolver metadataResolver;
 
-    public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration, final String callbackUrl,
-                                                final CredentialProvider credentialProvider) {
+    public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration) {
         this.configuration = configuration;
-        determineServiceProviderEntityId(callbackUrl);
-        metadataGenerator = configuration.getMetadataGenerator(callbackUrl, credentialProvider);
         this.metadataResolver = prepareServiceProviderMetadata();
     }
 
@@ -44,24 +35,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    private void determineServiceProviderEntityId(final String callbackUrl) {
-        try {
-            if (CommonHelper.isBlank(configuration.getServiceProviderEntityId())) {
-                final URL url = new URL(callbackUrl);
-                if (url.getQuery() != null) {
-                    configuration.setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), ""));
-                } else {
-                    configuration.setServiceProviderEntityId(url.toString());
-                }
-            }
-            logger.info("Using service provider entity ID {}", configuration.getServiceProviderEntityId());
-        } catch (final Exception e) {
-            throw new SAMLException(e);
-        }
-    }
-
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
+            final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
             final String metadata = metadataGenerator.getMetadata(entity);
             metadataGenerator.storeMetadata(metadata,
@@ -86,7 +62,8 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     @Override
     public String getMetadata() {
         try {
-            final EntityDescriptor entity = this.metadataGenerator.buildEntityDescriptor();
+            final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
+            final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
             return metadataGenerator.getMetadata(entity);
         } catch (final Exception e) {
             throw new SAMLException("Unable to fetch metadata", e);

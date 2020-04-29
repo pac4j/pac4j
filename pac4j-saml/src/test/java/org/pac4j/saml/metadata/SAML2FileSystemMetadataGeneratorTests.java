@@ -31,7 +31,7 @@ public class SAML2FileSystemMetadataGeneratorTests {
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
 
-        final SAMLMetadataGenerator metadataGenerator = new SAML2FileSystemMetadataGenerator();
+        final SAML2MetadataGenerator metadataGenerator = new SAML2FileSystemMetadataGenerator();
         final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
         final String metadata = metadataGenerator.getMetadata(entity);

@@ -8,7 +8,7 @@ import org.springframework.core.io.Resource;
  * Builds metadata and the relevant resolvers.
  * @author Misagh Moayyed
  */
-public interface SAMLMetadataGenerator {
+public interface SAML2MetadataGenerator {
     MetadataResolver buildMetadataResolver(Resource metadataResource) throws Exception;
 
     String getMetadata(EntityDescriptor entityDescriptor) throws Exception;

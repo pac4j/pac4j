@@ -37,6 +37,7 @@ import java.util.Date;
  * This is {@link BaseSAML2KeystoreGenerator}.
  *
  * @author Misagh Moayyed
+ * @since 4.0.1
  */
 public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerator {
     protected static final String CERTIFICATES_PREFIX = "saml-signing-cert";

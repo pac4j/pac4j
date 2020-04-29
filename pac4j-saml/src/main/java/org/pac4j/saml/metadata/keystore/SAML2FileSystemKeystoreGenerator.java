@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
  * This is {@link SAML2FileSystemKeystoreGenerator}.
  *
  * @author Misagh Moayyed
+ * @since 4.0.1
  */
 public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator {
     private static final Pattern NORMALIZE_PATTERN = Pattern.compile("[^a-zA-Z0-9-_\\.]");

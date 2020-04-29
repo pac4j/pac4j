@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.util.SAML2HttpClientBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -47,8 +46,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
     public void resolveServiceProviderMetadataViaFile() {
         final SAML2Configuration configuration =
             initializeConfiguration(new FileSystemResource("target/out.xml"), "target/keystore.jks");
-        final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration,
-            "http://localhost", new KeyStoreCredentialProvider(configuration));
+        final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         assertNotNull(metadataResolver.resolve());
     }
 
@@ -81,8 +79,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
             final SAML2Configuration configuration =
                 initializeConfiguration(new FileUrlResource(new URL("http://localhost:8081/saml")),
                     "http://localhost:8081/keystore");
-            final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration,
-                "http://localhost", new KeyStoreCredentialProvider(configuration));
+            final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
             assertNotNull(metadataResolver.resolve());
         } finally {
             wireMockServer.stop();

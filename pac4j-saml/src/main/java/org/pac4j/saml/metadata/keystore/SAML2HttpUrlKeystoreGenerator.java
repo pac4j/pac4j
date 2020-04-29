@@ -24,6 +24,7 @@ import java.util.Base64;
  * This is {@link SAML2HttpUrlKeystoreGenerator}.
  *
  * @author Misagh Moayyed
+ * @since 4.0.1
  */
 public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 

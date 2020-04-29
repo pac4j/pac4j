@@ -18,10 +18,10 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Generates metadata object with standard values and overriden user defined values.
+ * Generates metadata object with standard values and overridden user defined values.
  *
- * @author Michael Remond
- * @since 1.5.0
+ * @author Misagh Moayyed
+ * @since 4.0.1
  */
 public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator {
 

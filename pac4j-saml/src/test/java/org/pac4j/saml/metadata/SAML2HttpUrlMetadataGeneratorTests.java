@@ -58,7 +58,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
         wireMockServer.start();
         try {
             final SAML2Configuration configuration = initialConfiguration();
-            final SAMLMetadataGenerator metadataGenerator =
+            final SAML2MetadataGenerator metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8088/saml"), new SAML2HttpClientBuilder().build());
             final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
             assertNotNull(entity);
@@ -84,7 +84,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
         wireMockServer.start();
         try {
             final SAML2Configuration configuration = initialConfiguration();
-            final SAMLMetadataGenerator metadataGenerator =
+            final SAML2MetadataGenerator metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8087/saml"), new SAML2HttpClientBuilder().build());
             final MetadataResolver resolver = metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
             assertNotNull(resolver);
