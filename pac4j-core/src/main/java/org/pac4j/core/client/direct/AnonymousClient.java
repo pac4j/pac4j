@@ -20,8 +20,8 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
 
     public AnonymousClient() {
         if (!warned) {
-            logger.warn("Be careful when using the 'AnonymousClient': an 'AnonymousProfile' is always returned "
-                + "and the access is always granted by the \"security filter\". You may want to use an additional 'Authorizer'.");
+            logger.warn("Be careful when using the 'AnonymousClient': an 'AnonymousProfile' is returned "
+                + "and the access is granted for the request.");
             warned = true;
         }
     }
@@ -29,8 +29,6 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
     @Override
     protected void clientInit() {
         defaultCredentialsExtractor(ctx -> Optional.of(AnonymousCredentials.INSTANCE));
-        defaultAuthenticator((cred, ctx )-> {
-            cred.setUserProfile(AnonymousProfile.INSTANCE);
-        });
+        defaultAuthenticator((cred, ctx )-> cred.setUserProfile(AnonymousProfile.INSTANCE));
     }
 }

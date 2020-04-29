@@ -81,13 +81,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             final Optional<Credentials> credentials = foundClient.getCredentials(context);
             logger.debug("credentials: {}", credentials);
 
-            if (credentials.isPresent()) {
-                final Optional<UserProfile> profile = foundClient.getUserProfile(credentials.get(), context);
-                logger.debug("profile: {}", profile);
-
-                if (profile.isPresent()) {
-                    saveUserProfile(context, config, profile.get(), saveInSession, multiProfile, renewSession);
-                }
+            final Optional<UserProfile> profile = foundClient.getUserProfile(credentials.orElse(null), context);
+            logger.debug("profile: {}", profile);
+            if (profile.isPresent()) {
+                saveUserProfile(context, config, profile.get(), saveInSession, multiProfile, renewSession);
             }
 
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
