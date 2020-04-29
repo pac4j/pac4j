@@ -30,25 +30,27 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td><font size="+2">4</font></td>    </tr>
+        <td><font size="+2">4</font></td>
+    </tr>
     <tr>
         <td>spring-security-pac4j</td>
         <td><font size="+2">4</font></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td><font size="+2">4</font></td>    </tr>
+        <td><font size="+2">4</font></td>
+    </tr>
     <tr>
         <td>vertx-pac4j</td>
         <td>3</td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td>3</td>
+        <td><font size="+2">4</font></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td>3</td>
+        <td><font size="+2">4</font></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>

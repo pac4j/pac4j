@@ -29,6 +29,8 @@ Understand the main features:
 - [AJAX requests](#5-ajax-requests)
 - [The `Client` methods](#6-the-client-methods)
 - [Originally requested URLs](#7-originally-requested-urls)
+- [Silent login](#8-silent-login)
+
 
 ---
 
@@ -181,3 +183,18 @@ An originally requested URL is the URL called before the authenticated process s
 
 It is handled in the `DefaultSecurityLogic` and in the `CallbackSecurityLogic` by the `SavedRequestHandler` component.
 By default, it's a `DefaultSavedRequestHandler` which handles GET and POST requests.
+
+
+---
+
+## 8) Silent login
+
+When using an `IndirectClient`, the login process can fail or be cancelled at the external identity provider level.
+
+Thus, no user profile is created and the access is not be granted to the secured resources (401 error).
+
+Though, you may still want to access the web resources (as anonymous) if the login process has failed or been cancelled.
+
+For that, you can return an `AnonymousProfile` instead of no profile by using: `myClient.setForceAnonymousProfileWhenNotAuthenticated(true);`.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> In that case, the access is granted to all secured resources for the whole web session unless the proper <code>Authorizer</code>s have been defined.</div>

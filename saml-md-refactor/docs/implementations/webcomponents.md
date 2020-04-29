@@ -60,14 +60,14 @@ title: Implementations comparison for the web components&#58;
     <tr>
         <td>spark-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SparkWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2SessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SparkHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2SessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JavalinWebContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JavalinHttpActionAdapter</code></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
