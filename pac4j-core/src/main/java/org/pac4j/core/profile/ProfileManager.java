@@ -115,14 +115,10 @@ public class ProfileManager<U extends UserProfile> {
     protected LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
         this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
-            .ifPresent(requestAttribute -> {
-                profiles.putAll((LinkedHashMap<String, U>) requestAttribute);
-            });
+            .ifPresent(requestAttribute -> profiles.putAll((Map<String, U>) requestAttribute));
         if (readFromSession) {
             this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES)
-                .ifPresent(sessionAttribute -> {
-                    profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
-                });
+                .ifPresent(sessionAttribute -> profiles.putAll((Map<String, U>) sessionAttribute));
         }
 
         removeOrRenewExpiredProfiles(profiles, readFromSession);
