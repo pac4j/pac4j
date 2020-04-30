@@ -5,7 +5,7 @@ title: Release notes&#58;
 
 **v4.0.1**:
 
-- Add the type parameter for the `Client` in the return type of the `ClientFinder`
+- Type parameters: add the `? extends Credentials` type parameter for the `Client` in the return type of the method `find` of the `ClientFinder` and add the `UserProfile` type parameter for the `ProfileManager` in the return type of the `getProfileManager` method of the `ProfileManagerFactoryAware*`
 - Add setters on `Color`
 - Pull the `pac4j-saml-opensamlv3` dependency instead of the `pac4j-saml` dependency
 - Remove deprecated behaviors: the retrieval of one `CommonProfile` in request or session via the `ProfileManager` and the retrieval of a `String` as the requested URL
