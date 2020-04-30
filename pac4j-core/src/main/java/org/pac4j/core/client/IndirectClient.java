@@ -141,9 +141,9 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     public final Optional<C> getCredentials(final WebContext context) {
         init();
         final Optional<C> optCredentials = retrieveCredentials(context);
-        // no credentials -> save this authentication has already been tried and failed
-        if (!optCredentials.isPresent()) {
-            logger.debug("no credentials -> remember the authentication attempt");
+        // no credentials and no profile returned -> save this authentication has already been tried and failed
+        if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
+            logger.debug("no credentials and profile returned -> remember the authentication attempt");
             context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         } else {
             cleanAttemptedAuthentication(context);
