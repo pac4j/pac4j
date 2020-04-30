@@ -20,6 +20,8 @@ import java.util.Map;
  */
 public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAuth2AccessToken> {
 
+    public static final String OAUTH_CODE = "code";
+
     public static final String STATE_REQUEST_PARAMETER = "state";
 
     /* Map containing user defined parameters */
@@ -30,8 +32,6 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
     private DefaultApi20 api;
-
-    private String code = "code";
 
     @Override
     protected void internalInit() {
@@ -88,18 +88,10 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
         this.api = api;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(final String code) {
-        this.code = code;
-    }
-
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
             "responseType", responseType, "scope", scope, "api", api, "hasBeenCancelledFactory", hasBeenCancelledFactory,
-            "profileDefinition", profileDefinition, "httpClientConfig", httpClientConfig, "code", code);
+            "profileDefinition", profileDefinition, "httpClientConfig", httpClientConfig);
     }
 }
