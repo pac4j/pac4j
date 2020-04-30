@@ -9,7 +9,9 @@ import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -35,7 +37,7 @@ public final class ProfileManagerTests {
 
     private ProfileManager profileManager;
 
-    private LinkedHashMap<String, CommonProfile> profiles;
+    private Map<String, CommonProfile> profiles;
 
     @Before
     public void setUp() {
@@ -50,7 +52,7 @@ public final class ProfileManagerTests {
         profile3.setClientName(CLIENT1);
         context = MockWebContext.create();
         profileManager = new ProfileManager(context);
-        profiles = new LinkedHashMap<>();
+        profiles = new TreeMap<>();
     }
 
     @Test
