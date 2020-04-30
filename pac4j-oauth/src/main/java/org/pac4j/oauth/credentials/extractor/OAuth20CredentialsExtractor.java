@@ -44,7 +44,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
         }
 
-        final Optional<String> codeParameter = context.getRequestParameter(configuration.getCode());
+        final Optional<String> codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
         if (codeParameter.isPresent()) {
             final String code = OAuthEncoder.decode(codeParameter.get());
             logger.debug("code: {}", code);
