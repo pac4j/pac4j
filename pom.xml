@@ -68,7 +68,7 @@
 		<nimbus-jose-jwt.version>8.16</nimbus-jose-jwt.version>
 		<spring.version>5.2.6.RELEASE</spring.version>
 		<spring.security.version>5.3.1.RELEASE</spring.security.version>
-		<shiro.version>1.5.2</shiro.version>
+		<shiro.version>1.5.3</shiro.version>
         <jbcrypt.version>0.4.1</jbcrypt.version>
 		<mockito.version>3.3.3</mockito.version>
 		<slf4j.version>1.7.30</slf4j.version>
