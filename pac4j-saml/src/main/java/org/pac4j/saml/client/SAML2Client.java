@@ -20,10 +20,8 @@ import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
-import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
 import org.pac4j.saml.crypto.LogOnlySignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
@@ -45,7 +43,10 @@ import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.sso.artifact.DefaultSOAPPipelineProvider;
 import org.pac4j.saml.sso.artifact.SAML2ArtifactBindingMessageReceiver;
 import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
-import org.pac4j.saml.sso.impl.*;
+import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
+import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
+import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
+import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
@@ -62,8 +63,6 @@ import java.util.List;
  * @since 1.5.0
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials> {
-
-    protected CredentialProvider credentialProvider;
 
     protected SAMLContextProvider contextProvider;
 
@@ -111,9 +110,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         CommonHelper.assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
+        final String callbackUrl = computeFinalCallbackUrl(null);
+        configuration.setCallbackUrl(callbackUrl);
         this.configuration.init(getName());
 
-        initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
         final MetadataResolver metadataManager = initChainingMetadataResolver(
@@ -201,9 +201,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
     }
 
     protected MetadataResolver initServiceProviderMetadataResolver() {
-        this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration,
-            computeFinalCallbackUrl(null),
-            this.credentialProvider);
+        this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         return this.spMetadataResolver.resolve();
     }
 
@@ -212,17 +210,13 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         return this.idpMetadataResolver.resolve();
     }
 
-    protected void initCredentialProvider() {
-        this.credentialProvider = new KeyStoreCredentialProvider(this.configuration);
-    }
 
     protected void initDecrypter() {
-        this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();
+        this.decrypter = new KeyStoreDecryptionProvider(configuration.getCredentialProvider()).build();
     }
 
     protected void initSignatureSigningParametersProvider() {
-        this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(
-                this.credentialProvider, this.configuration);
+        this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(configuration);
     }
 
     protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,

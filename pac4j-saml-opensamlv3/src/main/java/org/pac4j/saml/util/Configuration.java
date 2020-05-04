@@ -74,7 +74,7 @@ public final class Configuration {
         ServiceLoader<ConfigurationManager> configurationManagers = ServiceLoader.load(ConfigurationManager.class);
         List<ConfigurationManager> configurationManagerList = new ArrayList();
         configurationManagers.forEach(configurationManagerList::add);
-        if (configurationManagerList.size() > 0) {
+        if (!configurationManagerList.isEmpty()) {
             configurationManagerList.sort(Configuration::compareManagers);
             configurationManagerList.get(0).configure();
         }

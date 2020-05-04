@@ -1,6 +1,21 @@
 package org.pac4j.saml.crypto;
 
-import java.io.IOException;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.security.credential.Credential;
+import org.opensaml.security.credential.CredentialResolver;
+import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
+import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
+import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
+import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.exceptions.SAMLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -8,30 +23,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
-import org.opensaml.core.criterion.EntityIdCriterion;
-
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.credential.CredentialResolver;
-import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
-import org.opensaml.security.x509.X509Credential;
-import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
-import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.exceptions.SAMLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-
 /**
  * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
  * opensaml object.
- * 
+ *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
@@ -45,44 +40,56 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     private final String privateKeyAlias;
 
-    public KeyStoreCredentialProvider(final String keyStoreAlias, final String keyStoreType,
-                                      final Resource keyStoreResource, final String storePasswd, final String privateKeyPasswd) {
-        CommonHelper.assertNotNull("keyStoreResource", keyStoreResource);
-        CommonHelper.assertNotBlank("storePasswd", storePasswd);
-        CommonHelper.assertNotBlank("privateKeyPasswd", privateKeyPasswd);
-
-        InputStream inputStream = null;
-        try {
-            inputStream = keyStoreResource.getInputStream();
-            final KeyStore keyStore = loadKeyStore(inputStream, storePasswd, keyStoreType);
-            this.privateKeyAlias = getPrivateKeyAlias(keyStore, keyStoreAlias);
+    public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
+        try (InputStream inputStream = configuration.getKeystoreGenerator().retrieve()) {
+            final String keyStoreType = configuration.getKeyStoreType() == null
+                ? DEFAULT_KEYSTORE_TYPE
+                : configuration.getKeyStoreType();
+            final KeyStore keyStore = loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
+            this.privateKeyAlias = getPrivateKeyAlias(keyStore, configuration.getKeyStoreAlias());
             final Map<String, String> passwords = new HashMap<>();
-            passwords.put(this.privateKeyAlias, privateKeyPasswd);
+            passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());
             this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             throw new SAMLException("Error loading keystore", e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (final IOException e) {
-                    this.logger.debug("Error closing input stream of keystore", e);
-                }
-            }
         }
     }
 
-    public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
-        this(configuration.getKeyStoreAlias(), 
-            configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType(),
-            configuration.getKeystoreResource(), configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
+    private static KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
+        try {
+            logger.debug("Loading keystore with type {}", keyStoreType);
+            final KeyStore ks = KeyStore.getInstance(keyStoreType);
+            ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
+            logger.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
+            return ks;
+        } catch (final Exception e) {
+            throw new SAMLException("Error loading keystore", e);
+        }
+    }
+
+    protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
+        try {
+            final Enumeration<String> aliases = keyStore.aliases();
+            while (aliases.hasMoreElements()) {
+                final String currentAlias = aliases.nextElement();
+                if (keyStoreAlias != null) {
+                    if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
+                        return currentAlias;
+                    }
+                } else if (keyStore.entryInstanceOf(currentAlias, KeyStore.PrivateKeyEntry.class)) {
+                    return currentAlias;
+                }
+            }
+            throw new SAMLException("Keystore has no private keys to match the requested key alias " + keyStoreAlias);
+        } catch (final KeyStoreException e) {
+            throw new SAMLException("Unable to get aliases from keyStore", e);
+        }
     }
 
     @Override
     public KeyInfo getKeyInfo() {
         final Credential serverCredential = getCredential();
-        final KeyInfo keyInfo = generateKeyInfoForCredential(serverCredential);
-        return keyInfo;
+        return generateKeyInfoForCredential(serverCredential);
     }
 
     @Override
@@ -108,8 +115,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             final CriteriaSet cs = new CriteriaSet();
             final EntityIdCriterion criteria = new EntityIdCriterion(this.privateKeyAlias);
             cs.add(criteria);
-            final X509Credential creds = (X509Credential) this.credentialResolver.resolveSingle(cs);
-            return creds;
+            return this.credentialResolver.resolveSingle(cs);
         } catch (final ResolverException e) {
             throw new SAMLException("Can't obtain SP private key", e);
         }
@@ -120,37 +126,6 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             return getKeyInfoGenerator().generate(credential);
         } catch (final org.opensaml.security.SecurityException e) {
             throw new SAMLException("Unable to generate keyInfo from given credential", e);
-        }
-    }
-
-    private KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
-        try {
-            final KeyStore ks = KeyStore.getInstance(keyStoreType);
-            ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
-            return ks;
-        } catch (final Exception e) {
-            throw new SAMLException("Error loading keystore", e);
-        }
-    }
-
-    protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
-        try {
-            final Enumeration<String> aliases = keyStore.aliases();
-            while (aliases.hasMoreElements()) {
-                final String currentAlias = aliases.nextElement();
-                if (keyStoreAlias != null) {
-                    if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
-                        return currentAlias;
-                    }
-                } else if (keyStore.entryInstanceOf(currentAlias, KeyStore.PrivateKeyEntry.class)) {
-                    return currentAlias;
-                }
-            }
-
-            throw new SAMLException("Keystore has no private keys");
-
-        } catch (final KeyStoreException e) {
-            throw new SAMLException("Unable to get aliases from keyStore", e);
         }
     }
 }

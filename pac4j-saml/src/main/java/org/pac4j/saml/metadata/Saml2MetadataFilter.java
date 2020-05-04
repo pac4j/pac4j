@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -9,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -46,14 +48,17 @@ public class Saml2MetadataFilter implements Filter {
         CommonHelper.assertNotNull("config", config);
         CommonHelper.assertNotNull("clientName", clientName);
 
-        final SAML2Client client = (SAML2Client) config.getClients().findClient(this.clientName).get();
-        if (client != null) {
-            client.init();
-            servletResponse.getWriter().write(client.getServiceProviderMetadataResolver().getMetadata());
-            servletResponse.getWriter().flush();
-        } else {
+        SAML2Client client = null;
+        final Optional<Client> result = config.getClients().findClient(this.clientName);
+        if (result.isPresent()) {
+            client = (SAML2Client) result.get();
+        }
+        if (client == null) {
             throw new TechnicalException("No SAML2Client: " + this.clientName);
         }
+        client.init();
+        servletResponse.getWriter().write(client.getServiceProviderMetadataResolver().getMetadata());
+        servletResponse.getWriter().flush();
     }
 
     @Override

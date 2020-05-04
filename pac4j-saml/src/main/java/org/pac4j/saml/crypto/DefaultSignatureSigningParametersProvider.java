@@ -26,12 +26,9 @@ import java.util.List;
 public class DefaultSignatureSigningParametersProvider implements SignatureSigningParametersProvider {
     private static final Logger logger = LoggerFactory.getLogger(DefaultSignatureSigningParametersProvider.class);
 
-    private final CredentialProvider credentialProvider;
     private final SAML2Configuration configuration;
 
-    public DefaultSignatureSigningParametersProvider(final CredentialProvider credentialProvider,
-                                                     final SAML2Configuration configuration) {
-        this.credentialProvider = credentialProvider;
+    public DefaultSignatureSigningParametersProvider(final SAML2Configuration configuration) {
         this.configuration = configuration;
     }
 
@@ -83,7 +80,7 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
         }
 
         final List<Credential> creds = new ArrayList<>();
-        creds.add(this.credentialProvider.getCredential());
+        creds.add(configuration.getCredentialProvider().getCredential());
         config.setSigningCredentials(creds);
         return config;
     }
