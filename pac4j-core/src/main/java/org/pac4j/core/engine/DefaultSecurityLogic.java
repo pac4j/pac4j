@@ -25,6 +25,8 @@ import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -52,6 +54,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSecurityLogic.class);
+
     private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 
     private AuthorizationChecker authorizationChecker = new DefaultAuthorizationChecker();
@@ -68,7 +72,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                      final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile,
                      final Object... parameters) {
 
-        logger.debug("=== SECURITY ===");
+        LOGGER.debug("=== SECURITY ===");
 
         HttpAction action;
         try {
@@ -88,21 +92,21 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             assertNotNull("configClients", configClients);
 
             // logic
-            logger.debug("url: {}", context.getFullRequestURL());
-            logger.debug("matchers: {}", matchers);
+            LOGGER.debug("url: {}", context.getFullRequestURL());
+            LOGGER.debug("matchers: {}", matchers);
             if (matchingChecker.matches(context, matchers, config.getMatchers())) {
 
-                logger.debug("clients: {}", clients);
+                LOGGER.debug("clients: {}", clients);
                 final List<Client<? extends Credentials>> currentClients = clientFinder.find(configClients, context, clients);
-                logger.debug("currentClients: {}", currentClients);
+                LOGGER.debug("currentClients: {}", currentClients);
 
                 final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
-                logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
+                LOGGER.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
                 context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, loadProfilesFromSession);
                 final ProfileManager<UserProfile> manager = getProfileManager(context);
                 manager.setConfig(config);
                 List<UserProfile> profiles = manager.getAll(loadProfilesFromSession);
-                logger.debug("profiles: {}", profiles);
+                LOGGER.debug("profiles: {}", profiles);
 
                 // no profile and some current clients
                 if (isEmpty(profiles) && isNotEmpty(currentClients)) {
@@ -110,17 +114,17 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                     // loop on all clients searching direct ones to perform authentication
                     for (final Client currentClient : currentClients) {
                         if (currentClient instanceof DirectClient) {
-                            logger.debug("Performing authentication for direct client: {}", currentClient);
+                            LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
                             final Optional<Credentials> credentials = currentClient.getCredentials(context);
-                            logger.debug("credentials: {}", credentials);
+                            LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
                                 final Optional<UserProfile> profile = currentClient.getUserProfile(credentials.get(), context);
-                                logger.debug("profile: {}", profile);
+                                LOGGER.debug("profile: {}", profile);
                                 if (profile.isPresent()) {
                                     final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
                                         currentClients, (DirectClient) currentClient, profile.get());
-                                    logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
+                                    LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                     manager.save(saveProfileInSession, profile.get(), multiProfile);
                                     updated = true;
                                     if (!multiProfile) {
@@ -132,34 +136,34 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                     }
                     if (updated) {
                         profiles = manager.getAll(loadProfilesFromSession);
-                        logger.debug("new profiles: {}", profiles);
+                        LOGGER.debug("new profiles: {}", profiles);
                     }
                 }
 
                 // we have profile(s) -> check authorizations
                 if (isNotEmpty(profiles)) {
-                    logger.debug("authorizers: {}", authorizers);
+                    LOGGER.debug("authorizers: {}", authorizers);
                     if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers())) {
-                        logger.debug("authenticated and authorized -> grant access");
+                        LOGGER.debug("authenticated and authorized -> grant access");
                         return securityGrantedAccessAdapter.adapt(context, profiles, parameters);
                     } else {
-                        logger.debug("forbidden");
+                        LOGGER.debug("forbidden");
                         action = forbidden(context, currentClients, profiles, authorizers);
                     }
                 } else {
                     if (startAuthentication(context, currentClients)) {
-                        logger.debug("Starting authentication");
+                        LOGGER.debug("Starting authentication");
                         saveRequestedUrl(context, currentClients, config.getClients().getAjaxRequestResolver());
                         action = redirectToIdentityProvider(context, currentClients);
                     } else {
-                        logger.debug("unauthorized");
+                        LOGGER.debug("unauthorized");
                         action = unauthorized(context, currentClients);
                     }
                 }
 
             } else {
 
-                logger.debug("no matching for this request -> grant access");
+                LOGGER.debug("no matching for this request -> grant access");
                 return securityGrantedAccessAdapter.adapt(context, Arrays.asList(), parameters);
             }
 

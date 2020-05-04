@@ -17,6 +17,8 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,8 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
 
     public static final DefaultCallbackLogic INSTANCE = new DefaultCallbackLogic();
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCallbackLogic.class);
+
     private ClientFinder clientFinder = new DefaultCallbackClientFinder();
 
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
@@ -44,7 +48,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
                      final String inputDefaultUrl, final Boolean inputSaveInSession, final Boolean inputMultiProfile,
                      final Boolean inputRenewSession, final String client) {
 
-        logger.debug("=== CALLBACK ===");
+        LOGGER.debug("=== CALLBACK ===");
 
         HttpAction action;
         try {
@@ -75,14 +79,14 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
                     + " or ensure that your configuration defaults to one indirect client");
             final Client foundClient = foundClients.get(0);
-            logger.debug("foundClient: {}", foundClient);
+            LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
             final Optional<Credentials> credentials = foundClient.getCredentials(context);
-            logger.debug("credentials: {}", credentials);
+            LOGGER.debug("credentials: {}", credentials);
 
             final Optional<UserProfile> profile = foundClient.getUserProfile(credentials.orElse(null), context);
-            logger.debug("profile: {}", profile);
+            LOGGER.debug("profile: {}", profile);
             if (profile.isPresent()) {
                 saveUserProfile(context, config, profile.get(), saveInSession, multiProfile, renewSession);
             }
@@ -114,7 +118,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
             final boolean renewed = sessionStore.renewSession(context);
             if (renewed) {
                 final String newSessionId = sessionStore.getOrCreateSessionId(context);
-                logger.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
+                LOGGER.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
                 final Clients clients = config.getClients();
                 if (clients != null) {
                     final List<Client> clientList = clients.getClients();
@@ -124,10 +128,10 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
                     }
                 }
             } else {
-                logger.error("Unable to renew the session. The session store may not support this feature");
+                LOGGER.error("Unable to renew the session. The session store may not support this feature");
             }
         } else {
-            logger.error("No session store available for this web context");
+            LOGGER.error("No session store available for this web context");
         }
     }
 

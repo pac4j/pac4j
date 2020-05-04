@@ -11,6 +11,8 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -38,12 +40,14 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
 
     public static final DefaultLogoutLogic INSTANCE = new DefaultLogoutLogic();
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLogoutLogic.class);
+
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
                      final Boolean inputDestroySession, final Boolean inputCentralLogout) {
 
-        logger.debug("=== LOGOUT ===");
+        LOGGER.debug("=== LOGOUT ===");
 
         HttpAction action;
         try {
@@ -78,7 +82,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
             }
-            logger.debug("redirectUrl: {}", redirectUrl);
+            LOGGER.debug("redirectUrl: {}", redirectUrl);
             if (redirectUrl != null) {
                 action = RedirectionActionHelper.buildRedirectUrlAction(context, redirectUrl);
             } else {
@@ -87,26 +91,26 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
 
             // local logout if requested or multiple profiles
             if (localLogout || profiles.size() > 1) {
-                logger.debug("Performing application logout");
+                LOGGER.debug("Performing application logout");
                 manager.logout();
                 if (destroySession) {
                     final SessionStore sessionStore = context.getSessionStore();
                     if (sessionStore != null) {
                         final boolean removed = sessionStore.destroySession(context);
                         if (!removed) {
-                            logger.error("Unable to destroy the web session. The session store may not support this feature");
+                            LOGGER.error("Unable to destroy the web session. The session store may not support this feature");
                         }
                     } else {
-                        logger.error("No session store available for this web context");
+                        LOGGER.error("No session store available for this web context");
                     }
                 }
             }
 
             // central logout
             if (centralLogout) {
-                logger.debug("Performing central logout");
+                LOGGER.debug("Performing central logout");
                 for (final UserProfile profile : profiles) {
-                    logger.debug("Profile: {}", profile);
+                    LOGGER.debug("Profile: {}", profile);
                     final String clientName = profile.getClientName();
                     if (clientName != null) {
                         final Optional<Client> client = configClients.findClient(clientName);
@@ -119,7 +123,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends AbstractExcepti
                                 targetUrl = null;
                             }
                             final Optional<RedirectionAction> logoutAction = client.get().getLogoutAction(context, profile, targetUrl);
-                            logger.debug("Logout action: {}", logoutAction);
+                            LOGGER.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {
                                 action = logoutAction.get();
                                 break;
