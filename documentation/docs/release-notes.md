@@ -14,6 +14,7 @@ title: Release notes&#58;
 - Handle a strange use case for the `JEEContext` where the `request.getRequestURI()` returns a path starting by a double slash
 - Can return a custom profile when the authentication fails or is cancelled ("silent login")
 - Fix the CAS logout URL computation (for central logout without prefix)
+- Introduce the `WebContextFactory` concept and the `JEEContextFactory` implementation
 
 **v4.0.0**:
 

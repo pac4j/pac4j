@@ -1,6 +1,7 @@
 package org.pac4j.core.util;
 
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
@@ -99,6 +100,18 @@ public class FindBest {
         } else {
             CommonHelper.assertNotNull("defaultLogic", defaultLogic);
             return defaultLogic;
+        }
+    }
+
+    public static WebContextFactory webContextFactory(final WebContextFactory localFactory, final Config config,
+                                                      final WebContextFactory defaultFactory) {
+        if (localFactory != null) {
+            return localFactory;
+        } else if (config != null && config.getWebContextFactory() != null) {
+            return config.getWebContextFactory();
+        } else {
+            CommonHelper.assertNotNull("defaultFactory", defaultFactory);
+            return defaultFactory;
         }
     }
 }

@@ -3,6 +3,7 @@ package org.pac4j.core.config;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
@@ -49,6 +50,8 @@ public class Config {
     protected CallbackLogic callbackLogic;
 
     protected LogoutLogic logoutLogic;
+
+    protected WebContextFactory webContextFactory;
 
     public Config() {}
 
@@ -193,6 +196,14 @@ public class Config {
         this.logoutLogic = logoutLogic;
     }
 
+    public WebContextFactory getWebContextFactory() {
+        return webContextFactory;
+    }
+
+    public void setWebContextFactory(final WebContextFactory webContextFactory) {
+        this.webContextFactory = webContextFactory;
+    }
+
     public static ProfileManagerFactory getProfileManagerFactory() {
         return INSTANCE.profileManagerFactory;
     }
@@ -242,5 +253,6 @@ public class Config {
         INSTANCE.setSecurityLogic(config.getSecurityLogic());
         INSTANCE.setCallbackLogic(config.getCallbackLogic());
         INSTANCE.setLogoutLogic(config.getLogoutLogic());
+        INSTANCE.setWebContextFactory(config.getWebContextFactory());
     }
 }
