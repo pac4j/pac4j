@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Jerome LELEU
  * @since 4.0.1
  */
-public class JEEContextFactory implements WebContextFactory<JEEContext> {
+public class JEEContextFactory implements WebContextFactory {
 
     public static final JEEContextFactory INSTANCE = new JEEContextFactory();
 
