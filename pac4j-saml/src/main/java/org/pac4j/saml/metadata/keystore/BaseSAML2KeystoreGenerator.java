@@ -151,8 +151,8 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     }
 
     private void validate() {
-        CommonHelper.assertNotNull("keystoreAlias", saml2Configuration.getKeyStoreAlias());
-        CommonHelper.assertNotNull("keystoreType", saml2Configuration.getKeyStoreType());
-        CommonHelper.assertNotNull("privateKeyPassword", saml2Configuration.getPrivateKeyPassword());
+        CommonHelper.assertNotBlank("keystoreAlias", saml2Configuration.getKeyStoreAlias());
+        CommonHelper.assertNotBlank("keystoreType", saml2Configuration.getKeyStoreType());
+        CommonHelper.assertNotBlank("privateKeyPassword", saml2Configuration.getPrivateKeyPassword());
     }
 }
