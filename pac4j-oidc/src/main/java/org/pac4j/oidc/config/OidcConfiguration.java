@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
@@ -15,7 +16,6 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
@@ -33,7 +33,7 @@ import org.pac4j.oidc.profile.creator.TokenValidator;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcConfiguration extends InitializableObject {
+public class OidcConfiguration extends BaseClientConfiguration {
 
     public static final String SCOPE = "scope";
     public static final String RESPONSE_TYPE = "response_type";

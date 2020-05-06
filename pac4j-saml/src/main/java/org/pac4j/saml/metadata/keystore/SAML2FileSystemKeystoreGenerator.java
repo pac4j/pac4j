@@ -74,6 +74,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
 
     private void validate() {
         CommonHelper.assertNotNull("keystoreResource", saml2Configuration.getKeystoreResource());
+        CommonHelper.assertNotNull("keystorePassword", saml2Configuration.getKeystorePassword());
     }
 
     @Override
