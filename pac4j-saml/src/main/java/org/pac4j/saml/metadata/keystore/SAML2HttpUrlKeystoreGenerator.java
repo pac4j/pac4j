@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 
@@ -34,6 +35,8 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 
     @Override
     public InputStream retrieve() throws Exception {
+        validate();
+
         final String url = saml2Configuration.getKeystoreResource().getURL().toExternalForm();
         logger.debug("Loading keystore from {}", url);
         final HttpGet httpGet = new HttpGet(url);
@@ -61,6 +64,8 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
     @Override
     protected void store(final KeyStore ks, final X509Certificate certificate,
                          final PrivateKey privateKey) throws Exception {
+        validate();
+
         HttpResponse response = null;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
@@ -97,5 +102,11 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
                 ((CloseableHttpResponse) response).close();
             }
         }
+    }
+
+    private void validate() {
+        CommonHelper.assertNotNull("keystoreResource", saml2Configuration.getKeystoreResource());
+        CommonHelper.assertNotBlank("keystorePassword", saml2Configuration.getPrivateKeyPassword());
+        CommonHelper.assertNotBlank("privateKeyPassword", saml2Configuration.getPrivateKeyPassword());
     }
 }

@@ -45,7 +45,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, @Nullable final String idpEntityId) {
-        CommonHelper.assertNotNull("idpMetadataResource", idpMetadataResource);
+        CommonHelper.assertNotNull("identityProviderMetadataResource", idpMetadataResource);
         this.idpMetadataResource = idpMetadataResource;
         this.idpEntityId = idpEntityId;
     }
@@ -55,18 +55,13 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
         // No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
         // idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
-        // Usage of locks will adversly impact performance.
+        // Usage of locks will adversely impact performance.
         if (idpMetadataProvider != null) {
             return idpMetadataProvider;
         }
 
         try {
-
-            if (this.idpMetadataResource == null) {
-                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
-            }
-
-            try ( InputStream in = this.idpMetadataResource.getInputStream()) {
+            try (InputStream in = this.idpMetadataResource.getInputStream()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
                 final Element metadataRoot = inCommonMDDoc.getDocumentElement();
                 idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
@@ -110,7 +105,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         final XMLObject md = getEntityDescriptorElement();
         if (md instanceof EntitiesDescriptor) {
             return ((EntitiesDescriptor) md).getEntityDescriptors().get(0).getEntityID();
-        } else if (md instanceof EntityDescriptor) {
+        }
+        if (md instanceof EntityDescriptor) {
             return ((EntityDescriptor) md).getEntityID();
         }
         throw new SAMLException("No idp entityId found");

@@ -278,11 +278,6 @@ public class SAML2Configuration extends InitializableObject {
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("keystoreResource", this.keystoreResource);
-        CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
-        CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
-        CommonHelper.assertNotNull("identityProviderMetadataResource", this.identityProviderMetadataResource);
-
         final SAML2KeystoreGenerator keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
@@ -869,7 +864,7 @@ public class SAML2Configuration extends InitializableObject {
         }
     }
 
-    protected SAML2MetadataGenerator getMetadataGenerator() throws Exception {
+    public SAML2MetadataGenerator getMetadataGenerator() throws Exception {
         if (this.metadataGenerator == null) {
             return serviceProviderMetadataResource instanceof UrlResource
                 ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())

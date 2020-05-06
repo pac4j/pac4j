@@ -11,6 +11,7 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
@@ -41,6 +42,9 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     private final String privateKeyAlias;
 
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
+        CommonHelper.assertNotBlank("keystorePassword", configuration.getPrivateKeyPassword());
+        CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
+        
         try (InputStream inputStream = configuration.getKeystoreGenerator().retrieve()) {
             final String keyStoreType = configuration.getKeyStoreType() == null
                 ? DEFAULT_KEYSTORE_TYPE
