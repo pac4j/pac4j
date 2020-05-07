@@ -20,8 +20,10 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
 import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
 import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
@@ -185,6 +187,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
+
+    private SAML2MetadataResolver identityProviderMetadataResolver;
 
     public SAML2Configuration() {
     }
@@ -848,9 +852,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 // the logout URL is callback URL with an extra parameter
                 generator.setSingleLogoutServiceUrl(logoutUrl);
 
-                generator.setBlackListedSignatureSigningAlgorithms(
-                    new ArrayList<>(getBlackListedSignatureSigningAlgorithms())
-                );
+                if (getBlackListedSignatureSigningAlgorithms() != null) {
+                    generator.setBlackListedSignatureSigningAlgorithms(
+                        new ArrayList<>(getBlackListedSignatureSigningAlgorithms()));
+                }
                 generator.setSignatureAlgorithms(getSignatureAlgorithms());
                 generator.setSignatureReferenceDigestMethods(getSignatureReferenceDigestMethods());
 
@@ -875,5 +880,16 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public void setMetadataGenerator(final SAML2MetadataGenerator metadataGenerator) {
         this.metadataGenerator = metadataGenerator;
+    }
+
+    public SAML2MetadataResolver getIdentityProviderMetadataResolver() {
+        if (identityProviderMetadataResolver == null) {
+            return new SAML2IdentityProviderMetadataResolver(this);
+        }
+        return identityProviderMetadataResolver;
+    }
+
+    public void setIdentityProviderMetadataResolver(final SAML2MetadataResolver identityProviderMetadataResolver) {
+        this.identityProviderMetadataResolver = identityProviderMetadataResolver;
     }
 }

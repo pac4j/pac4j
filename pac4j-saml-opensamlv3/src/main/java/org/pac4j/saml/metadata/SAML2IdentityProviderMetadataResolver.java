@@ -63,7 +63,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         try {
 
             if (this.idpMetadataResource == null) {
-                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
+                throw new XMLParserException("Identity provider metadata is undefined");
             }
 
             try (InputStream in = this.idpMetadataResource.getInputStream()) {
@@ -77,7 +77,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
                 idpMetadataProvider.initialize();
             } catch (final FileNotFoundException e) {
-                throw new TechnicalException("Error loading idp Metadata");
+                throw new TechnicalException("Identity provider metadata cannot be located from " + this.idpMetadataResource, e);
             }
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
             if (this.idpEntityId == null) {
@@ -92,15 +92,15 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
             }
 
             if (this.idpEntityId == null) {
-                throw new SAMLException("No idp entityId found");
+                throw new SAMLException("No Identity provider metadata entityId found");
             }
 
         } catch (final ComponentInitializationException e) {
-            throw new SAMLException("Error initializing idpMetadataProvider", e);
+            throw new SAMLException("Error initializing identity provider metadata", e);
         } catch (final XMLParserException e) {
-            throw new TechnicalException("Error parsing idp Metadata", e);
+            throw new TechnicalException("Error parsing identity provider metadata", e);
         } catch (final IOException e) {
-            throw new TechnicalException("Error getting idp Metadata resource", e);
+            throw new TechnicalException("Error getting identity provider metadata resource", e);
         }
         return idpMetadataProvider;
     }

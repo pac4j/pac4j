@@ -37,7 +37,9 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Resource idpMetadataResource;
+
     private String idpEntityId;
+
     private DOMMetadataResolver idpMetadataProvider;
 
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
@@ -50,16 +52,17 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         this.idpEntityId = idpEntityId;
     }
 
+    /**
+     * No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
+     * Usage of locks will adversely impact performance.
+     *
+     * @return
+     */
     @Override
     public final MetadataResolver resolve() {
-
-        // No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
-        // idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
-        // Usage of locks will adversely impact performance.
         if (idpMetadataProvider != null) {
             return idpMetadataProvider;
         }
-
         try {
             try (InputStream in = this.idpMetadataResource.getInputStream()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
