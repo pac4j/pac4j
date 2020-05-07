@@ -60,19 +60,28 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
 
     @Override
     public boolean shouldGenerate() {
+        validate();
         final Resource keystoreFile = saml2Configuration.getKeystoreResource();
-        return !keystoreFile.exists() || super.shouldGenerate();
+        return keystoreFile != null && !keystoreFile.exists() || super.shouldGenerate();
     }
 
     @Override
     public InputStream retrieve() throws Exception {
+        validate();
         logger.debug("Retrieving keystore from {}", saml2Configuration.getKeystoreResource());
         return saml2Configuration.getKeystoreResource().getInputStream();
+    }
+
+    private void validate() {
+        CommonHelper.assertNotNull("keystoreResource", saml2Configuration.getKeystoreResource());
+        CommonHelper.assertNotBlank("keystorePassword", saml2Configuration.getKeystorePassword());
     }
 
     @Override
     protected void store(final KeyStore ks, final X509Certificate certificate,
                          final PrivateKey privateKey) throws Exception {
+        validate();
+
         final File keystoreFile = saml2Configuration.getKeystoreResource().getFile();
         final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
         try (OutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {

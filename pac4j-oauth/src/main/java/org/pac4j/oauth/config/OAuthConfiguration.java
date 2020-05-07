@@ -4,9 +4,9 @@ import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
@@ -15,7 +15,8 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuthConfiguration<S extends OAuthService, T extends Token> extends InitializableObject {
+public abstract class OAuthConfiguration<S extends OAuthService, T extends Token>
+    extends BaseClientConfiguration {
 
     public static final String OAUTH_TOKEN = "oauth_token";
 

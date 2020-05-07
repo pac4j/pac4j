@@ -7,12 +7,12 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
@@ -20,8 +20,10 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
 import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
 import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
@@ -56,7 +58,7 @@ import java.util.function.Supplier;
  * @author Jerome Leleu
  * @since 1.7
  */
-public class SAML2Configuration extends InitializableObject {
+public class SAML2Configuration extends BaseClientConfiguration {
 
     protected static final String RESOURCE_PREFIX = "resource:";
 
@@ -186,6 +188,8 @@ public class SAML2Configuration extends InitializableObject {
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
 
+    private SAML2MetadataResolver identityProviderMetadataResolver;
+
     public SAML2Configuration() {
     }
 
@@ -278,11 +282,6 @@ public class SAML2Configuration extends InitializableObject {
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("keystoreResource", this.keystoreResource);
-        CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
-        CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
-        CommonHelper.assertNotNull("identityProviderMetadataResource", this.identityProviderMetadataResource);
-
         final SAML2KeystoreGenerator keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
@@ -853,9 +852,10 @@ public class SAML2Configuration extends InitializableObject {
                 // the logout URL is callback URL with an extra parameter
                 generator.setSingleLogoutServiceUrl(logoutUrl);
 
-                generator.setBlackListedSignatureSigningAlgorithms(
-                    new ArrayList<>(getBlackListedSignatureSigningAlgorithms())
-                );
+                if (getBlackListedSignatureSigningAlgorithms() != null) {
+                    generator.setBlackListedSignatureSigningAlgorithms(
+                        new ArrayList<>(getBlackListedSignatureSigningAlgorithms()));
+                }
                 generator.setSignatureAlgorithms(getSignatureAlgorithms());
                 generator.setSignatureReferenceDigestMethods(getSignatureReferenceDigestMethods());
 
@@ -869,7 +869,7 @@ public class SAML2Configuration extends InitializableObject {
         }
     }
 
-    protected SAML2MetadataGenerator getMetadataGenerator() throws Exception {
+    public SAML2MetadataGenerator getMetadataGenerator() throws Exception {
         if (this.metadataGenerator == null) {
             return serviceProviderMetadataResource instanceof UrlResource
                 ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
@@ -880,5 +880,16 @@ public class SAML2Configuration extends InitializableObject {
 
     public void setMetadataGenerator(final SAML2MetadataGenerator metadataGenerator) {
         this.metadataGenerator = metadataGenerator;
+    }
+
+    public SAML2MetadataResolver getIdentityProviderMetadataResolver() {
+        if (identityProviderMetadataResolver == null) {
+            return new SAML2IdentityProviderMetadataResolver(this);
+        }
+        return identityProviderMetadataResolver;
+    }
+
+    public void setIdentityProviderMetadataResolver(final SAML2MetadataResolver identityProviderMetadataResolver) {
+        this.identityProviderMetadataResolver = identityProviderMetadataResolver;
     }
 }

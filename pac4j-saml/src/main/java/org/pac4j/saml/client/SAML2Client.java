@@ -31,7 +31,6 @@ import org.pac4j.saml.logout.impl.SAML2LogoutMessageReceiver;
 import org.pac4j.saml.logout.impl.SAML2LogoutProfileHandler;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender;
 import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.redirect.SAML2RedirectionActionBuilder;
@@ -206,7 +205,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
     }
 
     protected MetadataResolver initIdentityProviderMetadataResolver() {
-        this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration);
+        this.idpMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
         return this.idpMetadataResolver.resolve();
     }
 

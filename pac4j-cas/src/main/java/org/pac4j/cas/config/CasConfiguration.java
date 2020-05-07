@@ -3,6 +3,7 @@ package org.pac4j.cas.config;
 import org.jasig.cas.client.util.PrivateKeyUtils;
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
@@ -11,7 +12,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasConfiguration extends InitializableObject {
+public class CasConfiguration extends BaseClientConfiguration {
 
     public static final String TICKET_PARAMETER = "ticket";
 

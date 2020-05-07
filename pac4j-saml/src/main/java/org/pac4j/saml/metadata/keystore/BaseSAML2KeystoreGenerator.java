@@ -68,6 +68,8 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
                 logger.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
             }
 
+            validate();
+            
             final KeyStore ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
             final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
             ks.load(null, password);
@@ -146,5 +148,11 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         cert.verify(keyPair.getPublic());
 
         return cert;
+    }
+
+    private void validate() {
+        CommonHelper.assertNotBlank("keystoreAlias", saml2Configuration.getKeyStoreAlias());
+        CommonHelper.assertNotBlank("keystoreType", saml2Configuration.getKeyStoreType());
+        CommonHelper.assertNotBlank("privateKeyPassword", saml2Configuration.getPrivateKeyPassword());
     }
 }

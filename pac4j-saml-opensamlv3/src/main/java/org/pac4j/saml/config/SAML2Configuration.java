@@ -49,12 +49,12 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
@@ -76,7 +76,7 @@ import org.springframework.core.io.WritableResource;
  * @author Jerome Leleu
  * @since 1.7
  */
-public class SAML2Configuration extends InitializableObject {
+public class SAML2Configuration extends BaseClientConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2Configuration.class);
 
