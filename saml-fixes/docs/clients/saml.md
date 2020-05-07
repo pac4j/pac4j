@@ -230,7 +230,7 @@ Resolution of identity provider metadata can also be controlled and overridden a
 ```java      
 final SAML2MetadataResolver resolver = new CustomIdentityProviderSAML2MetadataResolver();
 final SAML2Configuration config = new SAML2Configuration();
-config.setIdentityProviderMetadataResolver();
+config.setIdentityProviderMetadataResolver(resolver);
 ```
 
 ## 4) Logout
