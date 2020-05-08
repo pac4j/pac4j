@@ -41,9 +41,10 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
             logger.error("No session store available for this web context");
         } else {
             final String sessionId = sessionStore.getOrCreateSessionId(context);
-            final Object trackableSession = sessionStore.getTrackableSession(context);
+            final Optional<Object> optTrackableSession = sessionStore.getTrackableSession(context);
 
-            if (trackableSession != null) {
+            if (optTrackableSession.isPresent()) {
+                final Object trackableSession = optTrackableSession.get();
                 logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
                 logger.debug("sessionId: {}", sessionId);
                 store.set(key, trackableSession);
@@ -94,9 +95,9 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
 
     @Override
     public void destroySessionBack(final C context, final String key) {
-        final Optional trackableSession = store.get(key);
-        logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
-        if (!trackableSession.isPresent()) {
+        final Optional<Object> optTrackableSession = store.get(key);
+        logger.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
+        if (!optTrackableSession.isPresent()) {
             logger.error("No trackable session found for back channel logout. Either the session store does not support to track session "
                 + "or it has expired from the store and the store settings must be updated (expired data)");
         } else {
@@ -107,15 +108,16 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final Optional<SessionStore<C>> newSessionStore = sessionStore
-                    .buildFromTrackableSession(context, ((Optional) trackableSession.get()).orElse(null));
-                if (newSessionStore.isPresent()) {
+                final Optional<SessionStore<C>> optNewSessionStore = sessionStore
+                    .buildFromTrackableSession(context, optTrackableSession.get());
+                if (optNewSessionStore.isPresent()) {
+                    final SessionStore<C> newSessionStore = optNewSessionStore.get();
                     logger.debug("newSesionStore: {}", newSessionStore);
-                    final String sessionId = newSessionStore.get().getOrCreateSessionId(context);
+                    final String sessionId = newSessionStore.getOrCreateSessionId(context);
                     logger.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
-                    destroy(context, newSessionStore.get(), "back");
+                    destroy(context, newSessionStore, "back");
                 } else {
                     logger.error("The session store should be able to build a new session store from the tracked session");
                 }
