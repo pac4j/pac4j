@@ -21,7 +21,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
     @Override
     public void save(final WebContext context) {
-        final String requestedUrl = context.getFullRequestURL();
+        final String requestedUrl = getRequestedUrl(context);
         if (ContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
             final String formPost = RedirectionActionHelper.buildFormPostContent(context);
@@ -30,6 +30,10 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(requestedUrl));
         }
+    }
+
+    protected String getRequestedUrl(final WebContext context) {
+        return context.getFullRequestURL();
     }
 
     @Override
