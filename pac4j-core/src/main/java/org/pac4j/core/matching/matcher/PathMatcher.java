@@ -42,6 +42,15 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
+    public PathMatcher excludePaths(final String... paths) {
+        if (paths != null && paths.length > 0) {
+            for (final String path : paths) {
+                excludePath(path);
+            }
+        }
+        return this;
+    }
+
     /**
      * Convenience method for excluding all paths starting with a prefix e.g. "/foo" would exclude "/foo", "/foo/bar", etc.
      *
