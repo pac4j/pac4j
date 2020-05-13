@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-saml</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j for SAML protocol (JDK 11, OpenSAML &gt;= v4)</name>
+    <name>pac4j: Java web security via SAML protocol (JDK 11, OpenSAML &gt;= v4)</name>
 
     <properties>
         <opensaml.version>4.0.0</opensaml.version>

@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-config</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j configuration</name>
+    <name>pac4j: security configuration by properties</name>
 
     <properties>
         <hikaricp.version>3.4.5</hikaricp.version>

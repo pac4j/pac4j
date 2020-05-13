@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-cas</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j for CAS protocol</name>
+    <name>pac4j: Java web security via CAS protocol</name>
 
     <properties>
         <cas.version>3.6.1</cas.version>

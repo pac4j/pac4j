@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-openid</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j for OpenId protocol</name>
+    <name>pac4j: Java web security via OpenId protocol</name>
 
     <properties>
         <openid4java.version>1.0.0</openid4java.version>
