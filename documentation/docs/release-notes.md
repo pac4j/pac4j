@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.0.2**:
+
+- Fix the `ClassCastException` when receiving a SAML logout response
+
 **v4.0.1**:
 
 - Type parameters: add the `? extends Credentials` type parameter for the `Client` in the return type of the method `find` of the `ClientFinder` and add the `UserProfile` type parameter for the `ProfileManager` in the return type of the `getProfileManager` method of the `ProfileManagerFactoryAware*`
