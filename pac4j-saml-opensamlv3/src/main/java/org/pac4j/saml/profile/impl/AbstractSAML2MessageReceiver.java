@@ -57,12 +57,13 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         decodedCtx.getSAMLBindingContext().setRelayState(relayState);
         context.getSAMLBindingContext().setRelayState(relayState);
 
-        final StatusResponseType response = (StatusResponseType) decodedCtx.getMessage();
-        if (response == null) {
+        if (decodedCtx.getMessage() == null) {
             throw new SAMLException("Response from the context cannot be null");
+        } else if (decodedCtx.getMessage() instanceof StatusResponseType) {
+            final StatusResponseType response = (StatusResponseType) decodedCtx.getMessage();
+            final AssertionConsumerService acsService = context.getSPAssertionConsumerService(response);
+            decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
         }
-        final AssertionConsumerService acsService = context.getSPAssertionConsumerService(response);
-        decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
 
         final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
         if (metadata == null) {
