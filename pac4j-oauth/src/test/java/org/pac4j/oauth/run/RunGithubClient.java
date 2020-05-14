@@ -78,7 +78,7 @@ public class RunGithubClient extends RunClient {
         assertEquals("free", plan.getName());
         assertEquals(0, plan.getCollaborators().intValue());
         assertEquals(976562499, plan.getSpace().intValue());
-        assertEquals(0, plan.getPrivateRepos().intValue());
+        assertEquals(10000, plan.getPrivateRepos().intValue());
         assertEquals(24, profile.getAttributes().size());
     }
 }
