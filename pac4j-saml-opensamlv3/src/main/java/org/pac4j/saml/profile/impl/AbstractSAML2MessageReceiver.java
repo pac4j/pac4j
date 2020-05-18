@@ -5,7 +5,7 @@ import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.context.WebContext;
@@ -15,6 +15,8 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2MessageReceiver;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
+
+import java.util.Optional;
 
 /**
  * Receives the SAML2 messages.
@@ -42,6 +44,10 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
 
         final SAML2MessageContext decodedCtx = new SAML2MessageContext(decoder.getMessageContext());
         final SAMLObject message = decoder.getMessageContext().getMessage();
+        if (message == null) {
+            throw new SAMLException("Response from the context cannot be null");
+        }
+
         decodedCtx.setMessage(message);
         context.setMessage(message);
         decodedCtx.setSAMLMessageStore(context.getSAMLMessageStore());
@@ -57,12 +63,9 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         decodedCtx.getSAMLBindingContext().setRelayState(relayState);
         context.getSAMLBindingContext().setRelayState(relayState);
 
-        if (decodedCtx.getMessage() == null) {
-            throw new SAMLException("Response from the context cannot be null");
-        } else if (decodedCtx.getMessage() instanceof StatusResponseType) {
+        if (decodedCtx.getMessage() instanceof StatusResponseType) {
             final StatusResponseType response = (StatusResponseType) decodedCtx.getMessage();
-            final AssertionConsumerService acsService = context.getSPAssertionConsumerService(response);
-            decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
+            getEndpoint(context, response).ifPresent(e -> decodedCtx.getSAMLEndpointContext().setEndpoint(e));
         }
 
         final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
@@ -87,6 +90,8 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
 
         return this.validator.validate(decodedCtx);
     }
+
+    protected abstract Optional<Endpoint> getEndpoint(SAML2MessageContext context, StatusResponseType response);
 
     protected abstract AbstractPac4jDecoder getDecoder(WebContext webContext);
 

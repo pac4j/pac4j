@@ -1,7 +1,10 @@
 package org.pac4j.saml.logout.impl;
 
+import org.opensaml.saml.saml2.core.StatusResponseType;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.profile.impl.AbstractSAML2MessageReceiver;
@@ -9,6 +12,8 @@ import org.pac4j.saml.transport.AbstractPac4jDecoder;
 import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateDecoder;
 import org.pac4j.saml.util.Configuration;
+
+import java.util.Optional;
 
 /**
  * Receives the SAML2 logout messages.
@@ -55,7 +60,13 @@ public class SAML2LogoutMessageReceiver extends AbstractSAML2MessageReceiver {
     }
 
     @Override
+    protected Optional<Endpoint> getEndpoint(SAML2MessageContext context, StatusResponseType response) {
+        return Optional.empty();
+    }
+
+    @Override
     protected String getProfileUri() {
         return SAML2_SLO_PROFILE_URI;
     }
+
 }
