@@ -20,7 +20,7 @@
         <xmlsec.version>2.1.5</xmlsec.version>
         <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
         velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
-        <commons-collections.version>20040616</commons-collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.4</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
         <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
