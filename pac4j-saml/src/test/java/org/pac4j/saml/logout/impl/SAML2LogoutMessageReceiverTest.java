@@ -21,9 +21,8 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -47,7 +46,7 @@ public class SAML2LogoutMessageReceiverTest {
                     "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>%n" +
                     "  </samlp:Status>%n" +
                     "</samlp:LogoutResponse>",
-                LocalDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss'Z'"))
+                ZonedDateTime.now(ZoneOffset.UTC)
             )
         );
 
