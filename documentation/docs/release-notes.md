@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 - Fix the `ClassCastException` when receiving a SAML logout response
 - Send the access token as a header for the `GithubClient`
+- CAS front channel logout: fix the 401 error after the logout
 
 **v4.0.1**:
 

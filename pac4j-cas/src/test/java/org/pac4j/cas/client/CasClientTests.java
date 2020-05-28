@@ -7,6 +7,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.WithContentAction;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.TestsConstants;
@@ -187,7 +188,9 @@ public final class CasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod(HTTP_METHOD.GET.name());
-        assertFalse(casClient.getCredentials(context).isPresent());
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
+        assertEquals(200, action.getCode());
+        assertEquals("", ((WithContentAction) action).getContent());
     }
 
     @Test

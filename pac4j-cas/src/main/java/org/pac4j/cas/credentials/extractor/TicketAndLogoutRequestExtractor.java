@@ -7,6 +7,7 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.exception.http.NoContentAction;
+import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.context.ContextHelper;
@@ -74,7 +75,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
                 logoutHandler.destroySessionFront(context, ticket);
             }
             logger.debug("front logout request: no credential returned");
-            computeRedirectionToServerIfNecessary(context);
+            throwFinalActionForFrontChannelLogout(context);
         }
 
         return Optional.empty();
@@ -100,17 +101,17 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
                 && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).isPresent();
     }
 
-    private boolean isMultipartRequest(final WebContext context) {
+    protected boolean isMultipartRequest(final WebContext context) {
         final Optional<String> contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
         return contentType.isPresent() && contentType.get().toLowerCase().startsWith("multipart");
     }
 
-    private boolean isFrontLogoutRequest(final WebContext context) {
+    protected boolean isFrontLogoutRequest(final WebContext context) {
         return ContextHelper.isGet(context)
                 && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).isPresent();
     }
 
-    private String uncompressLogoutMessage(final String originalMessage) {
+    protected String uncompressLogoutMessage(final String originalMessage) {
         final byte[] binaryMessage = Base64.getMimeDecoder().decode(originalMessage);
 
         Inflater decompresser = null;
@@ -134,7 +135,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
         }
     }
 
-    private void computeRedirectionToServerIfNecessary(final WebContext context) {
+    protected void throwFinalActionForFrontChannelLogout(final WebContext context) {
         final Optional<String> relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (relayStateValue.isPresent()) {
@@ -150,6 +151,8 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
             final String redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
             throw RedirectionActionHelper.buildRedirectUrlAction(context, redirectUrl);
+        } else {
+            throw new OkAction("");
         }
     }
 }

@@ -82,13 +82,13 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
         // remove profiles
         final ProfileManager<UserProfile> manager = getProfileManager(context, sessionStore);
         manager.logout();
-        logger.debug("destroy the user profiles");
+        logger.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session
         if (destroySession) {
             logger.debug("destroy the whole session");
             final boolean invalidated = sessionStore.destroySession(context);
             if (!invalidated) {
-                logger.error("The session has not been invalidated for {} channel logout", channel);
+                logger.error("The session has not been invalidated");
             }
         }
     }
