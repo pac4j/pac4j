@@ -13,7 +13,7 @@
     <name>pac4j for Kerberos</name>
 
     <properties>
-        <kerby.version>2.0.0</kerby.version>
+        <kerby.version>2.0.1</kerby.version>
     </properties>
 
     <dependencies>
