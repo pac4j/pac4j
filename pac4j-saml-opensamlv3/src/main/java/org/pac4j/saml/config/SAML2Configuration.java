@@ -772,7 +772,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
         certGen.setStartDate(new Time(new Date(System.currentTimeMillis() - 1000L)));
 
-        final Date expiration = DateTime.now().plusDays(this.certificateExpirationPeriod.getDays()).toDate();
+        final Date expiration = DateTime.now().plusDays(
+            365 * certificateExpirationPeriod.getYears()
+            + 31 * certificateExpirationPeriod.getMonths()
+            + certificateExpirationPeriod.getDays()
+        ).toDate();
         certGen.setEndDate(new Time(expiration));
 
         certGen.setSignature(sigAlgID);

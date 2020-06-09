@@ -31,6 +31,7 @@ import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.Period;
 import java.util.Date;
 
 /**
@@ -69,7 +70,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
             }
 
             validate();
-            
+
             final KeyStore ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
             final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
             ks.load(null, password);
@@ -120,8 +121,12 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
 
         certGen.setStartDate(new Time(new Date(System.currentTimeMillis() - 1000L)));
 
+        final Period period = saml2Configuration.getCertificateExpirationPeriod();
         final Date expiration = DateTime.now().plusDays(
-            saml2Configuration.getCertificateExpirationPeriod().getDays()).toDate();
+            365 * period.getYears()
+            + 31 * period.getMonths()
+            + period.getDays()
+        ).toDate();
         certGen.setEndDate(new Time(expiration));
 
         certGen.setSignature(sigAlgID);

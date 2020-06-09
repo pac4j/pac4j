@@ -5,6 +5,10 @@ title: Release notes&#58;
 
 **v4.0.2**:
 
+- Fix the expiration date for the SAML generated certificate
+
+**v4.0.2**:
+
 - Fix the `ClassCastException` when receiving a SAML logout response
 - Send the access token as a header for the `GithubClient`
 - CAS front channel logout: fix the 401 error after the logout
