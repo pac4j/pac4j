@@ -3,7 +3,7 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v4.0.2**:
+**v4.0.3**:
 
 - Fix the expiration date for the SAML generated certificate
 
