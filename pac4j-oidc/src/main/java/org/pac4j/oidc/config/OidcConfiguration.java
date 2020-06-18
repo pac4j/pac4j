@@ -378,7 +378,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return stateValidator;
     }
 
-    public void setStateValidator(StateValidator stateValidator, ValueGenerator stateGenerator) {
+    public void setStateValidator(StateValidator stateValidator) {
         CommonHelper.assertNotNull("stateValidator", stateValidator);
         this.stateValidator = stateValidator;
     }
