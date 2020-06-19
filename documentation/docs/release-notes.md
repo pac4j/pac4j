@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v4.0.3**:
 
 - Fix the expiration date for the SAML generated certificate
+- Added a new `StateValidator` interface and its implementation `SessionStoreStateValidator` for the OpenID Connect protocol
 
 **v4.0.2**:
 
