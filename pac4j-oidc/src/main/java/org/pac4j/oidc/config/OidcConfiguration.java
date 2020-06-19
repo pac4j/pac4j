@@ -25,6 +25,8 @@ import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import org.pac4j.oidc.state.validator.SessionStoreStateValidator;
+import org.pac4j.oidc.state.validator.StateValidator;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
@@ -45,14 +47,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public static final String NONCE = "nonce";
 
     public static final List<ResponseType> AUTHORIZATION_CODE_FLOWS = Collections
-            .unmodifiableList(Arrays.asList(new ResponseType(ResponseType.Value.CODE)));
+        .unmodifiableList(Arrays.asList(new ResponseType(ResponseType.Value.CODE)));
     public static final List<ResponseType> IMPLICIT_FLOWS = Collections
-            .unmodifiableList(Arrays.asList(new ResponseType(OIDCResponseTypeValue.ID_TOKEN),
-                    new ResponseType(OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
+        .unmodifiableList(Arrays.asList(new ResponseType(OIDCResponseTypeValue.ID_TOKEN),
+            new ResponseType(OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
     public static final List<ResponseType> HYBRID_CODE_FLOWS = Collections.unmodifiableList(Arrays.asList(
-            new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN),
-            new ResponseType(ResponseType.Value.CODE, ResponseType.Value.TOKEN),
-            new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
+        new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN),
+        new ResponseType(ResponseType.Value.CODE, ResponseType.Value.TOKEN),
+        new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
 
     /* default max clock skew */
     public static final int DEFAULT_MAX_CLOCK_SKEW = 30;
@@ -108,6 +110,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
+    private StateValidator stateValidator = new SessionStoreStateValidator();
+
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
     private boolean expireSessionWithToken = false;
 
@@ -143,7 +147,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             try {
                 // Download OIDC metadata
                 this.setProviderMetadata(OIDCProviderMetadata.parse(getResourceRetriever().retrieveResource(
-                        new URL(this.getDiscoveryURI())).getContent()));
+                    new URL(this.getDiscoveryURI())).getContent()));
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
@@ -368,6 +372,15 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
+    }
+
+    public StateValidator getStateValidator() {
+        return stateValidator;
+    }
+
+    public void setStateValidator(StateValidator stateValidator) {
+        CommonHelper.assertNotNull("stateValidator", stateValidator);
+        this.stateValidator = stateValidator;
     }
 
     public LogoutHandler findLogoutHandler() {
