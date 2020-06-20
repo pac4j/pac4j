@@ -1,6 +1,9 @@
 package org.pac4j.oidc.redirect;
 
 import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -102,6 +105,15 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
             final Nonce nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
             context.getSessionStore().set(context, client.getNonceSessionAttributeName(), nonce.getValue());
+        }
+
+        CodeChallengeMethod pkceMethod = configuration.findPkceMethod();
+        if (pkceMethod != null) {
+            final CodeVerifier verfifier = new CodeVerifier(
+                    configuration.getCodeVerifierGenerator().generateValue(context));
+            context.getSessionStore().set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
+            params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());
+            params.put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
         }
     }
 

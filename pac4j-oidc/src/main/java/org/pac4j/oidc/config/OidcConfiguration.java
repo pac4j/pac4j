@@ -23,6 +23,7 @@ import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.pac4j.oidc.state.validator.SessionStoreStateValidator;
@@ -45,6 +46,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public static final String STATE = "state";
     public static final String MAX_AGE = "max_age";
     public static final String NONCE = "nonce";
+    public static final String CODE_CHALLENGE = "code_challenge";
+    public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
 
     public static final List<ResponseType> AUTHORIZATION_CODE_FLOWS = Collections
         .unmodifiableList(Arrays.asList(new ResponseType(ResponseType.Value.CODE)));
@@ -83,6 +86,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* use nonce? */
     private boolean useNonce;
 
+    /* use PKCE, when null, lookup support from metadata */
+    private CodeChallengeMethod pkceMethod;
+
     /* Preferred JWS algorithm */
     private JWSAlgorithm preferredJwsAlgorithm;
 
@@ -109,6 +115,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private boolean withState;
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
+
+    private ValueGenerator codeVerifierGenerator = new RandomValueGenerator(50);
 
     private StateValidator stateValidator = new SessionStoreStateValidator();
 
@@ -242,6 +250,33 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.useNonce = useNonce;
     }
 
+    public CodeChallengeMethod findPkceMethod() {
+        init();
+
+        if (getPkceMethod() == null) {
+            if (getProviderMetadata() == null) {
+                return null;
+            }
+            List<CodeChallengeMethod> methods = getProviderMetadata().getCodeChallengeMethods();
+            if (methods == null || methods.isEmpty()) {
+                return null;
+            }
+            if (methods.contains(CodeChallengeMethod.S256)) {
+                return CodeChallengeMethod.S256;
+            }
+            return methods.get(0);
+        }
+        return getPkceMethod();
+    }
+
+    public CodeChallengeMethod getPkceMethod() {
+        return pkceMethod;
+    }
+
+    public void setPkceMethod(CodeChallengeMethod pkceMethod) {
+        this.pkceMethod = pkceMethod;
+    }
+
     public JWSAlgorithm getPreferredJwsAlgorithm() {
         return preferredJwsAlgorithm;
     }
@@ -372,6 +407,15 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
+    }
+
+    public ValueGenerator getCodeVerifierGenerator() {
+        return codeVerifierGenerator;
+    }
+
+    public void setCodeVerifierGenerator(ValueGenerator codeVerifierGenerator) {
+        CommonHelper.assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
+        this.codeVerifierGenerator = codeVerifierGenerator;
     }
 
     public StateValidator getStateValidator() {

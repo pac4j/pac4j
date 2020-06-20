@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
@@ -147,9 +148,12 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         if (code != null) {
             try {
                 final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
+                CodeVerifier verifier = (CodeVerifier) context.getSessionStore()
+                        .get(context, client.getCodeVerifierSessionAttributeName()).orElse(null);
                 // Token request
-                final TokenRequest request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
-                        this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(computedCallbackUrl)));
+                final TokenRequest request = new TokenRequest(
+                        configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
+                        new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
                 executeTokenRequest(request, credentials);
             } catch (final URISyntaxException | IOException | ParseException e) {
                 throw new TechnicalException(e);
