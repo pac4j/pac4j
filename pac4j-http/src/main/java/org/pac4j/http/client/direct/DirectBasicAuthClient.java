@@ -45,10 +45,14 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
 
     @Override
     protected Optional<UsernamePasswordCredentials> retrieveCredentials(final WebContext context) {
-        // set the www-authenticate in case of error
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        addAuthenticateHeader(context);
 
         return super.retrieveCredentials(context);
+    }
+
+    protected void addAuthenticateHeader(final WebContext context) {
+        // set the www-authenticate in case of error
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
     }
 
     public String getRealmName() {
