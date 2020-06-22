@@ -148,8 +148,8 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         if (code != null) {
             try {
                 final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
-                CodeVerifier verifier = (CodeVerifier) context.getSessionStore()
-                        .get(context, client.getCodeVerifierSessionAttributeName()).orElse(null);
+                CodeVerifier verifier = (CodeVerifier) configuration.getValueRetriever()
+                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context).orElse(null);
                 // Token request
                 final TokenRequest request = new TokenRequest(
                         configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,

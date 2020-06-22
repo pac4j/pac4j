@@ -27,8 +27,8 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import org.pac4j.oidc.state.validator.SessionStoreStateValidator;
-import org.pac4j.oidc.state.validator.StateValidator;
+import org.pac4j.oidc.state.validator.SessionStoreValueRetriever;
+import org.pac4j.oidc.state.validator.ValueRetriever;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
@@ -119,7 +119,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private ValueGenerator codeVerifierGenerator = new RandomValueGenerator(50);
 
-    private StateValidator stateValidator = new SessionStoreStateValidator();
+    private ValueRetriever valueRetriever = new SessionStoreValueRetriever();
 
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
     private boolean expireSessionWithToken = false;
@@ -424,13 +424,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.codeVerifierGenerator = codeVerifierGenerator;
     }
 
-    public StateValidator getStateValidator() {
-        return stateValidator;
+    public ValueRetriever getValueRetriever() {
+        return valueRetriever;
     }
 
-    public void setStateValidator(StateValidator stateValidator) {
-        CommonHelper.assertNotNull("stateValidator", stateValidator);
-        this.stateValidator = stateValidator;
+    public void setValueRetriever(ValueRetriever valueRetriever) {
+        CommonHelper.assertNotNull("valueRetriever", valueRetriever);
+        this.valueRetriever = valueRetriever;
     }
 
     public LogoutHandler findLogoutHandler() {

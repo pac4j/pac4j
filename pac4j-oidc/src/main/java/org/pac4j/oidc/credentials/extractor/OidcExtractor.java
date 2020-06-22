@@ -4,6 +4,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
@@ -92,8 +93,21 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
             logger.debug("Authentication response successful");
             AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) response;
 
-            // Validate state for CSRF mitigation
-            configuration.getStateValidator().validate(successResponse.getState(), client, context);
+            if (configuration.isWithState()) {
+                // Validate state for CSRF mitigation
+                State state = (State) configuration.getValueRetriever()
+                        .retrieve(client.getStateSessionAttributeName(), client, context)
+                        .orElseThrow(() -> new TechnicalException("State cannot be determined"));
+
+                if (successResponse.getState() == null) {
+                    throw new TechnicalException("Missing state parameter");
+                }
+                if (!state.equals(successResponse.getState())) {
+                    throw new TechnicalException(
+                            "State parameter is different from the one sent in authentication request. "
+                                    + "Session expired or possible threat of cross-site request forgery");
+                }
+            }
 
             final OidcCredentials credentials = new OidcCredentials();
             // get authorization code
