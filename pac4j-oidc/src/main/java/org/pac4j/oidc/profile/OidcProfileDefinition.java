@@ -46,6 +46,7 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
 
     // Custom secondary attributes
     public static final String TOKEN_EXPIRATION_ADVANCE = "token_expiration_advance";
+    public static final String EXPIRATION               = "expiration";
 
     public OidcProfileDefinition() {
         super(x -> (P) new OidcProfile());
@@ -80,6 +81,7 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
 
         // custom attributes
         secondary(TOKEN_EXPIRATION_ADVANCE, Converters.INTEGER);
+        secondary(EXPIRATION, Converters.DATE_TZ_RFC822);
     }
 
     public OidcProfileDefinition(final ProfileFactory<P> profileFactory) {

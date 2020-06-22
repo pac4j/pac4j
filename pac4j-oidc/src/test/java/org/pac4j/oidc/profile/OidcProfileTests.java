@@ -1,18 +1,13 @@
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.oauth2.sdk.Scope;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.jwt.profile.JwtGenerator;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -153,12 +148,9 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testNoExpirationWithNoExpiredToken() {
-        final JwtGenerator jwtGenerator = new JwtGenerator<OidcProfile>();
-        final ZonedDateTime expAfter = LocalDateTime.from(LocalDateTime.now()).plusHours(1).atZone(ZoneId.systemDefault());
-        jwtGenerator.setExpirationTime(Date.from(expAfter.toInstant()));
+        final AccessToken token = new BearerAccessToken("token_value", 3600, new Scope("scope"));
         final OidcProfile profile = new OidcProfile();
-        final String idTokenString = jwtGenerator.generate(profile);
-        profile.setIdTokenString(idTokenString);
+        profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(0);
         assertFalse(profile.isExpired());
     }
@@ -168,12 +160,9 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testExpirationWithExpiredToken() {
-        final JwtGenerator jwtGenerator = new JwtGenerator<OidcProfile>();
-        final ZonedDateTime expBefore = LocalDateTime.from(LocalDateTime.now()).plusHours(-1).atZone(ZoneId.systemDefault());
-        jwtGenerator.setExpirationTime(Date.from(expBefore.toInstant()));
+        final AccessToken token = new BearerAccessToken("token_value", -1, new Scope("scope"));
         final OidcProfile profile = new OidcProfile();
-        final String idTokenString = jwtGenerator.generate(profile);
-        profile.setIdTokenString(idTokenString);
+        profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(0);
         assertTrue(profile.isExpired());
     }
@@ -184,12 +173,9 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testAdvancedExpirationWithNoExpiredToken() {
-        final JwtGenerator jwtGenerator = new JwtGenerator<OidcProfile>();
-        final ZonedDateTime expAfter = LocalDateTime.from(LocalDateTime.now()).plusHours(1).atZone(ZoneId.systemDefault());
-        jwtGenerator.setExpirationTime(Date.from(expAfter.toInstant()));
+        final AccessToken token = new BearerAccessToken("token_value", 3600, new Scope("scope"));
         final OidcProfile profile = new OidcProfile();
-        final String idTokenString = jwtGenerator.generate(profile);
-        profile.setIdTokenString(idTokenString);
+        profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(3600); // 1 hour
         assertTrue(profile.isExpired());
     }

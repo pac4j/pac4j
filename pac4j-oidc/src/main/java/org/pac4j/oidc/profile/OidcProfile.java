@@ -1,7 +1,6 @@
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
@@ -11,6 +10,7 @@ import org.pac4j.oidc.client.OidcClient;
 
 import java.net.URI;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -102,6 +102,7 @@ public class OidcProfile extends AbstractJwtProfile {
 
     public void setAccessToken(final AccessToken accessToken) {
         addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessToken);
+        addAttribute(OidcProfileDefinition.EXPIRATION, Date.from(Instant.now().plusSeconds(accessToken.getLifetime())));
     }
 
     public AccessToken getAccessToken() {
@@ -152,41 +153,25 @@ public class OidcProfile extends AbstractJwtProfile {
         addAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE, tokenExpirationAdvance);
     }
 
+    public Date getExpiration() {
+        return (Date) getAttribute(OidcProfileDefinition.EXPIRATION);
+    }
+
     @Override
     public boolean isExpired() {
-        JWT jwt = this.getIdToken();
-        return isTokenExpired(jwt);
+        int tokenExpirationAdvance = getTokenExpirationAdvance();
+        if (tokenExpirationAdvance < 0) {
+            tokenExpirationAdvance = 0;
+        }
+        return getExpiration() != null
+                && getExpiration().toInstant().isBefore(Instant.now().plusSeconds(tokenExpirationAdvance));
     }
 
-    public boolean isRefreshTokenExpired(){
-        RefreshToken refreshToken = this.getRefreshToken();
-        if(refreshToken != null){
-            try {
-                JWT jwt = JWTParser.parse(refreshToken.getValue());
-                return isTokenExpired(jwt);
-            } catch (ParseException e) {
-                throw new TechnicalException(e);
-            }
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isTokenExpired(JWT jwt){
-        if (jwt == null || getTokenExpirationAdvance() < 0)
-            return false;
-        else {
-            try {
-                JWTClaimsSet claims = jwt.getJWTClaimsSet();
-                Date expiresOn = claims.getExpirationTime();
-
-                Calendar now = Calendar.getInstance();
-                now.add( Calendar.SECOND, getTokenExpirationAdvance() );
-
-                return expiresOn.before(now.getTime());
-            } catch (ParseException e) {
-                throw new TechnicalException(e);
-            }
-        }
+    /**
+     * @deprecated This cannot be determined in a reliable way
+     */
+    @Deprecated
+    public boolean isRefreshTokenExpired() {
+        return false;
     }
 }
