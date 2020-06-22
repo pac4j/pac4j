@@ -99,8 +99,7 @@ public class OidcProfileCreator<P extends OidcProfile> extends ProfileDefinition
                 final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
                     (BearerAccessToken) accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-                userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
-                userInfoHttpRequest.setReadTimeout(configuration.getReadTimeout());
+                configuration.configureHttpRequest(userInfoHttpRequest);
                 final HTTPResponse httpResponse = userInfoHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());

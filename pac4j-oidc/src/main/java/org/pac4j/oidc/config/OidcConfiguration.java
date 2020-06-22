@@ -23,6 +23,7 @@ import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
@@ -319,6 +320,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public void setReadTimeout(final int readTimeout) {
         this.readTimeout = readTimeout;
+    }
+
+    public void configureHttpRequest(HTTPRequest request) {
+        request.setConnectTimeout(getConnectTimeout());
+        request.setReadTimeout(getReadTimeout());
     }
 
     public ResourceRetriever getResourceRetriever() {

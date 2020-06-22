@@ -176,8 +176,7 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 
     private void executeTokenRequest(TokenRequest request, OidcCredentials credentials) throws IOException, ParseException {
         HTTPRequest tokenHttpRequest = request.toHTTPRequest();
-        tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
-        tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());
+        configuration.configureHttpRequest(tokenHttpRequest);
 
         final HTTPResponse httpResponse = tokenHttpRequest.send();
         logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
