@@ -102,7 +102,10 @@ public class OidcProfile extends AbstractJwtProfile {
 
     public void setAccessToken(final AccessToken accessToken) {
         addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessToken);
-        addAttribute(OidcProfileDefinition.EXPIRATION, Date.from(Instant.now().plusSeconds(accessToken.getLifetime())));
+        if (accessToken != null) {
+            addAttribute(OidcProfileDefinition.EXPIRATION,
+                    Date.from(Instant.now().plusSeconds(accessToken.getLifetime())));
+        }
     }
 
     public AccessToken getAccessToken() {
