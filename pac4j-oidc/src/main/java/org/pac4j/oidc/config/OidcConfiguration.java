@@ -87,6 +87,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* use nonce? */
     private boolean useNonce;
 
+    /* disable PKCE, even when supported by the IdP */
+    private boolean disablePkce = false;
+    
     /* use PKCE, when null, lookup support from metadata */
     private CodeChallengeMethod pkceMethod;
 
@@ -250,10 +253,21 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setUseNonce(final boolean useNonce) {
         this.useNonce = useNonce;
     }
+    
+    public boolean isDisablePkce() {
+        return disablePkce;
+    }
+    
+    public void setDisablePkce(boolean disablePkce) {
+        this.disablePkce = disablePkce;
+    }
 
     public CodeChallengeMethod findPkceMethod() {
         init();
 
+        if (isDisablePkce()) {
+            return null;
+        }
         if (getPkceMethod() == null) {
             if (getProviderMetadata() == null) {
                 return null;
