@@ -6,7 +6,9 @@ title: Release notes&#58;
 **v4.0.3**:
 
 - Fix the expiration date for the SAML generated certificate
-- Added a new `StateValidator` interface and its implementation `SessionStoreStateValidator` for the OpenID Connect protocol
+- Added a new `ValueRetriever` interface and its implementation `SessionStoreValueRetriever` for the OpenID Connect protocol
+- Added support for PKCE to the OpenID Connect protocol [RFC-7636](https://tools.ietf.org/html/rfc7636)
+- Improved handling of expired tokens in `OidcProfile`
 
 **v4.0.2**:
 
