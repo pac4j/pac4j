@@ -92,14 +92,12 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
         // Init state for CSRF mitigation
-        final State state;
         if (configuration.isWithState()) {
-            state = new State(configuration.getStateGenerator().generateValue(context));
-        } else {
-            state = new State();
+            final State state = new State(configuration.getStateGenerator().generateValue(context));
+            params.put(OidcConfiguration.STATE, state.getValue());
+            context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
         }
-        params.put(OidcConfiguration.STATE, state.getValue());
-        context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
+
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             final Nonce nonce = new Nonce();

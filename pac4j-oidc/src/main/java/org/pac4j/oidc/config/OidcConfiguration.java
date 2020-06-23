@@ -113,7 +113,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
-    private boolean withState;
+    private boolean withState = true;
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
