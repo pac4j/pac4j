@@ -96,7 +96,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
             final IndirectHttpClientBuilder indirectHttpClientBuilder = new IndirectHttpClientBuilder(properties, authenticators);
             indirectHttpClientBuilder.tryCreateLoginFormClient(clients);
-            indirectHttpClientBuilder.tryCreateIndirectBasciAuthClient(clients);
+            indirectHttpClientBuilder.tryCreateIndirectBasicAuthClient(clients);
             final DirectClientBuilder directClientBuilder = new DirectClientBuilder(properties, authenticators);
             directClientBuilder.tryCreateAnonymousClient(clients);
             directClientBuilder.tryCreateDirectBasciAuthClient(clients);

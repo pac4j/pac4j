@@ -42,7 +42,7 @@ public class IndirectHttpClientBuilder extends AbstractBuilder {
         }
     }
 
-    public void tryCreateIndirectBasciAuthClient(final List<Client> clients) {
+    public void tryCreateIndirectBasicAuthClient(final List<Client> clients) {
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
             final String authenticator = getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i);
             if (isNotBlank(authenticator)) {
