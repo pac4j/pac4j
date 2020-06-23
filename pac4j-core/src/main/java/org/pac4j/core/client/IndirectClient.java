@@ -33,6 +33,7 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
     public static final String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
     private static final String STATE_SESSION_PARAMETER = "$stateSessionParameter";
     private static final String NONCE_SESSION_PARAMETER = "$nonceSessionParameter";
+    private static final String CODE_VERIFIER_SESSION_PARAMETER = "$codeVerifierSessionParameter";
 
     protected String callbackUrl;
 
@@ -226,6 +227,10 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
 
     public String getNonceSessionAttributeName() {
         return getName() + NONCE_SESSION_PARAMETER;
+    }
+
+    public String getCodeVerifierSessionAttributeName() {
+        return getName() + CODE_VERIFIER_SESSION_PARAMETER;
     }
 
     @Override

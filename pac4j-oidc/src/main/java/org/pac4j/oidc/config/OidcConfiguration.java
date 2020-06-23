@@ -23,10 +23,12 @@ import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import org.pac4j.oidc.state.validator.SessionStoreStateValidator;
-import org.pac4j.oidc.state.validator.StateValidator;
+import org.pac4j.oidc.state.validator.SessionStoreValueRetriever;
+import org.pac4j.oidc.state.validator.ValueRetriever;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
@@ -45,6 +47,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public static final String STATE = "state";
     public static final String MAX_AGE = "max_age";
     public static final String NONCE = "nonce";
+    public static final String CODE_CHALLENGE = "code_challenge";
+    public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
 
     public static final List<ResponseType> AUTHORIZATION_CODE_FLOWS = Collections
         .unmodifiableList(Arrays.asList(new ResponseType(ResponseType.Value.CODE)));
@@ -83,6 +87,12 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* use nonce? */
     private boolean useNonce;
 
+    /* disable PKCE, even when supported by the IdP */
+    private boolean disablePkce = false;
+    
+    /* use PKCE, when null, lookup support from metadata */
+    private CodeChallengeMethod pkceMethod;
+
     /* Preferred JWS algorithm */
     private JWSAlgorithm preferredJwsAlgorithm;
 
@@ -106,11 +116,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
-    private boolean withState;
+    private boolean withState = true;
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
-    private StateValidator stateValidator = new SessionStoreStateValidator();
+    private ValueGenerator codeVerifierGenerator = new RandomValueGenerator(50);
+
+    private ValueRetriever valueRetriever = new SessionStoreValueRetriever();
 
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
     private boolean expireSessionWithToken = false;
@@ -241,6 +253,44 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setUseNonce(final boolean useNonce) {
         this.useNonce = useNonce;
     }
+    
+    public boolean isDisablePkce() {
+        return disablePkce;
+    }
+    
+    public void setDisablePkce(boolean disablePkce) {
+        this.disablePkce = disablePkce;
+    }
+
+    public CodeChallengeMethod findPkceMethod() {
+        init();
+
+        if (isDisablePkce()) {
+            return null;
+        }
+        if (getPkceMethod() == null) {
+            if (getProviderMetadata() == null) {
+                return null;
+            }
+            List<CodeChallengeMethod> methods = getProviderMetadata().getCodeChallengeMethods();
+            if (methods == null || methods.isEmpty()) {
+                return null;
+            }
+            if (methods.contains(CodeChallengeMethod.S256)) {
+                return CodeChallengeMethod.S256;
+            }
+            return methods.get(0);
+        }
+        return getPkceMethod();
+    }
+
+    public CodeChallengeMethod getPkceMethod() {
+        return pkceMethod;
+    }
+
+    public void setPkceMethod(CodeChallengeMethod pkceMethod) {
+        this.pkceMethod = pkceMethod;
+    }
 
     public JWSAlgorithm getPreferredJwsAlgorithm() {
         return preferredJwsAlgorithm;
@@ -284,6 +334,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public void setReadTimeout(final int readTimeout) {
         this.readTimeout = readTimeout;
+    }
+
+    public void configureHttpRequest(HTTPRequest request) {
+        request.setConnectTimeout(getConnectTimeout());
+        request.setReadTimeout(getReadTimeout());
     }
 
     public ResourceRetriever getResourceRetriever() {
@@ -374,13 +429,22 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.stateGenerator = stateGenerator;
     }
 
-    public StateValidator getStateValidator() {
-        return stateValidator;
+    public ValueGenerator getCodeVerifierGenerator() {
+        return codeVerifierGenerator;
     }
 
-    public void setStateValidator(StateValidator stateValidator) {
-        CommonHelper.assertNotNull("stateValidator", stateValidator);
-        this.stateValidator = stateValidator;
+    public void setCodeVerifierGenerator(ValueGenerator codeVerifierGenerator) {
+        CommonHelper.assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
+        this.codeVerifierGenerator = codeVerifierGenerator;
+    }
+
+    public ValueRetriever getValueRetriever() {
+        return valueRetriever;
+    }
+
+    public void setValueRetriever(ValueRetriever valueRetriever) {
+        CommonHelper.assertNotNull("valueRetriever", valueRetriever);
+        this.valueRetriever = valueRetriever;
     }
 
     public LogoutHandler findLogoutHandler() {

@@ -68,20 +68,17 @@ public class OidcClient<V extends OidcConfiguration> extends IndirectClient<Oidc
 
     @Override
     public Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context) {
-        OidcProfile oidcProfile = (OidcProfile)profile;
-        if(!oidcProfile.isRefreshTokenExpired()){
-            Object refreshTokenObject = profile.getAttribute("refresh_token");
-            if(refreshTokenObject != null){
-                RefreshToken refreshToken = (RefreshToken)refreshTokenObject;
-                OidcCredentials credentials = new OidcCredentials();
-                credentials.setRefreshToken(refreshToken);
-                OidcAuthenticator authenticator =  new OidcAuthenticator(getConfiguration(), this);
-                authenticator.refresh(credentials);
+        OidcProfile oidcProfile = (OidcProfile) profile;
+        RefreshToken refreshToken = oidcProfile.getRefreshToken();
+        if (refreshToken != null) {
+            OidcCredentials credentials = new OidcCredentials();
+            credentials.setRefreshToken(refreshToken);
+            OidcAuthenticator authenticator = new OidcAuthenticator(getConfiguration(), this);
+            authenticator.refresh(credentials);
 
-                // Create a profile if the refresh grant was successful
-                if(credentials.getAccessToken() != null){
-                    return getUserProfile(credentials, context);
-                }
+            // Create a profile if the refresh grant was successful
+            if (credentials.getAccessToken() != null) {
+                return getUserProfile(credentials, context);
             }
         }
 

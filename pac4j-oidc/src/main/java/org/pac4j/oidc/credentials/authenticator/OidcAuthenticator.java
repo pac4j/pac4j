@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
@@ -147,9 +148,12 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         if (code != null) {
             try {
                 final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
+                CodeVerifier verifier = (CodeVerifier) configuration.getValueRetriever()
+                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context).orElse(null);
                 // Token request
-                final TokenRequest request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
-                        this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(computedCallbackUrl)));
+                final TokenRequest request = new TokenRequest(
+                        configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
+                        new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
                 executeTokenRequest(request, credentials);
             } catch (final URISyntaxException | IOException | ParseException e) {
                 throw new TechnicalException(e);
@@ -172,8 +176,7 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
 
     private void executeTokenRequest(TokenRequest request, OidcCredentials credentials) throws IOException, ParseException {
         HTTPRequest tokenHttpRequest = request.toHTTPRequest();
-        tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
-        tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());
+        configuration.configureHttpRequest(tokenHttpRequest);
 
         final HTTPResponse httpResponse = tokenHttpRequest.send();
         logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),

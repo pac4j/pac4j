@@ -1,6 +1,9 @@
 package org.pac4j.oidc.redirect;
 
 import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -89,19 +92,26 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
         // Init state for CSRF mitigation
-        final State state;
         if (configuration.isWithState()) {
-            state = new State(configuration.getStateGenerator().generateValue(context));
-        } else {
-            state = new State();
+            final State state = new State(configuration.getStateGenerator().generateValue(context));
+            params.put(OidcConfiguration.STATE, state.getValue());
+            context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
         }
-        params.put(OidcConfiguration.STATE, state.getValue());
-        context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
+
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             final Nonce nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
             context.getSessionStore().set(context, client.getNonceSessionAttributeName(), nonce.getValue());
+        }
+
+        CodeChallengeMethod pkceMethod = configuration.findPkceMethod();
+        if (pkceMethod != null) {
+            final CodeVerifier verfifier = new CodeVerifier(
+                    configuration.getCodeVerifierGenerator().generateValue(context));
+            context.getSessionStore().set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
+            params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());
+            params.put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
         }
     }
 

@@ -74,6 +74,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
         final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
             accessToken);
         final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+        configuration.configureHttpRequest(userInfoHttpRequest);
         try {
             final HTTPResponse httpResponse = userInfoHttpRequest.send();
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
