@@ -27,8 +27,8 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import org.pac4j.oidc.state.validator.SessionStoreValueRetriever;
-import org.pac4j.oidc.state.validator.ValueRetriever;
+import org.pac4j.oidc.util.SessionStoreValueRetriever;
+import org.pac4j.oidc.util.ValueRetriever;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
@@ -89,7 +89,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     /* disable PKCE, even when supported by the IdP */
     private boolean disablePkce = false;
-    
+
     /* use PKCE, when null, lookup support from metadata */
     private CodeChallengeMethod pkceMethod;
 
@@ -253,11 +253,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setUseNonce(final boolean useNonce) {
         this.useNonce = useNonce;
     }
-    
+
     public boolean isDisablePkce() {
         return disablePkce;
     }
-    
+
     public void setDisablePkce(boolean disablePkce) {
         this.disablePkce = disablePkce;
     }

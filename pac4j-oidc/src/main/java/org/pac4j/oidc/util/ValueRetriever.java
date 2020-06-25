@@ -1,4 +1,4 @@
-package org.pac4j.oidc.state.validator;
+package org.pac4j.oidc.util;
 
 import java.util.Optional;
 
