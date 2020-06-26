@@ -35,7 +35,7 @@ You can use the following clients depending on how they are passed in the HTTP r
 **Example:**
 
 ```java
-import org.pac4j.kerberos.client.indirect.DirectKerberosClient;
+import org.pac4j.kerberos.client.direct.DirectKerberosClient;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
