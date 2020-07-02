@@ -13,7 +13,7 @@
     <name>pac4j: Java web security via OpenID Connect protocol</name>
 
     <properties>
-        <oauth-oidc-sdk.version>8.12</oauth-oidc-sdk.version>
+        <oauth-oidc-sdk.version>8.13</oauth-oidc-sdk.version>
         <javax.mail.version>1.6.2</javax.mail.version>
     </properties>
 
