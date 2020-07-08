@@ -13,7 +13,7 @@
     <name>pac4j for MongoDB</name>
 
     <properties>
-        <mongo-driver.version>3.12.5</mongo-driver.version>
+        <mongo-driver.version>3.12.6</mongo-driver.version>
         <flapdoodle.version>2.2.0</flapdoodle.version>
     </properties>
 
