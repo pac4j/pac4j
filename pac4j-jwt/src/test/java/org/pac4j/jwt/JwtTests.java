@@ -117,6 +117,17 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testPlainJwtExpired2() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        generator.setExpirationTime(yesterday());
+        final String token = generator.generate(claims);
+        JwtAuthenticator authenticator = new JwtAuthenticator();
+        assertNull(authenticator.validateToken(token));
+    }
+
+    @Test
     public void testPlainJwtExpiredByAuthenticator() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         Map<String, Object> claims = new HashMap<>();
@@ -220,8 +231,8 @@ public final class JwtTests implements TestsConstants {
 
     private Date yesterday() {
         final Date now = new Date();
-        long tomorrow = now.getTime() - 24 * 3600 * 1000;
-        return new Date(tomorrow);
+        long yesterday = now.getTime() - 24 * 3600 * 1000;
+        return new Date(yesterday);
     }
 
     @Test
