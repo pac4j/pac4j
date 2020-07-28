@@ -2,8 +2,6 @@ package org.pac4j.core.profile.jwt;
 
 import org.pac4j.core.profile.CommonProfile;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,16 +24,7 @@ public abstract class AbstractJwtProfile extends CommonProfile {
     }
 
     public List<String> getAudience() {
-        final Object audience = getAttribute(JwtClaims.AUDIENCE);
-        if (audience instanceof String) {
-            return Collections.singletonList((String) audience);
-        } else if (audience instanceof String[]) {
-            return Arrays.asList((String[]) audience);
-        } else if (audience instanceof List) {
-            return (List<String>) audience;
-        } else {
-            return null;
-        }
+        return extractAttributeValues(JwtClaims.AUDIENCE);
     }
 
     public Date getExpirationDate() {
