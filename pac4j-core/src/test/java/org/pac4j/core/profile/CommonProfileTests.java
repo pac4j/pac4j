@@ -92,12 +92,13 @@ public final class CommonProfileTests implements TestsConstants {
     }
 
     @Test
-    public void testUnsafeAddAttribute() {
+    public void testUnsafeAddAttribute() throws UnsupportedOperationException {
         final CommonProfile userProfile = new CommonProfile();
         userProfile.getAttributes().put(KEY, VALUE);
     }
+
     @Test
-    public void testUnsafeAddAuthenticationAttribute() {
+    public void testUnsafeAddAuthenticationAttribute() throws UnsupportedOperationException {
         final CommonProfile userProfile = new CommonProfile();
         userProfile.getAuthenticationAttributes().put(KEY, VALUE);
     }
