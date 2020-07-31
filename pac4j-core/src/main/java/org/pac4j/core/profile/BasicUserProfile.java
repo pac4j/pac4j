@@ -252,6 +252,25 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
+     * Return the attribute values with name.
+     *
+     * @param name attribute name
+     * @return the attribute values as List of strings.
+     */
+    public List<String> extractAttributeValues(String name) {
+        final Object value = getAttribute(name);
+        if (value instanceof String) {
+            return Collections.singletonList((String) value);
+        } else if (value instanceof String[]) {
+            return Arrays.asList((String[]) value);
+        } else if (value instanceof List) {
+            return (List<String>) value;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Return the authentication attribute with name.
      *
      * @param name authentication attribute name
