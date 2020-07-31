@@ -41,7 +41,7 @@ public final class CommonProfileTests implements TestsConstants {
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
-    
+
     @Test
     public void testAddAttributeMultipleValues() {
         final CommonProfile userProfile = new CommonProfile(true);
@@ -50,7 +50,7 @@ public final class CommonProfileTests implements TestsConstants {
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(Arrays.asList("Value1", "Value2", "Value3"), userProfile.getAttribute(KEY));
     }
-    
+
     @Test
     public void testAddAttributeMultipleValuesOldBehaviour() {
         final CommonProfile userProfile = new CommonProfile(false);
@@ -92,22 +92,15 @@ public final class CommonProfileTests implements TestsConstants {
     }
 
     @Test
-    public void testUnsafeAddAttribute() {
+    public void testUnsafeAddAttribute() throws UnsupportedOperationException {
         final CommonProfile userProfile = new CommonProfile();
-        try {
-            userProfile.getAttributes().put(KEY, VALUE);
-        } catch (final UnsupportedOperationException e) {
-            fail();
-        }
+        userProfile.getAttributes().put(KEY, VALUE);
     }
+
     @Test
-    public void testUnsafeAddAuthenticationAttribute() {
+    public void testUnsafeAddAuthenticationAttribute() throws UnsupportedOperationException {
         final CommonProfile userProfile = new CommonProfile();
-        try {
-            userProfile.getAuthenticationAttributes().put(KEY, VALUE);
-        } catch (final UnsupportedOperationException e) {
-            fail();
-        }
+        userProfile.getAuthenticationAttributes().put(KEY, VALUE);
     }
 
     @Test
