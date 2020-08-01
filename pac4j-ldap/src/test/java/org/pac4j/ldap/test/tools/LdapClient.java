@@ -3,9 +3,11 @@ package org.pac4j.ldap.test.tools;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.DefaultConnectionFactory;
+import org.ldaptive.PooledConnectionFactory;
+import org.ldaptive.SearchConnectionValidator;
 import org.ldaptive.auth.Authenticator;
 import org.ldaptive.auth.FormatDnResolver;
-import org.ldaptive.auth.PooledBindAuthenticationHandler;
+import org.ldaptive.auth.SimpleBindAuthenticationHandler;
 import org.ldaptive.pool.*;
 
 import java.time.Duration;
@@ -31,32 +33,24 @@ public final class LdapClient {
         connectionConfig.setResponseTimeout(Duration.ofSeconds(1));
         connectionConfig.setLdapUrl("ldap://localhost:" + port);
 
-        connectionFactory = new DefaultConnectionFactory();
-        ((DefaultConnectionFactory) connectionFactory).setConnectionConfig(connectionConfig);
+        connectionFactory = new DefaultConnectionFactory(connectionConfig);
 
-        final PoolConfig poolConfig = new PoolConfig();
-        poolConfig.setMinPoolSize(1);
-        poolConfig.setMaxPoolSize(2);
-        poolConfig.setValidateOnCheckOut(true);
-        poolConfig.setValidateOnCheckIn(true);
-        poolConfig.setValidatePeriodically(false);
-
-        final SearchValidator searchValidator = new SearchValidator();
+        final SearchConnectionValidator searchValidator = new SearchConnectionValidator();
 
         final IdlePruneStrategy pruneStrategy = new IdlePruneStrategy();
 
-        final BlockingConnectionPool connectionPool = new BlockingConnectionPool();
-        connectionPool.setPoolConfig(poolConfig);
-        connectionPool.setBlockWaitTime(Duration.ofSeconds(1));
-        connectionPool.setValidator(searchValidator);
-        connectionPool.setPruneStrategy(pruneStrategy);
-        connectionPool.setConnectionFactory((DefaultConnectionFactory) connectionFactory);
-        connectionPool.initialize();
+        final PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory(connectionConfig);
+        pooledConnectionFactory.setMinPoolSize(1);
+        pooledConnectionFactory.setMaxPoolSize(2);
+        pooledConnectionFactory.setValidateOnCheckOut(true);
+        pooledConnectionFactory.setValidateOnCheckIn(true);
+        pooledConnectionFactory.setValidatePeriodically(false);
+        pooledConnectionFactory.setBlockWaitTime(Duration.ofSeconds(1));
+        pooledConnectionFactory.setValidator(searchValidator);
+        pooledConnectionFactory.setPruneStrategy(pruneStrategy);
+        pooledConnectionFactory.initialize();
 
-        final PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory();
-        pooledConnectionFactory.setConnectionPool(connectionPool);
-
-        final PooledBindAuthenticationHandler handler = new PooledBindAuthenticationHandler();
+        final SimpleBindAuthenticationHandler handler = new SimpleBindAuthenticationHandler();
         handler.setConnectionFactory(pooledConnectionFactory);
 
         authenticator = new Authenticator();

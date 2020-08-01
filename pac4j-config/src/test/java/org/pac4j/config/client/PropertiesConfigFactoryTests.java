@@ -2,7 +2,6 @@ package org.pac4j.config.client;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.junit.Test;
-import org.ldaptive.provider.jndi.JndiProvider;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
@@ -91,13 +90,11 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
             properties.put(LDAP_TYPE, "direct");
             properties.put(LDAP_URL, "ldap://localhost:" + ldapServer.getPort());
-            properties.put(LDAP_USE_SSL, "false");
             properties.put(LDAP_USE_START_TLS, "false");
             properties.put(LDAP_DN_FORMAT, CN + "=%s," + BASE_PEOPLE_DN);
             properties.put(LDAP_USERS_DN, BASE_PEOPLE_DN);
             properties.put(LDAP_PRINCIPAL_ATTRIBUTE_ID, CN);
             properties.put(LDAP_ATTRIBUTES, SN + "," + ROLE);
-            properties.put(LDAP_PROVIDER_CLASS, JndiProvider.class.getName());
 
             properties.put(FORMCLIENT_LOGIN_URL.concat(".2"), PAC4J_BASE_URL);
             properties.put(FORMCLIENT_AUTHENTICATOR.concat(".2"), "ldap");
