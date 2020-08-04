@@ -1,6 +1,6 @@
 package org.pac4j.saml.context;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;

@@ -1,7 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.MarshallingException;

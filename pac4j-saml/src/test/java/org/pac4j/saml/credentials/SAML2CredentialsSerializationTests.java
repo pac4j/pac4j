@@ -1,6 +1,6 @@
 package org.pac4j.saml.credentials;
 
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;

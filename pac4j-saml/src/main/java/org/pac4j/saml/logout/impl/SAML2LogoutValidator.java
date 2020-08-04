@@ -1,9 +1,13 @@
 package org.pac4j.saml.logout.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.EncryptedID;
+import org.opensaml.saml.saml2.core.LogoutRequest;
+import org.opensaml.saml.saml2.core.LogoutResponse;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.SessionIndex;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
