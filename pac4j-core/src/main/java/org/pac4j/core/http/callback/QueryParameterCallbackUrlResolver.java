@@ -1,11 +1,11 @@
 package org.pac4j.core.http.callback;
 
-import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,16 +14,18 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
+public class QueryParameterCallbackUrlResolver extends BaseCallbackUrlResolver {
     private String clientNameParameter = Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER;
-
-    private Map<String, String> customParams = new HashMap<>();
 
     public QueryParameterCallbackUrlResolver() {
     }
 
+    public QueryParameterCallbackUrlResolver(final BaseClientConfiguration config) {
+        super(config);
+    }
+
     public QueryParameterCallbackUrlResolver(final Map<String, String> customParams) {
-        this.customParams = customParams;
+        super(customParams);
     }
 
     @Override
@@ -32,10 +34,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
         if (newUrl != null && !newUrl.contains(this.clientNameParameter + '=')) {
             newUrl = CommonHelper.addParameter(newUrl, this.clientNameParameter, clientName);
         }
-        for (final Map.Entry<String, String> entry : this.customParams.entrySet()) {
-            newUrl = CommonHelper.addParameter(newUrl, entry.getKey(), entry.getValue());
-        }
-        return newUrl;
+        return computeUrlCustomParams(newUrl);
     }
 
     @Override

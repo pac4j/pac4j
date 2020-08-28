@@ -1,5 +1,6 @@
 package org.pac4j.oauth.client;
 
+import org.pac4j.core.client.ConfigurableClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -15,7 +16,7 @@ import org.pac4j.oauth.redirect.OAuth10RedirectionActionBuilder;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10Client extends IndirectClient<OAuth10Credentials> {
+public class OAuth10Client extends IndirectClient<OAuth10Credentials> implements ConfigurableClient<OAuth10Configuration> {
 
     protected OAuth10Configuration configuration = new OAuth10Configuration();
 

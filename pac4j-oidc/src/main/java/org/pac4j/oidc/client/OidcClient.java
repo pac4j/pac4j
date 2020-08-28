@@ -1,6 +1,7 @@
 package org.pac4j.oidc.client;
 
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import org.pac4j.core.client.ConfigurableClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -26,7 +27,8 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class OidcClient<V extends OidcConfiguration> extends IndirectClient<OidcCredentials> {
+public class OidcClient<V extends OidcConfiguration> extends IndirectClient<OidcCredentials>
+    implements ConfigurableClient<OidcConfiguration> {
 
     private V configuration = null;
 

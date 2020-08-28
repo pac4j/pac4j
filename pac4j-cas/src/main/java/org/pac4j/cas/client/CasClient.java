@@ -4,6 +4,7 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
+import org.pac4j.core.client.ConfigurableClient;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
@@ -32,7 +33,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends IndirectClient<TokenCredentials> {
+public class CasClient extends IndirectClient<TokenCredentials> implements ConfigurableClient<CasConfiguration> {
 
     private CasConfiguration configuration = new CasConfiguration();
 
@@ -57,7 +58,7 @@ public class CasClient extends IndirectClient<TokenCredentials> {
 
     @Override
     protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
-        return new QueryParameterCallbackUrlResolver(configuration.getCustomParams());
+        return new QueryParameterCallbackUrlResolver(configuration);
     }
 
     @Override

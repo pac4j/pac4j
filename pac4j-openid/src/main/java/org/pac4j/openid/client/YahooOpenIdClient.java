@@ -17,7 +17,7 @@ import org.pac4j.openid.redirect.YahooRedirectionActionBuilder;
  */
 public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials> {
 
-    public final static String DISCOVERY_INFORMATION = "discoveryInformation";
+    public static final String DISCOVERY_INFORMATION = "discoveryInformation";
 
     private ConsumerManager consumerManager;
 

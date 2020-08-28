@@ -1,8 +1,11 @@
 package org.pac4j.core.http.callback;
 
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
+
+import java.util.Map;
 
 /**
  * The client name is added to the path of the callback URL.
@@ -10,7 +13,18 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
+public class PathParameterCallbackUrlResolver extends BaseCallbackUrlResolver {
+
+    public PathParameterCallbackUrlResolver() {
+    }
+
+    public PathParameterCallbackUrlResolver(final BaseClientConfiguration config) {
+        super(config);
+    }
+
+    public PathParameterCallbackUrlResolver(final Map<String, String> customParams) {
+        super(customParams);
+    }
 
     @Override
     public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
@@ -21,7 +35,7 @@ public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
             }
             newUrl += clientName;
         }
-        return newUrl;
+        return computeUrlCustomParams(newUrl);
     }
 
     @Override

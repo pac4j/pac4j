@@ -9,6 +9,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.pac4j.core.client.ConfigurableClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -61,7 +62,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class SAML2Client extends IndirectClient<SAML2Credentials> {
+public class SAML2Client extends IndirectClient<SAML2Credentials> implements ConfigurableClient<SAML2Configuration> {
 
     protected SAMLContextProvider contextProvider;
 

@@ -15,8 +15,7 @@ import org.pac4j.core.util.CommonHelper;
 
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * CAS configuration.
@@ -65,9 +64,6 @@ public class CasConfiguration extends BaseClientConfiguration {
     private UrlResolver urlResolver;
 
     private String postLogoutUrlParameter = SERVICE_PARAMETER;
-
-    /* Map containing user defined parameters */
-    private Map<String, String> customParams = new HashMap<>();
 
     private String method;
 
@@ -272,14 +268,6 @@ public class CasConfiguration extends BaseClientConfiguration {
         this.prefixUrl = prefixUrl;
     }
 
-    public Map<String, String> getCustomParams() {
-        return customParams;
-    }
-
-    public void setCustomParams(final Map<String, String> customParams) {
-        this.customParams = customParams;
-    }
-    
     public long getTimeTolerance() {
         return timeTolerance;
     }
@@ -388,10 +376,6 @@ public class CasConfiguration extends BaseClientConfiguration {
         this.urlResolver = urlResolver;
     }
 
-    public void addCustomParam(final String name, final String value) {
-        this.customParams.put(name, value);
-    }
-
     public String getMethod() {
         return method;
     }
@@ -419,10 +403,10 @@ public class CasConfiguration extends BaseClientConfiguration {
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
-                "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
-                "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
-                this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver,
-                "method", this.method, "privateKeyPath", this.privateKeyPath, "privateKeyAlgorithm", this.privateKeyAlgorithm);
+            "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
+            "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
+            "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
+            this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver,
+            "method", this.method, "privateKeyPath", this.privateKeyPath, "privateKeyAlgorithm", this.privateKeyAlgorithm);
     }
 }
