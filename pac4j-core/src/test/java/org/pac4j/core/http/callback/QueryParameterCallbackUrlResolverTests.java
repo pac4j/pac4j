@@ -4,13 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.http.url.DefaultUrlResolver;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link QueryParameterCallbackUrlResolver}.
@@ -33,8 +32,7 @@ public final class QueryParameterCallbackUrlResolverTests implements TestsConsta
     @Test
     public void testParamsFromConfig() {
         final BaseClientConfiguration clientConfiguration = mock(BaseClientConfiguration.class);
-        doReturn(ImmutableMap.of("TestParam", "testValue")).when(clientConfiguration).getCustomParams();
-
+        when(clientConfiguration.getCustomParams()).thenReturn(ImmutableMap.of("TestParam", "testValue"));
         final String url = new QueryParameterCallbackUrlResolver(clientConfiguration)
             .compute(new DefaultUrlResolver(), CALLBACK_URL, CLIENT_NAME, MockWebContext.create());
         assertEquals(CALLBACK_URL +'?' + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER
@@ -44,7 +42,7 @@ public final class QueryParameterCallbackUrlResolverTests implements TestsConsta
     @Test
     public void testParamsFromConfigNull() {
         final BaseClientConfiguration clientConfiguration = mock(BaseClientConfiguration.class);
-        doReturn(null).when(clientConfiguration).getCustomParams();
+        when(clientConfiguration.getCustomParams()).thenReturn(null);
 
         final String url = new QueryParameterCallbackUrlResolver(clientConfiguration)
             .compute(new DefaultUrlResolver(), CALLBACK_URL, CLIENT_NAME, MockWebContext.create());
