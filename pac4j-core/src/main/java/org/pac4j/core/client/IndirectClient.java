@@ -1,8 +1,8 @@
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -112,18 +112,17 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
 
     private void cleanRequestedUrl(final WebContext context) {
         logger.debug("clean requested URL");
-        cleanSessionData(context, Pac4jConstants.REQUESTED_URL);
+        final SessionStore<WebContext> sessionStore = context.getSessionStore();
+        if (sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent()) {
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
+        }
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
         logger.debug("clean authentication attempt");
-        cleanSessionData(context, ATTEMPTED_AUTHENTICATION_SUFFIX);
-    }
-
-    private void cleanSessionData(final WebContext context, final String key) {
-        SessionStore<WebContext> sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, getName() + key).isPresent()) {
-            sessionStore.set(context, getName() + key, "");
+        final SessionStore<WebContext> sessionStore = context.getSessionStore();
+        if (sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent()) {
+            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
         }
     }
 
