@@ -62,8 +62,7 @@ public final class ECSignatureConfigurationTests extends AbstractKeyEncryptionCo
 
     @Test
     public void buildFromJwk() {
-        final String json = new ECKey.Builder(Curve.P_256,
-            (ECPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
+        final String json = new ECKey.Builder(Curve.P_256, (ECPublicKey) buildKeyPair().getPublic()).build().toJSONString();
         JWKHelper.buildECKeyPairFromJwk(json);
     }
 

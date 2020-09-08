@@ -49,7 +49,7 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
-        final String json = new OctetSequenceKey.Builder(MAC_SECRET.getBytes("UTF-8")).build().toJSONObject().toJSONString();
+        final String json = new OctetSequenceKey.Builder(MAC_SECRET.getBytes("UTF-8")).build().toJSONString();
         JWKHelper.buildSecretFromJwk(json);
     }
 

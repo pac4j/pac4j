@@ -61,7 +61,7 @@ public final class RSASignatureConfigurationTests extends AbstractKeyEncryptionC
 
     @Test
     public void buildFromJwk() {
-        final String json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
+        final String json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONString();
         JWKHelper.buildRSAKeyPairFromJwk(json);
     }
 

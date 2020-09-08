@@ -1,10 +1,10 @@
 package org.pac4j.oidc.authorization.generator;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -12,6 +12,7 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,7 +41,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                 final JWT jwt = SignedJWT.parse(((KeycloakOidcProfile) profile).getAccessToken().getValue());
                 final JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
 
-                final JSONObject realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
+                final Map<String, Object> realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
                 if (realmRolesJsonObject != null) {
                     final JSONArray realmRolesJsonArray = (JSONArray) realmRolesJsonObject.get("roles");
                     if (realmRolesJsonArray != null) {
@@ -49,7 +50,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                 }
 
                 if (clientId != null) {
-                    JSONObject resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
+                    final Map<String, Object> resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
                     if (resourceAccess != null) {
                         final JSONObject clientRolesJsonObject = (JSONObject) resourceAccess.get(clientId);
                         if (clientRolesJsonObject != null) {
