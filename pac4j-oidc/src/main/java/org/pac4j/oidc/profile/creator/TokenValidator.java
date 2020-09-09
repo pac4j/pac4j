@@ -93,12 +93,13 @@ public class TokenValidator {
         BadJOSEException badJOSEException = null;
         JOSEException joseException = null;
         for (final IDTokenValidator idTokenValidator : idTokenValidators) {
-
             try {
                 return idTokenValidator.validate(idToken, expectedNonce);
             } catch (final BadJOSEException e1) {
+                logger.debug("Validation fails with: {}", e1);
                 badJOSEException = e1;
             } catch (final JOSEException e2) {
+                logger.debug("Validation fails with: {}", e2);
                 joseException = e2;
             }
         }
