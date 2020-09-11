@@ -114,7 +114,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
-            Object valueForMap = getValueForMap(map, key, ProfileHelper.getInternalAttributeHandler().prepare(value));
+            Object valueForMap = getValueForMap(map, key, value);
             map.put(key, valueForMap);
         }
     }
@@ -234,7 +234,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
             final String key = entries.getKey();
-            final Object value = ProfileHelper.getInternalAttributeHandler().restore(attributeMap.get(key));
+            final Object value = attributeMap.get(key);
             newAttributes.put(key, value);
         }
         return newAttributes;
@@ -248,7 +248,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     @Override
     public Object getAttribute(final String name) {
-        return ProfileHelper.getInternalAttributeHandler().restore(this.attributes.get(name));
+        return this.attributes.get(name);
     }
 
     /**
@@ -277,7 +277,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @return the authentication attribute with name
      */
     public Object getAuthenticationAttribute(final String name) {
-        return ProfileHelper.getInternalAttributeHandler().restore(this.authenticationAttributes.get(name));
+        return this.authenticationAttributes.get(name);
     }
 
     /**

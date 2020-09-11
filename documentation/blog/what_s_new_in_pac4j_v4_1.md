@@ -11,6 +11,9 @@ Version 4.1 will be focused on cleaning (with none-breaking changes) and version
 
 The documentation will be updated too.
 
+## Removed
+
+The `InternalAttributeHandler` component has been removed: it was meant to be used in the CAS server, but it isn't.
 
 ## Deprecated before removal
 

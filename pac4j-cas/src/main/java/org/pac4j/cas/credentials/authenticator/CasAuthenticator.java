@@ -12,7 +12,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.InternalAttributeHandler;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -79,14 +78,13 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
             // restore both sets of attributes
             final Map<String, Object> oldPrincipalAttributes = principal.getAttributes();
             final Map<String, Object> oldAuthenticationAttributes = assertion.getAttributes();
-            final InternalAttributeHandler attrHandler = ProfileHelper.getInternalAttributeHandler();
             if (oldPrincipalAttributes != null) {
                 oldPrincipalAttributes.entrySet().stream()
-                    .forEach(e -> newPrincipalAttributes.put(e.getKey(), attrHandler.restore(e.getValue())));
+                    .forEach(e -> newPrincipalAttributes.put(e.getKey(), e.getValue()));
             }
             if (oldAuthenticationAttributes != null) {
                 oldAuthenticationAttributes.entrySet().stream()
-                    .forEach(e -> newAuthenticationAttributes.put(e.getKey(), attrHandler.restore(e.getValue())));
+                    .forEach(e -> newAuthenticationAttributes.put(e.getKey(), e.getValue()));
             }
 
             final CommonProfile profile;

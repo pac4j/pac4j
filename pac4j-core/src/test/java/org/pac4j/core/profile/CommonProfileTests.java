@@ -189,19 +189,4 @@ public final class CommonProfileTests implements TestsConstants {
         profile.setLinkedId(null);
         assertNull(profile.getLinkedId());
     }
-
-    @Test
-    public void stringifyProfile() {
-        try {
-            ProfileHelper.getInternalAttributeHandler().setStringify(true);
-            final CommonProfile profile = new CommonProfile();
-            profile.setId(ID);
-            profile.addAttribute(KEY, true);
-            profile.addAttribute(NAME, 1);
-            assertEquals(true, profile.getAttribute(KEY));
-            assertEquals(1, profile.getAttributes().get(NAME));
-        } finally {
-            ProfileHelper.getInternalAttributeHandler().setStringify(false);
-        }
-    }
 }

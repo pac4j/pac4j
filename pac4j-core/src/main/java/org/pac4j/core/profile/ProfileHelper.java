@@ -22,8 +22,6 @@ public final class ProfileHelper {
 
     private ProfileHelper() {}
 
-    private static InternalAttributeHandler internalAttributeHandler = new InternalAttributeHandler();
-
     /**
      * Indicate if the user identifier matches this kind of profile.
      *
@@ -134,13 +132,5 @@ public final class ProfileHelper {
             return sId;
         }
         return null;
-    }
-
-    public static InternalAttributeHandler getInternalAttributeHandler() {
-        return internalAttributeHandler;
-    }
-
-    public static void setInternalAttributeHandler(final InternalAttributeHandler internalAttributeHandler) {
-        ProfileHelper.internalAttributeHandler = internalAttributeHandler;
     }
 }
