@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.1.0**:
+
+- the `RememberMeAuthorizationGenerator` is deprecated and will likely be removed in the next version (v5)
+- the OpenID support (`YahooOpenIdClient`) is deprecated and will likely be removed in the next version (v5)
+
 **v4.0.3**:
 
 - Fix the expiration date for the SAML generated certificate

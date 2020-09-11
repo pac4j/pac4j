@@ -13,6 +13,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Deprecated
 public class RememberMeAuthorizationGenerator implements AuthorizationGenerator {
 
     private String rememberMeParameterName = "rme";

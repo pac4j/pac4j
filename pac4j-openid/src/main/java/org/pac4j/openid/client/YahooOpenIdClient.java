@@ -15,6 +15,7 @@ import org.pac4j.openid.redirect.YahooRedirectionActionBuilder;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
+@Deprecated
 public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials> {
 
     public final static String DISCOVERY_INFORMATION = "discoveryInformation";
