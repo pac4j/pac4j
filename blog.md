@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog
 ---
 
+## &bull; September 2020: [What's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)
+
 ## &bull; February 2020: [pac4j v4 is coming](/blog/pac4j_v4_is_coming.html)
 
 ## &bull; September 2019: [A brief history of the security protocols](/blog/a-brief-history-of-the-security-protocols.html)
