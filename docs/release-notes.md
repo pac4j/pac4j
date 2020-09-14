@@ -5,8 +5,9 @@ title: Release notes&#58;
 
 **v4.1.0**:
 
-- the `RememberMeAuthorizationGenerator` is deprecated and will likely be removed in the next version (v5)
-- the OpenID support (`YahooOpenIdClient`) is deprecated and will likely be removed in the next version (v5)
+- the `RememberMeAuthorizationGenerator` is deprecated and will be removed in the next version (v5)
+- the OpenID support (`YahooOpenIdClient`) is deprecated and will be removed in the next version (v5)
+- the `ProfileManagerFactory2` is deprecated and will be removed in the next version (v5)
 - Remove the `InternalAttributeHandler`
 
 **v4.0.3**:
