@@ -4,7 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory2Aware;
+import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactory2Aware<C> implements LogoutHandler<C> {
+public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactoryAware<C> implements LogoutHandler<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -80,7 +80,8 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
 
     protected void destroy(final C context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final ProfileManager<UserProfile> manager = getProfileManager(context, sessionStore);
+        final ProfileManager<UserProfile> manager = getProfileManager(context);
+        manager.setSessionStore(sessionStore);
         manager.logout();
         logger.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session

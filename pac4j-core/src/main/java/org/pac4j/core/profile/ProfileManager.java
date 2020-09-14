@@ -29,7 +29,7 @@ public class ProfileManager<U extends UserProfile> {
 
     protected final WebContext context;
 
-    protected final SessionStore sessionStore;
+    protected SessionStore sessionStore;
 
     protected Config config;
 
@@ -39,10 +39,16 @@ public class ProfileManager<U extends UserProfile> {
         this.sessionStore = context.getSessionStore();
     }
 
+    @Deprecated
     public ProfileManager(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("context", context);
         CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.context = context;
+        this.sessionStore = sessionStore;
+    }
+
+    public void setSessionStore(final SessionStore sessionStore) {
+        CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.sessionStore = sessionStore;
     }
 

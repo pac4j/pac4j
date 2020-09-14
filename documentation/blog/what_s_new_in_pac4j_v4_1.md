@@ -17,8 +17,14 @@ The `InternalAttributeHandler` component has been removed: it was meant to be us
 
 ## Deprecated before removal
 
-The `YahooOpenIdClient` has been marked as `@Deprecated` and will likely be removed in the next version (v5). The OpenID protocol is dead and even Yahoo is migrating to OAuth v2.
+The `YahooOpenIdClient` has been marked as `@Deprecated` and will be removed in the next version (v5). The OpenID protocol is dead and even Yahoo is migrating to OAuth v2.
 
-The `RememberMeAuthorizationGenerator` has also been marked as `@Deprecated`. This component turns a checked box in a form into a "remember me" nature of the authenticated profile.
-This is very misleading as the authenticated profile should not be marked as "remembered" in case we want to remember it.
+The `RememberMeAuthorizationGenerator` has also been marked as `@Deprecated` and will be removed in the next version (v5).
+This component turns a checked box in a form into a "remember me" nature of the authenticated profile.
+This is very misleading as the authenticated profile should not be marked as "remembered" for the first authentication in case we want to remember it.
 It should be saved somehow on the client browser (like a JWT in a cookie) with the "remember me" nature and restored later on.
+
+The `ProfileManagerFactory2` has also been marked as `@Deprecated` and will be removed in the next version (v5).
+To be able to build a `ProfileManager` from a `WebContext`, we have the `ProfileManagerFactory`.
+For the back channel logout calls, we also need to set the `sessionStore` for the `ProfileManager`: that's why the `ProfileManagerFactory2` exists.
+But a simple `setSessionStore` method at the `ProfileManager` wil do the same job and remove its need.

@@ -33,6 +33,8 @@ public class Config {
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
     private ProfileManagerFactory profileManagerFactory;
+
+    @Deprecated
     private ProfileManagerFactory2 profileManagerFactory2;
 
     protected Clients clients;
@@ -224,16 +226,19 @@ public class Config {
         }
     }
 
+    @Deprecated
     public static ProfileManagerFactory2 getProfileManagerFactory2() {
         return INSTANCE.profileManagerFactory2;
     }
 
+    @Deprecated
     public static void setProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
         CommonHelper.assertNotNull("profileManagerFactory2", profileManagerFactory2);
         LOGGER.info("Setting Config.profileManagerFactory2: {}", name);
         INSTANCE.profileManagerFactory2 = profileManagerFactory2;
     }
 
+    @Deprecated
     public static void defaultProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
         if (INSTANCE.profileManagerFactory2 == null) {
             synchronized (INSTANCE) {
