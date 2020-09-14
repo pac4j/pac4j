@@ -3,7 +3,7 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v4.1.0**:
+**v4.1.0** (see: [what's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)):
 
 - the `RememberMeAuthorizationGenerator` is deprecated and will be removed in the next version (v5)
 - the OpenID support (`YahooOpenIdClient`) is deprecated and will be removed in the next version (v5)
