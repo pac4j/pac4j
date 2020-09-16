@@ -44,7 +44,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * <p>Then, if the user has profile, authorizations are checked according to the <code>authorizers</code> configuration.
  * If the authorizations are valid, the user is granted access. Otherwise, a 403 error page is displayed.</p>
  *
- * <p>Finally, if the user is still not authenticated (no profile), he is redirected to the appropriate identity provider
+ * <p>Finally, if the user is not authenticated (no profile), he is redirected to the appropriate identity provider
  * if the first defined client is an indirect one in the <code>clients</code> configuration. Otherwise, a 401 error page is displayed.</p>
  *
  * @author Jerome Leleu
@@ -94,11 +94,11 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             // logic
             LOGGER.debug("url: {}", context.getFullRequestURL());
             LOGGER.debug("matchers: {}", matchers);
-            if (matchingChecker.matches(context, matchers, config.getMatchers())) {
+            LOGGER.debug("clients: {}", clients);
+            final List<Client<? extends Credentials>> currentClients = clientFinder.find(configClients, context, clients);
+            LOGGER.debug("currentClients: {}", currentClients);
 
-                LOGGER.debug("clients: {}", clients);
-                final List<Client<? extends Credentials>> currentClients = clientFinder.find(configClients, context, clients);
-                LOGGER.debug("currentClients: {}", currentClients);
+            if (matchingChecker.matches(context, matchers, config.getMatchers(), currentClients)) {
 
                 final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
                 LOGGER.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
@@ -140,10 +140,10 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                     }
                 }
 
-                // we have profile(s) -> check authorizations
+                // we have profile(s) -> check authorizations; otherwise, redirect to identity provider or 401
                 if (isNotEmpty(profiles)) {
                     LOGGER.debug("authorizers: {}", authorizers);
-                    if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers())) {
+                    if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers(), currentClients)) {
                         LOGGER.debug("authenticated and authorized -> grant access");
                         return securityGrantedAccessAdapter.adapt(context, profiles, parameters);
                     } else {

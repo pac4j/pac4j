@@ -1,6 +1,9 @@
 package org.pac4j.core.authorization.checker;
 
 import org.pac4j.core.authorization.authorizer.*;
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -29,12 +32,12 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
-                                final Map<String, Authorizer> authorizersMap) {
+                                final Map<String, Authorizer> authorizersMap, final List<Client<? extends Credentials>> clients) {
         final List<Authorizer> authorizers = new ArrayList<>();
         String authorizerNames = authorizersValue;
-        // no authorizers defined, we default to CSRF_CHECK
+        // if no authorizers are defined, compute the default one(s)
         if (isBlank(authorizerNames)) {
-            authorizerNames = DefaultAuthorizers.CSRF_CHECK;
+            authorizerNames = computeDefaultAuthorizers(clients);
         }
         final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
         final int nb = names.length;
@@ -67,6 +70,15 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             }
         }
         return isAuthorized(context, profiles, authorizers);
+    }
+
+    protected String computeDefaultAuthorizers(final List<Client<? extends Credentials>> clients) {
+        for (final Client client : clients) {
+            if (client instanceof IndirectClient) {
+                return DefaultAuthorizers.CSRF_CHECK;
+            }
+        }
+        return DefaultAuthorizers.NONE;
     }
 
     protected boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) {
