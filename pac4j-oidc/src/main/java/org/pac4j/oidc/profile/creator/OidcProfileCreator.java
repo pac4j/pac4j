@@ -101,7 +101,7 @@ public class OidcProfileCreator<P extends OidcProfile> extends ProfileDefinition
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
                 final HTTPResponse httpResponse = userInfoHttpRequest.send();
-                logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
+                logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
 
                 final UserInfoResponse userInfoResponse = UserInfoResponse.parse(httpResponse);
