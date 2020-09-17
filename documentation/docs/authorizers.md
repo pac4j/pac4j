@@ -22,11 +22,11 @@ Various authorizers are available:
 
 Most *pac4j* implementations use *pac4j* logics and authorizers and thus the [`DefaultAuthorizationChecker`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/checker/DefaultAuthorizationChecker.java) component. In that case, the following `Authorizer` are automatically available via the following short keywords:
 
-- `csrfCheck` for the `CsrfAuthorizer` authorizer
-- `isAnonymous` for the `IsAnonymousAuthorizer` authorizer
-- `isAuthenticated` for the `IsAuthenticatedAuthorizer` authorizer
-- `isFullyAuthenticated` for the `IsFullyAuthenticatedAuthorizer` authorizer
-- `isRemembered` for the `IsRememberedAuthorizer` authorizer
+- `csrfCheck` (for the `CsrfAuthorizer` authorizer) to check that the CSRF token has been sent as the `pac4jCsrfToken` header or parameter in a POST reques
+- `isAnonymous` (for the `IsAnonymousAuthorizer` authorizer) to ensure the user is not authenticated
+- `isAuthenticated` (for the `IsAuthenticatedAuthorizer` authorizer) to ensure the user is authenticated (not necessary by default unless you use the `AnonymousClient`)
+- `isFullyAuthenticated` (for the `IsFullyAuthenticatedAuthorizer` authorizer) to check if the user is authenticated but not remembered
+- `isRemembered` (for the `IsRememberedAuthorizer` authorizer) for a remembered user
 - `none` for no authorizers at all.
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Since <i>pac4j</i> v4, if no authorizers are defined, the <code>DefaultAuthorizationChecker</code> applies the <b>csrfCheck</b> configuration.</div>
@@ -35,7 +35,7 @@ These short names are defined as constants in [`DefaultAuthorizers`](https://git
 
 ## &#9656; The composition of authorizers
 
-You can create a composition (conjunction or disjunction) of authorizers. 
+You can create a composition (conjunction or disjunction) of authorizers.
 For example:
 
 ```java

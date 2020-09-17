@@ -5,17 +5,17 @@ title: Main concepts and components&#58;
 
 1) A [**client**](clients.html) represents an authentication mechanism (flow). It performs the login process and returns a user profile. An indirect client is for UI authentication while a direct client is for web services authentication
 
-2) An [**authenticator**](authenticators.html) is required for HTTP clients to validate credentials. It is a subcomponent of a `ProfileService` which validates credentials but also handles the creation, update, and removal of users 
+2) An [**authenticator**](authenticators.html) is a subcomponent of **clients** to validate credentials. It is related to the `ProfileService` component which handles the creation, update, and removal of users
 
 3) An [**authorizer**](authorizers.html) is meant to check authorizations on the authenticated user profile(s) or on the current web context
 
-4) A [**matcher**](matchers.html) defines whether the security must apply on the **security filter**
+4) A [**matcher**](matchers.html) defines whether the security must apply on the **security filter** or additional web processing (security headers for example)
 
-5) A [**config**](config.html) defines the security configuration via clients, authorizers and matchers
+5) A [**config**](config.html) defines the security configuration composed of clients, authorizers and matchers
 
 ---
 
-6) A [**user profile**](user-profile.html) is the profile of the authenticated user. It has an identifier, attributes, roles, permissions, a "remember-me" nature and a linked identifier
+6) A [**user profile**](user-profile.html) is the profile of the authenticated user. It has an identifier, attributes, roles, permissions, a "remember-me" nature and a linked identifier (to another account)
 
 ---
 
@@ -26,4 +26,4 @@ title: Main concepts and components&#58;
 
 9) The ["**callback endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client) finishes the login process for an indirect client
 
-10) The [**logout endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#c-logout) handles the application and/or the identity server logouts
+10) The ["**logout endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#c-logout) handles the application and/or the identity server logouts

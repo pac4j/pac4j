@@ -50,15 +50,9 @@ Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store
 
 ### A) Secure an URL
 
-The logic to secure an URL is defined by the `SecurityLogic` interface and its default implementation: [`DefaultSecurityLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java). In your framework, you must define the appropriate "filter", "interceptor", "controller" or whatever the mechanism used to intercept the HTTP request and delegate to the `SecurityLogic` class:
+The [logic to secure an URL](security_filter.html) is defined by the `SecurityLogic` interface and its default implementation: [`DefaultSecurityLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java).
 
-1) If the HTTP request matches the **matchers** configuration (or no **matchers** are defined), the security is applied. Otherwise, the user is automatically granted access
-
-2) First, if the user is not authenticated (no profile) and if some clients have been defined in the **clients** parameter, a login is tried for the direct clients
-
-3) Then, if the user has profile, authorizations are checked according to the **authorizers** configuration. If the authorizations are valid, the user is granted access. Otherwise, a 403 error page is displayed
-
-4) Finally, if the user is still not authenticated (no profile), he is redirected to the appropriate identity provider if the first defined client is an indirect one in the **clients** configuration. Otherwise, a 401 error page is displayed.
+In your framework, you must define the appropriate "filter", "interceptor", "controller" or whatever the mechanism used to intercept the HTTP request and delegate to the `SecurityLogic` class.
 
 **Examples**:
 
@@ -108,12 +102,9 @@ The logic to secure an URL is defined by the `SecurityLogic` interface and its d
 
 ### B) Handle callback for indirect client
 
-The logic to handle callbacks is defined by the `CallbackLogic` interface and its default implementation: [`DefaultCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java).
-In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `CallbackLogic` class:
+The [logic to handle callbacks](callback_endpoint.html) is defined by the `CallbackLogic` interface and its default implementation: [`DefaultCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java).
 
-1) the credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in the web session.
-
-2) finally, the user is redirected back to the originally requested URL (or to the **defaultUrl**).
+In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `CallbackLogic` class.
 
 **Examples**:
 
@@ -152,14 +143,8 @@ In your framework, you must define the appropriate "controller" to reply to an H
 
 ### C) Logout
 
-The logic to perform the application/identity provider logout is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
-In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `LogoutLogic` class:
-
-1) If the `localLogout` property is true, the pac4j profiles are removed from the web session (and the web session is destroyed if the `destroySession` property is `true`)
-
-2) A post logout action is computed as the redirection to the url request parameter if it matches the `logoutUrlPattern` or to the `defaultUrl` if it is defined or as a blank page otherwise
-
-3) If the `centralLogout` property is `true`, the user is redirected to the identity provider for a central logout and then optionally to the post logout redirection URL (if it's supported by the identity provider and if it's an absolute URL). If no central logout is defined, the post logout action is performed directly.
+The [logic to perform the application/identity provider logout](logout_endpoint.html) is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
+In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `LogoutLogic` class.
 
 **Examples**:
 

@@ -24,9 +24,8 @@ You need to use the following module: `pac4j-oauth`.
 ### a) Generic clients
 
 You can use the [`OAuth10Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/OAuth10Client.java) or the [`OAuth20Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/OAuth20Client.java) clients to login with an OAuth 1.0 or 2.0 server.
-In the latter case, you may use the [`GenericApi20`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/scribe/builder/api/GenericApi20.java).
 
-**Example to simulate the `BitbucketClient`:**
+**Example to simulate the `BitbucketClient` (OAuth v1.0):**
 
 ```java
 OAuth10Configuration config = new OAuth10Configuration();
@@ -39,7 +38,7 @@ client.setCallbackUrl(PAC4J_BASE_URL);
 client.setConfiguration(config);
 ```
 
-**Example to simulate the `GithubClient`:**
+**Example to simulate the `GithubClient` (OAuth v2.0):**
 
 ```java
 OAuth20Configuration config = new OAuth20Configuration();
@@ -53,16 +52,9 @@ client.setConfiguration(config);
 client.setCallbackUrl(PAC4J_BASE_URL);
 ```
 
-**Example to simulate the `GenericOAuth20Client`:**
+For OAuth v2.0, you can also use the [`GenericApi20`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/scribe/builder/api/GenericApi20.java) or directly the `GenericOAuth20Client`.
 
-We can set the appropriate converter per profile attribute.    
-For example, the type specified by the following expression:    
-`String|name`    
-Do not specify the type with the following expression:    
-`name`    
-Currently supported types are:`Integer`,`Boolean`,`Color`,`Gender`,`Locale`,`Long`,`URI`,`String(Not specified by default)`    
-    
-**Note**: If the profile contains non-character type fields, and you have not specified the type, it will be lost, so you must specify a type for any non-character profile field.
+**Example:**
 
 ```java
 GenericOAuth20Client client = new GenericOAuth20Client();
@@ -77,6 +69,12 @@ map.put(BLOG, "URI|blog");
 map.put("name", "name");  //default String
 client.setProfileAttrs(map);
 ```
+
+You need to define all the attributes you want to retrieve for the user profile. You can just define the attribute name (`name`) or the attribute name and the associated converter (`Boolean|is_admin`).
+
+Currently, the following converters are supported: `Integer`, `Boolean`, `Color`, `Gender`, `Locale`, `Long`, `URI` and `String` (by default).
+
+
 
 ### b) Specific clients
 

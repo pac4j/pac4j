@@ -3,7 +3,7 @@ layout: doc
 title: Clients&#58;
 ---
 
-A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents an **authentication mechanism**. It performs the login process and returns (if successful) a [user profile](user-profile.html). Many clients are available for the:
+A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents a **web authentication mechanism**. It performs the login process and returns (if successful) a [user profile](user-profile.html). Many clients are available for the:
 
 - [OAuth protocol](clients/oauth.html)
 - [SAML protocol](clients/saml.html)
@@ -16,11 +16,11 @@ A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java
 
 While most clients are self-sufficient, the HTTP clients require defining an [Authenticator](authenticators.html) to handle the credentials validation.
 
-Clients (like Authorizers) are generally defined in a [security configuration](config.html).
+Clients (like authorizers and matchers) are generally defined in a [security configuration](config.html).
 
 Each client has a name which is by default the class name (like `FacebookClient`), but it can be explicitly set to another value with the `setName` method.
 
-Understand the main features:
+Understanding the main features:
 
 - [Direct vs indirect clients](#1-direct-vs-indirect-clients)
 - [Compute roles and permissions](#2-compute-roles-and-permissions)
@@ -28,7 +28,7 @@ Understand the main features:
 - [Profile definition](#4-profile-definition)
 - [AJAX requests](#5-ajax-requests)
 - [The `Client` methods](#6-the-client-methods)
-- [Originally requested URLs](#7-originally-requested-urls)
+- [The originally requested URL](#7-the-originally-requested-url)
 - [Silent login](#8-silent-login)
 
 
@@ -36,15 +36,16 @@ Understand the main features:
 
 ## 1) Direct vs indirect clients
 
-Clients are of two kinds: direct for web services authentication and indirect for UI authentication. Here are their behaviors and differences:
+Clients are of two kinds: direct clients are for web services authentication and indirect clients are for UI authentication.
+
+Here are their behaviors and differences:
 
 | | Direct clients = web services authentication | Indirect clients = UI authentication
 |------|----------------|-----------------
-| [Authentication flows](authentication-flows.html) | 1) Credentials are passed for each HTTP request (to the "[security filter](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url)") | 1) The originally requested URL is saved in session (by the "security filter")<br />2) The user is redirected to the identity provider (by the "security filter")<br />3) Authentication happens at the identity provider (or locally for the `FormClient` and the `IndirectBasicAuthClient`)<br />4) The user is redirected back to the callback endpoint/URL ("callback filter")<br />5) The user is redirected to the originally requested URL (by the "[callback filter](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client)") |
-| How many times the login process occurs? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/docs/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the user profile can be saved (by the `Authenticator` or `ProfileCreator`) into the web session using the available web context and the `ProfileManager` class | The authentication happens only once (in the "callback filter") |
+| [Authentication flows](authentication-flows.html) | 1) Credentials are passed for each HTTP request (to the "[security filter](security_filter.html)") | 1) The originally requested URL is saved in session (by the "security filter")<br />2) The user is redirected to the identity provider (by the "security filter")<br />3) Authentication happens at the identity provider (or locally for the `FormClient` and the `IndirectBasicAuthClient`)<br />4) The user is redirected back to the callback endpoint/URL ("callback endpoint")<br />5) The user is redirected to the originally requested URL (by the "[callback endpoint](callback_endpoint.html)") |
+| How many times the login process occurs? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/docs/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the "security filter" can be configured to save the profile in session (`ProfileStorageDecision`) | The authentication happens only once (in the "callback filter") |
 | Where is the user profile saved by default? | In the HTTP request  (stateless) | In the web session (stateful) |
-| Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback filter") |
-| Are the credentials mandatory? | Generally, no. If no credentials are provided, the direct client will be ignored (by the "security filter") | Generally, yes. Credentials are expected on the callback endpoint |
+| Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback endpoint") |
 | What are the protected URLs? | The URLs of the web service are protected by the "security filter" | The URLs of the web application are protected by the "security filter", but the callback URL is not protected as it is used during the login process when the user is still anonymous |
 {:.striped}
 
@@ -63,14 +64,12 @@ AuthorizationGenerator authGen = (ctx, profile) -> {
   for (String role: roles.split(",")) {
     profile.addRole(role);
   }
-  return profile;
+  return Optional.of(profile);
 };
 client.addAuthorizationGenerator(authGen);
 ```
 
-And you can add as many authorization generators as you want using the `addAuthorizationGenerator` method or a list of authorization generators using the `setAuthorizationGenerators` method.
-
-In fact, the `AuthorizationGenerator` component can be used to do more than just computing roles and permissions, like defining the remember-me nature of a profile based on a remember-me checkbox of a form (see: [`RememberMeAuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/authorization/generator/RememberMeAuthorizationGenerator.java)).
+You can add as many authorization generators as you want using the `addAuthorizationGenerator` method or a list of authorization generators using the `setAuthorizationGenerators` method.
 
 ---
 
@@ -81,7 +80,7 @@ For an indirect client, you must define the callback URL which will be used in t
 
 On this callback URL, the "callback endpoint" must be defined to finish the login process.
 
-As the callback URL can be shared between multiple clients, the callback URL can hold the information of the client (to be able to distinguish between the different clients), as a query parameter or as a path parameter.
+As the callback URL can be shared between multiple clients, the callback URL must hold the information of the client (to be able to distinguish between the different clients), as a query parameter or as a path parameter.
 
 **Example:**
 
@@ -91,7 +90,7 @@ TwitterClient twitterClient = new TwitterClient(twKey, twSecret);
 Config config = new Config("http://localhost:8080/callback", facebookClient, twitterClient);
 ```
 
-In that case, the callback URL of the `FacebookClient` is `http://localhost:8080/callback?client_name=FacebookClient` and the callback URL of the `TwitterClient` is `http://localhost:8080/callback?client_name=TwitterClient`.
+In this case, the callback URL of the `FacebookClient` is `http://localhost:8080/callback?client_name=FacebookClient` and the callback URL of the `TwitterClient` is `http://localhost:8080/callback?client_name=TwitterClient`.
 
 This is the callback URL you must define on the identity provider side.
 
@@ -165,24 +164,24 @@ The `Client` interface has the following methods:
 
 | Method | Usage |
 |--------|-------|
-| `Optional<RedirectionAction> getRedirectionAction(WebContext context)` (only for indirect clients) | It returns the redirection action to redirect the user to the identity provider for login.<br />The redirection of the user to the identity provider is defined via a [`RedirectionActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectionActionBuilder.java) |
+| `Optional<RedirectionAction> getRedirectionAction(WebContext context)` | It returns the redirection action to redirect the user to the identity provider for login. It only makes sense for indirect clients.<br />The redirection of the user to the identity provider is internally computed via a [`RedirectionActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectionActionBuilder.java) |
 | `Optional<C> getCredentials(WebContext context)` | It extracts the credentials from the HTTP request and validates them.<br />The extraction of the credentials are done by a [`CredentialsExtractor`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java) while the credentials validation is ensured by an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) |
 | `Optional<UserProfile> getUserProfile(C credentials, WebContext context` | It builds the authenticated user profile.<br />The creation of the authenticated user profile is performed by a [`ProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java) |
 | `Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context)` | It returns the renewed user profile |
-| `Optional<RedirectionAction> getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl)` | It returns the redirect action to call the identity provider logout.<br />The logout redirect action computation is done by a [`LogoutActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/LogoutActionBuilder.java) |
+| `Optional<RedirectionAction> getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl)` | It returns the redirection action to call the identity provider logout.<br />The logout redirection action computation is done by a [`LogoutActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/LogoutActionBuilder.java) |
 {:.striped}
 
-Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder` and `Authenticator`, except for HTTP clients where the `Authenticator` must be defined. Sub-components can of course be changed for various [customizations](customizations.html).
+Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder` and `Authenticator`, except for HTTP clients where the `Authenticator` must be explicitely defined. Sub-components can of course be changed for various [customizations](customizations.html).
 
 
 ---
 
-## 7) Originally requested URLs
+## 7) The originally requested URL
 
-An originally requested URL is the URL called before the authenticated process starts: it is restored from the callback URL after the login process has been completed.
+The originally requested URL is the URL called before the authenticated process starts: it is restored by the "callback endpoint" after the login process has been completed.
 
-It is handled in the `DefaultSecurityLogic` and in the `CallbackSecurityLogic` by the `SavedRequestHandler` component.
-By default, it's a `DefaultSavedRequestHandler` which handles GET and POST requests.
+It is handled in the `DefaultSecurityLogic` and in the `DefaultCallbackLogic` by the `SavedRequestHandler` component.
+By default, it's the `DefaultSavedRequestHandler` which handles GET and POST requests.
 
 
 ---
@@ -191,7 +190,7 @@ By default, it's a `DefaultSavedRequestHandler` which handles GET and POST reque
 
 When using an `IndirectClient`, the login process can fail or be cancelled at the external identity provider level.
 
-Thus, no user profile is created and the access is not be granted to the secured resources (401 error).
+Thus, no user profile is created and the access is not granted to the secured resources (401 error).
 
 Though, you may still want to access the web resources if the login process has failed or been cancelled.
 
@@ -203,4 +202,4 @@ For that, you can return a custom profile instead of no profile by using the `se
 myClient.setProfileFactoryWhenNotAuthenticated(p -> AnonymousProfile.INSTANCE);
 ```
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> In that case, the access is granted to all secured resources for the whole web session unless the proper <code>Authorizer</code>s have been defined.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> In that case, the access is granted to all secured resources for the whole web session unless the proper authorizers have been defined.</div>
