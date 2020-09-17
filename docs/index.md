@@ -21,16 +21,20 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 5) [Security configuration](config.html)
 
-## 6) [User profile](user-profile.html)
+## 6) Web components:
 
-## 7) [SessionStore](session-store.html) and [Store](store.html)
+### &#9656; [Security filter](security_filter.html) - [Callback endpoint](callback_endpoint.html) - [Logout endpoint](logout_endpoint.html)
 
-## 8) [Release notes](release-notes.html) - [Backward compatibility](backward-compatibility.html)
+## 7) [User profile](user-profile.html)
 
-## 9) [Authentication flows](authentication-flows.html) - [Big picture](big-picture.html)
+## 8) [SessionStore](session-store.html) and [Store](store.html)
 
-## 10) [Customizations](customizations.html)
+## 9) [Release notes](release-notes.html) - [Backward compatibility](backward-compatibility.html)
 
-## 11) [Third-party extensions](extensions.html)
+## 10) [Authentication flows](authentication-flows.html) - [Big picture](big-picture.html)
 
-## 12) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/4.0.3/index.html)
+## 11) [Customizations](customizations.html)
+
+## 12) [Third-party extensions](extensions.html)
+
+## 13) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/4.1.0/index.html)
