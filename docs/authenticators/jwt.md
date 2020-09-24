@@ -3,7 +3,7 @@ layout: doc
 title: JWT
 ---
 
-*pac4j* allows you to validate JSON Web Token.
+*pac4j* allows you to validate JSON web tokens.
 
 The JWT support is based on the excellent [Nimbus JOSE JWT library](http://connect2id.com/products/nimbus-jose-jwt) and you should consider reading this [algorithm selection guide](http://connect2id.com/products/nimbus-jose-jwt/algorithm-selection-guide).
 
@@ -27,11 +27,15 @@ The [`JwtAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/sr
 
 It can be defined for HTTP clients which deal with `TokenCredentials`.
 
-It supports plain text, signed and/or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception. If the provided JWT has an expiration date, then `JwtAuthenticator` may also be configured to only accept JWTs that pass a date criteria that is compared against the JWT expiration date, via `JwtAuthenticator#setExpirationTime()`
+It supports plain text, signed and/or encrypted JWT tokens.
+
+In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless you have defined an `identifierGenerator` (of type `ValueGenerator`) to generate an identifier. Otherwise it will throw an exception.
+
+If the provided JWT has an expiration date, then `JwtAuthenticator` may also be configured to only accept JWTs that pass a date criteria that is compared against the JWT expiration date, via `JwtAuthenticator#setExpirationTime()`
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that for security reasons, plain text JWT tokens will be accepted ONLY if no signature configuration is defined. If one or more signature configurations are defined, the JWT tokens are expected to be signed accordingly.</div>
 
-### &#9656; Signature
+### a) Signature
 
 To handle signed JWT, you must define one or more [`SignatureConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/signature/SignatureConfiguration.java) with the `addSignatureConfiguration` method.
 
@@ -39,7 +43,7 @@ Three signature configurations are available: with a secret (`SecretSignatureCon
 
 To verify a signed JWT, the defined signature configurations will be tried successfully (if the algorithm of the JWT matches the one supported by the signature configuration).
 
-### &#9656; Encryption
+### b) Encryption
 
 To handle encrypted JWT, you must define one or more [`EncryptionConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/encryption/EncryptionConfiguration.java) with the `addEncryptionConfiguration` method.
 
@@ -76,7 +80,7 @@ The `JwtAuthenticator` also offers two convenient methods to handle JWT:
 - `Map<String, Object> validateTokenAndGetClaims(final String token)` validates a token and directly returns a set of claims/attributes, this method is completely agnostic from *pac4j* profiles.
 
 
-### &#9656; User profiles
+### c) User profiles
 
 - if the provided JWT has been generated from a *pac4j* profile (like `FacebookProfile` for example) using the `JwtGenerator`, the `JwtAuthenticator` will re-create the same profile
 - if the provided JWT has been created with any other mean, the `JwtAuthenticator` will create a [`JwtProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/profile/JwtProfile.java).

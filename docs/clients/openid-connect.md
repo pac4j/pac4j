@@ -23,13 +23,11 @@ You need to use the following module: `pac4j-oidc`.
 
 ## 2) Clients
 
-#### Indirect clients
+### a) Indirect clients
 
-For any OpenID Connect identity provider, you should use the generic [OidcClient](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/OidcClient.java) (or one of its subclasses) and the [`OidcConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/config/OidcConfiguration.java) to define the appropriate configuration.
-
-Note:  *[OidcClient](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/OidcClient.java) can be used only for indirect clients (web browser based authentication)*
-
-Before *pac4j* v1.9.2, the configuration was directly set at the client level.
+For any OpenID Connect identity provider, you should use the generic [OidcClient](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/OidcClient.java) (or one of its subclasses).
+It is an indirect client for web browser based authentication.
+The configuration is defined via the [`OidcConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/config/OidcConfiguration.java) component.
 
 **Example**:
 
@@ -81,7 +79,7 @@ You can request to use the `nonce` parameter to reinforce security via:
 config.setUseNonce(true);
 ```
 
-#### Direct clients
+### b) Direct clients
 
 For direct clients (web services), you can get the `access token` from any OpenID Connect identity provider and use that in your request to get the user profile.
 

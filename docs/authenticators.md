@@ -5,14 +5,14 @@ title: Authenticators&#58;
 
 [HTTP](clients/http.html) [clients](clients.html) require an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) to validate the credentials.
 
-This `Authenticator` interface has only one method: `void validate(C credentials, WebContext context) throws HttpAction, CredentialsException`.
+This `Authenticator` interface has only one method: `void validate(Credentials credentials, WebContext context)`.
 
 [`Credentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java) can be of two kinds:
 
 - username/password are [`UsernamePasswordCredentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/UsernamePasswordCredentials.java)
 - tokens or identifiers are [`TokenCredentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/TokenCredentials.java).
 
-The [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/HttpAction.java) allows you to interrupt the credentials validation and trigger a specific HTTP action (like a temporary redirection).
+The [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/http/HttpAction.java) allows you to interrupt the credentials validation and trigger a specific HTTP action (like a temporary redirection).
 
 You can use various `Authenticator` for many identity mechanisms:
 
@@ -25,7 +25,7 @@ You can use various `Authenticator` for many identity mechanisms:
 - [REST API](authenticators/rest.html)
 
 
-## 1) Deal with performance issues
+## 1) Dealing with performance issues
 
 For direct HTTP clients, credentials are passed and validated for each request, which may lead to performance issues (too many calls to the underlying identity system). So the use of a cache is highly recommended.
 
@@ -44,10 +44,10 @@ By default, the `LocalCachingAuthenticator` uses Guava as its internal [`Store`]
 
 ## 2) `PasswordEncoder`
 
-Regarding the IP address authenticator, there is no need for password protection. Regarding the LDAP and Stormpath authenticators, the password protection is handled by the systems themselves.
+Regarding the IP address authenticator, there is no need for password protection. Regarding the LDAP authenticator, the password protection is handled by the system itself.
 
 But for the MongoDB and SQL authenticators, the password protection must be handled explicitly by the [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java)
-which can encode plaintext passwords into crypted passwords as well as check if a plaintext password matches with an already encoded password.
+which can encode plaintext passwords into encrypted passwords as well as check if a plaintext password matches with an already encoded password.
 
 The password encoder must be defined for these two authenticators via constructors or via the `setPasswordEncoder(passwordEncoder)` method.
 
@@ -69,4 +69,4 @@ In practice:
 - all the available `Authenticator` create a specific user profile when validating credentials and save it in the current `Credentials`
 - all the clients are configured by default with the [`AuthenticatorProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/AuthenticatorProfileCreator.java) which retrieves the user profile from the current `Credentials` and returns it.
 
-So it works out of the box, even if providing a specific `ProfileCreator` is perfectly feasible.
+So it works out of the box, even if providing a specific `ProfileCreator` is possible.

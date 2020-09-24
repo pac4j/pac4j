@@ -5,7 +5,7 @@ title: OpenID
 
 *pac4j* allows you to login using the OpenID protocol v1.0 and v2.0.
 
-Notice that the OpenID protocol is not used very much.
+Notice that this support is deprecated and will be removed in the next major version (v5).
 
 ## 1) Dependency
 

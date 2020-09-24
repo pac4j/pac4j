@@ -9,8 +9,8 @@ Here are the main features categories:
 
 - [version](./version.html)
 - [configuration](./config.html)
-- [security filtering and callback/logout endpoints](./filters.html)
-- [web components](./webcomponents.html)
+- [web components: security filter and callback/logout endpoints](./webcomponents.html)
+- [web objects](./webobjects.html)
 - [default logics](./logics.html)
 - [profile management](./profile.html)
 - [authorization checks](./authorization.html).

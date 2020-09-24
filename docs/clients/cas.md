@@ -37,7 +37,7 @@ You need to use the following module: `pac4j-cas`.
 
 To login with a CAS server, the indirect [`CasClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/CasClient.java) must be defined (and optionally a [`CasProxyReceptor`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/CasProxyReceptor.java) to deal with proxies). Your web application protected by the `CasClient` will thus participate in the SSO.
 
-The CAS configuration must be defined in a [`CasConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/config/CasConfiguration.java) object instead of directly in the `CasClient`.
+The CAS configuration must be defined in a [`CasConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/config/CasConfiguration.java) object.
 
 **Example:**
 
@@ -59,7 +59,7 @@ config.setLoginUrl("https://casserverpac4j.herokuapp.com/login");
 config.setPrefixUrl("http://internal-cas-url");
 ```
 
-You can define the CAS protocol you want to support (`CasProtocol.CAS30` by default):
+You can define the CAS protocol you want to use (`CasProtocol.CAS30` by default):
 
 ```java
 config.setProtocol(CasProtocol.CAS20);
@@ -72,8 +72,7 @@ You can also set various parameters:
 | `setEncoding(String)` |  Define the encoding used for parsing the CAS responses |
 | `setRenew(boolean)` |  Define if the `renew` parameter will be used |
 | `setGateway(boolean)` |  Define if the `gateway` parameter will be used |
-| `setTimeTolerance(long)` |  Define the time tolerance for the SAML ticket validation |
-| `setTicketValidator(TicketValidator)` |  Define a specific `TicketValidator` |
+| `setTimeTolerance(long)` |  Define the time tolerance for the SAML ticket validation (`CasProtocol.SAML`) |
 | `setCallbackUrlResolver(CallbackUrlResolver)` |  Define a specific `CallbackUrlResolver` (by default, the `CallbackUrlResolver` of the `CasClient` is used) |
 | `setDefaultTicketValidator(TicketValidator)` | Define the default `TicketValidator` to use |
 {:.striped}
@@ -81,11 +80,11 @@ You can also set various parameters:
 
 ### b) CAS configuration
 
-Assuming your callback URL is `http://localhost:8080/callback`, the CAS server will be called via `https://mycasserver/login?service=http://localhost:8080/callback?client_name=CasClient`.
+Assuming your callback URL is `http://localhost:8080/callback`, the CAS server will be called by default via `https://mycasserver/login?service=http://localhost:8080/callback?client_name=CasClient`.
 
 So you must define in the CAS services registry the appropriate CAS service matching this URL: `http://localhost:8080/callback?client_name=CasClient` and with the appropriate configuration: which attributes to return? Does it support proxies?
 
-Read the [CAS documentation](https://apereo.github.io/cas/5.0.x/installation/Service-Management.html) for that.
+Read the [CAS documentation](https://apereo.github.io/cas/6.2.x/services/Service-Management.html) for that.
 
 
 ### c) Proxy support
@@ -93,7 +92,7 @@ Read the [CAS documentation](https://apereo.github.io/cas/5.0.x/installation/Ser
 For proxy support, the `CasProxyReceptor` component must be used, defined on the same or a new callback URL (via the [security configuration](../config.html)) and declared in the `CasConfiguration`:
 
 ```java
-CasProxyReceptor casProxy = new CasProxyReceptor(); 
+CasProxyReceptor casProxy = new CasProxyReceptor();
 config.setProxyReceptor(casProxy);
 // config.setAcceptAnyProxy(false);
 // config.setAllowedProxyChains(proxies);
@@ -114,14 +113,14 @@ To correlate proxy information, the `CasProxyReceptor` uses an internal [`Store`
 To handle CAS logout requests, a [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java) is automatically created. Unless you specify your own implementation of the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface.
 
 The `DefaultLogoutHandler`:
- 
+
 - relies on the capabilities of the `SessionStore` (`destroySession`, `getTrackableSession` and `buildFromTrackableSession`  methods)
 - stores data in a [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
 
 
 ### e) In a stateless way
 
-In fact, you can even login with the CAS login page using a **direct** [`DirectCasClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/direct/DirectCasClient.java). No session will be created and thus no logout will be necessary.
+In fact, you can even login with the CAS login page using a **direct** [`DirectCasClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/direct/DirectCasClient.java). No callback URL will be involved: the requested URL will be called back after the CAS login. No session will be created and thus no logout will be necessary.
 
 
 ---
@@ -141,19 +140,19 @@ config.setProtocol(CasProtocol.CAS30_PROXY);
 DirectCasProxyClient directCasProxyClient = new DirectCasProxyClient(config, "http://localhost:8080/webservices");
 ```
 
-After generating a proxy ticket (like `PT-1`), the web service will be called on a URL similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`. 
+After generating a proxy ticket (like `PT-1`), the web service will be called on a URL similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`.
 
 The `DirectCasProxyClient` will validate the proxy ticket and the service URL (defined in the constructor: `http://localhost:8080/webservices`) on the CAS server to get the identity of the user.
 
 This requires to define the appropriate CAS service (matching the `http://localhost:8080/webservices` URL) on the CAS server side.
 
-This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasAuthenticator.java). See how to [deal with performance issues](../authenticators.html#deal-with-performance-issues).
+This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasAuthenticator.java). See how to [deal with performance issues](../authenticators.html#1-dealing-with-performance-issues).
 
 ---
 
 ## 3) CAS REST API (web service)
 
-The CAS server can be called via a [REST API](https://apereo.github.io/cas/5.0.x/protocol/REST-Protocol.html) if the feature is enabled.
+The CAS server can be called via a [REST API](https://apereo.github.io/cas/6.2.x/protocol/REST-Protocol.html) if the feature is enabled.
 
 The [`CasRestFormClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestFormClient.java) and [`CasRestBasicAuthClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestBasicAuthClient.java) are direct clients which can be used to interact with the REST API of a CAS server:
 
@@ -167,14 +166,14 @@ CasConfiguration casConfig = new CasConfiguration("https://mycasserver/login");
 CasRestFormClient casRestClient = new CasRestFormClient(casConfig);
 ```
 
-These direct clients internally rely on the [`CasRestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasRestAuthenticator.java). See how to [deal with performance issues](../authenticators.html#deal-with-performance-issues).
+These direct clients internally rely on the [`CasRestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasRestAuthenticator.java). See how to [deal with performance issues](../authenticators.html#1-dealing-with-performance-issues).
 
 After a successful authentication via the `CasRestBasicAuthClient`/`CasRestFormClient`, a `CasRestProfile` will be created.
 
 This profile has no attributes as it was built by validating the CAS credentials on the REST API. You must request a service ticket and validate it to get a `CasProfile` with attributes (as the default protocol used is CAS v3.0).
 
 Indeed, with the `CasRestProfile`, you'll be able to:
- 
+
 - request service tickets: `TokenCredentials tokenCredentials = casRestClient.requestServiceTicket(serviceUrl, casRestProfile, context)`
 - validate them: `CasProfile casProfile = casRestClient.validateServiceTicket(serviceUrl, tokenCredentials, context)`
 - or destroy the previous authentication: `casRestClient.destroyTicketGrantingTicket(casRestProfile, context)`.
