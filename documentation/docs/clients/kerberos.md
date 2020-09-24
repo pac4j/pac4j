@@ -24,11 +24,11 @@ You need to use the following module: `pac4j-kerberos`.
 
 ## 2) Clients
 
-You can use the following clients depending on how they are passed in the HTTP request:
+You can use the following clients:
 
 | Behaviour wanted | Client |
 |-------------|--------|
-| **Web Browser** (Firefox/Safari/IE)<br/> after ticket validation, it stores user profile in the session| [`IndirectKerberosClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-kerberos/src/main/java/org/pac4j/kerberos/client/indirect/IndirectKerberosClient.java)<br>(upon failure it sends a `HTTP 401` with a `WWW-Authenticate: Negotiate` header asking the browser to provide the Kerberos/SPNEGO credentials) |
+| **Web Browser** (Firefox/Safari/IE)<br/> after ticket validation, it stores the user profile in the session| [`IndirectKerberosClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-kerberos/src/main/java/org/pac4j/kerberos/client/indirect/IndirectKerberosClient.java)<br>(upon failure it sends a `HTTP 401` with a `WWW-Authenticate: Negotiate` header asking the browser to provide the Kerberos/SPNEGO credentials) |
 | **Stateless Web service** | [`DirectKerberosClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-kerberos/src/main/java/org/pac4j/kerberos/client/direct/DirectKerberosClient.java) <br/>credentials can be provided upfront as a request's HTTP header:<br/>`Authentication: Negotiate SomeBase64EncKerberosTicket`<br/> (if not provided, the default strategy with send a `HTTP 401` with a `WWW-Authenticate: Negotiate` header asking the remote to provide the Kerberos/SPNEGO credentials) |
 {:.table-striped}
 

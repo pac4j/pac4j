@@ -17,110 +17,121 @@ title: Implementations comparison for the web components&#58;
 <table class="centered">
     <tr>
         <th>Implementation</th>
-        <th>The default <code class="highlighter-rouge">WebContext</code></th>
-        <th>The default <code class="highlighter-rouge">SessionStore</code></th>
-        <th>The default <code class="highlighter-rouge">HttpActionAdapter</code></th>
+        <th>The security filter applies at a URL level</th>
+        <th>The security filter applies at a method level</th>
+        <th>The callback endpoint</th>
+        <th>The logout endpoint</th>
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityInterceptor</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackController</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutController</code></td>
     </tr>
     <tr>
         <td>jee-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ShiroSessionStore.INSTANCE</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayCacheSessionStore</code> to use the Play Cache, <code class="highlighter-rouge">PlayCookieSessionStore</code> to use the Play session cookie</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">PlayHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Secure</code> annotation or the <code>Security</code> trait</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackController</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutController</code></td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxSessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SparkWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SparkHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackRoute</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutRoute</code></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JavalinWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JavalinHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">RatpackWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">RatpackSessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">RatpackPac4j.login</code> and <code class="highlighter-rouge">RatpackPac4j.requireAuth</code> methods</td>
         <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">RatpackPac4j.authenticator</code> method</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">RatpackPac4j.logout()</code> method</td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowSessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowNopHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
     </tr>
     <tr>
         <td>CAS</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code> or <code class="highlighter-rouge">DistributedJEESessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
-        <td>jax-rs-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>dropwizard-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>jax-rs-pac4j and dropwizard-pac4j</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>Knox</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>jooby-pac4j2</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
 </table>

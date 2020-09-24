@@ -48,5 +48,5 @@ It defines the default client to use to finish the login process if none is prov
 
 ## 3) Logout
 
-With the [logout endpoint](logout_endpoint.html), you can trigger the local and central logout process. Yet, in case of a Single-Log-Out process happening at the identity provider,
+With the [logout endpoint](logout-endpoint.html), you can trigger the local and central logout process. Yet, in case of a Single-Log-Out process happening at the identity provider,
 it's this callback endpoint which will receive a logout request (with some session key) to destroy the application session.

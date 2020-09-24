@@ -37,6 +37,7 @@ The IP address is retrieved via the `context.getRemoteAddr()` method. Though, on
 
 ```java
 IpClient ipClient = new IpClient(new IpRegexpAuthenticator("10\\..*"));
+
 IpExtractor ipHeaderExtractor = new IpExtractor(ipClient.getName());
 ipHeaderExtractor.setAlternateIpHeaders("X-Forwarded-For", "x-real-ip");
 ipHeaderExtractor.setProxyIp("127.0.0.1");

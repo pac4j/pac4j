@@ -52,3 +52,10 @@ You can also use the out-of-the-box matchers, already available without defining
 ### e) `multiProfile`
 
 It indicates whether multiple authentications (and thus multiple profiles) must be kept at the same time. It is an optional parameter, `false` by default.
+
+## 3) `ProfileStorageDecision`
+
+In the `DefaultSecurityLogic` component, you can set the `ProfileStorageDecision` which defines the decisions related to the profiles, whether we must read them from and save them into the web session if retrieved by a direct client:
+
+- by default, the [`DefaultProfileStorageDecision`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/decision/DefaultProfileStorageDecision.java) is set, which loads the user profiles from the web session only for indirect clients and does not save the profiles into the web session
+- you can also use the [`AlwaysUseSessionProfileStorageDecision`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/decision/AlwaysUseSessionProfileStorageDecision.java) to always use the web session.

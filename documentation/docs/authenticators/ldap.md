@@ -21,9 +21,9 @@ You need to use the following module: `pac4j-ldap`.
 
 ## 2) `LdapProfileService`
 
-The [`LdapProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/service/LdapProfileService.java) supersedes the deprecated `LdapAuthenticator` to:
-                                                                                                                                                       
-- validate a username/password on a LDAP (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
+The [`LdapProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/service/LdapProfileService.java) allows you to:
+
+- validate a username/password on a LDAP (it can be defined as the `Authenticator` for HTTP clients which deal with `UsernamePasswordCredentials`)
 - create, update or delete a user in the LDAP.
 
 It works with a [`LdapProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/LdapProfile.java).
@@ -72,5 +72,5 @@ The base users DN can be changed via the `setUsersDn` method. As well as the `id
 
 The attributes of the user profile can be managed in the LDAP in two ways:
 
-- either each attribute is explicitly mapped in a specific LDAP attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
+- either each attribute is explicitly mapped in a specific LDAP attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode existing since version 1.9)
 - or the whole user profile is serialized and saved in the `serializedprofile` LDAP attribute.

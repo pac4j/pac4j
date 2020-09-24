@@ -21,9 +21,9 @@ You need to use the following module: `pac4j-couch`.
 
 ## 2) `CouchProfileService`
 
-The [`CouchProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-couch/src/main/java/org/pac4j/couch/profile/service/CouchProfileService.java):
-                                                                                                                                                                                                                                                                                                                 
-- validates a username/password on a CouchDB database (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
+The [`CouchProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-couch/src/main/java/org/pac4j/couch/profile/service/CouchProfileService.java) allows you to:
+
+- validate a username/password on a CouchDB database (it can be defined as the `Authenticator` for HTTP clients which deal with `UsernamePasswordCredentials`)
 - create, update or delete a user in the CouchDB database.
 
 It works with a [`CouchProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-couch/src/main/java/org/pac4j/couch/profile/CouchProfile.java).
@@ -56,11 +56,11 @@ The choice of the database name is irrelevant to `CouchProfileService`. The data
 }
 ```
 
-The `id`, `username` and `password` attribute names can be changed using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods. By default, the `id` attribute is CouchDB's `_id` attribute. If you change the `username` or `linkedid` attribute, please change the design document accordingly. You can also get/set the ObjectMapper used to serialize the JSON data from CouchDB with `getObjectMapper()` and `setObjectMapper()`, the default one is a simple default one.
+The `id`, `username` and `password` attribute names can be changed using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods. By default, the `id` attribute is CouchDB's `_id` attribute. If you change the `username` or `linkedid` attribute, please change the design document accordingly. You can also get/set the ObjectMapper used to serialize the JSON data from CouchDB with `getObjectMapper()` and `setObjectMapper()`, the default one is simply `new ObjectMapper()`.
 
 The attributes of the user profile can be managed in the CouchDB collection in two ways:
 
-- either each attribute is explicitly saved in a specific attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
+- either each attribute is explicitly saved in a specific attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode existing since version 1.9)
 - or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
 This `CouchProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the CouchDB database.

@@ -6,8 +6,8 @@ title: User profile
 When the user is successfully authenticated by *pac4j*, his data are retrieved from the identity provider and a user profile is built. His profile has:
 
 - an identifier (`getId()`)
-- attributes (`getAttributes()`, `getAttribute(name)`) 
-- authentication-related attributes (`getAuthenticationAttributes()`, `getAuthenticationAttribute(name)`) 
+- attributes (`getAttributes()`, `getAttribute(name)`)
+- authentication-related attributes (`getAuthenticationAttributes()`, `getAuthenticationAttribute(name)`)
 - roles (`getRoles()`)
 - permissions (`getPermissions()`)
 - a client name (`getClientName()`)
@@ -16,9 +16,11 @@ When the user is successfully authenticated by *pac4j*, his data are retrieved f
 
 In fact, the root class of the profiles hierarchy is the [`BasicUserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/BasicUserProfile.java). It implements the [`UserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java) interface.
 
-This is for specific use cases where you want a minimal user profile.
+This is for specific use cases when you want a minimal user profile.
 
 In the *pac4j* environment, the first user profile which must be considered is the [`CommonProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java) which defines the most common methods available in most profiles.
+
+User profiles are managed via the [profile manager](profile-manager.html).
 
 ## 1) Identifier
 
@@ -41,7 +43,7 @@ As the identifier must be a `String`, you may use the `ProfileHelper.sanitizeIde
 
 User profiles have attributes, populated from the data retrieved from the identity provider (after conversion).
 Multiple attributes with the same name and value of collection type can be (optionally) merged into a single attribute.
-In particular it can be useful for identity providers that return roles in different single-element collections.  
+In particular it can be useful for identity providers that return roles in different single-element collections.
 
 
 ## 3) Authentication-related attributes
@@ -55,7 +57,7 @@ seperately from the user's attributes.
 
 Roles and permissions can be added to the user profile via the `addRole(role)`, `addRoles(roles)`, `addPermission(permission)` and `addPermissions(permissions)` methods.
 
-They are generally computed in an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions).
+They are generally computed in an [`AuthorizationGenerator`](clients.html#2-compute-roles-and-permissions).
 
 
 ## 5) Client name
@@ -111,18 +113,3 @@ In fact, most clients never return a `CommonProfile`, but specific profiles like
 
 Each user profile may have a linked identifier, it's the identifier of another user profile. This way, both user profiles are linked and it allows you to authenticate via an account for a user
 and load the linked user defined in the first user, especially by using the [`LoadLinkedUserAuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/LoadLinkedUserAuthorizationGenerator.java).
-
-## 11) Profile manager
-
-The profile manager is meant to deal with the user profile: it can be used to save or restore it.
-
-By default, the profile manager is the [`ProfileMamager`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileManager.java) component.
-
-In some *pac4j* implementations, there are specific profile managers: `UndertowProfileManager`, `ShiroProfileManager`, etc.
-
-A custom profile manager can be instantiated via two factories:
-
-- `setProfileManagerFactory(final Function<WebContext, ProfileManager> factory)`
-- `setProfileManagerFactory2(final BiFunction<WebContext, SessionStore<WebContext>, ProfileManager> factory)`.
-
-It can be set at a components level (like for the logics) or at the `Config` level.

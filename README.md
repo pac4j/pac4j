@@ -11,7 +11,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 [Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j)
 &bull; [JEE](https://github.com/pac4j/j2e-pac4j)
 &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
-&bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j) 
+&bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j)
 &bull; [Play 2.x](https://github.com/pac4j/play-pac4j)
 &bull; [Vertx](https://github.com/pac4j/vertx-pac4j)
 
@@ -47,7 +47,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the Maven central repository.
-The [next version](http://www.pac4j.org/docs/next_version.html) is under development.
+The [next version](http://www.pac4j.org/docs/next-version.html) is under development.
 
 Read the [documentation](http://www.pac4j.org/docs/index.html) for more information.
 

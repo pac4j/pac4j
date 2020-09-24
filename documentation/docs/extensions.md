@@ -3,7 +3,7 @@ layout: doc
 title: Third-party extensions&#58;
 ---
 
-There exist extensions to *pac4j* developed by third parties. The extensions provide features not available in the core *pac4j* distribution that may be useful for a specific set of users having specific needs. At the moment, the following extensions are known:
+There are extensions to *pac4j* developed by third parties. The extensions provide features not available in the core *pac4j* distribution that may be useful for a specific set of users having specific needs. At the moment, the following extensions are known:
 
 ### IDC Extensions
 

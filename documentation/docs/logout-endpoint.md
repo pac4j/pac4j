@@ -54,4 +54,4 @@ It defines whether a central logout must be performed. It is an optional paramet
 ## 3) Logout requests from the identity provider
 
 In case of a central logout, the SLO process happening at the identity provider will send logout requests to the applications.
-Yet, these logout requests will be received by the [callback endpoint](callback_endpoint.html) and not this logout endpoint.
+Yet, these logout requests will be received by the [callback endpoint](callback-endpoint.html) and not this logout endpoint.

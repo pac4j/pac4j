@@ -21,9 +21,9 @@ You need to use the following module: `pac4j-mongo`.
 
 ## 2) `MongoProfileService`
 
-The [`MongoProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/service/MongoProfileService.java) supersedes the deprecated `MongoAuthenticator` to:
-                                                                                                                                                                                                                                                                                                                 
-- validate a username/password on a MongoDB database (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
+The [`MongoProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/service/MongoProfileService.java) allows you to:
+
+- validate a username/password on a MongoDB database (it can be defined as the `Authenticator` for HTTP clients which deal with `UsernamePasswordCredentials`)
 - create, update or delete a user in the MongoDB database.
 
 It works with a [`MongoProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/MongoProfile.java).
@@ -42,7 +42,7 @@ As well as the `id`, `username` and `password` attribute names using the `setIdA
 
 The attributes of the user profile can be managed in the MongoDB collection in two ways:
 
-- either each attribute is explicitly saved in a specific attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
+- either each attribute is explicitly saved in a specific attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode existing since version 1.9)
 - or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
 This `MongoProfileService` supports the use of a specific [`PasswordEncoder`](../authenticators.html#passwordencoder) to encode the passwords in the MongoDB database.

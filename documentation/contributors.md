@@ -3,7 +3,7 @@ layout: ddoc
 title: <i class="fa fa-file-code-o" aria-hidden="true"></i> For <i>pac4j</i> contributors/committers&#58;
 ---
 
-## 1) [Next version](docs/next_version.html)
+## 1) [Next version](docs/next-version.html)
 
 ## 2) [How to contribute](docs/contribute.html)
 

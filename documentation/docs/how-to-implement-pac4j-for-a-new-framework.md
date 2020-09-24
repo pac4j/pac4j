@@ -13,7 +13,8 @@ Add the `pac4j-core` dependency to benefit from the core API of `pac4j`. Other d
 
 ## 2) Configuration
 
-To define your security configuration, gather all your authentication mechanisms = [**clients**](clients.html) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](authorizers.html) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
+To define your security configuration, gather all your authentication mechanisms = [**clients**](clients.html) via the `Clients` class (to share the same callback url).
+Also define your [**authorizers**](authorizers.html) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
 
 ```java
 FacebookClient facebookClient = new FacebookClient(FB_KEY, FB_SECRET);
@@ -27,7 +28,6 @@ config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
 config.addAuthorizer("custom", new CustomAuthorizer());
 ```
 
-Notice you may also use the `ConfigSingleton` object to keep one instance of your configuration and share it among the different components (if you don't have any dependency injection capability). You can also use the `ConfigFactory` to build you configuration if no other mean is available.
 You can also add **matchers** to define whether the security must apply or not.
 
 ---
@@ -45,12 +45,12 @@ In your framework, you will need to create:
 1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for JEE environment where you can already use the existing `JEEContext`.
 Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session management
 
-2) a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
+2) a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/adapter/HttpActionAdapter.java) to perform actions on the web context.
 
 
 ### A) Secure an URL
 
-The [logic to secure an URL](security_filter.html) is defined by the `SecurityLogic` interface and its default implementation: [`DefaultSecurityLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java).
+The [logic to secure an URL](security-filter.html) is defined by the `SecurityLogic` interface and its default implementation: [`DefaultSecurityLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java).
 
 In your framework, you must define the appropriate "filter", "interceptor", "controller" or whatever the mechanism used to intercept the HTTP request and delegate to the `SecurityLogic` class.
 
@@ -102,7 +102,7 @@ In your framework, you must define the appropriate "filter", "interceptor", "con
 
 ### B) Handle callback for indirect client
 
-The [logic to handle callbacks](callback_endpoint.html) is defined by the `CallbackLogic` interface and its default implementation: [`DefaultCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java).
+The [logic to handle callbacks](callback-endpoint.html) is defined by the `CallbackLogic` interface and its default implementation: [`DefaultCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java).
 
 In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `CallbackLogic` class.
 
@@ -143,7 +143,7 @@ In your framework, you must define the appropriate "controller" to reply to an H
 
 ### C) Logout
 
-The [logic to perform the application/identity provider logout](logout_endpoint.html) is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
+The [logic to perform the application/identity provider logout](logout-endpoint.html) is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
 In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `LogoutLogic` class.
 
 **Examples**:

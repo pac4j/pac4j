@@ -13,9 +13,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 3) Authorization mechanisms: [Authorizers](authorizers.html)
 
-### &#9656; [Roles/permissions](authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
+### &#9656; [On the user profile](authorizers/profile-authorizers.html): roles/permissions, anonymous/remember-me/(fully) authenticated, etc.
 
-### &#9656; [CSRF](authorizers/web-authorizers.html#csrf) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
+### &#9656; [On the web context](authorizers/web-authorizers.html): CSRF, IP address, HTTP method, etc.
 
 ## 4) [Matchers](matchers.html)
 
@@ -23,15 +23,15 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 6) Web components:
 
-### &#9656; [Security filter](security_filter.html) - [Callback endpoint](callback_endpoint.html) - [Logout endpoint](logout_endpoint.html)
+### &#9656; [Security filter](security-filter.html) - [Callback endpoint](callback-endpoint.html) - [Logout endpoint](logout-endpoint.html)
 
-## 7) [User profile](user-profile.html)
+## 7) [User profile](user-profile.html) and [Profile manager](profile-manager.html)
 
 ## 8) [SessionStore](session-store.html) and [Store](store.html)
 
 ## 9) [Release notes](release-notes.html) - [Backward compatibility](backward-compatibility.html)
 
-## 10) [Authentication flows](authentication-flows.html) - [Big picture](big-picture.html)
+## 10) [Authentication flows](authentication-flows.html)
 
 ## 11) [Customizations](customizations.html)
 

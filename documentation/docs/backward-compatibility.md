@@ -20,4 +20,4 @@ Generally, *pac4j* implementations will adopt the semver versioning when upgradi
 
 ## 2) Maintenance
 
-Only one stable and released stream of `pac4j` is maintained at the same time since version 3.
+Generally, only one stable and released stream of `pac4j` is maintained at the same time, currently, it's version 4.

@@ -9,11 +9,11 @@ In most `pac4j` implementations, the security configuration can be defined via a
 
 It gathers the required:
 
-- [PasswordEncoders](authenticators.html#passwordencoder)
-- [Authenticators](authenticators.html)
 - [Clients](clients.html)
+- [Authenticators](authenticators.html)
 - [Authorizers](authorizers.html)
 - [Matchers](matchers.html)
+- [PasswordEncoders](authenticators.html#2-passwordencoder)
 
 **Example:**
 
@@ -40,18 +40,27 @@ Clients clients = new Clients("http://localhost:8080/callback", facebookClient, 
 Config config = new Config(clients);
 ```
 
-In that case, you can define for **all** clients:
+In that case, you can define for **all** the clients:
 
-- a callback URL and a [`CallbackUrlResolver`](clients.html#the-callback-url): `clients.setCallbackUrl(callbackUrl);` and `clients.setCallbackUrlResolver(callbackUrlResolver);`
-- an [`AjaxRequestResolver`](clients.html#ajax-requests): `clients.setAjaxRequestResolver(ajaxRequestResolver);`
-- an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions): `clients.addAuthorizationGenerator(authorizationGenerator);`
+- the same callback URL, `UrlResolver` and [`CallbackUrlResolver`](clients.html#3-the-callback-url): `clients.setCallbackUrl(callbackUrl)`, `clients.setUrlResolver(urlResolver)` and `clients.setCallbackUrlResolver(callbackUrlResolver)`
+- the same [`AjaxRequestResolver`](clients.html#5-ajax-requests): `clients.setAjaxRequestResolver(ajaxRequestResolver)`
+- the same [`AuthorizationGenerator`](clients.html#2-compute-roles-and-permissions): `clients.addAuthorizationGenerator(authorizationGenerator)`
 
 
 ## 2) The `pac4j-config` module
 
-The `pac4j-config` module gathers all the *pac4j* facilities to define this `Config` object.
+The `pac4j-config` module:
+
+```xml
+<dependency>
+    <groupId>org.pac4j</groupId>
+    <artifactId>pac4j-config</artifactId>
+    <version>${pac4j.version}</version>
+</dependency>
+```
+
+gathers all the *pac4j* facilities to define this `Config` object.
 Currently, there is only one component which allows you to build the clients from a set of properties: the [`PropertiesConfigFactory`](https://github.com/pac4j/pac4j/blob/master/pac4j-config/src/main/java/org/pac4j/config/client/PropertiesConfigFactory.java).
-It is used by Dropwizard, CAS and Knox.
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that dependencies must be explicitly declared when necessary (the <code>pac4j-saml</code> module if you want to use SAML, the <code>pac4j-oauth</code> module if you want to use OAuth...)</div>
 
@@ -84,7 +93,7 @@ pac4j:
     formClient.authenticator: ldap
 ```
 
-Here are the properties you can use to define the clients (, password encoders and authenticators):
+Here are the properties you can use to define the clients (, authenticators and password encoders):
 
 | Available properties | Usage |
 |---------------|--------|
@@ -120,4 +129,4 @@ Notice that:
 
 - the `.passwordEncoder` property must be set to the name of an already defined `PasswordEncoder` like `encoder.spring` or `encoder.shiro.3`
 
-- the `.authenticator` property must be set to the name of an already defined `Authenticator` like `ldap` or `db.1` or the implicit values: `testUsernamePassword` or `testToken`.
+- the `.authenticator` property must be set to the name of an already defined `Authenticator` like `ldap` or `db.1` or the implicit values: `testUsernamePassword` or `testToken` (for test authenticators).

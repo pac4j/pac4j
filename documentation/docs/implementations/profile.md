@@ -87,10 +87,10 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>pippo-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>undertow-pac4j</td>
@@ -108,37 +108,37 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>Knox</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
     <tr>
         <td>jooby-pac4j2</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
+        <td bgcolor="#eeeeee"></td>
     </tr>
 </table>
