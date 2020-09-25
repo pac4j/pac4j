@@ -51,22 +51,16 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         uiInfo.setKeywords(Collections.singletonList("keyword1,keyword2,keyword3"));
         uiInfo.setLogos(Collections.singletonList(new SAML2MetadataUIInfo.SAML2MetadataUILogo("https://pac4j.org/logo.png", 16, 16)));
         client.getConfiguration().getMetadataUIInfos().add(uiInfo);
-        
+
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final OkAction action = (OkAction) client.getRedirectionAction(context).get();
-        
-        // JDK8 and JDK11 do not produce the same XML (attributes in different order)
-        // something like xmlunit would have been better but may be a bit overkill for just 2 failing tests
-        final String issuerJdk8 = "<saml2:Issuer "
-                + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
-                + "NameQualifier=\"http://localhost:8080/cb\" "
-                + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>";
+
         final String issuerJdk11 = "<saml2:Issuer "
                 + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
                 + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
                 + "NameQualifier=\"http://localhost:8080/cb\">http://localhost:8080/cb</saml2:Issuer>";
         final String decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
-        assertTrue(decodedAuthnRequest.contains(issuerJdk8) || decodedAuthnRequest.contains(issuerJdk11));
+        assertTrue(decodedAuthnRequest.contains(issuerJdk11));
     }
 
     @Test
@@ -76,14 +70,11 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         final OkAction action = (OkAction) client.getRedirectionAction(context).get();
 
-        final String issuerJdk8 = "<saml2:Issuer "
-            + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
-            + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/cb</saml2:Issuer>";
         final String issuerJdk11 = "<saml2:Issuer "
             + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
             + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">http://localhost:8080/cb</saml2:Issuer>";
         final String decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
-        assertTrue(decodedAuthnRequest.contains(issuerJdk8) || decodedAuthnRequest.contains(issuerJdk11));
+        assertTrue(decodedAuthnRequest.contains(issuerJdk11));
     }
 
     @Test
