@@ -5,6 +5,7 @@ import org.ldaptive.auth.AuthenticationRequest;
 import org.ldaptive.auth.AuthenticationResponse;
 import org.ldaptive.auth.AuthenticationResultCode;
 import org.ldaptive.auth.Authenticator;
+import org.ldaptive.handler.ResultPredicate;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -71,21 +72,17 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void insert(final Map<String, Object> attributes) {
         attributes.put("objectClass", "person");
-        final LdapEntry ldapEntry = new LdapEntry(getEntryId(attributes));
-        ldapEntry.addAttributes(getLdapAttributes(attributes));
+        final LdapEntry ldapEntry = LdapEntry.builder()
+            .dn(getEntryId(attributes))
+            .attributes(getLdapAttributes(attributes))
+            .build();
 
-        Connection connection = null;
         try {
-            connection = connectionFactory.getConnection();
-            connection.open();
-            final AddOperation add = new AddOperation(connection);
+            final AddOperation add = new AddOperation(connectionFactory);
+            add.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             add.execute(new AddRequest(ldapEntry.getDn(), ldapEntry.getAttributes()));
         } catch (final LdapException e) {
             throw new TechnicalException(e);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
         }
     }
 
@@ -116,63 +113,44 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        Connection connection = null;
         try {
-            connection = connectionFactory.getConnection();
-            connection.open();
-            final ModifyOperation modify = new ModifyOperation(connection);
-            final ModifyRequest modifyRequest = new ModifyRequest(getEntryId(attributes));
+            final ModifyOperation modify = new ModifyOperation(connectionFactory);
+            modify.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             final List<AttributeModification> modifications = new ArrayList<>();
             for (final LdapAttribute attribute : getLdapAttributes(attributes)) {
-                modifications.add(new AttributeModification(AttributeModificationType.REPLACE, attribute));
+                modifications.add(new AttributeModification(AttributeModification.Type.REPLACE, attribute));
             }
-            modifyRequest.setAttributeModifications(modifications.toArray(new AttributeModification[modifications.size()]));
+            final ModifyRequest modifyRequest = new ModifyRequest(
+                getEntryId(attributes), modifications.toArray(new AttributeModification[modifications.size()]));
             modify.execute(modifyRequest);
         } catch (final LdapException e) {
             throw new TechnicalException(e);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
         }
     }
 
     @Override
     protected void deleteById(final String id) {
-        Connection connection = null;
         try {
-            connection = connectionFactory.getConnection();
-            connection.open();
-            final DeleteOperation delete = new DeleteOperation(connection);
+            final DeleteOperation delete = new DeleteOperation(connectionFactory);
+            delete.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
         } catch (final LdapException e) {
             throw new TechnicalException(e);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
         }
     }
 
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         final List<Map<String, Object>> listAttributes = new ArrayList<>();
-        Connection connection = null;
         try {
-            connection = connectionFactory.getConnection();
-            connection.open();
-            final SearchOperation search = new SearchOperation(connection);
-            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value,
-                names.toArray(new String[names.size()]))).getResult();
+            final SearchOperation search = new SearchOperation(connectionFactory);
+            final SearchResponse result = search.execute(new SearchRequest(usersDn,key + "=" + value,
+                names.toArray(new String[names.size()])));
             for (final LdapEntry entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }
         } catch (final LdapException e) {
             throw new TechnicalException(e);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
         }
         return listAttributes;
     }
@@ -208,7 +186,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         }
         logger.debug("LDAP response: {}", response);
 
-        if (response.getResult()) {
+        if (response.isSuccess()) {
             final LdapEntry entry = response.getLdapEntry();
             final List<Map<String, Object>> listAttributes = new ArrayList<>();
             listAttributes.add(getAttributesFromEntry(entry));

@@ -118,10 +118,8 @@ public interface PropertiesConstants {
     String LDAP_PRUNE_PERIOD = "ldap.prunePeriod";
     String LDAP_BLOCK_WAIT_TIME = "ldap.blockWaitTime";
     String LDAP_URL = "ldap.url";
-    String LDAP_USE_SSL = "ldap.useSsl";
     String LDAP_USE_START_TLS = "ldap.useStartTls";
     String LDAP_CONNECT_TIMEOUT = "ldap.connectTimeout";
-    String LDAP_PROVIDER_CLASS = "ldap.providerClass";
     String LDAP_ALLOW_MULTIPLE_DNS = "ldap.allowMultipleDns";
     String LDAP_BIND_DN = "ldap.bindDn";
     String LDAP_BIND_CREDENTIAL = "ldap.bindCredential";

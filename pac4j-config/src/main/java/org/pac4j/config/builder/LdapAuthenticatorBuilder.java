@@ -1,6 +1,6 @@
 package org.pac4j.config.builder;
 
-import org.ldaptive.pool.PooledConnectionFactoryManager;
+import org.ldaptive.ConnectionFactoryManager;
 import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.QualityOfProtection;
 import org.ldaptive.sasl.SecurityStrength;
@@ -33,9 +33,9 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
                 final org.ldaptive.auth.Authenticator ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
 
                 final LdapProfileService authenticator = new LdapProfileService(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
-                final PooledConnectionFactoryManager pooledConnectionFactoryManager =
-                    (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
-                authenticator.setConnectionFactory(pooledConnectionFactoryManager.getConnectionFactory());
+                final ConnectionFactoryManager connectionFactoryManager =
+                    (ConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
+                authenticator.setConnectionFactory(connectionFactoryManager.getConnectionFactory());
                 authenticator.setUsersDn(getProperty(LDAP_USERS_DN, i));
                 if (containsProperty(LDAP_PRINCIPAL_ATTRIBUTE_ID, i)) {
                     authenticator.setUsernameAttribute(getProperty(LDAP_PRINCIPAL_ATTRIBUTE_ID, i));
@@ -108,17 +108,11 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
         if (containsProperty(LDAP_BLOCK_WAIT_TIME, i)) {
             ldapProp.setBlockWaitTime(getPropertyAsLong(LDAP_BLOCK_WAIT_TIME, i));
         }
-        if (containsProperty(LDAP_USE_SSL, i)) {
-            ldapProp.setUseSsl(getPropertyAsBoolean(LDAP_USE_SSL, i));
-        }
         if (containsProperty(LDAP_USE_START_TLS, i)) {
             ldapProp.setUseStartTls(getPropertyAsBoolean(LDAP_USE_START_TLS, i));
         }
         if (containsProperty(LDAP_CONNECT_TIMEOUT, i)) {
             ldapProp.setConnectTimeout(getPropertyAsLong(LDAP_CONNECT_TIMEOUT, i));
-        }
-        if (containsProperty(LDAP_PROVIDER_CLASS, i)) {
-            ldapProp.setProviderClass(getProperty(LDAP_PROVIDER_CLASS, i));
         }
         if (containsProperty(LDAP_ALLOW_MULTIPLE_DNS, i)) {
             ldapProp.setAllowMultipleDns(getPropertyAsBoolean(LDAP_ALLOW_MULTIPLE_DNS, i));

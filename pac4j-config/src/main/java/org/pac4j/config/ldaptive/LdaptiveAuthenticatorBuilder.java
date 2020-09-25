@@ -1,31 +1,22 @@
 package org.pac4j.config.ldaptive;
 
 import org.ldaptive.BindConnectionInitializer;
-import org.ldaptive.BindRequest;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.Credential;
-import org.ldaptive.DefaultConnectionFactory;
+import org.ldaptive.FilterTemplate;
+import org.ldaptive.PooledConnectionFactory;
 import org.ldaptive.ReturnAttributes;
-import org.ldaptive.SearchExecutor;
-import org.ldaptive.SearchFilter;
+import org.ldaptive.SearchConnectionValidator;
+import org.ldaptive.SearchOperation;
 import org.ldaptive.SearchRequest;
 import org.ldaptive.SearchScope;
-import org.ldaptive.ad.extended.FastBindOperation;
+import org.ldaptive.SimpleBindRequest;
+import org.ldaptive.ad.extended.FastBindConnectionInitializer;
 import org.ldaptive.auth.*;
 import org.ldaptive.control.PasswordPolicyControl;
-import org.ldaptive.pool.BindPassivator;
-import org.ldaptive.pool.BlockingConnectionPool;
-import org.ldaptive.pool.ClosePassivator;
-import org.ldaptive.pool.ConnectionPool;
+import org.ldaptive.pool.BindConnectionPassivator;
 import org.ldaptive.pool.IdlePruneStrategy;
-import org.ldaptive.pool.PoolConfig;
-import org.ldaptive.pool.PooledConnectionFactory;
-import org.ldaptive.pool.SearchValidator;
-import org.ldaptive.provider.Provider;
-import org.ldaptive.sasl.CramMd5Config;
-import org.ldaptive.sasl.DigestMd5Config;
-import org.ldaptive.sasl.ExternalConfig;
-import org.ldaptive.sasl.GssApiConfig;
+import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.SaslConfig;
 import org.ldaptive.ssl.KeyStoreCredentialConfig;
 import org.ldaptive.ssl.SslConfig;
@@ -34,7 +25,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
 import java.time.Duration;
 import java.util.Arrays;
 
@@ -81,7 +71,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getSaslAuthenticator(final LdapAuthenticationProperties l) {
-        final PooledSearchDnResolver resolver = new PooledSearchDnResolver();
+        final SearchDnResolver resolver = new SearchDnResolver();
         resolver.setBaseDn(l.getBaseDn());
         resolver.setSubtreeSearch(l.isSubtreeSearch());
         resolver.setAllowMultipleDns(l.isAllowMultipleDns());
@@ -91,7 +81,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getAuthenticatedOrAnonSearchAuthenticator(final LdapAuthenticationProperties l) {
-        final PooledSearchDnResolver resolver = new PooledSearchDnResolver();
+        final SearchDnResolver resolver = new SearchDnResolver();
         resolver.setBaseDn(l.getBaseDn());
         resolver.setSubtreeSearch(l.isSubtreeSearch());
         resolver.setAllowMultipleDns(l.isAllowMultipleDns());
@@ -137,14 +127,14 @@ public class LdaptiveAuthenticatorBuilder {
         return authn;
     }
 
-    private static PooledBindAuthenticationHandler getPooledBindAuthenticationHandler(final LdapAuthenticationProperties l) {
-        final PooledBindAuthenticationHandler handler = new PooledBindAuthenticationHandler(newPooledConnectionFactory(l));
+    private static SimpleBindAuthenticationHandler getPooledBindAuthenticationHandler(final LdapAuthenticationProperties l) {
+        final SimpleBindAuthenticationHandler handler = new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
         handler.setAuthenticationControls(new PasswordPolicyControl());
         return handler;
     }
 
-    private static PooledCompareAuthenticationHandler getPooledCompareAuthenticationHandler(final LdapAuthenticationProperties l) {
-        final PooledCompareAuthenticationHandler handler = new PooledCompareAuthenticationHandler(newPooledConnectionFactory(l));
+    private static CompareAuthenticationHandler getPooledCompareAuthenticationHandler(final LdapAuthenticationProperties l) {
+        final CompareAuthenticationHandler handler = new CompareAuthenticationHandler(newPooledConnectionFactory(l));
         handler.setPasswordAttribute(l.getPrincipalAttributePassword());
         return handler;
     }
@@ -164,7 +154,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the entry resolver
      */
     public static EntryResolver newSearchEntryResolver(final LdapAuthenticationProperties l) {
-        final PooledSearchEntryResolver entryResolver = new PooledSearchEntryResolver();
+        final SearchEntryResolver entryResolver = new SearchEntryResolver();
         entryResolver.setBaseDn(l.getBaseDn());
         entryResolver.setUserFilter(l.getUserFilter());
         entryResolver.setSubtreeSearch(l.isSubtreeSearch());
@@ -184,7 +174,6 @@ public class LdaptiveAuthenticatorBuilder {
         final String urls = Arrays.stream(l.getLdapUrl().split(",")).collect(Collectors.joining(" "));
         LOGGER.debug("Transformed LDAP urls from [{}] to [{}]", l.getLdapUrl(), urls);
         cc.setLdapUrl(urls);
-        cc.setUseSSL(l.isUseSsl());
         cc.setUseStartTLS(l.isUseStartTls());
         cc.setConnectTimeout(newDuration(l.getConnectTimeout()));
 
@@ -206,18 +195,16 @@ public class LdaptiveAuthenticatorBuilder {
             final SaslConfig sc;
             switch (l.getSaslMechanism()) {
                 case DIGEST_MD5:
-                    sc = new DigestMd5Config();
-                    ((DigestMd5Config) sc).setRealm(l.getSaslRealm());
+                    sc = SaslConfig.builder().mechanism(Mechanism.DIGEST_MD5).realm(l.getSaslRealm()).build();
                     break;
                 case CRAM_MD5:
-                    sc = new CramMd5Config();
+                    sc = SaslConfig.builder().mechanism(Mechanism.CRAM_MD5).build();
                     break;
                 case EXTERNAL:
-                    sc = new ExternalConfig();
+                    sc = SaslConfig.builder().mechanism(Mechanism.EXTERNAL).build();
                     break;
                 case GSSAPI:
-                    sc = new GssApiConfig();
-                    ((GssApiConfig) sc).setRealm(l.getSaslRealm());
+                    sc = SaslConfig.builder().mechanism(Mechanism.GSSAPI).realm(l.getSaslRealm()).build();
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown SASL mechanism " + l.getSaslMechanism().name());
@@ -227,86 +214,57 @@ public class LdaptiveAuthenticatorBuilder {
             sc.setQualityOfProtection(l.getSaslQualityOfProtection());
             sc.setSecurityStrength(l.getSaslSecurityStrength());
             bc.setBindSaslConfig(sc);
-            cc.setConnectionInitializer(bc);
+            cc.setConnectionInitializers(bc);
         } else if (CommonHelper.areEquals(l.getBindCredential(), "*") && CommonHelper.areEquals(l.getBindDn(), "*")) {
-            cc.setConnectionInitializer(new FastBindOperation.FastBindConnectionInitializer());
+            cc.setConnectionInitializers(new FastBindConnectionInitializer());
         } else if (CommonHelper.isNotBlank(l.getBindDn()) && CommonHelper.isNotBlank(l.getBindCredential())) {
-            cc.setConnectionInitializer(new BindConnectionInitializer(l.getBindDn(), new Credential(l.getBindCredential())));
+            cc.setConnectionInitializers(new BindConnectionInitializer(l.getBindDn(), new Credential(l.getBindCredential())));
         }
         return cc;
     }
 
     /**
-     * New pool config pool config.
+     * New pooled connection factory.
      *
      * @param l the ldap properties
-     * @return the pool config
+     * @return the pooled connection factory
      */
-    public static PoolConfig newPoolConfig(final AbstractLdapProperties l) {
-        final PoolConfig pc = new PoolConfig();
-        pc.setMinPoolSize(l.getMinPoolSize());
-        pc.setMaxPoolSize(l.getMaxPoolSize());
-        pc.setValidateOnCheckOut(l.isValidateOnCheckout());
-        pc.setValidatePeriodically(l.isValidatePeriodically());
-        pc.setValidatePeriod(newDuration(l.getValidatePeriod()));
-        return pc;
-    }
-
-    /**
-     * New connection factory connection factory.
-     *
-     * @param l the l
-     * @return the connection factory
-     */
-    public static DefaultConnectionFactory newConnectionFactory(final AbstractLdapProperties l) {
+    public static PooledConnectionFactory newPooledConnectionFactory(final AbstractLdapProperties l) {
         final ConnectionConfig cc = newConnectionConfig(l);
-        final DefaultConnectionFactory bindCf = new DefaultConnectionFactory(cc);
-        if (l.getProviderClass() != null) {
-            try {
-                final Constructor<? extends Provider> constructor = CommonHelper.getConstructor(l.getProviderClass());
-                bindCf.setProvider(constructor.newInstance());
-            } catch (final Exception e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return bindCf;
-    }
-
-    /**
-     * New blocking connection pool connection pool.
-     *
-     * @param l the l
-     * @return the connection pool
-     */
-    public static ConnectionPool newBlockingConnectionPool(final AbstractLdapProperties l) {
-        final DefaultConnectionFactory bindCf = newConnectionFactory(l);
-        final PoolConfig pc = newPoolConfig(l);
-        final BlockingConnectionPool cp = new BlockingConnectionPool(pc, bindCf);
-
-        cp.setBlockWaitTime(newDuration(l.getBlockWaitTime()));
-        cp.setPoolConfig(pc);
+        final PooledConnectionFactory cf = new PooledConnectionFactory(cc);
+        cf.setBlockWaitTime(newDuration(l.getBlockWaitTime()));
+        cf.setMinPoolSize(l.getMinPoolSize());
+        cf.setMaxPoolSize(l.getMaxPoolSize());
+        cf.setValidateOnCheckOut(l.isValidateOnCheckout());
+        cf.setValidatePeriodically(l.isValidatePeriodically());
 
         final IdlePruneStrategy strategy = new IdlePruneStrategy();
         strategy.setIdleTime(newDuration(l.getIdleTime()));
         strategy.setPrunePeriod(newDuration(l.getPrunePeriod()));
+        cf.setPruneStrategy(strategy);
 
-        cp.setPruneStrategy(strategy);
-        cp.setValidator(new SearchValidator());
-        cp.setFailFastInitialize(l.isFailFast());
+        cf.setFailFastInitialize(l.isFailFast());
+
+        final SearchConnectionValidator validator = new SearchConnectionValidator();
+        validator.setValidatePeriod(newDuration(l.getValidatePeriod()));
+        cf.setValidator(validator);
 
         if (CommonHelper.isNotBlank(l.getPoolPassivator())) {
             final AbstractLdapProperties.LdapConnectionPoolPassivator pass =
-                    AbstractLdapProperties.LdapConnectionPoolPassivator.valueOf(l.getPoolPassivator().toUpperCase());
+                AbstractLdapProperties.LdapConnectionPoolPassivator.valueOf(l.getPoolPassivator().toUpperCase());
             switch (pass) {
                 case CLOSE:
-                    cp.setPassivator(new ClosePassivator());
+                    // TODO: provide a property to disable pooling which return a DefaultConnectionFactory
+                    // TODO: this is preferable to a pool of closed connections
+                    cf.setPassivator(conn -> {
+                        conn.close();
+                        return true;
+                    });
                     break;
                 case BIND:
                     LOGGER.debug("Creating a bind passivator instance for the connection pool");
-                    final BindRequest bindRequest = new BindRequest();
-                    bindRequest.setDn(l.getBindDn());
-                    bindRequest.setCredential(new Credential(l.getBindCredential()));
-                    cp.setPassivator(new BindPassivator(bindRequest));
+                    final SimpleBindRequest bindRequest = new SimpleBindRequest(l.getBindDn(), new Credential(l.getBindCredential()));
+                    cf.setPassivator(new BindConnectionPassivator(bindRequest));
                     break;
                 default:
                     break;
@@ -314,19 +272,8 @@ public class LdaptiveAuthenticatorBuilder {
         }
 
         LOGGER.debug("Initializing ldap connection pool for {} and bindDn {}", l.getLdapUrl(), l.getBindDn());
-        cp.initialize();
-        return cp;
-    }
-
-    /**
-     * New pooled connection factory pooled connection factory.
-     *
-     * @param l the ldap properties
-     * @return the pooled connection factory
-     */
-    public static PooledConnectionFactory newPooledConnectionFactory(final AbstractLdapProperties l) {
-        final ConnectionPool cp = newBlockingConnectionPool(l);
-        return new PooledConnectionFactory(cp);
+        cf.initialize();
+        return cf;
     }
 
     /**
@@ -346,24 +293,24 @@ public class LdaptiveAuthenticatorBuilder {
      * @param filter the filter
      * @return the search request
      */
-    public static SearchRequest newSearchRequest(final String baseDn, final SearchFilter filter) {
+    public static SearchRequest newSearchRequest(final String baseDn, final FilterTemplate filter) {
         final SearchRequest sr = new SearchRequest(baseDn, filter);
-        sr.setBinaryAttributes(ReturnAttributes.ALL_USER.value());
+        // TODO: this argument should be a list of individual attribute names
+        //sr.setBinaryAttributes(ReturnAttributes.ALL_USER.value());
         sr.setReturnAttributes(ReturnAttributes.ALL_USER.value());
         sr.setSearchScope(SearchScope.SUBTREE);
         return sr;
     }
 
     /**
-     * Constructs a new search filter using {@link SearchExecutor#searchFilter} as a template and
-     * the username as a parameter.
+     * Constructs a new search filter using filterQuery as a template and the username as a parameter.
      *
      * @param filterQuery the query filter
      * @param params      the username
      * @return Search filter with parameters applied.
      */
-    public static SearchFilter newSearchFilter(final String filterQuery, final String... params) {
-        final SearchFilter filter = new SearchFilter();
+    public static FilterTemplate newSearchFilter(final String filterQuery, final String... params) {
+        final FilterTemplate filter = new FilterTemplate();
         filter.setFilter(filterQuery);
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
@@ -379,20 +326,22 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     /**
-     * New search executor search executor.
+     * New search operation .
      *
      * @param baseDn      the base dn
      * @param filterQuery the filter query
      * @param params      the params
      * @return the search executor
      */
-    public static SearchExecutor newSearchExecutor(final String baseDn, final String filterQuery, final String... params) {
-        final SearchExecutor executor = new SearchExecutor();
-        executor.setBaseDn(baseDn);
-        executor.setSearchFilter(newSearchFilter(filterQuery, params));
-        executor.setReturnAttributes(ReturnAttributes.ALL.value());
-        executor.setSearchScope(SearchScope.SUBTREE);
-        return executor;
+    public static SearchOperation newSearchOperation(final String baseDn, final String filterQuery, final String... params) {
+        final SearchOperation operation = new SearchOperation();
+        operation.setRequest(SearchRequest.builder()
+            .dn(baseDn)
+            .filter(newSearchFilter(filterQuery, params))
+            .returnAttributes(ReturnAttributes.ALL.value())
+            .scope(SearchScope.SUBTREE)
+            .build());
+        return operation;
     }
 }
 
