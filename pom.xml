@@ -43,10 +43,8 @@
 		<module>pac4j-config</module>
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
-		<module>pac4j-openid</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
-        <module>pac4j-saml-opensamlv3</module>
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
@@ -106,7 +104,7 @@
 			</dependency>
             <dependency>
                 <groupId>org.pac4j</groupId>
-                <artifactId>pac4j-saml-opensamlv3</artifactId>
+                <artifactId>pac4j-saml</artifactId>
                 <version>${project.version}</version>
             </dependency>
 			<dependency>

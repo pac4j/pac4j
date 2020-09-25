@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-jwt</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security via JWT</name>
+    <name>pac4j: Java web security for JWT</name>
 
     <properties>
         <bcprov.version>1.66</bcprov.version>

@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-oidc</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security via OpenID Connect protocol</name>
+    <name>pac4j: Java web security for OpenID Connect</name>
 
     <properties>
         <oauth-oidc-sdk.version>8.22</oauth-oidc-sdk.version>

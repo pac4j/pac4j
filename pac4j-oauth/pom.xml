@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-oauth</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security via OAuth protocol</name>
+    <name>pac4j: Java web security for OAuth</name>
 
     <properties>
         <scribe.version>7.1.1</scribe.version>

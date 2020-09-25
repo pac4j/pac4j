@@ -10,7 +10,6 @@ A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java
 - [CAS protocol](clients/cas.html)
 - [OpenID Connect protocol](clients/openid-connect.html)
 - [HTTP protocol](clients/http.html)
-- [OpenID protocol](clients/openid.html)
 - [Google App Engine support](clients/google-app-engine.html)
 - [Kerberos (SPNEGO Negotiate) protocol](clients/kerberos.html)
 

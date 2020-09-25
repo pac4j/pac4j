@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.0.0** (see: [what's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)):
 
 - Upgraded to JDK 11
+- Removed the `pac4j-saml-opensamlv3` and `pac4j-openid` modules
 
 **v4.1.0** (see: [what's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)):
 

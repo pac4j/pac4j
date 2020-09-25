@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-saml-opensamlv3</artifactId>
+            <artifactId>pac4j-saml</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
