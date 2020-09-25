@@ -1,8 +1,11 @@
 package org.pac4j.core.util;
 
 import org.junit.Test;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ public final class CommonHelperTests {
     public void testAssertNotBlankBlank() {
         try {
             CommonHelper.assertNotBlank(NAME, "");
-            fail("must throw an ClientException");
+            fail("must throw an TechnicalException");
         } catch (final TechnicalException e) {
             assertEquals(NAME + " cannot be blank", e.getMessage());
         }
@@ -71,7 +74,7 @@ public final class CommonHelperTests {
     public void testAssertNotNullNull() {
         try {
             CommonHelper.assertNotNull(NAME, null);
-            fail("must throw an ClientException");
+            fail("must throw an TechnicalException");
         } catch (final TechnicalException e) {
             assertEquals(NAME + " cannot be null", e.getMessage());
         }
@@ -241,5 +244,32 @@ public final class CommonHelperTests {
     @Test(expected = ClassNotFoundException.class)
     public void testGetConstructorMissingClass() throws Exception {
         CommonHelper.getConstructor("this.class.does.not.Exist");
+    }
+
+    @Test
+    public void testAssertOfTypeOk() {
+        final UsernamePasswordCredentials c = new UsernamePasswordCredentials("login", "pwd");
+        final Credentials c2 = CommonHelper.assertOfType("credential", c, Credentials.class);
+        assertEquals(c, c2);
+    }
+
+    @Test
+    public void testAssertOfTypeFailsBecauseOfType() {
+        try {
+            CommonHelper.assertOfType("credential", new UsernamePasswordCredentials("login", "pwd"), UserProfile.class);
+            fail("must throw a TechnicalException");
+        } catch (final TechnicalException e) {
+            assertEquals("credential is not of type: " + UserProfile.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertOfTypeFailsBecauseOfNullClass() {
+        try {
+            CommonHelper.assertOfType("credential", new UsernamePasswordCredentials("login", "pwd"), null);
+            fail("must throw a TechnicalException");
+        } catch (final TechnicalException e) {
+            assertEquals("class cannot be null", e.getMessage());
+        }
     }
 }

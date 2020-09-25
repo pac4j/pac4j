@@ -113,7 +113,7 @@ public final class CommonHelper {
      *
      * @param name  name if the string
      * @param value value of the string
-     * @param msg an expanatory message
+     * @param msg   an expanatory message
      */
     public static void assertNotBlank(final String name, final String value, final String msg) {
         assertTrue(!isBlank(value), name + " cannot be blank" + (msg != null ? ": " + msg : ""));
@@ -147,6 +147,16 @@ public final class CommonHelper {
      */
     public static void assertNull(final String name, final Object obj) {
         assertTrue(obj == null, name + " must be null");
+    }
+
+    public static <T> T assertOfType(final String name, final Object obj, final Class<T> clazz) {
+        assertNotNull("class", clazz);
+
+        if (!clazz.isAssignableFrom(obj.getClass())) {
+            throw new TechnicalException(name + " is not of type: " + clazz.getName());
+        }
+
+        return (T) obj;
     }
 
     /**
@@ -321,7 +331,7 @@ public final class CommonHelper {
      * @param name the name of the class
      * @return the constructor
      * @throws ClassNotFoundException class not found
-     * @throws NoSuchMethodException method not found
+     * @throws NoSuchMethodException  method not found
      */
     public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
         Constructor constructor = constructorsCache.get(name);
@@ -342,5 +352,4 @@ public final class CommonHelper {
         }
         return constructor;
     }
-
 }
