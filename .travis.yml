@@ -8,7 +8,7 @@ script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/set
 dist: trusty
 
 jdk:
-  - oraclejdk11
+  - openjdk11
 
 cache:
   directories:
