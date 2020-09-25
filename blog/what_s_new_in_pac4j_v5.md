@@ -10,3 +10,7 @@ One of the primary goals of pac4j has always been to be easy. One must admit tha
 Version 5 will be focused on cleaning with breaking changes as was the version 4.1 (with none-breaking changes).
 
 The documentation will be updated too.
+
+## Upgrades
+
+pac4j v5 is now based on Java 11.
