@@ -9,26 +9,12 @@ It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 
 
 ## 1) Dependency
 
-You need to use the following modules:
-
-- This module requires the JDK 11 and is built on OpenSAML >= v4.
+You need to use the following module:
 
 ```xml
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-saml</artifactId>
-    <version>${pac4j.version}</version>
-</dependency>
-```
-
-This is the recommended option for most deployments and configurations.
-
-- This module requires the JDK 8 and is built on OpenSAML v3.
-
-```xml
-<dependency>
-    <groupId>org.pac4j</groupId>
-    <artifactId>pac4j-saml-opensamlv3</artifactId>
     <version>${pac4j.version}</version>
 </dependency>
 ```
