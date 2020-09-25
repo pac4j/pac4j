@@ -36,7 +36,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
 
     @Parameterized.Parameters
     public static Object[] data() {
-        return new Object[] {null, "custom" , DEFAULT_FORCE_CLIENT_PARAMETER};
+        return new Object[] {null, "custom"};
     }
 
     @Before
@@ -71,7 +71,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         if (clientNameParameter != null) {
             return clientNameParameter;
         } else {
-            return DEFAULT_CLIENT_NAME_PARAMETER;
+            return DEFAULT_FORCE_CLIENT_PARAMETER;
         }
     }
 

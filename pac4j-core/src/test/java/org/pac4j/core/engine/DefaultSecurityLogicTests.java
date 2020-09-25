@@ -254,7 +254,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final DirectClient directClient2 = new MockDirectClient(VALUE, Optional.of(new MockCredentials()), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
-        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
         multiProfile = true;
         call();
         assertEquals(-1, context.getResponseStatus());
@@ -276,7 +276,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final DirectClient directClient2 = new MockDirectClient(VALUE, Optional.of(new MockCredentials()), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME;
-        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
         multiProfile = true;
         call();
         assertEquals(401, action.getCode());
@@ -303,7 +303,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
             new MockIndirectClient(VALUE, new FoundAction(PAC4J_BASE_URL), Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME + "," + VALUE;
-        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
         call();
         assertEquals(302, action.getCode());
         assertEquals(PAC4J_BASE_URL, ((FoundAction) action).getLocation());
@@ -318,7 +318,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
             new MockIndirectClient(VALUE, new FoundAction(PAC4J_BASE_URL), Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient, indirectClient2));
         clients = NAME;
-        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
         call();
         assertEquals(401, action.getCode());
         assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());

@@ -48,17 +48,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
 
         if (CommonHelper.isNotBlank(securityClientNames)) {
             final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
-            Optional<String> clientOnRequest = context.getRequestParameter(clientNameParameter);
-            // @Deprecated in v4.0.1
-            // if we use the default clientNameParameter and we haven't found any value, we also try the old clientNameParameter
-            if (!clientOnRequest.isPresent() && Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER.equals(clientNameParameter)) {
-                clientOnRequest = context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER);
-                // we have a value, use it and output a warning requesting migration
-                if (clientOnRequest.isPresent()) {
-                    logger.warn("Migration required: use the 'force_client' parameter instead of the 'client_name' parameter "
-                        + "to force a client for security. URL: {}", context.getFullRequestURL());
-                }
-            }
+            final Optional<String> clientOnRequest = context.getRequestParameter(clientNameParameter);
 
             // if a client is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)

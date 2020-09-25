@@ -11,7 +11,6 @@ import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
-import org.pac4j.core.profile.factory.ProfileManagerFactory2;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +32,6 @@ public class Config {
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
     private ProfileManagerFactory profileManagerFactory;
-
-    @Deprecated
-    private ProfileManagerFactory2 profileManagerFactory2;
 
     protected Clients clients;
 
@@ -221,29 +217,6 @@ public class Config {
             synchronized (INSTANCE) {
                 if (INSTANCE.profileManagerFactory == null) {
                     setProfileManagerFactory(name, profileManagerFactory);
-                }
-            }
-        }
-    }
-
-    @Deprecated
-    public static ProfileManagerFactory2 getProfileManagerFactory2() {
-        return INSTANCE.profileManagerFactory2;
-    }
-
-    @Deprecated
-    public static void setProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
-        CommonHelper.assertNotNull("profileManagerFactory2", profileManagerFactory2);
-        LOGGER.info("Setting Config.profileManagerFactory2: {}", name);
-        INSTANCE.profileManagerFactory2 = profileManagerFactory2;
-    }
-
-    @Deprecated
-    public static void defaultProfileManagerFactory2(final String name, final ProfileManagerFactory2 profileManagerFactory2) {
-        if (INSTANCE.profileManagerFactory2 == null) {
-            synchronized (INSTANCE) {
-                if (INSTANCE.profileManagerFactory2 == null) {
-                    setProfileManagerFactory2(name, profileManagerFactory2);
                 }
             }
         }

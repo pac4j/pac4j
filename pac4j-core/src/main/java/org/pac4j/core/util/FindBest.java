@@ -8,7 +8,6 @@ import org.pac4j.core.engine.LogoutLogic;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
-import org.pac4j.core.profile.factory.ProfileManagerFactory2;
 
 /**
  * Utility class to find the best adapter, logic... in the following order:
@@ -54,19 +53,6 @@ public class FindBest {
         } else {
             CommonHelper.assertNotNull("defaultProfileManagerFactory", defaultProfileManagerFactory);
             return defaultProfileManagerFactory;
-        }
-    }
-
-    public static ProfileManagerFactory2 profileManagerFactory2(final ProfileManagerFactory2 localProfileManagerFactory2,
-                                                                final Config config,
-                                                                final ProfileManagerFactory2 defaultProfileManagerFactory2) {
-        if (localProfileManagerFactory2 != null) {
-            return localProfileManagerFactory2;
-        } else if (config != null && config.getProfileManagerFactory2() != null) {
-            return config.getProfileManagerFactory2();
-        } else {
-            CommonHelper.assertNotNull("defaultProfileManagerFactory2", defaultProfileManagerFactory2);
-            return defaultProfileManagerFactory2;
         }
     }
 

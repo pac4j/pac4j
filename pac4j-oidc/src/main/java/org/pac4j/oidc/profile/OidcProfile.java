@@ -169,12 +169,4 @@ public class OidcProfile extends AbstractJwtProfile {
         return getExpiration() != null
                 && getExpiration().toInstant().isBefore(Instant.now().plusSeconds(tokenExpirationAdvance));
     }
-
-    /**
-     * @deprecated This cannot be determined in a reliable way
-     */
-    @Deprecated
-    public boolean isRefreshTokenExpired() {
-        return false;
-    }
 }

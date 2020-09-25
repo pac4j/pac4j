@@ -20,3 +20,5 @@ pac4j v5 is now based on Java 11.
 The `pac4j-saml-opensamlv3` module has been removed as it was based on JDK 8 and OpenSAML v3. It is replaced by the current `pac4j-saml` module, already based on JDK 11 and OpenSAML v4.
 
 The `pac4j-openid` module has been removed as the OpenID protocol is no longer supported (the OpenID Connect protocol is still supported).
+
+The `client_name` parameter can no longer be used to choose a client on the security filter. You must use the `force_client` parameter.

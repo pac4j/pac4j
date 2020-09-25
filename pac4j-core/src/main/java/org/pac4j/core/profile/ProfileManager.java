@@ -39,14 +39,6 @@ public class ProfileManager<U extends UserProfile> {
         this.sessionStore = context.getSessionStore();
     }
 
-    @Deprecated
-    public ProfileManager(final WebContext context, final SessionStore sessionStore) {
-        CommonHelper.assertNotNull("context", context);
-        CommonHelper.assertNotNull("sessionStore", sessionStore);
-        this.context = context;
-        this.sessionStore = sessionStore;
-    }
-
     public void setSessionStore(final SessionStore sessionStore) {
         CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.sessionStore = sessionStore;
