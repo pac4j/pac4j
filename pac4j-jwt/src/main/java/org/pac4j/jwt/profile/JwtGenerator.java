@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtGenerator<U extends CommonProfile> {
+public class JwtGenerator {
 
     public static final String INTERNAL_ROLES = "$int_roles";
     public static final String INTERNAL_PERMISSIONS = "$int_perms";
@@ -66,7 +66,7 @@ public class JwtGenerator<U extends CommonProfile> {
      * @param profile the given user profile
      * @return the created JWT
      */
-    public String generate(final U profile) {
+    public String generate(final CommonProfile profile) {
         verifyProfile(profile);
 
         return internalGenerate(buildJwtClaimsSet(profile));
@@ -95,14 +95,14 @@ public class JwtGenerator<U extends CommonProfile> {
         }
     }
 
-    protected void verifyProfile(final U profile) {
+    protected void verifyProfile(final CommonProfile profile) {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
         CommonHelper.assertNull(INTERNAL_LINKEDID, profile.getAttribute(INTERNAL_LINKEDID));
     }
 
-    protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
+    protected JWTClaimsSet buildJwtClaimsSet(final CommonProfile profile) {
         // claims builder with subject and issue time
         final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .issueTime(new Date());
