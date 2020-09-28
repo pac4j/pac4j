@@ -1,6 +1,7 @@
 package org.pac4j.core.context.session;
 
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,28 +18,28 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class JEESessionStore implements SessionStore<JEEContext> {
+public class JEESessionStore implements SessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected HttpSession getNativeSession(final JEEContext context) {
-        return context.getNativeRequest().getSession();
+    protected HttpSession getNativeSession(final WebContext context) {
+        return ((JEEContext) context).getNativeRequest().getSession();
     }
 
     @Override
-    public String getOrCreateSessionId(final JEEContext context) {
+    public String getOrCreateSessionId(final WebContext context) {
         return getNativeSession(context).getId();
     }
 
     @Override
-    public Optional get(final JEEContext context, final String key) {
+    public Optional get(final WebContext context, final String key) {
         return Optional.ofNullable(getNativeSession(context).getAttribute(key));
     }
 
     @Override
-    public void set(final JEEContext context, final String key, final Object value) {
+    public void set(final WebContext context, final String key, final Object value) {
         if (value == null) {
             getNativeSession(context).removeAttribute(key);
         } else {
@@ -47,18 +48,18 @@ public class JEESessionStore implements SessionStore<JEEContext> {
     }
 
     @Override
-    public boolean destroySession(final JEEContext context) {
+    public boolean destroySession(final WebContext context) {
         getNativeSession(context).invalidate();
         return true;
     }
 
     @Override
-    public Optional getTrackableSession(final JEEContext context) {
+    public Optional getTrackableSession(final WebContext context) {
         return Optional.ofNullable(getNativeSession(context));
     }
 
     @Override
-    public Optional<SessionStore<JEEContext>> buildFromTrackableSession(final JEEContext context, final Object trackableSession) {
+    public Optional<SessionStore> buildFromTrackableSession(final WebContext context, final Object trackableSession) {
         if (trackableSession != null) {
             return Optional.of(new JEEProvidedSessionStore((HttpSession) trackableSession));
         } else {
@@ -67,8 +68,8 @@ public class JEESessionStore implements SessionStore<JEEContext> {
     }
 
     @Override
-    public boolean renewSession(final JEEContext context) {
-        final HttpServletRequest request = context.getNativeRequest();
+    public boolean renewSession(final WebContext context) {
+        final HttpServletRequest request = ((JEEContext) context).getNativeRequest();
         final HttpSession session = request.getSession();
         logger.debug("Discard old session: {}", session.getId());
         final Map<String, Object> attributes = Collections.list(session.getAttributeNames())

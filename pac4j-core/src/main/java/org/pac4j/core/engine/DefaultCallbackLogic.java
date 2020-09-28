@@ -112,7 +112,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     }
 
     protected void renewSession(final C context, final Config config) {
-        final SessionStore<C> sessionStore = context.getSessionStore();
+        final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore != null) {
             final String oldSessionId = sessionStore.getOrCreateSessionId(context);
             final boolean renewed = sessionStore.renewSession(context);

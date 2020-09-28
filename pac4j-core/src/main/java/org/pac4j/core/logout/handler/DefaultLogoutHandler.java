@@ -109,10 +109,10 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final Optional<SessionStore<C>> optNewSessionStore = sessionStore
+                final Optional<SessionStore> optNewSessionStore = sessionStore
                     .buildFromTrackableSession(context, optTrackableSession.get());
                 if (optNewSessionStore.isPresent()) {
-                    final SessionStore<C> newSessionStore = optNewSessionStore.get();
+                    final SessionStore newSessionStore = optNewSessionStore.get();
                     logger.debug("newSesionStore: {}", newSessionStore);
                     final String sessionId = newSessionStore.getOrCreateSessionId(context);
                     logger.debug("remove sessionId: {}", sessionId);

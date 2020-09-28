@@ -22,7 +22,7 @@ public class JEEContext implements WebContext {
 
     private final HttpServletResponse response;
 
-    private SessionStore<JEEContext> sessionStore;
+    private SessionStore sessionStore;
 
     private String body;
 
@@ -43,7 +43,7 @@ public class JEEContext implements WebContext {
      * @param response     the current response
      * @param sessionStore the session store to use
      */
-    public JEEContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<JEEContext> sessionStore) {
+    public JEEContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("request", request);
         CommonHelper.assertNotNull("response", response);
         CommonHelper.assertNotNull("sessionStore", sessionStore);

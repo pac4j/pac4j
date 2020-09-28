@@ -1,6 +1,6 @@
 package org.pac4j.core.context.session;
 
-import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 import javax.servlet.http.HttpSession;
@@ -21,8 +21,7 @@ class JEEProvidedSessionStore extends JEESessionStore {
     }
 
     @Override
-    protected HttpSession getNativeSession(final JEEContext context) {
+    protected HttpSession getNativeSession(final WebContext context) {
         return session;
     }
 }
-
