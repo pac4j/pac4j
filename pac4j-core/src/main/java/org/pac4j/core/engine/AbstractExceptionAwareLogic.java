@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> extends ProfileManagerFactoryAware {
+public abstract class AbstractExceptionAwareLogic extends ProfileManagerFactoryAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExceptionAwareLogic.class);
 
@@ -34,7 +34,7 @@ public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> exten
      * @param context the web context
      * @return the final HTTP result
      */
-    protected R handleException(final Exception e, final HttpActionAdapter<R, C> httpActionAdapter, final C context) {
+    protected Object handleException(final Exception e, final HttpActionAdapter httpActionAdapter, final WebContext context) {
         if (httpActionAdapter == null || context == null) {
             throw runtimeException(e);
         } else if (e instanceof HttpAction) {

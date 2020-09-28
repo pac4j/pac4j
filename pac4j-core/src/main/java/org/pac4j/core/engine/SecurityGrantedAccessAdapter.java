@@ -11,7 +11,7 @@ import org.pac4j.core.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface SecurityGrantedAccessAdapter<R, C extends WebContext> {
+public interface SecurityGrantedAccessAdapter {
 
     /**
      * Adapt the current successful action as the expected result.
@@ -22,5 +22,5 @@ public interface SecurityGrantedAccessAdapter<R, C extends WebContext> {
      * @return an adapted result
      * @throws Exception any exception
      */
-    R adapt(C context, Collection<UserProfile> profiles, Object... parameters) throws Exception;
+    Object adapt(WebContext context, Collection<UserProfile> profiles, Object... parameters) throws Exception;
 }

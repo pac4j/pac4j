@@ -33,7 +33,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements CallbackLogic<R, C> {
+public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements CallbackLogic {
 
     public static final DefaultCallbackLogic INSTANCE = new DefaultCallbackLogic();
 
@@ -44,7 +44,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
-    public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
+    public Object perform(final WebContext context, final Config config, final HttpActionAdapter httpActionAdapter,
                      final String inputDefaultUrl, final Boolean inputSaveInSession, final Boolean inputMultiProfile,
                      final Boolean inputRenewSession, final String client) {
 
@@ -100,7 +100,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
         return httpActionAdapter.adapt(action, context);
     }
 
-    protected void saveUserProfile(final C context, final Config config, final UserProfile profile,
+    protected void saveUserProfile(final WebContext context, final Config config, final UserProfile profile,
                                    final boolean saveInSession, final boolean multiProfile, final boolean renewSession) {
         final ProfileManager<UserProfile> manager = getProfileManager(context);
         if (profile != null) {
@@ -111,7 +111,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
         }
     }
 
-    protected void renewSession(final C context, final Config config) {
+    protected void renewSession(final WebContext context, final Config config) {
         final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore != null) {
             final String oldSessionId = sessionStore.getOrCreateSessionId(context);
@@ -135,7 +135,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends AbstractExcep
         }
     }
 
-    protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
+    protected HttpAction redirectToOriginallyRequestedUrl(final WebContext context, final String defaultUrl) {
         return savedRequestHandler.restore(context, defaultUrl);
     }
 

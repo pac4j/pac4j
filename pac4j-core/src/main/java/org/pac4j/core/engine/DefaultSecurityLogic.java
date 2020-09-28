@@ -50,7 +50,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements SecurityLogic<R, C> {
+public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic implements SecurityLogic {
 
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
 
@@ -67,10 +67,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
-    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
-                     final HttpActionAdapter<R, C> httpActionAdapter,
-                     final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile,
-                     final Object... parameters) {
+    public Object perform(final WebContext context, final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
+                     final HttpActionAdapter httpActionAdapter, final String clients, final String authorizers, final String matchers,
+                     final Boolean inputMultiProfile, final Object... parameters) {
 
         LOGGER.debug("=== SECURITY ===");
 
@@ -183,7 +182,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param authorizers the authorizers
      * @return a forbidden error
      */
-    protected HttpAction forbidden(final C context, final List<Client> currentClients,
+    protected HttpAction forbidden(final WebContext context, final List<Client> currentClients,
                                    final List<UserProfile> profiles, final String authorizers) {
         return ForbiddenAction.INSTANCE;
     }
@@ -195,7 +194,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      * @return whether we must start a login process
      */
-    protected boolean startAuthentication(final C context, final List<Client> currentClients) {
+    protected boolean startAuthentication(final WebContext context, final List<Client> currentClients) {
         return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClient;
     }
 
@@ -205,7 +204,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param context the web context
      * @param currentClients the current clients
      */
-    protected void saveRequestedUrl(final C context, final List<Client> currentClients,
+    protected void saveRequestedUrl(final WebContext context, final List<Client> currentClients,
                                     final AjaxRequestResolver ajaxRequestResolver) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
             savedRequestHandler.save(context);
@@ -219,7 +218,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      * @return the performed redirection
      */
-    protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) {
+    protected HttpAction redirectToIdentityProvider(final WebContext context, final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
         return (HttpAction) currentClient.getRedirectionAction(context).get();
     }
@@ -231,7 +230,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      * @param currentClients the current clients
      * @return an unauthorized error
      */
-    protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
+    protected HttpAction unauthorized(final WebContext context, final List<Client> currentClients) {
         return UnauthorizedAction.INSTANCE;
     }
 

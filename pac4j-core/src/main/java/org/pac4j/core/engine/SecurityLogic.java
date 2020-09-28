@@ -10,7 +10,7 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface SecurityLogic<R, C extends WebContext> {
+public interface SecurityLogic {
 
     /**
      * Perform the security logic.
@@ -26,7 +26,7 @@ public interface SecurityLogic<R, C extends WebContext> {
      * @param parameters additional parameters
      * @return the resulting action of the security
      */
-    R perform(C context, Config config, SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
-              HttpActionAdapter<R, C> httpActionAdapter,
-              String clients, String authorizers, String matchers, Boolean multiProfile, Object... parameters);
+    Object perform(WebContext context, Config config, SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
+              HttpActionAdapter httpActionAdapter, String clients, String authorizers, String matchers,
+              Boolean multiProfile, Object... parameters);
 }

@@ -10,7 +10,7 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface CallbackLogic<R, C extends WebContext> {
+public interface CallbackLogic {
 
     /**
      * Perform the callback logic.
@@ -25,6 +25,6 @@ public interface CallbackLogic<R, C extends WebContext> {
      * @param client the default client
      * @return the resulting action of the callback
      */
-    R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter,
+    Object perform(WebContext context, Config config, HttpActionAdapter httpActionAdapter,
                      String defaultUrl, Boolean saveInSession, Boolean multiProfile, Boolean renewSession, String client);
 }
