@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactoryAware<C> implements LogoutHandler<C> {
+public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactoryAware implements LogoutHandler<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

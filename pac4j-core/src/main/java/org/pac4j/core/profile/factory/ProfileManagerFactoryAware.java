@@ -13,11 +13,11 @@ import org.pac4j.core.util.FindBest;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class ProfileManagerFactoryAware<C extends WebContext> {
+public class ProfileManagerFactoryAware {
 
     private ProfileManagerFactory profileManagerFactory;
 
-    protected ProfileManager<UserProfile> getProfileManager(final C context) {
+    protected ProfileManager<UserProfile> getProfileManager(final WebContext context) {
         return FindBest.profileManagerFactory(this.profileManagerFactory, Config.INSTANCE, ProfileManagerFactory.DEFAULT)
             .apply(context);
     }

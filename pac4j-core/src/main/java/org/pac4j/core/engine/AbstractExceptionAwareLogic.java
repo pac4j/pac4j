@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> {
+public abstract class AbstractExceptionAwareLogic<R, C extends WebContext> extends ProfileManagerFactoryAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExceptionAwareLogic.class);
 
