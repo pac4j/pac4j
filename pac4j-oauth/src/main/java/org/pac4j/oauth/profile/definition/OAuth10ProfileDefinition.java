@@ -18,7 +18,7 @@ public abstract class OAuth10ProfileDefinition<P extends OAuth10Profile>
         super();
     }
 
-    public OAuth10ProfileDefinition(final ProfileFactory<P> profileFactory) {
+    public OAuth10ProfileDefinition(final ProfileFactory profileFactory) {
         super(profileFactory);
     }
 }

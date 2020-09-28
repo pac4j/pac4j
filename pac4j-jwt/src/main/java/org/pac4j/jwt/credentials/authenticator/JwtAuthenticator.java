@@ -90,7 +90,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     protected void internalInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new JwtProfile()));
 
         if (signatureConfigurations.isEmpty()) {
             logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");

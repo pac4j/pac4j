@@ -26,7 +26,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("pattern", pattern);
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new IpProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new IpProfile()));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
 
-        final IpProfile profile = getProfileDefinition().newProfile();
+        final IpProfile profile = (IpProfile) getProfileDefinition().newProfile();
         profile.setId(ip);
         logger.debug("profile: {}", profile);
 

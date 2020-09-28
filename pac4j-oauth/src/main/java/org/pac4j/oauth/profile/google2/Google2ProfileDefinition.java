@@ -40,7 +40,7 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
 
     @Override
     public Google2Profile extractUserProfile(final String body) {
-        final Google2Profile profile = newProfile();
+        final Google2Profile profile = (Google2Profile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "sub")));

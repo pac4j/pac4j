@@ -18,7 +18,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileDefinition<P> {
+public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileDefinition {
 
     public static final String NAME                     = "name";
     public static final String GIVEN_NAME               = "given_name";
@@ -84,7 +84,7 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
         secondary(EXPIRATION, Converters.DATE_TZ_RFC822);
     }
 
-    public OidcProfileDefinition(final ProfileFactory<P> profileFactory) {
+    public OidcProfileDefinition(final ProfileFactory profileFactory) {
         this();
         setProfileFactory(profileFactory);
     }

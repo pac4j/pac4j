@@ -10,5 +10,5 @@ import java.util.function.Function;
  * @author Jerome LELEU
  * @since 4.0.0
  */
-public interface ProfileFactory<P extends UserProfile> extends Function<Object[], P> {
+public interface ProfileFactory extends Function<Object[], UserProfile> {
 }

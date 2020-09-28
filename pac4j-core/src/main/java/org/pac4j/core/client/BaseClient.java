@@ -51,7 +51,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
-    private ProfileFactory<UserProfile> profileFactoryWhenNotAuthenticated;
+    private ProfileFactory profileFactoryWhenNotAuthenticated;
 
     private static boolean warned;
 
@@ -231,11 +231,11 @@ public abstract class BaseClient extends InitializableObject implements Client {
         this.customProperties =  customProperties;
     }
 
-    public ProfileFactory<UserProfile> getProfileFactoryWhenNotAuthenticated() {
+    public ProfileFactory getProfileFactoryWhenNotAuthenticated() {
         return profileFactoryWhenNotAuthenticated;
     }
 
-    public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory<UserProfile> profileFactoryWhenNotAuthenticated) {
+    public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory profileFactoryWhenNotAuthenticated) {
         if (!warned) {
             logger.warn("Be careful when using the 'setProfileFactoryWhenNotAuthenticated' method: a custom profile "
                 + "is returned when the authentication fails or is cancelled and the access is granted for the whole session. "

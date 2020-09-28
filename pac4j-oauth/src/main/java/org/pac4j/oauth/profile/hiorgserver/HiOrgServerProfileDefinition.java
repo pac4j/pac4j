@@ -17,10 +17,10 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * @since 3.2.0
  */
 public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrgServerProfile, HiOrgServerConfiguration> {
-    
+
     public static final String USER_ID = "user_id";
     public static final String USERNAME = "username";
-    
+
     public static final String NAME = "name";
     public static final String FIRST_NAME = "vorname";
     public static final String FULL_NAME = "fullname";
@@ -34,7 +34,7 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
     public static final String TYPED_ALTERNATIVE_ID = "typed_alt_user_id";
 
     protected static final String BASE_URL = "https://www.hiorg-server.de/api/oauth2/v1/user.php";
-    
+
     public HiOrgServerProfileDefinition() {
         super(x -> new HiOrgServerProfile());
         primary(USERNAME, Converters.STRING);
@@ -49,15 +49,15 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         secondary(ALTERNATIVE_ID, Converters.STRING);
         secondary(TYPED_ALTERNATIVE_ID, Converters.STRING);
     }
-    
+
     @Override
     public String getProfileUrl(OAuth2AccessToken accessToken, HiOrgServerConfiguration configuration) {
         return BASE_URL;
     }
-    
+
     @Override
     public HiOrgServerProfile extractUserProfile(String body) {
-        final HiOrgServerProfile profile = newProfile();
+        final HiOrgServerProfile profile = (HiOrgServerProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             logger.debug("Extracting user profile from JSON node " + json);
@@ -74,7 +74,7 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         extractRoles(profile);
         return profile;
     }
-    
+
     protected void extractRoles(HiOrgServerProfile profile) {
         final Integer rolesAsInt = profile.getRolesAsInteger();
         Set<String> roles = new HashSet<>();
@@ -88,5 +88,5 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
         }
         profile.setRoles(roles);
     }
-    
+
 }

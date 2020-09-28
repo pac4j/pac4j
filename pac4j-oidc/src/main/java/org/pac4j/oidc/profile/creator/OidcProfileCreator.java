@@ -72,7 +72,7 @@ public class OidcProfileCreator<P extends OidcProfile> extends ProfileDefinition
         final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile
-        final OidcProfile profile = getProfileDefinition().newProfile();
+        final OidcProfile profile = (OidcProfile) getProfileDefinition().newProfile();
         profile.setAccessToken(accessToken);
         final JWT idToken = credentials.getIdToken();
         profile.setIdTokenString(idToken.getParsedString());

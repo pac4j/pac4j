@@ -58,7 +58,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
     @Override
     protected void internalInit() {
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new SAML2Profile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new SAML2Profile()));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         init();
 
         final SAML2Credentials credentials = (SAML2Credentials) cred;
-        final SAML2Profile profile = getProfileDefinition().newProfile();
+        final SAML2Profile profile = (SAML2Profile) getProfileDefinition().newProfile();
 
         final SAML2Credentials.SAMLNameID nameId = credentials.getNameId();
         profile.setId(nameId.getValue());

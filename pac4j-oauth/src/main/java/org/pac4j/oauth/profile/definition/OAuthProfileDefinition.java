@@ -16,13 +16,13 @@ import org.pac4j.core.exception.TechnicalException;
  * @since 2.0.0
  */
 public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends Token, O extends OAuthConfiguration>
-    extends CommonProfileDefinition<P> {
+    extends CommonProfileDefinition {
 
     public OAuthProfileDefinition() {
         super();
     }
 
-    public OAuthProfileDefinition(final ProfileFactory<P> profileFactory) {
+    public OAuthProfileDefinition(final ProfileFactory profileFactory) {
         super(profileFactory);
     }
 

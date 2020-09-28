@@ -18,7 +18,7 @@ public abstract class OAuth20ProfileDefinition<P extends OAuth20Profile, C exten
         super();
     }
 
-    public OAuth20ProfileDefinition(final ProfileFactory<P> profileFactory) {
+    public OAuth20ProfileDefinition(final ProfileFactory profileFactory) {
         super(profileFactory);
     }
 }

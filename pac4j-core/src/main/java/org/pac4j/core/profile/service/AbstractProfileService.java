@@ -225,7 +225,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         final String linkedId = (String) storageAttributes.get(LINKEDID);
         // legacy mode: only read the defined attributes
         if (isLegacyMode()) {
-            final U profile = getProfileDefinition().newProfile();
+            final U profile = (U) getProfileDefinition().newProfile();
             for (final String attributeName : attributeNames) {
                 getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, attributeName, storageAttributes.get(attributeName));
             }

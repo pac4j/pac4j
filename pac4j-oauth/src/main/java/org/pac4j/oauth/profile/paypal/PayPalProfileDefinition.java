@@ -41,7 +41,7 @@ public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProf
 
     @Override
     public PayPalProfile extractUserProfile(final String body) {
-        final PayPalProfile profile = newProfile();
+        final PayPalProfile profile = (PayPalProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             final String userId = (String) JsonHelper.getElement(json, "user_id");

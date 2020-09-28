@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 public class InMemoryProfileService<U extends CommonProfile> extends AbstractProfileService<U>  {
 
     public Map<String,Map<String,Object>> profiles;
-    public ProfileFactory<U> profileFactory;
+    public ProfileFactory profileFactory;
 
-    public InMemoryProfileService(final ProfileFactory<U> profileFactory) {
+    public InMemoryProfileService(final ProfileFactory profileFactory) {
         this(new HashMap<>(), profileFactory);
     }
 
-    public InMemoryProfileService(final Map<String,Map<String,Object>> profiles, final ProfileFactory<U> profileFactory) {
+    public InMemoryProfileService(final Map<String,Map<String,Object>> profiles, final ProfileFactory profileFactory) {
         this.profiles = profiles;
         this.profileFactory = profileFactory;
     }
@@ -35,7 +35,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
-        defaultProfileDefinition(new CommonProfileDefinition<U>(profileFactory));
+        defaultProfileDefinition(new CommonProfileDefinition(profileFactory));
         super.internalInit();
     }
 

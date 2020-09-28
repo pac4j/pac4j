@@ -45,7 +45,7 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
 
     @Override
     public CasOAuthWrapperProfile extractUserProfile(final String body) {
-        final CasOAuthWrapperProfile profile = newProfile();
+        final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) newProfile();
         final String attributesNode = "attributes";
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

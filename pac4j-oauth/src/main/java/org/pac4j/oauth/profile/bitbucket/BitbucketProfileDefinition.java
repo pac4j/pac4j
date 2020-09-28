@@ -42,7 +42,7 @@ public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<Bitbuck
 
     @Override
     public BitbucketProfile extractUserProfile(final String body) {
-        final BitbucketProfile profile = newProfile();
+        final BitbucketProfile profile = (BitbucketProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = (JsonNode) JsonHelper.getElement(json, "user");

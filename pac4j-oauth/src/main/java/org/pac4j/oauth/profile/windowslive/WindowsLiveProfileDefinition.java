@@ -37,7 +37,7 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
 
     @Override
     public WindowsLiveProfile extractUserProfile(final String body) {
-        final WindowsLiveProfile profile = newProfile();
+        final WindowsLiveProfile profile = (WindowsLiveProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

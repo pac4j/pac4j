@@ -2,6 +2,7 @@ package org.pac4j.core.profile.definition;
 
 import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.core.util.CommonHelper;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class ProfileDefinition<P extends CommonProfile> {
+public abstract class ProfileDefinition {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +35,7 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
 
     private final Map<String, AttributeConverter<? extends Object>> converters = new HashMap<>();
 
-    protected ProfileFactory<P> newProfile = parameters -> (P) new CommonProfile();
+    protected ProfileFactory newProfile = parameters -> new CommonProfile();
 
     /**
      * Return the new built profile.
@@ -42,7 +43,7 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
      * @param parameters some optional input parameters
      * @return the new built profile
      */
-    public P newProfile(final Object... parameters) {
+    public UserProfile newProfile(final Object... parameters) {
         return newProfile.apply(parameters);
     }
 
@@ -102,7 +103,7 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
      *
      * @param profileFactory the way to build the profile
      */
-    protected void setProfileFactory(final ProfileFactory<P> profileFactory) {
+    protected void setProfileFactory(final ProfileFactory profileFactory) {
         CommonHelper.assertNotNull("profileFactory", profileFactory);
         this.newProfile = profileFactory;
     }

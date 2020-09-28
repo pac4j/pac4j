@@ -42,7 +42,7 @@ public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPre
 
     @Override
     public WordPressProfile extractUserProfile(final String body) {
-        final WordPressProfile profile = newProfile();
+        final WordPressProfile profile = (WordPressProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "ID")));

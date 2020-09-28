@@ -82,7 +82,7 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkC
 
     @Override
     public OkProfile extractUserProfile(String body) {
-        final OkProfile profile = newProfile();
+        final OkProfile profile = (OkProfile) newProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, OkProfileDefinition.UID)));

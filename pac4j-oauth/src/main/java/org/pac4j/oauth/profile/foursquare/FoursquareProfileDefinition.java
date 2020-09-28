@@ -47,7 +47,7 @@ public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<Foursq
 
     @Override
     public FoursquareProfile extractUserProfile(String body) {
-        FoursquareProfile profile = newProfile();
+        FoursquareProfile profile = (FoursquareProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {
             raiseProfileExtractionJsonError(body);

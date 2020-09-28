@@ -69,7 +69,7 @@ public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProf
 
     @Override
     public GitHubProfile extractUserProfile(final String body) {
-        final GitHubProfile profile = newProfile();
+        final GitHubProfile profile = (GitHubProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

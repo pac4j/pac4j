@@ -1,6 +1,6 @@
 package org.pac4j.core.profile.definition;
 
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -10,20 +10,20 @@ import org.pac4j.core.util.InitializableObject;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class ProfileDefinitionAware<P extends CommonProfile> extends InitializableObject {
+public abstract class ProfileDefinitionAware<U extends UserProfile> extends InitializableObject {
 
-    private ProfileDefinition<P> profileDefinition;
+    private ProfileDefinition profileDefinition;
 
-    public ProfileDefinition<P> getProfileDefinition() {
+    public ProfileDefinition getProfileDefinition() {
         return profileDefinition;
     }
 
-    public void setProfileDefinition(final ProfileDefinition<P> profileDefinition) {
+    public void setProfileDefinition(final ProfileDefinition profileDefinition) {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
         this.profileDefinition = profileDefinition;
     }
 
-    protected void defaultProfileDefinition(final ProfileDefinition<P> profileDefinition) {
+    protected void defaultProfileDefinition(final ProfileDefinition profileDefinition) {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
         if (this.profileDefinition == null) {
             this.profileDefinition = profileDefinition;

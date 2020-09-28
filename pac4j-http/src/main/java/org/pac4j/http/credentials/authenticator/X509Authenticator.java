@@ -30,7 +30,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator<X509Profile> 
 
     @Override
     protected void internalInit() {
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new X509Profile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new X509Profile()));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator<X509Profile> 
         }
 
         final String id = matcher.group(1);
-        final X509Profile profile = getProfileDefinition().newProfile();
+        final X509Profile profile = (X509Profile) getProfileDefinition().newProfile();
         profile.setId(id);
         logger.debug("profile: {}", profile);
 

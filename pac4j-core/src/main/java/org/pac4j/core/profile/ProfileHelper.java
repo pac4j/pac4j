@@ -43,7 +43,7 @@ public final class ProfileHelper {
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition,
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition profileDefinition,
             final String typedId, final Map<String, Object> profileAttributes, final Map<String, Object> authenticationAttributes,
             final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
@@ -63,7 +63,7 @@ public final class ProfileHelper {
             profile.addAttributes(profileAttributes);
             profile.addAuthenticationAttributes(authenticationAttributes);
         } else {
-            profile = profileDefinition.newProfile(parameters);
+            profile = (CommonProfile) profileDefinition.newProfile(parameters);
             profileDefinition.convertAndAdd(profile, profileAttributes, authenticationAttributes);
         }
         profile.setId(ProfileHelper.sanitizeIdentifier(profile, typedId));

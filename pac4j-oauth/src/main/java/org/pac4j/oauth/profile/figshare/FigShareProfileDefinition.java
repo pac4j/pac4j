@@ -32,7 +32,7 @@ public class FigShareProfileDefinition extends OAuth20ProfileDefinition<FigShare
 
     @Override
     public FigShareProfile extractUserProfile(final String body) {
-        final FigShareProfile profile = newProfile();
+        final FigShareProfile profile = (FigShareProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             if (getProfileId() != null) {

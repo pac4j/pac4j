@@ -62,7 +62,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         CommonHelper.assertNotNull("connectionFactory", connectionFactory);
         CommonHelper.assertNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotBlank("usersDn", usersDn);
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new LdapProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new LdapProfile()));
 
         super.internalInit();
     }

@@ -37,7 +37,7 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
 
     @Override
     public LinkedIn2Profile extractUserProfile(final String body) {
-        final LinkedIn2Profile profile = newProfile();
+        final LinkedIn2Profile profile = (LinkedIn2Profile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {
             raiseProfileExtractionJsonError(body);

@@ -64,7 +64,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("couchDbConnector", this.couchDbConnector);
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new CouchProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new CouchProfile()));
 
         super.internalInit();
     }

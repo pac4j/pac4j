@@ -24,8 +24,8 @@ import java.util.Optional;
  */
 public class GaeUserServiceClient extends IndirectClient {
 
-    private static final ProfileDefinition<GaeUserServiceProfile> PROFILE_DEFINITION
-        = new CommonProfileDefinition<>(x -> new GaeUserServiceProfile());
+    private static final ProfileDefinition PROFILE_DEFINITION
+        = new CommonProfileDefinition(x -> new GaeUserServiceProfile());
 
     protected UserService service;
     protected String authDomain = null;
@@ -48,7 +48,7 @@ public class GaeUserServiceClient extends IndirectClient {
         defaultAuthenticator((credentials, ctx) -> {
             final User user = ((GaeUserCredentials) credentials).getUser();
             if (user != null) {
-                final GaeUserServiceProfile profile = PROFILE_DEFINITION.newProfile();
+                final GaeUserServiceProfile profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
                 profile.setId(user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.EMAIL, user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());

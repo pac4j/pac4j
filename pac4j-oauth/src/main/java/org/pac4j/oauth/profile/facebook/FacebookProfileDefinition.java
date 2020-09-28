@@ -146,7 +146,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
 
     @Override
     public FacebookProfile extractUserProfile(final String body) {
-        final FacebookProfile profile = newProfile();
+        final FacebookProfile profile = (FacebookProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

@@ -73,7 +73,7 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
 
     @Override
     public YahooProfile extractUserProfile(final String body) {
-        final YahooProfile profile = newProfile();
+        final YahooProfile profile = (YahooProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("profile");

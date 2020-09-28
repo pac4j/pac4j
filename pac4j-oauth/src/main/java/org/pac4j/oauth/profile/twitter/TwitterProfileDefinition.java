@@ -98,7 +98,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
 
     @Override
     public TwitterProfile extractUserProfile(final String body) {
-        final TwitterProfile profile = newProfile();
+        final TwitterProfile profile = (TwitterProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

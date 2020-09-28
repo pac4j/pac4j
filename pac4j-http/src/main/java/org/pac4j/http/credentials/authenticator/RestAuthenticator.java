@@ -49,7 +49,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     @Override
     protected void internalInit() {
         CommonHelper.assertNotBlank("url", url);
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new RestProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new RestProfile()));
         if (mapper == null) {
             mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -78,7 +78,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     }
 
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
-        final RestProfile profileClass = getProfileDefinition().newProfile();
+        final RestProfile profileClass = (RestProfile) getProfileDefinition().newProfile();
         final RestProfile profile;
         try {
             profile = mapper.readValue(body, profileClass.getClass());
