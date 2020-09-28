@@ -32,7 +32,7 @@ public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPre
         primary(PRIMARY_BLOG, Converters.INTEGER);
         primary(AVATAR_URL, Converters.URL);
         primary(PROFILE_URL, Converters.URL);
-        secondary(LINKS, new JsonConverter<>(WordPressLinks.class));
+        secondary(LINKS, new JsonConverter(WordPressLinks.class));
     }
 
     @Override

@@ -4,11 +4,11 @@ import java.util.Locale;
 
 /**
  * This class converts a String to a Locale.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class LocaleConverter extends AbstractAttributeConverter<Locale> {
+public final class LocaleConverter extends AbstractAttributeConverter {
 
     public LocaleConverter() {
         super(Locale.class);

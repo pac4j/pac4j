@@ -116,7 +116,7 @@ public class GenericOAuth20Client extends OAuth20Client {
             Stream<Class> acceptableConverters = Arrays.stream(getConverters())
                 .filter(x -> {
                     try {
-                        AbstractAttributeConverter<?> converter = (AbstractAttributeConverter<?>) x.getDeclaredConstructor().newInstance();
+                        AbstractAttributeConverter converter = (AbstractAttributeConverter) x.getDeclaredConstructor().newInstance();
                         Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
                     } catch (ReflectiveOperationException e) {
@@ -125,7 +125,7 @@ public class GenericOAuth20Client extends OAuth20Client {
                     return false;
                 });
             Class converterClazz = acceptableConverters.findFirst().get();
-            return (AbstractAttributeConverter<?>) converterClazz.newInstance();
+            return (AbstractAttributeConverter) converterClazz.newInstance();
         } catch (Exception e) {
             LOG.warn(e.toString());
         }

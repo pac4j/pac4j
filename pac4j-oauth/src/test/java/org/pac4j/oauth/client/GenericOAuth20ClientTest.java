@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.pac4j.core.util.TestsConstants.CALLBACK_URL;
 import static org.pac4j.core.util.TestsConstants.ID;
 
-
 public class GenericOAuth20ClientTest {
     final static String AGE = "age";
     final static String IS_ADMIN = "is_admin";
@@ -45,7 +44,7 @@ public class GenericOAuth20ClientTest {
         GenericOAuth20ProfileDefinition profileDefinition = (GenericOAuth20ProfileDefinition) configuration.getProfileDefinition();
         Method getConverters = ProfileDefinition.class.getDeclaredMethod("getConverters");
         getConverters.setAccessible(true);
-        Map<String, AttributeConverter<?>> converters = (Map<String, AttributeConverter<?>>) getConverters.invoke(profileDefinition);
+        Map<String, AttributeConverter> converters = (Map<String, AttributeConverter>) getConverters.invoke(profileDefinition);
         assertTrue(converters.get(AGE) instanceof IntegerConverter);
         assertTrue(converters.get(IS_ADMIN) instanceof BooleanConverter);
         assertTrue(converters.get(BG_COLOR) instanceof ColorConverter);

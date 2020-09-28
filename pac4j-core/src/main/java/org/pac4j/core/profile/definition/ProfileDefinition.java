@@ -33,7 +33,7 @@ public abstract class ProfileDefinition {
 
     private final List<String> secondaries = new ArrayList<>();
 
-    private final Map<String, AttributeConverter<? extends Object>> converters = new HashMap<>();
+    private final Map<String, AttributeConverter> converters = new HashMap<>();
 
     protected ProfileFactory newProfile = parameters -> new CommonProfile();
 
@@ -59,7 +59,7 @@ public abstract class ProfileDefinition {
             final Object value) {
         if (value != null) {
             final Object convertedValue;
-            final AttributeConverter<? extends Object> converter = this.converters.get(name);
+            final AttributeConverter converter = this.converters.get(name);
             if (converter != null) {
                 convertedValue = converter.convert(value);
                 if (convertedValue != null) {
@@ -114,7 +114,7 @@ public abstract class ProfileDefinition {
      * @param name name of the attribute
      * @param converter converter
      */
-    protected void primary(final String name, final AttributeConverter<? extends Object> converter) {
+    protected void primary(final String name, final AttributeConverter converter) {
         primaries.add(name);
         converters.put(name, converter);
     }
@@ -125,7 +125,7 @@ public abstract class ProfileDefinition {
      * @param name name of the attribute
      * @param converter converter
      */
-    protected void secondary(final String name, final AttributeConverter<? extends Object> converter) {
+    protected void secondary(final String name, final AttributeConverter converter) {
         secondaries.add(name);
         converters.put(name, converter);
     }
@@ -138,7 +138,7 @@ public abstract class ProfileDefinition {
         return this.secondaries;
     }
 
-    protected Map<String, AttributeConverter<? extends Object>> getConverters() {
+    protected Map<String, AttributeConverter> getConverters() {
         return converters;
     }
 

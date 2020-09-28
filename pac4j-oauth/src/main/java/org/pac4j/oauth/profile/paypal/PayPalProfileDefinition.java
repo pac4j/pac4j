@@ -30,7 +30,7 @@ public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProf
     public PayPalProfileDefinition() {
         super(x -> new PayPalProfile());
         Arrays.stream(new String[] {ZONEINFO, NAME, GIVEN_NAME}).forEach(a -> primary(a, Converters.STRING));
-        primary(ADDRESS, new JsonConverter<>(PayPalAddress.class));
+        primary(ADDRESS, new JsonConverter(PayPalAddress.class));
         primary(LANGUAGE, Converters.LOCALE);
     }
 

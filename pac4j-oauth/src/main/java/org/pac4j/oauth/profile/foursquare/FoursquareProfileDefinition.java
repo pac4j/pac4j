@@ -35,9 +35,9 @@ public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<Foursq
                 FIRST_NAME, LAST_NAME, HOME_CITY, BIO, PHOTO
         }).forEach(a -> primary(a, Converters.STRING));
         primary(GENDER, Converters.GENDER);
-        primary(FIRENDS, new JsonConverter<>(FoursquareUserFriends.class));
-        primary(CONTACT, new JsonConverter<>(FoursquareUserContact.class));
-        primary(PHOTO, new JsonConverter<>(FoursquareUserPhoto.class));
+        primary(FIRENDS, new JsonConverter(FoursquareUserFriends.class));
+        primary(CONTACT, new JsonConverter(FoursquareUserContact.class));
+        primary(PHOTO, new JsonConverter(FoursquareUserPhoto.class));
     }
 
     @Override

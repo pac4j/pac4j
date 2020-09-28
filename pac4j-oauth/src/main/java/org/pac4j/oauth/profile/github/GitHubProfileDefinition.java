@@ -59,7 +59,7 @@ public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProf
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(AVATAR_URL, Converters.URL);
         primary(HTML_URL, Converters.URL);
-        primary(PLAN, new JsonConverter<>(GitHubPlan.class));
+        primary(PLAN, new JsonConverter(GitHubPlan.class));
     }
 
     @Override

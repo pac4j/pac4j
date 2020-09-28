@@ -27,7 +27,7 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
     public LinkedIn2ProfileDefinition() {
         super(x -> new LinkedIn2Profile());
         Arrays.stream(new String[] {LOCALIZED_FIRST_NAME, LOCALIZED_LAST_NAME}).forEach(a -> primary(a, Converters.STRING));
-        primary(PROFILE_PICTURE, new JsonConverter<>(LinkedIn2ProfilePicture.class));
+        primary(PROFILE_PICTURE, new JsonConverter(LinkedIn2ProfilePicture.class));
     }
 
     @Override

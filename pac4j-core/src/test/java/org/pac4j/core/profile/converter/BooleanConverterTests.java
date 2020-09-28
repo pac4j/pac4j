@@ -8,22 +8,22 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link BooleanConverter} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public final class BooleanConverterTests {
-    
+
     private final BooleanConverter converter = new BooleanConverter();
 
     @Test
     public void testNull() {
-        assertFalse(this.converter.convert(null));
+        assertFalse((Boolean) this.converter.convert(null));
     }
 
     @Test
     public void testNotAStringNotABoolean() {
-        assertFalse(this.converter.convert(new Date()));
+        assertFalse((Boolean) this.converter.convert(new Date()));
     }
 
     @Test

@@ -6,7 +6,7 @@ package org.pac4j.core.profile.converter;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class StringConverter extends AbstractAttributeConverter<String> {
+public final class StringConverter extends AbstractAttributeConverter {
 
     public StringConverter() {
         super(String.class);

@@ -11,32 +11,32 @@ import java.io.IOException;
 
 /**
  * This class converts a JSON node (or string) into an object.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class JsonConverter<T extends Object> implements AttributeConverter<T> {
+public final class JsonConverter implements AttributeConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
-    private final Class<T> clazz;
+    private final Class clazz;
 
-    private TypeReference<T> typeReference;
+    private TypeReference typeReference;
 
-    public JsonConverter(final Class<T> clazz) {
+    public JsonConverter(final Class clazz) {
         this.clazz = clazz;
     }
 
-    public JsonConverter(final Class<T> clazz, final TypeReference<T> typeReference) {
+    public JsonConverter(final Class clazz, final TypeReference typeReference) {
         this(clazz);
         this.typeReference = typeReference;
     }
 
     @Override
-    public T convert(final Object attribute) {
+    public Object convert(final Object attribute) {
         if (attribute != null) {
             if (clazz.isAssignableFrom(attribute.getClass())) {
-                return (T) attribute;
+                return attribute;
             } else if (attribute instanceof String || attribute instanceof JsonNode) {
                 final String s;
                 if (attribute instanceof String) {
@@ -47,9 +47,9 @@ public final class JsonConverter<T extends Object> implements AttributeConverter
 
                 try {
                     if (typeReference != null) {
-                        return (T) JsonHelper.getMapper().readValue(s, typeReference);
+                        return JsonHelper.getMapper().readValue(s, typeReference);
                     } else {
-                        return (T) JsonHelper.getMapper().readValue(s, clazz);
+                        return JsonHelper.getMapper().readValue(s, clazz);
                     }
                 } catch (final IOException e) {
                     logger.error("Cannot read value", e);

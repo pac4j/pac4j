@@ -58,7 +58,7 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
         primary(ADDRESSES, new JsonConverter(List.class, new TypeReference<List<YahooAddress>>() {}));
         primary(DISCLOSURES, new JsonConverter(List.class, new TypeReference<List<YahooDisclosure>>() {}));
         primary(EMAILS, new JsonConverter(List.class, new TypeReference<List<YahooEmail>>() {}));
-        primary(IMAGE, new JsonConverter<>(YahooImage.class));
+        primary(IMAGE, new JsonConverter(YahooImage.class));
         primary(INTERESTS, new JsonConverter(List.class, new TypeReference<List<YahooInterest>>() {}));
         primary(CREATED, Converters.DATE_TZ_RFC822);
         primary(MEMBER_SINCE, Converters.DATE_TZ_RFC822);

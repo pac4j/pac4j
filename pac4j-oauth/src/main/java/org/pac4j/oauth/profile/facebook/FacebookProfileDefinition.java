@@ -80,7 +80,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
         primary(LINK, Converters.URL);
-        final JsonConverter<FacebookObject> objectConverter = new JsonConverter<>(FacebookObject.class);
+        final JsonConverter objectConverter = new JsonConverter(FacebookObject.class);
         final JsonConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
         final JsonConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
@@ -104,7 +104,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
         secondary(EVENTS, new JsonConverter(List.class, new TypeReference<List<FacebookEvent>>() {}));
         secondary(GROUPS, new JsonConverter(List.class, new TypeReference<List<FacebookGroup>>() {}));
         secondary(MUSIC_LISTENS, new JsonConverter(List.class, new TypeReference<List<FacebookMusicListen>>() {}));
-        secondary(PICTURE, new JsonConverter<>(FacebookPicture.class));
+        secondary(PICTURE, new JsonConverter(FacebookPicture.class));
     }
 
     @Override
