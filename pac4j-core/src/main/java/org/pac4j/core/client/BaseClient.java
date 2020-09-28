@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials> extends InitializableObject implements Client<C> {
+public abstract class BaseClient extends InitializableObject implements Client {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,11 +43,11 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
 
     private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
-    private CredentialsExtractor<C> credentialsExtractor;
+    private CredentialsExtractor credentialsExtractor;
 
-    private Authenticator<C> authenticator;
+    private Authenticator authenticator;
 
-    private ProfileCreator<C> profileCreator = AuthenticatorProfileCreator.INSTANCE;
+    private ProfileCreator profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     private Map<String, Object> customProperties = new LinkedHashMap<>();
 
@@ -61,9 +61,9 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
      * @param context the web context
      * @return the credentials
      */
-    protected Optional<C> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         try {
-            final Optional<C> optCredentials = this.credentialsExtractor.extract(context);
+            final Optional<Credentials> optCredentials = this.credentialsExtractor.extract(context);
             optCredentials.ifPresent(credentials -> {
                 final long t0 = System.currentTimeMillis();
                 try {
@@ -83,7 +83,7 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
     }
 
     @Override
-    public final Optional<UserProfile> getUserProfile(final C credentials, final WebContext context) {
+    public final Optional<UserProfile> getUserProfile(final Credentials credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
@@ -115,7 +115,7 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
      * @param context     the web context
      * @return the user profile
      */
-    protected final Optional<UserProfile> retrieveUserProfile(final C credentials, final WebContext context) {
+    protected final Optional<UserProfile> retrieveUserProfile(final Credentials credentials, final WebContext context) {
         final Optional<UserProfile> profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
@@ -180,45 +180,45 @@ public abstract class BaseClient<C extends Credentials> extends InitializableObj
         this.authorizationGenerators.addAll(authorizationGenerators);
     }
 
-    public CredentialsExtractor<C> getCredentialsExtractor() {
+    public CredentialsExtractor getCredentialsExtractor() {
         return credentialsExtractor;
     }
 
-    protected void defaultCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+    protected void defaultCredentialsExtractor(final CredentialsExtractor credentialsExtractor) {
         if (this.credentialsExtractor == null) {
             this.credentialsExtractor = credentialsExtractor;
         }
     }
 
-    public Authenticator<C> getAuthenticator() {
+    public Authenticator getAuthenticator() {
         return authenticator;
     }
 
-    protected void defaultAuthenticator(final Authenticator<C> authenticator) {
+    protected void defaultAuthenticator(final Authenticator authenticator) {
         if (this.authenticator == null) {
             this.authenticator = authenticator;
         }
     }
 
-    public ProfileCreator<C> getProfileCreator() {
+    public ProfileCreator getProfileCreator() {
         return profileCreator;
     }
 
-    protected void defaultProfileCreator(final ProfileCreator<C> profileCreator) {
+    protected void defaultProfileCreator(final ProfileCreator profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
     }
 
-    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+    public void setCredentialsExtractor(final CredentialsExtractor credentialsExtractor) {
         this.credentialsExtractor = credentialsExtractor;
     }
 
-    public void setAuthenticator(final Authenticator<C> authenticator) {
+    public void setAuthenticator(final Authenticator authenticator) {
         this.authenticator = authenticator;
     }
 
-    public void setProfileCreator(final ProfileCreator<C> profileCreator) {
+    public void setProfileCreator(final ProfileCreator profileCreator) {
         this.profileCreator = profileCreator;
     }
 

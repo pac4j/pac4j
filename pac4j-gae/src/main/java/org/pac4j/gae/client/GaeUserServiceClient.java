@@ -22,7 +22,7 @@ import java.util.Optional;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
+public class GaeUserServiceClient extends IndirectClient {
 
     private static final ProfileDefinition<GaeUserServiceProfile> PROFILE_DEFINITION
         = new CommonProfileDefinition<>(x -> new GaeUserServiceProfile());
@@ -46,7 +46,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials> {
             return Optional.of(credentials);
         });
         defaultAuthenticator((credentials, ctx) -> {
-            final User user = credentials.getUser();
+            final User user = ((GaeUserCredentials) credentials).getUser();
             if (user != null) {
                 final GaeUserServiceProfile profile = PROFILE_DEFINITION.newProfile();
                 profile.setId(user.getEmail());

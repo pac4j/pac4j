@@ -1,6 +1,7 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.util.Pac4jConstants;
@@ -11,7 +12,6 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
+public class FormClient extends IndirectClient {
 
     private String loginUrl;
 
@@ -73,12 +73,12 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials> {
     }
 
     @Override
-    protected Optional<UsernamePasswordCredentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
         final String username = context.getRequestParameter(this.usernameParameter).orElse(null);
-        final Optional<UsernamePasswordCredentials> credentials;
+        final Optional<Credentials> credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);

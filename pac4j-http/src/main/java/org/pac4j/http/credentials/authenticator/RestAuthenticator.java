@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -31,7 +32,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> implements Authenticator<UsernamePasswordCredentials> {
+public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAuthenticator.class);
 
@@ -58,9 +59,10 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {

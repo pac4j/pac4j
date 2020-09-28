@@ -2,7 +2,6 @@ package org.pac4j.core.client.finder;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
@@ -28,8 +27,8 @@ public class DefaultSecurityClientFinder implements ClientFinder {
     private String clientNameParameter = Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER;
 
     @Override
-    public List<Client<? extends Credentials>> find(final Clients clients, final WebContext context, final String clientNames) {
-        final List<Client<? extends Credentials>> result = new ArrayList<>();
+    public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
+        final List<Client> result = new ArrayList<>();
 
         String securityClientNames = clientNames;
         // we don't have defined clients to secure the URL, use the general default security ones from the Clients if they exist

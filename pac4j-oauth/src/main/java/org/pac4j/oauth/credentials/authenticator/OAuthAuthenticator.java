@@ -3,11 +3,11 @@ package org.pac4j.oauth.credentials.authenticator;
 import com.github.scribejava.core.exceptions.OAuthException;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthConfiguration> implements Authenticator<C> {
+abstract class OAuthAuthenticator<O extends OAuthConfiguration> implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -33,7 +33,7 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
     }
 
     @Override
-    public void validate(final C credentials, final WebContext context) {
+    public void validate(final Credentials credentials, final WebContext context) {
         try {
             retrieveAccessToken(context, credentials);
         } catch (final OAuthException e) {
@@ -47,5 +47,5 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
      * @param context the web context
      * @param credentials credentials
      */
-    protected abstract void retrieveAccessToken(WebContext context, OAuthCredentials credentials);
+    protected abstract void retrieveAccessToken(WebContext context, Credentials credentials);
 }

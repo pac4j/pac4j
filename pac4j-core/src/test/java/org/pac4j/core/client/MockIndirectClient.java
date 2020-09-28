@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class MockIndirectClient extends IndirectClient<Credentials> {
+public final class MockIndirectClient extends IndirectClient {
 
     private RedirectionAction redirectAction;
 

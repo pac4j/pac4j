@@ -149,16 +149,6 @@ public final class CommonHelper {
         assertTrue(obj == null, name + " must be null");
     }
 
-    public static <T> T assertOfType(final String name, final Object obj, final Class<T> clazz) {
-        assertNotNull("class", clazz);
-
-        if (!clazz.isAssignableFrom(obj.getClass())) {
-            throw new TechnicalException(name + " is not of type: " + clazz.getName());
-        }
-
-        return (T) obj;
-    }
-
     /**
      * Add a new parameter to an url.
      *

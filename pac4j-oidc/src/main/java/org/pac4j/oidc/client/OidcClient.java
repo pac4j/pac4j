@@ -26,7 +26,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class OidcClient<V extends OidcConfiguration> extends IndirectClient<OidcCredentials> {
+public class OidcClient<V extends OidcConfiguration> extends IndirectClient {
 
     private V configuration = null;
 

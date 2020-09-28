@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public interface ProfileCreator<C extends Credentials> {
+public interface ProfileCreator {
 
     /**
      * Create a profile from a credentials.
@@ -22,5 +22,5 @@ public interface ProfileCreator<C extends Credentials> {
      * @param context the web context
      * @return the created profile (optional)
      */
-    Optional<UserProfile> create(C credentials, WebContext context);
+    Optional<UserProfile> create(Credentials credentials, WebContext context);
 }

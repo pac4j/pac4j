@@ -1,6 +1,7 @@
 package org.pac4j.saml.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -22,7 +23,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> implements Authenticator<SAML2Credentials> {
+public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> implements Authenticator {
 
     public static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
     public static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";
@@ -61,9 +62,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
     }
 
     @Override
-    public void validate(final SAML2Credentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        final SAML2Credentials credentials = (SAML2Credentials) cred;
         final SAML2Profile profile = getProfileDefinition().newProfile();
 
         final SAML2Credentials.SAMLNameID nameId = credentials.getNameId();

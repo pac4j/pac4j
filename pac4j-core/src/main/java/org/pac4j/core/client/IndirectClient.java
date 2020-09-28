@@ -28,7 +28,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class IndirectClient<C extends Credentials> extends BaseClient<C> {
+public abstract class IndirectClient extends BaseClient {
 
     public static final String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
     private static final String STATE_SESSION_PARAMETER = "$stateSessionParameter";
@@ -138,9 +138,9 @@ public abstract class IndirectClient<C extends Credentials> extends BaseClient<C
      * @return the credentials
      */
     @Override
-    public final Optional<C> getCredentials(final WebContext context) {
+    public final Optional<Credentials> getCredentials(final WebContext context) {
         init();
-        final Optional<C> optCredentials = retrieveCredentials(context);
+        final Optional<Credentials> optCredentials = retrieveCredentials(context);
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");

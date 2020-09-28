@@ -2,6 +2,7 @@ package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.exception.http.UnauthorizedAction;
@@ -10,7 +11,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
- * <p>This class is the client to authenticate users through HTTP basic auth. It was previously named: <code>BasicAuthClient</code>.</p>
+ * <p>This class is the client to authenticate users through HTTP basic auth.</p>
  * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
  * specific exception : {@link HttpAction} is returned which must be handled by the application to force
  * authentication.</p>
@@ -26,7 +26,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCredentials> {
+public class IndirectBasicAuthClient extends IndirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
@@ -56,14 +56,14 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
     }
 
     @Override
-    protected Optional<UsernamePasswordCredentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
 
-        final Optional<UsernamePasswordCredentials> credentials;
+        final Optional<Credentials> credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);

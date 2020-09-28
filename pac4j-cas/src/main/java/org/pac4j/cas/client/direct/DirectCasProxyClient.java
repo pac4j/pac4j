@@ -6,7 +6,6 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
@@ -28,7 +27,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasProxyClient extends DirectClient<TokenCredentials> {
+public class DirectCasProxyClient extends DirectClient {
 
     private CasConfiguration configuration;
 

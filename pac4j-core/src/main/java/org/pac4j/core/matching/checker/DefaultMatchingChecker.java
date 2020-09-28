@@ -3,7 +3,6 @@ package org.pac4j.core.matching.checker;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.matching.matcher.*;
@@ -48,7 +47,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
 
     @Override
     public boolean matches(final WebContext context, final String matchersValue, final Map<String, Matcher> matchersMap,
-                           final List<Client<? extends Credentials>> clients) {
+                           final List<Client> clients) {
         String matcherNames = matchersValue;
         // if we have no matchers defined, compute the default one(s)
         if (CommonHelper.isBlank(matcherNames)) {
@@ -107,7 +106,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return true;
     }
 
-    protected String computeDefaultMatchers(final List<Client<? extends Credentials>> clients) {
+    protected String computeDefaultMatchers(final List<Client> clients) {
         for (final Client client : clients) {
             if (client instanceof IndirectClient) {
                 return DefaultMatchers.SECURITYHEADERS + Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;

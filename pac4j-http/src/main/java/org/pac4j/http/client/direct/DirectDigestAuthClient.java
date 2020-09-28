@@ -3,11 +3,11 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.CredentialUtil;
-import org.pac4j.http.credentials.DigestCredentials;
 import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 
 import java.time.LocalDateTime;
@@ -21,7 +21,7 @@ import java.util.Optional;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class DirectDigestAuthClient extends DirectClient<DigestCredentials> {
+public class DirectDigestAuthClient extends DirectClient {
 
     private String realm = "pac4jRealm";
 
@@ -49,7 +49,7 @@ public class DirectDigestAuthClient extends DirectClient<DigestCredentials> {
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    protected Optional<DigestCredentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         // set the www-authenticate in case of error
         final String nonce = calculateNonce();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""

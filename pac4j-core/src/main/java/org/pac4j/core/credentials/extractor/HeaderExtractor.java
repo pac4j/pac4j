@@ -1,6 +1,7 @@
 package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
+public class HeaderExtractor implements CredentialsExtractor {
 
     private String headerName;
 
@@ -55,7 +56,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public Optional<TokenCredentials> extract(final WebContext context) {
+    public Optional<Credentials> extract(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 

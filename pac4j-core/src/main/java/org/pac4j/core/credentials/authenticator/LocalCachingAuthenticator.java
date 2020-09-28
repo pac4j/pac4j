@@ -22,25 +22,25 @@ import java.util.concurrent.TimeUnit;
  * @author Misagh Moayyed
  * @since 1.8
  */
-public class LocalCachingAuthenticator<T extends Credentials> extends InitializableObject implements Authenticator<T> {
+public class LocalCachingAuthenticator extends InitializableObject implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Authenticator<T> delegate;
+    private Authenticator delegate;
     private int cacheSize;
     private int timeout;
     private TimeUnit timeUnit;
 
-    private Store<T, CommonProfile> store;
+    private Store<Credentials, CommonProfile> store;
 
     public LocalCachingAuthenticator() {}
 
-    public LocalCachingAuthenticator(final Authenticator<T> delegate, final Store<T, CommonProfile> store) {
+    public LocalCachingAuthenticator(final Authenticator delegate, final Store<Credentials, CommonProfile> store) {
         this.delegate = delegate;
         this.store = store;
     }
 
-    public LocalCachingAuthenticator(final Authenticator<T> delegate, final int cacheSize,
+    public LocalCachingAuthenticator(final Authenticator delegate, final int cacheSize,
                                      final int timeout, final TimeUnit timeUnit) {
         this.delegate = delegate;
         this.cacheSize = cacheSize;
@@ -49,7 +49,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     @Override
-    public void validate(final T credentials, final WebContext context) {
+    public void validate(final Credentials credentials, final WebContext context) {
         init();
 
         Optional<CommonProfile> optProfile = this.store.get(credentials);
@@ -77,19 +77,19 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
 
-    public void removeFromCache(final T credentials) {
+    public void removeFromCache(final Credentials credentials) {
         this.store.remove(credentials);
     }
 
-    public boolean isCached(final T credentials) {
+    public boolean isCached(final Credentials credentials) {
         return this.store.get(credentials).isPresent();
     }
 
-    public Authenticator<T> getDelegate() {
+    public Authenticator getDelegate() {
         return delegate;
     }
 
-    public void setDelegate(final Authenticator<T> delegate) {
+    public void setDelegate(final Authenticator delegate) {
         this.delegate = delegate;
     }
 
@@ -117,11 +117,11 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
         this.timeUnit = timeUnit;
     }
 
-    public Store<T, CommonProfile> getStore() {
+    public Store<Credentials, CommonProfile> getStore() {
         return store;
     }
 
-    public void setStore(final Store<T, CommonProfile> store) {
+    public void setStore(final Store<Credentials, CommonProfile> store) {
         this.store = store;
     }
 

@@ -1,11 +1,9 @@
 package org.pac4j.ldap.profile.service;
 
 import org.ldaptive.*;
-import org.ldaptive.auth.AuthenticationRequest;
-import org.ldaptive.auth.AuthenticationResponse;
-import org.ldaptive.auth.AuthenticationResultCode;
-import org.ldaptive.auth.Authenticator;
+import org.ldaptive.auth.*;
 import org.ldaptive.handler.ResultPredicate;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -169,9 +167,10 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
         CommonHelper.assertNotBlank(Pac4jConstants.USERNAME, username);
         final AuthenticationResponse response;

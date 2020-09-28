@@ -9,11 +9,11 @@ import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
-import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
 import org.pac4j.kerberos.credentials.authenticator.SunJaasKerberosTicketValidator;
 import org.springframework.core.io.FileSystemResource;
@@ -142,12 +142,12 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         }
     }
 
-    private void checkWithGoodTicket(Client<KerberosCredentials> client) throws Exception {
+    private void checkWithGoodTicket(Client client) throws Exception {
         String spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
 
         // mock web request
         final MockWebContext context = mockWebRequestContext(spnegoWebTicket);
-        final Optional<KerberosCredentials> credentials = client.getCredentials(context);
+        final Optional<Credentials> credentials = client.getCredentials(context);
         assertTrue(credentials.isPresent());
         System.out.println(credentials.get());
 

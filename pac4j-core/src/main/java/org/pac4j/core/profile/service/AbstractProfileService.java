@@ -1,6 +1,7 @@
 package org.pac4j.core.profile.service;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -25,7 +26,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @since 2.0.0
  */
 public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U>
-        implements ProfileService<U>, Authenticator<UsernamePasswordCredentials> {
+        implements ProfileService<U>, Authenticator {
 
     public static final String ID = "id";
 
@@ -272,10 +273,10 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
-        assertNotNull("credentials", credentials);
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
         assertNotBlank(USERNAME, username);

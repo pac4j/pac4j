@@ -1,5 +1,6 @@
 package org.pac4j.http.credentials.authenticator.test;
 
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -14,13 +15,14 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class SimpleTestUsernamePasswordAuthenticator implements Authenticator<UsernamePasswordCredentials> {
+public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
-        if (credentials == null) {
+    public void validate(final Credentials cred, final WebContext context) {
+        if (cred == null) {
             throw new CredentialsException("No credential");
         }
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         String username = credentials.getUsername();
         String password = credentials.getPassword();
         if (CommonHelper.isBlank(username)) {

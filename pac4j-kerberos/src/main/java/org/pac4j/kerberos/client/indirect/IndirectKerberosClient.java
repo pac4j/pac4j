@@ -3,13 +3,13 @@ package org.pac4j.kerberos.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 
 import java.util.Optional;
@@ -19,7 +19,7 @@ import java.util.Optional;
  *
  * @since 2.1.0
  */
-public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> {
+public class IndirectKerberosClient extends IndirectClient {
 
     public IndirectKerberosClient() {}
 
@@ -27,7 +27,7 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> 
         defaultAuthenticator(authenticator);
     }
 
-    public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials> profileCreator) {
+    public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
         defaultAuthenticator(authenticator);
         defaultProfileCreator(profileCreator);
     }
@@ -40,14 +40,14 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials> 
     }
 
     @Override
-    protected Optional<KerberosCredentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
 
-        final Optional<KerberosCredentials> credentials;
+        final Optional<Credentials> credentials;
         try {
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);

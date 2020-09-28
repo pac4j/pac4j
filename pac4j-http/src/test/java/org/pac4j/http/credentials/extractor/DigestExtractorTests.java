@@ -3,6 +3,7 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -23,7 +24,7 @@ public class DigestExtractorTests implements TestsConstants {
     public void testRetrieveDigestHeaderComponents() {
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, DIGEST_AUTHORIZATION_HEADER_VALUE);
-        final DigestCredentials credentials = digestExtractor.extract(context).get();
+        final DigestCredentials credentials = (DigestCredentials) digestExtractor.extract(context).get();
         assertEquals(DIGEST_RESPONSE, credentials.getToken());
         assertEquals(USERNAME, credentials.getUsername());
     }
@@ -31,7 +32,7 @@ public class DigestExtractorTests implements TestsConstants {
     @Test
     public void testNotDigest() {
         final MockWebContext context = MockWebContext.create();
-        final Optional<DigestCredentials> credentials = digestExtractor.extract(context);
+        final Optional<Credentials> credentials = digestExtractor.extract(context);
         assertFalse(credentials.isPresent());
     }
 

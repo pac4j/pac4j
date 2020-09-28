@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.context.*;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.DefaultMatchers;
 import org.pac4j.core.matching.matcher.HttpMethodMatcher;
@@ -234,7 +233,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     @Test
     public void testCsrfTokenDefaultButIndirectClient() {
         final MockWebContext context = MockWebContext.create();
-        final List<Client<? extends Credentials>> clients = new ArrayList<>();
+        final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
         assertTrue(checker.matches(context, "", new HashMap<>(), clients));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());

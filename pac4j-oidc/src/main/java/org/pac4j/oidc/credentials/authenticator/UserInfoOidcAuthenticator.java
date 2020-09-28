@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.naming.AuthenticationException;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -34,7 +35,7 @@ import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
  * @author Rakesh Sarangi
  * @since 3.5.0
  */
-public class UserInfoOidcAuthenticator extends InitializableObject implements Authenticator<TokenCredentials> {
+public class UserInfoOidcAuthenticator extends InitializableObject implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(UserInfoOidcAuthenticator.class);
 
@@ -52,9 +53,10 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public void validate(TokenCredentials credentials, WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        final TokenCredentials credentials = (TokenCredentials) cred;
         final OidcProfileDefinition profileDefinition = new OidcProfileDefinition();
         final OidcProfile profile = (OidcProfile) profileDefinition.newProfile();
         final BearerAccessToken accessToken = new BearerAccessToken(credentials.getToken());

@@ -136,7 +136,7 @@ public class ProfileManager<U extends UserProfile> {
                     final Optional<Client> client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
                         try {
-                            final Optional<U> newProfile = client.get().renewUserProfile(profile, context);
+                            final Optional<U> newProfile = (Optional<U>) client.get().renewUserProfile(profile, context);
                             if (newProfile.isPresent()) {
                                 profiles.put(key, newProfile.get());
                             }

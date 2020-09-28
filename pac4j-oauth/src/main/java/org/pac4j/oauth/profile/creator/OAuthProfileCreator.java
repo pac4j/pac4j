@@ -10,6 +10,7 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -17,7 +18,6 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +32,8 @@ import java.util.concurrent.ExecutionException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration<S, T>,
-    T extends Token, S extends OAuthService> implements ProfileCreator<C> {
+abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfiguration<S, T>,
+    T extends Token, S extends OAuthService> implements ProfileCreator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -56,7 +56,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
     }
 
     @Override
-    public Optional<UserProfile> create(final C credentials, final WebContext context) {
+    public Optional<UserProfile> create(final Credentials credentials, final WebContext context) {
         try {
             final T token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(context, token);
@@ -71,7 +71,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @param credentials credentials
      * @return the access token
      */
-    protected abstract T getAccessToken(final C credentials);
+    protected abstract T getAccessToken(final Credentials credentials);
 
     /**
      * Retrieve the user profile from the access token.

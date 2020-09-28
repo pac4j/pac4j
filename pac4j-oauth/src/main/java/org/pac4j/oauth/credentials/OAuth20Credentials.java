@@ -1,6 +1,7 @@
 package org.pac4j.oauth.credentials;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -9,7 +10,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author zhangzhenli
  * @since 1.9.0
  */
-public class OAuth20Credentials extends OAuthCredentials {
+public class OAuth20Credentials extends Credentials {
 
     private static final long serialVersionUID = -1370874913317625788L;
     private String code;

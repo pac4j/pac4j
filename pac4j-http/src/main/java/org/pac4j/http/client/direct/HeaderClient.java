@@ -4,7 +4,6 @@ import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 
 /**
@@ -13,7 +12,7 @@ import org.pac4j.core.credentials.extractor.HeaderExtractor;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class HeaderClient extends DirectClient<TokenCredentials> {
+public class HeaderClient extends DirectClient {
 
     private String headerName = "";
 

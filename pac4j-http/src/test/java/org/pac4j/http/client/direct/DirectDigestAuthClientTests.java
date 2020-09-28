@@ -52,7 +52,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
                 DIGEST_AUTHORIZATION_HEADER_VALUE);
         context.setRequestMethod(HTTP_METHOD.GET.name());
 
-        final DigestCredentials credentials = client.getCredentials(context).get();
+        final DigestCredentials credentials = (DigestCredentials) client.getCredentials(context).get();
 
         final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
 

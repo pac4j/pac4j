@@ -6,6 +6,7 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> implements Authenticator<TokenCredentials> {
+public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
@@ -62,9 +63,10 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        final TokenCredentials credentials = (TokenCredentials) cred;
         final String ticket = credentials.getToken();
         try {
             final String finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, context);

@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 
 /**
@@ -17,7 +17,7 @@ import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class DirectKerberosClient extends DirectClient<KerberosCredentials> {
+public class DirectKerberosClient extends DirectClient {
 
     public DirectKerberosClient() {
     }
@@ -26,7 +26,7 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials> {
         setAuthenticator(authenticator);
     }
 
-    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials> profileCreator) {
+    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
         setAuthenticator(authenticator);
         setProfileCreator(profileCreator);
     }
@@ -37,7 +37,7 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials> {
     }
 
     @Override
-    protected Optional<KerberosCredentials> retrieveCredentials(WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(WebContext context) {
         // Set the WWW-Authenticate: Negotiate header in case no credentials are found
         // to trigger the SPNEGO process by replying with 401 Unauthorized
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");

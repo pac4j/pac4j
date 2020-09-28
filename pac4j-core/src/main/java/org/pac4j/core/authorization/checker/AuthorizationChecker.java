@@ -3,7 +3,6 @@ package org.pac4j.core.authorization.checker;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
@@ -28,5 +27,5 @@ public interface AuthorizationChecker {
      * @return whether the user is authorized.
      */
     boolean isAuthorized(WebContext context, List<UserProfile> profiles, String authorizerNames,
-                         Map<String, Authorizer> authorizersMap, List<Client<? extends Credentials>> clients);
+                         Map<String, Authorizer> authorizersMap, List<Client> clients);
 }

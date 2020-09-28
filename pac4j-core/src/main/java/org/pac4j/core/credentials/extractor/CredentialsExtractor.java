@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface CredentialsExtractor<C extends Credentials> {
+public interface CredentialsExtractor {
 
     /**
      * Extract the {@link Credentials} from a {@link WebContext}
@@ -22,5 +22,5 @@ public interface CredentialsExtractor<C extends Credentials> {
      * @param context the current web context
      * @return the credentials (optional)
      */
-    Optional<C> extract(WebContext context);
+    Optional<Credentials> extract(WebContext context);
 }

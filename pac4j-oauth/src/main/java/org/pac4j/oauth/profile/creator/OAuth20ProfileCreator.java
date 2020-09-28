@@ -4,6 +4,7 @@ import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -16,15 +17,15 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @since 2.0.0
  */
 public class OAuth20ProfileCreator<U extends OAuth20Profile>
-    extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken, OAuth20Service> {
+    extends OAuthProfileCreator<U, OAuth20Configuration, OAuth2AccessToken, OAuth20Service> {
 
     public OAuth20ProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
     @Override
-    protected OAuth2AccessToken getAccessToken(final OAuth20Credentials credentials) {
-        return credentials.getAccessToken();
+    protected OAuth2AccessToken getAccessToken(final Credentials credentials) {
+        return ((OAuth20Credentials) credentials).getAccessToken();
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
@@ -32,7 +31,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends IndirectClient<TokenCredentials> {
+public class CasClient extends IndirectClient {
 
     private CasConfiguration configuration = new CasConfiguration();
 

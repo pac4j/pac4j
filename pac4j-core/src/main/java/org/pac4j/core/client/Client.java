@@ -24,7 +24,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public interface Client<C extends Credentials> {
+public interface Client {
 
     /**
      * Get the name of the client.
@@ -48,7 +48,7 @@ public interface Client<C extends Credentials> {
      * @param context the current web context
      * @return the credentials (optional)
      */
-    Optional<C> getCredentials(WebContext context);
+    Optional<Credentials> getCredentials(WebContext context);
 
     /**
      * Get the user profile based on the provided credentials.
@@ -57,7 +57,7 @@ public interface Client<C extends Credentials> {
      * @param context web context
      * @return the user profile (optional)
      */
-    Optional<UserProfile> getUserProfile(C credentials, WebContext context);
+    Optional<UserProfile> getUserProfile(Credentials credentials, WebContext context);
 
     /**
      * Renew the user profile.

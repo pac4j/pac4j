@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -14,7 +15,7 @@ import org.pac4j.http.profile.IpProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile> implements Authenticator<TokenCredentials> {
+public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile> implements Authenticator {
 
     public IpRegexpAuthenticator() { }
 
@@ -29,10 +30,10 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) {
+    public void validate(final Credentials credentials, final WebContext context) {
         init();
 
-        final String ip = credentials.getToken();
+        final String ip = ((TokenCredentials) credentials).getToken();
 
         if (!this.pattern.matcher(ip).matches()) {
             throw new CredentialsException("Unauthorized IP address: " + ip);

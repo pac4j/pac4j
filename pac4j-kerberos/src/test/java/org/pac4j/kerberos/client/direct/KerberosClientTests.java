@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -68,7 +69,7 @@ public class KerberosClientTests implements TestsConstants {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final Optional<KerberosCredentials> credentials = client.getCredentials(new JEEContext(request, response));
+        final Optional<Credentials> credentials = client.getCredentials(new JEEContext(request, response));
         assertFalse(credentials.isPresent());
     }
 
@@ -77,7 +78,7 @@ public class KerberosClientTests implements TestsConstants {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final Optional<KerberosCredentials> credentials = client.getCredentials(new JEEContext(request, response));
+        final Optional<Credentials> credentials = client.getCredentials(new JEEContext(request, response));
         assertFalse(credentials.isPresent());
         verify(response).setHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
     }
@@ -89,7 +90,7 @@ public class KerberosClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
-        final KerberosCredentials credentials = client.getCredentials(context).get();
+        final KerberosCredentials credentials = (KerberosCredentials) client.getCredentials(context).get();
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 

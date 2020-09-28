@@ -120,8 +120,9 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testGetCredentialsGoodCredentials() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + USERNAME;
-        final UsernamePasswordCredentials credentials= basicAuthClient.getCredentials(getContextWithAuthorizationHeader(
-                "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)))).get();
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) basicAuthClient
+            .getCredentials(getContextWithAuthorizationHeader("Basic "
+                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)))).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }
