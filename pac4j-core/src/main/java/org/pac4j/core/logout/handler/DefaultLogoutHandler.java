@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFactoryAware implements LogoutHandler<C> {
+public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements LogoutHandler {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,7 +35,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
     }
 
     @Override
-    public void recordSession(final C context, final String key) {
+    public void recordSession(final WebContext context, final String key) {
         final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
@@ -56,7 +56,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
     }
 
     @Override
-    public void destroySessionFront(final C context, final String key) {
+    public void destroySessionFront(final WebContext context, final String key) {
         store.remove(key);
 
         final SessionStore sessionStore = context.getSessionStore();
@@ -78,7 +78,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
         }
     }
 
-    protected void destroy(final C context, final SessionStore sessionStore, final String channel) {
+    protected void destroy(final WebContext context, final SessionStore sessionStore, final String channel) {
         // remove profiles
         final ProfileManager<UserProfile> manager = getProfileManager(context);
         manager.setSessionStore(sessionStore);
@@ -95,7 +95,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
     }
 
     @Override
-    public void destroySessionBack(final C context, final String key) {
+    public void destroySessionBack(final WebContext context, final String key) {
         final Optional<Object> optTrackableSession = store.get(key);
         logger.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
         if (!optTrackableSession.isPresent()) {
@@ -127,7 +127,7 @@ public class DefaultLogoutHandler<C extends WebContext> extends ProfileManagerFa
     }
 
     @Override
-    public void renewSession(final String oldSessionId, final C context) {
+    public void renewSession(final String oldSessionId, final WebContext context) {
         final Optional optKey = store.get(oldSessionId);
         logger.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
         if (optKey.isPresent()) {
