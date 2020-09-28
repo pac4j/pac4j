@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<String> {
 
     public RequireAnyRoleAuthorizer() { }
 
@@ -28,20 +28,20 @@ public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractReq
     public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final String element) {
+    protected boolean check(final WebContext context, final UserProfile profile, final String element) {
         final Set<String> profileRoles = profile.getRoles();
         return profileRoles.contains(element);
     }
 
-    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(String ... roles) {
-        return new RequireAnyRoleAuthorizer<>(roles);
+    public static RequireAnyRoleAuthorizer requireAnyRole(String ... roles) {
+        return new RequireAnyRoleAuthorizer(roles);
     }
 
-    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(List<String> roles) {
-        return new RequireAnyRoleAuthorizer<>(roles);
+    public static RequireAnyRoleAuthorizer requireAnyRole(List<String> roles) {
+        return new RequireAnyRoleAuthorizer(roles);
     }
 
-    public static <U extends UserProfile> RequireAnyRoleAuthorizer<U> requireAnyRole(Set<String> roles) {
-        return new RequireAnyRoleAuthorizer<>(roles);
+    public static RequireAnyRoleAuthorizer requireAnyRole(Set<String> roles) {
+        return new RequireAnyRoleAuthorizer(roles);
     }
 }

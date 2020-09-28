@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import static org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer.r
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class OrAuthorizerTests {
 
-    private List<CommonProfile> profiles = new ArrayList<>();
+    private List<UserProfile> profiles = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -35,7 +36,7 @@ public class OrAuthorizerTests {
 
     @Test
     public void testDisjunctionAuthorizer1() {
-        final Authorizer<CommonProfile> authorizer = or(
+        final Authorizer authorizer = or(
             requireAnyRole("profile_role2"),
             requireAnyPermission("profile_permission2")
         );
@@ -44,7 +45,7 @@ public class OrAuthorizerTests {
 
     @Test
     public void testDisjunctionAuthorizer2() {
-        final Authorizer<CommonProfile> authorizer = or(
+        final Authorizer authorizer = or(
             requireAnyRole("profile_role2"),
             requireAnyPermission("profile_permission")
         );
@@ -53,7 +54,7 @@ public class OrAuthorizerTests {
 
     @Test
     public void testDisjunctionAuthorizer3() {
-        final Authorizer<CommonProfile> authorizer = or(
+        final Authorizer authorizer = or(
             requireAnyRole("profile_role"),
             requireAnyPermission("profile_permission2")
         );

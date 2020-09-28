@@ -15,7 +15,7 @@ import static org.pac4j.core.context.ContextHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class CsrfAuthorizer implements Authorizer<UserProfile> {
+public class CsrfAuthorizer implements Authorizer {
 
     private String parameterName = Pac4jConstants.CSRF_TOKEN;
 

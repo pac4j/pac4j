@@ -11,7 +11,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface Authorizer<U extends UserProfile> {
+public interface Authorizer {
 
     /**
      * Checks if the user profiles and / or the current web context are authorized.
@@ -20,5 +20,5 @@ public interface Authorizer<U extends UserProfile> {
      * @param profiles the user profiles
      * @return if the access is authorized
      */
-    boolean isAuthorized(WebContext context, List<U> profiles);
+    boolean isAuthorized(WebContext context, List<UserProfile> profiles);
 }

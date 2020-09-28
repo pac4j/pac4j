@@ -11,7 +11,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class ProfileAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public abstract class ProfileAuthorizer implements Authorizer {
 
     /**
      * If all profiles are authorized.
@@ -20,8 +20,8 @@ public abstract class ProfileAuthorizer<U extends UserProfile> implements Author
      * @param profiles the user profiles
      * @return whether all profiles are authorized
      */
-    public boolean isAllAuthorized(final WebContext context, final List<U> profiles) {
-        for (final U profile : profiles) {
+    public boolean isAllAuthorized(final WebContext context, final List<UserProfile> profiles) {
+        for (final UserProfile profile : profiles) {
             if (!isProfileAuthorized(context, profile)) {
                 return handleError(context);
             }
@@ -36,8 +36,8 @@ public abstract class ProfileAuthorizer<U extends UserProfile> implements Author
      * @param profiles the user profiles
      * @return whether any of the profiles is authorized
      */
-    public boolean isAnyAuthorized(final WebContext context, final List<U> profiles) {
-        for (final U profile : profiles) {
+    public boolean isAnyAuthorized(final WebContext context, final List<UserProfile> profiles) {
+        for (final UserProfile profile : profiles) {
             if (isProfileAuthorized(context, profile)) {
                 return true;
             }
@@ -52,7 +52,7 @@ public abstract class ProfileAuthorizer<U extends UserProfile> implements Author
      * @param profile the user profile
      * @return whether a specific profile is authorized
      */
-    protected abstract boolean isProfileAuthorized(WebContext context, U profile);
+    protected abstract boolean isProfileAuthorized(WebContext context, UserProfile profile);
 
     /**
      * Handle the error.

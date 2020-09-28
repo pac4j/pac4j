@@ -9,11 +9,10 @@ import java.util.Set;
 /**
  * Checks an access if the user profile has all the roles.
  *
- * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAllRolesAuthorizer<U extends UserProfile> extends AbstractRequireAllAuthorizer<String, U> {
+public class RequireAllRolesAuthorizer extends AbstractRequireAllAuthorizer<String> {
 
     public RequireAllRolesAuthorizer() { }
 
@@ -30,20 +29,20 @@ public class RequireAllRolesAuthorizer<U extends UserProfile> extends AbstractRe
     }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final String element) {
+    protected boolean check(final WebContext context, final UserProfile profile, final String element) {
         final Set<String> profileRoles = profile.getRoles();
         return profileRoles.contains(element);
     }
 
-    public static <U extends UserProfile> RequireAllRolesAuthorizer<U> requireAllRoles(String ... roles) {
-        return new RequireAllRolesAuthorizer<>(roles);
+    public static RequireAllRolesAuthorizer requireAllRoles(String ... roles) {
+        return new RequireAllRolesAuthorizer(roles);
     }
 
-    public static <U extends UserProfile> RequireAllRolesAuthorizer<U> requireAllRoles(List<String> roles) {
-        return new RequireAllRolesAuthorizer<>(roles);
+    public static RequireAllRolesAuthorizer requireAllRoles(List<String> roles) {
+        return new RequireAllRolesAuthorizer(roles);
     }
 
-    public static <U extends UserProfile> RequireAllRolesAuthorizer<U> requireAllRoles(Set<String> roles) {
-        return new RequireAllRolesAuthorizer<>(roles);
+    public static RequireAllRolesAuthorizer requireAllRoles(Set<String> roles) {
+        return new RequireAllRolesAuthorizer(roles);
     }
 }

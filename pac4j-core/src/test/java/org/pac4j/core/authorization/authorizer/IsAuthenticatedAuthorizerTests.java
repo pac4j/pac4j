@@ -6,6 +6,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -25,7 +26,7 @@ public class IsAuthenticatedAuthorizerTests implements TestsConstants {
 
     protected Authorizer authorizer;
 
-    protected List<CommonProfile> profiles;
+    protected List<UserProfile> profiles;
 
     protected CommonProfile profile;
 

@@ -18,7 +18,7 @@ public final class IsRememberedAuthorizerTests extends IsAuthenticatedAuthorizer
 
     @Override
     protected Authorizer newAuthorizer() {
-        return new IsRememberedAuthorizer<>();
+        return new IsRememberedAuthorizer();
     }
 
     @Override

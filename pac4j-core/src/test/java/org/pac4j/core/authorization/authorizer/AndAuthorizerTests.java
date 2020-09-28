@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import static org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer.r
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class AndAuthorizerTests {
 
-    private List<CommonProfile> profiles = new ArrayList<>();
+    private List<UserProfile> profiles = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -37,7 +38,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint1() {
-        final Authorizer<CommonProfile> authorizer = and(
+        final Authorizer authorizer = and(
             isAuthenticated(),
             requireAnyRole("profile_role"),
             requireAnyPermission("profile_permission")
@@ -47,7 +48,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint2() {
-        final Authorizer<CommonProfile> authorizer = and(
+        final Authorizer authorizer = and(
             requireAnyRole("profile_role2"),
             requireAnyPermission("profile_permission")
         );
@@ -56,7 +57,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint3() {
-        final Authorizer<CommonProfile> authorizer = and(
+        final Authorizer authorizer = and(
             requireAnyRole("profile_role"),
             requireAnyPermission("profile_permission2")
         );

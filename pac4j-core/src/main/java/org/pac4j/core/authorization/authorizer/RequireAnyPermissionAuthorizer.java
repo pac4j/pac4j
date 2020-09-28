@@ -9,11 +9,10 @@ import java.util.Set;
 /**
  * Checks an access if the user profile has any of the permissions.
  *
- * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyPermissionAuthorizer extends AbstractRequireAnyAuthorizer<String> {
 
     public RequireAnyPermissionAuthorizer() { }
 
@@ -30,20 +29,20 @@ public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends Abstr
     }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final String element) {
+    protected boolean check(final WebContext context, final UserProfile profile, final String element) {
         final Set<String> profilePermissions = profile.getPermissions();
         return profilePermissions.contains(element);
     }
 
-    public static <U extends UserProfile> RequireAnyPermissionAuthorizer<U> requireAnyPermission(String ... permissions) {
-        return new RequireAnyPermissionAuthorizer<>(permissions);
+    public static RequireAnyPermissionAuthorizer requireAnyPermission(String ... permissions) {
+        return new RequireAnyPermissionAuthorizer(permissions);
     }
 
-    public static <U extends UserProfile> RequireAnyPermissionAuthorizer<U> requireAnyPermission(List<String> permissions) {
-        return new RequireAnyPermissionAuthorizer<>(permissions);
+    public static RequireAnyPermissionAuthorizer requireAnyPermission(List<String> permissions) {
+        return new RequireAnyPermissionAuthorizer(permissions);
     }
 
-    public static <U extends UserProfile> RequireAnyPermissionAuthorizer<U> requireAnyPermission(Set<String> permissions) {
-        return new RequireAnyPermissionAuthorizer<>(permissions);
+    public static RequireAnyPermissionAuthorizer requireAnyPermission(Set<String> permissions) {
+        return new RequireAnyPermissionAuthorizer(permissions);
     }
 }

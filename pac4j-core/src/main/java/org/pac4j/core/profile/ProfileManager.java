@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class ProfileManager<U extends UserProfile> {
 
-    private final Authorizer<U> IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer<U>();
+    private final Authorizer IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -215,7 +215,7 @@ public class ProfileManager<U extends UserProfile> {
      */
     public boolean isAuthenticated() {
         try {
-            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, getAll(true));
+            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, (List<UserProfile>) getAll(true));
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }

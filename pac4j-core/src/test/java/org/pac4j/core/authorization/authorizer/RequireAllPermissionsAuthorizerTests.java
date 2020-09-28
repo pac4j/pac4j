@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +31,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     private final JEEContext context = new JEEContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
 
-    private List<CommonProfile> profiles;
+    private List<UserProfile> profiles;
 
     private CommonProfile profile;
 

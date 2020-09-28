@@ -14,12 +14,12 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public abstract class AbstractRequireElementAuthorizer<E extends Object, U extends UserProfile> extends ProfileAuthorizer<U> {
+public abstract class AbstractRequireElementAuthorizer<E extends Object> extends ProfileAuthorizer {
 
     protected Set<E> elements;
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
         return isAnyAuthorized(context, profiles);
     }
 
@@ -31,7 +31,7 @@ public abstract class AbstractRequireElementAuthorizer<E extends Object, U exten
      * @param element the element to check
      * @return whether it is authorized for this element
      */
-    protected abstract boolean check(final WebContext context, final U profile, final E element);
+    protected abstract boolean check(final WebContext context, final UserProfile profile, final E element);
 
     public Set<E> getElements() {
         return elements;
