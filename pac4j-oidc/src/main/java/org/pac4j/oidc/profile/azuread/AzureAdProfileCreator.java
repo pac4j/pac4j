@@ -12,7 +12,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile> {
+public class AzureAdProfileCreator extends OidcProfileCreator {
 
     public AzureAdProfileCreator(final OidcConfiguration configuration, final OidcClient client) {
         super(configuration, client);

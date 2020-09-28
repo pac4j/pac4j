@@ -51,7 +51,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> implements Authenticator {
+public class JwtAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

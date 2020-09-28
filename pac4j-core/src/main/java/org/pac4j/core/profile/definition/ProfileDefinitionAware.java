@@ -1,6 +1,5 @@
 package org.pac4j.core.profile.definition;
 
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -10,7 +9,7 @@ import org.pac4j.core.util.InitializableObject;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class ProfileDefinitionAware<U extends UserProfile> extends InitializableObject {
+public abstract class ProfileDefinitionAware extends InitializableObject {
 
     private ProfileDefinition profileDefinition;
 

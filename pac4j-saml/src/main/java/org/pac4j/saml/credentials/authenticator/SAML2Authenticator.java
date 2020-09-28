@@ -23,7 +23,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> implements Authenticator {
+public class SAML2Authenticator extends ProfileDefinitionAware implements Authenticator {
 
     public static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
     public static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";

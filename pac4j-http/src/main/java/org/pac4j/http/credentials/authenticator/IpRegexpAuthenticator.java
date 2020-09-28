@@ -15,7 +15,7 @@ import org.pac4j.http.profile.IpProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator<IpProfile> implements Authenticator {
+public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implements Authenticator {
 
     public IpRegexpAuthenticator() { }
 

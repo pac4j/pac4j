@@ -25,7 +25,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U>
+public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware
         implements ProfileService<U>, Authenticator {
 
     public static final String ID = "id";

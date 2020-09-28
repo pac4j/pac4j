@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> implements Authenticator {
+public class RestAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAuthenticator.class);
 

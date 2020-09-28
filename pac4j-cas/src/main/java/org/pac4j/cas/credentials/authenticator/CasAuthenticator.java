@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> implements Authenticator {
+public class CasAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 

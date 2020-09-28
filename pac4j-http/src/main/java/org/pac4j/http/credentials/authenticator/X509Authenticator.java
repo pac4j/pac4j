@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
  * @author Jerome Leleu
  * @since 3.3.0
  */
-public class X509Authenticator extends AbstractRegexpAuthenticator<X509Profile> implements Authenticator {
+public class X509Authenticator extends AbstractRegexpAuthenticator implements Authenticator {
 
     public X509Authenticator() {
         setRegexpPattern("CN=(.*?)(?:,|$)");
