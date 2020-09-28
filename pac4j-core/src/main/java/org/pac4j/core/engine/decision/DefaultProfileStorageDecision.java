@@ -17,7 +17,7 @@ import static org.pac4j.core.util.CommonHelper.isEmpty;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class DefaultProfileStorageDecision<C extends WebContext> implements ProfileStorageDecision<C> {
+public class DefaultProfileStorageDecision implements ProfileStorageDecision {
 
     /**
      * Load the profiles from the web session if no clients are defined or if the first client is an indirect one
@@ -28,7 +28,7 @@ public class DefaultProfileStorageDecision<C extends WebContext> implements Prof
      * @return whether the profiles must be loaded from the web session
      */
     @Override
-    public boolean mustLoadProfilesFromSession(final C context, final List<Client> currentClients) {
+    public boolean mustLoadProfilesFromSession(final WebContext context, final List<Client> currentClients) {
         return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient ||
             currentClients.get(0) instanceof AnonymousClient;
     }
@@ -43,7 +43,7 @@ public class DefaultProfileStorageDecision<C extends WebContext> implements Prof
      * @return <code>false</code>
      */
     @Override
-    public boolean mustSaveProfileInSession(final C context, final List<Client> currentClients,
+    public boolean mustSaveProfileInSession(final WebContext context, final List<Client> currentClients,
                                             final DirectClient directClient, final UserProfile profile) {
         return false;
     }
