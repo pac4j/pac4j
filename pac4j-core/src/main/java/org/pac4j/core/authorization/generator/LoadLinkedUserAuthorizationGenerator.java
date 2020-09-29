@@ -6,7 +6,6 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.ProfileService;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 
 import java.util.Optional;
 
@@ -16,8 +15,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class LoadLinkedUserAuthorizationGenerator extends InitializableObject
-        implements AuthorizationGenerator {
+public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenerator {
 
     private ProfileService profileService;
 
@@ -30,13 +28,8 @@ public class LoadLinkedUserAuthorizationGenerator extends InitializableObject
     }
 
     @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("profileService", profileService);
-    }
-
-    @Override
     public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
-        init();
+        CommonHelper.assertNotNull("profileService", profileService);
 
         final CommonProfile linkedProfile = profileService.findByLinkedId(profile.getId());
 

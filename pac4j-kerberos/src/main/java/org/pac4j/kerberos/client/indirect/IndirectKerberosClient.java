@@ -33,7 +33,7 @@ public class IndirectKerberosClient extends IndirectClient {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         defaultRedirectionActionBuilder(webContext ->
             Optional.of(RedirectionActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
         defaultCredentialsExtractor(new KerberosExtractor());

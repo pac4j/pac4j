@@ -10,10 +10,11 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 
 import java.util.Optional;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the client to authenticate users through HTTP form.</p>
@@ -60,10 +61,10 @@ public class FormClient extends IndirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
-        CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
-        CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
+    protected void internalInit() {
+        assertNotBlank("loginUrl", this.loginUrl);
+        assertNotBlank("usernameParameter", this.usernameParameter);
+        assertNotBlank("passwordParameter", this.passwordParameter);
 
         defaultRedirectionActionBuilder(ctx -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
@@ -74,8 +75,8 @@ public class FormClient extends IndirectClient {
 
     @Override
     protected Optional<Credentials> retrieveCredentials(final WebContext context) {
-        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        assertNotNull("authenticator", getAuthenticator());
 
         final String username = context.getRequestParameter(this.usernameParameter).orElse(null);
         final Optional<Credentials> credentials;
@@ -103,8 +104,8 @@ public class FormClient extends IndirectClient {
             logger.info("AJAX request detected -> returning 401");
             return UnauthorizedAction.INSTANCE;
         } else {
-            String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-            redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
+            String redirectionUrl = addParameter(this.loginUrl, this.usernameParameter, username);
+            redirectionUrl = addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
             logger.debug("redirectionUrl: {}", redirectionUrl);
             return RedirectionActionHelper.buildRedirectUrlAction(context, redirectionUrl);
         }
@@ -146,7 +147,7 @@ public class FormClient extends IndirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
+        return toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
                 "redirectionActionBuilder", getRedirectionActionBuilder(), "extractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());

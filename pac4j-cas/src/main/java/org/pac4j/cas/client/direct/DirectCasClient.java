@@ -17,9 +17,10 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the direct client to authenticate users on a CAS server for a web application in a stateless way: when trying to access
@@ -54,11 +55,9 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
-        CommonHelper.assertNotNull("configuration", this.configuration);
-        CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
+    protected void internalInit() {
+        assertNotNull("configuration", this.configuration);
+        assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
@@ -83,8 +82,8 @@ public class DirectCasClient extends DirectClient {
             }
 
             // clean url from ticket parameter
-            callbackUrl = CommonHelper.substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
-            callbackUrl = CommonHelper.substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
+            callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
+            callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
             final CasAuthenticator casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
@@ -129,7 +128,7 @@ public class DirectCasClient extends DirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration, "urlResolver", this.urlResolver,
             "callbackUrlResolver", this.callbackUrlResolver);

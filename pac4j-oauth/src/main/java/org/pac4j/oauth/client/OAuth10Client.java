@@ -19,7 +19,13 @@ public class OAuth10Client extends IndirectClient {
     protected OAuth10Configuration configuration = new OAuth10Configuration();
 
     @Override
-    protected void clientInit() {
+    protected void beforeInternalInit() {
+        super.beforeInternalInit();
+        CommonHelper.assertNotNull("configuration", configuration);
+    }
+
+    @Override
+    protected void internalInit() {
         defaultRedirectionActionBuilder(new OAuth10RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth10CredentialsExtractor(configuration, this));
         defaultAuthenticator(new OAuth10Authenticator(configuration, this));

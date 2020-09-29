@@ -3,13 +3,14 @@ package org.pac4j.core.profile.service;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.factory.ProfileFactory;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * In-memory profile service.
@@ -34,8 +35,10 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
+        assertNotNull("passwordEncoder", getPasswordEncoder());
+
         defaultProfileDefinition(new CommonProfileDefinition(profileFactory));
+
         super.internalInit();
     }
 
@@ -91,5 +94,4 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         logger.debug("Found: {}", listAttributes);
         return listAttributes;
     }
-
 }

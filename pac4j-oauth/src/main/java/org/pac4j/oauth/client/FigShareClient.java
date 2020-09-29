@@ -16,8 +16,9 @@ import org.pac4j.scribe.builder.api.FigShareApi20;
  * @since 3.8
  */
 public class FigShareClient extends OAuth20Client {
+
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         final FigShareApi20 api = new FigShareApi20();
         configuration.setApi(api);
 
@@ -33,6 +34,6 @@ public class FigShareClient extends OAuth20Client {
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional
             .of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://figshare.com/account/logout")));
 
-        super.clientInit();
+        super.internalInit();
     }
 }

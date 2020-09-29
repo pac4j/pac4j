@@ -2,7 +2,6 @@ package org.pac4j.oidc.client;
 
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
@@ -49,7 +48,6 @@ public final class OidcRedirectTests implements TestsConstants {
         return client;
     }
 
-    @Ignore
     @Test
     public void testAjaxRequestAfterStandardRequestShouldNotOverrideState() throws MalformedURLException, URISyntaxException {
         OidcClient client = getClient();

@@ -3,7 +3,6 @@ package org.pac4j.sql.profile.service;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -12,6 +11,8 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * The DB profile service (which supersedes the DB authenticator).
@@ -51,10 +52,11 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new DbProfile()));
-        CommonHelper.assertNotNull("dataSource", this.dataSource);
+        assertNotNull("passwordEncoder", getPasswordEncoder());
+        assertNotNull("dataSource", this.dataSource);
         this.dbi = new DBI(this.dataSource);
+
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new DbProfile()));
 
         super.internalInit();
     }
@@ -98,7 +100,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
             }
         }
 
-        CommonHelper.assertNotNull(ID, id);
+        assertNotNull(ID, id);
         values.add(id);
         final String query = "update " + usersTable + " set " + attributesList.toString() + " where " + getIdAttribute() + " = :id";
         execute(query, values.toArray());
@@ -170,7 +172,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     public void setUsersTable(final String usersTable) {
-        CommonHelper.assertNotBlank("usersTable", usersTable);
+        assertNotBlank("usersTable", usersTable);
         this.usersTable = usersTable;
     }
 
@@ -180,7 +182,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
+        return toNiceString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
                 "attributes", getAttributes(), "profileDefinition", getProfileDefinition(), "usersTable", usersTable,
                 "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }

@@ -13,7 +13,7 @@ import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
 public class X509Client extends DirectClient {
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         defaultCredentialsExtractor(new X509CredentialsExtractor());
         defaultAuthenticator(new X509Authenticator());
     }

@@ -17,9 +17,10 @@ import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Indirect client: the requested protected URL is saved, the user is redirected to the identity provider for login and
@@ -48,9 +49,9 @@ public abstract class IndirectClient extends BaseClient {
     private LogoutActionBuilder logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
     @Override
-    protected final void internalInit() {
+    protected void beforeInternalInit() {
         // check configuration
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
+        assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
         if (this.urlResolver == null) {
             this.urlResolver = new DefaultUrlResolver();
         }
@@ -60,25 +61,21 @@ public abstract class IndirectClient extends BaseClient {
         if (this.ajaxRequestResolver == null) {
             ajaxRequestResolver = new DefaultAjaxRequestResolver();
         }
+    }
 
-        clientInit();
-
+    @Override
+    protected final void afterInternalInit() {
         // ensures components have been properly initialized
-        CommonHelper.assertNotNull("redirectionActionBuilder", this.redirectionActionBuilder);
-        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        CommonHelper.assertNotNull("authenticator", getAuthenticator());
-        CommonHelper.assertNotNull("profileCreator", getProfileCreator());
-        CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
+        assertNotNull("redirectionActionBuilder", this.redirectionActionBuilder);
+        assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        assertNotNull("authenticator", getAuthenticator());
+        assertNotNull("profileCreator", getProfileCreator());
+        assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
     }
 
     protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
         return new QueryParameterCallbackUrlResolver();
     }
-
-    /**
-     * Initialize the client.
-     */
-    protected abstract void clientInit();
 
     /**
      * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
@@ -234,7 +231,7 @@ public abstract class IndirectClient extends BaseClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
                 "urlResolver", this.urlResolver, "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver",
                 this.ajaxRequestResolver, "redirectionActionBuilder", this.redirectionActionBuilder, "credentialsExtractor",
                 getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),

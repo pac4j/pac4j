@@ -30,11 +30,11 @@ public class VkClient extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         configuration.setApi(VkontakteApi.instance());
         configuration.setProfileDefinition(new VkProfileDefinition());
 
-        super.clientInit();
+        super.internalInit();
     }
 
     @Override

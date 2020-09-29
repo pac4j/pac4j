@@ -13,7 +13,6 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
@@ -50,6 +49,8 @@ import org.pac4j.saml.util.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * This class is the client to authenticate and logout users with a SAML2 Identity Provider.
@@ -91,10 +92,10 @@ public class SAML2Client extends IndirectClient {
     protected SOAPPipelineProvider soapPipelineProvider;
 
     static {
-        CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
-        CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
-        CommonHelper.assertNotNull("unmarshallerFactory", Configuration.getUnmarshallerFactory());
-        CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
+        assertNotNull("parserPool", Configuration.getParserPool());
+        assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
+        assertNotNull("unmarshallerFactory", Configuration.getUnmarshallerFactory());
+        assertNotNull("builderFactory", Configuration.getBuilderFactory());
     }
 
     public SAML2Client() { }
@@ -104,8 +105,8 @@ public class SAML2Client extends IndirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("configuration", this.configuration);
+    protected void internalInit() {
+        assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
         final String callbackUrl = computeFinalCallbackUrl(null);
@@ -297,7 +298,7 @@ public class SAML2Client extends IndirectClient {
     }
 
     public void setStateGenerator(final ValueGenerator stateGenerator) {
-        CommonHelper.assertNotNull("stateGenerator", stateGenerator);
+        assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
     }
 

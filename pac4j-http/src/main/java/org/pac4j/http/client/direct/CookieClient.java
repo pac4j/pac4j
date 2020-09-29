@@ -23,7 +23,7 @@ public class CookieClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
         defaultCredentialsExtractor(new CookieExtractor(this.cookieName));

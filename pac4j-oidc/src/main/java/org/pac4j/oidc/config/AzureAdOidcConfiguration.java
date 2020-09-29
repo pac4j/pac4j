@@ -1,7 +1,8 @@
 package org.pac4j.oidc.config;
 
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * AzureAd OpenID Connect configuration.
@@ -36,22 +37,21 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
         this.setLogoutUrl(oidcConfiguration.getLogoutUrl());
 
         if (oidcConfiguration instanceof AzureAdOidcConfiguration) {
-            final AzureAdOidcConfiguration azureConfig = AzureAdOidcConfiguration.class.cast(oidcConfiguration);
+            final AzureAdOidcConfiguration azureConfig = (AzureAdOidcConfiguration) oidcConfiguration;
             this.setTenant(azureConfig.getTenant());
         }
     }
 
     @Override
     protected void internalInit() {
-        // checks
-        CommonHelper.assertNotBlank("tenant", tenant);
+        assertNotBlank("tenant", tenant);
 
         super.internalInit();
     }
 
     @Override
     public String getDiscoveryURI() {
-        return "https://login.microsoftonline.com/"+tenant+"/.well-known/openid-configuration";
+        return "https://login.microsoftonline.com/" + tenant + "/.well-known/openid-configuration";
     }
 
     public String getTenant() {
@@ -71,5 +71,4 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
 
         return payload;
     }
-
 }

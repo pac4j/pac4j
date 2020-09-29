@@ -34,7 +34,7 @@ public class PayPalClient extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
@@ -42,7 +42,7 @@ public class PayPalClient extends OAuth20Client {
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
             Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.paypal.com/myaccount/logout")));
 
-        super.clientInit();
+        super.internalInit();
     }
 
     public String getScope() {

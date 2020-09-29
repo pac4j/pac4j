@@ -47,13 +47,14 @@ public class WechatClient extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         configuration.setApi(new WechatApi20());
         configuration.setScope(getOAuthScope());
         configuration.setProfileDefinition(new WechatProfileDefinition());
         configuration.setWithState(true);
         defaultProfileCreator(new WechatProfileCreator(configuration, this));
-        super.clientInit();
+
+        super.internalInit();
     }
 
     protected String getOAuthScope() {

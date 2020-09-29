@@ -3,8 +3,9 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the client to authenticate users directly based on a provided parameter (in a GET and/or POST request).</p>
@@ -37,8 +38,8 @@ public class ParameterClient extends DirectClient {
 
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotBlank("parameterName", this.parameterName);
+    protected void internalInit() {
+        assertNotBlank("parameterName", this.parameterName);
 
         defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest));
     }
@@ -69,7 +70,7 @@ public class ParameterClient extends DirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "parameterName", this.parameterName,
+        return toNiceString(this.getClass(), "name", getName(), "parameterName", this.parameterName,
                 "supportGetRequest", this.supportGetRequest, "supportPostRequest", this.supportPostRequest,
                 "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }

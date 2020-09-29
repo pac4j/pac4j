@@ -12,7 +12,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.util.CommonHelper;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the client to authenticate users on a CAS server for a web application in a stateful way: when trying to access a
@@ -42,8 +43,8 @@ public class CasClient extends IndirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("configuration", configuration);
+    protected void internalInit() {
+        assertNotNull("configuration", configuration);
         configuration.setUrlResolver(this.getUrlResolver());
 
         defaultRedirectionActionBuilder(new CasRedirectionActionBuilder(configuration, this));
@@ -74,7 +75,7 @@ public class CasClient extends IndirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
             "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),

@@ -13,7 +13,6 @@ import org.ektorp.ViewResult;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
-import org.pac4j.core.util.CommonHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * The CouchDB profile service.
@@ -62,8 +63,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
-        CommonHelper.assertNotNull("couchDbConnector", this.couchDbConnector);
+        assertNotNull("passwordEncoder", getPasswordEncoder());
+        assertNotNull("couchDbConnector", this.couchDbConnector);
+
         defaultProfileDefinition(new CommonProfileDefinition(x -> new CouchProfile()));
 
         super.internalInit();
@@ -174,7 +176,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
+        return toNiceString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
                 "attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
                 "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }

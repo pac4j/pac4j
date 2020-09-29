@@ -4,8 +4,9 @@ import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * This class is the client to authenticate users, based on form HTTP parameters.
@@ -39,9 +40,9 @@ public class DirectFormClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotBlank("usernameParameter", usernameParameter);
-        CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
+    protected void internalInit() {
+        assertNotBlank("usernameParameter", usernameParameter);
+        assertNotBlank("passwordParameter", passwordParameter);
 
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
@@ -64,7 +65,7 @@ public class DirectFormClient extends DirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
+        return toNiceString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
                 "passwordParameter", this.passwordParameter, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }

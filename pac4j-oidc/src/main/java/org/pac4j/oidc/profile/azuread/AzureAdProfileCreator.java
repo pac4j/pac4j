@@ -25,7 +25,6 @@ public class AzureAdProfileCreator extends OidcProfileCreator {
         if (configuration.getTokenValidator() == null) {
             configuration.setTokenValidator(new AzureAdTokenValidator(configuration));
         }
-
         defaultProfileDefinition(new AzureAdProfileDefinition());
 
         super.internalInit();

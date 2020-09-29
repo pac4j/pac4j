@@ -11,7 +11,8 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.util.CommonHelper;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>This class is the direct client to authenticate users based on CAS proxy tickets.</p>
@@ -45,14 +46,12 @@ public class DirectCasProxyClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
-        CommonHelper.assertNotBlank("serviceUrl", this.serviceUrl);
-        CommonHelper.assertNotNull("configuration", this.configuration);
+    protected void internalInit() {
+        assertNotBlank("serviceUrl", this.serviceUrl);
+        assertNotNull("configuration", this.configuration);
         // must be a CAS proxy protocol
         final CasProtocol protocol = configuration.getProtocol();
-        CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY,
+        assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY,
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
@@ -94,7 +93,7 @@ public class DirectCasProxyClient extends DirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
             "callbackUrlResolver", callbackUrlResolver, "serviceUrl", serviceUrl, "urlResolver", this.urlResolver);

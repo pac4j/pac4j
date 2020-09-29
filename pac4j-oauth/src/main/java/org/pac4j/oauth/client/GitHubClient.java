@@ -32,14 +32,14 @@ public class GitHubClient extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         configuration.setApi(GitHubApi.instance());
         configuration.setProfileDefinition(new GitHubProfileDefinition());
         configuration.setTokenAsHeader(true);
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
             Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://github.com/logout")));
 
-        super.clientInit();
+        super.internalInit();
     }
 
     public String getScope() {

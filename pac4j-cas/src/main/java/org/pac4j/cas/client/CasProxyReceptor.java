@@ -37,7 +37,7 @@ public final class CasProxyReceptor extends IndirectClient {
     private Store<String, String> store = new GuavaStore<>(1000, 1, TimeUnit.MINUTES);
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         assertNotNull("store", this.store);
 
         defaultRedirectionActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });

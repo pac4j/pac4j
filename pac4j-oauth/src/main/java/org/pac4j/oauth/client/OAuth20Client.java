@@ -19,7 +19,13 @@ public class OAuth20Client extends IndirectClient {
     protected OAuth20Configuration configuration = new OAuth20Configuration();
 
     @Override
-    protected void clientInit() {
+    protected void beforeInternalInit() {
+        super.beforeInternalInit();
+        CommonHelper.assertNotNull("configuration", configuration);
+    }
+
+    @Override
+    protected void internalInit() {
         defaultRedirectionActionBuilder(new OAuth20RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration, this));
         defaultAuthenticator(new OAuth20Authenticator(configuration, this));

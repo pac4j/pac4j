@@ -1,6 +1,6 @@
 package org.pac4j.oidc.config;
 
-import org.pac4j.core.util.CommonHelper;
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Keycloak OpenID Connect configuration.
@@ -18,8 +18,8 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
     @Override
     protected void internalInit() {
         // checks
-        CommonHelper.assertNotBlank("realm", realm);
-        CommonHelper.assertNotBlank("baseUri", baseUri);
+        assertNotBlank("realm", realm);
+        assertNotBlank("baseUri", baseUri);
 
         super.internalInit();
     }
@@ -44,5 +44,4 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
     public void setBaseUri(String baseUri) {
         this.baseUri = baseUri;
     }
-
 }

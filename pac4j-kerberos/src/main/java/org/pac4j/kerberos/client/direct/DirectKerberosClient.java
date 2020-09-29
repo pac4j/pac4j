@@ -32,7 +32,7 @@ public class DirectKerberosClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         defaultCredentialsExtractor(new KerberosExtractor());
     }
 

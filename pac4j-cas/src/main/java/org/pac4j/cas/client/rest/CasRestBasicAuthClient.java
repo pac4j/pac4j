@@ -4,7 +4,8 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
-import org.pac4j.core.util.CommonHelper;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Direct client which receives credentials as a basic auth and validates them via the CAS REST API.
@@ -28,10 +29,10 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotBlank("headerName", this.headerName);
-        CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
-        CommonHelper.assertNotNull("configuration", this.configuration);
+    protected void internalInit() {
+        assertNotBlank("headerName", this.headerName);
+        assertNotNull("prefixHeader", this.prefixHeader);
+        assertNotNull("configuration", this.configuration);
 
         defaultCredentialsExtractor(new BasicAuthExtractor(this.headerName, this.prefixHeader));
         defaultAuthenticator(new CasRestAuthenticator(this.configuration));
@@ -55,7 +56,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
             "headerName", this.headerName, "prefixHeader", this.prefixHeader);

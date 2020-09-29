@@ -28,7 +28,7 @@ public class OrcidClient extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         configuration.setApi(new OrcidApi20());
         configuration.setProfileDefinition(new OrcidProfileDefinition());
         configuration.setTokenAsHeader(true);
@@ -43,7 +43,7 @@ public class OrcidClient extends OAuth20Client {
             }
         });
 
-        super.clientInit();
+        super.internalInit();
     }
 
     public String getScope() {

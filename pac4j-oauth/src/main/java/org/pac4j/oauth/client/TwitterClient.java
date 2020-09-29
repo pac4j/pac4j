@@ -39,7 +39,7 @@ public class TwitterClient extends OAuth10Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition(includeEmail));
         configuration.setHasBeenCancelledFactory(ctx -> {
@@ -53,7 +53,7 @@ public class TwitterClient extends OAuth10Client {
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
             Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://twitter.com/logout")));
 
-        super.clientInit();
+        super.internalInit();
     }
 
     protected DefaultApi10a getApi() {

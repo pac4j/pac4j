@@ -4,7 +4,6 @@ import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
@@ -16,6 +15,8 @@ import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.redirect.OidcRedirectionActionBuilder;
 
 import java.util.Optional;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
@@ -37,8 +38,13 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("configuration", configuration);
+    protected void beforeInternalInit() {
+        super.beforeInternalInit();
+        assertNotNull("configuration", configuration);
+    }
+
+    @Override
+    protected void internalInit() {
         configuration.init();
 
         defaultRedirectionActionBuilder(new OidcRedirectionActionBuilder(configuration, this));
@@ -82,7 +88,7 @@ public class OidcClient extends IndirectClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
             "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
             "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),

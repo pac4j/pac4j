@@ -43,7 +43,7 @@ public class FacebookClient extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("fields", getConfiguration().getFields());
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
@@ -60,7 +60,7 @@ public class FacebookClient extends OAuth20Client {
         configuration.setWithState(true);
         defaultProfileCreator(new FacebookProfileCreator(configuration, this));
 
-        super.clientInit();
+        super.internalInit();
     }
 
     @Override

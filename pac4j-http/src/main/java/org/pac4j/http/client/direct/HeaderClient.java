@@ -48,7 +48,7 @@ public class HeaderClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         if (getCredentialsExtractor() == null) {
             CommonHelper.assertNotBlank("headerName", this.headerName);
             CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);

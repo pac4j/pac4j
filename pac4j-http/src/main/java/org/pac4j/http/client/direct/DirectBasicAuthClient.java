@@ -37,7 +37,7 @@ public class DirectBasicAuthClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         assertNotBlank("realmName", this.realmName);
 
         defaultCredentialsExtractor(new BasicAuthExtractor());

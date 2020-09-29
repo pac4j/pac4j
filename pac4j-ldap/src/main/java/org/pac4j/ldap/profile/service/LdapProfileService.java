@@ -10,10 +10,11 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.ldap.profile.LdapProfile;
 
 import java.util.*;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * The LDAP profile service (which supersedes the LDAP authenticator).
@@ -58,10 +59,11 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
-        CommonHelper.assertNotNull("connectionFactory", connectionFactory);
-        CommonHelper.assertNull("passwordEncoder", getPasswordEncoder());
-        CommonHelper.assertNotBlank("usersDn", usersDn);
+        assertNotNull("ldapAuthenticator", ldapAuthenticator);
+        assertNotNull("connectionFactory", connectionFactory);
+        assertNull("passwordEncoder", getPasswordEncoder());
+        assertNotBlank("usersDn", usersDn);
+
         defaultProfileDefinition(new CommonProfileDefinition(x -> new LdapProfile()));
 
         super.internalInit();
@@ -172,7 +174,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
-        CommonHelper.assertNotBlank(Pac4jConstants.USERNAME, username);
+        assertNotBlank(Pac4jConstants.USERNAME, username);
         final AuthenticationResponse response;
         try {
             logger.debug("Attempting LDAP authentication for: {}", credentials);
@@ -226,7 +228,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator,
+        return toNiceString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator,
                 "usersDn", usersDn, "idAttribute", getIdAttribute(), "attributes", getAttributes(),
                 "profileDefinition", getProfileDefinition());
     }

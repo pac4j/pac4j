@@ -4,7 +4,8 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.extractor.FormExtractor;
-import org.pac4j.core.util.CommonHelper;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Direct client which receives credentials as form parameters and validates them via the CAS REST API.
@@ -27,10 +28,10 @@ public class CasRestFormClient extends AbstractCasRestClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
-        CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
-        CommonHelper.assertNotNull("configuration", this.configuration);
+    protected void internalInit() {
+        assertNotBlank("usernameParameter", this.usernameParameter);
+        assertNotBlank("passwordParameter", this.passwordParameter);
+        assertNotNull("configuration", this.configuration);
 
         defaultCredentialsExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter));
         defaultAuthenticator(new CasRestAuthenticator(this.configuration));
@@ -54,7 +55,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
             "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
             "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
             "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter);

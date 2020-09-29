@@ -27,7 +27,7 @@ public final class AnonymousClient extends DirectClient {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         defaultCredentialsExtractor(ctx -> Optional.of(AnonymousCredentials.INSTANCE));
         defaultAuthenticator((cred, ctx )-> cred.setUserProfile(AnonymousProfile.INSTANCE));
     }

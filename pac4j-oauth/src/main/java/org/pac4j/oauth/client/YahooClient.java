@@ -27,13 +27,13 @@ public class YahooClient extends OAuth10Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         configuration.setApi(YahooApi.instance());
         configuration.setProfileDefinition(new YahooProfileDefinition());
         defaultProfileCreator(new YahooProfileCreator(configuration, this));
         defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
             Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "http://login.yahoo.com/config/login?logout=1")));
 
-        super.clientInit();
+        super.internalInit();
     }
 }

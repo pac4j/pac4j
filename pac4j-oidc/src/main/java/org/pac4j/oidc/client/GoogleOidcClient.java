@@ -1,7 +1,6 @@
 package org.pac4j.oidc.client;
 
 import org.pac4j.core.logout.GoogleLogoutActionBuilder;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
@@ -24,14 +23,13 @@ public class GoogleOidcClient extends OidcClient {
     }
 
     @Override
-    protected void clientInit() {
-        CommonHelper.assertNotNull("configuration", getConfiguration());
+    protected void internalInit() {
         getConfiguration().defaultDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
         final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new GoogleOidcProfile()));
         defaultProfileCreator(profileCreator);
         defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());
 
-        super.clientInit();
+        super.internalInit();
     }
 }

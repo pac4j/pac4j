@@ -4,9 +4,10 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Direct client: credentials are passed and authentication occurs for every HTTP request.
@@ -17,19 +18,15 @@ import java.util.Optional;
 public abstract class DirectClient extends BaseClient {
 
     @Override
-    protected final void internalInit() {
-        clientInit();
+    protected final void beforeInternalInit() {}
 
+    @Override
+    protected final void afterInternalInit() {
         // ensures components have been properly initialized
-        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        CommonHelper.assertNotNull("authenticator", getAuthenticator());
-        CommonHelper.assertNotNull("profileCreator", getProfileCreator());
+        assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        assertNotNull("authenticator", getAuthenticator());
+        assertNotNull("profileCreator", getProfileCreator());
     }
-
-    /**
-     * Initialize the client.
-     */
-    protected abstract void clientInit();
 
     @Override
     public final Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
@@ -46,5 +43,12 @@ public abstract class DirectClient extends BaseClient {
     public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
                                                              final String targetUrl) {
         return Optional.empty();
+    }
+
+    @Override
+    public String toString() {
+        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "authorizationGenerators", getAuthorizationGenerators());
     }
 }

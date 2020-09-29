@@ -15,7 +15,6 @@ import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.core.util.generator.RandomValueGenerator;
-import org.pac4j.core.util.CommonHelper;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
@@ -30,6 +29,8 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 import org.pac4j.oidc.profile.creator.TokenValidator;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * OpenID Connect configuration.
@@ -137,14 +138,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
     @Override
     protected void internalInit() {
         // checks
-        CommonHelper.assertNotBlank("clientId", getClientId());
+        assertNotBlank("clientId", getClientId());
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new TechnicalException("Unsupported responseType: " + responseType);
         }
         // except for the implicit flow, the secret is mandatory
         if (!IMPLICIT_FLOWS.contains(responseType)) {
-            CommonHelper.assertNotBlank("secret", getSecret());
+            assertNotBlank("secret", getSecret());
         }
         if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {
             throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
@@ -155,7 +156,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             setResourceRetriever(new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()));
         }
         if (this.getProviderMetadata() == null) {
-            CommonHelper.assertNotBlank("discoveryURI", getDiscoveryURI());
+            assertNotBlank("discoveryURI", getDiscoveryURI());
             try {
                 // Download OIDC metadata
                 this.setProviderMetadata(OIDCProviderMetadata.parse(getResourceRetriever().retrieveResource(
@@ -226,7 +227,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     public void setCustomParams(final Map<String, String> customParams) {
-        CommonHelper.assertNotNull("customParams", customParams);
+        assertNotNull("customParams", customParams);
         this.customParams = customParams;
     }
 
@@ -425,7 +426,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     public void setStateGenerator(final ValueGenerator stateGenerator) {
-        CommonHelper.assertNotNull("stateGenerator", stateGenerator);
+        assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
     }
 
@@ -434,7 +435,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     public void setCodeVerifierGenerator(ValueGenerator codeVerifierGenerator) {
-        CommonHelper.assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
+        assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
         this.codeVerifierGenerator = codeVerifierGenerator;
     }
 
@@ -443,7 +444,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     public void setValueRetriever(ValueRetriever valueRetriever) {
-        CommonHelper.assertNotNull("valueRetriever", valueRetriever);
+        assertNotNull("valueRetriever", valueRetriever);
         this.valueRetriever = valueRetriever;
     }
 
@@ -474,7 +475,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
+        return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
             "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
             "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
             "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,

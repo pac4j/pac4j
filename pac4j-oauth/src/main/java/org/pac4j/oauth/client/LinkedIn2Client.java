@@ -34,7 +34,7 @@ public class LinkedIn2Client extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
         configuration.setApi(LinkedInApi20.instance());
         configuration.setProfileDefinition(new LinkedIn2ProfileDefinition());
@@ -54,7 +54,7 @@ public class LinkedIn2Client extends OAuth20Client {
             Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://www.linkedin.com/uas/logout")));
         defaultProfileCreator(new LinkedIn2ProfileCreator(configuration, this));
 
-        super.clientInit();
+        super.internalInit();
     }
 
     @Override

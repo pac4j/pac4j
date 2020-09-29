@@ -44,10 +44,7 @@ public class GenericOAuth20Client extends OAuth20Client {
     }
 
     @Override
-    protected void clientInit() {
-
-        LOG.debug("Initializing oauth client...");
-
+    protected void internalInit() {
         final GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
@@ -86,7 +83,7 @@ public class GenericOAuth20Client extends OAuth20Client {
         configuration.setScope(scope);
         configuration.setWithState(withState);
 
-        super.clientInit();
+        super.internalInit();
     }
 
     private Class[] getConverters() {
