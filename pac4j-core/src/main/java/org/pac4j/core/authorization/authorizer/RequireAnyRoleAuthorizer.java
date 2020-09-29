@@ -9,7 +9,6 @@ import java.util.Set;
 /**
  * Checks an access if the user profile has any of the roles.
  *
- * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
