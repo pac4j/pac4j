@@ -2,9 +2,11 @@ package org.pac4j.oauth.profile.creator;
 
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -16,8 +18,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20ProfileCreator<U extends OAuth20Profile>
-    extends OAuthProfileCreator<U, OAuth20Configuration, OAuth2AccessToken, OAuth20Service> {
+public class OAuth20ProfileCreator extends OAuthProfileCreator {
 
     public OAuth20ProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
@@ -29,23 +30,23 @@ public class OAuth20ProfileCreator<U extends OAuth20Profile>
     }
 
     @Override
-    protected void addAccessTokenToProfile(final U profile, final OAuth2AccessToken accessToken) {
+    protected void addAccessTokenToProfile(final UserProfile profile, final Token tok) {
         if (profile != null) {
-            final String token = accessToken.getAccessToken();
+            final String token = ((OAuth2AccessToken) tok).getAccessToken();
             logger.debug("add access_token: {} to profile", token);
-            profile.setAccessToken(token);
+            ((OAuth20Profile) profile).setAccessToken(token);
         }
     }
 
     @Override
-    protected void signRequest(final OAuth20Service service, final OAuth2AccessToken accessToken,
-                               final OAuthRequest request) {
-        service.signRequest(accessToken, request);
+    protected void signRequest(final OAuthService service, final Token token, final OAuthRequest request) {
+        ((OAuth20Service) service).signRequest((OAuth2AccessToken) token, request);
+        final String accessToken = ((OAuth2AccessToken) token).getAccessToken();
         if (this.configuration.isTokenAsHeader()) {
-            request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken.getAccessToken());
+            request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken);
         }
         if (Verb.POST.equals(request.getVerb())) {
-            request.addParameter(OAuthConfiguration.OAUTH_TOKEN, accessToken.getAccessToken());
+            request.addParameter(OAuthConfiguration.OAUTH_TOKEN, accessToken);
         }
     }
 }

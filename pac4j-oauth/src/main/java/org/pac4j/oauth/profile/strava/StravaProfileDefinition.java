@@ -2,13 +2,13 @@ package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * @since 1.7.0
  * @author Adrian Papusoi
  */
-public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProfile, OAuth20Configuration> {
+public class StravaProfileDefinition extends OAuthProfileDefinition {
 
     public static final String ID = "id";
     public static final String RESOURCE_STATE = "resource_state";
@@ -70,7 +70,7 @@ public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProf
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://www.strava.com/api/v3/athlete";
     }
 

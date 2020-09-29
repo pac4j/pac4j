@@ -17,15 +17,15 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthAuthenticator<O extends OAuthConfiguration> implements Authenticator {
+abstract class OAuthAuthenticator implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected O configuration;
+    protected OAuthConfiguration configuration;
 
     protected IndirectClient client;
 
-    protected OAuthAuthenticator(final O configuration, final IndirectClient client) {
+    protected OAuthAuthenticator(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;

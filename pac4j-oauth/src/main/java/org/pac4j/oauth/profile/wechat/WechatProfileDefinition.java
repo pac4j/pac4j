@@ -2,17 +2,17 @@ package org.pac4j.oauth.profile.wechat;
 
 import java.util.Arrays;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.GenderConverter;
 import org.pac4j.oauth.client.WechatClient;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.model.WechatToken;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -25,7 +25,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProfile, OAuth20Configuration> {
+public class WechatProfileDefinition extends OAuthProfileDefinition {
 
     public static final String OPENID = "openid";
 
@@ -72,7 +72,7 @@ public class WechatProfileDefinition extends OAuth20ProfileDefinition<WechatProf
 
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (accessToken instanceof WechatToken) {
             WechatToken token = (WechatToken) accessToken;
             String profileUrl;

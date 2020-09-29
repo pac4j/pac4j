@@ -20,15 +20,15 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthCredentialsExtractor<O extends OAuthConfiguration> implements CredentialsExtractor {
+abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected O configuration;
+    protected OAuthConfiguration configuration;
 
     protected IndirectClient client;
 
-    protected OAuthCredentialsExtractor(final O configuration, final IndirectClient client) {
+    protected OAuthCredentialsExtractor(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;

@@ -49,7 +49,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             } else {
                 state = null;
             }
-            final OAuth20Service service = this.configuration.buildService(context, client);
+            final OAuth20Service service = (OAuth20Service) this.configuration.buildService(context, client);
             final String authorizationUrl = new AuthorizationUrlBuilder(service)
                 .state(state).additionalParams(this.configuration.getCustomParams()).build();
             logger.debug("authorizationUrl: {}", authorizationUrl);

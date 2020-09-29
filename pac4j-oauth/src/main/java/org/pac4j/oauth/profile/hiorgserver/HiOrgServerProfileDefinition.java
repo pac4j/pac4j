@@ -1,14 +1,16 @@
 package org.pac4j.oauth.profile.hiorgserver;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 import java.util.HashSet;
 import java.util.Set;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
+
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
  * This class is the HiOrg-Server profile definition.
@@ -16,7 +18,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * @author Martin Böhmer
  * @since 3.2.0
  */
-public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrgServerProfile, HiOrgServerConfiguration> {
+public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
 
     public static final String USER_ID = "user_id";
     public static final String USERNAME = "username";
@@ -51,7 +53,7 @@ public class HiOrgServerProfileDefinition extends OAuth20ProfileDefinition<HiOrg
     }
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, HiOrgServerConfiguration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return BASE_URL;
     }
 

@@ -1,12 +1,12 @@
 package org.pac4j.oauth.profile.windowslive;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -18,7 +18,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<WindowsLiveProfile, OAuth20Configuration> {
+public class WindowsLiveProfileDefinition extends OAuthProfileDefinition {
 
     public static final String NAME = "name";
     public static final String LAST_NAME = "last_name";
@@ -31,7 +31,7 @@ public class WindowsLiveProfileDefinition extends OAuth20ProfileDefinition<Windo
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://apis.live.net/v5.0/me";
     }
 

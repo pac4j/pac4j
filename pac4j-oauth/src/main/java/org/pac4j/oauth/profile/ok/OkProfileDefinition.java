@@ -2,10 +2,12 @@ package org.pac4j.oauth.profile.ok;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -20,7 +22,7 @@ import java.util.Arrays;
  * @author imayka (imayka[at]ymail[dot]com)
  * @since 1.8
  */
-public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkConfiguration> {
+public class OkProfileDefinition extends OAuthProfileDefinition {
 
     public static final String UID = "uid";
     public static final String BIRTHDAY = "birthday";
@@ -51,20 +53,21 @@ public class OkProfileDefinition extends OAuth20ProfileDefinition<OkProfile, OkC
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OkConfiguration configuration) {
+    public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
+        final String accessToken = ((OAuth2AccessToken) token).getAccessToken();
         String baseParams =
-                "application_key=" + configuration.getPublicKey() +
+                "application_key=" + ((OkConfiguration) configuration).getPublicKey() +
                         "&format=json" +
                         "&method=users.getCurrentUser";
         final String finalSign;
         try {
-            final String preSign = getMD5SignAsHexString(accessToken.getAccessToken() + configuration.getSecret());
+            final String preSign = getMD5SignAsHexString(accessToken + configuration.getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return null;
         }
-        return API_BASE_URL + baseParams + "&access_token=" + accessToken.getAccessToken() + "&sig=" + finalSign;
+        return API_BASE_URL + baseParams + "&access_token=" + accessToken + "&sig=" + finalSign;
     }
 
     protected String getMD5SignAsHexString(final String strForEncoding) throws NoSuchAlgorithmException {

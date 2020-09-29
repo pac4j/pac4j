@@ -23,7 +23,7 @@ public class OAuth20Client extends IndirectClient {
         defaultRedirectionActionBuilder(new OAuth20RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration, this));
         defaultAuthenticator(new OAuth20Authenticator(configuration, this));
-        defaultProfileCreator(new OAuth20ProfileCreator<>(configuration, this));
+        defaultProfileCreator(new OAuth20ProfileCreator(configuration, this));
     }
 
     public OAuth20Configuration getConfiguration() {

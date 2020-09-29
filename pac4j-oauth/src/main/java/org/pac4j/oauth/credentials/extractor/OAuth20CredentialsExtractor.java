@@ -16,7 +16,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth20Configuration> {
+public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
 
     public OAuth20CredentialsExtractor(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
@@ -24,7 +24,7 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
     @Override
     protected Optional<Credentials> getOAuthCredentials(final WebContext context) {
-        if (configuration.isWithState()) {
+        if (((OAuth20Configuration) configuration).isWithState()) {
 
             final Optional<String> stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 

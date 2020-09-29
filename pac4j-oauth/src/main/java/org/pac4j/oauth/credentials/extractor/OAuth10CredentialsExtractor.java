@@ -17,7 +17,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor<OAuth10Configuration> {
+public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor {
 
     public OAuth10CredentialsExtractor(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);
@@ -29,8 +29,9 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
         final Optional<String> verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
         if (tokenParameter.isPresent() && verifierParameter.isPresent()) {
             // get request token from session
-            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) context
-                .getSessionStore().get(context, configuration.getRequestTokenSessionAttributeName(client.getName())).orElse(null);
+            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) context.getSessionStore()
+                    .get(context, ((OAuth10Configuration) configuration)
+                    .getRequestTokenSessionAttributeName(client.getName())).orElse(null);
             logger.debug("tokenRequest: {}", tokenSession);
             final String token = OAuthEncoder.decode(tokenParameter.get());
             final String verifier = OAuthEncoder.decode(verifierParameter.get());

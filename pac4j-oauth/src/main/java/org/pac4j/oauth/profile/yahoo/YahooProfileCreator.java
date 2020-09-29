@@ -1,6 +1,6 @@
 package org.pac4j.oauth.profile.yahoo;
 
-import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.client.IndirectClient;
@@ -10,7 +10,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
-import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import java.util.Optional;
 
@@ -20,19 +20,18 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
+public class YahooProfileCreator extends OAuth10ProfileCreator {
 
     public YahooProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final OAuth1AccessToken accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
-        final OAuth10ProfileDefinition<YahooProfile> profileDefinition =
-            (OAuth10ProfileDefinition<YahooProfile>) configuration.getProfileDefinition();
+        final OAuthProfileDefinition profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);
-        final OAuth10aService service = configuration.buildService(context, client);
+        final OAuth10aService service = (OAuth10aService) configuration.buildService(context, client);
         String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);

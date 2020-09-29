@@ -13,7 +13,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -32,8 +31,7 @@ import java.util.concurrent.ExecutionException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfiguration<S, T>,
-    T extends Token, S extends OAuthService> implements ProfileCreator {
+abstract class OAuthProfileCreator implements ProfileCreator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,11 +42,11 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected O configuration;
+    protected OAuthConfiguration configuration;
 
     protected IndirectClient client;
 
-    protected OAuthProfileCreator(final O configuration, final IndirectClient client) {
+    protected OAuthProfileCreator(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
@@ -58,7 +56,7 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
     @Override
     public Optional<UserProfile> create(final Credentials credentials, final WebContext context) {
         try {
-            final T token = getAccessToken(credentials);
+            final Token token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(context, token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
@@ -71,7 +69,7 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
      * @param credentials credentials
      * @return the access token
      */
-    protected abstract T getAccessToken(final Credentials credentials);
+    protected abstract Token getAccessToken(final Credentials credentials);
 
     /**
      * Retrieve the user profile from the access token.
@@ -80,16 +78,16 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
      * @param accessToken the access token
      * @return the user profile
      */
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final T accessToken) {
-        final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+        final OAuthProfileDefinition profileDefinition = configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final S service = this.configuration.buildService(context, client);
+        final OAuthService service = this.configuration.buildService(context, client);
         final String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {
             throw new HttpCommunicationException("No data found for accessToken: " + accessToken);
         }
-        final U profile = (U) configuration.getProfileDefinition().extractUserProfile(body);
+        final UserProfile profile = configuration.getProfileDefinition().extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         return Optional.of(profile);
     }
@@ -103,7 +101,7 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
      * @param verb        method used to request data
      * @return the user data response
      */
-    protected String sendRequestForData(final S service, final T accessToken, final String dataUrl, Verb verb) {
+    protected String sendRequestForData(final OAuthService service, final Token accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final OAuthRequest request = createOAuthRequest(dataUrl, verb);
@@ -133,7 +131,7 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
      * @param token the token
      * @param request the request
      */
-    protected abstract void signRequest(S service, T token, OAuthRequest request);
+    protected abstract void signRequest(OAuthService service, Token token, OAuthRequest request);
 
     /**
      * Create an OAuth request.
@@ -152,5 +150,5 @@ abstract class OAuthProfileCreator<U extends CommonProfile, O extends OAuthConfi
      * @param profile     the user profile
      * @param accessToken the access token
      */
-    protected abstract void addAccessTokenToProfile(final U profile, final T accessToken);
+    protected abstract void addAccessTokenToProfile(final UserProfile profile, final Token accessToken);
 }

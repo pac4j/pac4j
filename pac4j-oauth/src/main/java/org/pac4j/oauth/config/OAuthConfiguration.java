@@ -1,7 +1,6 @@
 package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.httpclient.HttpClientConfig;
-import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.config.BaseClientConfiguration;
@@ -15,8 +14,7 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuthConfiguration<S extends OAuthService, T extends Token>
-    extends BaseClientConfiguration {
+public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
     public static final String OAUTH_TOKEN = "oauth_token";
 
@@ -46,7 +44,7 @@ public abstract class OAuthConfiguration<S extends OAuthService, T extends Token
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
     }
 
-    public abstract S buildService(final WebContext context, final IndirectClient client);
+    public abstract OAuthService buildService(final WebContext context, final IndirectClient client);
 
     public String getKey() {
         return key;

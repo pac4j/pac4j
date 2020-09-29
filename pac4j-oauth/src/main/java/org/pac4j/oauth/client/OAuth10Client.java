@@ -23,7 +23,7 @@ public class OAuth10Client extends IndirectClient {
         defaultRedirectionActionBuilder(new OAuth10RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth10CredentialsExtractor(configuration, this));
         defaultAuthenticator(new OAuth10Authenticator(configuration, this));
-        defaultProfileCreator(new OAuth10ProfileCreator<>(configuration, this));
+        defaultProfileCreator(new OAuth10ProfileCreator(configuration, this));
     }
 
     public OAuth10Configuration getConfiguration() {

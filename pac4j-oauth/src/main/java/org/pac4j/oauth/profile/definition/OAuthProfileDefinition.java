@@ -15,8 +15,7 @@ import org.pac4j.core.exception.TechnicalException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends Token, O extends OAuthConfiguration>
-    extends CommonProfileDefinition {
+public abstract class OAuthProfileDefinition extends CommonProfileDefinition {
 
     public OAuthProfileDefinition() {
         super();
@@ -42,7 +41,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      * @param configuration the current configuration
      * @return the url of the user profile given by the provider
      */
-    public abstract String getProfileUrl(T accessToken, O configuration);
+    public abstract String getProfileUrl(Token accessToken, OAuthConfiguration configuration);
 
     /**
      * Extract the user profile from the response (JSON, XML...) of the profile url.
@@ -50,7 +49,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      * @param body the response body
      * @return the returned profile
      */
-    public abstract P extractUserProfile(String body);
+    public abstract CommonProfile extractUserProfile(String body);
 
     /**
      * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.

@@ -1,7 +1,7 @@
 package org.pac4j.oauth.profile.generic;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -12,10 +12,10 @@ import java.util.Map;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.StringConverter;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
  * <p>This class is the user profile for generic OAuth2 with appropriate getters.</p>
@@ -25,7 +25,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  *
  * @author Julio Arrebola
  */
-public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profile, OAuth20Configuration> {
+public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
 
     private final Map<String,String> profileAttributes = new HashMap<>();
 
@@ -51,7 +51,7 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return profileUrl;
     }
 
