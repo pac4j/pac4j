@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
@@ -66,7 +67,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
                 logger.debug("Retrieve extended token from  {}", body);
                 final OAuth2AccessToken extendedAccessToken;
                 try {
-                    extendedAccessToken = ((OAuth20Configuration) configuration).getApi().getAccessTokenExtractor().extract(response);
+                    extendedAccessToken = ((DefaultApi20) configuration.getApi()).getAccessTokenExtractor().extract(response);
                 } catch (IOException | OAuthException ex) {
                     throw new HttpCommunicationException("Error extracting token: " + ex.getMessage());
                 }

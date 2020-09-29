@@ -36,8 +36,11 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
     protected HttpClientConfig httpClientConfig;
 
+    protected Object api;
+
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("api", api);
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotNull("hasBeenCancelledFactory", hasBeenCancelledFactory);
@@ -108,5 +111,13 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
     public void setHttpClientConfig(final HttpClientConfig httpClientConfig) {
         this.httpClientConfig = httpClientConfig;
+    }
+
+    public Object getApi() {
+        return api;
+    }
+
+    public void setApi(final Object api) {
+        this.api = api;
     }
 }

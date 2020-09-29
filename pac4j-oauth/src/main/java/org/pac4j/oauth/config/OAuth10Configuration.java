@@ -18,14 +18,6 @@ public class OAuth10Configuration extends OAuthConfiguration {
 
     public static final String REQUEST_TOKEN = "requestToken";
 
-    private DefaultApi10a api;
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("api", api);
-        super.internalInit();
-    }
-
     /**
      * Build an OAuth service from the web context.
      *
@@ -38,7 +30,8 @@ public class OAuth10Configuration extends OAuthConfiguration {
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        return api.createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig, null);
+        return ((DefaultApi10a) api)
+            .createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig, null);
     }
 
     /**
@@ -49,14 +42,6 @@ public class OAuth10Configuration extends OAuthConfiguration {
      */
     public String getRequestTokenSessionAttributeName(final String clientName) {
         return clientName + "#" + REQUEST_TOKEN;
-    }
-
-    public DefaultApi10a getApi() {
-        return api;
-    }
-
-    public void setApi(final DefaultApi10a api) {
-        this.api = api;
     }
 
     @Override

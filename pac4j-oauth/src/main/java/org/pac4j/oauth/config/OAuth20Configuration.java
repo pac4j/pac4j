@@ -30,14 +30,6 @@ public class OAuth20Configuration extends OAuthConfiguration {
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
-    private DefaultApi20 api;
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("api", api);
-        super.internalInit();
-    }
-
     /**
      * Build an OAuth service from the web context.
      *
@@ -50,7 +42,7 @@ public class OAuth20Configuration extends OAuthConfiguration {
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        return api.createService(this.key, this.secret, finalCallbackUrl, this.scope,
+        return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
             this.responseType, null, null, this.httpClientConfig, null);
     }
 
@@ -77,14 +69,6 @@ public class OAuth20Configuration extends OAuthConfiguration {
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
-    }
-
-    public DefaultApi20 getApi() {
-        return api;
-    }
-
-    public void setApi(final DefaultApi20 api) {
-        this.api = api;
     }
 
     @Override
