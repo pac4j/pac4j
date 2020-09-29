@@ -7,7 +7,6 @@ import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
@@ -29,13 +28,13 @@ import static org.junit.Assert.assertEquals;
  */
 public final class DefaultLogoutLogicTests implements TestsConstants {
 
-    private LogoutLogic<Object, WebContext> logic;
+    private LogoutLogic logic;
 
     private MockWebContext context;
 
     private Config config;
 
-    private HttpActionAdapter<Object, WebContext> httpActionAdapter;
+    private HttpActionAdapter httpActionAdapter;
 
     private String defaultUrl;
 
@@ -51,7 +50,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     @Before
     public void setUp() {
-        logic = new DefaultLogoutLogic<>();
+        logic = new DefaultLogoutLogic();
         context = MockWebContext.create();
         config = new Config();
         config.setClients(new Clients());

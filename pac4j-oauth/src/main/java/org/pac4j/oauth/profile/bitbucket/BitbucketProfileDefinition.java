@@ -1,13 +1,13 @@
 package org.pac4j.oauth.profile.bitbucket;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth1Token;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth10Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -19,7 +19,7 @@ import java.util.Arrays;
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
-public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<BitbucketProfile> {
+public class BitbucketProfileDefinition extends OAuthProfileDefinition {
 
     public static final String LAST_NAME = "last_name";
     public static final String IS_TEAM = "is_team";
@@ -36,13 +36,13 @@ public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<Bitbuck
     }
 
     @Override
-    public String getProfileUrl(final OAuth1Token token, final OAuth10Configuration configuration) {
+    public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
         return "https://bitbucket.org/api/1.0/user/";
     }
 
     @Override
     public BitbucketProfile extractUserProfile(final String body) {
-        final BitbucketProfile profile = newProfile();
+        final BitbucketProfile profile = (BitbucketProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = (JsonNode) JsonHelper.getElement(json, "user");

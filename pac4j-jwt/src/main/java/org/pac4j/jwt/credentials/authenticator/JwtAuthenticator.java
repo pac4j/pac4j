@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -50,7 +51,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> implements Authenticator<TokenCredentials> {
+public class JwtAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -89,7 +90,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     protected void internalInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new JwtProfile()));
 
         if (signatureConfigurations.isEmpty()) {
             logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");
@@ -132,8 +133,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
+
+        final TokenCredentials credentials = (TokenCredentials) cred;
         final String token = credentials.getToken();
 
         if (context != null) {

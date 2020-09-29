@@ -2,8 +2,12 @@ package org.pac4j.oauth.profile.creator;
 
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
@@ -14,20 +18,21 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10ProfileCreator<U extends OAuth10Profile>
-    extends OAuthProfileCreator<OAuth10Credentials, U, OAuth10Configuration, OAuth1AccessToken, OAuth10aService> {
+public class OAuth10ProfileCreator extends OAuthProfileCreator {
 
     public OAuth10ProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
     @Override
-    protected OAuth1AccessToken getAccessToken(final OAuth10Credentials credentials) {
-        return credentials.getAccessToken();
+    protected OAuth1AccessToken getAccessToken(final Credentials credentials) {
+        return ((OAuth10Credentials) credentials).getAccessToken();
     }
 
     @Override
-    protected void addAccessTokenToProfile(final U profile, final OAuth1AccessToken accessToken) {
+    protected void addAccessTokenToProfile(final UserProfile userProfile, final Token tok) {
+        final OAuth10Profile profile = (OAuth10Profile) userProfile;
+        final OAuth1AccessToken accessToken = (OAuth1AccessToken) tok;
         if (profile != null) {
             final String token = accessToken.getToken();
             logger.debug("add access_token: {} to profile", token);
@@ -37,8 +42,9 @@ public class OAuth10ProfileCreator<U extends OAuth10Profile>
     }
 
     @Override
-    protected void signRequest(final OAuth10aService service, final OAuth1AccessToken token, final OAuthRequest request) {
-        service.signRequest(token, request);
+    protected void signRequest(final OAuthService service, final Token tok, final OAuthRequest request) {
+        final OAuth1AccessToken token = (OAuth1AccessToken) tok;
+        ((OAuth10aService) service).signRequest(token, request);
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader("Authorization", "Bearer " + token.getToken());
         }

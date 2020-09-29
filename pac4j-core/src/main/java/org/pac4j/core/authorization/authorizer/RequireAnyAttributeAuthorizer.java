@@ -16,7 +16,7 @@ import java.util.Collection;
  * @author Misagh Moayyed
  * @since 1.9.2
  */
-public class RequireAnyAttributeAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<String> {
     private final String valueToMatch;
 
     public RequireAnyAttributeAuthorizer() {
@@ -28,7 +28,7 @@ public class RequireAnyAttributeAuthorizer<U extends UserProfile> extends Abstra
     }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final String element) {
+    protected boolean check(final WebContext context, final UserProfile profile, final String element) {
         if (!profile.containsAttribute(element)) {
             return false;
         }
@@ -48,7 +48,7 @@ public class RequireAnyAttributeAuthorizer<U extends UserProfile> extends Abstra
         return attributeValues.toString().matches(this.valueToMatch);
     }
 
-    public static <U extends UserProfile> RequireAnyAttributeAuthorizer<U> requireAnyAttribute(String valueToMatch) {
-        return new RequireAnyAttributeAuthorizer<>(valueToMatch);
+    public static RequireAnyAttributeAuthorizer requireAnyAttribute(String valueToMatch) {
+        return new RequireAnyAttributeAuthorizer(valueToMatch);
     }
 }

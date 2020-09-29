@@ -8,7 +8,6 @@ import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.context.*;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.AnonymousProfile;
@@ -42,7 +41,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         profiles.add(profile);
     }
 
-    private static class IdAuthorizer implements Authorizer<UserProfile> {
+    private static class IdAuthorizer implements Authorizer {
         @Override
         public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
             return VALUE.equals(profiles.get(0).getId());
@@ -68,7 +67,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testNullAuthorizerNameAProfilePostRequestIndirectClient() {
         final MockWebContext context = MockWebContext.create().setRequestMethod("POST");
-        final List<Client<? extends Credentials>> clients = new ArrayList<>();
+        final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
         assertFalse(checker.isAuthorized(context, profiles, null, null, clients));
     }
@@ -82,7 +81,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testBlankAuthorizerNameAProfilePostRequestIndirectClient() {
         final MockWebContext context = MockWebContext.create().setRequestMethod("POST");
-        final List<Client<? extends Credentials>> clients = new ArrayList<>();
+        final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
         assertFalse(checker.isAuthorized(context, profiles, " ", null, clients));
     }

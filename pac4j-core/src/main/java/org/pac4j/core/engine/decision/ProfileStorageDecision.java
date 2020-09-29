@@ -13,7 +13,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public interface ProfileStorageDecision<C extends WebContext> {
+public interface ProfileStorageDecision {
 
     /**
      * Whether we must load the profiles from the web session.
@@ -22,7 +22,7 @@ public interface ProfileStorageDecision<C extends WebContext> {
      * @param currentClients the current clients
      * @return whether the profiles must be loaded from the web session
      */
-    boolean mustLoadProfilesFromSession(C context, List<Client> currentClients);
+    boolean mustLoadProfilesFromSession(WebContext context, List<Client> currentClients);
 
     /**
      * Whether we must save the profile in session after the authentication of direct clients.
@@ -33,5 +33,5 @@ public interface ProfileStorageDecision<C extends WebContext> {
      * @param profile the retrieved profile after login
      * @return whether we must save the profile in session
      */
-    boolean mustSaveProfileInSession(C context, List<Client> currentClients, DirectClient directClient, UserProfile profile);
+    boolean mustSaveProfileInSession(WebContext context, List<Client> currentClients, DirectClient directClient, UserProfile profile);
 }

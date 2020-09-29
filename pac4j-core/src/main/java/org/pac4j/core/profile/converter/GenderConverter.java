@@ -10,7 +10,7 @@ import org.pac4j.core.profile.Gender;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class GenderConverter extends AbstractAttributeConverter<Gender> {
+public final class GenderConverter extends AbstractAttributeConverter {
 
     private final Pattern maleText;
     private final Pattern femaleText;

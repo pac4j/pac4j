@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
  */
 public final class DefaultCallbackLogicTests implements TestsConstants {
 
-    private DefaultCallbackLogic<Object, JEEContext> logic;
+    private DefaultCallbackLogic logic;
 
     protected MockHttpServletRequest request;
 
@@ -50,7 +50,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     private Config config;
 
-    private HttpActionAdapter<Object, JEEContext> httpActionAdapter;
+    private HttpActionAdapter httpActionAdapter;
 
     private String defaultUrl;
 
@@ -62,7 +62,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Before
     public void setUp() {
-        logic = new DefaultCallbackLogic<>();
+        logic = new DefaultCallbackLogic();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         context = new JEEContext(request, response);

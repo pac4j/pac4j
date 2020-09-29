@@ -2,11 +2,11 @@ package org.pac4j.core.profile.converter;
 
 /**
  * This class converts a String into a Long or returns the Long (or Integer) in input.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class LongConverter extends AbstractAttributeConverter<Long> {
+public final class LongConverter extends AbstractAttributeConverter {
 
     public LongConverter() {
         super(Long.class);

@@ -1,7 +1,7 @@
 package org.pac4j.http.credentials.authenticator.test;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
@@ -14,29 +14,29 @@ import org.pac4j.http.credentials.DigestCredentials;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class SimpleTestDigestAuthenticator implements Authenticator<TokenCredentials> {
+public class SimpleTestDigestAuthenticator implements Authenticator {
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) {
-        if (credentials == null) {
+    public void validate(final Credentials cred, final WebContext context) {
+        if (cred == null) {
             throw new CredentialsException("No credential");
         }
-        if (!(credentials instanceof DigestCredentials)) {
-            throw new CredentialsException ("Unsupported credentials type " + credentials.getClass());
+        if (!(cred instanceof DigestCredentials)) {
+            throw new CredentialsException ("Unsupported credentials type " + cred.getClass());
         }
-        DigestCredentials digestCredentials = (DigestCredentials) credentials;
+        DigestCredentials digestCredentials = (DigestCredentials) cred;
         String username = digestCredentials.getUsername();
         if (CommonHelper.isBlank(username)) {
             throw new CredentialsException("Username cannot be blank");
         }
 
-        String token = credentials.getToken();
+        String token = digestCredentials.getToken();
         if (CommonHelper.isBlank(token)) {
             throw new CredentialsException("Token cannot be blank");
         }
 
         CommonProfile profile = new CommonProfile();
         profile.setId(username);
-        credentials.setUserProfile(profile);
+        digestCredentials.setUserProfile(profile);
     }
 }

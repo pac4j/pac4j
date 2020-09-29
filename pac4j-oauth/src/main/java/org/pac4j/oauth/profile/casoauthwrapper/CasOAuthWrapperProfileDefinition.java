@@ -3,12 +3,13 @@ package org.pac4j.oauth.profile.casoauthwrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -21,7 +22,7 @@ import java.util.Iterator;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<CasOAuthWrapperProfile, OAuth20Configuration> {
+public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
 
     public static final String IS_FROM_NEW_LOGIN = "isFromNewLogin";
     public static final String AUTHENTICATION_DATE = "authenticationDate";
@@ -39,13 +40,13 @@ public class CasOAuthWrapperProfileDefinition extends OAuth20ProfileDefinition<C
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
-        return ((CasOAuthWrapperApi20) configuration.getApi()).getCasServerUrl() + "/profile";
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
+        return ((CasOAuthWrapperApi20) ((OAuth20Configuration) configuration).getApi()).getCasServerUrl() + "/profile";
     }
 
     @Override
     public CasOAuthWrapperProfile extractUserProfile(final String body) {
-        final CasOAuthWrapperProfile profile = newProfile();
+        final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) newProfile();
         final String attributesNode = "attributes";
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

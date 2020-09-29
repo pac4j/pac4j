@@ -5,11 +5,11 @@ import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 
 /**
  * This class converts a String into a FacebookRelationshipStatus.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookRelationshipStatusConverter implements AttributeConverter<FacebookRelationshipStatus> {
+public final class FacebookRelationshipStatusConverter implements AttributeConverter {
 
     @Override
     public FacebookRelationshipStatus convert(final Object attribute) {

@@ -13,6 +13,7 @@ import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -42,7 +43,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileCreator<P extends OidcProfile> extends ProfileDefinitionAware<P> implements ProfileCreator<OidcCredentials> {
+public class OidcProfileCreator extends ProfileDefinitionAware implements ProfileCreator {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
@@ -59,14 +60,15 @@ public class OidcProfileCreator<P extends OidcProfile> extends ProfileDefinition
     protected void internalInit() {
         assertNotNull("configuration", configuration);
 
-        defaultProfileDefinition(new OidcProfileDefinition<>());
+        defaultProfileDefinition(new OidcProfileDefinition());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<UserProfile> create(final OidcCredentials credentials, final WebContext context) {
+    public Optional<UserProfile> create(final Credentials cred, final WebContext context) {
         init();
 
+        final OidcCredentials credentials = (OidcCredentials) cred;
         final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile

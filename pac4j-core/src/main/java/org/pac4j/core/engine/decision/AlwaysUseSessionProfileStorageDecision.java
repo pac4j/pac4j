@@ -13,15 +13,15 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public class AlwaysUseSessionProfileStorageDecision<C extends WebContext> implements ProfileStorageDecision<C> {
+public class AlwaysUseSessionProfileStorageDecision implements ProfileStorageDecision {
 
     @Override
-    public boolean mustLoadProfilesFromSession(final C context, final List<Client> currentClients) {
+    public boolean mustLoadProfilesFromSession(final WebContext context, final List<Client> currentClients) {
         return true;
     }
 
     @Override
-    public boolean mustSaveProfileInSession(final C context, final List<Client> currentClients,
+    public boolean mustSaveProfileInSession(final WebContext context, final List<Client> currentClients,
                                             final DirectClient directClient, final UserProfile profile) {
         return true;
     }

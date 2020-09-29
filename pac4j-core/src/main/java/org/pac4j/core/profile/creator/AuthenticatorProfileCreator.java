@@ -12,12 +12,12 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AuthenticatorProfileCreator<C extends Credentials> implements ProfileCreator<C> {
+public class AuthenticatorProfileCreator implements ProfileCreator {
 
-    public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator<>();
+    public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator();
 
     @Override
-    public Optional<UserProfile> create(final C credentials, final WebContext context) {
+    public Optional<UserProfile> create(final Credentials credentials, final WebContext context) {
         return Optional.ofNullable(credentials.getUserProfile());
     }
 }

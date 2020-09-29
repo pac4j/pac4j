@@ -2,6 +2,7 @@ package org.pac4j.kerberos.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 
@@ -15,10 +16,10 @@ import java.util.Optional;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class KerberosExtractor implements CredentialsExtractor<KerberosCredentials> {
+public class KerberosExtractor implements CredentialsExtractor {
 
     @Override
-    public Optional<KerberosCredentials> extract(final WebContext context) {
+    public Optional<Credentials> extract(final WebContext context) {
         final Optional<String> optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (!optHeader.isPresent()) {
             return Optional.empty();

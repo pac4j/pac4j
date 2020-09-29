@@ -1,6 +1,7 @@
 package org.pac4j.core.profile.service;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -24,8 +25,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U>
-        implements ProfileService<U>, Authenticator<UsernamePasswordCredentials> {
+public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware
+        implements ProfileService<U>, Authenticator {
 
     public static final String ID = "id";
 
@@ -224,7 +225,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         final String linkedId = (String) storageAttributes.get(LINKEDID);
         // legacy mode: only read the defined attributes
         if (isLegacyMode()) {
-            final U profile = getProfileDefinition().newProfile();
+            final U profile = (U) getProfileDefinition().newProfile();
             for (final String attributeName : attributeNames) {
                 getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, attributeName, storageAttributes.get(attributeName));
             }
@@ -272,10 +273,11 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
-        assertNotNull("credentials", credentials);
+        assertNotNull("credentials", cred);
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
         assertNotBlank(USERNAME, username);

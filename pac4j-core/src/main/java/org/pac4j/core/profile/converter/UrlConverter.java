@@ -10,7 +10,7 @@ import java.net.URI;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class UrlConverter extends AbstractAttributeConverter<URI> {
+public class UrlConverter extends AbstractAttributeConverter {
 
     public UrlConverter() {
         super(URI.class);

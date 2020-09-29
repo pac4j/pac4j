@@ -1,6 +1,6 @@
 package org.pac4j.oauth.profile.linkedin2;
 
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth20Service;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
  * @author Vassilis Virvilis
  * @since 3.8.0
  */
-public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Profile> {
+public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
     private static final String EMAIL_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
 
     public LinkedIn2ProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
@@ -29,12 +29,12 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator<LinkedIn2Prof
     }
 
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final OAuth2AccessToken accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         super.retrieveUserProfileFromToken(context, accessToken);
         final LinkedIn2ProfileDefinition profileDefinition = (LinkedIn2ProfileDefinition) configuration.getProfileDefinition();
         final LinkedIn2Configuration linkedin2Configuration = (LinkedIn2Configuration) configuration;
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, linkedin2Configuration);
-        final OAuth20Service service = configuration.buildService(context, client);
+        final OAuth20Service service = (OAuth20Service) configuration.buildService(context, client);
         String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);

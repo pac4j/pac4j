@@ -1,14 +1,14 @@
 package org.pac4j.oauth.profile.orcid;
 
 import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.config.OAuth20Configuration;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.config.OAuthConfiguration;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.model.OrcidToken;
 
 /**
@@ -17,7 +17,7 @@ import org.pac4j.scribe.model.OrcidToken;
  * @author Jens Tinglev
  * @since 1.6.0
  */
-public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfile, OAuth20Configuration> {
+public class OrcidProfileDefinition extends OAuthProfileDefinition {
 
     public static final String ORCID = "path";
     public static final String FIRST_NAME = "given-names";
@@ -37,7 +37,7 @@ public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfil
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (accessToken instanceof OrcidToken) {
             return String.format("https://api.orcid.org/v1.1/%s/orcid-profile",
                     ((OrcidToken) accessToken).getOrcid());
@@ -48,7 +48,7 @@ public class OrcidProfileDefinition extends OAuth20ProfileDefinition<OrcidProfil
 
     @Override
     public OrcidProfile extractUserProfile(String body) {
-        OrcidProfile profile = newProfile();
+        OrcidProfile profile = (OrcidProfile) newProfile();
         if (body == null || body.isEmpty()) {
             raiseProfileExtractionError(body);
         }

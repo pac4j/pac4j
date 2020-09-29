@@ -1,16 +1,16 @@
 package org.pac4j.oauth.profile.dropbox;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
  * This class is the DropBox profile definition.
@@ -18,7 +18,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxProfile, OAuth20Configuration> {
+public class DropBoxProfileDefinition extends OAuthProfileDefinition {
 
     public static final String REFERRAL_LINK = "referral_link";
     public static final String COUNTRY = "country";
@@ -34,7 +34,7 @@ public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxPr
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken token, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
         return "https://api.dropboxapi.com/2/users/get_current_account";
     }
 
@@ -45,7 +45,7 @@ public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxPr
 
     @Override
     public DropBoxProfile extractUserProfile(final String body) {
-        final DropBoxProfile profile = newProfile();
+        final DropBoxProfile profile = (DropBoxProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "account_id")));

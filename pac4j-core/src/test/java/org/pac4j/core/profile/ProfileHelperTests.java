@@ -142,7 +142,7 @@ public final class ProfileHelperTests implements TestsConstants {
     }
 
     private CommonProfile profileRestoreMustBringBackAllAttributes(final String typedId) {
-        final ProfileDefinition<CommonProfile> pd = new CommonProfileDefinition<>();
+        final ProfileDefinition pd = new CommonProfileDefinition();
         final Map<String,Object> profileAttributes = exampleSamlProfileAttributes();
         final Map<String,Object> authenticationAttributes = exampleSamlAuthenticationAttributes();
         return ProfileHelper.restoreOrBuildProfile(pd, typedId, profileAttributes, authenticationAttributes);

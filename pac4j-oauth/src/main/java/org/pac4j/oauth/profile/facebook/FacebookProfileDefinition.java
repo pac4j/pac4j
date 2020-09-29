@@ -3,14 +3,16 @@ package org.pac4j.oauth.profile.facebook;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
 
 import javax.crypto.Mac;
@@ -30,7 +32,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookProfileDefinition extends OAuth20ProfileDefinition<FacebookProfile, FacebookConfiguration> {
+public class FacebookProfileDefinition extends OAuthProfileDefinition {
 
     public static final String NAME = "name";
     public static final String MIDDLE_NAME = "middle_name";
@@ -80,7 +82,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
         primary(LINK, Converters.URL);
-        final JsonConverter<FacebookObject> objectConverter = new JsonConverter<>(FacebookObject.class);
+        final JsonConverter objectConverter = new JsonConverter(FacebookObject.class);
         final JsonConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
         final JsonConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
@@ -104,18 +106,19 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
         secondary(EVENTS, new JsonConverter(List.class, new TypeReference<List<FacebookEvent>>() {}));
         secondary(GROUPS, new JsonConverter(List.class, new TypeReference<List<FacebookGroup>>() {}));
         secondary(MUSIC_LISTENS, new JsonConverter(List.class, new TypeReference<List<FacebookMusicListen>>() {}));
-        secondary(PICTURE, new JsonConverter<>(FacebookPicture.class));
+        secondary(PICTURE, new JsonConverter(FacebookPicture.class));
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final FacebookConfiguration configuration) {
-        String url = BASE_URL + "?fields=" + configuration.getFields();
-        if (configuration.getLimit() > DEFAULT_LIMIT) {
-            url += "&limit=" + configuration.getLimit();
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
+        final FacebookConfiguration fbConfiguration = (FacebookConfiguration) configuration;
+        String url = BASE_URL + "?fields=" + fbConfiguration.getFields();
+        if (fbConfiguration.getLimit() > DEFAULT_LIMIT) {
+            url += "&limit=" + fbConfiguration.getLimit();
         }
         // possibly include the appsecret_proof parameter
-        if (configuration.isUseAppsecretProof()) {
-            url = computeAppSecretProof(url, accessToken, configuration);
+        if (fbConfiguration.isUseAppsecretProof()) {
+            url = computeAppSecretProof(url, (OAuth2AccessToken) accessToken, fbConfiguration);
         }
         return url;
     }
@@ -146,7 +149,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
 
     @Override
     public FacebookProfile extractUserProfile(final String body) {
-        final FacebookProfile profile = newProfile();
+        final FacebookProfile profile = (FacebookProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

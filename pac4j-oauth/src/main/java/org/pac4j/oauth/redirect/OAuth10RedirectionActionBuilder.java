@@ -44,7 +44,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
     public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
         try {
 
-            final OAuth10aService service = this.configuration.buildService(context, client);
+            final OAuth10aService service = (OAuth10aService) this.configuration.buildService(context, client);
             final OAuth1RequestToken requestToken;
             try {
                 requestToken = service.getRequestToken();

@@ -52,7 +52,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new DbProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new DbProfile()));
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         this.dbi = new DBI(this.dataSource);
 

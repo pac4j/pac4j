@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HttpConstants.HTTP_METHOD, UserProfile> {
+public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HttpConstants.HTTP_METHOD> {
 
     public CheckHttpMethodAuthorizer() { }
 

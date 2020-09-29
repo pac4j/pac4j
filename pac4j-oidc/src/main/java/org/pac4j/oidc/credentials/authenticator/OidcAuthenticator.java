@@ -11,6 +11,7 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -34,7 +35,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcAuthenticator implements Authenticator<OidcCredentials> {
+public class OidcAuthenticator implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcAuthenticator.class);
 
@@ -102,7 +103,6 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
             clientAuthentication = new ClientNoSecret(_clientID);
 
         }
-
     }
 
     /**
@@ -142,7 +142,8 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
     }
 
     @Override
-    public void validate(final OidcCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
+        final OidcCredentials credentials = (OidcCredentials) cred;
         final AuthorizationCode code = credentials.getCode();
         // if we have a code
         if (code != null) {

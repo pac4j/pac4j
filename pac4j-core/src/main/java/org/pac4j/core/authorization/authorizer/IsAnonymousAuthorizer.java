@@ -12,7 +12,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class IsAnonymousAuthorizer<U extends UserProfile> extends AbstractCheckAuthenticationAuthorizer<U> {
+public class IsAnonymousAuthorizer extends AbstractCheckAuthenticationAuthorizer {
 
     public IsAnonymousAuthorizer() {}
 
@@ -21,16 +21,16 @@ public class IsAnonymousAuthorizer<U extends UserProfile> extends AbstractCheckA
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
         return isAllAuthorized(context, profiles);
     }
 
     @Override
-    public boolean isProfileAuthorized(final WebContext context, final U profile) {
+    public boolean isProfileAuthorized(final WebContext context, final UserProfile profile) {
         return profile == null || profile instanceof AnonymousProfile;
     }
 
-    public static <U extends UserProfile> IsAnonymousAuthorizer<U> isAnonymous() {
-        return new IsAnonymousAuthorizer<>();
+    public static IsAnonymousAuthorizer isAnonymous() {
+        return new IsAnonymousAuthorizer();
     }
 }

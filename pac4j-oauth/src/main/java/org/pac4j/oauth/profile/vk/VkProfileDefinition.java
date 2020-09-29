@@ -2,13 +2,14 @@ package org.pac4j.oauth.profile.vk;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.profile.converter.GenderConverter;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -20,7 +21,7 @@ import java.util.Arrays;
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  */
-public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkConfiguration> {
+public class VkProfileDefinition extends OAuthProfileDefinition {
 
     public static final String LAST_NAME = "last_name";
     public static final String SEX = "sex";
@@ -65,13 +66,13 @@ public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile, VkC
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final VkConfiguration configuration) {
-        return BASE_URL + "?fields=" + configuration.getFields();
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
+        return BASE_URL + "?fields=" + ((VkConfiguration) configuration).getFields();
     }
 
     @Override
     public VkProfile extractUserProfile(final String body) {
-        final VkProfile profile = newProfile();
+        final VkProfile profile = (VkProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             ArrayNode array = (ArrayNode) json.get("response");

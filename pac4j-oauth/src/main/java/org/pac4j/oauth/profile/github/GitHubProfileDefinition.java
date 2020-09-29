@@ -1,13 +1,13 @@
 package org.pac4j.oauth.profile.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -19,7 +19,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProfile, OAuth20Configuration> {
+public class GitHubProfileDefinition extends OAuthProfileDefinition {
 
     public static final String TYPE = "type";
     public static final String BLOG = "blog";
@@ -59,17 +59,17 @@ public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProf
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(AVATAR_URL, Converters.URL);
         primary(HTML_URL, Converters.URL);
-        primary(PLAN, new JsonConverter<>(GitHubPlan.class));
+        primary(PLAN, new JsonConverter(GitHubPlan.class));
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://api.github.com/user";
     }
 
     @Override
     public GitHubProfile extractUserProfile(final String body) {
-        final GitHubProfile profile = newProfile();
+        final GitHubProfile profile = (GitHubProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

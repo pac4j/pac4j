@@ -1,17 +1,17 @@
 package org.pac4j.oauth.profile.wordpress;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
  * This class is the WordPress profile definition.
@@ -19,7 +19,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPressProfile, OAuth20Configuration> {
+public class WordPressProfileDefinition extends OAuthProfileDefinition {
 
     public static final String PRIMARY_BLOG = "primary_blog";
     public static final String AVATAR_URL = "avatar_URL";
@@ -32,17 +32,17 @@ public class WordPressProfileDefinition extends OAuth20ProfileDefinition<WordPre
         primary(PRIMARY_BLOG, Converters.INTEGER);
         primary(AVATAR_URL, Converters.URL);
         primary(PROFILE_URL, Converters.URL);
-        secondary(LINKS, new JsonConverter<>(WordPressLinks.class));
+        secondary(LINKS, new JsonConverter(WordPressLinks.class));
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://public-api.wordpress.com/rest/v1/me/?pretty=1";
     }
 
     @Override
     public WordPressProfile extractUserProfile(final String body) {
-        final WordPressProfile profile = newProfile();
+        final WordPressProfile profile = (WordPressProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "ID")));

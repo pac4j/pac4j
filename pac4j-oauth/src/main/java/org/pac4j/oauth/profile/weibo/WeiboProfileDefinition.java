@@ -2,18 +2,18 @@ package org.pac4j.oauth.profile.weibo;
 
 import java.util.Arrays;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.model.WeiboToken;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -24,7 +24,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class WeiboProfileDefinition extends OAuth20ProfileDefinition<WeiboProfile, OAuth20Configuration> {
+public class WeiboProfileDefinition extends OAuthProfileDefinition {
 
     /**
      * int64    User UID
@@ -214,8 +214,7 @@ public class WeiboProfileDefinition extends OAuth20ProfileDefinition<WeiboProfil
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken,
-                                final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (accessToken instanceof WeiboToken) {
             return CommonHelper.addParameter("https://api.weibo.com/2/users/show.json", "uid",
                 ((WeiboToken) accessToken).getUid());

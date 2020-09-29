@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -31,7 +32,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> implements Authenticator<UsernamePasswordCredentials> {
+public class RestAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAuthenticator.class);
 
@@ -48,7 +49,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     @Override
     protected void internalInit() {
         CommonHelper.assertNotBlank("url", url);
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new RestProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new RestProfile()));
         if (mapper == null) {
             mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -58,9 +59,10 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
@@ -76,7 +78,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     }
 
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
-        final RestProfile profileClass = getProfileDefinition().newProfile();
+        final RestProfile profileClass = (RestProfile) getProfileDefinition().newProfile();
         final RestProfile profile;
         try {
             profile = mapper.readValue(body, profileClass.getClass());

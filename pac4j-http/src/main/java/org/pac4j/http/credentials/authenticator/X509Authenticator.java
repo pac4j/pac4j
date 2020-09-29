@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -17,7 +18,7 @@ import java.util.regex.Matcher;
  * @author Jerome Leleu
  * @since 3.3.0
  */
-public class X509Authenticator extends AbstractRegexpAuthenticator<X509Profile> implements Authenticator<X509Credentials> {
+public class X509Authenticator extends AbstractRegexpAuthenticator implements Authenticator {
 
     public X509Authenticator() {
         setRegexpPattern("CN=(.*?)(?:,|$)");
@@ -29,14 +30,14 @@ public class X509Authenticator extends AbstractRegexpAuthenticator<X509Profile> 
 
     @Override
     protected void internalInit() {
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new X509Profile()));
+        defaultProfileDefinition(new CommonProfileDefinition(x -> new X509Profile()));
     }
 
     @Override
-    public void validate(final X509Credentials credentials, final WebContext context) {
+    public void validate(final Credentials credentials, final WebContext context) {
         init();
 
-        final X509Certificate certificate = credentials.getCertificate();
+        final X509Certificate certificate = ((X509Credentials) credentials).getCertificate();
         if (certificate == null) {
             throw new CredentialsException("No X509 certificate");
         }
@@ -64,7 +65,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator<X509Profile> 
         }
 
         final String id = matcher.group(1);
-        final X509Profile profile = getProfileDefinition().newProfile();
+        final X509Profile profile = (X509Profile) getProfileDefinition().newProfile();
         profile.setId(id);
         logger.debug("profile: {}", profile);
 

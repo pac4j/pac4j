@@ -13,7 +13,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,7 +31,7 @@ import java.nio.charset.StandardCharsets;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswordCredentials> {
+public abstract class AbstractCasRestClient extends DirectClient {
 
     protected CasConfiguration configuration;
 

@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CasRestAuthenticator implements Authenticator<UsernamePasswordCredentials> {
+public class CasRestAuthenticator implements Authenticator {
 
     private final static Logger logger = LoggerFactory.getLogger(CasRestAuthenticator.class);
 
@@ -38,7 +39,8 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");
         }

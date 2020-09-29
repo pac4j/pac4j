@@ -75,7 +75,7 @@ public final class DirectCasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        final TokenCredentials credentials = client.getCredentials(context).get();
+        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context).get();
         assertEquals(TICKET, credentials.getToken());
         final CommonProfile profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);

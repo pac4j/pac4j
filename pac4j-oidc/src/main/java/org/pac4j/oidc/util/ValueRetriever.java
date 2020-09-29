@@ -20,5 +20,5 @@ import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
  */
 public interface ValueRetriever {
 
-    Optional<Object> retrieve(String key, OidcClient<?> client, WebContext webContext);
+    Optional<Object> retrieve(String key, OidcClient client, WebContext webContext);
 }

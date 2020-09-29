@@ -21,12 +21,12 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public class LocalCachingAuthenticatorTests {
 
-    private static class OnlyOneCallAuthenticator implements Authenticator<UsernamePasswordCredentials> {
+    private static class OnlyOneCallAuthenticator implements Authenticator {
 
         private int n = 0;
 
         @Override
-        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+        public void validate(final Credentials credentials, final WebContext context) {
             if (n > 0) {
                 throw new IllegalArgumentException("Cannot call validate twice");
             }
@@ -35,12 +35,12 @@ public class LocalCachingAuthenticatorTests {
         }
     }
 
-    private static class SimpleUPAuthenticator implements Authenticator<UsernamePasswordCredentials> {
+    private static class SimpleUPAuthenticator implements Authenticator {
 
         @Override
-        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+        public void validate(final Credentials credentials, final WebContext context) {
             final CommonProfile profile = new CommonProfile();
-            profile.setId(credentials.getUsername());
+            profile.setId(((UsernamePasswordCredentials) credentials).getUsername());
             credentials.setUserProfile(profile);
         }
     }
@@ -81,8 +81,8 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testValidateAndCacheSwitchDelegate() {
-        final LocalCachingAuthenticator<UsernamePasswordCredentials> authenticator = new
-                LocalCachingAuthenticator<>(this.delegate, 10, 2, TimeUnit.SECONDS);
+        final LocalCachingAuthenticator authenticator = new
+                LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init();
 
         authenticator.validate(this.credentials, null);
@@ -132,10 +132,10 @@ public class LocalCachingAuthenticatorTests {
         assertFalse(authenticator.isCached(this.credentials));
     }
 
-    private static class ThrowingAuthenticator implements Authenticator<UsernamePasswordCredentials> {
+    private static class ThrowingAuthenticator implements Authenticator {
 
         @Override
-        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+        public void validate(final Credentials credentials, final WebContext context) {
             throw new CredentialsException("fail");
         }
     }

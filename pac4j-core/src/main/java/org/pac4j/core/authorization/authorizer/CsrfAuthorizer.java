@@ -15,7 +15,7 @@ import static org.pac4j.core.context.ContextHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class CsrfAuthorizer implements Authorizer<UserProfile> {
+public class CsrfAuthorizer implements Authorizer {
 
     private String parameterName = Pac4jConstants.CSRF_TOKEN;
 
@@ -42,7 +42,7 @@ public class CsrfAuthorizer implements Authorizer<UserProfile> {
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
-            final Optional<String> sessionToken = (Optional<String>) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
+            final Optional<Object> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
             return sessionToken.isPresent() && (sessionToken.get().equals(parameterToken) || sessionToken.get().equals(headerToken));
         } else {
             return true;

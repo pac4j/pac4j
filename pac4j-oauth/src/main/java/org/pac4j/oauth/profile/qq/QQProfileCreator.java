@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.qq;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
+public class QQProfileCreator extends OAuth20ProfileCreator {
 
     public QQProfileCreator(final OAuth20Configuration configuration,
                             final IndirectClient client) {
@@ -28,11 +29,10 @@ public class QQProfileCreator extends OAuth20ProfileCreator<QQProfile> {
     }
 
     @Override
-    public Optional<UserProfile> retrieveUserProfileFromToken(WebContext context,
-                                                              OAuth2AccessToken accessToken) {
+    public Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         QQProfileDefinition profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
-        String openidUrl = profileDefinition.getOpenidUrl(accessToken, configuration);
-        final OAuth20Service service = this.configuration.buildService(context, client);
+        String openidUrl = profileDefinition.getOpenidUrl((OAuth2AccessToken) accessToken, (OAuth20Configuration) configuration);
+        final OAuth20Service service = (OAuth20Service) this.configuration.buildService(context, client);
 
         String body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
         String openid = profileDefinition.extractOpenid(body);

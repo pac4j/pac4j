@@ -2,14 +2,14 @@ package org.pac4j.oauth.profile.figshare;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
  * This class is the FigShare profile definition
@@ -17,7 +17,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  * @author Vassilis Virvilis
  * @since 3.8.0
  */
-public class FigShareProfileDefinition extends OAuth20ProfileDefinition<FigShareProfile, OAuth20Configuration> {
+public class FigShareProfileDefinition extends OAuthProfileDefinition {
     public static final String LAST_NAME = "last_name";
 
     public FigShareProfileDefinition() {
@@ -26,13 +26,13 @@ public class FigShareProfileDefinition extends OAuth20ProfileDefinition<FigShare
     }
 
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://api.figshare.com/v2/account";
     }
 
     @Override
     public FigShareProfile extractUserProfile(final String body) {
-        final FigShareProfile profile = newProfile();
+        final FigShareProfile profile = (FigShareProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             if (getProfileId() != null) {

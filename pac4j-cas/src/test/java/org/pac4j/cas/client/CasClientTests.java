@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.WithContentAction;
@@ -149,7 +149,7 @@ public final class CasClientTests implements TestsConstants {
         configuration.setGateway(true);
         final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
         assertTrue(action.getLocation().indexOf("gateway=true") >= 0);
-        final Optional<TokenCredentials> credentials = casClient.getCredentials(context);
+        final Optional<Credentials> credentials = casClient.getCredentials(context);
         assertFalse(credentials.isPresent());
     }
 

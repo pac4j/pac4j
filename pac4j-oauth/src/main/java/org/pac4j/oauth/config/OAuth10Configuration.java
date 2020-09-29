@@ -1,8 +1,7 @@
 package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.oauth.OAuth10aService;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
@@ -13,19 +12,11 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10Configuration extends OAuthConfiguration<OAuth10aService, OAuth1AccessToken> {
+public class OAuth10Configuration extends OAuthConfiguration {
 
     public static final String OAUTH_VERIFIER = "oauth_verifier";
 
     public static final String REQUEST_TOKEN = "requestToken";
-
-    private DefaultApi10a api;
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("api", api);
-        super.internalInit();
-    }
 
     /**
      * Build an OAuth service from the web context.
@@ -34,12 +25,13 @@ public class OAuth10Configuration extends OAuthConfiguration<OAuth10aService, OA
      * @param client the client
      * @return the OAuth service
      */
-    public OAuth10aService buildService(final WebContext context, final IndirectClient client) {
+    public OAuthService buildService(final WebContext context, final IndirectClient client) {
         init();
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        return api.createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig, null);
+        return ((DefaultApi10a) api)
+            .createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig, null);
     }
 
     /**
@@ -50,14 +42,6 @@ public class OAuth10Configuration extends OAuthConfiguration<OAuth10aService, OA
      */
     public String getRequestTokenSessionAttributeName(final String clientName) {
         return clientName + "#" + REQUEST_TOKEN;
-    }
-
-    public DefaultApi10a getApi() {
-        return api;
-    }
-
-    public void setApi(final DefaultApi10a api) {
-        this.api = api;
     }
 
     @Override

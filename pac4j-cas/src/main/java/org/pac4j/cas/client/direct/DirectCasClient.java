@@ -7,7 +7,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
@@ -39,7 +39,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasClient extends DirectClient<TokenCredentials> {
+public class DirectCasClient extends DirectClient {
 
     private CasConfiguration configuration;
 
@@ -67,13 +67,13 @@ public class DirectCasClient extends DirectClient<TokenCredentials> {
     }
 
     @Override
-    protected Optional<TokenCredentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         init();
         try {
             String callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
-            final Optional<TokenCredentials> credentials = getCredentialsExtractor().extract(context);
+            final Optional<Credentials> credentials = getCredentialsExtractor().extract(context);
             if (!credentials.isPresent()) {
                 // redirect to the login page
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,

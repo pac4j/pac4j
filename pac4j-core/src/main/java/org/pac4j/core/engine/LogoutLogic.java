@@ -10,7 +10,7 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface LogoutLogic<R, C extends WebContext> {
+public interface LogoutLogic {
 
     /**
      * Perform the application logout logic.
@@ -25,6 +25,6 @@ public interface LogoutLogic<R, C extends WebContext> {
      * @param centralLogout whether a central logout is required
      * @return the resulting action for logout
      */
-    R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter, String defaultUrl,
+    Object perform(WebContext context, Config config, HttpActionAdapter httpActionAdapter, String defaultUrl,
               String logoutUrlPattern, Boolean localLogout, Boolean destroySession, Boolean centralLogout);
 }

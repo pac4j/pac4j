@@ -1,8 +1,7 @@
 package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.generator.ValueGenerator;
@@ -18,7 +17,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAuth2AccessToken> {
+public class OAuth20Configuration extends OAuthConfiguration {
 
     public static final String OAUTH_CODE = "code";
 
@@ -31,14 +30,6 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
-    private DefaultApi20 api;
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("api", api);
-        super.internalInit();
-    }
-
     /**
      * Build an OAuth service from the web context.
      *
@@ -46,12 +37,12 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
      * @param client the client
      * @return the OAuth service
      */
-    public OAuth20Service buildService(final WebContext context, final IndirectClient client) {
+    public OAuthService buildService(final WebContext context, final IndirectClient client) {
         init();
 
         final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        return api.createService(this.key, this.secret, finalCallbackUrl, this.scope,
+        return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
             this.responseType, null, null, this.httpClientConfig, null);
     }
 
@@ -78,14 +69,6 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Service, OAu
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
-    }
-
-    public DefaultApi20 getApi() {
-        return api;
-    }
-
-    public void setApi(final DefaultApi20 api) {
-        this.api = api;
     }
 
     @Override

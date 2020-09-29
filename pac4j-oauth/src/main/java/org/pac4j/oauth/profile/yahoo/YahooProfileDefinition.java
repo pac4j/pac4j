@@ -2,14 +2,14 @@ package org.pac4j.oauth.profile.yahoo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth1Token;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
-import org.pac4j.oauth.config.OAuth10Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfile> {
+public class YahooProfileDefinition extends OAuthProfileDefinition {
 
     public static final String ABOUT_ME = "aboutMe";
     public static final String AGE_CATEGORY = "ageCategory";
@@ -58,7 +58,7 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
         primary(ADDRESSES, new JsonConverter(List.class, new TypeReference<List<YahooAddress>>() {}));
         primary(DISCLOSURES, new JsonConverter(List.class, new TypeReference<List<YahooDisclosure>>() {}));
         primary(EMAILS, new JsonConverter(List.class, new TypeReference<List<YahooEmail>>() {}));
-        primary(IMAGE, new JsonConverter<>(YahooImage.class));
+        primary(IMAGE, new JsonConverter(YahooImage.class));
         primary(INTERESTS, new JsonConverter(List.class, new TypeReference<List<YahooInterest>>() {}));
         primary(CREATED, Converters.DATE_TZ_RFC822);
         primary(MEMBER_SINCE, Converters.DATE_TZ_RFC822);
@@ -67,13 +67,13 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
     }
 
     @Override
-    public String getProfileUrl(final OAuth1Token accessToken, final OAuth10Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://social.yahooapis.com/v1/me/guid?format=xml";
     }
 
     @Override
     public YahooProfile extractUserProfile(final String body) {
-        final YahooProfile profile = newProfile();
+        final YahooProfile profile = (YahooProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("profile");

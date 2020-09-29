@@ -43,10 +43,10 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  * @author Emond Papegaaij
  * @since 1.8.3
  */
-public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
+public class AzureAdClient extends OidcClient {
 
     private ObjectMapper objectMapper;
-    private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+    private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<>() {};
 
     public AzureAdClient() {}
 
@@ -69,8 +69,9 @@ public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
         return new PathParameterCallbackUrlResolver();
     }
 
-    public String getAccessTokenFromRefreshToken(AzureAdProfile azureAdProfile) {
-        CommonHelper.assertTrue(CommonHelper.isNotBlank(getConfiguration().getTenant()),
+    public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
+        final AzureAdOidcConfiguration azureConfig = (AzureAdOidcConfiguration) getConfiguration();
+        CommonHelper.assertTrue(CommonHelper.isNotBlank(azureConfig.getTenant()),
             "Tenant must be defined. Update your config.");
         HttpURLConnection connection = null;
         try {
@@ -78,12 +79,12 @@ public class AzureAdClient extends OidcClient<AzureAdOidcConfiguration> {
             headers.put( HttpConstants.CONTENT_TYPE_HEADER, HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE);
             headers.put( HttpConstants.ACCEPT_HEADER, HttpConstants.APPLICATION_JSON);
 
-            connection = HttpUtils.openPostConnection(new URL("https://login.microsoftonline.com/"+getConfiguration().getTenant()+
+            connection = HttpUtils.openPostConnection(new URL("https://login.microsoftonline.com/" + azureConfig.getTenant()+
                 "/oauth2/token"), headers);
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
                 StandardCharsets.UTF_8));
-            out.write(getConfiguration().makeOauth2TokenRequest(azureAdProfile.getRefreshToken().getValue()));
+            out.write(azureConfig.makeOauth2TokenRequest(azureAdProfile.getRefreshToken().getValue()));
             out.close();
 
             final int responseCode = connection.getResponseCode();

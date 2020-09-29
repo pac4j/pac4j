@@ -10,7 +10,7 @@ import java.util.Date;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcLongTimeConverter implements AttributeConverter<Date> {
+public class OidcLongTimeConverter implements AttributeConverter {
 
     @Override
     public Date convert(final Object attribute) {

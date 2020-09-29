@@ -107,7 +107,7 @@ public final class FormClientTests implements TestsConstants {
     @Test
     public void testGetRightCredentials() {
         final FormClient formClient = getFormClient();
-        final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
+        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
                 .addRequestParameter(formClient.getPasswordParameter(), USERNAME)).get();
         assertEquals(USERNAME, credentials.getUsername());
@@ -118,7 +118,7 @@ public final class FormClientTests implements TestsConstants {
     public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
         formClient.setProfileCreator((credentials, context) -> {
-            String username = credentials.getUsername();
+            String username = ((UsernamePasswordCredentials) credentials).getUsername();
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);

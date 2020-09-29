@@ -4,16 +4,18 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.profile.converter.GenderConverter;
 import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -24,7 +26,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @author zhangzhenli
  * @since 3.1.0
  */
-public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAuth20Configuration> {
+public class QQProfileDefinition extends OAuthProfileDefinition {
 
     public static final Pattern OPENID_REGEX = Pattern.compile("\"openid\"\\s*:\\s*\"(\\S*?)\"");
 
@@ -74,9 +76,8 @@ public class QQProfileDefinition extends OAuth20ProfileDefinition<QQProfile, OAu
         return "https://graph.qq.com/oauth2.0/me";
     }
 
-
     @Override
-    public String getProfileUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://graph.qq.com/user/get_user_info";
     }
 

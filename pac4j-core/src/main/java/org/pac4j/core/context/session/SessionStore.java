@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public interface SessionStore<C extends WebContext> {
+public interface SessionStore {
 
     /**
      * Get or create the session identifier and initialize the session with it if necessary.
@@ -18,7 +18,7 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return the session identifier
      */
-    String getOrCreateSessionId(C context);
+    String getOrCreateSessionId(WebContext context);
 
     /**
      * Get the object from its key in store.
@@ -27,7 +27,7 @@ public interface SessionStore<C extends WebContext> {
      * @param key the key of the object
      * @return the optional object in store
      */
-    Optional<Object> get(C context, String key);
+    Optional<Object> get(WebContext context, String key);
 
     /**
      * Save an object in the store by its key.
@@ -36,7 +36,7 @@ public interface SessionStore<C extends WebContext> {
      * @param key the key of the object
      * @param value the value to save in store
      */
-    void set(C context, String key, Object value);
+    void set(WebContext context, String key, Object value);
 
     /**
      * Destroy the web session.
@@ -44,7 +44,7 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return whether the session has been destroyed
      */
-    boolean destroySession(C context);
+    boolean destroySession(WebContext context);
 
     /**
      * Get the native session as a trackable object.
@@ -52,7 +52,7 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return the optional trackable object
      */
-    Optional getTrackableSession(C context);
+    Optional getTrackableSession(WebContext context);
 
     /**
      * Build a new session store from a trackable session.
@@ -61,7 +61,7 @@ public interface SessionStore<C extends WebContext> {
      * @param trackableSession the trackable session
      * @return the optional new session store
      */
-    Optional<SessionStore<C>> buildFromTrackableSession(C context, Object trackableSession);
+    Optional<SessionStore> buildFromTrackableSession(WebContext context, Object trackableSession);
 
     /**
      * Renew the native session by copying all data to a new one.
@@ -69,5 +69,5 @@ public interface SessionStore<C extends WebContext> {
      * @param context the web context
      * @return whether the session store has renewed the session
      */
-    boolean renewSession(C context);
+    boolean renewSession(WebContext context);
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class IsFullyAuthenticatedAuthorizer<U extends UserProfile> extends AbstractCheckAuthenticationAuthorizer<U> {
+public class IsFullyAuthenticatedAuthorizer extends AbstractCheckAuthenticationAuthorizer {
 
     public IsFullyAuthenticatedAuthorizer() {}
 
@@ -21,16 +21,16 @@ public class IsFullyAuthenticatedAuthorizer<U extends UserProfile> extends Abstr
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
         return isAnyAuthorized(context, profiles);
     }
 
     @Override
-    public boolean isProfileAuthorized(final WebContext context, final U profile) {
+    public boolean isProfileAuthorized(final WebContext context, final UserProfile profile) {
         return profile != null && !(profile instanceof AnonymousProfile) && !profile.isRemembered();
     }
 
-    public static <U extends UserProfile> IsFullyAuthenticatedAuthorizer<U> isFullyAuthenticated() {
-        return new IsFullyAuthenticatedAuthorizer<>();
+    public static IsFullyAuthenticatedAuthorizer isFullyAuthenticated() {
+        return new IsFullyAuthenticatedAuthorizer();
     }
 }

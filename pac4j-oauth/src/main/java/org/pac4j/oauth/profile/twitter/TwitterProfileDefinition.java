@@ -1,13 +1,13 @@
 package org.pac4j.oauth.profile.twitter;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth1Token;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
-import org.pac4j.oauth.config.OAuth10Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -20,7 +20,7 @@ import java.util.Locale;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterProfile> {
+public class TwitterProfileDefinition extends OAuthProfileDefinition {
 
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";
@@ -88,7 +88,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
     }
 
     @Override
-    public String getProfileUrl(final OAuth1Token accessToken, final OAuth10Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (includeEmail) {
             // https://developer.twitter.com/en/docs/accounts-and-users/manage-account-settings/api-reference/get-account-verify_credentials
             return VERIFY_CREDENTIALS_URL + "?include_email=true";
@@ -98,7 +98,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
 
     @Override
     public TwitterProfile extractUserProfile(final String body) {
-        final TwitterProfile profile = newProfile();
+        final TwitterProfile profile = (TwitterProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));

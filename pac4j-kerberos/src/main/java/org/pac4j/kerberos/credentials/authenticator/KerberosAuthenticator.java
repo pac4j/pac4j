@@ -1,6 +1,7 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class KerberosAuthenticator implements Authenticator<KerberosCredentials> {
+public class KerberosAuthenticator implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +35,8 @@ public class KerberosAuthenticator implements Authenticator<KerberosCredentials>
     }
 
     @Override
-    public void validate(KerberosCredentials credentials, WebContext context) {
+    public void validate(final Credentials cred, final WebContext context) {
+        final KerberosCredentials credentials = (KerberosCredentials) cred;
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");

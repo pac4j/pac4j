@@ -9,28 +9,27 @@ import static java.util.Arrays.asList;
 
 /**
  * The disjunction of authorizers.
- * @param <U> Type of profile
  *
  * @author Sergey Morgunov
  * @since 3.4.0
  */
-public class OrAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public class OrAuthorizer implements Authorizer {
 
-    private final List<Authorizer<U>> authorizers;
+    private final List<Authorizer> authorizers;
 
-    public OrAuthorizer(List<Authorizer<U>> authorizers) {
+    public OrAuthorizer(List<Authorizer> authorizers) {
         this.authorizers = authorizers;
     }
 
     @Override
-    public boolean isAuthorized(WebContext context, List<U> profiles) {
-        for (Authorizer<U> authorizer : authorizers) {
+    public boolean isAuthorized(WebContext context, List<UserProfile> profiles) {
+        for (Authorizer authorizer : authorizers) {
             if (authorizer.isAuthorized(context, profiles)) return true;
         }
         return false;
     }
 
-    public static <U extends UserProfile> OrAuthorizer<U> or(Authorizer<U>... authorizers) {
-        return new OrAuthorizer<>(asList(authorizers));
+    public static OrAuthorizer or(Authorizer... authorizers) {
+        return new OrAuthorizer(asList(authorizers));
     }
 }

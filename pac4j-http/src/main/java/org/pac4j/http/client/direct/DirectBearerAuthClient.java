@@ -5,9 +5,9 @@ import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -20,7 +20,7 @@ import java.util.Optional;
  * @author Graham Leggett
  * @since 3.5.0
  */
-public class DirectBearerAuthClient extends DirectClient<TokenCredentials> {
+public class DirectBearerAuthClient extends DirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
@@ -45,7 +45,7 @@ public class DirectBearerAuthClient extends DirectClient<TokenCredentials> {
     }
 
     @Override
-    protected Optional<TokenCredentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 

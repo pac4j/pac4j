@@ -1,7 +1,6 @@
 package org.pac4j.core.profile.definition;
 
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.factory.ProfileFactory;
 
@@ -11,7 +10,7 @@ import org.pac4j.core.profile.factory.ProfileFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDefinition<P> {
+public class CommonProfileDefinition extends ProfileDefinition {
 
     public static final String EMAIL = "email";
     public static final String FIRST_NAME = "first_name";
@@ -40,7 +39,7 @@ public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDef
         primary(Pac4jConstants.USERNAME, Converters.STRING);
     }
 
-    public CommonProfileDefinition(final ProfileFactory<P> profileFactory) {
+    public CommonProfileDefinition(final ProfileFactory profileFactory) {
         this();
         setProfileFactory(profileFactory);
     }

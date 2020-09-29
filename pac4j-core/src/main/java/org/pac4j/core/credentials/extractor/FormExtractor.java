@@ -1,6 +1,7 @@
 package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 import java.util.Optional;
@@ -11,7 +12,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class FormExtractor implements CredentialsExtractor<UsernamePasswordCredentials> {
+public class FormExtractor implements CredentialsExtractor {
 
     private final String usernameParameter;
 
@@ -23,7 +24,7 @@ public class FormExtractor implements CredentialsExtractor<UsernamePasswordCrede
     }
 
     @Override
-    public Optional<UsernamePasswordCredentials> extract(WebContext context) {
+    public Optional<Credentials> extract(WebContext context) {
         final Optional<String> username = context.getRequestParameter(this.usernameParameter);
         final Optional<String> password = context.getRequestParameter(this.passwordParameter);
         if (!username.isPresent() || !password.isPresent()) {

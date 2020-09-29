@@ -3,6 +3,7 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.TestsConstants;
@@ -30,7 +31,7 @@ public final class ParameterExtractorTests implements TestsConstants {
     public void testRetrieveGetParameterOk() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final TokenCredentials credentials = getExtractor.extract(context).get();
+        final TokenCredentials credentials = (TokenCredentials) getExtractor.extract(context).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
@@ -38,7 +39,7 @@ public final class ParameterExtractorTests implements TestsConstants {
     public void testRetrievePostParameterOk() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final TokenCredentials credentials = postExtractor.extract(context).get();
+        final TokenCredentials credentials = (TokenCredentials) postExtractor.extract(context).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
@@ -59,14 +60,14 @@ public final class ParameterExtractorTests implements TestsConstants {
     @Test
     public void testRetrieveNoGetParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
-        final Optional<TokenCredentials> credentials = getExtractor.extract(context);
+        final Optional<Credentials> credentials = getExtractor.extract(context);
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testRetrieveNoPostParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        final Optional<TokenCredentials> credentials = postExtractor.extract(context);
+        final Optional<Credentials> credentials = postExtractor.extract(context);
         assertFalse(credentials.isPresent());
     }
 }

@@ -2,6 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class BasicAuthExtractor implements CredentialsExtractor<UsernamePasswordCredentials> {
+public class BasicAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
 
@@ -29,10 +30,11 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
     }
 
     @Override
-    public Optional<UsernamePasswordCredentials> extract(final WebContext context) {
-        final Optional<TokenCredentials> optCredentials = this.extractor.extract(context);
-        return optCredentials.map(credentials -> {
+    public Optional<Credentials> extract(final WebContext context) {
+        final Optional<Credentials> optCredentials = this.extractor.extract(context);
+        return optCredentials.map(cred -> {
 
+            final TokenCredentials credentials = (TokenCredentials) cred;
             final byte[] decoded = Base64.getDecoder().decode(credentials.getToken());
             final String token = new String(decoded, StandardCharsets.UTF_8);
 

@@ -1,12 +1,12 @@
 package org.pac4j.oauth.profile.google2;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -16,7 +16,7 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Profile, OAuth20Configuration> {
+public class Google2ProfileDefinition extends OAuthProfileDefinition {
 
     public static final String EMAIL_VERIFIED = "email_verified";
     public static final String GIVEN_NAME = "given_name";
@@ -34,13 +34,13 @@ public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Pr
     }
 
     @Override
-    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+    public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://www.googleapis.com/oauth2/v3/userinfo";
     }
 
     @Override
     public Google2Profile extractUserProfile(final String body) {
-        final Google2Profile profile = newProfile();
+        final Google2Profile profile = (Google2Profile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "sub")));

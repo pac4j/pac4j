@@ -2,6 +2,7 @@ package org.pac4j.core.http.adapter;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.*;
 
@@ -14,15 +15,15 @@ import java.io.IOException;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class JEEHttpActionAdapter implements HttpActionAdapter<Object, JEEContext> {
+public class JEEHttpActionAdapter implements HttpActionAdapter {
 
     public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
 
     @Override
-    public Object adapt(final HttpAction action, final JEEContext context) {
+    public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {
             int code = action.getCode();
-            final HttpServletResponse response = context.getNativeResponse();
+            final HttpServletResponse response = ((JEEContext) context).getNativeResponse();
 
             if (code < 400) {
                 response.setStatus(code);

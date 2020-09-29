@@ -2,6 +2,7 @@ package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
@@ -20,7 +21,7 @@ import java.util.StringTokenizer;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentials> {
+public class DigestAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
 
@@ -50,13 +51,13 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * @return the Digest credentials
      */
     @Override
-    public Optional<DigestCredentials> extract(WebContext context) {
-        final Optional<TokenCredentials> credentials = this.extractor.extract(context);
+    public Optional<Credentials> extract(WebContext context) {
+        final Optional<Credentials> credentials = this.extractor.extract(context);
         if (!credentials.isPresent()) {
             return Optional.empty();
         }
 
-        String token = credentials.get().getToken();
+        String token = ((TokenCredentials) credentials.get()).getToken();
         Map<String, String> valueMap = parseTokenValue(token);
         String username = valueMap.get("username");
         String response = valueMap.get("response");

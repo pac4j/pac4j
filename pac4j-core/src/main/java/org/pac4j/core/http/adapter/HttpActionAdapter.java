@@ -9,7 +9,7 @@ import org.pac4j.core.exception.http.HttpAction;
  * @author Jerome Leleu
  * @since 1.8.2
  */
-public interface HttpActionAdapter<R, C extends WebContext> {
+public interface HttpActionAdapter {
 
     /**
      * Adapt the HTTP action.
@@ -18,5 +18,5 @@ public interface HttpActionAdapter<R, C extends WebContext> {
      * @param context the web context
      * @return the specific framework HTTP result
      */
-    R adapt(HttpAction action, C context);
+    Object adapt(HttpAction action, WebContext context);
 }

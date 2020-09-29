@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.http.credentials.X509Credentials;
 import org.slf4j.Logger;
@@ -15,14 +16,14 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 3.3.0
  */
-public class X509CredentialsExtractor implements CredentialsExtractor<X509Credentials>  {
+public class X509CredentialsExtractor implements CredentialsExtractor  {
 
     public static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
     private static final Logger logger = LoggerFactory.getLogger(X509CredentialsExtractor.class);
 
     @Override
-    public Optional<X509Credentials> extract(WebContext context) {
+    public Optional<Credentials> extract(WebContext context) {
         final Optional<X509Certificate[]> certificates =
             (Optional<X509Certificate[]>) context.getRequestAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 

@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class MockDirectClient extends DirectClient<Credentials> {
+public final class MockDirectClient extends DirectClient {
 
     private final ReturnCredentials returnCredentials;
 

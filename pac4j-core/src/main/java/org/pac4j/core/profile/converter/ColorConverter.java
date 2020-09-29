@@ -6,12 +6,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class converts a String into a Color.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class ColorConverter extends AbstractAttributeConverter<Color> {
-    
+public final class ColorConverter extends AbstractAttributeConverter {
+
     private static final Logger logger = LoggerFactory.getLogger(ColorConverter.class);
 
     public ColorConverter() {

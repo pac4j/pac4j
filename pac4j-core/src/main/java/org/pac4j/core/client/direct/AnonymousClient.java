@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class AnonymousClient extends DirectClient<AnonymousCredentials> {
+public final class AnonymousClient extends DirectClient {
 
     public static final AnonymousClient INSTANCE = new AnonymousClient();
 

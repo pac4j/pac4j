@@ -8,26 +8,26 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class AbstractAttributeConverter<T extends Object> implements AttributeConverter<T> {
+public abstract class AbstractAttributeConverter implements AttributeConverter {
 
-    private final Class<T> clazz;
+    private final Class clazz;
 
-    protected AbstractAttributeConverter(final Class<T> clazz) {
+    protected AbstractAttributeConverter(final Class clazz) {
         this.clazz = clazz;
     }
 
     @Override
-    public T convert(final Object attribute) {
-        T t = null;
+    public Object convert(final Object attribute) {
+        Object t = null;
         if (attribute != null) {
             if (clazz.isAssignableFrom(attribute.getClass())) {
-                t = (T) attribute;
+                t = attribute;
             } else if (attribute instanceof List) {
                 final List l = (List) attribute;
                 if (l.size() > 0) {
                     final Object element = l.get(0);
                     if (clazz.isAssignableFrom(element.getClass())) {
-                        t = (T) element;
+                        t = element;
                     }
                 }
             } else {
@@ -41,11 +41,11 @@ public abstract class AbstractAttributeConverter<T extends Object> implements At
         }
     }
 
-    protected T internalConvert(final Object attribute) {
+    protected Object internalConvert(final Object attribute) {
         return null;
     }
 
-    protected T defaultValue() {
+    protected Object defaultValue() {
         return null;
     }
 

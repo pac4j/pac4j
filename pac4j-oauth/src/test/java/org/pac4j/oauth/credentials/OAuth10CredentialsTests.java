@@ -8,12 +8,12 @@ import org.pac4j.core.util.TestsConstants;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class tests the {@link OAuthCredentials} class.
+ * This class tests the {@link OAuth10Credentials} class.
  *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class OAuthCredentialsTests implements TestsConstants {
+public final class OAuth10CredentialsTests implements TestsConstants {
 
     private final static OAuth1RequestToken REQUEST_TOKEN = new OAuth1RequestToken(TOKEN, SECRET);
 

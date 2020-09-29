@@ -9,29 +9,27 @@ import static java.util.Arrays.asList;
 
 /**
  * The conjunction of authorizers.
- * @param <U> Type of profile
  *
  * @author Sergey Morgunov
  * @since 3.4.0
  */
-public class AndAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public class AndAuthorizer implements Authorizer {
 
-    private final List<Authorizer<U>> authorizers;
+    private final List<Authorizer> authorizers;
 
-    public AndAuthorizer(List<Authorizer<U>> authorizers) {
+    public AndAuthorizer(List<Authorizer> authorizers) {
         this.authorizers = authorizers;
     }
 
     @Override
-    public boolean isAuthorized(WebContext context, List<U> profiles) {
-        for (Authorizer<U> authorizer : authorizers) {
+    public boolean isAuthorized(WebContext context, List<UserProfile> profiles) {
+        for (Authorizer authorizer : authorizers) {
             if (!authorizer.isAuthorized(context, profiles)) return false;
         }
         return true;
     }
 
-    public static <U extends UserProfile> Authorizer<U> and(Authorizer<U>... authorizers) {
-        return new AndAuthorizer<>(asList(authorizers));
+    public static Authorizer and(Authorizer... authorizers) {
+        return new AndAuthorizer(asList(authorizers));
     }
-
 }

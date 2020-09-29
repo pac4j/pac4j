@@ -3,7 +3,6 @@ package org.pac4j.core.authorization.checker;
 import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -32,7 +31,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
-                                final Map<String, Authorizer> authorizersMap, final List<Client<? extends Credentials>> clients) {
+                                final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
         final List<Authorizer> authorizers = new ArrayList<>();
         String authorizerNames = authorizersValue;
         // if no authorizers are defined, compute the default one(s)
@@ -72,7 +71,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return isAuthorized(context, profiles, authorizers);
     }
 
-    protected String computeDefaultAuthorizers(final List<Client<? extends Credentials>> clients) {
+    protected String computeDefaultAuthorizers(final List<Client> clients) {
         for (final Client client : clients) {
             if (client instanceof IndirectClient) {
                 return DefaultAuthorizers.CSRF_CHECK;

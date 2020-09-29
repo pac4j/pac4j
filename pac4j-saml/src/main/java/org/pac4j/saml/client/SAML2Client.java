@@ -17,7 +17,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
-import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
@@ -61,7 +60,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class SAML2Client extends IndirectClient<SAML2Credentials> {
+public class SAML2Client extends IndirectClient {
 
     protected SAMLContextProvider contextProvider;
 

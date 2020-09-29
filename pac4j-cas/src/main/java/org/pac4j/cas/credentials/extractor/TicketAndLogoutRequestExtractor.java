@@ -6,6 +6,7 @@ import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionActionHelper;
@@ -29,7 +30,7 @@ import java.util.zip.Inflater;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<TokenCredentials> {
+public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
 
     private final static int DECOMPRESSION_FACTOR = 10;
 
@@ -43,7 +44,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor<Tok
     }
 
     @Override
-    public Optional<TokenCredentials> extract(final WebContext context) {
+    public Optional<Credentials> extract(final WebContext context) {
         final LogoutHandler logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:

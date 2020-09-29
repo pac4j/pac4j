@@ -18,7 +18,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileDefinition<P> {
+public class OidcProfileDefinition extends CommonProfileDefinition {
 
     public static final String NAME                     = "name";
     public static final String GIVEN_NAME               = "given_name";
@@ -49,7 +49,7 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
     public static final String EXPIRATION               = "expiration";
 
     public OidcProfileDefinition() {
-        super(x -> (P) new OidcProfile());
+        super(x -> new OidcProfile());
         Arrays.stream(new String[] {NAME, GIVEN_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, WEBSITE,
                 PHONE_NUMBER, ZONEINFO, ID_TOKEN}).forEach(a -> primary(a, Converters.STRING));
         primary(PROFILE, Converters.URL);
@@ -84,7 +84,7 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
         secondary(EXPIRATION, Converters.DATE_TZ_RFC822);
     }
 
-    public OidcProfileDefinition(final ProfileFactory<P> profileFactory) {
+    public OidcProfileDefinition(final ProfileFactory profileFactory) {
         this();
         setProfileFactory(profileFactory);
     }

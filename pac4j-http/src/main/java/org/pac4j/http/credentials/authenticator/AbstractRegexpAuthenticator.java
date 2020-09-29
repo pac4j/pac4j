@@ -1,6 +1,5 @@
 package org.pac4j.http.credentials.authenticator;
 
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -14,7 +13,7 @@ import java.util.regex.Pattern;
  * @author Jerome Leleu
  * @since 3.3.0
  */
-public abstract class AbstractRegexpAuthenticator<U extends CommonProfile> extends ProfileDefinitionAware<U> {
+public abstract class AbstractRegexpAuthenticator extends ProfileDefinitionAware {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

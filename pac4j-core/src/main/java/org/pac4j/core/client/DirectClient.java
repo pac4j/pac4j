@@ -14,7 +14,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class DirectClient<C extends Credentials> extends BaseClient<C> {
+public abstract class DirectClient extends BaseClient {
 
     @Override
     protected final void internalInit() {
@@ -37,7 +37,7 @@ public abstract class DirectClient<C extends Credentials> extends BaseClient<C> 
     }
 
     @Override
-    public final Optional<C> getCredentials(final WebContext context) {
+    public final Optional<Credentials> getCredentials(final WebContext context) {
         init();
         return retrieveCredentials(context);
     }

@@ -8,12 +8,12 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link org.pac4j.core.profile.converter.LocaleConverter} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class LocaleConverterTests {
-    
+
     private final LocaleConverter converter = new LocaleConverter();
 
     @Test
@@ -28,13 +28,13 @@ public final class LocaleConverterTests {
 
     @Test
     public void testLanguage() {
-        final Locale locale = this.converter.convert("fr");
+        final Locale locale = (Locale) this.converter.convert("fr");
         assertEquals("fr", locale.getLanguage());
     }
 
     @Test
     public void testLanguageCountry() {
-        final Locale locale = this.converter.convert(Locale.FRANCE.toString());
+        final Locale locale = (Locale) this.converter.convert(Locale.FRANCE.toString());
         assertEquals(Locale.FRANCE.getLanguage(), locale.getLanguage());
         assertEquals(Locale.FRANCE.getCountry(), locale.getCountry());
     }

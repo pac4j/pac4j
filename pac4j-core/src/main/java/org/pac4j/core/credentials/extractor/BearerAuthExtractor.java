@@ -2,7 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.Credentials;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author Graham Leggett
  * @since 3.5.0
  */
-public class BearerAuthExtractor implements CredentialsExtractor<TokenCredentials> {
+public class BearerAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
 
@@ -25,7 +25,7 @@ public class BearerAuthExtractor implements CredentialsExtractor<TokenCredential
     }
 
     @Override
-    public Optional<TokenCredentials> extract(WebContext context) {
+    public Optional<Credentials> extract(WebContext context) {
         return this.extractor.extract(context);
     }
 }

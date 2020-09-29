@@ -2,6 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -30,14 +31,14 @@ public final class HeaderExtractorTests implements TestsConstants {
     @Test
     public void testRetrieveHeaderOk() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
-        final TokenCredentials credentials = extractor.extract(context).get();
+        final TokenCredentials credentials = (TokenCredentials) extractor.extract(context).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testBadHeader() {
         final MockWebContext context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
-        final Optional<TokenCredentials> credentials = extractor.extract(context);
+        final Optional<Credentials> credentials = extractor.extract(context);
         assertFalse(credentials.isPresent());
     }
 

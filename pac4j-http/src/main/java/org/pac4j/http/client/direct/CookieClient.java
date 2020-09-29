@@ -3,7 +3,6 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.extractor.CookieExtractor;
 
 /**
@@ -12,7 +11,7 @@ import org.pac4j.http.credentials.extractor.CookieExtractor;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CookieClient extends DirectClient<TokenCredentials> {
+public class CookieClient extends DirectClient {
 
     private String cookieName;
 

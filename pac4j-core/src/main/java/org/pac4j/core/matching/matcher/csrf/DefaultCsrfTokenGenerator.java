@@ -15,7 +15,7 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
     @Override
     public String get(final WebContext context) {
-        Optional<String> token = getTokenFromSession(context);
+        Optional<Object> token = getTokenFromSession(context);
         if (!token.isPresent()) {
             synchronized (this) {
                 token = getTokenFromSession(context);
@@ -25,10 +25,10 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
                 }
             }
         }
-        return token.get();
+        return (String) token.get();
     }
 
-    protected Optional<String> getTokenFromSession(final WebContext context) {
-        return (Optional<String>) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
+    protected Optional<Object> getTokenFromSession(final WebContext context) {
+        return context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
     }
 }

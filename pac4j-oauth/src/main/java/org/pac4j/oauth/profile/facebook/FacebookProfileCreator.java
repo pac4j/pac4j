@@ -11,7 +11,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
-import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfile> {
+public class FacebookProfileCreator extends OAuth20ProfileCreator {
 
     private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.8/oauth/access_token?grant_type=fb_exchange_token";
 
@@ -34,22 +34,21 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
     }
 
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final OAuth2AccessToken accessToken) {
-        final OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration> profileDefinition =
-            (OAuth20ProfileDefinition<FacebookProfile, OAuth20Configuration>) configuration.getProfileDefinition();
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+        final OAuthProfileDefinition profileDefinition = configuration.getProfileDefinition();
         final FacebookConfiguration facebookConfiguration = (FacebookConfiguration) configuration;
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final OAuth20Service service = this.configuration.buildService(context, client);
+        final OAuth20Service service = (OAuth20Service) this.configuration.buildService(context, client);
         String body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
-        final FacebookProfile profile = profileDefinition.extractUserProfile(body);
+        final FacebookProfile profile = (FacebookProfile) profileDefinition.extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         if (profile != null && facebookConfiguration.isRequiresExtendedToken()) {
             String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, configuration.getKey());
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, configuration.getSecret());
-            url = addExchangeToken(url, accessToken);
+            url = addExchangeToken(url, (OAuth2AccessToken) accessToken);
             final OAuthRequest request = createOAuthRequest(url, Verb.GET);
             final long t0 = System.currentTimeMillis();
             final Response response;
