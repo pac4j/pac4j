@@ -276,6 +276,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     public void validate(final Credentials cred, final WebContext context) {
         init();
 
+        assertNotNull("credentials", cred);
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
