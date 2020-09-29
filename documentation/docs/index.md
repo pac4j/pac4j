@@ -35,6 +35,4 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 11) [Customizations](customizations.html)
 
-## 12) [Third-party extensions](extensions.html)
-
-## 13) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/4.1.0/index.html)
+## 12) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/4.1.0/index.html)

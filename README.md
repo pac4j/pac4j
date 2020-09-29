@@ -67,9 +67,3 @@ If you have any questions, want to contribute or be notified about the new relea
 ## Supported by
 
 [![CAS in the cloud](http://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*
-
-
-## Third-party extensions
-
-There exist extensions to pac4j developed by third parties. The extensions provide features not available in the core pac4j distribution. At the moment, the following extension are known:
-- [IDC Extensions to PAC4J](https://github.com/jkacer/pac4j-extensions), developed internally by IDC and published as open source.
