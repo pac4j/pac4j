@@ -19,7 +19,7 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
  * @author Julio Arrebola
  * @since 2.0.0
  */
-public class KeycloakOidcClient extends OidcClient<KeycloakOidcConfiguration> {
+public class KeycloakOidcClient extends OidcClient {
 
     public KeycloakOidcClient() {
     }
@@ -32,7 +32,7 @@ public class KeycloakOidcClient extends OidcClient<KeycloakOidcConfiguration> {
     protected void clientInit() {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
-        profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new KeycloakOidcProfile()));
+        profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 
         addAuthorizationGenerator(new KeycloakRolesAuthorizationGenerator(getConfiguration().getClientId()));

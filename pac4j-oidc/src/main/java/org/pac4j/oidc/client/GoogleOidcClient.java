@@ -14,7 +14,7 @@ import org.pac4j.oidc.profile.google.GoogleOidcProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class GoogleOidcClient extends OidcClient<OidcConfiguration> {
+public class GoogleOidcClient extends OidcClient {
 
     public GoogleOidcClient() {
     }
@@ -28,7 +28,7 @@ public class GoogleOidcClient extends OidcClient<OidcConfiguration> {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().defaultDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
         final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
-        profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new GoogleOidcProfile()));
+        profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new GoogleOidcProfile()));
         defaultProfileCreator(profileCreator);
         defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());
 

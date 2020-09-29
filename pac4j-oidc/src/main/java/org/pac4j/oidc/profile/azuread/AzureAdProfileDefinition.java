@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class AzureAdProfileDefinition extends OidcProfileDefinition<AzureAdProfile> {
+public class AzureAdProfileDefinition extends OidcProfileDefinition {
 
     public static final String IDP = "idp";
     public static final String OID = "oid";

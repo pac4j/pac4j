@@ -17,7 +17,7 @@ public class SessionStoreValueRetriever implements ValueRetriever {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<Object> retrieve(String key, OidcClient<?> client, WebContext webContext) {
+    public Optional<Object> retrieve(String key, OidcClient client, WebContext webContext) {
         return webContext.getSessionStore().get(webContext, key);
     }
 }

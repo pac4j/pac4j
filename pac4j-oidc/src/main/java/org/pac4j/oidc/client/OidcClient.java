@@ -26,22 +26,14 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class OidcClient<V extends OidcConfiguration> extends IndirectClient {
+public class OidcClient extends IndirectClient {
 
-    private V configuration = null;
+    private OidcConfiguration configuration;
 
     public OidcClient() { }
 
-    public OidcClient(final V configuration) {
+    public OidcClient(final OidcConfiguration configuration) {
         setConfiguration(configuration);
-    }
-
-    public V getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final V configuration) {
-        this.configuration = configuration;
     }
 
     @Override
@@ -54,16 +46,6 @@ public class OidcClient<V extends OidcConfiguration> extends IndirectClient {
         defaultAuthenticator(new OidcAuthenticator(configuration, this));
         defaultProfileCreator(new OidcProfileCreator(configuration, this));
         defaultLogoutActionBuilder(new OidcLogoutActionBuilder(configuration));
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
-            "configuration", configuration);
     }
 
     @Override
@@ -88,5 +70,23 @@ public class OidcClient<V extends OidcConfiguration> extends IndirectClient {
     @Override
     public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
         configuration.findLogoutHandler().renewSession(oldSessionId, context);
+    }
+
+    public OidcConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(final OidcConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
+            "configuration", configuration);
     }
 }
