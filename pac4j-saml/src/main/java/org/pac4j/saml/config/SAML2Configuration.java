@@ -770,15 +770,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
         return logoutHandler;
     }
 
-    /**
-     * Initializes the configuration for a particular client.
-     *
-     * @param clientName Name of the client. The configuration can use the value or not.
-     */
-    public void init(final String clientName) {
-        init();
-    }
-
     private void initSignatureSigningConfiguration() {
         // Bootstrap signature signing configuration if not manually set
         final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap

@@ -111,7 +111,7 @@ public class SAML2Client extends IndirectClient {
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
         final String callbackUrl = computeFinalCallbackUrl(null);
         configuration.setCallbackUrl(callbackUrl);
-        this.configuration.init(getName());
+        configuration.init();
 
         initDecrypter();
         initSignatureSigningParametersProvider();
