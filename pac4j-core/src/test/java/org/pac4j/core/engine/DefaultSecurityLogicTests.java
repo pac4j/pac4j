@@ -74,7 +74,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testNullConfig() {
         config = null;
         TestsHelper.expectException(() -> call(), TechnicalException.class, "config cannot be null");
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
@@ -87,35 +86,30 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testNullHttpActionAdapter() {
         httpActionAdapter = null;
         TestsHelper.expectException(() -> call(), TechnicalException.class, "httpActionAdapter cannot be null");
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
     public void testNullClients() {
         config.setClients(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "configClients cannot be null");
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
     public void testNullClientFinder() {
         logic.setClientFinder(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "clientFinder cannot be null");
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
     public void testNullAuthorizationChecker() {
         logic.setAuthorizationChecker(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "authorizationChecker cannot be null");
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
     public void testNullMatchingChecker() {
         logic.setMatchingChecker(null);
         TestsHelper.expectException(() -> call(), TechnicalException.class, "matchingChecker cannot be null");
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
@@ -125,7 +119,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         clients = "";
         call();
         assertEquals(401, action.getCode());
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -137,7 +130,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertNull(action);
         assertEquals(1, nbCall);
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).isPresent());
     }
 
     @Test
@@ -154,7 +146,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertNull(action);
         assertEquals(1, nbCall);
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -169,7 +160,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.addAuthorizer(NAME, (context, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
         call();
         assertEquals(403, action.getCode());
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -185,7 +175,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(400, action.getCode());
         assertEquals(0, nbCall);
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -205,7 +194,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile));
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -219,7 +207,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(400, action.getCode());
         assertEquals(0, nbCall);
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -241,7 +228,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         assertEquals(2, profiles.size());
         assertTrue(profiles.containsValue(profile));
         assertTrue(profiles.containsValue(profile2));
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -263,7 +249,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile2));
-        assertEquals(false, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -280,7 +265,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         multiProfile = true;
         call();
         assertEquals(401, action.getCode());
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -292,7 +276,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(302, action.getCode());
         assertEquals(PAC4J_URL, ((FoundAction) action).getLocation());
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -307,7 +290,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(302, action.getCode());
         assertEquals(PAC4J_BASE_URL, ((FoundAction) action).getLocation());
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 
     @Test
@@ -321,6 +303,5 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
         call();
         assertEquals(401, action.getCode());
-        assertEquals(true, context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION).get());
     }
 }

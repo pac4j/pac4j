@@ -16,9 +16,9 @@ public interface SessionStore {
      * Get or create the session identifier and initialize the session with it if necessary.
      *
      * @param context the web context
-     * @return the session identifier
+     * @return the optional session identifier
      */
-    String getOrCreateSessionId(WebContext context);
+    Optional<String> getSessionId(WebContext context, boolean createSession);
 
     /**
      * Get the object from its key in store.

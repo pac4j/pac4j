@@ -89,6 +89,4 @@ public interface Pac4jConstants {
     String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
 
     String OIDC_CLAIM_SESSIONID = "sid";
-
-    String LOAD_PROFILES_FROM_SESSION = "pac4jLoadProfilesFromSession";
 }

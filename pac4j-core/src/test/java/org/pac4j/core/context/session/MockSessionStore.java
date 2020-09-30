@@ -26,11 +26,17 @@ public class MockSessionStore implements SessionStore {
     }
 
     @Override
-    public String getOrCreateSessionId(final WebContext context) {
+    public Optional<String> getSessionId(final WebContext context, final boolean createSession) {
+        if (createSession) {
+            generateIdIfNecessary();
+        }
+        return Optional.ofNullable(id);
+    }
+
+    protected void generateIdIfNecessary() {
         if (id == null) {
             id = new Date().toString();
         }
-        return id;
     }
 
     @Override
@@ -40,6 +46,7 @@ public class MockSessionStore implements SessionStore {
 
     @Override
     public void set(final WebContext context, final String key, final Object value) {
+        generateIdIfNecessary();
         store.put(key, value);
     }
 

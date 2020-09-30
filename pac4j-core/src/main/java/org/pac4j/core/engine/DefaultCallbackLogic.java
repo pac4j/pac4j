@@ -114,10 +114,10 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     protected void renewSession(final WebContext context, final Config config) {
         final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore != null) {
-            final String oldSessionId = sessionStore.getOrCreateSessionId(context);
+            final String oldSessionId = sessionStore.getSessionId(context, true).get();
             final boolean renewed = sessionStore.renewSession(context);
             if (renewed) {
-                final String newSessionId = sessionStore.getOrCreateSessionId(context);
+                final String newSessionId = sessionStore.getSessionId(context, true).get();
                 LOGGER.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
                 final Clients clients = config.getClients();
                 if (clients != null) {

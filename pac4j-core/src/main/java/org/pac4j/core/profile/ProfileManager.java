@@ -47,61 +47,29 @@ public class ProfileManager<U extends UserProfile> {
     /**
      * Retrieve the first user profile if it exists, ignoring any {@link AnonymousProfile} if possible.
      *
-     * @param readFromSession if the user profile must be read from session
      * @return the user profile
      */
+    public Optional<U> getProfile() {
+        return get(true);
+    }
+
     public Optional<U> get(final boolean readFromSession) {
         final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
         return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
     /**
-     * Retrieve the first user profile if it exists, ignoring any {@link AnonymousProfile} if possible.
-     * From the session or not, depending on the behavior which occured in the {@link org.pac4j.core.engine.DefaultSecurityLogic}.
-     *
-     * @param readFromSessionDefault if the user profile must be read from session otherwise
-     * @return the user profile
-     */
-    public Optional<U> getLikeDefaultSecurityLogic(final boolean readFromSessionDefault) {
-        return get(retrieveLoadProfilesFromSession(readFromSessionDefault));
-    }
-
-    /**
-     * Compute whether we must read the user profiles from the session.
-     * (depending on the {@link org.pac4j.core.engine.DefaultSecurityLogic} behavior).
-     *
-     * @param readFromSessionDefault if the user profile(s) must be read from session otherwise
-     * @return whether we must read the user profiles from the session
-     */
-    protected boolean retrieveLoadProfilesFromSession(final boolean readFromSessionDefault) {
-        final Optional<Boolean> loadProfilesFromSession = context.getRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION);
-        if (loadProfilesFromSession.isPresent()) {
-            return loadProfilesFromSession.get();
-        } else {
-            return readFromSessionDefault;
-        }
-    }
-
-    /**
      * Retrieve all user profiles.
      *
-     * @param readFromSession if the user profiles must be read from session
      * @return the user profiles
      */
+    public List<U> getProfiles() {
+        return getAll(true);
+    }
+
     public List<U> getAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
         return ProfileHelper.flatIntoAProfileList(profiles);
-    }
-
-    /**
-     * Retrieve all user profiles.
-     * From the session or not, depending on the behavior which occured in the {@link org.pac4j.core.engine.DefaultSecurityLogic}.
-     *
-     * @param readFromSessionDefault if the user profiles must be read from session otherwise
-     * @return the user profiles
-     */
-    public List<U> getAllLikeDefaultSecurityLogic(final boolean readFromSessionDefault) {
-        return getAll(retrieveLoadProfilesFromSession(readFromSessionDefault));
     }
 
     /**
@@ -154,9 +122,12 @@ public class ProfileManager<U extends UserProfile> {
 
     /**
      * Remove the current user profile(s).
-     *
-     * @param removeFromSession if the user profile(s) must be removed from session
      */
+    public void removeProfiles() {
+        final boolean sessionExists = context.getSessionStore().getSessionId(context, false).isPresent();
+        remove(sessionExists);
+    }
+
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
@@ -202,20 +173,13 @@ public class ProfileManager<U extends UserProfile> {
     }
 
     /**
-     * Perform a logout by removing the current user profile(s).
-     */
-    public void logout() {
-        remove(true);
-    }
-
-    /**
      * Tests if the current user is authenticated (meaning a user profile exists which is not an {@link AnonymousProfile}).
      *
      * @return whether the current user is authenticated
      */
     public boolean isAuthenticated() {
         try {
-            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, (List<UserProfile>) getAll(true));
+            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, (List<UserProfile>) getProfiles());
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }

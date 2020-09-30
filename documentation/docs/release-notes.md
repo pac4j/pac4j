@@ -10,6 +10,7 @@ title: Release notes&#58;
 - Removed deprecated methods and classes
 - Removed most generics
 - Slightly refactored the auto-initialization
+- Refactored the session management (`ProfileManager` and `SessionStore`): reading in the web session does not create it while writing a not null value in the session always create it
 
 **v4.1.0** (see: [what's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)):
 

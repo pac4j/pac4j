@@ -2,14 +2,10 @@ package org.pac4j.core.engine.decision;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
-
-import static org.pac4j.core.util.CommonHelper.isEmpty;
 
 /**
  * Default decision class where the indirect clients are handled separately from the direct clients.
@@ -20,8 +16,7 @@ import static org.pac4j.core.util.CommonHelper.isEmpty;
 public class DefaultProfileStorageDecision implements ProfileStorageDecision {
 
     /**
-     * Load the profiles from the web session if no clients are defined or if the first client is an indirect one
-     * or if the first client is the anonymous one.
+     * Always load the profiles from the web session.
      *
      * @param context the web context
      * @param currentClients the current clients
@@ -29,8 +24,7 @@ public class DefaultProfileStorageDecision implements ProfileStorageDecision {
      */
     @Override
     public boolean mustLoadProfilesFromSession(final WebContext context, final List<Client> currentClients) {
-        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient ||
-            currentClients.get(0) instanceof AnonymousClient;
+        return true;
     }
 
     /**

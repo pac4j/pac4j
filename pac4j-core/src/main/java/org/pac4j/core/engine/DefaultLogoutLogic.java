@@ -74,7 +74,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             // logic
             final ProfileManager<UserProfile> manager = getProfileManager(context);
             manager.setConfig(config);
-            final List<UserProfile> profiles = manager.getAll(true);
+            final List<UserProfile> profiles = manager.getProfiles();
 
             // compute redirection URL
             final Optional<String> url = context.getRequestParameter(Pac4jConstants.URL);
@@ -92,7 +92,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             // local logout if requested or multiple profiles
             if (localLogout || profiles.size() > 1) {
                 LOGGER.debug("Performing application logout");
-                manager.logout();
+                manager.removeProfiles();
                 if (destroySession) {
                     final SessionStore sessionStore = context.getSessionStore();
                     if (sessionStore != null) {
