@@ -1,6 +1,7 @@
 package org.pac4j.mongo.test.tools;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -12,9 +13,9 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.bson.Document;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.credentials.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public final class MongoServer implements TestsConstants {
             mongodExecutable.start();
 
             // populate
-            final MongoClient mongo = new MongoClient("localhost", port);
+            final MongoClient mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
             final MongoDatabase db = mongo.getDatabase("users");
             db.createCollection("users");
             final MongoCollection<Document> collection = db.getCollection("users");

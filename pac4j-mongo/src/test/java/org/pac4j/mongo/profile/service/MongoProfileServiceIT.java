@@ -1,13 +1,14 @@
 package org.pac4j.mongo.profile.service;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import org.bson.types.ObjectId;
 import org.junit.*;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.pac4j.mongo.test.tools.MongoServer;
@@ -90,7 +91,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     }
 
     private MongoClient getClient() {
-        return new MongoClient("localhost", PORT);
+        return MongoClients.create(String.format("mongodb://localhost:%d", PORT));
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
