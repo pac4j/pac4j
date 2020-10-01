@@ -49,7 +49,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic implements SecurityLogic {
+public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements SecurityLogic {
 
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
 

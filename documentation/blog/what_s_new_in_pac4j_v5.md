@@ -32,9 +32,12 @@ So almost all generics constraints have been removed from the source code. Only 
 
 ## Session management
 
-Web applications require a web session while web services generally don't create one.
-So far, the use of the web session was explicitly requested in several places (`ProfileManager`, `DefaultSecuritylogic`) even if web services don't write into the web session, they just read from it.
-Thus, the solution is to have session implementations (`SessionStore`) which don't create a session for reads, they just try to find it back (a session is created for writes if it doesn't exist).
-And reads can always happen from the web session and from the current request.
+Web applications require a web session while web services generally don't need one.
+These latter generally don't write into the web session, they just read from it so reads should not create a web session when it does not already exist (because of course, if the web session does not exist, the read will only return `Optional.empty()`).
 
-`profileManager.getAll(readFromSession)` can be replaced by `profileManager.getProfiles()`, no need to specify if the read must happen from the web session (this will be the case only if the session exists and no session will be created otherwise).
+Instead of explicitly requesting the use of the web session in several places (`ProfileManager`, `DefaultSecuritylogic`), the solution is to have session implementations (`SessionStore`) which don't create a new session for reads, they just try to find it back.
+This way, no need to explicitly define if you want to read from the web session or not.
+
+`profileManager.getAll(readFromSession)` can be replaced by `profileManager.getProfiles()`.
+
+BTW, a session is always created for writes if it doesn't exist.

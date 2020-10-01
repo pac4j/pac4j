@@ -6,7 +6,6 @@ import org.pac4j.core.client.*;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
@@ -30,7 +29,7 @@ import static org.junit.Assert.*;
  */
 public final class DefaultSecurityLogicTests implements TestsConstants {
 
-    private DefaultSecurityLogic<Object, WebContext> logic;
+    private DefaultSecurityLogic logic;
 
     private MockWebContext context;
 
