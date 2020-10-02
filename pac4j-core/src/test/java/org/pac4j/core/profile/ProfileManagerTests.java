@@ -153,51 +153,6 @@ public final class ProfileManagerTests {
         assertEquals(profile1, profileManager.get(true).get());
     }
 
-    @Test
-    public void testGetLikeProfileInSessionNoHintDefaultSession() {
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        assertEquals(profile1, profileManager.getLikeDefaultSecurityLogic(true).get());
-    }
-
-    @Test
-    public void testGetLikeProfileInSessionRequestHintDefaultSession() {
-        context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, false);
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        assertEquals(false, profileManager.getLikeDefaultSecurityLogic(true).isPresent());
-    }
-
-    @Test
-    public void testGetLikeProfileInSessionSessionHintDefaultRequest() {
-        context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, true);
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        assertEquals(profile1, profileManager.getLikeDefaultSecurityLogic(false).get());
-    }
-
-    @Test
-    public void testGetAllLikeProfileInSessionNoHintDefaultSession() {
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        assertEquals(profile1, profileManager.getAllLikeDefaultSecurityLogic(true).get(0));
-    }
-
-    @Test
-    public void testGetAllLikeProfileInSessionRequestHintDefaultSession() {
-        context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, false);
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        assertEquals(0, profileManager.getAllLikeDefaultSecurityLogic(true).size());
-    }
-
-    @Test
-    public void testGetAllLikeProfileInSessionSessionHintDefaultRequest() {
-        context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, true);
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        assertEquals(profile1, profileManager.getAllLikeDefaultSecurityLogic(false).get(0));
-    }
 
     @Test
     public void testGetOneTwoProfilesFromSession() {
@@ -274,14 +229,6 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, profile1);
         context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
         profileManager.remove(true);
-        assertFalse(profileManager.get(true).isPresent());
-    }
-
-    @Test
-    public void testLogoutSession() {
-        profiles.put(CLIENT1, profile1);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
-        profileManager.logout();
         assertFalse(profileManager.get(true).isPresent());
     }
 

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,44 +25,79 @@ public class JEESessionStore implements SessionStore {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected HttpSession getNativeSession(final WebContext context) {
-        return ((JEEContext) context).getNativeRequest().getSession();
+    protected HttpSession httpSession;
+
+    public JEESessionStore() {}
+
+    public JEESessionStore(final HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
+
+    protected Optional<HttpSession> getNativeSession(final WebContext context, final boolean createSession) {
+        if (httpSession != null) {
+            return Optional.of(httpSession);
+        } else {
+            final JEEContext jeeContext = (JEEContext) context;
+            return Optional.ofNullable(jeeContext.getNativeRequest().getSession(createSession));
+        }
     }
 
     @Override
-    public String getOrCreateSessionId(final WebContext context) {
-        return getNativeSession(context).getId();
+    public Optional<String> getSessionId(final WebContext context, final boolean createSession) {
+        final Optional<HttpSession> httpSession = getNativeSession(context, createSession);
+        if (httpSession.isPresent()) {
+            return Optional.of(httpSession.get().getId());
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional get(final WebContext context, final String key) {
-        return Optional.ofNullable(getNativeSession(context).getAttribute(key));
+        final Optional<HttpSession> httpSession = getNativeSession(context, false);
+        if (httpSession.isPresent()) {
+            return Optional.ofNullable(httpSession.get().getAttribute(key));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public void set(final WebContext context, final String key, final Object value) {
         if (value == null) {
-            getNativeSession(context).removeAttribute(key);
+            final Optional<HttpSession> httpSession = getNativeSession(context, false);
+            if (httpSession.isPresent()) {
+                httpSession.get().removeAttribute(key);
+            }
         } else {
-            getNativeSession(context).setAttribute(key, value);
+            final Optional<HttpSession> httpSession = getNativeSession(context, true);
+            httpSession.get().setAttribute(key, value);
         }
     }
 
     @Override
     public boolean destroySession(final WebContext context) {
-        getNativeSession(context).invalidate();
+        final Optional<HttpSession> httpSession = getNativeSession(context, false);
+        if (httpSession.isPresent()) {
+            httpSession.get().invalidate();
+        }
         return true;
     }
 
     @Override
     public Optional getTrackableSession(final WebContext context) {
-        return Optional.ofNullable(getNativeSession(context));
+        final Optional<HttpSession> httpSession = getNativeSession(context, false);
+        if (httpSession.isPresent()) {
+            return httpSession;
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<SessionStore> buildFromTrackableSession(final WebContext context, final Object trackableSession) {
         if (trackableSession != null) {
-            return Optional.of(new JEEProvidedSessionStore((HttpSession) trackableSession));
+            return Optional.of(new JEESessionStore((HttpSession) trackableSession));
         } else {
             return Optional.empty();
         }
@@ -69,13 +105,16 @@ public class JEESessionStore implements SessionStore {
 
     @Override
     public boolean renewSession(final WebContext context) {
+        Map<String, Object> attributes = new HashMap<>();
         final HttpServletRequest request = ((JEEContext) context).getNativeRequest();
-        final HttpSession session = request.getSession();
-        logger.debug("Discard old session: {}", session.getId());
-        final Map<String, Object> attributes = Collections.list(session.getAttributeNames())
-            .stream()
-            .collect(Collectors.toMap(k -> k, session::getAttribute, (a, b) -> b));
-        session.invalidate();
+        final HttpSession session = request.getSession(false);
+        if (session != null) {
+            logger.debug("Discard old session: {}", session.getId());
+            attributes = Collections.list(session.getAttributeNames())
+                .stream()
+                .collect(Collectors.toMap(k -> k, session::getAttribute, (a, b) -> b));
+            session.invalidate();
+        }
         final HttpSession newSession = request.getSession(true);
         logger.debug("And copy all data to the new one: {}", newSession.getId());
         attributes.forEach((k, v) -> newSession.setAttribute(k, v));

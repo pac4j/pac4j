@@ -10,8 +10,6 @@ import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
-import org.pac4j.core.engine.decision.ProfileStorageDecision;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
@@ -24,7 +22,6 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +47,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic implements SecurityLogic {
+public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements SecurityLogic {
 
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
 
@@ -62,23 +59,17 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
-    private ProfileStorageDecision profileStorageDecision = new DefaultProfileStorageDecision();
-
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
     public Object perform(final WebContext context, final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
                      final HttpActionAdapter httpActionAdapter, final String clients, final String authorizers, final String matchers,
-                     final Boolean inputMultiProfile, final Object... parameters) {
+                     final Object... parameters) {
 
         LOGGER.debug("=== SECURITY ===");
 
         HttpAction action;
         try {
-
-            // default value
-            final boolean multiProfile = inputMultiProfile != null && inputMultiProfile;
-
             // checks
             assertNotNull("context", context);
             assertNotNull("config", config);
@@ -86,7 +77,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
-            assertNotNull("profileStorageDecision", profileStorageDecision);
             final Clients configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
@@ -99,12 +89,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
 
             if (matchingChecker.matches(context, matchers, config.getMatchers(), currentClients)) {
 
-                final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
-                LOGGER.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
-                context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, loadProfilesFromSession);
                 final ProfileManager<UserProfile> manager = getProfileManager(context);
                 manager.setConfig(config);
-                List<UserProfile> profiles = manager.getAll(loadProfilesFromSession);
+                List<UserProfile> profiles = loadProfiles(manager, context, currentClients);
                 LOGGER.debug("profiles: {}", profiles);
 
                 // no profile and some current clients
@@ -118,13 +105,15 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                             final Optional<Credentials> credentials = currentClient.getCredentials(context);
                             LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
-                                final Optional<UserProfile> profile = currentClient.getUserProfile(credentials.get(), context);
-                                LOGGER.debug("profile: {}", profile);
-                                if (profile.isPresent()) {
-                                    final boolean saveProfileInSession = profileStorageDecision.mustSaveProfileInSession(context,
-                                        currentClients, (DirectClient) currentClient, profile.get());
+                                final Optional<UserProfile> optProfile = currentClient.getUserProfile(credentials.get(), context);
+                                LOGGER.debug("profile: {}", optProfile);
+                                if (optProfile.isPresent()) {
+                                    final UserProfile profile = optProfile.get();
+                                    final DirectClient directClient = (DirectClient) currentClient;
+                                    final boolean saveProfileInSession = directClient.getSaveProfileInSession(context, profile);
+                                    final boolean multiProfile = directClient.isMultiProfile(context, profile);
                                     LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                    manager.save(saveProfileInSession, profile.get(), multiProfile);
+                                    manager.save(saveProfileInSession, profile, multiProfile);
                                     updated = true;
                                     if (!multiProfile) {
                                         break;
@@ -134,7 +123,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
                         }
                     }
                     if (updated) {
-                        profiles = manager.getAll(loadProfilesFromSession);
+                        profiles = loadProfiles(manager, context, currentClients);
                         LOGGER.debug("new profiles: {}", profiles);
                     }
                 }
@@ -171,6 +160,19 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         }
 
         return httpActionAdapter.adapt(action, context);
+    }
+
+    /**
+     * Load the profiles.
+     *
+     * @param manager the profile manager
+     * @param context the web context
+     * @param clients the current clients
+     * @return
+     */
+    protected List<UserProfile> loadProfiles(final ProfileManager<UserProfile> manager, final WebContext context,
+                                             final List<Client> clients) {
+        return manager.getProfiles();
     }
 
     /**
@@ -220,7 +222,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
      */
     protected HttpAction redirectToIdentityProvider(final WebContext context, final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
-        return (HttpAction) currentClient.getRedirectionAction(context).get();
+        return currentClient.getRedirectionAction(context).get();
     }
 
     /**
@@ -258,14 +260,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
         this.matchingChecker = matchingChecker;
     }
 
-    public ProfileStorageDecision getProfileStorageDecision() {
-        return profileStorageDecision;
-    }
-
-    public void setProfileStorageDecision(final ProfileStorageDecision profileStorageDecision) {
-        this.profileStorageDecision = profileStorageDecision;
-    }
-
     public SavedRequestHandler getSavedRequestHandler() {
         return savedRequestHandler;
     }
@@ -277,7 +271,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends AbstractExcep
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
-            "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
-            "errorUrl", getErrorUrl(), "savedRequestHandler", savedRequestHandler);
+            "matchingChecker", this.matchingChecker, "errorUrl", getErrorUrl(), "savedRequestHandler", savedRequestHandler);
     }
 }

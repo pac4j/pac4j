@@ -28,9 +28,7 @@ import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link DefaultCallbackLogic}.
@@ -75,7 +73,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, null, null, renewSession, null);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, renewSession, null);
         logic.setClientFinder(clientFinder);
     }
 

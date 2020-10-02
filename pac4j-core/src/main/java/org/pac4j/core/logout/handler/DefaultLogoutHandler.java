@@ -40,7 +40,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
-            final String sessionId = sessionStore.getOrCreateSessionId(context);
+            final String sessionId = sessionStore.getSessionId(context, true).get();
             final Optional<Object> optTrackableSession = sessionStore.getTrackableSession(context);
 
             if (optTrackableSession.isPresent()) {
@@ -63,7 +63,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
-            final String currentSessionId = sessionStore.getOrCreateSessionId(context);
+            final String currentSessionId = sessionStore.getSessionId(context, true).get();
             logger.debug("currentSessionId: {}", currentSessionId);
             final String sessionToKey = (String) store.get(currentSessionId).orElse(null);
             logger.debug("-> key: {}", key);
@@ -82,7 +82,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         // remove profiles
         final ProfileManager<UserProfile> manager = getProfileManager(context);
         manager.setSessionStore(sessionStore);
-        manager.logout();
+        manager.removeProfiles();
         logger.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session
         if (destroySession) {
@@ -114,7 +114,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
                 if (optNewSessionStore.isPresent()) {
                     final SessionStore newSessionStore = optNewSessionStore.get();
                     logger.debug("newSesionStore: {}", newSessionStore);
-                    final String sessionId = newSessionStore.getOrCreateSessionId(context);
+                    final String sessionId = newSessionStore.getSessionId(context, true).get();
                     logger.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
