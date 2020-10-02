@@ -24,7 +24,7 @@ ParameterClient parameterClient = new ParameterClient("token", new JwtAuthentica
 
 Config config = new Config("http://localhost:8080/callback", facebookClient, twitterClient, parameterClient);
 
-config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
+config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
 config.addAuthorizer("custom", new CustomAuthorizer());
 
 config.addMatcher("excludedPath", new ExcludedPathMatcher("^/facebook/notprotected\\.jsp$"));

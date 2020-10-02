@@ -9,8 +9,8 @@ To specifically deal with the session, it relies on a [`SessionStore`](https://g
 
 The `SessionStore` has the following methods:
 
-- `getOrCreateSessionId`: gets or creates the session identifier and initializes the session with it if necessary
-- ` get`: gets the attribute from the session
+- `getSessionId`: gets or creates the session identifier and initializes the session with it if necessary
+- `get`: gets the attribute from the session
 - `set`: sets the attribute in the session
 - `destroySession`: destroys the underlying web session
 - `getTrackableSession`: get the native session as a trackable object (for back-channel logout)

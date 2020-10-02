@@ -41,6 +41,8 @@ By default, the `LocalCachingAuthenticator` uses Guava as its internal [`Store`]
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that this <code>LocalCachingAuthenticator</code> requires the additionnal <i>guava</i> dependency.</div>
 
+In some cases, you may also rely on the session by using: `client.setSaveProfileInSession(true);`.
+
 
 ## 2) `PasswordEncoder`
 

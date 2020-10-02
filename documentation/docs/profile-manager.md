@@ -9,9 +9,7 @@ The profile manager is instantiated from the `WebContext`.
 
 ## 1) Retrieval
 
-You can use the `get(readFromSession)` method to return only one profile and the `getAll(readFromSession)` method to retrieve all profiles.
-
-You need to specific whether you want to read that information from the session or not.
+You can use the `getProfile()` method to return only one profile and the `getProfiles()` method to retrieve all profiles.
 
 The returned profiles are of type `UserProfile`, but they should be at least cast as `CommonProfile` to retrieve the most common attributes that all profiles share
 or to their real types like a `FacebookProfile` in case of a Facebook authentication.
@@ -20,7 +18,7 @@ The `ProfileManager` can also be instantiated with a profile type to always retr
 
 ```java
 ProfileManager<CasProfile> manager = new ProfileManager<CasProfile>(webContext)
-CasProfile profile = manager.get(true).get();
+CasProfile profile = manager.getProfile().get();
 ```
 
 ## 2) Custom profile managers
