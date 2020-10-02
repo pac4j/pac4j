@@ -45,8 +45,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
 
     @Override
     public Object perform(final WebContext context, final Config config, final HttpActionAdapter httpActionAdapter,
-                     final String inputDefaultUrl, final Boolean inputSaveInSession, final Boolean inputMultiProfile,
-                     final Boolean inputRenewSession, final String client) {
+                     final String inputDefaultUrl, final Boolean inputRenewSession, final String defaultClient) {
 
         LOGGER.debug("=== CALLBACK ===");
 
@@ -60,8 +59,6 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             } else {
                 defaultUrl = inputDefaultUrl;
             }
-            final boolean saveInSession = inputSaveInSession == null || inputSaveInSession;
-            final boolean multiProfile = inputMultiProfile != null && inputMultiProfile;
             final boolean renewSession = inputRenewSession == null || inputRenewSession;
 
             // checks
@@ -74,7 +71,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("clients", clients);
 
             // logic
-            final List<Client> foundClients = clientFinder.find(clients, context, client);
+            final List<Client> foundClients = clientFinder.find(clients, context, defaultClient);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
                     + " or ensure that your configuration defaults to one indirect client");
@@ -85,10 +82,14 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             final Optional<Credentials> credentials = foundClient.getCredentials(context);
             LOGGER.debug("credentials: {}", credentials);
 
-            final Optional<UserProfile> profile = foundClient.getUserProfile(credentials.orElse(null), context);
-            LOGGER.debug("profile: {}", profile);
-            if (profile.isPresent()) {
-                saveUserProfile(context, config, profile.get(), saveInSession, multiProfile, renewSession);
+            final Optional<UserProfile> optProfile = foundClient.getUserProfile(credentials.orElse(null), context);
+            LOGGER.debug("optProfile: {}", optProfile);
+            if (optProfile.isPresent()) {
+                final UserProfile profile = optProfile.get();
+                final boolean saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(context, profile);
+                final boolean multiProfile = ((BaseClient) foundClient).isMultiProfile(context, profile);
+                LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
+                saveUserProfile(context, config, profile, saveProfileInSession, multiProfile, renewSession);
             }
 
             action = redirectToOriginallyRequestedUrl(context, defaultUrl);
@@ -101,10 +102,10 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     }
 
     protected void saveUserProfile(final WebContext context, final Config config, final UserProfile profile,
-                                   final boolean saveInSession, final boolean multiProfile, final boolean renewSession) {
+                                   final boolean saveProfileInSession, final boolean multiProfile, final boolean renewSession) {
         final ProfileManager<UserProfile> manager = getProfileManager(context);
         if (profile != null) {
-            manager.save(saveInSession, profile, multiProfile);
+            manager.save(saveProfileInSession, profile, multiProfile);
             if (renewSession) {
                 renewSession(context, config);
             }

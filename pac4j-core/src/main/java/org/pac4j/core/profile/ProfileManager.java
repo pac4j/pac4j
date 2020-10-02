@@ -53,6 +53,10 @@ public class ProfileManager<U extends UserProfile> {
         return get(true);
     }
 
+    /**
+     * Use {@link #getProfile()}.
+     */
+    @Deprecated
     public Optional<U> get(final boolean readFromSession) {
         final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
         return ProfileHelper.flatIntoOneProfile(allProfiles.values());
@@ -67,6 +71,10 @@ public class ProfileManager<U extends UserProfile> {
         return getAll(true);
     }
 
+    /**
+     * Use {@link #getProfiles()}.
+     */
+    @Deprecated
     public List<U> getAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
         return ProfileHelper.flatIntoAProfileList(profiles);
@@ -128,6 +136,10 @@ public class ProfileManager<U extends UserProfile> {
         remove(sessionExists);
     }
 
+    /**
+     * Use {@link #removeProfiles()}.
+     */
+    @Deprecated
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());

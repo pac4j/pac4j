@@ -18,7 +18,11 @@ import static org.pac4j.core.util.CommonHelper.*;
 public abstract class DirectClient extends BaseClient {
 
     @Override
-    protected final void beforeInternalInit() {}
+    protected void beforeInternalInit() {
+        if (saveProfileInSession == null) {
+            saveProfileInSession = false;
+        }
+    }
 
     @Override
     protected final void afterInternalInit() {

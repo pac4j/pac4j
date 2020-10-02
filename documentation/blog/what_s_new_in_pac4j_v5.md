@@ -36,8 +36,13 @@ Web applications require a web session while web services generally don't need o
 These latter generally don't write into the web session, they just read from it so reads should not create a web session when it does not already exist (because of course, if the web session does not exist, the read will only return `Optional.empty()`).
 
 Instead of explicitly requesting the use of the web session in several places (`ProfileManager`, `DefaultSecuritylogic`), the solution is to have session implementations (`SessionStore`) which don't create a new session for reads, they just try to find it back.
-This way, no need to explicitly define if you want to read from the web session or not.
+This way, no need to explicitly define if you want to read from the web session or not. For writes, nothing changes: a session is always created if it doesn't exist.
 
-`profileManager.getAll(readFromSession)` can be replaced by `profileManager.getProfiles()`.
+`profileManager.getProfiles()` replaces `profileManager.getAll(readFromSession)`
 
-BTW, a session is always created for writes if it doesn't exist.
+The fact that a profile is saved in the session or not after a succesful login is now override at the `Client` level, and no longer in the "security filter" and "callback endpoint". BTW, the multi-profile option is now also set at the `Client` level.
+
+```java
+client.setMultiProfile(true);
+client.setSaveProfileInSession(true);
+```

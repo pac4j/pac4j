@@ -61,6 +61,9 @@ public abstract class IndirectClient extends BaseClient {
         if (this.ajaxRequestResolver == null) {
             ajaxRequestResolver = new DefaultAjaxRequestResolver();
         }
+        if (saveProfileInSession == null) {
+            saveProfileInSession = true;
+        }
     }
 
     @Override

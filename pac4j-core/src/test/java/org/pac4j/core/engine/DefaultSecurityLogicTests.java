@@ -45,8 +45,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private String matchers;
 
-    private Boolean multiProfile;
-
     private int nbCall;
 
     private HttpAction action;
@@ -61,12 +59,11 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         clients = null;
         authorizers = null;
         matchers = null;
-        multiProfile = null;
         nbCall = 0;
     }
 
     private void call() {
-        logic.perform(context, config, securityGrantedAccessAdapter, httpActionAdapter, clients, authorizers, matchers, multiProfile);
+        logic.perform(context, config, securityGrantedAccessAdapter, httpActionAdapter, clients, authorizers, matchers);
     }
 
     @Test
@@ -215,10 +212,11 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final CommonProfile profile2 = new CommonProfile();
         profile2.setId(VALUE);
         final DirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), profile);
+        directClient.setMultiProfile(true);
         final DirectClient directClient2 = new MockDirectClient(VALUE, Optional.of(new MockCredentials()), profile2);
+        directClient2.setMultiProfile(true);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
-        multiProfile = true;
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
@@ -240,7 +238,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
         context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
-        multiProfile = true;
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
@@ -261,7 +258,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME;
         context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
-        multiProfile = true;
         call();
         assertEquals(401, action.getCode());
     }

@@ -22,11 +22,9 @@ public interface SecurityLogic {
      * @param clients the defined clients
      * @param authorizers the defined authorizers
      * @param matchers the defined matchers
-     * @param multiProfile whether multi profiles are supported
      * @param parameters additional parameters
      * @return the resulting action of the security
      */
     Object perform(WebContext context, Config config, SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
-              HttpActionAdapter httpActionAdapter, String clients, String authorizers, String matchers,
-              Boolean multiProfile, Object... parameters);
+              HttpActionAdapter httpActionAdapter, String clients, String authorizers, String matchers, Object... parameters);
 }

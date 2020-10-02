@@ -53,6 +53,10 @@ public abstract class BaseClient extends InitializableObject implements Client {
 
     private ProfileFactory profileFactoryWhenNotAuthenticated;
 
+    private boolean multiProfile = false;
+
+    protected Boolean saveProfileInSession;
+
     private static boolean warned;
 
     /**
@@ -245,11 +249,28 @@ public abstract class BaseClient extends InitializableObject implements Client {
         this.profileFactoryWhenNotAuthenticated = profileFactoryWhenNotAuthenticated;
     }
 
+    public boolean isMultiProfile(final WebContext context, final UserProfile profile) {
+        return multiProfile;
+    }
+
+    public void setMultiProfile(final boolean multiProfile) {
+        this.multiProfile = multiProfile;
+    }
+
+    public Boolean getSaveProfileInSession(final WebContext context, final UserProfile profile) {
+        return saveProfileInSession;
+    }
+
+    public void setSaveProfileInSession(final boolean saveProfileInSession) {
+        this.saveProfileInSession = saveProfileInSession;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
             "authenticator", this.authenticator, "profileCreator", this.profileCreator,
             "authorizationGenerators", authorizationGenerators, "customProperties", customProperties,
-            "profileFactoryWhenNotAuthenticated", profileFactoryWhenNotAuthenticated);
+            "profileFactoryWhenNotAuthenticated", profileFactoryWhenNotAuthenticated, "multiProfile", multiProfile,
+            "saveProfileInSession", saveProfileInSession);
     }
 }
