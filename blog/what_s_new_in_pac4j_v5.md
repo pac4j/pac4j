@@ -28,4 +28,42 @@ The `client_name` parameter can no longer be used to choose a client on the secu
 While generics should have brought value to the pac4j source code, they have, in fact, cluttered it.
 With inconsistencies especially in the `Clients` and `Config` components where the generics were "forgotten".
 
-So almost all generics constraints have been removed from the source code. Only remains the generics ìn the `ProfileService`, `Store` and `ProfileManager` components.
+So almost all generics constraints have been removed from the source code. Only remains the generics in the `ProfileService`, `Store` and `ProfileManager` components.
+
+## Session management
+
+Web applications require a web session while web services generally don't need one.
+These latter generally don't write into the web session, they just read from it so reads should not create a web session when it does not already exist (because of course, if the web session does not exist, the read will only return `Optional.empty()`).
+
+Instead of explicitly requesting the use of the web session in several places (`ProfileManager`, `DefaultSecuritylogic`), the solution is to have session implementations (`SessionStore`) which don't create a new session for reads, they just try to find it back.
+This way, no need to explicitly define if you want to read from the web session or not. For writes, nothing changes: a session is always created if it doesn't exist.
+
+`profileManager.getProfiles()` replaces `profileManager.getAll(readFromSession)`
+
+The fact that a profile is saved in the session or not after a succesful login is now override at the `Client` level, and no longer in the "security filter" and "callback endpoint". BTW, the multi-profile option is now also set at the `Client` level.
+
+```java
+client.setMultiProfile(true);
+client.setSaveProfileInSession(true);
+```
+
+## SAML SLO
+
+Up to v5, when a central logout was triggered for the SAML protocol, a local logout was performed as well. This is no longer the case in v5 to be consistent with the CAS and OpenID Connect protocols.
+
+The local logout should be triggered by a logout request from the IdP (received on the callback endpoint) or explicitly by enabling the local logout.
+
+## Default authorizers
+
+When using the "security filter", the clients (authentication mechanisms), the authorizers (authorization checks) and the matchers can be defined.
+
+If no matchers is defined, the `securityHeaders` is applied to add the security headers to the HTTP request and the `csrfToken` is applied for the web applications (at least one `IndirectClient` is defined),
+it means that a CSRF token is generated and added in the request/session/cookie.
+
+If no authorizers is defined, the `csrfCheck` is used for web applications, meaning that the CSRF token is expected for a POST request.
+
+Since v5, a new default authorizer is added if no matchers is defined: `isAuthenticated` to check that the user is authenticated and not only that he has a profile. This check is removed if an `AnonymousClient` has been defined in the `clients`.
+
+Since a few versions, you can use the `AnonymousClient` and its `AnonymousProfile` put in the HTTP request when no other authenticated profile is available. The edge case is that this profile can be saved into the session and be available on other secured endpoints and URLs.
+
+So the idea here is to be protected by default against any `AnonymousProfile` "leaking" to the session.

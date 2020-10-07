@@ -37,7 +37,7 @@ You can create a composition (conjunction or disjunction) of authorizers.
 For example:
 
 ```java
-final Authorizer<CommonProfile> authorizer = or(
+final Authorizer authorizer = or(
     and(
         requireAnyRole("profile_role1"),
         requireAnyPermission("profile_permission1")

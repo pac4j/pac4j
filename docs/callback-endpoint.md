@@ -29,19 +29,11 @@ It's the [security configuration](config.html).
 
 It's the default URL after login if no URL was originally requested. It is an optional parameter which equals `/` by default.
 
-### c) `saveInSession`
-
-It indicates whether the profile should be saved into the web session. It is an optional parameter, `true` by default.
-
-### d) `multiProfile`
-
-It indicates whether multiple authentications (and thus multiple profiles) must be kept at the same time. It is an optional parameter, `false` by default.
-
-### e) `renewSession`
+### c) `renewSession`
 
 It indicates whether the web session must be renewed after login, to avoid session hijacking. It is an optional parameter, `true` by default.
 
-### f) `defaultClient`
+### d) `defaultClient`
 
 It defines the default client to use to finish the login process if none is provided on the URL. It is an optional parameter, not defined by default.
 

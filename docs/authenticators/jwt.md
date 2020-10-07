@@ -93,7 +93,7 @@ To generate a plain text, signed and/or encrypted JWT, a `JwtGenerator` can be d
 **Example:**
 
 ```java
-JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(SECRET), new SecretEncryptionConfiguration(SECRET));
+JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(SECRET), new SecretEncryptionConfiguration(SECRET));
 String token = generator.generate(facebookProfile);
 ```
 
