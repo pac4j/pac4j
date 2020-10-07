@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.checker;
 import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -72,12 +73,30 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     protected String computeDefaultAuthorizers(final List<Client> clients) {
+        final List<String> authorizers = new ArrayList<>();
+        if (containsClientType(clients, IndirectClient.class)) {
+            authorizers.add(DefaultAuthorizers.CSRF_CHECK);
+        }
+        if (!containsClientType(clients, AnonymousClient.class)) {
+            authorizers.add(DefaultAuthorizers.IS_AUTHENTICATED);
+        }
+        final String defaultAuthorizer;
+        if (authorizers.isEmpty()) {
+            defaultAuthorizer = DefaultAuthorizers.NONE;
+        } else {
+            defaultAuthorizer = String.join(",", authorizers);
+        }
+        LOGGER.debug("Computed default authorizers: {}", defaultAuthorizer);
+        return defaultAuthorizer;
+    }
+
+    protected boolean containsClientType(final List<Client> clients, final Class<? extends Client> clazz) {
         for (final Client client : clients) {
-            if (client instanceof IndirectClient) {
-                return DefaultAuthorizers.CSRF_CHECK;
+            if (clazz.isAssignableFrom(client.getClass())) {
+                return true;
             }
         }
-        return DefaultAuthorizers.NONE;
+        return false;
     }
 
     protected boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) {

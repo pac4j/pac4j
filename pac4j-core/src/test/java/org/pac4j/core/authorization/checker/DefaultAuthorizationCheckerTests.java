@@ -6,7 +6,9 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.DefaultAuthorizers;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.client.MockIndirectClient;
+import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.context.*;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
@@ -239,5 +241,35 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testIsRemembered() {
         profile.setRemembered(true);
         assertTrue(checker.isAuthorized(null, profiles, DefaultAuthorizers.IS_REMEMBERED, null, new ArrayList<>()));
+    }
+
+    @Test
+    public void testDefaultAuthorizersNoClient() {
+        assertEquals(DefaultAuthorizers.IS_AUTHENTICATED, checker.computeDefaultAuthorizers(new ArrayList<>()));
+    }
+
+    @Test
+    public void testDefaultAuthorizersAnonymousClient() {
+        final List<Client> clients = Arrays.asList(AnonymousClient.INSTANCE);
+        assertEquals(DefaultAuthorizers.NONE, checker.computeDefaultAuthorizers(clients));
+    }
+
+    @Test
+    public void testDefaultAuthorizersDirectClient() {
+        final List<Client> clients = Arrays.asList(new MockDirectClient("test"));
+        assertEquals(DefaultAuthorizers.IS_AUTHENTICATED, checker.computeDefaultAuthorizers(clients));
+    }
+
+    @Test
+    public void testDefaultAuthorizersIndirectClient() {
+        final List<Client> clients = Arrays.asList(new MockIndirectClient("test"));
+        assertEquals(DefaultAuthorizers.CSRF_CHECK + "," + DefaultAuthorizers.IS_AUTHENTICATED,
+            checker.computeDefaultAuthorizers(clients));
+    }
+
+    @Test
+    public void testDefaultAuthorizersIndirectAndAnonymousClients() {
+        final List<Client> clients = Arrays.asList(new MockIndirectClient("test"), AnonymousClient.INSTANCE);
+        assertEquals(DefaultAuthorizers.CSRF_CHECK, checker.computeDefaultAuthorizers(clients));
     }
 }

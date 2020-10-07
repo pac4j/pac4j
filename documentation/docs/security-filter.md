@@ -37,14 +37,15 @@ A specific client may be chosen among all defined clients for the filter by usin
 
 It's a string of the list of the [authorizer](authorizers.html) names (separated by commas) used to check authorizations. It is an optional parameter.
 
-If the `authorizers` is blank or not defined, the default authorizer is applied: `csrfCheck` for web applications and no authorizer is applied for web services.
+If the `authorizers` is blank or not defined, the default authorizer is applied: `csrfCheck` for web applications (at least one `IndirectClient` is defined) and no authorizer is applied for web services.
+The `isAuthenticated` authorizer is also applied by default if no `AnonymousClient` is configured.
 
-You can also use the out-of-the-box authorizers, already available without defining them in the security configuration.
+You can also use the [out-of-the-box authorizers](authorizers.html#-default-authorizer-names), already available without defining them in the security configuration.
 
 ### d) `matchers`
 
 It's the list of the [matcher](matchers.html) names (separated by commas) that the request must satisfy to check authentication/authorizations. It is an optional parameter.
 
-If the `matchers` is blank or not defined, it is satisfied and the `securityHeaders,csrfToken` matchers are applied for web applications or the `securityHeaders` matcher is applied for web services.
+If the `matchers` is blank or not defined, it is satisfied and the `securityHeaders` is applied and the `csrfToken` is applied only for web applications (at least one `IndirectClient` is defined).
 
-You can also use the out-of-the-box matchers, already available without defining them in the security configuration.
+You can also use the [out-of-the-box matchers](matchers.html#3-default-matchers), already available without defining them in the security configuration.
