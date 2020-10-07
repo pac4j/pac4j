@@ -1,20 +1,19 @@
-package org.pac4j.saml.client;
+package org.pac4j.saml.config;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
 import org.junit.Test;
-import org.pac4j.saml.config.SAML2Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
 /**
- * This is {@link SAML2ClientConfigurationTests}.
+ * This is {@link SAML2ConfigurationTests}.
  *
  * @author Misagh Moayyed
  */
-public class SAML2ClientConfigurationTests {
+public class SAML2ConfigurationTests {
     @Test
     public void verifySigningCertExported() {
         final SAML2Configuration configuration = new SAML2Configuration();

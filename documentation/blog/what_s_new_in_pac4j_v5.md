@@ -46,3 +46,9 @@ The fact that a profile is saved in the session or not after a succesful login i
 client.setMultiProfile(true);
 client.setSaveProfileInSession(true);
 ```
+
+### SAML SLO
+
+Up to v5, when a central logout was triggered for the SAML protocol, a local logout was performed as well. This is no longer the case in v5 to be consistent with the CAS and OpenID Connect protocols.
+
+The local logout should be triggered by a logout request from the IdP (received on the callback endpoint) or explicitly by enabling the local logout.

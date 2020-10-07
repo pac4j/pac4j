@@ -11,6 +11,7 @@ title: Release notes&#58;
 - Removed most generics
 - Slightly refactored the auto-initialization
 - Refactored the session management (mainly `ProfileManager` and `SessionStore`): reading in the web session does not create it while writing a none-null value in the session always create it. The multi-profile and save-profile-in-session-or-not options can now be defined at the `Client` level, and no longer in the "security filter" and "callback endpoint"
+- The SAML central logout does not perform any local logout
 
 **v4.1.0** (see: [what's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)):
 

@@ -6,7 +6,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.RedirectionActionHelper;
 import org.pac4j.core.logout.LogoutActionBuilder;
-import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
@@ -38,15 +37,12 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     protected final ValueGenerator stateGenerator;
 
-    protected final LogoutHandler logoutHandler;
-
     public SAML2LogoutActionBuilder(final SAML2Client client) {
         this.logoutProfileHandler = client.getLogoutProfileHandler();
         this.contextProvider = client.getContextProvider();
         this.configuration = client.getConfiguration();
         this.stateGenerator = client.getStateGenerator();
         this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(configuration);
-        this.logoutHandler = client.getConfiguration().getLogoutHandler();
     }
 
     @Override
@@ -59,9 +55,6 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
             final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
             this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
-
-            // we won't get any session index from the logout response so we call the local logout before calling the IdP
-            this.logoutHandler.destroySessionFront(context, saml2Profile.getSessionIndex());
 
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
