@@ -10,9 +10,9 @@ import java.util.List;
  */
 public abstract class AbstractAttributeConverter implements AttributeConverter {
 
-    private final Class clazz;
+    private final Class<? extends Object> clazz;
 
-    protected AbstractAttributeConverter(final Class clazz) {
+    protected AbstractAttributeConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
     }
 

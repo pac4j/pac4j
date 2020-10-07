@@ -112,9 +112,9 @@ public class ProfileManager<U extends UserProfile> {
                     final Optional<Client> client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
                         try {
-                            final Optional<U> newProfile = (Optional<U>) client.get().renewUserProfile(profile, context);
+                            final Optional<UserProfile> newProfile = client.get().renewUserProfile(profile, context);
                             if (newProfile.isPresent()) {
-                                profiles.put(key, newProfile.get());
+                                profiles.put(key, (U) newProfile.get());
                             }
                         } catch (final RuntimeException e) {
                             logger.error("Unable to renew the user profile for key: {}", key, e);

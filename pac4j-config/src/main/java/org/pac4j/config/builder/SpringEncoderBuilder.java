@@ -2,6 +2,8 @@ package org.pac4j.config.builder;
 
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  */
 public class SpringEncoderBuilder extends AbstractBuilder {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringEncoderBuilder.class);
+
     public SpringEncoderBuilder(final Map<String, String> properties) {
         super(properties);
     }
@@ -31,6 +35,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
             if (isNotBlank(type)) {
                 final PasswordEncoder encoder;
                 if (SpringEncoderType.NOOP.toString().equalsIgnoreCase(type)) {
+                    LOGGER.debug("Please notice that the NOOP Spring encoder type is insecure and for tests only");
                     encoder = NoOpPasswordEncoder.getInstance();
                 } else if (SpringEncoderType.BCRYPT.toString().equalsIgnoreCase(type)) {
                     if (containsProperty(SPRING_ENCODER_BCRYPT_LENGTH, i)) {
@@ -65,6 +70,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                         encoder = new SCryptPasswordEncoder();
                     }
                 } else if (SpringEncoderType.STANDARD.toString().equalsIgnoreCase(type)) {
+                    LOGGER.debug("Please notice that the STANDARD Spring encoder type is insecure and for tests only");
                     if (containsProperty(SPRING_ENCODER_STANDARD_SECRET, i)) {
                         encoder = new StandardPasswordEncoder(getProperty(SPRING_ENCODER_STANDARD_SECRET, i));
                     } else {

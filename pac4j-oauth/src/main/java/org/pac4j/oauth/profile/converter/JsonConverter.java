@@ -19,15 +19,15 @@ public final class JsonConverter implements AttributeConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
-    private final Class clazz;
+    private final Class<? extends Object> clazz;
 
-    private TypeReference typeReference;
+    private TypeReference<? extends Object> typeReference;
 
-    public JsonConverter(final Class clazz) {
+    public JsonConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
     }
 
-    public JsonConverter(final Class clazz, final TypeReference typeReference) {
+    public JsonConverter(final Class<? extends Object> clazz, final TypeReference<? extends Object> typeReference) {
         this(clazz);
         this.typeReference = typeReference;
     }

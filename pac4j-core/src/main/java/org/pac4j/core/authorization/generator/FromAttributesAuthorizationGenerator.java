@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * <p>Generate the authorization information by inspecting attributes.</p>
- * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)}) 
+ * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)})
  * are defined in the constructor. It's the same for the attributes containing the permissions.</p>
  *
  * @author Jerome Leleu
@@ -22,8 +22,8 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
     private String splitChar = ",";
 
     public FromAttributesAuthorizationGenerator() {
-        this.roleAttributes = new ArrayList();
-        this.permissionAttributes = new ArrayList();
+        this.roleAttributes = new ArrayList<>();
+        this.permissionAttributes = new ArrayList<>();
     }
 
     public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes, final Collection<String> permissionAttributes) {

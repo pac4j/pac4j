@@ -53,7 +53,7 @@ public class JEESessionStore implements SessionStore {
     }
 
     @Override
-    public Optional get(final WebContext context, final String key) {
+    public Optional<Object> get(final WebContext context, final String key) {
         final Optional<HttpSession> httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
             return Optional.ofNullable(httpSession.get().getAttribute(key));
@@ -85,10 +85,10 @@ public class JEESessionStore implements SessionStore {
     }
 
     @Override
-    public Optional getTrackableSession(final WebContext context) {
+    public Optional<Object> getTrackableSession(final WebContext context) {
         final Optional<HttpSession> httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            return httpSession;
+            return Optional.of(httpSession.get());
         } else {
             return Optional.empty();
         }

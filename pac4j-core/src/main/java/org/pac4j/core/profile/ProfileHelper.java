@@ -78,8 +78,8 @@ public final class ProfileHelper {
      */
     public static CommonProfile buildUserProfileByClassCompleteName(final String completeName) {
         try {
-            final Constructor<? extends CommonProfile> constructor = CommonHelper.getConstructor(completeName);
-            return constructor.newInstance();
+            final Constructor constructor = CommonHelper.getConstructor(completeName);
+            return (CommonProfile) constructor.newInstance();
         } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException
                  | InstantiationException e) {
             throw new TechnicalException(e);

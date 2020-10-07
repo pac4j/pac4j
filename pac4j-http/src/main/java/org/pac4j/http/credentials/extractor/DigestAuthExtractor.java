@@ -79,7 +79,7 @@ public class DigestAuthExtractor implements CredentialsExtractor {
     private Map<String, String> parseTokenValue(String token) {
         StringTokenizer tokenizer = new StringTokenizer(token, ", ");
         String keyval;
-        Map map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         while (tokenizer.hasMoreElements()) {
             keyval = tokenizer.nextToken();
             if (keyval.contains("=")) {

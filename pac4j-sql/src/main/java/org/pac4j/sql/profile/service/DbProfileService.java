@@ -65,7 +65,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     protected void insert(final Map<String, Object> attributes) {
         final List<String> names = new ArrayList<>();
         final List<String> questionMarks = new ArrayList<>();
-        final List values = new ArrayList();
+        final List<Object> values = new ArrayList<>();
         for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
             names.add(entry.getKey());
             questionMarks.add("?");
@@ -81,7 +81,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     protected void update(final Map<String, Object> attributes) {
         final StringBuilder attributesList = new StringBuilder();
         String id = null;
-        final List values = new ArrayList();
+        final List<Object> values = new ArrayList<>();
         int i = 0;
         for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
             final String name = entry.getKey();

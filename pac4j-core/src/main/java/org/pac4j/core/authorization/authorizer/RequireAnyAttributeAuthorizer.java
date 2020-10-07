@@ -41,9 +41,7 @@ public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<
         if (attributeValues instanceof Collection) {
             return Collection.class.cast(attributeValues)
                     .stream()
-                    .filter(v -> v.toString().matches(this.valueToMatch))
-                    .findAny()
-                    .isPresent();
+                    .anyMatch(v -> v.toString().matches(this.valueToMatch));
         }
         return attributeValues.toString().matches(this.valueToMatch);
     }

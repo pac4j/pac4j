@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 
 /**
  * Build a SAML2 logout response.
- * 
+ *
  * @author Jerome Leleu
  * @since 3.4.0
  */
@@ -56,7 +56,7 @@ public class SAML2LogoutResponseBuilder {
         response.setDestination(ssoService.getLocation());
         response.setStatus(getSuccess());
         final SAMLObject originalMessage = (SAMLObject) context.getMessageContext().getMessage();
-        if (originalMessage != null && originalMessage instanceof RequestAbstractTypeImpl) {
+        if (originalMessage instanceof RequestAbstractTypeImpl) {
             response.setInResponseTo(((RequestAbstractTypeImpl) originalMessage).getID());
         }
 

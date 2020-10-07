@@ -52,7 +52,7 @@ public interface SessionStore {
      * @param context the web context
      * @return the optional trackable object
      */
-    Optional getTrackableSession(WebContext context);
+    Optional<Object> getTrackableSession(WebContext context);
 
     /**
      * Build a new session store from a trackable session.

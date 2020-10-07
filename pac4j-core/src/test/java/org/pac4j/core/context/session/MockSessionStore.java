@@ -58,7 +58,7 @@ public class MockSessionStore implements SessionStore {
     }
 
     @Override
-    public Optional getTrackableSession(final WebContext context) {
+    public Optional<Object> getTrackableSession(final WebContext context) {
         return Optional.of(store);
     }
 

@@ -461,11 +461,11 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         this.id = (String) in.readObject();
-        this.attributes = (Map) in.readObject();
-        this.authenticationAttributes = (Map) in.readObject();
+        this.attributes = (Map<String, Object>) in.readObject();
+        this.authenticationAttributes = (Map<String, Object>) in.readObject();
         this.isRemembered = in.readBoolean();
-        this.roles = (Set) in.readObject();
-        this.permissions = (Set) in.readObject();
+        this.roles = (Set<String>) in.readObject();
+        this.permissions = (Set<String>) in.readObject();
         this.clientName = (String) in.readObject();
         this.linkedId = (String) in.readObject();
     }

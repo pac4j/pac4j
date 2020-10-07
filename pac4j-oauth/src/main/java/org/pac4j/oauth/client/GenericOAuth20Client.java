@@ -122,7 +122,7 @@ public class GenericOAuth20Client extends OAuth20Client {
                     return false;
                 });
             Class converterClazz = acceptableConverters.findFirst().get();
-            return (AbstractAttributeConverter) converterClazz.newInstance();
+            return (AbstractAttributeConverter) converterClazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             LOG.warn(e.toString());
         }
