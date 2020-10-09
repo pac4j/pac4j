@@ -3,37 +3,37 @@ layout: doc
 title: Callback endpoint&#58;
 ---
 
-To handle authentication for web applications, the *pac4j* implementation provides a callback endpoint which delegates the work to the `DefaultCallbackLogic` component.
+To handle authentication for web applications, a callback endpoint is necessary to receive callback calls from the identity server and finish the login process.
 
 For indirect clients (like Facebook), the user is redirected to an external identity provider for login and then back to the application on the callback endpoint.
 
 
 ## 1) Behavior
 
-The `DefaultCallbackLogic` has the following behaviour:
+By default, it relies on the `DefaultCallbackLogic` which has the following behaviour:
 
 1. the credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved (or not) in the web session
 
-2. finally, the user is redirected back to the originally requested url (or to the `defaultUrl`).
+2. finally, the user is redirected back to the originally requested URL (or to the `defaultUrl`).
 
 
 ## 2) Options
 
-The following options are available:
+The following options are available for the callback endpoint. They can be defined via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
 
-### a) `config`
+### a) config
 
 It's the [security configuration](config.html).
 
-### b) `defaultUrl`
+### b) defaultUrl
 
 It's the default URL after login if no URL was originally requested. It is an optional parameter which equals `/` by default.
 
-### c) `renewSession`
+### c) renewSession
 
 It indicates whether the web session must be renewed after login, to avoid session hijacking. It is an optional parameter, `true` by default.
 
-### d) `defaultClient`
+### d) defaultClient
 
 It defines the default client to use to finish the login process if none is provided on the URL. It is an optional parameter, not defined by default.
 
@@ -42,3 +42,28 @@ It defines the default client to use to finish the login process if none is prov
 
 With the [logout endpoint](logout-endpoint.html), you can trigger the local and central logout process. Yet, in case of a Single-Log-Out process happening at the identity provider,
 it's this callback endpoint which will receive a logout request (with some session key) to destroy the application session.
+
+---
+
+## 4) Advanced options
+
+Advanced options can be set at:
+
+- the `Config` level
+- directly at the callback endpoint level via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
+
+### a) sessionStore
+
+You may define a specific [`SessionStore`](session-store.html) instead of the default one of the *pac4j* implementation.
+
+### b) httpActionAdapter
+
+You may define a specific [`HttpActionAdapter`](http-action-adapter.html) instead of the default one of the *pac4j* implementation.
+
+### c) callbackLogic
+
+You may define a specific `CallbackLogic` instead of the default `DefaultCallbackLogic`.
+
+### d) webContextFactory
+
+You may define a specific [`WebContextFactory`](web-context.html) instead of the default one of the *pac4j* implementation.

@@ -23,7 +23,7 @@ public class JEESessionStore implements SessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(JEESessionStore.class);
 
     protected HttpSession httpSession;
 
@@ -35,10 +35,13 @@ public class JEESessionStore implements SessionStore {
 
     protected Optional<HttpSession> getNativeSession(final WebContext context, final boolean createSession) {
         if (httpSession != null) {
+            LOGGER.debug("Provided session: {}", httpSession);
             return Optional.of(httpSession);
         } else {
             final JEEContext jeeContext = (JEEContext) context;
-            return Optional.ofNullable(jeeContext.getNativeRequest().getSession(createSession));
+            final HttpSession session = jeeContext.getNativeRequest().getSession(createSession);
+            LOGGER.debug("createSession: {}, retrieved session: {}", createSession, session);
+            return Optional.ofNullable(session);
         }
     }
 
@@ -46,8 +49,11 @@ public class JEESessionStore implements SessionStore {
     public Optional<String> getSessionId(final WebContext context, final boolean createSession) {
         final Optional<HttpSession> httpSession = getNativeSession(context, createSession);
         if (httpSession.isPresent()) {
-            return Optional.of(httpSession.get().getId());
+            final String sessionId = httpSession.get().getId();
+            LOGGER.debug("Get sessionId: {}", sessionId);
+            return Optional.of(sessionId);
         } else {
+            LOGGER.debug("No sessionId");
             return Optional.empty();
         }
     }
@@ -56,8 +62,11 @@ public class JEESessionStore implements SessionStore {
     public Optional<Object> get(final WebContext context, final String key) {
         final Optional<HttpSession> httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            return Optional.ofNullable(httpSession.get().getAttribute(key));
+            final Object value = httpSession.get().getAttribute(key);
+            LOGGER.debug("Get value: {} for key: {}", value, key);
+            return Optional.ofNullable(value);
         } else {
+            LOGGER.debug("Can't get value for key: {}, no session available", key);
             return Optional.empty();
         }
     }
@@ -67,10 +76,12 @@ public class JEESessionStore implements SessionStore {
         if (value == null) {
             final Optional<HttpSession> httpSession = getNativeSession(context, false);
             if (httpSession.isPresent()) {
+                LOGGER.debug("Remove value for key: {}", key);
                 httpSession.get().removeAttribute(key);
             }
         } else {
             final Optional<HttpSession> httpSession = getNativeSession(context, true);
+            LOGGER.debug("Set key: {} for value: {}", key, value);
             httpSession.get().setAttribute(key, value);
         }
     }
@@ -79,7 +90,9 @@ public class JEESessionStore implements SessionStore {
     public boolean destroySession(final WebContext context) {
         final Optional<HttpSession> httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            httpSession.get().invalidate();
+            final HttpSession session = httpSession.get();
+            LOGGER.debug("Invalidate session: {}", session);
+            session.invalidate();
         }
         return true;
     }
@@ -88,8 +101,11 @@ public class JEESessionStore implements SessionStore {
     public Optional<Object> getTrackableSession(final WebContext context) {
         final Optional<HttpSession> httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            return Optional.of(httpSession.get());
+            final HttpSession session = httpSession.get();
+            LOGGER.debug("Return trackable session: {}", session);
+            return Optional.of(session);
         } else {
+            LOGGER.debug("No trackable session");
             return Optional.empty();
         }
     }
@@ -97,8 +113,10 @@ public class JEESessionStore implements SessionStore {
     @Override
     public Optional<SessionStore> buildFromTrackableSession(final WebContext context, final Object trackableSession) {
         if (trackableSession != null) {
+            LOGGER.debug("Rebuild session from trackable session: {}", trackableSession);
             return Optional.of(new JEESessionStore((HttpSession) trackableSession));
         } else {
+            LOGGER.debug("Unable to build session from trackable session");
             return Optional.empty();
         }
     }
@@ -109,14 +127,14 @@ public class JEESessionStore implements SessionStore {
         final HttpServletRequest request = ((JEEContext) context).getNativeRequest();
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            logger.debug("Discard old session: {}", session.getId());
+            LOGGER.debug("Discard old session: {}", session.getId());
             attributes = Collections.list(session.getAttributeNames())
                 .stream()
                 .collect(Collectors.toMap(k -> k, session::getAttribute, (a, b) -> b));
             session.invalidate();
         }
         final HttpSession newSession = request.getSession(true);
-        logger.debug("And copy all data to the new one: {}", newSession.getId());
+        LOGGER.debug("And copy all data to the new one: {}", newSession.getId());
         attributes.forEach((k, v) -> newSession.setAttribute(k, v));
         return true;
     }

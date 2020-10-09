@@ -19,20 +19,22 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 4) [Matchers](matchers.html)
 
-## 5) [Security configuration](config.html)
+## 5) [Security configuration](config.html) - [Security module](config-module.html)
 
-## 6) Web components:
+## 6) [Web components](web-components.html):
 
 ### &#9656; [Security filter](security-filter.html) - [Callback endpoint](callback-endpoint.html) - [Logout endpoint](logout-endpoint.html)
 
-## 7) [User profile](user-profile.html) and [Profile manager](profile-manager.html)
+## 7) [User profile](user-profile.html) - [Profile manager](profile-manager.html)
 
-## 8) [SessionStore](session-store.html) and [Store](store.html)
+## 8) [WebContext](web-context.html) - [HttpActionAdapter](http-action-adapter.html)
 
-## 9) [Release notes](release-notes.html) - [Backward compatibility](backward-compatibility.html)
+## 9) [SessionStore](session-store.html) - [Store](store.html)
 
-## 10) [Authentication flows](authentication-flows.html)
+## 10) [Release notes](release-notes.html) - [Backward compatibility](backward-compatibility.html)
 
-## 11) [Customizations](customizations.html)
+## 11) [Authentication flows](authentication-flows.html)
 
-## 12) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/4.1.0/index.html)
+## 12) [Customizations](customizations.html)
+
+## 13) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/4.1.0/index.html)

@@ -19,7 +19,7 @@ title: Main concepts and components&#58;
 
 ---
 
-7) The [**web context**](session-store.html) is an abstraction of the HTTP request and response specific to the *pac4j* implementation and the associated `SessionStore` represents an implementation of the session
+7) The [**web context**](web-context.html) is an abstraction of the HTTP request and response specific to the *pac4j* implementation and the associated [session store](session-store.html) represents an implementation of the session
 
 
 8) The ["**security filter**"](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url) (or whatever the mechanism used to intercept HTTP requests) protects an URL by checking that the user is authenticated and that the authorizations are valid, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients

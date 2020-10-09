@@ -92,7 +92,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 final ProfileManager<UserProfile> manager = getProfileManager(context);
                 manager.setConfig(config);
                 List<UserProfile> profiles = loadProfiles(manager, context, currentClients);
-                LOGGER.debug("profiles: {}", profiles);
+                LOGGER.debug("Loaded profiles: {}", profiles);
 
                 // no profile and some current clients
                 if (isEmpty(profiles) && isNotEmpty(currentClients)) {
@@ -124,7 +124,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                     }
                     if (updated) {
                         profiles = loadProfiles(manager, context, currentClients);
-                        LOGGER.debug("new profiles: {}", profiles);
+                        LOGGER.debug("Reloaded profiles: {}", profiles);
                     }
                 }
 
