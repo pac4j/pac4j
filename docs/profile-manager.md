@@ -31,4 +31,4 @@ A custom profile manager can be instantiated via the following factory:
 
 - `setProfileManagerFactory(final ProfileManagerFactory factory)`.
 
-It can be set at a components level (like for the logics) or at the `Config` level.
+It can be set at components level (like for the logics) or at the `Config` level.

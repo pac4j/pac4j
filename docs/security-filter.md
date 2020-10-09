@@ -3,11 +3,11 @@ layout: doc
 title: Security filter&#58;
 ---
 
-In order to secure an URL, the *pac4j* implementation provides the security filter which delegates the work to the `DefaultSecurityLogic` component.
+To protect URLs, a security filter is necessary which defines which authentication/authorization mechanisms which are applied.
 
 ## 1) Behavior
 
-The `DefaultSecurityLogic` has the following behaviour:
+By default, it relies on the `DefaultSecurityLogic` which has the following behaviour:
 
 1. If the HTTP request matches the matchers configuration (or no matchers are defined), the security is applied. Otherwise, the user is automatically granted access.
 
@@ -17,15 +17,16 @@ The `DefaultSecurityLogic` has the following behaviour:
 
 4. Finally, if the user is not authenticated (no profile), he is redirected to the appropriate identity provider if the first defined client is an indirect one in the clients configuration. Otherwise, a 401 error page is displayed.
 
+
 ## 2) Options
 
-The following options are available:
+The following options are available for the security filter. They can be defined via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
 
-### a) `config`
+### a) config
 
 It's the [security configuration](config.html).
 
-### b) `clients`
+### b) clients
 
 It's a string of the list of the [client](clients.html) names (separated by commas) used for authentication. It is an optional parameter.
 
@@ -33,7 +34,7 @@ In all cases, this filter requires the user to be authenticated. Thus, if the `c
 
 A specific client may be chosen among all defined clients for the filter by using the request parameter: `force_client`.
 
-### c) `authorizers`
+### c) authorizers
 
 It's a string of the list of the [authorizer](authorizers.html) names (separated by commas) used to check authorizations. It is an optional parameter.
 
@@ -42,10 +43,36 @@ The `isAuthenticated` authorizer is also applied by default if no `AnonymousClie
 
 You can also use the [out-of-the-box authorizers](authorizers.html#-default-authorizer-names), already available without defining them in the security configuration.
 
-### d) `matchers`
+### d) matchers
 
 It's the list of the [matcher](matchers.html) names (separated by commas) that the request must satisfy to check authentication/authorizations. It is an optional parameter.
 
 If the `matchers` is blank or not defined, it is satisfied and the `securityHeaders` is applied and the `csrfToken` is applied only for web applications (at least one `IndirectClient` is defined).
 
 You can also use the [out-of-the-box matchers](matchers.html#3-default-matchers), already available without defining them in the security configuration.
+
+
+---
+
+## 3) Advanced options
+
+Advanced options can be set at:
+
+- the `Config` level
+- directly at the security filter level via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
+
+### a) sessionStore
+
+You may define a specific [`SessionStore`](session-store.html) instead of the default one of the *pac4j* implementation.
+
+### b) httpActionAdapter
+
+You may define a specific [`HttpActionAdapter`](http-action-adapter.html) instead of the default one of the *pac4j* implementation.
+
+### c) logoutLogic
+
+You may define a specific `SecurityLogic` instead of the default `DefaultSecurityLogic`.
+
+### d) webContextFactory
+
+You may define a specific [`WebContextFactory`](web-context.html) instead of the default one of the *pac4j* implementation.
