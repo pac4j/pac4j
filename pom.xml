@@ -57,7 +57,7 @@
 	</modules>
 
 	<properties>
-		<junit.version>4.13</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
 		<logback.version>1.2.3</logback.version>
 		<commons-codec.version>1.15</commons-codec.version>
