@@ -4,12 +4,12 @@
 <footer class="page-footer">
     <div class="footer-copyright">
         <div class="container center">
-            Made with passion by <a href="/docs/the-team.html">Jérôme Leleu and other volunteers</a>, &copy; 2012 - <script>document.write(new Date().getFullYear());</script>
+            Made with passion by <a href="/docs/the-team.html">Jérôme LELEU and other volunteers</a>, &copy; 2012 - <script>document.write(new Date().getFullYear());</script>
         </div>
     </div>
 </footer>
 
-{% if page.url contains 'docs' %}
+{% if page.url contains 'docs' or page.url contains 'mailing' %}
     <script>
         anchors.add();
     </script>

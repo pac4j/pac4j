@@ -1,13 +1,9 @@
 ---
-layout: content
-title: Mailing lists
+layout: mailing
+title: <i class="fa fa-envelope" aria-hidden="true"></i> Mailing lists&#58;
 ---
 
-## <i class="fa fa-life-ring" aria-hidden="true"></i> Commercial support
-
-- If you need commercial support (premium support or new/specific features), contact us at [info@pac4j.org](mailto:info@pac4j.org).
-
-## <i class="fa fa-envelope" aria-hidden="true"></i> Mailing lists
+## General
 
 - If you need help and have any question/issue when using pac4j, please use the [pac4j-users](https://groups.google.com/forum/?fromgroups#!forum/pac4j-users) Google group
 
@@ -15,7 +11,7 @@ title: Mailing lists
 
 - To receive the release announcements, please subscribe to the [pac4j-announce](https://groups.google.com/forum/?fromgroups#!forum/pac4j-announce) Google group.
 
-## <i class="fa fa-shield" aria-hidden="true"></i> Security
+## Security
 
 - To receive the security alerts, please subscribe to the [pac4j-security](https://groups.google.com/forum/?fromgroups#!forum/pac4j-security) Google group
 

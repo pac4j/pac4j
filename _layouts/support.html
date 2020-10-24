@@ -4,9 +4,9 @@
 <li><a href="/gettingstarted.html">GETTING STARTED</a></li>
 <li><a href="/implementations.html">IMPLEMENTATIONS</a></li>
 <li><a href="/docs/alldocs.html">DOCUMENTATION</a></li>
-<li class="active"><a href="/contributors.html">CONTRIBUTE</a></li>
+<li><a href="/contributors.html">CONTRIBUTE</a></li>
 <li><a href="/blog.html">BLOG</a></li>
-<li><a href="/commercial-support.html">COMMERCIAL SUPPORT</a></li>
+<li class="{% if page.url == '/commercial-support.html' %}active{% endif %}"><a href="/commercial-support.html">COMMERCIAL SUPPORT</a></li>
 <li><a href="/mailing-lists.html">MAILING LISTS</a></li>
 </ul>
 </div>
@@ -17,7 +17,7 @@
     <div class="container">
 
          <div class="title">
-            <h1 class="text-center"><span class="alert alert-contrib">{{ page.title }}</span></h1>
+            <h1 class="text-center"><span class="alert alert-support">{{ page.title }}</span></h1>
         </div>
 
         {{ content }}

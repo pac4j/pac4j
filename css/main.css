@@ -128,6 +128,16 @@ pre[class="highlight"] {
     border-color: #299cee;
     color: #ffffff;
 }
+.alert-support {
+    background-color: #bbbbbb;
+    border-color: #aaaaaa;
+    color: #ffffff;
+}
+.alert-mailing {
+    background-color: #a580ee;
+    border-color: #9470dd;
+    color: #ffffff;
+}
 .title {
     margin-bottom: 70px;
 }
