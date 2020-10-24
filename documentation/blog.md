@@ -1,6 +1,6 @@
 ---
 layout: homeblog
-title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog
+title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
 ## &bull; October 2020: [What's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)

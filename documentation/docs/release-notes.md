@@ -73,6 +73,10 @@ title: Release notes&#58;
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 - The `pac4j-saml` module is saved as the legacy `pac4j-saml-opensamlv3` module and upgraded to JDK 11 and OpenSAML v4
 
+---
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The 3.x stream is no longer maintained except via the <a href="/commercial-support.html">LTS program</a>.</div>
+
 **v3.8.3**:
 
 - Upgrade the nimbus-jose-jwt library to version 7.9 because of [CVE-2019-17195](https://connect2id.com/blog/nimbus-jose-jwt-7-9)
