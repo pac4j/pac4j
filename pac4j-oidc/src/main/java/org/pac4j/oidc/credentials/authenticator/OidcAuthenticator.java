@@ -193,7 +193,9 @@ public class OidcAuthenticator implements Authenticator {
         final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
         credentials.setAccessToken(oidcTokens.getAccessToken());
         credentials.setRefreshToken(oidcTokens.getRefreshToken());
-        credentials.setIdToken(oidcTokens.getIDToken());
+        if (oidcTokens.getIDToken() != null) {
+            credentials.setIdToken(oidcTokens.getIDToken());
+        }
     }
 
     public ClientAuthentication getClientAuthentication() {
