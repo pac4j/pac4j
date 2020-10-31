@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for CAS</name>
 
     <properties>
-        <cas.version>3.6.1</cas.version>
+        <cas.version>3.6.2</cas.version>
     </properties>
 
     <dependencies>
