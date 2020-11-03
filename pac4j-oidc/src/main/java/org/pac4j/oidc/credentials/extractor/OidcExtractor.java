@@ -95,17 +95,19 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
 
             if (configuration.isWithState()) {
                 // Validate state for CSRF mitigation
-                State state = (State) configuration.getValueRetriever()
+                final State requestState = (State) configuration.getValueRetriever()
                         .retrieve(client.getStateSessionAttributeName(), client, context)
                         .orElseThrow(() -> new TechnicalException("State cannot be determined"));
 
-                if (successResponse.getState() == null) {
+                final State responseState = successResponse.getState();
+                if (responseState == null) {
                     throw new TechnicalException("Missing state parameter");
                 }
-                if (!state.equals(successResponse.getState())) {
+
+                logger.debug("Request state: {}/response state: {}", requestState, successResponse);
+                if (!requestState.equals(responseState)) {
                     throw new TechnicalException(
-                            "State parameter is different from the one sent in authentication request. "
-                                    + "Session expired or possible threat of cross-site request forgery");
+                            "State parameter is different from the one sent in authentication request.");
                 }
             }
 
