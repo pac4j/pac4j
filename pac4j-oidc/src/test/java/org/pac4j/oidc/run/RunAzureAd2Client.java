@@ -2,26 +2,25 @@ package org.pac4j.oidc.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.oidc.client.AzureAdClient;
-import org.pac4j.oidc.config.AzureAdOidcConfiguration;
+import org.pac4j.core.run.RunClient;
+import org.pac4j.oidc.client.AzureAd2Client;
+import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 
 import static org.junit.Assert.*;
 
 /**
- * Run a manual test for the {@link AzureAdClient}.
+ * Run a manual test for the {@link AzureAd2Client}.
  *
- * @author Jerome Leleu
- * @since 1.9.0
+ * @author Charley Wu
+ * @since 5.0.0
  */
-@SuppressWarnings( "deprecation" )
-public class RunAzureAdClient extends RunClient {
+public class RunAzureAd2Client extends RunClient {
 
     public static void main(final String[] args) {
-        new RunAzureAdClient().run();
+        new RunAzureAd2Client().run();
     }
 
     @Override
@@ -36,13 +35,13 @@ public class RunAzureAdClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final AzureAdOidcConfiguration configuration = new AzureAdOidcConfiguration();
+        final AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
         configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
         configuration.setTenant("38c46e5a-21f0-46e5-940d-3ca06fd1a330");
-        final AzureAdClient client = new AzureAdClient(configuration);
-        client.setCallbackUrl(PAC4J_URL);
-        //client.setCallbackUrl(CommonHelper.addParameter(PAC4J_URL, Clients.DEFAULT_CLIENT_NAME_PARAMETER, client.getName()));
+        final AzureAd2Client client = new AzureAd2Client(configuration);
+        // MUST begin with https:// or http://localhost
+        client.setCallbackUrl("https://www.pac4j.org/test.html");
         return client;
     }
 
@@ -51,14 +50,14 @@ public class RunAzureAdClient extends RunClient {
         final AzureAdProfile profile = (AzureAdProfile) userProfile;
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
         assertEquals(AzureAdProfile.class.getName() + CommonProfile.SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
-                profile.getTypedId());
+            profile.getTypedId());
         assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getIdToken());
         assertNotNull(profile.getRefreshToken());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), AzureAdProfile.class));
         assertNotNull(profile.getIdTokenString());
         assertCommonProfile(profile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
-                Gender.UNSPECIFIED, null, null, null, null);
+            Gender.UNSPECIFIED, null, null, null, null);
         assertEquals("live.com", profile.getIdp());
         assertEquals("6c59c433-11b5-4fb1-9641-40b829e7a8e4", profile.getOid());
         assertEquals("38c46e5a-21f0-46e5-940d-3ca06fd1a330", profile.getTid());
