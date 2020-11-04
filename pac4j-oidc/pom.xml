@@ -46,6 +46,10 @@
             <artifactId>javax.mail</artifactId>
             <version>${javax.mail.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>
