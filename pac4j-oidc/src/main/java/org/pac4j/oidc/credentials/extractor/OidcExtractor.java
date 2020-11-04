@@ -104,7 +104,7 @@ public class OidcExtractor implements CredentialsExtractor<OidcCredentials> {
                     throw new TechnicalException("Missing state parameter");
                 }
 
-                logger.debug("Request state: {}/response state: {}", requestState, successResponse);
+                logger.debug("Request state: {}/response state: {}", requestState, responseState);
                 if (!requestState.equals(responseState)) {
                     throw new TechnicalException(
                             "State parameter is different from the one sent in authentication request.");
