@@ -31,7 +31,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Authentication mechanisms:
 
-[OAuth (Facebook, Twitter, Google...)](http://www.pac4j.org/docs/clients/oauth.html) - [SAML](http://www.pac4j.org/docs/clients/saml.html) - [CAS](http://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](http://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](http://www.pac4j.org/docs/clients/http.html) - [OpenID](http://www.pac4j.org/docs/clients/openid.html) - [Google App Engine](http://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](http://www.pac4j.org/docs/clients/kerberos.html)
+[OAuth (Facebook, Twitter, Google...)](http://www.pac4j.org/docs/clients/oauth.html) - [SAML](http://www.pac4j.org/docs/clients/saml.html) - [CAS](http://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](http://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](http://www.pac4j.org/docs/clients/http.html) - [Google App Engine](http://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](http://www.pac4j.org/docs/clients/kerberos.html)
 
 [LDAP](http://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](http://www.pac4j.org/docs/authenticators/sql.html) - [JWT](http://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](http://www.pac4j.org/docs/authenticators/mongodb.html) - [CouchDB](http://www.pac4j.org/docs/authenticators/couchdb.html) - [IP address](http://www.pac4j.org/docs/authenticators/ip.html) - [REST API](http://www.pac4j.org/docs/authenticators/rest.html)
 
