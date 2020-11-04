@@ -23,9 +23,9 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
 /**
- * A specialized {@link OidcClient} for authenticating againt Microsoft Azure AD. Microsoft Azure
+ * A specialized {@link OidcClient} for authenticating against Microsoft Azure AD. Microsoft Azure
  * AD provides authentication for multiple tenants, or, when the tenant is not known prior to
- * authentication, the speciall common-tenant. For a specific tenant, the following discovery URI
+ * authentication, the special common-tenant. For a specific tenant, the following discovery URI
  * must be used:
  * {@code https://login.microsoftonline.com/tenantid/.well-known/openid-configuration} or
  * {@code https://login.microsoftonline.com/tenantid/v2.0/.well-known/openid-configuration} for
@@ -38,15 +38,16 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  * from the {@code issuer} mentioned in the discovery data. This class uses to special validator
  * to correctly validate the issuer returned by Azure AD.
  *
- * More information at: https://msdn.microsoft.com/en-us/library/azure/dn645541.aspx
+ * More information at: https://docs.microsoft.com/azure/active-directory/azuread-dev/v1-protocols-openid-connect-code
  *
  * @author Emond Papegaaij
  * @since 1.8.3
  */
+@Deprecated
 public class AzureAdClient extends OidcClient {
 
-    private ObjectMapper objectMapper;
-    private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<>() {};
+    protected ObjectMapper objectMapper;
+    protected static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<>() {};
 
     public AzureAdClient() {}
 
