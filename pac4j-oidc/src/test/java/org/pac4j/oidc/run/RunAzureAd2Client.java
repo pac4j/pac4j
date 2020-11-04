@@ -37,9 +37,10 @@ public class RunAzureAd2Client extends RunClient {
     protected IndirectClient getClient() {
         final AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
-        configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
+        configuration.setSecret("7~nTx-1_-zn~04jLMfY4J~af6vRY9wXrYW");
         configuration.setTenant("38c46e5a-21f0-46e5-940d-3ca06fd1a330");
         final AzureAd2Client client = new AzureAd2Client(configuration);
+        client.setName("AzureAdClient");
         // MUST begin with https:// or http://localhost
         client.setCallbackUrl("https://www.pac4j.org/test.html");
         return client;
@@ -73,7 +74,6 @@ public class RunAzureAd2Client extends RunClient {
         assertNotNull(profile.getIssuedAt());
         assertNotNull(profile.getAttribute("sub"));
         assertNull(profile.getAttribute("pwd_exp"));
-        assertEquals("5", profile.getAttribute("platf"));
-        assertEquals(23, profile.getAttributes().size());
+        assertEquals(25, profile.getAttributes().size());
     }
 }
