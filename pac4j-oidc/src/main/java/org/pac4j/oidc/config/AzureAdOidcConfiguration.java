@@ -10,6 +10,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Stephen More
  * @since 3.0.0
  */
+@Deprecated
 public class AzureAdOidcConfiguration extends OidcConfiguration {
 
     /** AzureAd tenant **/
