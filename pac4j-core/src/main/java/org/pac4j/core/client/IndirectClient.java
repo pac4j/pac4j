@@ -1,6 +1,5 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -112,18 +111,12 @@ public abstract class IndirectClient extends BaseClient {
 
     private void cleanRequestedUrl(final WebContext context) {
         logger.debug("clean requested URL");
-        final SessionStore sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent()) {
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
-        }
+        context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
         logger.debug("clean authentication attempt");
-        final SessionStore sessionStore = context.getSessionStore();
-        if (sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent()) {
-            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
-        }
+        context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
     }
 
     /**
