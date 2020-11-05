@@ -14,6 +14,10 @@ title: Release notes&#58;
 - The SAML central logout does not perform any local logout
 - When no authorizers is defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
 
+**v4.2.0**:
+
+- Apple SignIn support (OIDC protocol)
+
 **v4.1.0** (see: [what's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)):
 
 - The `RememberMeAuthorizationGenerator` is deprecated and will be removed in the next version (v5)
