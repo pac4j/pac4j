@@ -22,7 +22,7 @@ You need to use the following module: `pac4j-mongodb`.
 ## 2) `MongoProfileService`
 
 The [`MongoProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/service/MongoProfileService.java) supersedes the deprecated `MongoAuthenticator` to:
-                                                                                                                                                                                                                                                                                                                 
+
 - validate a username/password on a MongoDB database (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
 - create, update or delete a user in the MongoDB database.
 
@@ -46,3 +46,5 @@ The attributes of the user profile can be managed in the MongoDB collection in t
 - or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
 This `MongoProfileService` supports the use of a specific [`PasswordEncoder`](../authenticators.html#passwordencoder) to encode the passwords in the MongoDB database.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Starting with v3.9.0 in the 3.x stream, v4.2.0 in the 4.x stream and v5.0, the <code>serializedprofile</code> is written in JSON instead of using the Java serialization.</div>
