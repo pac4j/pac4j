@@ -4,6 +4,7 @@ import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.serializer.ProfileServiceSerializer;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -55,6 +56,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new DbProfile()));
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         this.dbi = new DBI(this.dataSource);
+        setSerializer(new ProfileServiceSerializer(DbProfile.class));
 
         super.internalInit();
     }

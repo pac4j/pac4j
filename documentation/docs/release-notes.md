@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.9.0**:
+
+- Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports
+
 **v3.8.3**:
 
 - Upgrade the nimbus-jose-jwt library to version 7.9 because of [CVE-2019-17195](https://connect2id.com/blog/nimbus-jose-jwt-7-9)
@@ -17,7 +21,7 @@ title: Release notes&#58;
 - Sign metadata when configured to do so and open up the metadata generation API for customization.
 - Never sign AuthnRequests with XMLSig when using REDIRECT binding, signing is done via the Signature query parameter.
 - Added support for LinkedIn v2 API
-- Added support for FigShare 
+- Added support for FigShare
 
 **v3.7.0**:
 

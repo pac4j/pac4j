@@ -22,7 +22,7 @@ You need to use the following module: `pac4j-couch`.
 ## 2) `CouchProfileService`
 
 The [`CouchProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-couch/src/main/java/org/pac4j/couch/profile/service/CouchProfileService.java):
-                                                                                                                                                                                                                                                                                                                 
+
 - validates a username/password on a CouchDB database (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
 - create, update or delete a user in the CouchDB database.
 
@@ -64,3 +64,5 @@ The attributes of the user profile can be managed in the CouchDB collection in t
 - or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
 This `CouchProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the CouchDB database.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Starting with v3.9.0 in the 3.x stream, v4.2.0 in the 4.x stream and v5.0, the <code>serializedprofile</code> is written in JSON instead of using the Java serialization.</div>

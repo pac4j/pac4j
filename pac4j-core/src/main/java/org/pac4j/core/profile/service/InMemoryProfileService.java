@@ -3,6 +3,7 @@ package org.pac4j.core.profile.service;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.serializer.ProfileServiceSerializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     protected void internalInit() {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         defaultProfileDefinition(new CommonProfileDefinition<U>(profileFactory));
+        setSerializer(new ProfileServiceSerializer(CommonProfile.class));
+
         super.internalInit();
     }
 
