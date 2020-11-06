@@ -58,7 +58,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
     private Duration timeout = MAX_TIMEOUT;
 
     @Override
-    protected void clientInit() {
+    protected void internalInit() {
         // checks
         CommonHelper.assertNotBlank("privateKeyID", privateKeyID);
         CommonHelper.assertNotNull("privateKey", privateKey);
@@ -82,7 +82,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         providerMetadata.setIDTokenJWSAlgs(Collections.singletonList(JWSAlgorithm.RS256));
         setProviderMetadata(providerMetadata);
         setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
-        super.clientInit();
+        super.internalInit();
     }
 
     /**
