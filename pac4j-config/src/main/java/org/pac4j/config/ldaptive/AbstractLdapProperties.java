@@ -46,7 +46,6 @@ public abstract class AbstractLdapProperties {
     private long blockWaitTime = 6000;
 
     private String ldapUrl = "ldap://localhost:389";
-    private boolean useSsl = true;
     private boolean useStartTls;
     private long connectTimeout = 5000;
 
@@ -214,14 +213,6 @@ public abstract class AbstractLdapProperties {
 
     public void setLdapUrl(final String ldapUrl) {
         this.ldapUrl = ldapUrl;
-    }
-
-    public boolean isUseSsl() {
-        return useSsl;
-    }
-
-    public void setUseSsl(final boolean useSsl) {
-        this.useSsl = useSsl;
     }
 
     public boolean isUseStartTls() {
