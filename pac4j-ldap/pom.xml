@@ -13,7 +13,7 @@
     <name>pac4j for LDAP</name>
 
     <properties>
-        <ldaptive.version>2.0.0</ldaptive.version>
+        <ldaptive.version>2.0.1</ldaptive.version>
     </properties>
 
     <dependencies>
