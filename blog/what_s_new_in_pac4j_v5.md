@@ -2,7 +2,7 @@
 layout: blog
 title: What's new in pac4j v5?
 author: Jérôme LELEU
-date: October 2020
+date: November 2020
 ---
 
 One of the primary goals of pac4j has always been to be easy. One must admit that along the versions, it has gained some complexity and weight and time has come for cleaning.
@@ -67,3 +67,15 @@ Since v5, a new default authorizer is added if no matchers is defined: `isAuthen
 Since a few versions, you can use the `AnonymousClient` and its `AnonymousProfile` put in the HTTP request when no other authenticated profile is available. The edge case is that this profile can be saved into the session and be available on other secured endpoints and URLs.
 
 So the idea here is to be protected by default against any `AnonymousProfile` "leaking" to the session.
+
+## User profiles
+
+When using the `ProfileService` for RDBMS, LDAP, MongoDB or CouchDB, there is a core issue in the format used to serialize profiles: it might block upgrades.
+Indeed, we use the Java serialization which is a very bad idea because of the changes that can happen to the profiles classes like the fact that the `UserProfile` has moved from an abstract class in v3.x to an interface in v4.x.
+So the idea is to use JSON instead of Java serialization.
+
+The new `Serializer` (`encode` + `decode` methods) used by the profile services is the `ProfileServiceSerializer` which relies on the `JsonSerializer` and the `JavaSerializer` and is able to read JSON or Java serialized data and write JSON data.
+
+Before upgrading to a new major *pac4j* version, it might be necessary to re-encode all data in the `serializedprofile` attribute with the `ProfileServiceSerializer`.
+
+These fixes are available in v3.9.0, v4.2.0 and in the v5.x stream.
