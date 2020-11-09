@@ -3,7 +3,6 @@ package org.pac4j.core.logout.handler;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
@@ -80,7 +79,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     protected void destroy(final WebContext context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final ProfileManager<UserProfile> manager = getProfileManager(context);
+        final ProfileManager manager = getProfileManager(context);
         manager.setSessionStore(sessionStore);
         manager.removeProfiles();
         logger.debug("{} channel logout call: destroy the user profiles", channel);

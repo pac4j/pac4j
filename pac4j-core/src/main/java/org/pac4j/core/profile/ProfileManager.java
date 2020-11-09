@@ -21,7 +21,7 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ProfileManager<U extends UserProfile> {
+public class ProfileManager {
 
     private final Authorizer IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer();
 
@@ -49,16 +49,20 @@ public class ProfileManager<U extends UserProfile> {
      *
      * @return the user profile
      */
-    public Optional<U> getProfile() {
+    public Optional<UserProfile> getProfile() {
         return get(true);
+    }
+
+    public <U extends UserProfile> Optional<U> getProfile(final Class<U> clazz) {
+        return (Optional<U>) getProfile();
     }
 
     /**
      * Use {@link #getProfile()}.
      */
     @Deprecated
-    public Optional<U> get(final boolean readFromSession) {
-        final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
+    public Optional<UserProfile> get(final boolean readFromSession) {
+        final LinkedHashMap<String, UserProfile> allProfiles = retrieveAll(readFromSession);
         return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
@@ -67,7 +71,7 @@ public class ProfileManager<U extends UserProfile> {
      *
      * @return the user profiles
      */
-    public List<U> getProfiles() {
+    public List<UserProfile> getProfiles() {
         return getAll(true);
     }
 
@@ -75,8 +79,8 @@ public class ProfileManager<U extends UserProfile> {
      * Use {@link #getProfiles()}.
      */
     @Deprecated
-    public List<U> getAll(final boolean readFromSession) {
-        final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
+    public List<UserProfile> getAll(final boolean readFromSession) {
+        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
         return ProfileHelper.flatIntoAProfileList(profiles);
     }
 
@@ -86,13 +90,13 @@ public class ProfileManager<U extends UserProfile> {
      * @param readFromSession if the user profiles must be read from session
      * @return the map of profiles
      */
-    protected LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
-        final LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
+    protected LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {
+        final LinkedHashMap<String, UserProfile> profiles = new LinkedHashMap<>();
         this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
-            .ifPresent(requestAttribute -> profiles.putAll((Map<String, U>) requestAttribute));
+            .ifPresent(requestAttribute -> profiles.putAll((Map<String, UserProfile>) requestAttribute));
         if (readFromSession) {
             this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES)
-                .ifPresent(sessionAttribute -> profiles.putAll((Map<String, U>) sessionAttribute));
+                .ifPresent(sessionAttribute -> profiles.putAll((Map<String, UserProfile>) sessionAttribute));
         }
 
         removeOrRenewExpiredProfiles(profiles, readFromSession);
@@ -100,11 +104,11 @@ public class ProfileManager<U extends UserProfile> {
         return profiles;
     }
 
-    protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, U> profiles, final boolean readFromSession) {
+    protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, UserProfile> profiles, final boolean readFromSession) {
         boolean profilesUpdated = false;
-        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
+        for (final Map.Entry<String, UserProfile> entry : profiles.entrySet()) {
             final String key = entry.getKey();
-            final U profile = entry.getValue();
+            final UserProfile profile = entry.getValue();
             if (profile.isExpired()) {
                 profilesUpdated = true;
                 profiles.remove(key);
@@ -114,7 +118,7 @@ public class ProfileManager<U extends UserProfile> {
                         try {
                             final Optional<UserProfile> newProfile = client.get().renewUserProfile(profile, context);
                             if (newProfile.isPresent()) {
-                                profiles.put(key, (U) newProfile.get());
+                                profiles.put(key, newProfile.get());
                             }
                         } catch (final RuntimeException e) {
                             logger.error("Unable to renew the user profile for key: {}", key, e);
@@ -142,9 +146,9 @@ public class ProfileManager<U extends UserProfile> {
     @Deprecated
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
-            this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
+            this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
         }
-        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
+        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
     }
 
     /**
@@ -154,8 +158,8 @@ public class ProfileManager<U extends UserProfile> {
      * @param profile a given user profile
      * @param multiProfile whether multiple profiles are supported
      */
-    public void save(final boolean saveInSession, final U profile, final boolean multiProfile) {
-        final LinkedHashMap<String, U> profiles;
+    public void save(final boolean saveInSession, final UserProfile profile, final boolean multiProfile) {
+        final LinkedHashMap<String, UserProfile> profiles;
 
         final String clientName = retrieveClientName(profile);
         if (multiProfile) {
@@ -169,7 +173,7 @@ public class ProfileManager<U extends UserProfile> {
         saveAll(profiles, saveInSession);
     }
 
-    protected String retrieveClientName(final U profile) {
+    protected String retrieveClientName(final UserProfile profile) {
         String clientName = profile.getClientName();
         if (clientName == null) {
             clientName = "DEFAULT";
@@ -177,7 +181,7 @@ public class ProfileManager<U extends UserProfile> {
         return clientName;
     }
 
-    protected void saveAll(LinkedHashMap<String, U> profiles, final boolean saveInSession) {
+    protected void saveAll(LinkedHashMap<String, UserProfile> profiles, final boolean saveInSession) {
         if (saveInSession) {
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, profiles);
         }
@@ -191,7 +195,7 @@ public class ProfileManager<U extends UserProfile> {
      */
     public boolean isAuthenticated() {
         try {
-            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, (List<UserProfile>) getProfiles());
+            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, getProfiles());
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }

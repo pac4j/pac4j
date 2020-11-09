@@ -3,7 +3,6 @@ package org.pac4j.core.profile.factory;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.FindBest;
 
@@ -17,7 +16,7 @@ public class ProfileManagerFactoryAware {
 
     private ProfileManagerFactory profileManagerFactory;
 
-    protected ProfileManager<UserProfile> getProfileManager(final WebContext context) {
+    protected ProfileManager getProfileManager(final WebContext context) {
         return FindBest.profileManagerFactory(this.profileManagerFactory, Config.INSTANCE, ProfileManagerFactory.DEFAULT)
             .apply(context);
     }

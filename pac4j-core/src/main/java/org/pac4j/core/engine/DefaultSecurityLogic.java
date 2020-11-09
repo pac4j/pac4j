@@ -89,7 +89,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
             if (matchingChecker.matches(context, matchers, config.getMatchers(), currentClients)) {
 
-                final ProfileManager<UserProfile> manager = getProfileManager(context);
+                final ProfileManager manager = getProfileManager(context);
                 manager.setConfig(config);
                 List<UserProfile> profiles = loadProfiles(manager, context, currentClients);
                 LOGGER.debug("Loaded profiles: {}", profiles);
@@ -170,7 +170,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * @param clients the current clients
      * @return
      */
-    protected List<UserProfile> loadProfiles(final ProfileManager<UserProfile> manager, final WebContext context,
+    protected List<UserProfile> loadProfiles(final ProfileManager manager, final WebContext context,
                                              final List<Client> clients) {
         return manager.getProfiles();
     }

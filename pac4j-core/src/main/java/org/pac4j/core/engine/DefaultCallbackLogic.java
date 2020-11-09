@@ -103,7 +103,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
 
     protected void saveUserProfile(final WebContext context, final Config config, final UserProfile profile,
                                    final boolean saveProfileInSession, final boolean multiProfile, final boolean renewSession) {
-        final ProfileManager<UserProfile> manager = getProfileManager(context);
+        final ProfileManager manager = getProfileManager(context);
         if (profile != null) {
             manager.save(saveProfileInSession, profile, multiProfile);
             if (renewSession) {

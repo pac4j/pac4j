@@ -72,7 +72,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             assertNotNull("configClients", configClients);
 
             // logic
-            final ProfileManager<UserProfile> manager = getProfileManager(context);
+            final ProfileManager manager = getProfileManager(context);
             manager.setConfig(config);
             final List<UserProfile> profiles = manager.getProfiles();
 

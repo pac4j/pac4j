@@ -28,7 +28,7 @@ The `client_name` parameter can no longer be used to choose a client on the secu
 While generics should have brought value to the pac4j source code, they have, in fact, cluttered it.
 With inconsistencies especially in the `Clients` and `Config` components where the generics were "forgotten".
 
-So almost all generics constraints have been removed from the source code. Only remains the generics in the `ProfileService`, `Store` and `ProfileManager` components.
+So almost all generics constraints have been removed from the source code. Only remain the generics in the `ProfileService` and `Store` components.
 
 ## Session management
 
@@ -40,7 +40,8 @@ This way, no need to explicitly define if you want to read from the web session 
 
 `profileManager.getProfiles()` replaces `profileManager.getAll(readFromSession)`
 
-The fact that a profile is saved in the session or not after a succesful login is now override at the `Client` level, and no longer in the "security filter" and "callback endpoint". BTW, the multi-profile option is now also set at the `Client` level.
+The fact that a profile is saved in the session or not after a succesful login is now override at the `Client` level, and no longer in the "security filter" and "callback endpoint".
+BTW, the multi-profile option is now also set at the `Client` level.
 
 ```java
 client.setMultiProfile(true);
