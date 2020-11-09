@@ -15,6 +15,7 @@ title: Release notes&#58;
 - When no authorizers is defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
 - Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports; Added a `JsonSerializer` and turned the `JavaSerializationHelper` into a `JavaSerializer`
 - Removed the 307 HTTP code for a new POST request after a POST request (use 200 instead)
+- Turned the `UserProfile` component into a pure interface and use it in the `JwtGenerator` and `JwtAuthenticator`
 
 **v4.2.0**:
 

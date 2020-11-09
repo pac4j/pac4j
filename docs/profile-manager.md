@@ -14,11 +14,10 @@ You can use the `getProfile()` method to return only one profile and the `getPro
 The returned profiles are of type `UserProfile`, but they should be at least cast as `CommonProfile` to retrieve the most common attributes that all profiles share
 or to their real types like a `FacebookProfile` in case of a Facebook authentication.
 
-The `ProfileManager` can also be instantiated with a profile type to always retrieve a specific user profile type.
+You may also use the `getProfile(class)` if you already know the type of the user profile.
 
 ```java
-ProfileManager<CasProfile> manager = new ProfileManager<CasProfile>(webContext)
-CasProfile profile = manager.getProfile().get();
+CasProfile profile = manager.getProfile(CasProfile.class).get();
 ```
 
 ## 2) Custom profile managers
