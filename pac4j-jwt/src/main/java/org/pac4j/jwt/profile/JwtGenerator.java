@@ -3,7 +3,7 @@ package org.pac4j.jwt.profile;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
@@ -66,7 +66,7 @@ public class JwtGenerator {
      * @param profile the given user profile
      * @return the created JWT
      */
-    public String generate(final CommonProfile profile) {
+    public String generate(final UserProfile profile) {
         verifyProfile(profile);
 
         return internalGenerate(buildJwtClaimsSet(profile));
@@ -95,14 +95,14 @@ public class JwtGenerator {
         }
     }
 
-    protected void verifyProfile(final CommonProfile profile) {
+    protected void verifyProfile(final UserProfile profile) {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
         CommonHelper.assertNull(INTERNAL_LINKEDID, profile.getAttribute(INTERNAL_LINKEDID));
     }
 
-    protected JWTClaimsSet buildJwtClaimsSet(final CommonProfile profile) {
+    protected JWTClaimsSet buildJwtClaimsSet(final UserProfile profile) {
         // claims builder with subject and issue time
         final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .issueTime(new Date());

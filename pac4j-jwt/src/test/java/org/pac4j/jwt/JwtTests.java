@@ -6,6 +6,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -156,7 +157,7 @@ public final class JwtTests implements TestsConstants {
         final String token = generator.generate(new HashMap<>());
         JwtAuthenticator authenticator = new JwtAuthenticator();
         authenticator.setIdentifierGenerator(new StaticValueGenerator(VALUE));
-        final CommonProfile profile = authenticator.validateToken(token);
+        final UserProfile profile = authenticator.validateToken(token);
         assertEquals(VALUE, profile.getId());
     }
 

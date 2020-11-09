@@ -3,11 +3,11 @@ package org.pac4j.core.profile;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * A minimal user profile: the {@link #getId()} method must be implemented,
- * absolutely required methods have a default behavior, others throw a {@link UnsupportedOperationException}.
+ * The contract that all user profiles must respect.
  *
  * @author Jerome Leleu
  * @since 4.0.0
@@ -16,59 +16,39 @@ public interface UserProfile extends Serializable {
 
     String getId();
 
-    default String getUsername() {
-        return null;
-    }
+    String getTypedId();
 
-    default Object getAttribute(String name) {
-        throw new UnsupportedOperationException("Your user profile must implement the getAttribute method");
-    }
+    String getUsername();
 
-    default boolean containsAttribute(String name) {
-        throw new UnsupportedOperationException("Your user profile must implement the containsAttribute method");
-    }
+    Object getAttribute(String name);
 
-    default void addRole(String role) {
-        throw new UnsupportedOperationException("Your user profile must implement the addRole method");
-    }
+    Map<String, Object> getAttributes();
 
-    default void addRoles(Collection<String> roles) {
-        throw new UnsupportedOperationException("Your user profile must implement the addRoles method");
-    }
+    boolean containsAttribute(String name);
 
-    default Set<String> getRoles() {
-        throw new UnsupportedOperationException("Your user profile must implement the getRoles method");
-    }
+    void addRole(String role);
 
-    default void addPermission(String permission) {
-        throw new UnsupportedOperationException("Your user profile must implement the addPermission method");
-    }
+    void addRoles(Collection<String> roles);
 
-    default void addPermissions(Collection<String> permissions) {
-        throw new UnsupportedOperationException("Your user profile must implement the addPermissions method");
-    }
+    Set<String> getRoles();
 
-    default Set<String> getPermissions() {
-        throw new UnsupportedOperationException("Your user profile must implement the getPermissions method");
-    }
+    void addPermission(String permission);
 
-    default boolean isRemembered() {
-        throw new UnsupportedOperationException("Your user profile must implement the isRemembered method");
-    }
+    void addPermissions(Collection<String> permissions);
 
-    default void setRemembered(boolean rme) {}
+    Set<String> getPermissions();
 
-    default String getClientName() {
-        return null;
-    }
+    boolean isRemembered();
 
-    default void setClientName(String clientName) {}
+    void setRemembered(boolean rme);
 
-    default boolean isExpired() {
-        return false;
-    }
+    String getClientName();
 
-    default Principal asPrincipal() {
-        return new Pac4JPrincipal(this);
-    }
+    void setClientName(String clientName);
+
+    String getLinkedId();
+
+    boolean isExpired();
+
+    Principal asPrincipal();
 }

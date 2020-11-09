@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -104,7 +105,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
      * @return the corresponding user profile
      */
     public Map<String, Object> validateTokenAndGetClaims(final String token) {
-        final CommonProfile profile = validateToken(token);
+        final UserProfile profile = validateToken(token);
 
         final Map<String, Object> claims = new HashMap<>(profile.getAttributes());
         claims.put(JwtClaims.SUBJECT, profile.getId());
@@ -118,7 +119,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
      * @param token the JWT
      * @return the corresponding user profile
      */
-    public CommonProfile validateToken(final String token) {
+    public UserProfile validateToken(final String token) {
         final TokenCredentials credentials = new TokenCredentials(token);
         try {
             validate(credentials, null);

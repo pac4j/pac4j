@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Streams;
 
 import java.io.*;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,6 +109,11 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public String getTypedId() {
         return this.getClass().getName() + SEPARATOR + this.id;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
     }
 
     private void addAttributeToMap(final Map<String, Object> map, final String key, Object value)
@@ -488,11 +494,22 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         this.clientName = clientName;
     }
 
+    @Override
     public String getLinkedId() {
         return linkedId;
     }
 
     public void setLinkedId(final String linkedId) {
         this.linkedId = linkedId;
+    }
+
+    @Override
+    public boolean isExpired() {
+        return false;
+    }
+
+    @Override
+    public Principal asPrincipal() {
+        return new Pac4JPrincipal(this);
     }
 }
