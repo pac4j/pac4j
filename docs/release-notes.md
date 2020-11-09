@@ -14,6 +14,7 @@ title: Release notes&#58;
 - The SAML central logout does not perform any local logout
 - When no authorizers is defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
 - Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports; Added a `JsonSerializer` and turned the `JavaSerializationHelper` into a `JavaSerializer`
+- Removed the 307 HTTP code for a new POST request after a POST request (use 200 instead)
 
 **v4.2.0**:
 
