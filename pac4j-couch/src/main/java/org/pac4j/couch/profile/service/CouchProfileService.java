@@ -1,5 +1,6 @@
 package org.pac4j.couch.profile.service;
 
+import org.pac4j.core.util.serializer.ProfileServiceSerializer;
 import org.pac4j.couch.profile.CouchProfile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -67,6 +68,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         assertNotNull("couchDbConnector", this.couchDbConnector);
 
         defaultProfileDefinition(new CommonProfileDefinition(x -> new CouchProfile()));
+        setSerializer(new ProfileServiceSerializer(CouchProfile.class));
 
         super.internalInit();
     }

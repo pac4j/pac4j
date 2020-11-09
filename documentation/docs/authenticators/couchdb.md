@@ -64,3 +64,5 @@ The attributes of the user profile can be managed in the CouchDB collection in t
 - or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
 This `CouchProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the CouchDB database.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Starting with v3.9.0 in the 3.x stream, v4.2.0 in the 4.x stream and v5.0, the <code>serializedprofile</code> is written in JSON instead of using the Java serialization.</div>

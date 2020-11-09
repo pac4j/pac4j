@@ -3,7 +3,7 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
-## &bull; October 2020: [What's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)
+## &bull; November 2020: [What's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)
 
 ## &bull; September 2020: [What's new in pac4j v4.1?](/blog/what_s_new_in_pac4j_v4_1.html)
 

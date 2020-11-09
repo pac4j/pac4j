@@ -1,5 +1,6 @@
-package org.pac4j.core.util;
+package org.pac4j.core.util.serializer;
 
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,20 +10,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Helper for Java serialization.
+ * Java serializer.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class JavaSerializationHelper {
+public class JavaSerializer implements Serializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaSerializer.class);
 
     private Set<String> trustedPackages;
 
     private Set<Class<?>> trustedClasses;
 
-    public JavaSerializationHelper() {
+    public JavaSerializer() {
         trustedPackages = new HashSet<>();
         trustedPackages.addAll(Arrays.asList("java.", "javax.", "[Ljava.lang.String", "org.pac4j.", "[Lorg.pac4j.",
                 "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "[Lcom.nimbusds.", "org.joda.", "net.minidev.json.",
@@ -36,8 +37,8 @@ public class JavaSerializationHelper {
      * @param o the object to serialize
      * @return the base64 string of the serialized object
      */
-    public String serializeToBase64(final Serializable o) {
-        return Base64.getEncoder().encodeToString(serializeToBytes(o));
+    public String encode(final Object o) {
+        return Base64.getEncoder().encodeToString(encodeToBytes((Serializable) o));
     }
 
     /**
@@ -46,7 +47,8 @@ public class JavaSerializationHelper {
      * @param o the object to serialize
      * @return the bytes array of the serialized object
      */
-    public byte[] serializeToBytes(final Serializable o) {
+    @Deprecated
+    public byte[] encodeToBytes(final Serializable o) {
         byte[] bytes = null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ObjectOutputStream oos = new ObjectOutputStream(baos)) {
@@ -65,8 +67,8 @@ public class JavaSerializationHelper {
      * @param base64 the serialized object as a base64 String
      * @return the deserialized Java object
      */
-    public Serializable deserializeFromBase64(final String base64) {
-        return deserializeFromBytes(Base64.getDecoder().decode(base64));
+    public Object decode(final String base64) {
+        return decodeFromBytes(Base64.getDecoder().decode(base64));
     }
 
     /**
@@ -75,7 +77,8 @@ public class JavaSerializationHelper {
      * @param bytes the serialized object as a bytes array
      * @return the deserialized Java object
      */
-    public Serializable deserializeFromBytes(final byte[] bytes) {
+    @Deprecated
+    public Serializable decodeFromBytes(final byte[] bytes) {
         Serializable o = null;
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
              ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {

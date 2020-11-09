@@ -9,7 +9,7 @@ import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.util.JavaSerializationHelper;
+import org.pac4j.core.util.serializer.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     private PasswordEncoder passwordEncoder;
 
-    private JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+    private Serializer serializer;
 
     private String attributes;
 
@@ -54,6 +54,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank("usernameAttribute", this.usernameAttribute);
         assertNotBlank("passwordAttribute", this.passwordAttribute);
         assertNotBlank("idAttribute", this.idAttribute);
+        assertNotNull("serializer", serializer);
 
         if (isNotBlank(attributes)) {
             attributeNames = attributes.split(",");
@@ -143,7 +144,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             }
         } else {
             // new behaviour (>= v2.0): save the serialized profile
-            storageAttributes.put(SERIALIZED_PROFILE, javaSerializationHelper.serializeToBase64(profile));
+            storageAttributes.put(SERIALIZED_PROFILE, serializer.encode(profile));
         }
         return storageAttributes;
     }
@@ -246,7 +247,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you " +
                     "want to retrieve");
             }
-            final U profile = (U) javaSerializationHelper.deserializeFromBase64(serializedProfile);
+            final U profile = (U) serializer.decode(serializedProfile);
             if (profile == null) {
                 throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " +
                     "names you want to retrieve");
@@ -339,12 +340,12 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         this.attributes = attributes;
     }
 
-    public JavaSerializationHelper getJavaSerializationHelper() {
-        return javaSerializationHelper;
+    public Serializer getSerializer() {
+        return serializer;
     }
 
-    public void setJavaSerializationHelper(final JavaSerializationHelper javaSerializationHelper) {
-        this.javaSerializationHelper = javaSerializationHelper;
+    public void setSerializer(final Serializer serializer) {
+        this.serializer = serializer;
     }
 
     public String getUsernameAttribute() {

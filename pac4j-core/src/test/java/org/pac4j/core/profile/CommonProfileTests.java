@@ -2,7 +2,7 @@ package org.pac4j.core.profile;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.JavaSerializationHelper;
+import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -168,10 +168,10 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void serializeProfile() {
-        final JavaSerializationHelper helper = new JavaSerializationHelper();
+        final JavaSerializer helper = new JavaSerializer();
         final CommonProfile profile = new CommonProfile();
-        final String s = helper.serializeToBase64(profile);
-        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromBase64(s);
+        final String s = helper.encode(profile);
+        final CommonProfile profile2 = (CommonProfile) helper.decode(s);
         assertNotNull(profile2);
     }
 

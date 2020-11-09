@@ -10,6 +10,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.serializer.ProfileServiceSerializer;
 import org.pac4j.ldap.profile.LdapProfile;
 
 import java.util.*;
@@ -65,6 +66,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         assertNotBlank("usersDn", usersDn);
 
         defaultProfileDefinition(new CommonProfileDefinition(x -> new LdapProfile()));
+        setSerializer(new ProfileServiceSerializer(LdapProfile.class));
 
         super.internalInit();
     }

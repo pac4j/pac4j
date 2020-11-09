@@ -5,7 +5,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.*;
-import org.pac4j.core.util.JavaSerializationHelper;
+import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +47,9 @@ public abstract class RunClient implements TestsConstants {
             if (profile.isPresent() || !canCancel()) {
                 verifyProfile((CommonProfile) profile.get());
                 logger.warn("## Java serialization");
-                final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
-                byte[] bytes = javaSerializationHelper.serializeToBytes(profile.get());
-                final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.deserializeFromBytes(bytes);
+                final JavaSerializer javaSerializationHelper = new JavaSerializer();
+                byte[] bytes = javaSerializationHelper.encodeToBytes(profile.get());
+                final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.decodeFromBytes(bytes);
                 verifyProfile(profile2);
             }
         }

@@ -2,7 +2,7 @@ package org.pac4j.oauth.credentials;
 
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import org.junit.Test;
-import org.pac4j.core.util.JavaSerializationHelper;
+import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.assertEquals;
@@ -26,9 +26,9 @@ public final class OAuth10CredentialsTests implements TestsConstants {
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getTokenSecret());
         // test serialization
-        final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
-        final byte[] bytes = javaSerializationHelper.serializeToBytes(credentials);
-        final OAuth10Credentials credentials2 = (OAuth10Credentials) javaSerializationHelper.deserializeFromBytes(bytes);
+        final JavaSerializer javaSerializationHelper = new JavaSerializer();
+        final byte[] bytes = javaSerializationHelper.encodeToBytes(credentials);
+        final OAuth10Credentials credentials2 = (OAuth10Credentials) javaSerializationHelper.decodeFromBytes(bytes);
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());
