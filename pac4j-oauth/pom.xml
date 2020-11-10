@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for OAuth</name>
 
     <properties>
-        <scribe.version>7.1.1</scribe.version>
+        <scribe.version>8.0.0</scribe.version>
     </properties>
 
     <dependencies>
