@@ -319,20 +319,20 @@ public final class JwtTests implements TestsConstants {
         profile.addRoles(ROLES);
         profile.addPermissions(PERMISSIONS);
         final String token = generator.generate(profile);
-        final CommonProfile profile2 = assertToken(profile, token);
+        final UserProfile profile2 = assertToken(profile, token);
         assertEquals(ROLES, profile2.getRoles());
         assertEquals(PERMISSIONS, profile2.getPermissions());
     }
 
-    private CommonProfile assertToken(FacebookProfile profile, String token) {
+    private UserProfile assertToken(FacebookProfile profile, String token) {
         return assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET)));
     }
 
-    private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
+    private UserProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
         final TokenCredentials credentials = new TokenCredentials(token);
         authenticator.validate(credentials, null);
-        final CommonProfile profile2 = credentials.getUserProfile();
+        final UserProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
         final FacebookProfile fbProfile = (FacebookProfile) profile2;
         assertEquals(profile.getTypedId(), fbProfile.getTypedId());

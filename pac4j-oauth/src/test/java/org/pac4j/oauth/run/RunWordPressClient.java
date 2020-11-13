@@ -6,6 +6,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WordPressClient;
 import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
@@ -48,7 +49,7 @@ public final class RunWordPressClient extends RunClient {
         final WordPressProfile profile = (WordPressProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("35944437", profile.getId());
-        assertEquals(WordPressProfile.class.getName() + CommonProfile.SEPARATOR + "35944437", profile.getTypedId());
+        assertEquals(WordPressProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "35944437", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WordPressProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "testscribeup", "testscribeup",

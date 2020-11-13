@@ -7,6 +7,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
@@ -51,7 +52,7 @@ public class RunGithubClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final GitHubProfile profile = (GitHubProfile) userProfile;
         assertEquals("1412558", profile.getId());
-        assertEquals(GitHubProfile.class.getName() + CommonProfile.SEPARATOR + "1412558", profile.getTypedId());
+        assertEquals(GitHubProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "Test", "testscribeup",

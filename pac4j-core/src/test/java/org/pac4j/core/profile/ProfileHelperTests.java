@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinition;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
@@ -48,7 +49,8 @@ public final class ProfileHelperTests implements TestsConstants {
         assertFalse(ProfileHelper.isTypedIdOf(VALUE, CommonProfile.class));
         assertFalse(ProfileHelper.isTypedIdOf(null, CommonProfile.class));
         assertFalse(ProfileHelper.isTypedIdOf(VALUE, null));
-        assertTrue(ProfileHelper.isTypedIdOf("org.pac4j.core.profile.CommonProfile" + CommonProfile.SEPARATOR, CommonProfile.class));
+        assertTrue(ProfileHelper.isTypedIdOf("org.pac4j.core.profile.CommonProfile" + Pac4jConstants.TYPED_ID_SEPARATOR,
+            CommonProfile.class));
     }
 
     @Test
@@ -81,7 +83,7 @@ public final class ProfileHelperTests implements TestsConstants {
      */
     @Test
     public void testProfileRestoreFromClassName() {
-        final String typedId = CommonProfile.class.getName() + CommonProfile.SEPARATOR + ID;
+        final String typedId = CommonProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + ID;
         final CommonProfile restoredProfile = profileRestoreMustBringBackAllAttributes(typedId);
 
         assertNotNull(restoredProfile);

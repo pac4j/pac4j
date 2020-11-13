@@ -2,7 +2,7 @@ package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
@@ -31,11 +31,11 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     private int timeout;
     private TimeUnit timeUnit;
 
-    private Store<Credentials, CommonProfile> store;
+    private Store<Credentials, UserProfile> store;
 
     public LocalCachingAuthenticator() {}
 
-    public LocalCachingAuthenticator(final Authenticator delegate, final Store<Credentials, CommonProfile> store) {
+    public LocalCachingAuthenticator(final Authenticator delegate, final Store<Credentials, UserProfile> store) {
         this.delegate = delegate;
         this.store = store;
     }
@@ -52,11 +52,11 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     public void validate(final Credentials credentials, final WebContext context) {
         init();
 
-        Optional<CommonProfile> optProfile = this.store.get(credentials);
+        Optional<UserProfile> optProfile = this.store.get(credentials);
         if (!optProfile.isPresent()) {
             logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
             delegate.validate(credentials, context);
-            final CommonProfile profile = credentials.getUserProfile();
+            final UserProfile profile = credentials.getUserProfile();
             logger.debug("Caching credential. Using profile {}...", profile);
             store.set(credentials, profile);
         } else {
@@ -117,11 +117,11 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         this.timeUnit = timeUnit;
     }
 
-    public Store<Credentials, CommonProfile> getStore() {
+    public Store<Credentials, UserProfile> getStore() {
         return store;
     }
 
-    public void setStore(final Store<Credentials, CommonProfile> store) {
+    public void setStore(final Store<Credentials, UserProfile> store) {
         this.store = store;
     }
 

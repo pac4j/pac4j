@@ -12,8 +12,8 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -89,16 +89,9 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
                     .forEach(e -> newAuthenticationAttributes.put(e.getKey(), e.getValue()));
             }
 
-            final CommonProfile profile;
-            // in case of CAS proxy, don't restore the profile, just build a CAS one
-            if (configuration.getProxyReceptor() != null) {
-                profile = (CommonProfile) getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
-                getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
-            } else {
-                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newPrincipalAttributes,
-                        newAuthenticationAttributes, principal, configuration.getProxyReceptor());
-            }
+            final UserProfile profile = getProfileDefinition().newProfile(id, configuration.getProxyReceptor(), principal);
+            profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
+            getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
             logger.debug("profile returned by CAS: {}", profile);
 
             credentials.setUserProfile(profile);

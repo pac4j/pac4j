@@ -7,6 +7,7 @@ import java.util.*;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,8 @@ public final class ProfileHelper {
      * @param clazz profile class
      * @return if the user identifier matches this kind of profile
      */
-    public static boolean isTypedIdOf(final String id, final Class<? extends CommonProfile> clazz) {
-        return id != null && clazz != null && id.startsWith(clazz.getName() + CommonProfile.SEPARATOR);
+    public static boolean isTypedIdOf(final String id, final Class<? extends UserProfile> clazz) {
+        return id != null && clazz != null && id.startsWith(clazz.getName() + Pac4jConstants.TYPED_ID_SEPARATOR);
     }
 
     /**
@@ -52,8 +53,8 @@ public final class ProfileHelper {
 
         logger.info("Building user profile based on typedId: {}", typedId);
         final CommonProfile profile;
-        if (typedId.contains(CommonProfile.SEPARATOR)) {
-            final String className = CommonHelper.substringBefore(typedId, CommonProfile.SEPARATOR);
+        if (typedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
+            final String className = CommonHelper.substringBefore(typedId, Pac4jConstants.TYPED_ID_SEPARATOR);
             try {
                 profile = buildUserProfileByClassCompleteName(className);
             } catch (final TechnicalException e) {
@@ -120,11 +121,11 @@ public final class ProfileHelper {
      * @param id the identifier object
      * @return the sanitized identifier
      */
-    public static String sanitizeIdentifier(final BasicUserProfile profile, final Object id) {
+    public static String sanitizeIdentifier(final UserProfile profile, final Object id) {
         if (id != null) {
             String sId = id.toString();
             if (profile != null) {
-                final String type = profile.getClass().getName() + BasicUserProfile.SEPARATOR;
+                final String type = profile.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR;
                 if (sId.startsWith(type)) {
                     sId = sId.substring(type.length());
                 }

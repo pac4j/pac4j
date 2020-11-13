@@ -6,6 +6,7 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.QQClient;
 import org.pac4j.oauth.profile.qq.QQProfile;
 
@@ -64,7 +65,7 @@ public final class RunQQClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final QQProfile profile = (QQProfile) userProfile;
         assertEquals("8585AB16822E1437050D63C27D277991", profile.getId());
-        assertEquals(QQProfile.class.getName() + CommonProfile.SEPARATOR + "8585AB16822E1437050D63C27D277991",
+        assertEquals(QQProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "8585AB16822E1437050D63C27D277991",
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), QQProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

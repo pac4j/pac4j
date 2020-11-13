@@ -5,6 +5,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.FoursquareClient;
 import org.pac4j.oauth.profile.foursquare.*;
 
@@ -45,7 +46,7 @@ public class RunFoursquareClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final FoursquareProfile profile = (FoursquareProfile) userProfile;
         assertEquals("81827700", profile.getId());
-        assertEquals(FoursquareProfile.class.getName() + CommonProfile.SEPARATOR + "81827700", profile.getTypedId());
+        assertEquals(FoursquareProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "81827700", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FoursquareProfile.class));
         assertCommonProfile(userProfile,
                 "pac4j@mailinator.com",

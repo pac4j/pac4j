@@ -6,6 +6,7 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 
@@ -54,7 +55,7 @@ public final class RunTwitterClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final TwitterProfile profile = (TwitterProfile) userProfile;
         assertEquals("488358057", profile.getId());
-        assertEquals(TwitterProfile.class.getName() + CommonProfile.SEPARATOR + "488358057", profile.getTypedId());
+        assertEquals(TwitterProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,

@@ -1,6 +1,7 @@
 package org.pac4j.core.profile;
 
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +31,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     private Map<String, Object> attributes = new HashMap<>();
 
     private Map<String, Object> authenticationAttributes = new HashMap<>();
-
-    public transient static final String SEPARATOR = "#";
 
     private boolean isRemembered = false;
 
@@ -108,7 +107,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @return the typed user identifier
      */
     public String getTypedId() {
-        return this.getClass().getName() + SEPARATOR + this.id;
+        return this.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR + this.id;
     }
 
     @Override
@@ -116,7 +115,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return null;
     }
 
-    private void addAttributeToMap(final Map<String, Object> map, final String key, Object value)
+    private void addAttributeToMap(final Map<String, Object> map, final String key, final Object value)
     {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
@@ -126,7 +125,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Object getValueForMap(final Map<String, Object> map, final String key, Object preparedValue) {
+    private Object getValueForMap(final Map<String, Object> map, final String key, final Object preparedValue) {
         // support multiple attribute values (e.g. roles can be received as separate attributes and require merging)
         // https://github.com/pac4j/pac4j/issues/1145
         if (canMergeAttributes(map, key, preparedValue))
@@ -140,12 +139,12 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         }
     }
 
-    private boolean canMergeAttributes(final Map<String, Object> map, final String key, Object preparedValue)
+    private boolean canMergeAttributes(final Map<String, Object> map, final String key, final Object preparedValue)
     {
         return this.canAttributesBeMerged && preparedValue instanceof Collection && map.get(key) instanceof Collection;
     }
 
-    private <T> Collection<T> mergeCollectionAttributes(Collection<T> existingCollection, Collection<T> newCollection)
+    private <T> Collection<T> mergeCollectionAttributes(final Collection<T> existingCollection, final Collection<T> newCollection)
     {
         return Streams.concat(existingCollection.stream(), newCollection.stream()).collect(Collectors.toList());
     }
@@ -158,7 +157,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key key of the attribute
      * @param value value of the attribute
      */
-    public void addAttribute(final String key, Object value) {
+    public void addAttribute(final String key, final Object value) {
         addAttributeToMap(this.attributes, key, value);
     }
 
@@ -168,7 +167,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key the attribute key
      * @param value the attribute value
      */
-    public void addAuthenticationAttribute(final String key, Object value) {
+    public void addAuthenticationAttribute(final String key, final Object value) {
         addAttributeToMap(this.authenticationAttributes, key, value);
     }
 
@@ -191,7 +190,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @param attributeMap the authentication attributes
      */
-    public void addAuthenticationAttributes(Map<String, Object> attributeMap) {
+    public void addAuthenticationAttributes(final Map<String, Object> attributeMap) {
         if (attributeMap != null) {
             for (final Map.Entry<String, Object> entry : attributeMap.entrySet()) {
                 addAuthenticationAttribute(entry.getKey(), entry.getValue());
@@ -236,7 +235,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return getAttributeMap(this.authenticationAttributes);
     }
 
-    private static Map<String, Object> getAttributeMap(Map<String, Object> attributeMap) {
+    private static Map<String, Object> getAttributeMap(final Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
             final String key = entries.getKey();
@@ -263,7 +262,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param name attribute name
      * @return the attribute values as List of strings.
      */
-    public List<String> extractAttributeValues(String name) {
+    public List<String> extractAttributeValues(final String name) {
         final Object value = getAttribute(name);
         if (value instanceof String) {
             return Collections.singletonList((String) value);
@@ -337,7 +336,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return getAttributeByType(name, clazz, attribute);
     }
 
-    private <T> T getAttributeByType(String name, Class<T> clazz, Object attribute) {
+    private <T> T getAttributeByType(final String name, final Class<T> clazz, final Object attribute) {
 
         if (attribute == null) {
             return null;
@@ -420,7 +419,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return new LinkedHashSet<>(this.permissions);
     }
 
-    public void setPermissions(Set<String> permissions) {
+    public void setPermissions(final Set<String> permissions) {
         CommonHelper.assertNotNull("permissions", permissions);
         this.permissions = permissions;
     }
@@ -499,6 +498,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return linkedId;
     }
 
+    @Override
     public void setLinkedId(final String linkedId) {
         this.linkedId = linkedId;
     }

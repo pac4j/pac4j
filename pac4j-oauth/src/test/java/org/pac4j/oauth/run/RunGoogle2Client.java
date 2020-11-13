@@ -6,6 +6,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.Google2Client;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 
@@ -54,7 +55,7 @@ public final class RunGoogle2Client extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final Google2Profile profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(Google2Profile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
+        assertEquals(Google2Profile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "113675986756217860428",
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), Google2Profile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
