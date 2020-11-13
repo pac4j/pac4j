@@ -7,6 +7,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oauth.profile.yahoo.*;
 
@@ -52,7 +53,7 @@ public final class RunYahooClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
-        assertEquals(YahooProfile.class.getName() + CommonProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
+        assertEquals(YahooProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

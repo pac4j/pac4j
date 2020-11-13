@@ -6,6 +6,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.LinkedIn2Client;
 import org.pac4j.oauth.profile.linkedin2.*;
 
@@ -52,7 +53,7 @@ public final class RunLinkedIn2Client extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final LinkedIn2Profile profile = (LinkedIn2Profile) userProfile;
         assertEquals("X_0RQBLXtJ", profile.getId());
-        assertEquals(LinkedIn2Profile.class.getName() + CommonProfile.SEPARATOR + "X_0RQBLXtJ",
+        assertEquals(LinkedIn2Profile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "X_0RQBLXtJ",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), LinkedIn2Profile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

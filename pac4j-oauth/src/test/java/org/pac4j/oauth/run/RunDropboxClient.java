@@ -6,6 +6,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.DropBoxClient;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 
@@ -48,7 +49,7 @@ public final class RunDropboxClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
         assertEquals("dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU", profile.getId());
-        assertEquals(DropBoxProfile.class.getName() + CommonProfile.SEPARATOR + "dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU",
+        assertEquals(DropBoxProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU",
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

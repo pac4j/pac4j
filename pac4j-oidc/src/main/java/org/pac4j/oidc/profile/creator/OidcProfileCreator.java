@@ -94,7 +94,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             // Check ID Token
             final IDTokenClaimsSet claimsSet = configuration.findTokenValidator().validate(idToken, nonce);
             assertNotNull("claimsSet", claimsSet);
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, claimsSet.getSubject()));
+            profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
             // User Info request
             if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {

@@ -47,7 +47,7 @@ public class BitbucketProfileDefinition extends OAuthProfileDefinition {
         if (json != null) {
             json = (JsonNode) JsonHelper.getElement(json, "user");
             if (json != null) {
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, Pac4jConstants.USERNAME)));
+                profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, Pac4jConstants.USERNAME)));
                 for (final String attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }

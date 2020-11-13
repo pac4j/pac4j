@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.hiorgserver;
 
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -63,21 +64,20 @@ public class HiOrgServerProfile extends OAuth20Profile {
     }
 
     /** An alternative identifier to uniquely identify a HiOrg-Server user.
-     * 
+     *
      * @return username and the organisation id, joined by an at-sign, lowercase
      */
     public String getAlternativeId() {
         String alternativeId = getUsername() + "@" + getOrganisationId();
         return alternativeId.toLowerCase();
     }
-    
+
     /**
      * A alternative, typed identifier based on {@link #getAlternativeId()}.
-     * 
+     *
      * @return the class name and {@link #getAlternativeId()}, joined by the seperator constant
      */
     public String getTypedAlternativeId() {
-        return this.getClass().getName() + SEPARATOR + getAlternativeId();
+        return this.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR + getAlternativeId();
     }
-
 }

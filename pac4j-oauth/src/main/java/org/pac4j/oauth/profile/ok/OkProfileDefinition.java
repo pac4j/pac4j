@@ -88,7 +88,7 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
         final OkProfile profile = (OkProfile) newProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, OkProfileDefinition.UID)));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, OkProfileDefinition.UID)));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }

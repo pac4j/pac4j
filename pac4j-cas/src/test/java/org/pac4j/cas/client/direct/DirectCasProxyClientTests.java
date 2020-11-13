@@ -8,7 +8,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -82,7 +82,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
         final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context).get();
         assertEquals(TICKET, credentials.getToken());
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);
         assertEquals(TICKET, profile.getId());
     }

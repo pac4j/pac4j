@@ -50,7 +50,7 @@ public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
         final String attributesNode = "attributes";
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
             json = json.get(attributesNode);
             if (json != null) {
                 // CAS <= v4.2

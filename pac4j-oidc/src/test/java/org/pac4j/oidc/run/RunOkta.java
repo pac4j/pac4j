@@ -5,6 +5,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -50,7 +51,7 @@ public class RunOkta extends RunClient {
     protected void verifyProfile(final CommonProfile userProfile) {
         final OidcProfile profile = (OidcProfile) userProfile;
         assertEquals("00u5h0czw1aIjTQtM0h7", profile.getId());
-        assertEquals(OidcProfile.class.getName() + CommonProfile.SEPARATOR + "00u5h0czw1aIjTQtM0h7",
+        assertEquals(OidcProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "00u5h0czw1aIjTQtM0h7",
                 profile.getTypedId());
         assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getIdToken());

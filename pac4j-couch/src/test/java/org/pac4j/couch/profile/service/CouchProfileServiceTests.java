@@ -4,7 +4,7 @@ import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.ektorp.CouchDbConnector;
 import org.junit.*;
 import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -98,7 +98,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         couchProfileService.validate(credentials, null);
 
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof CouchProfile);
         final CouchProfile couchProfile = (CouchProfile) profile;
@@ -120,7 +120,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS);
         couchProfileService.validate(credentials, null);
-        final CommonProfile profile1 = credentials.getUserProfile();
+        final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
         final List<Map<String, Object>> results = getData(couchProfileService, COUCH_ID);
@@ -151,7 +151,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2);
         couchProfileService.validate(credentials2, null);
-        CommonProfile profile3 = credentials.getUserProfile();
+        UserProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // update with no password update
         couchProfileService.update(profile, null);

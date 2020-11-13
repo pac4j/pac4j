@@ -6,6 +6,7 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.profile.facebook.*;
 
@@ -62,7 +63,7 @@ public final class RunFacebookClient extends RunClient {
     protected void verifyProfile(final CommonProfile userProfile) {
         final FacebookProfile profile = (FacebookProfile) userProfile;
         assertEquals("771361542992890", profile.getId());
-        assertEquals(FacebookProfile.class.getName() + CommonProfile.SEPARATOR + "771361542992890",
+        assertEquals(FacebookProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "771361542992890",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

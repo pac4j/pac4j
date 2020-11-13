@@ -79,7 +79,7 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
         final StravaProfile profile = (StravaProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, StravaProfileDefinition.ID)));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, StravaProfileDefinition.ID)));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
