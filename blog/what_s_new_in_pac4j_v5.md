@@ -71,6 +71,14 @@ So the idea here is to be protected by default against any `AnonymousProfile` "l
 
 ## 7) User profiles
 
+### a) Refactoring
+
+The `UserProfile` has been turned into a pure interface without any default method and all implementations are made in the `BasicUserProfile`.
+
+The `UserProfile` interface is used as much as possible in all *pac4j* classes.
+
+### b) serializedprofile
+
 When using the `ProfileService` for RDBMS, LDAP, MongoDB or CouchDB, there is a core issue in the format used to serialize profiles: it might block upgrades.
 Indeed, we use the Java serialization which is a very bad idea because of the changes that can happen to the profiles classes like the fact that the `UserProfile` has moved from an abstract class in v3.x to an interface in v4.x.
 So the idea is to use JSON instead of Java serialization.
@@ -80,3 +88,9 @@ The new `Serializer` (`encode` + `decode` methods) used by the profile services 
 Before upgrading to a new major *pac4j* version, it might be necessary to re-encode all data in the `serializedprofile` attribute with the `ProfileServiceSerializer`.
 
 These fixes are available in v3.9.0, v4.2.0 and in the v5.x stream.
+
+### c) Restoring the profile from the typed identifier
+
+In previous versions, after the authentication process, the profile was built from the typed identifier if possible for the CAS protocol and the JWT support.
+
+This is now controlled in the `ProfileDefinition` via the `setRestoreProfileFromTypedId` method and this is only enabled by default for the JWT support.
