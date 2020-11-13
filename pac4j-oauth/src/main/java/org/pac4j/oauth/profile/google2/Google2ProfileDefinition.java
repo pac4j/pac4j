@@ -43,7 +43,7 @@ public class Google2ProfileDefinition extends OAuthProfileDefinition {
         final Google2Profile profile = (Google2Profile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "sub")));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "sub")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }

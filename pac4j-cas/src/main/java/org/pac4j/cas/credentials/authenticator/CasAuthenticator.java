@@ -90,7 +90,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
             }
 
             final UserProfile profile = getProfileDefinition().newProfile(id, configuration.getProxyReceptor(), principal);
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, id));
+            profile.setId(ProfileHelper.sanitizeIdentifier(id));
             getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
             logger.debug("profile returned by CAS: {}", profile);
 

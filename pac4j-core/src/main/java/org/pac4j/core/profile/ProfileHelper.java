@@ -8,6 +8,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
+import static org.pac4j.core.util.CommonHelper.substringBefore;
+
 /**
  * This class is an helper for profiles.
  *
@@ -15,6 +17,8 @@ import org.pac4j.core.util.Pac4jConstants;
  * @since 1.1.0
  */
 public final class ProfileHelper {
+
+    private static List<String> profileClassPrefixes = Arrays.asList("org.pac4j.");
 
     private ProfileHelper() {}
 
@@ -75,21 +79,31 @@ public final class ProfileHelper {
     /**
      * Sanitize into a string identifier.
      *
-     * @param profile the user profile
      * @param id the identifier object
      * @return the sanitized identifier
      */
-    public static String sanitizeIdentifier(final UserProfile profile, final Object id) {
+    public static String sanitizeIdentifier(final Object id) {
         if (id != null) {
             String sId = id.toString();
-            if (profile != null) {
-                final String type = profile.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR;
-                if (sId.startsWith(type)) {
-                    sId = sId.substring(type.length());
+            if (sId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
+                final String profileClass = substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                for (final String profileClassPrefix : getProfileClassPrefixes()) {
+                    if (profileClass.startsWith(profileClassPrefix)) {
+                        return sId.substring(profileClass.length() + 1);
+                    }
                 }
             }
             return sId;
         }
         return null;
+    }
+
+    public static List<String> getProfileClassPrefixes() {
+        return profileClassPrefixes;
+    }
+
+    public static void setProfileClassPrefixes(final List<String> profileClassPrefixes) {
+        CommonHelper.assertNotNull("profileClassPrefixes", profileClassPrefixes);
+        ProfileHelper.profileClassPrefixes = profileClassPrefixes;
     }
 }

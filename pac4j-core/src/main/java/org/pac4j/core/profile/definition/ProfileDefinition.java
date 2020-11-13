@@ -40,8 +40,6 @@ public abstract class ProfileDefinition {
 
     private boolean restoreProfileFromTypedId = false;
 
-    private List<String> profileClassPrefixes = Arrays.asList("org.pac4j.");
-
     /**
      * Return the new built or restored profile.
      *
@@ -56,7 +54,7 @@ public abstract class ProfileDefinition {
                 final String sTypedId = (String) typedId;
                 if (sTypedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
                     final String profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
-                    for (final String profileClassPrefix : profileClassPrefixes) {
+                    for (final String profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
                         if (profileClass.startsWith(profileClassPrefix)) {
                             try {
                                 return ProfileHelper.buildUserProfileByClassCompleteName(profileClass);
@@ -188,14 +186,5 @@ public abstract class ProfileDefinition {
 
     public void setRestoreProfileFromTypedId(final boolean restoreProfileFromTypedId) {
         this.restoreProfileFromTypedId = restoreProfileFromTypedId;
-    }
-
-    public List<String> getProfileClassPrefixes() {
-        return profileClassPrefixes;
-    }
-
-    public void setProfileClassPrefixes(final List<String> profileClassPrefixes) {
-        assertNotNull("profileClassPrefixes", profileClassPrefixes);
-        this.profileClassPrefixes = profileClassPrefixes;
     }
 }

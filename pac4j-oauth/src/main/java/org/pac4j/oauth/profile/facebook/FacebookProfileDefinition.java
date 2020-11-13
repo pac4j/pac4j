@@ -152,7 +152,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         final FacebookProfile profile = (FacebookProfile) newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }

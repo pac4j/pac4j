@@ -228,7 +228,7 @@ public class WeiboProfileDefinition extends OAuthProfileDefinition {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(
-                ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "id")));
+                ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));

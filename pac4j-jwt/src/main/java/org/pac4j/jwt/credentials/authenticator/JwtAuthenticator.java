@@ -268,7 +268,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
 
         final UserProfile profile = getProfileDefinition().newProfile(subject);
-        profile.setId(ProfileHelper.sanitizeIdentifier(profile, subject));
+        profile.setId(ProfileHelper.sanitizeIdentifier(subject));
         getProfileDefinition().convertAndAdd(profile, attributes, null);
 
         if (roles != null) {

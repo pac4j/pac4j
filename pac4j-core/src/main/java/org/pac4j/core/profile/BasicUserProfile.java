@@ -64,7 +64,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param attributes user attributes
      */
     public void build(final Object id, final Map<String, Object> attributes) {
-        setId(ProfileHelper.sanitizeIdentifier(this, id));
+        setId(ProfileHelper.sanitizeIdentifier(id));
         addAttributes(attributes);
     }
 

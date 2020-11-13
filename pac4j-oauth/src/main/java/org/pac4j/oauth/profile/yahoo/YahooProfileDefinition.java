@@ -78,7 +78,7 @@ public class YahooProfileDefinition extends OAuthProfileDefinition {
         if (json != null) {
             json = json.get("profile");
             if (json != null) {
-                profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "guid")));
+                profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "guid")));
                 for (final String attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }

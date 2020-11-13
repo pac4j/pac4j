@@ -80,7 +80,7 @@ public class VkProfileDefinition extends OAuthProfileDefinition {
             if (userNode == null) {
                 raiseProfileExtractionJsonError(body, "response");
             }
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(userNode, "uid")));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, "uid")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }

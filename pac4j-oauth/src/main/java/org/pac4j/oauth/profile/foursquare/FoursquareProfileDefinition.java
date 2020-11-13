@@ -58,7 +58,7 @@ public class FoursquareProfileDefinition extends OAuthProfileDefinition {
         }
         JsonNode user = (JsonNode) JsonHelper.getElement(response, "user");
         if (user != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(user, "id")));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(user, "id")));
 
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(user, attribute));

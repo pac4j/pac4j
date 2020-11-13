@@ -86,7 +86,7 @@ public abstract class AbstractCasRestClient extends DirectClient {
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket.getToken(), serviceURL);
             final AttributePrincipal principal = assertion.getPrincipal();
             final CasProfile casProfile = new CasProfile();
-            casProfile.setId(ProfileHelper.sanitizeIdentifier(casProfile, principal.getName()));
+            casProfile.setId(ProfileHelper.sanitizeIdentifier(principal.getName()));
             casProfile.addAttributes(principal.getAttributes());
             return casProfile;
         } catch (final TicketValidationException e) {
