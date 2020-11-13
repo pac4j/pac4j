@@ -5,11 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is an helper for profiles.
@@ -18,8 +15,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  */
 public final class ProfileHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
 
     private ProfileHelper() {}
 
@@ -35,52 +30,15 @@ public final class ProfileHelper {
     }
 
     /**
-     * Restore or build a profile.
-     *
-     * @param profileDefinition the profile definition
-     * @param typedId the typed identifier
-     * @param profileAttributes The profile attributes. May be {@code null}.
-     * @param authenticationAttributes The authentication attributes. May be {@code null}.
-     * @param parameters additional parameters for the profile definition
-     * @return the restored or built profile
-     */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition profileDefinition,
-            final String typedId, final Map<String, Object> profileAttributes, final Map<String, Object> authenticationAttributes,
-            final Object... parameters) {
-        if (CommonHelper.isBlank(typedId)) {
-            return null;
-        }
-
-        logger.info("Building user profile based on typedId: {}", typedId);
-        final CommonProfile profile;
-        if (typedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-            final String className = CommonHelper.substringBefore(typedId, Pac4jConstants.TYPED_ID_SEPARATOR);
-            try {
-                profile = buildUserProfileByClassCompleteName(className);
-            } catch (final TechnicalException e) {
-                logger.error("Cannot build instance for class name: {}", className, e);
-                return null;
-            }
-            profile.addAttributes(profileAttributes);
-            profile.addAuthenticationAttributes(authenticationAttributes);
-        } else {
-            profile = (CommonProfile) profileDefinition.newProfile(parameters);
-            profileDefinition.convertAndAdd(profile, profileAttributes, authenticationAttributes);
-        }
-        profile.setId(ProfileHelper.sanitizeIdentifier(profile, typedId));
-        return profile;
-    }
-
-    /**
      * Build a profile by its class name.
      *
      * @param completeName the class name
      * @return the built user profile
      */
-    public static CommonProfile buildUserProfileByClassCompleteName(final String completeName) {
+    public static UserProfile buildUserProfileByClassCompleteName(final String completeName) {
         try {
             final Constructor constructor = CommonHelper.getConstructor(completeName);
-            return (CommonProfile) constructor.newInstance();
+            return (UserProfile) constructor.newInstance();
         } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException
                  | InstantiationException e) {
             throw new TechnicalException(e);

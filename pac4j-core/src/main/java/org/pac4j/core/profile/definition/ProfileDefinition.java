@@ -1,7 +1,9 @@
 package org.pac4j.core.profile.definition;
 
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.factory.ProfileFactory;
@@ -12,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.*;
@@ -59,10 +59,8 @@ public abstract class ProfileDefinition {
                     for (final String profileClassPrefix : profileClassPrefixes) {
                         if (profileClass.startsWith(profileClassPrefix)) {
                             try {
-                                final Constructor constructor = getConstructor(profileClass);
-                                return (UserProfile) constructor.newInstance();
-                            } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException
-                                | InvocationTargetException | InstantiationException e) {
+                                return ProfileHelper.buildUserProfileByClassCompleteName(profileClass);
+                            } catch (final TechnicalException e) {
                                 logger.error("Cannot build instance for class name: {}", profileClass, e);
                             }
                         }
