@@ -81,7 +81,11 @@ public class JEESessionStore implements SessionStore {
             }
         } else {
             final Optional<HttpSession> httpSession = getNativeSession(context, true);
-            LOGGER.debug("Set key: {} for value: {}", key, value);
+            if (value instanceof Exception) {
+                LOGGER.debug("Set key: {} for value: {}", key, value.toString());
+            } else {
+                LOGGER.debug("Set key: {} for value: {}", key, value);
+            }
             httpSession.get().setAttribute(key, value);
         }
     }

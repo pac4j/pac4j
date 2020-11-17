@@ -81,9 +81,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("configClients", configClients);
 
             // logic
-            LOGGER.debug("url: {}", context.getFullRequestURL());
-            LOGGER.debug("matchers: {}", matchers);
-            LOGGER.debug("clients: {}", clients);
+            LOGGER.debug("url: {} | clients: {} | matchers: {}", context.getFullRequestURL(), clients, matchers);
             final List<Client> currentClients = clientFinder.find(configClients, context, clients);
             LOGGER.debug("currentClients: {}", currentClients);
 

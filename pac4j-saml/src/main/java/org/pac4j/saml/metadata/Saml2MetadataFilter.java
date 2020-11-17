@@ -3,74 +3,66 @@ package org.pac4j.saml.metadata;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.pac4j.core.client.Client;
-import org.pac4j.core.config.Config;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.filter.AbstractConfigFilter;
 import org.pac4j.saml.client.SAML2Client;
 
 /**
  * This filter prints the SP metadata for SAML.
- * 
+ *
  * Example shiro.ini configuration:
- * 
+ *
  * saml2MetadataFilter = org.pac4j.saml.metadata.Saml2MetadataFilter
  * saml2MetadataFilter.config = $config
  * saml2MetadataFilter.clientName = SAML2Client
- * 
+ *
  * [urls]
  * /API/SAML2/metadata = saml2MetadataFilter
- * 
+ *
  * @author Graham Leggett
  * @since 3.8.0
  */
-public class Saml2MetadataFilter implements Filter {
-
-    private Config config;
+public class Saml2MetadataFilter extends AbstractConfigFilter {
 
     private String clientName;
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
+        super.init(filterConfig);
+
+        this.clientName = getStringParam(filterConfig, Pac4jConstants.CLIENT_NAME, null);
     }
 
     @Override
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
+    protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
+                                  final FilterChain chain)  throws IOException, ServletException {
 
-        CommonHelper.assertNotNull("config", config);
+        CommonHelper.assertNotNull("config", getSharedConfig());
         CommonHelper.assertNotNull("clientName", clientName);
 
-        SAML2Client client = null;
-        final Optional<Client> result = config.getClients().findClient(this.clientName);
+        SAML2Client client;
+        final Optional<Client> result = getSharedConfig().getClients().findClient(this.clientName);
         if (result.isPresent()) {
             client = (SAML2Client) result.get();
-        }
-        if (client == null) {
-            throw new TechnicalException("No SAML2Client: " + this.clientName);
+        } else {
+            throw new TechnicalException("No SAML2 client: " + this.clientName);
         }
         client.init();
-        servletResponse.getWriter().write(client.getServiceProviderMetadataResolver().getMetadata());
-        servletResponse.getWriter().flush();
+        response.getWriter().write(client.getServiceProviderMetadataResolver().getMetadata());
+        response.getWriter().flush();
     }
 
     @Override
     public void destroy() {
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(final Config config) {
-        this.config = config;
     }
 
     public String getClientName() {
@@ -80,5 +72,4 @@ public class Saml2MetadataFilter implements Filter {
     public void setClientName(final String clientName) {
         this.clientName = clientName;
     }
-
 }

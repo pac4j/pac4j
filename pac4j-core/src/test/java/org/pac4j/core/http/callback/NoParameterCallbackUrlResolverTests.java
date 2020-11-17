@@ -19,11 +19,11 @@ public final class NoParameterCallbackUrlResolverTests implements TestsConstants
 
     @Test
     public void testCompute() {
-        assertEquals(CALLBACK_URL, resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, CLIENT_NAME, MockWebContext.create()));
+        assertEquals(CALLBACK_URL, resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create()));
     }
 
     @Test
     public void testMatches() {
-        assertFalse(resolver.matches(CLIENT_NAME, MockWebContext.create()));
+        assertFalse(resolver.matches(MY_CLIENT_NAME, MockWebContext.create()));
     }
 }

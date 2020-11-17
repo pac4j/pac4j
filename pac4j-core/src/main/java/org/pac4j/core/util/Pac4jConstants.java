@@ -23,14 +23,14 @@ public interface Pac4jConstants {
     /* Client names configuration parameter */
     String CLIENTS = "clients";
 
-    /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
-    String IS_AJAX_REQUEST = "is_ajax_request";
-
     /* Authorizers names configuration parameter */
     String AUTHORIZERS = "authorizers";
 
     /* The default url parameter */
     String DEFAULT_URL = "defaultUrl";
+
+    /* The client name servlet parameter */
+    String CLIENT_NAME = "clientName";
 
     /* The default client */
     String DEFAULT_CLIENT = "defaultClient";
@@ -74,15 +74,19 @@ public interface Pac4jConstants {
     /** Whether a central logout must be performed */
     String CENTRAL_LOGOUT = "centralLogout";
 
-    /** The default client name parameter used on callback */
-    String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
-
-    /** The default client name parameter used for security */
-    String DEFAULT_FORCE_CLIENT_PARAMETER = "force_client";
-
     String DEFAULT_REALM_NAME = "authentication required";
 
     String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
 
     String OIDC_CLAIM_SESSIONID = "sid";
+
+
+    /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
+    String IS_AJAX_REQUEST = "is_ajax_request";
+
+    /** The default client name parameter used on callback */
+    String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
+
+    /** The default client name parameter used for security */
+    String DEFAULT_FORCE_CLIENT_PARAMETER = "force_client";
 }
