@@ -16,8 +16,7 @@ public class FacebookConfiguration extends OAuth20Configuration {
 
     protected String fields = DEFAULT_FIELDS;
 
-    public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,"
-        + "user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
+    public final static String DEFAULT_SCOPE = "user_likes,user_birthday,email,user_hometown,user_location";
 
     protected int limit = FacebookProfileDefinition.DEFAULT_LIMIT;
 
