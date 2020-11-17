@@ -231,6 +231,15 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     }
 
     @Test
+    public void testCsrfTokenDefaultButSessionAlreadyExists() {
+        final MockWebContext context = MockWebContext.create();
+        context.getSessionStore().getSessionId(context, true);
+        assertTrue(checker.matches(context, "", new HashMap<>(), new ArrayList<>()));
+        assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
+        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
     public void testCsrfTokenDefaultButIndirectClient() {
         final MockWebContext context = MockWebContext.create();
         final List<Client> clients = new ArrayList<>();

@@ -245,31 +245,33 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testDefaultAuthorizersNoClient() {
-        assertEquals(DefaultAuthorizers.IS_AUTHENTICATED, checker.computeDefaultAuthorizers(new ArrayList<>()));
+        assertEquals(DefaultAuthorizers.IS_AUTHENTICATED,
+            checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), new ArrayList<>()));
     }
 
     @Test
     public void testDefaultAuthorizersAnonymousClient() {
         final List<Client> clients = Arrays.asList(AnonymousClient.INSTANCE);
-        assertEquals(DefaultAuthorizers.NONE, checker.computeDefaultAuthorizers(clients));
+        assertEquals(DefaultAuthorizers.NONE, checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients));
     }
 
     @Test
     public void testDefaultAuthorizersDirectClient() {
         final List<Client> clients = Arrays.asList(new MockDirectClient("test"));
-        assertEquals(DefaultAuthorizers.IS_AUTHENTICATED, checker.computeDefaultAuthorizers(clients));
+        assertEquals(DefaultAuthorizers.IS_AUTHENTICATED,
+            checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients));
     }
 
     @Test
     public void testDefaultAuthorizersIndirectClient() {
         final List<Client> clients = Arrays.asList(new MockIndirectClient("test"));
         assertEquals(DefaultAuthorizers.CSRF_CHECK + "," + DefaultAuthorizers.IS_AUTHENTICATED,
-            checker.computeDefaultAuthorizers(clients));
+            checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients));
     }
 
     @Test
     public void testDefaultAuthorizersIndirectAndAnonymousClients() {
         final List<Client> clients = Arrays.asList(new MockIndirectClient("test"), AnonymousClient.INSTANCE);
-        assertEquals(DefaultAuthorizers.CSRF_CHECK, checker.computeDefaultAuthorizers(clients));
+        assertEquals(DefaultAuthorizers.CSRF_CHECK, checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients));
     }
 }

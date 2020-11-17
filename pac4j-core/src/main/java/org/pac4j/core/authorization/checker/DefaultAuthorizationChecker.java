@@ -37,7 +37,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         String authorizerNames = authorizersValue;
         // if no authorizers are defined, compute the default one(s)
         if (isBlank(authorizerNames)) {
-            authorizerNames = computeDefaultAuthorizers(clients);
+            authorizerNames = computeDefaultAuthorizers(context, profiles, clients);
         }
         final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
         final int nb = names.length;
@@ -72,7 +72,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return isAuthorized(context, profiles, authorizers);
     }
 
-    protected String computeDefaultAuthorizers(final List<Client> clients) {
+    protected String computeDefaultAuthorizers(final WebContext context, final List<UserProfile> profiles, final List<Client> clients) {
         final List<String> authorizers = new ArrayList<>();
         if (containsClientType(clients, IndirectClient.class)) {
             authorizers.add(DefaultAuthorizers.CSRF_CHECK);

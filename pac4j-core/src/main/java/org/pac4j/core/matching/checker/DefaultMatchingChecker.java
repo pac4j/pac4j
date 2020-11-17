@@ -51,7 +51,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
         String matcherNames = matchersValue;
         // if we have no matchers defined, compute the default one(s)
         if (CommonHelper.isBlank(matcherNames)) {
-            matcherNames = computeDefaultMatchers(clients);
+            matcherNames = computeDefaultMatchers(context, clients);
         }
         final List<Matcher> matchers = new ArrayList<>();
         // we must have matchers defined
@@ -106,7 +106,10 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return true;
     }
 
-    protected String computeDefaultMatchers(final List<Client> clients) {
+    protected String computeDefaultMatchers(final WebContext context, final List<Client> clients) {
+        if (context.getSessionStore().getSessionId(context, false).isPresent()) {
+            return DefaultMatchers.SECURITYHEADERS + Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
+        }
         for (final Client client : clients) {
             if (client instanceof IndirectClient) {
                 return DefaultMatchers.SECURITYHEADERS + Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
