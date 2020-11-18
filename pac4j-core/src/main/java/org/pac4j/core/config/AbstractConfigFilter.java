@@ -1,4 +1,4 @@
-package org.pac4j.core.util.filter;
+package org.pac4j.core.config;
 
 import java.io.IOException;
 
@@ -11,8 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.pac4j.core.config.Config;
-import org.pac4j.core.config.ConfigBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;

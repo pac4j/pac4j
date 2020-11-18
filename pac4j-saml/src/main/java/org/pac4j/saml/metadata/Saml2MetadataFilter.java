@@ -13,7 +13,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.filter.AbstractConfigFilter;
+import org.pac4j.core.config.AbstractConfigFilter;
 import org.pac4j.saml.client.SAML2Client;
 
 /**
