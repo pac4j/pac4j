@@ -39,7 +39,7 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
 
-        this.clientName = getStringParam(filterConfig, Pac4jConstants.CLIENT_NAME, null);
+        this.clientName = getStringParam(filterConfig, Pac4jConstants.CLIENT_NAME, this.clientName);
     }
 
     @Override
