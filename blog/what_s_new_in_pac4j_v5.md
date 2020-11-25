@@ -69,6 +69,8 @@ Since a few versions, you can use the `AnonymousClient` and its `AnonymousProfil
 
 So the idea here is to be protected by default against any `AnonymousProfile` "leaking" to the session.
 
+Notice you can now use the "+" character before the new authorizers or matchers to say that they apply in addition of the default ones.
+
 ## 7) User profiles
 
 ### a) Refactoring
