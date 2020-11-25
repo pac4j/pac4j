@@ -26,7 +26,7 @@ import static org.pac4j.core.context.HttpConstants.*;
  */
 public final class DefaultMatchingCheckerTests implements TestsConstants {
 
-    private final static MatchingChecker checker = new DefaultMatchingChecker();
+    private final static DefaultMatchingChecker checker = new DefaultMatchingChecker();
 
     private static class NullContextMatcher implements Matcher {
 
@@ -255,5 +255,25 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         assertTrue(checker.matches(context, DefaultMatchers.CSRF_TOKEN, new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
+    public void testComputeMatchers() {
+        assertEquals(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS,
+            checker.computeMatchers(MockWebContext.create(), "" , new HashMap<>(), new ArrayList<>()));
+    }
+
+    @Test
+    public void testComputeMatchersPost() {
+        assertEquals(Arrays.asList(DefaultMatchingChecker.POST_MATCHER),
+            checker.computeMatchers(MockWebContext.create(), "post" , new HashMap<>(), new ArrayList<>()));
+    }
+
+    @Test
+    public void testComputeMatchersPlusPost() {
+        final List<Matcher> matchers = new ArrayList<>();
+        matchers.addAll(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS);
+        matchers.add(DefaultMatchingChecker.POST_MATCHER);
+        assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), "   +   post" , new HashMap<>(), new ArrayList<>()));
     }
 }
