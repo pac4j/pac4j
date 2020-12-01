@@ -36,8 +36,11 @@ public class SAML2ServiceProviderMetadataResolverTest {
         config.setForceServiceProviderMetadataGeneration(true);
         config.setServiceProviderMetadataResource(serviceProviderMetadataResource);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
-        config.getRequestedServiceProviderAttributes().add(
-            new SAML2ServiceProvicerRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName"));
+        SAML2ServiceProviderRequestedAttribute attribute =
+            new SAML2ServiceProviderRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName");
+        attribute.setServiceLang("fr");
+        attribute.setServiceName("MySAML2ServiceProvider");
+        config.getRequestedServiceProviderAttributes().add(attribute);
         config.init();
         return config;
     }
@@ -73,7 +76,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
         wireMockServer.stubFor(
             post(urlPathEqualTo("/keystore"))
                 .willReturn(aResponse().withStatus(200)));
-        
+
         try {
             wireMockServer.start();
             final SAML2Configuration configuration =
