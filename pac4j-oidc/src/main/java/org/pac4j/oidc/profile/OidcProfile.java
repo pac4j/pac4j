@@ -11,7 +11,7 @@ import org.pac4j.oidc.client.OidcClient;
 import java.net.URI;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.*;
+import java.util.Date;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -103,8 +103,21 @@ public class OidcProfile extends AbstractJwtProfile {
     public void setAccessToken(final AccessToken accessToken) {
         addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessToken);
         if (accessToken != null) {
-            addAttribute(OidcProfileDefinition.EXPIRATION,
+            if (accessToken.getLifetime() != 0) {
+                addAttribute(OidcProfileDefinition.EXPIRATION,
                     Date.from(Instant.now().plusSeconds(accessToken.getLifetime())));
+            } else {
+                Date exp;
+                try {
+                    exp = JWTParser.parse(accessToken.getValue()).getJWTClaimsSet().getExpirationTime();
+                } catch (ParseException e) {
+                    exp = null;
+                }
+                if (exp != null) {
+                    addAttribute(OidcProfileDefinition.EXPIRATION,
+                        exp);
+                }
+            }
         }
     }
 
