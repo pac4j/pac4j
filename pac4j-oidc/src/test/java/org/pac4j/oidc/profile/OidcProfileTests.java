@@ -1,5 +1,7 @@
 package org.pac4j.oidc.profile;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
@@ -8,6 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
+
+import java.time.Instant;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -178,5 +183,23 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(3600); // 1 hour
         assertTrue(profile.isExpired());
+    }
+
+    /**
+     * Test experation based on access token exp date.
+     */
+    @Test
+    public void testAccessTokenExpiration(){
+
+        final OidcProfile profile = new OidcProfile();
+        profile.setAccessToken(new BearerAccessToken(ID_TOKEN));
+
+        assertTrue(profile.isExpired());
+
+        JWTClaimsSet cs = new JWTClaimsSet.Builder().expirationTime(Date.from(Instant.now().plusSeconds(30))).build();
+
+        profile.setAccessToken(new BearerAccessToken(new PlainJWT(cs).serialize()));
+
+        assertFalse(profile.isExpired());
     }
 }
