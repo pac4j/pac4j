@@ -1,9 +1,10 @@
 package org.pac4j.core.matching.matcher.csrf;
 
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 
-import java.util.Optional;
+import java.util.Date;
 
 /**
  * Default CSRF token generator.
@@ -13,22 +14,25 @@ import java.util.Optional;
  */
 public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
+    // 4 hours
+    private int ttlInSeconds = 4*60*60;
+
     @Override
     public String get(final WebContext context) {
-        Optional<Object> token = getTokenFromSession(context);
-        if (!token.isPresent()) {
-            synchronized (this) {
-                token = getTokenFromSession(context);
-                if (!token.isPresent()) {
-                    token = Optional.of(java.util.UUID.randomUUID().toString());
-                    context.getSessionStore().set(context, Pac4jConstants.CSRF_TOKEN, token.get());
-                }
-            }
-        }
-        return (String) token.get();
+        final String token = java.util.UUID.randomUUID().toString();
+        final long expirationDate = new Date().getTime() + ttlInSeconds * 1000;
+
+        final SessionStore sessionStore = context.getSessionStore();
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, token);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
+        return token;
     }
 
-    protected Optional<Object> getTokenFromSession(final WebContext context) {
-        return context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
+    public int getTtlInSeconds() {
+        return ttlInSeconds;
+    }
+
+    public void setTtlInSeconds(final int ttlInSeconds) {
+        this.ttlInSeconds = ttlInSeconds;
     }
 }

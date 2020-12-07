@@ -4,6 +4,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,10 +44,21 @@ public class CsrfAuthorizer implements Authorizer {
             final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
             final Optional<Object> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
-            return sessionToken.isPresent() && (sessionToken.get().equals(parameterToken) || sessionToken.get().equals(headerToken));
-        } else {
-            return true;
+            final Optional<Object> sessionDate = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
+            if (sessionToken.isEmpty() || sessionDate.isEmpty()) {
+                return false;
+            }
+            final String token = (String) sessionToken.get();
+            if (!token.equals(parameterToken) && !token.equals(headerToken)) {
+                return false;
+            }
+            final Long expirationDate = (Long) sessionDate.get();
+            final long now = new Date().getTime();
+            if (expirationDate < now) {
+                return false;
+            }
         }
+        return true;
     }
 
     public String getParameterName() {

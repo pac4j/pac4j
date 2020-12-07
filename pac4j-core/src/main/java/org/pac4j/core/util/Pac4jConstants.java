@@ -17,6 +17,9 @@ public interface Pac4jConstants {
     /* CSRF token name saved in session */
     String CSRF_TOKEN = "pac4jCsrfToken";
 
+    /* CSRF token expiration date name saved in session */
+    String CSRF_TOKEN_EXPIRATION_DATE = "pac4jCsrfTokenExpirationDate";
+
     /* Session ID */
     String SESSION_ID = "pac4jSessionId";
 
