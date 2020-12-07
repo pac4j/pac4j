@@ -67,7 +67,7 @@
 		<spring.version>5.3.1</spring.version>
 		<spring.security.version>5.4.2</spring.security.version>
 		<shiro.version>1.7.0</shiro.version>
-        <jbcrypt.version>0.4.1</jbcrypt.version>
+        <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>3.6.28</mockito.version>
 		<slf4j.version>1.7.30</slf4j.version>
         <unboundid.version>5.1.2</unboundid.version>
