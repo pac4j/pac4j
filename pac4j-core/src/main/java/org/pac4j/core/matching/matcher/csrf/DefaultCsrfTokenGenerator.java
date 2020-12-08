@@ -1,6 +1,7 @@
 package org.pac4j.core.matching.matcher.csrf;
 
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 
@@ -19,7 +20,7 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
     @Override
     public String get(final WebContext context) {
-        final String token = java.util.UUID.randomUUID().toString();
+        final String token = CommonHelper.randomString(32);
         final long expirationDate = new Date().getTime() + ttlInSeconds * 1000;
 
         final SessionStore sessionStore = context.getSessionStore();

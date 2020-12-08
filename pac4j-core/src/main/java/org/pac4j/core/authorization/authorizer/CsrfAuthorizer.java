@@ -45,20 +45,27 @@ public class CsrfAuthorizer implements Authorizer {
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
             final Optional<Object> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
             final Optional<Object> sessionDate = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
-            if (sessionToken.isEmpty() || sessionDate.isEmpty()) {
-                return false;
-            }
-            final String token = (String) sessionToken.get();
-            if (!token.equals(parameterToken) && !token.equals(headerToken)) {
-                return false;
-            }
-            final Long expirationDate = (Long) sessionDate.get();
+            // all checks are always performed, conditional operations are turned into logical ones,
+            // string comparisons are replaced by hash equalities to be protected against time-based attacks
+            final boolean hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
+            final String token = (String) sessionToken.orElse("");
+            final boolean isGoodToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
+            final Long expirationDate = (Long) sessionDate.orElse(0L);
             final long now = new Date().getTime();
-            if (expirationDate < now) {
+            final boolean isDateExpired = expirationDate < now;
+            if (!hasSessionData | !isGoodToken | isDateExpired) {
                 return false;
             }
+
         }
         return true;
+    }
+
+    protected boolean hashEquals(final String a, final String b) {
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.hashCode() == b.hashCode();
     }
 
     public String getParameterName() {
