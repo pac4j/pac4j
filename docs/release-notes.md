@@ -18,7 +18,7 @@ title: Release notes&#58;
 - Turned the `UserProfile` component into a pure interface and use it as much as possible (especially in the `JwtGenerator` and `JwtAuthenticator`)
 - The `ProfileHelper.restoreOrBuildProfile` method has been removed and the behavior is controlled by the `ProfileDefinition` and its `setRestoreProfileFromTypedId` method (enabled for JWT, disabled for others)
 - Authorizers and matchers can be defined additionaly with "+"
-- Generate CSRF tokens per HTTP request and with an internal expiration date (4 hours)
+- CSRF security improvements proposed by Xhelal Likaj (https://github.com/xhlika): longer CSRF token values (32 bytes), CSRF tokens generated per HTTP request and with an internal expiration date (4 hours), CSRF token verification protected against time-based attacks
 - Improved responses for unauthenticated users: 401 with "WWW-Authenticate" header or 403 to be compliant with the HTTP spec
 
 **v4.2.0**:
