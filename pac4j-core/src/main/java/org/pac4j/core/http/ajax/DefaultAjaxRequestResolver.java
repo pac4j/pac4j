@@ -6,6 +6,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 
 /**
  * Default way to compute if a HTTP request is an AJAX one.
@@ -42,7 +43,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
-            throw UnauthorizedAction.INSTANCE;
+            throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
         final StringBuilder buffer = new StringBuilder();
@@ -53,7 +54,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         }
         buffer.append("</partial-response>");
 
-        return RedirectionActionHelper.buildFormPostContentAction(context, buffer.toString());
+        return HttpActionHelper.buildFormPostContentAction(context, buffer.toString());
     }
 
     public boolean isAddRedirectionUrlAsHeader() {

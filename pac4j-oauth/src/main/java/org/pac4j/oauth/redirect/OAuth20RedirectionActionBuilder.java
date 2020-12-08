@@ -7,7 +7,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -53,7 +53,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             final String authorizationUrl = new AuthorizationUrlBuilder(service)
                 .state(state).additionalParams(this.configuration.getCustomParams()).build();
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, authorizationUrl));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

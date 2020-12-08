@@ -1,11 +1,11 @@
 package org.pac4j.core.client;
 
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
@@ -103,7 +103,7 @@ public abstract class IndirectClient extends BaseClient {
             logger.debug("authentication already attempted -> 401");
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw UnauthorizedAction.INSTANCE;
+            throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
         return redirectionActionBuilder.getRedirectionAction(context);

@@ -84,6 +84,14 @@ public interface WebContext {
     void setResponseHeader(String name, String value);
 
     /**
+     * Get a header from the response.
+     *
+     * @param name  name of the header
+     * @return the value of the header
+     */
+    Optional<String> getResponseHeader(String name);
+
+    /**
      * Sets the response content type.
      *
      * @param content the content type

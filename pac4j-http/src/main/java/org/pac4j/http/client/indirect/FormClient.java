@@ -2,8 +2,7 @@ package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
-import org.pac4j.core.exception.http.UnauthorizedAction;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -68,7 +67,7 @@ public class FormClient extends IndirectClient {
 
         defaultRedirectionActionBuilder(ctx -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
-            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
@@ -102,12 +101,12 @@ public class FormClient extends IndirectClient {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (getAjaxRequestResolver().isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
-            return UnauthorizedAction.INSTANCE;
+            return HttpActionHelper.buildUnauthenticatedAction(context);
         } else {
             String redirectionUrl = addParameter(this.loginUrl, this.usernameParameter, username);
             redirectionUrl = addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return RedirectionActionHelper.buildRedirectUrlAction(context, redirectionUrl);
+            return HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl);
         }
     }
 

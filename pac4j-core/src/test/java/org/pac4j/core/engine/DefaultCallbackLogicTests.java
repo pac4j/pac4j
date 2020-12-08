@@ -14,7 +14,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.exception.http.SeeOtherAction;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
@@ -69,7 +69,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         defaultUrl = null;
         renewSession = null;
         clientFinder = new DefaultCallbackClientFinder();
-        RedirectionActionHelper.setUseModernHttpCodes(true);
+        HttpActionHelper.setUseModernHttpCodes(true);
     }
 
     private void call() {
