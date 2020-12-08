@@ -17,6 +17,7 @@ By default, it relies on the `DefaultSecurityLogic` which has the following beha
 
 4. Finally, if the user is not authenticated (no profile), he is redirected to the appropriate identity provider if the first defined client is an indirect one in the clients configuration. Otherwise, a 401 error page is displayed.
 
+When the 401 HTTP status code is set, a `WWW-Authenticate` header is added with the value: `Bearer ream="pac4j"` if it does not already exist (to be compliant with the HTTP spec). A 403 HTTP status code can be used instead if the `WWW-Authenticate` header does not exist by setting: `HttpActionHelper.setAlwaysUse401ForUnauthenticated(false);`.
 
 ## 2) Options
 
