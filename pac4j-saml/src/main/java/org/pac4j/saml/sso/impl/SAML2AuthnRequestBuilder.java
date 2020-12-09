@@ -4,8 +4,12 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang3.StringUtils;
+import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
@@ -27,6 +31,8 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Build a SAML2 Authn Request from the given {@link MessageContext}.
@@ -36,6 +42,9 @@ import org.pac4j.saml.util.SAML2Utils;
  * @since 1.5.0
  */
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
+    protected final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final SAML2Configuration configuration;
 
     private int issueInstantSkewSeconds = 0;
@@ -58,7 +67,20 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             ? String.valueOf(this.configuration.getAssertionConsumerServiceIndex())
             : null;
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService(idx);
-        return buildAuthnRequest(context, assertionConsumerService, ssoService);
+        final AuthnRequest authnRequest = buildAuthnRequest(context, assertionConsumerService, ssoService);
+        logProtocolMessage(authnRequest);
+        return authnRequest;
+    }
+
+    protected void logProtocolMessage(final XMLObject object) {
+        if (protocolMessageLog.isDebugEnabled()) {
+            try {
+                final String requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
+                protocolMessageLog.debug(requestXml);
+            } catch (final MarshallingException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
