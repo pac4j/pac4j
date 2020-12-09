@@ -2,6 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
 
@@ -31,5 +32,10 @@ public class OrAuthorizer implements Authorizer {
 
     public static OrAuthorizer or(Authorizer... authorizers) {
         return new OrAuthorizer(asList(authorizers));
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(this.getClass(), "authorizers", authorizers);
     }
 }

@@ -39,3 +39,5 @@ Most *pac4j* implementations use the *pac4j* logics and matchers and thus the [`
 - the `csrfToken` keyword for the `CsrfTokenGeneratorMatcher` with the `DefaultCsrfTokenGenerator` (it generates a CSRF token and saves it as the `pac4jCsrfToken` request attribute and in the `pac4jCsrfToken` cookie)
 - the `allowAjaxRequests` keyword for a default configuration of the `CorsMatcher` with the `Access-Control-Allow-Origin` header set to `*`.
 - the `none` keyword for no matchers at all.
+
+These short names are defined as constants in [`DefaultMatchers`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/matcher/DefaultMatchers.java). You can override them with your own matchers using the same names.

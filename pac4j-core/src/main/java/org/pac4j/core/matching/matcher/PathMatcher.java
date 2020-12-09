@@ -148,4 +148,9 @@ public class PathMatcher implements Matcher {
             throw new TechnicalException("Excluded path must begin with a /");
         }
     }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(this.getClass(), "excludedPaths", excludedPaths, "excludedPatterns", excludedPatterns);
+    }
 }

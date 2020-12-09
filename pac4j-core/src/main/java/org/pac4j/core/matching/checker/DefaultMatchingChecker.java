@@ -25,20 +25,20 @@ public class DefaultMatchingChecker implements MatchingChecker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMatchingChecker.class);
 
-    static final Matcher GET_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
-    static final Matcher POST_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
-    static final Matcher PUT_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.PUT);
-    static final Matcher DELETE_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE);
+    protected static final Matcher GET_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
+    protected static final Matcher POST_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
+    protected static final Matcher PUT_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.PUT);
+    protected static final Matcher DELETE_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE);
 
-    static final StrictTransportSecurityMatcher STRICT_TRANSPORT_MATCHER = new StrictTransportSecurityMatcher();
-    static final XContentTypeOptionsMatcher X_CONTENT_TYPE_OPTIONS_MATCHER = new XContentTypeOptionsMatcher();
-    static final XFrameOptionsMatcher X_FRAME_OPTIONS_MATCHER = new XFrameOptionsMatcher();
-    static final XSSProtectionMatcher XSS_PROTECTION_MATCHER = new XSSProtectionMatcher();
-    static final CacheControlMatcher CACHE_CONTROL_MATCHER = new CacheControlMatcher();
-    static final CsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
+    protected static final StrictTransportSecurityMatcher STRICT_TRANSPORT_MATCHER = new StrictTransportSecurityMatcher();
+    protected static final XContentTypeOptionsMatcher X_CONTENT_TYPE_OPTIONS_MATCHER = new XContentTypeOptionsMatcher();
+    protected static final XFrameOptionsMatcher X_FRAME_OPTIONS_MATCHER = new XFrameOptionsMatcher();
+    protected static final XSSProtectionMatcher XSS_PROTECTION_MATCHER = new XSSProtectionMatcher();
+    protected static final CacheControlMatcher CACHE_CONTROL_MATCHER = new CacheControlMatcher();
+    protected static final CsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
     static final List<Matcher> SECURITY_HEADERS_MATCHERS = Arrays.asList(CACHE_CONTROL_MATCHER, X_CONTENT_TYPE_OPTIONS_MATCHER,
         STRICT_TRANSPORT_MATCHER, X_FRAME_OPTIONS_MATCHER, XSS_PROTECTION_MATCHER);
-    static final CorsMatcher CORS_MATCHER = new CorsMatcher();
+    protected static final CorsMatcher CORS_MATCHER = new CorsMatcher();
 
     static {
         CORS_MATCHER.setAllowOrigin("*");
@@ -57,18 +57,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
                            final List<Client> clients) {
 
         final List<Matcher> matchers = computeMatchers(context, matchersValue, matchersMap, clients);
-
-        if (!matchers.isEmpty()) {
-            // check matching using matchers: all must be satisfied
-            for (final Matcher matcher : matchers) {
-                final boolean matches = matcher.matches(context);
-                LOGGER.debug("Checking matcher: {} -> {}", matcher, matches);
-                if (!matches) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return matches(context, matchers);
     }
 
     protected List<Matcher> computeMatchers(final WebContext context, final String matchersValue, final Map<String, Matcher> matchersMap,
@@ -83,48 +72,6 @@ public class DefaultMatchingChecker implements MatchingChecker {
                 matchers.addAll(computeMatchersFromNames(matcherNames, matchersMap));
             } else {
                 matchers = computeMatchersFromNames(matchersValue, matchersMap);
-            }
-        }
-        return matchers;
-    }
-
-    protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
-        final List<Matcher> matchers = new ArrayList<>();
-        // we must have matchers defined
-        assertNotNull("matchersMap", matchersMap);
-        final Map<String, Matcher> allMatchers = buildAllMatchers(matchersMap);
-        final String[] names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
-        final int nb = names.length;
-        for (int i = 0; i < nb; i++) {
-            final String name = names[i].trim();
-            if (DefaultMatchers.HSTS.equalsIgnoreCase(name)) {
-                matchers.add(STRICT_TRANSPORT_MATCHER);
-            } else if (DefaultMatchers.NOSNIFF.equalsIgnoreCase(name)) {
-                matchers.add(X_CONTENT_TYPE_OPTIONS_MATCHER);
-            } else if (DefaultMatchers.NOFRAME.equalsIgnoreCase(name)) {
-                matchers.add(X_FRAME_OPTIONS_MATCHER);
-            } else if (DefaultMatchers.XSSPROTECTION.equalsIgnoreCase(name)) {
-                matchers.add(XSS_PROTECTION_MATCHER);
-            } else if (DefaultMatchers.NOCACHE.equalsIgnoreCase(name)) {
-                matchers.add(CACHE_CONTROL_MATCHER);
-            } else if (DefaultMatchers.SECURITYHEADERS.equalsIgnoreCase(name)) {
-                matchers.addAll(SECURITY_HEADERS_MATCHERS);
-            } else if (DefaultMatchers.CSRF_TOKEN.equalsIgnoreCase(name)) {
-                matchers.add(CSRF_TOKEN_MATCHER);
-            } else if (DefaultMatchers.ALLOW_AJAX_REQUESTS.equalsIgnoreCase(name)) {
-                matchers.add(CORS_MATCHER);
-                // we don't add any matcher for none
-            } else if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
-                Matcher result = null;
-                for (final Map.Entry<String, Matcher> entry : allMatchers.entrySet()) {
-                    if (areEqualsIgnoreCaseAndTrim(entry.getKey(), name)) {
-                        result = entry.getValue();
-                        break;
-                    }
-                }
-                // we must have a matcher defined for this name
-                assertNotNull("allMatchers['" + name + "']", result);
-                matchers.add(result);
             }
         }
         return matchers;
@@ -146,19 +93,73 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return matchers;
     }
 
-    protected Map<String, Matcher> buildAllMatchers(final Map<String, Matcher> matchersMap) {
-        final Map<String, Matcher> allMatchers = new HashMap<>();
-        allMatchers.putAll(matchersMap);
-        addDefaultMatcherIfNotDefined(allMatchers, DefaultMatchers.GET, GET_MATCHER);
-        addDefaultMatcherIfNotDefined(allMatchers, DefaultMatchers.POST, POST_MATCHER);
-        addDefaultMatcherIfNotDefined(allMatchers, DefaultMatchers.PUT, PUT_MATCHER);
-        addDefaultMatcherIfNotDefined(allMatchers, DefaultMatchers.DELETE, DELETE_MATCHER);
-        return allMatchers;
+    protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
+        assertNotNull("matchersMap", matchersMap);
+        final List<Matcher> matchers = new ArrayList<>();
+        final String[] names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
+        final int nb = names.length;
+        for (int i = 0; i < nb; i++) {
+            final String name = names[i].trim();
+            if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
+                final List<Matcher> results = retrieveMatchers(name, matchersMap);
+                // we must have matchers defined for this name
+                assertTrue(results != null && results.size() > 0, "The matcher '" + name + "' must exist");
+                matchers.addAll(results);
+            }
+        }
+        return matchers;
     }
 
-    protected void addDefaultMatcherIfNotDefined(final Map<String, Matcher> allMatchers, final String name, final Matcher matcher) {
-        if (!allMatchers.containsKey(name)) {
-            allMatchers.put(name, matcher);
+    protected List<Matcher> retrieveMatchers(final String matcherName, final Map<String, Matcher> matchersMap) {
+        final List<Matcher> results = new ArrayList<>();
+        for (final Map.Entry<String, Matcher> entry : matchersMap.entrySet()) {
+            if (areEqualsIgnoreCaseAndTrim(entry.getKey(), matcherName)) {
+                results.add(entry.getValue());
+                break;
+            }
         }
+        if (results.size() == 0) {
+            if (DefaultMatchers.HSTS.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(STRICT_TRANSPORT_MATCHER);
+            } else if (DefaultMatchers.NOSNIFF.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(X_CONTENT_TYPE_OPTIONS_MATCHER);
+            } else if (DefaultMatchers.NOFRAME.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(X_FRAME_OPTIONS_MATCHER);
+            } else if (DefaultMatchers.XSSPROTECTION.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(XSS_PROTECTION_MATCHER);
+            } else if (DefaultMatchers.NOCACHE.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(CACHE_CONTROL_MATCHER);
+            } else if (DefaultMatchers.SECURITYHEADERS.equalsIgnoreCase(matcherName)) {
+                return SECURITY_HEADERS_MATCHERS;
+            } else if (DefaultMatchers.CSRF_TOKEN.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(CSRF_TOKEN_MATCHER);
+            } else if (DefaultMatchers.ALLOW_AJAX_REQUESTS.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(CORS_MATCHER);
+            } else if (DefaultMatchers.GET.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(GET_MATCHER);
+            } else if (DefaultMatchers.POST.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(POST_MATCHER);
+            } else if (DefaultMatchers.PUT.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(PUT_MATCHER);
+            } else if (DefaultMatchers.DELETE.equalsIgnoreCase(matcherName)) {
+                return Arrays.asList(DELETE_MATCHER);
+            }
+        }
+        return results;
+    }
+
+
+    protected boolean matches(final WebContext context, final List<Matcher> matchers) {
+        if (!matchers.isEmpty()) {
+            // check matching using matchers: all must be satisfied
+            for (final Matcher matcher : matchers) {
+                final boolean matches = matcher.matches(context);
+                LOGGER.debug("Checking matcher: {} -> {}", matcher, matches);
+                if (!matches) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

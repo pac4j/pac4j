@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 
 /**
@@ -34,5 +35,10 @@ public abstract class AbstractCheckAuthenticationAuthorizer extends ProfileAutho
 
     public void setRedirectionUrl(final String redirectionUrl) {
         this.redirectionUrl = redirectionUrl;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(this.getClass(), "redirectionUrl", redirectionUrl);
     }
 }

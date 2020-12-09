@@ -2,6 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * An authorizer to require all the elements.
@@ -22,5 +23,10 @@ public abstract class AbstractRequireAllAuthorizer<E extends Object> extends Abs
             }
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(this.getClass(), "elements", getElements());
     }
 }

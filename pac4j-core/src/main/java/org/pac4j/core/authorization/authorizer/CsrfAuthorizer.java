@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -90,5 +91,11 @@ public class CsrfAuthorizer implements Authorizer {
 
     public void setCheckAllRequests(final boolean checkAllRequests) {
         this.checkAllRequests = checkAllRequests;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(this.getClass(), "parameterName", parameterName, "headerName", headerName,
+            "checkAllRequests", checkAllRequests);
     }
 }

@@ -67,7 +67,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     @Test
     public void testNoExistingMatcher()  {
         TestsHelper.expectException(() -> checker.matches(null, NAME, new HashMap<>(), new ArrayList<>()), TechnicalException.class,
-            "allMatchers['" + NAME + "'] cannot be null");
+            "The matcher '" + NAME + "' must exist");
     }
 
     @Test
@@ -274,6 +274,14 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final List<Matcher> matchers = new ArrayList<>();
         matchers.addAll(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS);
         matchers.add(DefaultMatchingChecker.POST_MATCHER);
-        assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), "   +   post" , new HashMap<>(), new ArrayList<>()));
+        assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), "   +   post", new HashMap<>(), new ArrayList<>()));
+    }
+
+    @Test
+    public void testComputeMatchersOverrideDefault() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        matchers.put(DefaultMatchers.GET, DefaultMatchingChecker.POST_MATCHER);
+        assertEquals(Arrays.asList(DefaultMatchingChecker.POST_MATCHER), checker.computeMatchers(MockWebContext.create(),
+            "get", matchers, new ArrayList<>()));
     }
 }
