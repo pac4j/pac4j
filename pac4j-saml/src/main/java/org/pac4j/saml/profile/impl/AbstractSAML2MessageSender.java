@@ -1,7 +1,11 @@
 package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.velocity.app.VelocityEngine;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
@@ -36,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 3.4.0
  */
 public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implements SAML2MessageSender<T> {
-
+    protected final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final SignatureSigningParametersProvider signatureSigningParametersProvider;
@@ -106,7 +110,9 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                     messageStorage.set(((StatusResponseType) request).getID(), request);
                 }
             }
-
+            logProtocolMessage(request);
+        } catch (final MarshallingException e) {
+            throw new SAMLException("Error marshalling saml message", e);
         } catch (final MessageEncodingException e) {
             throw new SAMLException("Error encoding saml message", e);
         } catch (final ComponentInitializationException e) {
@@ -114,9 +120,16 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
     }
 
+    protected void logProtocolMessage(final XMLObject object) throws MarshallingException {
+        if (protocolMessageLog.isDebugEnabled()) {
+            final String requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
+            protocolMessageLog.debug(requestXml);
+        }
+    }
+
     protected abstract Endpoint getEndpoint(SAML2MessageContext context);
 
-    protected final void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
+    protected void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                        final IDPSSODescriptor idpssoDescriptor,
                                                        final MessageContext messageContext) {
         try {

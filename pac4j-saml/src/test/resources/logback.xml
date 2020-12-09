@@ -7,6 +7,8 @@
 
 <!--	<logger name="org.pac4j" level="INFO" />-->
 
+	<logger name="PROTOCOL_MESSAGE" level="DEBUG" />
+
 	<root level="WARN">
 		<appender-ref ref="STDOUT" />
 	</root>
