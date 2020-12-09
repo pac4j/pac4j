@@ -2,7 +2,7 @@
 layout: blog
 title: What's new in pac4j v5?
 author: Jérôme LELEU
-date: November 2020
+date: December 2020
 ---
 
 One of the primary goals of pac4j has always been to be easy. One must admit that along the versions, it has gained some complexity and weight and time has come for cleaning.
@@ -96,3 +96,19 @@ These fixes are available in v3.9.0, v4.2.0 and in the v5.x stream.
 In previous versions, after the authentication process, the profile was built from the typed identifier if possible for the CAS protocol and the JWT support.
 
 This is now controlled in the `ProfileDefinition` via the `setRestoreProfileFromTypedId` method and this is only enabled by default for the JWT support.
+
+## 8) CSRF
+
+The CSRF protection has been improved:
+
+- longer CSRF token values (32 bytes)
+- CSRF tokens generated per HTTP request
+- internal expiration date (4 hours)
+- CSRF token verification protected against time-based attacks.
+
+## 9) Specifcation compliance
+
+The compliance with the HTTP specifcation has been improved as well:
+
+- the 307 HTTP status code is no longer misused
+- the "WWW-Authenticate" header is added when missing for the 401 HTTP status code or the 403 HTTP status code is used instead.
