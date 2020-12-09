@@ -32,7 +32,7 @@ public interface TestsConstants {
     String MULTIPLE_USERNAME = "misagh";
     String FIRSTNAME = "firstname";
     String FIRSTNAME_VALUE = "Jerome";
-    String CLIENT_NAME = "clientname";
+    String MY_CLIENT_NAME = "myclientname";
     String ROLE = "role";
     String PATH = "/tmp/path";
     String EMAIL = "test@example.com";

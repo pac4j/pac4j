@@ -125,6 +125,11 @@ public class JEEContext implements WebContext {
     }
 
     @Override
+    public Optional<String> getResponseHeader(final String name) {
+        return Optional.ofNullable(this.response.getHeader(name));
+    }
+
+    @Override
     public void setResponseContentType(final String content) {
         this.response.setContentType(content);
     }

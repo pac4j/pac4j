@@ -2,6 +2,7 @@ package org.pac4j.core.profile;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -133,7 +134,7 @@ public final class CommonProfileTests implements TestsConstants {
     public void testTypeId() {
         final CommonProfile profile = new CommonProfile();
         profile.setId(ID);
-        assertEquals("org.pac4j.core.profile.CommonProfile" + CommonProfile.SEPARATOR + ID, profile.getTypedId());
+        assertEquals("org.pac4j.core.profile.CommonProfile" + Pac4jConstants.TYPED_ID_SEPARATOR + ID, profile.getTypedId());
     }
 
     @Test

@@ -19,26 +19,26 @@ public final class PathParameterCallbackUrlResolverTests implements TestsConstan
 
     @Test
     public void testCompute() {
-        final String url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, CLIENT_NAME, MockWebContext.create());
-        assertEquals(CALLBACK_URL + "/" + CLIENT_NAME, url);
+        final String url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
+        assertEquals(CALLBACK_URL + "/" + MY_CLIENT_NAME, url);
     }
 
     @Test
     public void testMatchesNoClientName() {
-        assertFalse(resolver.matches(CLIENT_NAME, MockWebContext.create()));
+        assertFalse(resolver.matches(MY_CLIENT_NAME, MockWebContext.create()));
     }
 
     @Test
     public void testMatchesSimplePath() {
         final MockWebContext context = MockWebContext.create();
-        context.setPath(CLIENT_NAME);
-        assertTrue(resolver.matches(CLIENT_NAME, context));
+        context.setPath(MY_CLIENT_NAME);
+        assertTrue(resolver.matches(MY_CLIENT_NAME, context));
     }
 
     @Test
     public void testMatchesComplexPath() {
         final MockWebContext context = MockWebContext.create();
-        context.setPath(VALUE + "/" + CLIENT_NAME);
-        assertTrue(resolver.matches(CLIENT_NAME, context));
+        context.setPath(VALUE + "/" + MY_CLIENT_NAME);
+        assertTrue(resolver.matches(MY_CLIENT_NAME, context));
     }
 }

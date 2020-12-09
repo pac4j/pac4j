@@ -1,19 +1,46 @@
-package org.pac4j.core.exception.http;
+package org.pac4j.core.util;
 
 import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.http.*;
 
 import java.util.Map;
 
 /**
- * Helper to build {@link RedirectionAction}.
+ * Helper to build the appropriate {@link HttpAction}.
  *
  * @author Jerome LELEU
  * @since 4.0.0
  */
-public final class RedirectionActionHelper {
+public final class HttpActionHelper {
 
     private static boolean useModernHttpCodes = true;
+
+    private static boolean alwaysUse401ForUnauthenticated = true;
+
+    /**
+     * Build the action for unauthenticated users.
+     *
+     * @param context the web context
+     * @return the appropriate HTTP action
+     */
+    public static HttpAction buildUnauthenticatedAction(final WebContext context) {
+        final boolean hasHeader = context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isPresent();
+        if (alwaysUse401ForUnauthenticated) {
+            // add the WWW-Authenticate header to be compliant with the HTTP spec if it does not already exist
+            if (!hasHeader) {
+                context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"pac4j\"");
+            }
+            return UnauthorizedAction.INSTANCE;
+        } else {
+            if (hasHeader) {
+                return UnauthorizedAction.INSTANCE;
+            } else {
+                return ForbiddenAction.INSTANCE;
+            }
+        }
+    }
 
     /**
      * Build the appropriate redirection action for a location.
@@ -79,6 +106,14 @@ public final class RedirectionActionHelper {
     }
 
     public static void setUseModernHttpCodes(final boolean useModernHttpCodes) {
-        RedirectionActionHelper.useModernHttpCodes = useModernHttpCodes;
+        HttpActionHelper.useModernHttpCodes = useModernHttpCodes;
+    }
+
+    public static boolean isAlwaysUse401ForUnauthenticated() {
+        return alwaysUse401ForUnauthenticated;
+    }
+
+    public static void setAlwaysUse401ForUnauthenticated(final boolean alwaysUse401ForUnauthenticated) {
+        HttpActionHelper.alwaysUse401ForUnauthenticated = alwaysUse401ForUnauthenticated;
     }
 }

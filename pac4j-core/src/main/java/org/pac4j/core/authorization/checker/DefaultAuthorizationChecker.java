@@ -33,12 +33,31 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     @Override
     public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
                                 final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
-        final List<Authorizer> authorizers = new ArrayList<>();
-        String authorizerNames = authorizersValue;
-        // if no authorizers are defined, compute the default one(s)
-        if (isBlank(authorizerNames)) {
-            authorizerNames = computeDefaultAuthorizers(clients);
+
+        final List<Authorizer> authorizers = computeAuthorizers(context, profiles, authorizersValue, authorizersMap, clients);
+
+        return isAuthorized(context, profiles, authorizers);
+    }
+
+    protected List<Authorizer> computeAuthorizers(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
+                                                  final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
+        final List<Authorizer> authorizers;
+        if (isBlank(authorizersValue)) {
+            authorizers = computeDefaultAuthorizers(context, profiles, clients);
+        } else {
+            if (authorizersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
+                final String authorizerNames = substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
+                authorizers = computeDefaultAuthorizers(context, profiles, clients);
+                authorizers.addAll(computeAuthorizersFromNames(authorizerNames, authorizersMap));
+            } else {
+                authorizers = computeAuthorizersFromNames(authorizersValue, authorizersMap);
+            }
         }
+        return authorizers;
+    }
+
+    protected List<Authorizer> computeAuthorizersFromNames(final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
+        final List<Authorizer> authorizers = new ArrayList<>();
         final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
         final int nb = names.length;
         for (int i = 0; i < nb; i++) {
@@ -53,7 +72,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 authorizers.add(IS_FULLY_AUTHENTICATED_AUTHORIZER);
             } else if (DefaultAuthorizers.IS_REMEMBERED.equalsIgnoreCase(name)) {
                 authorizers.add(IS_REMEMBERED_AUTHORIZER);
-            // we don't add any authorizer for none
+                // we don't add any authorizer for none
             } else if (!DefaultAuthorizers.NONE.equalsIgnoreCase(name)){
                 // we must have authorizers
                 assertNotNull("authorizersMap", authorizersMap);
@@ -69,25 +88,19 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 authorizers.add(result);
             }
         }
-        return isAuthorized(context, profiles, authorizers);
+        return authorizers;
     }
 
-    protected String computeDefaultAuthorizers(final List<Client> clients) {
-        final List<String> authorizers = new ArrayList<>();
+    protected List<Authorizer> computeDefaultAuthorizers(final WebContext context, final List<UserProfile> profiles,
+                                                         final List<Client> clients) {
+        final List<Authorizer> authorizers = new ArrayList<>();
         if (containsClientType(clients, IndirectClient.class)) {
-            authorizers.add(DefaultAuthorizers.CSRF_CHECK);
+            authorizers.add(CSRF_AUTHORIZER);
         }
         if (!containsClientType(clients, AnonymousClient.class)) {
-            authorizers.add(DefaultAuthorizers.IS_AUTHENTICATED);
+            authorizers.add(IS_AUTHENTICATED_AUTHORIZER);
         }
-        final String defaultAuthorizer;
-        if (authorizers.isEmpty()) {
-            defaultAuthorizer = DefaultAuthorizers.NONE;
-        } else {
-            defaultAuthorizer = String.join(",", authorizers);
-        }
-        LOGGER.debug("Computed default authorizers: {}", defaultAuthorizer);
-        return defaultAuthorizer;
+        return authorizers;
     }
 
     protected boolean containsClientType(final List<Client> clients, final Class<? extends Client> clazz) {

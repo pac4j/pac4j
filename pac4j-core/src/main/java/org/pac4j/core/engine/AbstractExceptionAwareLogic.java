@@ -2,7 +2,7 @@ package org.pac4j.core.engine;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.util.CommonHelper;
@@ -43,7 +43,7 @@ public abstract class AbstractExceptionAwareLogic extends ProfileManagerFactoryA
             return httpActionAdapter.adapt(action, context);
         } else {
             if (CommonHelper.isNotBlank(errorUrl)) {
-                final HttpAction action = RedirectionActionHelper.buildRedirectUrlAction(context, errorUrl);
+                final HttpAction action = HttpActionHelper.buildRedirectUrlAction(context, errorUrl);
                 return httpActionAdapter.adapt(action, context);
             } else {
                 throw runtimeException(e);

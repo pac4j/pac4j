@@ -8,6 +8,7 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WeiboClient;
 import org.pac4j.oauth.profile.weibo.WeiboProfile;
 
@@ -65,7 +66,7 @@ public final class RunWeiboClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final WeiboProfile profile = (WeiboProfile) userProfile;
         assertEquals("6591860688", profile.getId());
-        assertEquals(WeiboProfile.class.getName() + CommonProfile.SEPARATOR + "6591860688",
+        assertEquals(WeiboProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "6591860688",
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WeiboProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

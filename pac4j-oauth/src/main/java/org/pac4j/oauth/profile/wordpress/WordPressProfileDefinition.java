@@ -45,7 +45,7 @@ public class WordPressProfileDefinition extends OAuthProfileDefinition {
         final WordPressProfile profile = (WordPressProfile) newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, "ID")));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "ID")));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }

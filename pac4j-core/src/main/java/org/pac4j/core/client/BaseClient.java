@@ -242,8 +242,8 @@ public abstract class BaseClient extends InitializableObject implements Client {
     public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory profileFactoryWhenNotAuthenticated) {
         if (!warned) {
             logger.warn("Be careful when using the 'setProfileFactoryWhenNotAuthenticated' method: a custom profile "
-                + "is returned when the authentication fails or is cancelled and the access is granted for the whole session. "
-                + "You certainly need to define additional 'Authorizer's to secure your web resources.");
+                + "is returned when the authentication fails or is cancelled and it is stored for the whole session. "
+                + "You may need to define additional 'Authorizer's to secure your web resources.");
             warned = true;
         }
         this.profileFactoryWhenNotAuthenticated = profileFactoryWhenNotAuthenticated;

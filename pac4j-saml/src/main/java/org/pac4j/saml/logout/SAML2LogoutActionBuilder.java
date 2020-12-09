@@ -4,7 +4,7 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.generator.ValueGenerator;
@@ -59,10 +59,10 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
                 final String content = adapter.getOutgoingContent();
-                return Optional.of(RedirectionActionHelper.buildFormPostContentAction(context, content));
+                return Optional.of(HttpActionHelper.buildFormPostContentAction(context, content));
             }
             final String location = adapter.getRedirectUrl();
-            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, location));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
         } else {
             return Optional.empty();
         }

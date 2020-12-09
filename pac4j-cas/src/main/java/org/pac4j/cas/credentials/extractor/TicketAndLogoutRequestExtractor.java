@@ -9,7 +9,7 @@ import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
@@ -151,7 +151,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             buffer.append(CommonUtils.urlEncode(relayStateValue.get()));
             final String redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
-            throw RedirectionActionHelper.buildRedirectUrlAction(context, redirectUrl);
+            throw HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
         } else {
             throw new OkAction("");
         }

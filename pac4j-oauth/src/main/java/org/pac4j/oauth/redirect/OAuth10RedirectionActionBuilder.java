@@ -8,7 +8,7 @@ import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -56,7 +56,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             final String authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
-            return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, authorizationUrl));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

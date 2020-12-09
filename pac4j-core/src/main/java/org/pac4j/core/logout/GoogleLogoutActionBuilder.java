@@ -2,7 +2,7 @@ package org.pac4j.core.logout;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +25,6 @@ public class GoogleLogoutActionBuilder implements LogoutActionBuilder {
 
         final String redirectUrl = "https://accounts.google.com/Logout";
         logger.debug("redirectUrl: {}", redirectUrl);
-        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(context, redirectUrl));
+        return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectUrl));
     }
 }

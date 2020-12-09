@@ -8,7 +8,7 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;
@@ -70,7 +70,7 @@ public class SAML2AuthenticatorTests {
         final SAML2Authenticator authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create());
 
-        final CommonProfile finalProfile = credentials.getUserProfile();
+        final UserProfile finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));

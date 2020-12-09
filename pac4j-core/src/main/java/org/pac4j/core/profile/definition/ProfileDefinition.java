@@ -1,21 +1,22 @@
 package org.pac4j.core.profile.definition;
 
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.factory.ProfileFactory;
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Define a profile (its class and attributes).
@@ -35,16 +36,45 @@ public abstract class ProfileDefinition {
 
     private final Map<String, AttributeConverter> converters = new HashMap<>();
 
-    protected ProfileFactory newProfile = parameters -> new CommonProfile();
+    private ProfileFactory profileFactory = parameters -> new CommonProfile();
+
+    private boolean restoreProfileFromTypedId = false;
 
     /**
-     * Return the new built profile.
+     * Return the new built or restored profile.
      *
-     * @param parameters some optional input parameters
-     * @return the new built profile
+     * @param parameters some input parameters (the first optional one is the typed id)
+     * @return the new built or restored profile
      */
     public UserProfile newProfile(final Object... parameters) {
-        return newProfile.apply(parameters);
+        if (restoreProfileFromTypedId) {
+            final Object typedId = getParameter(parameters, 0);
+            if (typedId instanceof String) {
+                logger.debug("Building user profile based on typedId: {}", typedId);
+                final String sTypedId = (String) typedId;
+                if (sTypedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
+                    final String profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                    for (final String profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
+                        if (profileClass.startsWith(profileClassPrefix)) {
+                            try {
+                                return ProfileHelper.buildUserProfileByClassCompleteName(profileClass);
+                            } catch (final TechnicalException e) {
+                                logger.error("Cannot build instance for class name: {}", profileClass, e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return profileFactory.apply(parameters);
+    }
+
+    protected Object getParameter(final Object[] parameters, final int num) {
+        if (parameters != null && parameters.length >= num) {
+            return parameters[num];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -55,7 +85,7 @@ public abstract class ProfileDefinition {
      * @param name The attribute name.
      * @param value The attribute value.
      */
-    public void convertAndAdd(final CommonProfile profile, final AttributeLocation attributeLocation, final String name,
+    public void convertAndAdd(final UserProfile profile, final AttributeLocation attributeLocation, final String name,
             final Object value) {
         if (value != null) {
             final Object convertedValue;
@@ -85,7 +115,7 @@ public abstract class ProfileDefinition {
      * @param profileAttributes The profile attributes. May be {@code null}.
      * @param authenticationAttributes The authentication attributes. May be {@code null}.
      */
-    public void convertAndAdd(final CommonProfile profile,
+    public void convertAndAdd(final UserProfile profile,
             final Map<String, Object> profileAttributes,
             final Map<String, Object> authenticationAttributes) {
         if (profileAttributes != null) {
@@ -104,8 +134,8 @@ public abstract class ProfileDefinition {
      * @param profileFactory the way to build the profile
      */
     protected void setProfileFactory(final ProfileFactory profileFactory) {
-        CommonHelper.assertNotNull("profileFactory", profileFactory);
-        this.newProfile = profileFactory;
+        assertNotNull("profileFactory", profileFactory);
+        this.profileFactory = profileFactory;
     }
 
     /**
@@ -148,5 +178,13 @@ public abstract class ProfileDefinition {
 
     public String getProfileId() {
         return profileId;
+    }
+
+    public boolean isRestoreProfileFromTypedId() {
+        return restoreProfileFromTypedId;
+    }
+
+    public void setRestoreProfileFromTypedId(final boolean restoreProfileFromTypedId) {
+        this.restoreProfileFromTypedId = restoreProfileFromTypedId;
     }
 }

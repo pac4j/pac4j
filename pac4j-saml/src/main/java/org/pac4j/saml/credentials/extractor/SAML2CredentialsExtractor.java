@@ -7,7 +7,7 @@ import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -67,10 +67,10 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
             final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
                 final String content = adapter.getOutgoingContent();
-                throw RedirectionActionHelper.buildFormPostContentAction(context, content);
+                throw HttpActionHelper.buildFormPostContentAction(context, content);
             } else {
                 final String location = adapter.getRedirectUrl();
-                throw RedirectionActionHelper.buildRedirectUrlAction(context, location);
+                throw HttpActionHelper.buildRedirectUrlAction(context, location);
             }
 
         } else {

@@ -6,6 +6,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.OkClient;
 import org.pac4j.oauth.profile.ok.OkProfile;
 
@@ -75,7 +76,7 @@ public final class RunOkClient extends RunClient {
     protected void verifyProfile(CommonProfile userProfile) {
         final OkProfile profile = (OkProfile) userProfile;
         assertEquals(TEST_PROFILE_ID, profile.getId());
-        assertEquals(OkProfile.class.getName() + CommonProfile.SEPARATOR + TEST_PROFILE_ID,
+        assertEquals(OkProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), OkProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

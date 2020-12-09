@@ -15,7 +15,11 @@ title: Release notes&#58;
 - When no authorizers is defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
 - Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports; Added a `JsonSerializer` and turned the `JavaSerializationHelper` into a `JavaSerializer`
 - Removed the 307 HTTP code for a new POST request after a POST request (use 200 instead)
-- Turned the `UserProfile` component into a pure interface and use it in the `JwtGenerator` and `JwtAuthenticator`
+- Turned the `UserProfile` component into a pure interface and use it as much as possible (especially in the `JwtGenerator` and `JwtAuthenticator`)
+- The `ProfileHelper.restoreOrBuildProfile` method has been removed and the behavior is controlled by the `ProfileDefinition` and its `setRestoreProfileFromTypedId` method (enabled for JWT, disabled for others)
+- Authorizers and matchers can be defined additionaly with "+"
+- CSRF security improvements proposed by Xhelal Likaj (https://github.com/xhlika): longer CSRF token values (32 bytes), CSRF tokens generated per HTTP request and with an internal expiration date (4 hours), CSRF token verification protected against time-based attacks
+- Improved responses for unauthenticated users: 401 with "WWW-Authenticate" header or 403 to be compliant with the HTTP spec
 
 **v4.2.0**:
 

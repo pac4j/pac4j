@@ -6,8 +6,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
-import org.pac4j.core.exception.http.UnauthorizedAction;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
@@ -35,7 +34,7 @@ public class IndirectKerberosClient extends IndirectClient {
     @Override
     protected void internalInit() {
         defaultRedirectionActionBuilder(webContext ->
-            Optional.of(RedirectionActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
+            Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
         defaultCredentialsExtractor(new KerberosExtractor());
     }
 
@@ -53,12 +52,12 @@ public class IndirectKerberosClient extends IndirectClient {
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("kerberos credentials : {}", credentials);
             if (!credentials.isPresent()) {
-                throw UnauthorizedAction.INSTANCE;
+                throw HttpActionHelper.buildUnauthenticatedAction(context);
             }
             // validate credentials
             getAuthenticator().validate(credentials.get(), context);
         } catch (final CredentialsException e) {
-            throw UnauthorizedAction.INSTANCE;
+            throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
         return credentials;

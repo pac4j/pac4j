@@ -4,6 +4,7 @@ import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.junit.*;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -74,7 +75,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     public void authentSuccessSingleAttribute() {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         inMemoryProfileService.validate(credentials, null);
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(GOOD_USERNAME, profile.getUsername());
         assertEquals(2, profile.getAttributes().size());
@@ -92,7 +93,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS);
         inMemoryProfileService.validate(credentials, null);
-        final CommonProfile profile1 = credentials.getUserProfile();
+        final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
         final List<Map<String, Object>> results = getData(TEST_ID);
@@ -123,7 +124,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2);
         inMemoryProfileService.validate(credentials2, null);
-        final CommonProfile profile3 = credentials.getUserProfile();
+        final UserProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // update with no password update
         inMemoryProfileService.update(profile, null);
@@ -134,7 +135,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
         inMemoryProfileService.validate(credentials2, null);
-        final CommonProfile profile4 = credentials.getUserProfile();
+        final UserProfile profile4 = credentials.getUserProfile();
         assertNotNull(profile4);
         // remove
         inMemoryProfileService.remove(profile);

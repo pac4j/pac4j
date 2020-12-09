@@ -5,9 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.TestsConstants;
+
+import java.util.Date;
 
 /**
  * Tests {@link CsrfAuthorizer}.
@@ -19,23 +22,44 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     private CsrfAuthorizer authorizer;
 
+    private long expirationDate;
+
     @Before
     public void setUp() {
         authorizer = new CsrfAuthorizer();
         authorizer.setCheckAllRequests(true);
+        expirationDate = new Date().getTime() + 1000 * new DefaultCsrfTokenGenerator().getTtlInSeconds();
     }
 
     @Test
     public void testParameterOk() {
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE)
-                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
+    }
+
+    @Test
+    public void testParameterNoExpirationDate() {
+        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE)
+            .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        Assert.assertFalse(authorizer.isAuthorized(context, null));
+    }
+
+    @Test
+    public void testParameterExpiredDate() {
+        final long expiredDate = new Date().getTime() - 1000;
+        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE)
+            .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+            .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expiredDate);
+        Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testParameterOkNewName() {
         final WebContext context = MockWebContext.create().addRequestParameter(NAME, VALUE)
-                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         authorizer.setParameterName(NAME);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
@@ -43,27 +67,31 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     @Test
     public void testHeaderOk() {
         final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE)
-                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testHeaderOkNewName() {
         final WebContext context = MockWebContext.create().addRequestHeader(NAME, VALUE)
-                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         authorizer.setHeaderName(NAME);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testNoToken() {
-        final WebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final WebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testNoTokenCheckAll() {
-        final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                    .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         authorizer.setCheckAllRequests(false);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
@@ -77,14 +105,16 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     }
 
     private void internalTestNoTokenRequest(final HttpConstants.HTTP_METHOD method) {
-        final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                        .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         context.setRequestMethod(method.name());
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 
     @Test
     public void testHeaderOkButNoTokenInSession() {
-        final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE)
+                                        .addSessionAttribute(Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 }

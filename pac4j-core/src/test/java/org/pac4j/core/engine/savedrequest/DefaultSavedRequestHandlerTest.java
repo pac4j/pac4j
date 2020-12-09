@@ -6,6 +6,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.*;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
@@ -32,7 +33,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @BeforeClass
     public static void beforeClass() {
-        RedirectionActionHelper.setUseModernHttpCodes(true);
+        HttpActionHelper.setUseModernHttpCodes(true);
     }
 
     @Test
@@ -97,7 +98,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     @Test
     public void testRestoreOkAction() {
         final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL).addRequestParameter(KEY, VALUE);
-        final String formPost = RedirectionActionHelper.buildFormPostContent(context);
+        final String formPost = HttpActionHelper.buildFormPostContent(context);
         context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         final HttpAction action = handler.restore(context, LOGIN_URL);
         assertTrue(action instanceof OkAction);
@@ -108,7 +109,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     @Test
     public void testRestoreOkActionAfterPost() {
         final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL).addRequestParameter(KEY, VALUE);
-        final String formPost = RedirectionActionHelper.buildFormPostContent(context);
+        final String formPost = HttpActionHelper.buildFormPostContent(context);
         context.setRequestMethod("POST");
         context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         final HttpAction action = handler.restore(context, LOGIN_URL);

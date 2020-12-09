@@ -6,7 +6,7 @@ import org.bson.types.ObjectId;
 import org.junit.*;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -107,7 +107,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     public void testGoodUsernameAttribute() {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof MongoProfile);
         final MongoProfile dbProfile = (MongoProfile) profile;
@@ -119,7 +119,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     public void testGoodUsernameNoAttribute() {
         final UsernamePasswordCredentials credentials = login(GOOD_USERNAME, PASSWORD, "");
 
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof MongoProfile);
         final MongoProfile dbProfile = (MongoProfile) profile;
@@ -160,7 +160,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
         mongoProfileService.validate(credentials, null);
-        final CommonProfile profile1 = credentials.getUserProfile();
+        final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
         final List<Map<String, Object>> results = getData(mongoProfileService, MONGO_ID);

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -17,7 +18,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -91,7 +91,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     protected void internalInit() {
         assertNotBlank("realmName", this.realmName);
 
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new JwtProfile()));
+        final ProfileDefinition definition = new CommonProfileDefinition(x -> new JwtProfile());
+        definition.setRestoreProfileFromTypedId(true);
+        defaultProfileDefinition(definition);
 
         if (signatureConfigurations.isEmpty()) {
             logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");
@@ -265,7 +267,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         final String linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
         attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
 
-        final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes, null);
+        final UserProfile profile = getProfileDefinition().newProfile(subject);
+        profile.setId(ProfileHelper.sanitizeIdentifier(subject));
+        getProfileDefinition().convertAndAdd(profile, attributes, null);
 
         if (roles != null) {
             profile.addRoles(roles);

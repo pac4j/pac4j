@@ -17,6 +17,7 @@ By default, it relies on the `DefaultSecurityLogic` which has the following beha
 
 4. Finally, if the user is not authenticated (no profile), he is redirected to the appropriate identity provider if the first defined client is an indirect one in the clients configuration. Otherwise, a 401 error page is displayed.
 
+When the 401 HTTP status code is set, a `WWW-Authenticate` header is added with the value: `Bearer ream="pac4j"` if it does not already exist (to be compliant with the HTTP spec). A 403 HTTP status code can be used instead if the `WWW-Authenticate` header does not exist by setting: `HttpActionHelper.setAlwaysUse401ForUnauthenticated(false);`.
 
 ## 2) Options
 
@@ -38,18 +39,20 @@ A specific client may be chosen among all defined clients for the filter by usin
 
 It's a string of the list of the [authorizer](authorizers.html) names (separated by commas) used to check authorizations. It is an optional parameter.
 
-If the `authorizers` is blank or not defined, the default authorizer is applied: `csrfCheck` for web applications (at least one `IndirectClient` is defined) and no authorizer is applied for web services.
+If the `authorizers` is blank or not defined, the default authorizer is applied: `csrfCheck` for web applications (at least one `IndirectClient` is defined) but not for web services.
 The `isAuthenticated` authorizer is also applied by default if no `AnonymousClient` is configured.
 
 You can also use the [out-of-the-box authorizers](authorizers.html#-default-authorizer-names), already available without defining them in the security configuration.
+Start the `authorizers` string by "+" to add other authorizers to the default ones or without to replace them.
 
 ### d) matchers
 
 It's the list of the [matcher](matchers.html) names (separated by commas) that the request must satisfy to check authentication/authorizations. It is an optional parameter.
 
-If the `matchers` is blank or not defined, it is satisfied and the `securityHeaders` is applied and the `csrfToken` is applied only for web applications (at least one `IndirectClient` is defined).
+If the `matchers` is blank or not defined, it matches as by default the `securityHeaders` is applied and the `csrfToken` is applied only for web applications (at least one `IndirectClient` is defined).
 
 You can also use the [out-of-the-box matchers](matchers.html#3-default-matchers), already available without defining them in the security configuration.
+Start the `matchers` string by "+" to add other matchers to the default ones or without to replace them.
 
 
 ---

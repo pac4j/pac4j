@@ -100,6 +100,7 @@ Many attribute converters already exists: [`BooleanConverter`](https://github.co
 
 As a result, the `newProfile` method returns a new class instance while the `convertAndAdd` methods convert the attributes if there is an associated converter and adds them to the profile.
 
+The `newProfile` method may also return the related profile of a `typedId` if this one is specified as the first parameter and if the `setRestoreProfileFromTypedId(true)` method has been called.
 
 ## 9) Profile hierarchy
 

@@ -16,6 +16,8 @@ public interface UserProfile extends Serializable {
 
     String getId();
 
+    void setId(String id);
+
     String getTypedId();
 
     String getUsername();
@@ -25,6 +27,10 @@ public interface UserProfile extends Serializable {
     Map<String, Object> getAttributes();
 
     boolean containsAttribute(String name);
+
+    void addAttribute(String key, Object value);
+
+    void addAuthenticationAttribute(String key, Object value);
 
     void addRole(String role);
 
@@ -47,6 +53,8 @@ public interface UserProfile extends Serializable {
     void setClientName(String clientName);
 
     String getLinkedId();
+
+    void setLinkedId(String linkedId);
 
     boolean isExpired();
 

@@ -65,12 +65,12 @@
 		<guava.version>30.0-jre</guava.version>
 		<nimbus-jose-jwt.version>8.20.1</nimbus-jose-jwt.version>
 		<spring.version>5.3.1</spring.version>
-		<spring.security.version>5.4.1</spring.security.version>
+		<spring.security.version>5.4.2</spring.security.version>
 		<shiro.version>1.7.0</shiro.version>
-        <jbcrypt.version>0.4.1</jbcrypt.version>
-		<mockito.version>3.6.0</mockito.version>
+        <jbcrypt.version>0.4.3</jbcrypt.version>
+		<mockito.version>3.6.28</mockito.version>
 		<slf4j.version>1.7.30</slf4j.version>
-        <unboundid.version>5.1.1</unboundid.version>
+        <unboundid.version>5.1.2</unboundid.version>
         <h2.version>1.4.200</h2.version>
 		<java.version>11</java.version>
         <jackson.version>2.11.3</jackson.version>

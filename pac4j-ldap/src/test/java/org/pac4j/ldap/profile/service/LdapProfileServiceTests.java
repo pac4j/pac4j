@@ -8,7 +8,7 @@ import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -92,7 +92,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null);
 
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
@@ -108,7 +108,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null);
 
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
@@ -125,7 +125,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD);
         ldapProfileService.validate(credentials, null);
 
-        final CommonProfile profile = credentials.getUserProfile();
+        final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
@@ -153,7 +153,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS);
         ldapProfileService.validate(credentials, null);
-        final CommonProfile profile1 = credentials.getUserProfile();
+        final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
         final List<Map<String, Object>> results = getData(ldapProfileService, LDAP_ID);
@@ -184,7 +184,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         // check credentials
         final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2);
         ldapProfileService.validate(credentials2, null);
-        final CommonProfile profile3 = credentials.getUserProfile();
+        final UserProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // remove
         ldapProfileService.remove(profile);

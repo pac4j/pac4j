@@ -4,7 +4,7 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
@@ -49,9 +49,9 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         if (SAMLConstants.SAML2_POST_BINDING_URI.equalsIgnoreCase(bindingType) ||
             SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equalsIgnoreCase(bindingType)) {
             final String content = adapter.getOutgoingContent();
-            return Optional.of(RedirectionActionHelper.buildFormPostContentAction(wc, content));
+            return Optional.of(HttpActionHelper.buildFormPostContentAction(wc, content));
         }
         final String location = adapter.getRedirectUrl();
-        return Optional.of(RedirectionActionHelper.buildRedirectUrlAction(wc, location));
+        return Optional.of(HttpActionHelper.buildRedirectUrlAction(wc, location));
     }
 }

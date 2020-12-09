@@ -2,7 +2,7 @@ package org.pac4j.oauth.client;
 
 import java.util.Optional;
 
-import org.pac4j.core.exception.http.RedirectionActionHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.profile.figshare.FigShareProfileCreator;
 import org.pac4j.oauth.profile.figshare.FigShareProfileDefinition;
 import org.pac4j.scribe.builder.api.FigShareApi20;
@@ -32,7 +32,7 @@ public class FigShareClient extends OAuth20Client {
 
         defaultProfileCreator(new FigShareProfileCreator(configuration, this));
         defaultLogoutActionBuilder((ctx, profile, targetUrl) -> Optional
-            .of(RedirectionActionHelper.buildRedirectUrlAction(ctx, "https://figshare.com/account/logout")));
+            .of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://figshare.com/account/logout")));
 
         super.internalInit();
     }

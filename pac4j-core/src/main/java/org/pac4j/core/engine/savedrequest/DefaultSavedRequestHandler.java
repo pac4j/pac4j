@@ -4,6 +4,7 @@ import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
+import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         final String requestedUrl = getRequestedUrl(context);
         if (ContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
-            final String formPost = RedirectionActionHelper.buildFormPostContent(context);
+            final String formPost = HttpActionHelper.buildFormPostContent(context);
             context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
@@ -55,9 +56,9 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
         LOGGER.debug("requestedAction: {}", requestedAction.getMessage());
         if (requestedAction instanceof FoundAction) {
-            return RedirectionActionHelper.buildRedirectUrlAction(context, ((FoundAction) requestedAction).getLocation());
+            return HttpActionHelper.buildRedirectUrlAction(context, ((FoundAction) requestedAction).getLocation());
         } else {
-            return RedirectionActionHelper.buildFormPostContentAction(context, ((OkAction) requestedAction).getContent());
+            return HttpActionHelper.buildFormPostContentAction(context, ((OkAction) requestedAction).getContent());
         }
     }
 }

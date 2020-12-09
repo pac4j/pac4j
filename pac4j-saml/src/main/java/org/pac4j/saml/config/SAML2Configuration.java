@@ -25,7 +25,7 @@ import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
-import org.pac4j.saml.metadata.SAML2ServiceProvicerRequestedAttribute;
+import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
@@ -70,7 +70,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2Configuration.class);
 
-    private final List<SAML2ServiceProvicerRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
+    private final List<SAML2ServiceProviderRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
 
     private String callbackUrl;
 
@@ -365,7 +365,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.privateKeySize = privateKeySize;
     }
 
-    public List<SAML2ServiceProvicerRequestedAttribute> getRequestedServiceProviderAttributes() {
+    public List<SAML2ServiceProviderRequestedAttribute> getRequestedServiceProviderAttributes() {
         return requestedServiceProviderAttributes;
     }
 

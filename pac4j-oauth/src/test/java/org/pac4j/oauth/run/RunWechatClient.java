@@ -6,6 +6,7 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WechatClient;
 import org.pac4j.oauth.profile.wechat.WechatProfile;
 
@@ -88,7 +89,7 @@ public final class RunWechatClient extends RunClient {
             openid = "oLQIp0oBRhtxJGMIh9Gs7qiCCAcI";
         }
         assertEquals(openid, profile.getId());
-        assertEquals(WechatProfile.class.getName() + CommonProfile.SEPARATOR + openid,
+        assertEquals(WechatProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + openid,
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WechatProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

@@ -99,10 +99,10 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+            new MockIndirectClient(MY_CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(getClientNameParameter(), NAME);
-        assertTrue(finder.find(clients, context, CLIENT_NAME).isEmpty());
+        assertTrue(finder.find(clients, context, MY_CLIENT_NAME).isEmpty());
     }
 
     @Test
@@ -110,10 +110,10 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+            new MockIndirectClient(MY_CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(getClientNameParameter(), NAME);
-        assertTrue(finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE).isEmpty());
+        assertTrue(finder.find(clients, context, MY_CLIENT_NAME + "," + FAKE_VALUE).isEmpty());
     }
 
     @Test
@@ -121,10 +121,10 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+            new MockIndirectClient(MY_CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        final List<Client> currentClients = finder.find(clients, context, CLIENT_NAME);
+        final List<Client> currentClients = finder.find(clients, context, MY_CLIENT_NAME);
         assertEquals(1, currentClients.size());
         assertEquals(client2, currentClients.get(0));
     }
@@ -134,7 +134,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+            new MockIndirectClient(MY_CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
         assertTrue(finder.find(clients, context, FAKE_VALUE).isEmpty());
@@ -142,29 +142,29 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
 
     @Test
     public void testNoClientOnRequestList() {
-        internalTestNoClientOnRequestList(CLIENT_NAME + "," + NAME);
+        internalTestNoClientOnRequestList(MY_CLIENT_NAME + "," + NAME);
     }
 
     @Test
     public void testNoClientOnRequestListBlankSpaces() {
-        internalTestNoClientOnRequestList(CLIENT_NAME + " ," + NAME);
+        internalTestNoClientOnRequestList(MY_CLIENT_NAME + " ," + NAME);
     }
 
     @Test
     public void testNoClientOnRequestListDifferentCase() {
-        internalTestNoClientOnRequestList(CLIENT_NAME.toUpperCase() + "," + NAME);
+        internalTestNoClientOnRequestList(MY_CLIENT_NAME.toUpperCase() + "," + NAME);
     }
 
     @Test
     public void testNoClientOnRequestListUppercase() {
-        internalTestNoClientOnRequestList(CLIENT_NAME.toUpperCase() + "," + NAME);
+        internalTestNoClientOnRequestList(MY_CLIENT_NAME.toUpperCase() + "," + NAME);
     }
 
     private void internalTestNoClientOnRequestList(final String names) {
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+            new MockIndirectClient(MY_CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
         final List<Client> currentClients = finder.find(clients, context, names);
@@ -178,9 +178,9 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         final MockIndirectClient client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final MockIndirectClient client2 =
-            new MockIndirectClient(CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+            new MockIndirectClient(MY_CLIENT_NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final Clients clients = new Clients(client1, client2);
-        clients.setDefaultSecurityClients(CLIENT_NAME);
+        clients.setDefaultSecurityClients(MY_CLIENT_NAME);
         final List<Client> result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
         assertEquals(client2, result.get(0));

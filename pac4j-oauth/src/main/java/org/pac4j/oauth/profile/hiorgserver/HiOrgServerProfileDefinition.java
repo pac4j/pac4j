@@ -63,7 +63,7 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             logger.debug("Extracting user profile from JSON node " + json);
-            profile.setId(ProfileHelper.sanitizeIdentifier(profile, JsonHelper.getElement(json, USER_ID)));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, USER_ID)));
             for (final String attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }

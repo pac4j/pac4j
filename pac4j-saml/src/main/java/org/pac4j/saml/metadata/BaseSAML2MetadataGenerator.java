@@ -34,6 +34,7 @@ import org.opensaml.saml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.ServiceName;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.saml.saml2.metadata.SurName;
 import org.opensaml.saml.saml2.metadata.TelephoneNumber;
@@ -105,7 +106,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     protected String nameIdPolicyFormat = null;
 
-    protected List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes = new ArrayList<>();
+    protected List<SAML2ServiceProviderRequestedAttribute> requestedAttributes = new ArrayList<>();
 
     protected SignatureSigningConfiguration defaultSignatureSigningConfiguration =
         DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
@@ -257,9 +258,10 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
             final SAMLObjectBuilder<AttributeConsumingService> attrServiceBuilder =
                 (SAMLObjectBuilder<AttributeConsumingService>) this.builderFactory
                     .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
+
             final AttributeConsumingService attributeService =
                 attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
-            for (final SAML2ServiceProvicerRequestedAttribute attr : this.requestedAttributes) {
+            for (final SAML2ServiceProviderRequestedAttribute attr : this.requestedAttributes) {
                 final SAMLObjectBuilder<RequestedAttribute> attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
                     .getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
                 final RequestedAttribute requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
@@ -269,7 +271,19 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 requestAttribute.setNameFormat(attr.getNameFormat());
 
                 attributeService.getRequestedAttributes().add(requestAttribute);
+
+                if (StringUtils.isNotBlank(attr.getServiceName())) {
+                    final SAMLObjectBuilder<ServiceName> serviceBuilder = (SAMLObjectBuilder<ServiceName>)
+                        this.builderFactory.getBuilder(ServiceName.DEFAULT_ELEMENT_NAME);
+                    final ServiceName serviceName = Objects.requireNonNull(serviceBuilder).buildObject();
+                    serviceName.setValue(attr.getServiceName());
+                    if (StringUtils.isNotBlank(attr.getServiceLang())) {
+                        serviceName.setXMLLang(attr.getServiceLang());
+                    }
+                    attributeService.getNames().add(serviceName);
+                }
             }
+
             spDescriptor.getAttributeConsumingServices().add(attributeService);
         }
 
@@ -554,11 +568,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
-    public List<SAML2ServiceProvicerRequestedAttribute> getRequestedAttributes() {
+    public List<SAML2ServiceProviderRequestedAttribute> getRequestedAttributes() {
         return requestedAttributes;
     }
 
-    public void setRequestedAttributes(final List<SAML2ServiceProvicerRequestedAttribute> requestedAttributes) {
+    public void setRequestedAttributes(final List<SAML2ServiceProviderRequestedAttribute> requestedAttributes) {
         this.requestedAttributes = requestedAttributes;
     }
 

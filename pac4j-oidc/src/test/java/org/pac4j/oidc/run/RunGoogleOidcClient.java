@@ -5,6 +5,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.google.GoogleOidcProfile;
@@ -49,7 +50,7 @@ public class RunGoogleOidcClient extends RunClient {
     protected void verifyProfile(final CommonProfile userProfile) {
         final GoogleOidcProfile profile = (GoogleOidcProfile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(GoogleOidcProfile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
+        assertEquals(GoogleOidcProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
         assertNotNull(profile.getAccessToken());

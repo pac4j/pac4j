@@ -15,13 +15,13 @@ import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.UnauthorizedAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +82,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
             // logic
             LOGGER.debug("url: {}", context.getFullRequestURL());
-            LOGGER.debug("matchers: {}", matchers);
-            LOGGER.debug("clients: {}", clients);
+            LOGGER.debug("clients: {} | matchers: {}", clients, matchers);
             final List<Client> currentClients = clientFinder.find(configClients, context, clients);
             LOGGER.debug("currentClients: {}", currentClients);
 
@@ -233,7 +232,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * @return an unauthorized error
      */
     protected HttpAction unauthorized(final WebContext context, final List<Client> currentClients) {
-        return UnauthorizedAction.INSTANCE;
+        return HttpActionHelper.buildUnauthenticatedAction(context);
     }
 
     public ClientFinder getClientFinder() {

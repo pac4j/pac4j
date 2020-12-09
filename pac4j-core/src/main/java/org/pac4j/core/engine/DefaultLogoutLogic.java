@@ -11,6 +11,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +85,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             }
             LOGGER.debug("redirectUrl: {}", redirectUrl);
             if (redirectUrl != null) {
-                action = RedirectionActionHelper.buildRedirectUrlAction(context, redirectUrl);
+                action = HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
             } else {
                 action = NoContentAction.INSTANCE;
             }

@@ -4,6 +4,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,10 +44,28 @@ public class CsrfAuthorizer implements Authorizer {
             final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
             final Optional<Object> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
-            return sessionToken.isPresent() && (sessionToken.get().equals(parameterToken) || sessionToken.get().equals(headerToken));
-        } else {
-            return true;
+            final Optional<Object> sessionDate = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
+            // all checks are always performed, conditional operations are turned into logical ones,
+            // string comparisons are replaced by hash equalities to be protected against time-based attacks
+            final boolean hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
+            final String token = (String) sessionToken.orElse("");
+            final boolean isGoodToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
+            final Long expirationDate = (Long) sessionDate.orElse(0L);
+            final long now = new Date().getTime();
+            final boolean isDateExpired = expirationDate < now;
+            if (!hasSessionData | !isGoodToken | isDateExpired) {
+                return false;
+            }
+
         }
+        return true;
+    }
+
+    protected boolean hashEquals(final String a, final String b) {
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.hashCode() == b.hashCode();
     }
 
     public String getParameterName() {

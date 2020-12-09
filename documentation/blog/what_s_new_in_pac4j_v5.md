@@ -11,11 +11,11 @@ Version 5 will be focused on cleaning with breaking changes as was the version 4
 
 The documentation will be updated too.
 
-## Java upgrade
+## 1) Java upgrade
 
 pac4j v5 is now based on Java 11.
 
-## Removed
+## 2) Removed
 
 The `pac4j-saml-opensamlv3` module has been removed as it was based on JDK 8 and OpenSAML v3. It is replaced by the current `pac4j-saml` module, already based on JDK 11 and OpenSAML v4.
 
@@ -23,14 +23,14 @@ The `pac4j-openid` module has been removed as the OpenID protocol is no longer s
 
 The `client_name` parameter can no longer be used to choose a client on the security filter. You must use the `force_client` parameter.
 
-## Generics
+## 3) Generics
 
 While generics should have brought value to the pac4j source code, they have, in fact, cluttered it.
 With inconsistencies especially in the `Clients` and `Config` components where the generics were "forgotten".
 
 So almost all generics constraints have been removed from the source code. Only remain the generics in the `ProfileService` and `Store` components.
 
-## Session management
+## 4) Session management
 
 Web applications require a web session while web services generally don't need one.
 These latter generally don't write into the web session, they just read from it so reads should not create a web session when it does not already exist (because of course, if the web session does not exist, the read will only return `Optional.empty()`).
@@ -48,13 +48,13 @@ client.setMultiProfile(true);
 client.setSaveProfileInSession(true);
 ```
 
-## SAML SLO
+## 5) SAML SLO
 
 Up to v5, when a central logout was triggered for the SAML protocol, a local logout was performed as well. This is no longer the case in v5 to be consistent with the CAS and OpenID Connect protocols.
 
 The local logout should be triggered by a logout request from the IdP (received on the callback endpoint) or explicitly by enabling the local logout.
 
-## Default authorizers
+## 6) Default authorizers
 
 When using the "security filter", the clients (authentication mechanisms), the authorizers (authorization checks) and the matchers can be defined.
 
@@ -69,7 +69,17 @@ Since a few versions, you can use the `AnonymousClient` and its `AnonymousProfil
 
 So the idea here is to be protected by default against any `AnonymousProfile` "leaking" to the session.
 
-## User profiles
+Notice you can now use the "+" character before the new authorizers or matchers to say that they apply in addition of the default ones.
+
+## 7) User profiles
+
+### a) Refactoring
+
+The `UserProfile` has been turned into a pure interface without any default method and all implementations are made in the `BasicUserProfile`.
+
+The `UserProfile` interface is used as much as possible in all *pac4j* classes.
+
+### b) serializedprofile
 
 When using the `ProfileService` for RDBMS, LDAP, MongoDB or CouchDB, there is a core issue in the format used to serialize profiles: it might block upgrades.
 Indeed, we use the Java serialization which is a very bad idea because of the changes that can happen to the profiles classes like the fact that the `UserProfile` has moved from an abstract class in v3.x to an interface in v4.x.
@@ -80,3 +90,9 @@ The new `Serializer` (`encode` + `decode` methods) used by the profile services 
 Before upgrading to a new major *pac4j* version, it might be necessary to re-encode all data in the `serializedprofile` attribute with the `ProfileServiceSerializer`.
 
 These fixes are available in v3.9.0, v4.2.0 and in the v5.x stream.
+
+### c) Restoring the profile from the typed identifier
+
+In previous versions, after the authentication process, the profile was built from the typed identifier if possible for the CAS protocol and the JWT support.
+
+This is now controlled in the `ProfileDefinition` via the `setRestoreProfileFromTypedId` method and this is only enabled by default for the JWT support.

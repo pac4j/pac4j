@@ -8,6 +8,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.AppleClient;
 import org.pac4j.oidc.config.AppleOidcConfiguration;
 import org.pac4j.oidc.profile.apple.AppleProfile;
@@ -74,7 +75,7 @@ public class RunAppleClient extends RunClient {
         final AppleProfile profile = (AppleProfile) userProfile;
         final String id = profile.getId();
         assertNotNull(id);
-        assertEquals(AppleProfile.class.getName() + CommonProfile.SEPARATOR + id,
+        assertEquals(AppleProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + id,
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), AppleProfile.class));
         assertNotNull(profile.getAccessToken());
