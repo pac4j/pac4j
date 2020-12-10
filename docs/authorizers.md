@@ -29,7 +29,7 @@ Most *pac4j* implementations use the *pac4j* logics and authorizers and thus the
 - `isRemembered` (for the `IsRememberedAuthorizer` authorizer) for a remembered user
 - `none` for no authorizers at all.
 
-These short names are defined as constants in [`DefaultAuthorizers`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/DefaultAuthorizers.java).
+These short names are defined as constants in [`DefaultAuthorizers`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/DefaultAuthorizers.java). You can override them with your own authorizers using the same names.
 
 ## &#9656; The composition of authorizers
 

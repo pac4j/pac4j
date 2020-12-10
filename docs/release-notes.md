@@ -20,6 +20,7 @@ title: Release notes&#58;
 - Authorizers and matchers can be defined additionaly with "+"
 - CSRF security improvements proposed by Xhelal Likaj (https://github.com/xhlika): longer CSRF token values (32 bytes), CSRF tokens generated per HTTP request and with an internal expiration date (4 hours), CSRF token verification protected against time-based attacks
 - Improved responses for unauthenticated users: 401 with "WWW-Authenticate" header or 403 to be compliant with the HTTP spec
+- Default authorizers and matchers can be re-defined by users
 
 **v4.2.0**:
 

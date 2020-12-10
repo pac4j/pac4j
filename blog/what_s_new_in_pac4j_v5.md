@@ -54,7 +54,9 @@ Up to v5, when a central logout was triggered for the SAML protocol, a local log
 
 The local logout should be triggered by a logout request from the IdP (received on the callback endpoint) or explicitly by enabling the local logout.
 
-## 6) Default authorizers
+## 6) Authorizers and matchers
+
+### a) CSRF only for web applications
 
 When using the "security filter", the clients (authentication mechanisms), the authorizers (authorization checks) and the matchers can be defined.
 
@@ -63,13 +65,21 @@ it means that a CSRF token is generated and added in the request/session/cookie.
 
 If no authorizers is defined, the `csrfCheck` is used for web applications, meaning that the CSRF token is expected for a POST request.
 
-Since v5, a new default authorizer is added if no matchers is defined: `isAuthenticated` to check that the user is authenticated and not only that he has a profile. This check is removed if an `AnonymousClient` has been defined in the `clients`.
+### b) `isAuthenticated` by default
 
-Since a few versions, you can use the `AnonymousClient` and its `AnonymousProfile` put in the HTTP request when no other authenticated profile is available. The edge case is that this profile can be saved into the session and be available on other secured endpoints and URLs.
+Since v5, a new default authorizer is added if no authorizers is defined: `isAuthenticated` to check that the user is authenticated and not only that he has a profile. This check is removed if an `AnonymousClient` has been defined in the `clients`.
+
+Indeed, since a few versions, you can use the `AnonymousClient` and its `AnonymousProfile` put in the HTTP request when no other authenticated profile is available. The edge case is that this profile can be saved into the session and be available on other secured endpoints and URLs.
 
 So the idea here is to be protected by default against any `AnonymousProfile` "leaking" to the session.
 
-Notice you can now use the "+" character before the new authorizers or matchers to say that they apply in addition of the default ones.
+### c) In addition to the default ones
+
+You can now use the "+" character before the new authorizers or matchers to say that they apply in addition of the default ones.
+
+### d) Overriding default ones
+
+You can also override the default autorizers and matchers by defining your owns with the same names.
 
 ## 7) User profiles
 
