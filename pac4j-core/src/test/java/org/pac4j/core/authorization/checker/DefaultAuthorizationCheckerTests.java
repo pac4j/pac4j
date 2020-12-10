@@ -17,6 +17,7 @@ import org.pac4j.core.profile.BasicUserProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
 
 import java.util.*;
 
@@ -118,11 +119,12 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         assertFalse(checker.isAuthorized(null, profiles, name, authorizers, new ArrayList<>()));
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testOneAuthorizerDoesNotExist() {
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, new IdAuthorizer());
-        checker.isAuthorized(null, profiles, VALUE, authorizers, new ArrayList<>());
+        TestsHelper.expectException(() -> checker.isAuthorized(null, profiles, VALUE, authorizers, new ArrayList<>()),
+            TechnicalException.class, "The authorizer '" + VALUE + "' must be defined in the security configuration");
     }
 
     @Test

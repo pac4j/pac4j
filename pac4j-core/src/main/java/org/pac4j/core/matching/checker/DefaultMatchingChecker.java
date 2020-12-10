@@ -103,7 +103,8 @@ public class DefaultMatchingChecker implements MatchingChecker {
             if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
                 final List<Matcher> results = retrieveMatchers(name, matchersMap);
                 // we must have matchers defined for this name
-                assertTrue(results != null && results.size() > 0, "The matcher '" + name + "' must exist");
+                assertTrue(results != null && results.size() > 0,
+                    "The matcher '" + name + "' must be defined in the security configuration");
                 matchers.addAll(results);
             }
         }

@@ -67,7 +67,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     @Test
     public void testNoExistingMatcher()  {
         TestsHelper.expectException(() -> checker.matches(null, NAME, new HashMap<>(), new ArrayList<>()), TechnicalException.class,
-            "The matcher '" + NAME + "' must exist");
+            "The matcher '" + NAME + "' must be defined in the security configuration");
     }
 
     @Test

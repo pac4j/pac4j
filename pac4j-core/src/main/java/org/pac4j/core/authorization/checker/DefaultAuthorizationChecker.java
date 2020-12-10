@@ -77,7 +77,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             if (!DefaultAuthorizers.NONE.equalsIgnoreCase(name)){
                 final Authorizer result = retrieveAuthorizer(name, authorizersMap);
                 // we must have an authorizer defined for this name
-                assertNotNull("The '" + name + "' authorizer", result);
+                assertTrue(result != null, "The authorizer '" + name + "' must be defined in the security configuration");
                 authorizers.add(result);
             }
         }
