@@ -47,7 +47,6 @@ public class JavaSerializer implements Serializer {
      * @param o the object to serialize
      * @return the bytes array of the serialized object
      */
-    @Deprecated
     public byte[] encodeToBytes(final Serializable o) {
         byte[] bytes = null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -77,7 +76,6 @@ public class JavaSerializer implements Serializer {
      * @param bytes the serialized object as a bytes array
      * @return the deserialized Java object
      */
-    @Deprecated
     public Serializable decodeFromBytes(final byte[] bytes) {
         Serializable o = null;
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
