@@ -7,6 +7,7 @@ import java.util.Objects;
  * This is {@link ChainingConverter}.
  *
  * @author Misagh Moayyed
+ * @since 4.3.0
  */
 public class ChainingConverter implements AttributeConverter {
     private final List<AttributeConverter> converters;

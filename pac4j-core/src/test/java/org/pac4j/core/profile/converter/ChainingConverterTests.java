@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * This class tests the {@link ChainingConverterTests} class.
  *
  * @author Misagh Moayyed
- * @since 1.1.0
+ * @since 4.3.0
  */
 public final class ChainingConverterTests {
 
