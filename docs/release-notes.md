@@ -22,6 +22,11 @@ title: Release notes&#58;
 - Improved responses for unauthenticated users: 401 with "WWW-Authenticate" header or 403 to be compliant with the HTTP spec
 - Default authorizers and matchers can be re-defined by users
 
+**v4.3.0**:
+
+- Added a `ChainingConverter` for attributes
+- Fix expired access tokens for the OIDC protocol
+
 **v4.2.0**:
 
 - Apple SignIn support (OIDC protocol)
