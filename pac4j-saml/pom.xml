@@ -16,7 +16,7 @@
         <opensaml.version>4.0.1</opensaml.version>
         <joda-time.version>2.10.8</joda-time.version>
         <velocity.version>2.2</velocity.version>
-        <xmlsectool.version>2.0.0</xmlsectool.version>
+        <xmlsectool.version>3.0.0</xmlsectool.version>
         <xmlsec.version>2.2.1</xmlsec.version>
         <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
         velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
