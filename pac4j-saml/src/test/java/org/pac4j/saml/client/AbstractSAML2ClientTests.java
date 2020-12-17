@@ -2,6 +2,7 @@ package org.pac4j.saml.client;
 
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.store.HttpSessionStoreFactory;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -44,6 +45,13 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setForceKeystoreGeneration(true);
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
+
+        final SAML2ServiceProviderRequestedAttribute attribute =
+            new SAML2ServiceProviderRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName");
+        attribute.setServiceLang("fr");
+        attribute.setServiceName("MySAML2ServiceProvider");
+        cfg.getRequestedServiceProviderAttributes().add(attribute);
+
         return cfg;
     }
 
