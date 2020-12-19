@@ -20,7 +20,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j)
 &bull; [Pippo](http://www.pippo.ro/doc/security.html#pac4j-integration)
 &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
-&bull; [Jooby](http://jooby.org/doc/pac4j)
+&bull; [Jooby](https://jooby.io/modules/pac4j)
 
 [CAS server](https://apereo.github.io/cas/5.3.x/integration/Delegate-Authentication.html)
 &bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j)
