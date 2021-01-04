@@ -102,14 +102,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             encoder.prepareContext();
             encoder.encode();
 
-            final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
-            if (messageStorage != null) {
-                if (request instanceof RequestAbstractType) {
-                    messageStorage.set(((RequestAbstractType) request).getID(), request);
-                } else if (request instanceof StatusResponseType) {
-                    messageStorage.set(((StatusResponseType) request).getID(), request);
-                }
-            }
+            storeMessage(context, request);
             logProtocolMessage(request);
         } catch (final MarshallingException e) {
             throw new SAMLException("Error marshalling saml message", e);
@@ -117,6 +110,17 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             throw new SAMLException("Error encoding saml message", e);
         } catch (final ComponentInitializationException e) {
             throw new SAMLException("Error initializing saml encoder", e);
+        }
+    }
+
+    protected void storeMessage(final SAML2MessageContext context, final T request) {
+        final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
+        if (messageStorage != null) {
+            if (request instanceof RequestAbstractType) {
+                messageStorage.set(((RequestAbstractType) request).getID(), request);
+            } else if (request instanceof StatusResponseType) {
+                messageStorage.set(((StatusResponseType) request).getID(), request);
+            }
         }
     }
 

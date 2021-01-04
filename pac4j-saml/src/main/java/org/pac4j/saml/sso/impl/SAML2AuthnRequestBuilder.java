@@ -25,6 +25,7 @@ import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -138,14 +139,30 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             request.setAttributeConsumingServiceIndex(this.configuration.getAttributeConsumingServiceIndex());
         }
 
-        // Setting extensions if they are defined
-        if (this.configuration.getAuthnRequestExtensions() != null) {
-            final Extensions extensionsElem = ((SAMLObjectBuilder<Extensions>) this.builderFactory
-                .getBuilder(Extensions.DEFAULT_ELEMENT_NAME)).buildObject();
-            extensionsElem.getUnknownXMLObjects().addAll(this.configuration.getAuthnRequestExtensions() .get());
-            request.setExtensions(extensionsElem);
+        final Extensions extensions = ((SAMLObjectBuilder<Extensions>) this.builderFactory
+            .getBuilder(Extensions.DEFAULT_ELEMENT_NAME)).buildObject();
+
+        if (!configuration.getRequestedServiceProviderAttributes().isEmpty()) {
+            final SAMLObjectBuilder<RequestedAttribute> attrBuilder =
+                (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory.getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+            configuration.getRequestedServiceProviderAttributes().forEach(attribute -> {
+                final RequestedAttribute requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+                requestAttribute.setIsRequired(attribute.isRequired());
+                requestAttribute.setName(attribute.getName());
+                requestAttribute.setFriendlyName(attribute.getFriendlyName());
+                requestAttribute.setNameFormat(attribute.getNameFormat());
+                extensions.getUnknownXMLObjects().add(requestAttribute);
+            });
         }
 
+        // Setting extensions if they are defined
+        if (this.configuration.getAuthnRequestExtensions() != null) {
+            extensions.getUnknownXMLObjects().addAll(this.configuration.getAuthnRequestExtensions() .get());
+        }
+
+        if (!extensions.getUnknownXMLObjects().isEmpty()) {
+            request.setExtensions(extensions);
+        }
         return request;
     }
 
