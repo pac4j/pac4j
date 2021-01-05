@@ -36,6 +36,9 @@
         <Bug pattern="OBL_UNSATISFIED_OBLIGATION" />
     </Match>
     <Match>
+        <Bug pattern="JUA_DONT_ASSERT_INSTANCEOF_IN_TESTS" />
+    </Match>
+    <Match>
         <Class name="~.*SAML2Credentials"/>
         <Bug code="Se" />
     </Match>
