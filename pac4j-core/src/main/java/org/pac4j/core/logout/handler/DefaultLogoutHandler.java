@@ -79,8 +79,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     protected void destroy(final WebContext context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final ProfileManager manager = getProfileManager(context);
-        manager.setSessionStore(sessionStore);
+        final ProfileManager manager = getProfileManager(context, sessionStore);
         manager.removeProfiles();
         logger.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session

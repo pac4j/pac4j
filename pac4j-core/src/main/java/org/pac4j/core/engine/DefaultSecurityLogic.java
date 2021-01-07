@@ -10,6 +10,7 @@ import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
@@ -62,9 +63,9 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
-    public Object perform(final WebContext context, final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
-                     final HttpActionAdapter httpActionAdapter, final String clients, final String authorizers, final String matchers,
-                     final Object... parameters) {
+    public Object perform(final WebContext context, final SessionStore sessionStore, final Config config,
+                          final SecurityGrantedAccessAdapter securityGrantedAccessAdapter, final HttpActionAdapter httpActionAdapter,
+                          final String clients, final String authorizers, final String matchers, final Object... parameters) {
 
         LOGGER.debug("=== SECURITY ===");
 
@@ -88,9 +89,9 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
             if (matchingChecker.matches(context, matchers, config.getMatchers(), currentClients)) {
 
-                final ProfileManager manager = getProfileManager(context);
+                final ProfileManager manager = getProfileManager(context, sessionStore);
                 manager.setConfig(config);
-                List<UserProfile> profiles = loadProfiles(manager, context, currentClients);
+                List<UserProfile> profiles = loadProfiles(manager, context, sessionStore, currentClients);
                 LOGGER.debug("Loaded profiles: {}", profiles);
 
                 // no profile and some current clients
@@ -122,7 +123,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                         }
                     }
                     if (updated) {
-                        profiles = loadProfiles(manager, context, currentClients);
+                        profiles = loadProfiles(manager, context, sessionStore, currentClients);
                         LOGGER.debug("Reloaded profiles: {}", profiles);
                     }
                 }
@@ -130,28 +131,29 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 // we have profile(s) -> check authorizations; otherwise, redirect to identity provider or 401
                 if (isNotEmpty(profiles)) {
                     LOGGER.debug("authorizers: {}", authorizers);
-                    if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers(), currentClients)) {
+                    if (authorizationChecker.isAuthorized(context, sessionStore, profiles,
+                                                          authorizers, config.getAuthorizers(), currentClients)) {
                         LOGGER.debug("authenticated and authorized -> grant access");
-                        return securityGrantedAccessAdapter.adapt(context, profiles, parameters);
+                        return securityGrantedAccessAdapter.adapt(context, sessionStore, profiles, parameters);
                     } else {
                         LOGGER.debug("forbidden");
-                        action = forbidden(context, currentClients, profiles, authorizers);
+                        action = forbidden(context, sessionStore, currentClients, profiles, authorizers);
                     }
                 } else {
-                    if (startAuthentication(context, currentClients)) {
+                    if (startAuthentication(context, sessionStore, currentClients)) {
                         LOGGER.debug("Starting authentication");
-                        saveRequestedUrl(context, currentClients, config.getClients().getAjaxRequestResolver());
-                        action = redirectToIdentityProvider(context, currentClients);
+                        saveRequestedUrl(context, sessionStore, currentClients, config.getClients().getAjaxRequestResolver());
+                        action = redirectToIdentityProvider(context, sessionStore, currentClients);
                     } else {
                         LOGGER.debug("unauthorized");
-                        action = unauthorized(context, currentClients);
+                        action = unauthorized(context, sessionStore, currentClients);
                     }
                 }
 
             } else {
 
                 LOGGER.debug("no matching for this request -> grant access");
-                return securityGrantedAccessAdapter.adapt(context, Arrays.asList(), parameters);
+                return securityGrantedAccessAdapter.adapt(context, sessionStore, Collections.emptyList(), parameters);
             }
 
         } catch (final Exception e) {
@@ -166,10 +168,11 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      *
      * @param manager the profile manager
      * @param context the web context
+     * @param sessionStore the session store
      * @param clients the current clients
      * @return
      */
-    protected List<UserProfile> loadProfiles(final ProfileManager manager, final WebContext context,
+    protected List<UserProfile> loadProfiles(final ProfileManager manager, final WebContext context, final SessionStore sessionStore,
                                              final List<Client> clients) {
         return manager.getProfiles();
     }
@@ -178,12 +181,13 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * Return a forbidden error.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param currentClients the current clients
      * @param profiles the current profiles
      * @param authorizers the authorizers
      * @return a forbidden error
      */
-    protected HttpAction forbidden(final WebContext context, final List<Client> currentClients,
+    protected HttpAction forbidden(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients,
                                    final List<UserProfile> profiles, final String authorizers) {
         return ForbiddenAction.INSTANCE;
     }
@@ -192,10 +196,11 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * Return whether we must start a login process if the first client is an indirect one.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param currentClients the current clients
      * @return whether we must start a login process
      */
-    protected boolean startAuthentication(final WebContext context, final List<Client> currentClients) {
+    protected boolean startAuthentication(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients) {
         return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClient;
     }
 
@@ -203,12 +208,14 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * Save the requested url.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param currentClients the current clients
+     * @param ajaxRequestResolver the AJAX request resolver
      */
-    protected void saveRequestedUrl(final WebContext context, final List<Client> currentClients,
+    protected void saveRequestedUrl(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients,
                                     final AjaxRequestResolver ajaxRequestResolver) {
         if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
-            savedRequestHandler.save(context);
+            savedRequestHandler.save(context, sessionStore);
         }
     }
 
@@ -216,10 +223,12 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * Perform a redirection to start the login process of the first indirect client.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param currentClients the current clients
      * @return the performed redirection
      */
-    protected HttpAction redirectToIdentityProvider(final WebContext context, final List<Client> currentClients) {
+    protected HttpAction redirectToIdentityProvider(final WebContext context, final SessionStore sessionStore,
+                                                    final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
         return currentClient.getRedirectionAction(context).get();
     }
@@ -228,10 +237,11 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * Return an unauthorized error.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param currentClients the current clients
      * @return an unauthorized error
      */
-    protected HttpAction unauthorized(final WebContext context, final List<Client> currentClients) {
+    protected HttpAction unauthorized(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients) {
         return HttpActionHelper.buildUnauthenticatedAction(context);
     }
 

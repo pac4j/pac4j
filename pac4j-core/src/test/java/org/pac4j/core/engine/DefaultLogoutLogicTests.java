@@ -6,6 +6,8 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
@@ -32,6 +34,8 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private MockWebContext context;
 
+    private SessionStore sessionStore;
+
     private Config config;
 
     private HttpActionAdapter httpActionAdapter;
@@ -52,6 +56,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     public void setUp() {
         logic = new DefaultLogoutLogic();
         context = MockWebContext.create();
+        sessionStore = new MockSessionStore();
         config = new Config();
         config.setClients(new Clients());
         httpActionAdapter = (act, ctx) -> { action = act; return null; };
@@ -63,7 +68,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern, localLogout, null, centralLogout);
+        logic.perform(context, sessionStore, config, httpActionAdapter, defaultUrl, logoutUrlPattern, localLogout, null, centralLogout);
     }
 
     @Test
@@ -92,7 +97,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private void addProfilesToContext() {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
     }
 
     private LinkedHashMap<String, CommonProfile> getProfilesFromRequest() {
@@ -100,7 +105,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private LinkedHashMap<String, CommonProfile> getProfilesFromSession() {
-        return (LinkedHashMap<String, CommonProfile>) context.getSessionStore().get(context, Pac4jConstants.USER_PROFILES).get();
+        return (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
     }
 
     private void expectedNProfiles(final int n) {

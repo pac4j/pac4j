@@ -27,9 +27,9 @@ public class JEESessionStore implements SessionStore {
 
     protected HttpSession httpSession;
 
-    public JEESessionStore() {}
+    protected JEESessionStore() {}
 
-    public JEESessionStore(final HttpSession httpSession) {
+    protected JEESessionStore(final HttpSession httpSession) {
         this.httpSession = httpSession;
     }
 

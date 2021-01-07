@@ -104,18 +104,6 @@ public final class MockWebContext implements WebContext {
     }
 
     /**
-     * Add a session attribute for mock purpose.
-     *
-     * @param name session attribute name
-     * @param value session attribute value
-     * @return this mock web context
-     */
-    public MockWebContext addSessionAttribute(final String name, final Object value) {
-        this.sessionStore.set(this, name, value);
-        return this;
-    }
-
-    /**
      * Set the request method for mock purpose.
      *
      * @param method request method

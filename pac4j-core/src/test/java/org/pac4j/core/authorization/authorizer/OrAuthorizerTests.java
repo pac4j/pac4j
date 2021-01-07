@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -40,7 +41,7 @@ public class OrAuthorizerTests {
             requireAnyRole("profile_role2"),
             requireAnyPermission("profile_permission2")
         );
-        assertFalse(authorizer.isAuthorized(MockWebContext.create(), profiles));
+        assertFalse(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));
     }
 
     @Test
@@ -49,7 +50,7 @@ public class OrAuthorizerTests {
             requireAnyRole("profile_role2"),
             requireAnyPermission("profile_permission")
         );
-        assertTrue(authorizer.isAuthorized(MockWebContext.create(), profiles));
+        assertTrue(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));
     }
 
     @Test
@@ -58,6 +59,6 @@ public class OrAuthorizerTests {
             requireAnyRole("profile_role"),
             requireAnyPermission("profile_permission2")
         );
-        assertTrue(authorizer.isAuthorized(MockWebContext.create(), profiles));
+        assertTrue(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));
     }
 }

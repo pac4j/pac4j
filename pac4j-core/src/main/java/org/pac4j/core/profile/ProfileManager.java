@@ -33,14 +33,10 @@ public class ProfileManager {
 
     protected Config config;
 
-    public ProfileManager(final WebContext context) {
+    public ProfileManager(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("context", context);
-        this.context = context;
-        this.sessionStore = context.getSessionStore();
-    }
-
-    public void setSessionStore(final SessionStore sessionStore) {
         CommonHelper.assertNotNull("sessionStore", sessionStore);
+        this.context = context;
         this.sessionStore = sessionStore;
     }
 
@@ -136,7 +132,7 @@ public class ProfileManager {
      * Remove the current user profile(s).
      */
     public void removeProfiles() {
-        final boolean sessionExists = context.getSessionStore().getSessionId(context, false).isPresent();
+        final boolean sessionExists = sessionStore.getSessionId(context, false).isPresent();
         remove(sessionExists);
     }
 
@@ -195,7 +191,7 @@ public class ProfileManager {
      */
     public boolean isAuthenticated() {
         try {
-            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, getProfiles());
+            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(context, sessionStore, getProfiles());
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -41,7 +42,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
         authorizer.setElements("name1");
         profile.addAttribute("name2", "anything-goes-here");
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -49,7 +50,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "anything-goes-here");
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -57,7 +58,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^value.+");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "valueAddedHere");
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -65,7 +66,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -74,7 +75,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
         profile.addAttribute("name2", "v3");
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -83,6 +84,6 @@ public final class RequireAnyAttributeAuthorizerTests {
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2"));
         profile.addAttribute("name2", "v3");
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 }

@@ -2,6 +2,7 @@ package org.pac4j.http.authorization.authorizer;
 
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class IpRegexpAuthorizer implements Authorizer {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profile) {
+    public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profile) {
         CommonHelper.assertNotNull("pattern", pattern);
 
         final String ip = context.getRemoteAddr();

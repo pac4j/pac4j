@@ -2,6 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
@@ -30,7 +31,8 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     }
 
     @Override
-    protected boolean check(final WebContext context, final UserProfile profile, final HttpConstants.HTTP_METHOD element) {
+    protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile,
+                            final HttpConstants.HTTP_METHOD element) {
         final String requestMethod = context.getRequestMethod();
         return requestMethod.equalsIgnoreCase(element.toString());
     }

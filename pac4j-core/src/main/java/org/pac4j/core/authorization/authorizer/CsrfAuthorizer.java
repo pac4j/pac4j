@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -39,13 +40,13 @@ public class CsrfAuthorizer implements Authorizer {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
+    public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         final boolean checkRequest = checkAllRequests || isPost(context) || isPut(context) || isPatch(context) || isDelete(context);
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
-            final Optional<Object> sessionToken = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN);
-            final Optional<Object> sessionDate = context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
+            final Optional<Object> sessionToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
+            final Optional<Object> sessionDate = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
             // all checks are always performed, conditional operations are turned into logical ones,
             // string comparisons are replaced by hash equalities to be protected against time-based attacks
             final boolean hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();

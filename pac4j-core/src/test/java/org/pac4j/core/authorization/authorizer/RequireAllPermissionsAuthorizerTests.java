@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -47,7 +48,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -56,7 +57,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         profiles.add(new CommonProfile());
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -64,7 +65,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(Arrays.asList(PERMISSION3, PERMISSION1));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -73,7 +74,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         authorizer.setElements(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -82,7 +83,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         authorizer.setElements(new HashSet<>(Arrays.asList(PERMISSION3, PERMISSION1)));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -91,7 +92,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         authorizer.setElements(Arrays.asList(PERMISSION3, PERMISSION1));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -99,7 +100,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer((List<String>) null);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -107,7 +108,7 @@ public final class RequireAllPermissionsAuthorizerTests {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(new String[]{});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -115,6 +116,6 @@ public final class RequireAllPermissionsAuthorizerTests {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(new String[]{PERMISSION3, PERMISSION1});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION2);
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 }

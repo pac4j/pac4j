@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -23,9 +24,9 @@ public class AndAuthorizer implements Authorizer {
     }
 
     @Override
-    public boolean isAuthorized(WebContext context, List<UserProfile> profiles) {
+    public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         for (Authorizer authorizer : authorizers) {
-            if (!authorizer.isAuthorized(context, profiles)) return false;
+            if (!authorizer.isAuthorized(context, sessionStore, profiles)) return false;
         }
         return true;
     }

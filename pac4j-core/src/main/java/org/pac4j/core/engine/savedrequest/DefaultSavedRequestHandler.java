@@ -1,6 +1,7 @@
 package org.pac4j.core.engine.savedrequest;
 
 import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
@@ -21,28 +22,28 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSavedRequestHandler.class);
 
     @Override
-    public void save(final WebContext context) {
-        final String requestedUrl = getRequestedUrl(context);
+    public void save(final WebContext context, final SessionStore sessionStore) {
+        final String requestedUrl = getRequestedUrl(context, sessionStore);
         if (ContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
             final String formPost = HttpActionHelper.buildFormPostContent(context);
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(requestedUrl));
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(requestedUrl));
         }
     }
 
-    protected String getRequestedUrl(final WebContext context) {
+    protected String getRequestedUrl(final WebContext context, final SessionStore sessionStore) {
         return context.getFullRequestURL();
     }
 
     @Override
-    public HttpAction restore(final WebContext context, final String defaultUrl) {
-        final Optional<Object> optRequestedUrl = context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL);
+    public HttpAction restore(final WebContext context, final SessionStore sessionStore, final String defaultUrl) {
+        final Optional<Object> optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
         HttpAction requestedAction = null;
         if (optRequestedUrl.isPresent()) {
-            context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
             final Object requestedUrl = optRequestedUrl.get();
             if (requestedUrl instanceof FoundAction) {
                 requestedAction = (FoundAction) requestedUrl;

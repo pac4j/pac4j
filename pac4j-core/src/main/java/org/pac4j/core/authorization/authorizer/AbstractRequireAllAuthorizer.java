@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -13,12 +14,12 @@ import org.pac4j.core.util.CommonHelper;
 public abstract class AbstractRequireAllAuthorizer<E extends Object> extends AbstractRequireElementAuthorizer<E> {
 
     @Override
-    protected boolean isProfileAuthorized(final WebContext context, final UserProfile profile) {
+    protected boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         if (elements == null || elements.isEmpty()) {
             return true;
         }
         for (final E element : elements) {
-            if (!check(context, profile, element)) {
+            if (!check(context, sessionStore, profile, element)) {
                 return false;
             }
         }

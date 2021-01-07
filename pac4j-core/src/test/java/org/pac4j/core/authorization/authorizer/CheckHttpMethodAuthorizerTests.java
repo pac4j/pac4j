@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -32,12 +33,14 @@ public final class CheckHttpMethodAuthorizerTests {
     public void testGoodHttpMethod() {
         final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
             HttpConstants.HTTP_METHOD.POST);
-        assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name()), profiles));
+        assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name()),
+            new MockSessionStore(), profiles));
     }
 
     @Test
     public void testBadHttpMethod() {
         final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
-        assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.DELETE.name()), profiles));
+        assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.DELETE.name()),
+            new MockSessionStore(), profiles));
     }
 }

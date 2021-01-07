@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.junit.Test;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -34,7 +35,7 @@ public final class CheckProfileTypeAuthorizerTests {
         final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile1());
-        assertTrue(authorizer.isAuthorized(null, profiles));
+        assertTrue(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -42,6 +43,6 @@ public final class CheckProfileTypeAuthorizerTests {
         final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile2());
-        assertFalse(authorizer.isAuthorized(null, profiles));
+        assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 }

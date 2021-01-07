@@ -44,9 +44,9 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLogoutLogic.class);
 
     @Override
-    public Object perform(final WebContext context, final Config config, final HttpActionAdapter httpActionAdapter,
-                     final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
-                     final Boolean inputDestroySession, final Boolean inputCentralLogout) {
+    public Object perform(final WebContext context, final SessionStore sessionStore, final Config config,
+                          final HttpActionAdapter httpActionAdapter, final String defaultUrl, final String inputLogoutUrlPattern,
+                          final Boolean inputLocalLogout, final Boolean inputDestroySession, final Boolean inputCentralLogout) {
 
         LOGGER.debug("=== LOGOUT ===");
 
@@ -73,7 +73,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             assertNotNull("configClients", configClients);
 
             // logic
-            final ProfileManager manager = getProfileManager(context);
+            final ProfileManager manager = getProfileManager(context, sessionStore);
             manager.setConfig(config);
             final List<UserProfile> profiles = manager.getProfiles();
 
@@ -95,7 +95,6 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                 LOGGER.debug("Performing application logout");
                 manager.removeProfiles();
                 if (destroySession) {
-                    final SessionStore sessionStore = context.getSessionStore();
                     if (sessionStore != null) {
                         final boolean removed = sessionStore.destroySession(context);
                         if (!removed) {
