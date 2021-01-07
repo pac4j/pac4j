@@ -6,6 +6,7 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -63,7 +64,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final TokenCredentials credentials = (TokenCredentials) cred;

@@ -104,7 +104,7 @@ public final class ProfileManagerTests {
         final BaseClient client1 = mock(BaseClient.class);
         when(client1.getName()).thenReturn(CLIENT1);
         profileManager.setConfig(new Config(client1));
-        when(client1.renewUserProfile(profile1, context)).thenReturn(Optional.of(profile2));
+        when(client1.renewUserProfile(profile1, context, sessionStore)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(profile2, profileManager.get(true).get());
         assertTrue(profileManager.isAuthenticated());
@@ -122,7 +122,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, profile1);
         final BaseClient client1 = mock(BaseClient.class);
         when(client1.getName()).thenReturn(CLIENT1);
-        when(client1.renewUserProfile(profile1, context)).thenReturn(Optional.of(profile2));
+        when(client1.renewUserProfile(profile1, context, sessionStore)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.get(true).isPresent());
         assertFalse(profileManager.isAuthenticated());
@@ -141,7 +141,7 @@ public final class ProfileManagerTests {
         final BaseClient client1 = mock(BaseClient.class);
         when(client1.getName()).thenReturn(CLIENT2);
         profileManager.setConfig(new Config(client1));
-        when(client1.renewUserProfile(profile1, context)).thenReturn(Optional.of(profile2));
+        when(client1.renewUserProfile(profile1, context, sessionStore)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.get(true).isPresent());
         assertFalse(profileManager.isAuthenticated());

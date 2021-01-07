@@ -38,7 +38,7 @@ public class StravaClient extends OAuth20Client {
     protected void internalInit() {
         configuration.setApi(new StravaApi20(approvalPrompt));
         configuration.setProfileDefinition(new StravaProfileDefinition());
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.strava.com/session")));
 
         super.internalInit();

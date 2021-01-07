@@ -5,6 +5,7 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.HttpActionHelper;
@@ -37,7 +38,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         String computeLoginUrl = configuration.computeFinalLoginUrl(context);
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         final String redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, getServiceParameter(),

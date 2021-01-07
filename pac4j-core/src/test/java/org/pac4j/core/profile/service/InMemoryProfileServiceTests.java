@@ -68,13 +68,13 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     @Test(expected = AccountNotFoundException.class)
     public void authentFailed() {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        inMemoryProfileService.validate(credentials, null);
+        inMemoryProfileService.validate(credentials, null, null);
     }
 
     @Test
     public void authentSuccessSingleAttribute() {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        inMemoryProfileService.validate(credentials, null);
+        inMemoryProfileService.validate(credentials, null, null);
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(GOOD_USERNAME, profile.getUsername());
@@ -92,7 +92,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         inMemoryProfileService.create(profile, TEST_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS);
-        inMemoryProfileService.validate(credentials, null);
+        inMemoryProfileService.validate(credentials, null, null);
         final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -123,7 +123,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
         final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2);
-        inMemoryProfileService.validate(credentials2, null);
+        inMemoryProfileService.validate(credentials2, null, null);
         final UserProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // update with no password update
@@ -134,7 +134,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertEquals(5, result2.size());
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
-        inMemoryProfileService.validate(credentials2, null);
+        inMemoryProfileService.validate(credentials2, null, null);
         final UserProfile profile4 = credentials.getUserProfile();
         assertNotNull(profile4);
         // remove

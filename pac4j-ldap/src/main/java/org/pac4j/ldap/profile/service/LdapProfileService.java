@@ -3,6 +3,7 @@ package org.pac4j.ldap.profile.service;
 import org.ldaptive.*;
 import org.ldaptive.auth.*;
 import org.ldaptive.handler.ResultPredicate;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -171,7 +172,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;

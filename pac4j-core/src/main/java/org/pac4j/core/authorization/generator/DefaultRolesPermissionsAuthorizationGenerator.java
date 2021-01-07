@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.generator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.Arrays;
@@ -19,7 +20,7 @@ public class DefaultRolesPermissionsAuthorizationGenerator implements Authorizat
 
     private final Collection<String> defaultPermissions;
 
-    public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles, 
+    public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles,
         final Collection<String> defaultPermissions) {
         this.defaultRoles = defaultRoles;
         this.defaultPermissions = defaultPermissions;
@@ -39,7 +40,7 @@ public class DefaultRolesPermissionsAuthorizationGenerator implements Authorizat
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         if (defaultRoles != null) {
             profile.addRoles(defaultRoles);
         }

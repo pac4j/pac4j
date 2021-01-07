@@ -122,7 +122,8 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                             } else {
                                 targetUrl = null;
                             }
-                            final Optional<RedirectionAction> logoutAction = client.get().getLogoutAction(context, profile, targetUrl);
+                            final Optional<RedirectionAction> logoutAction =
+                                client.get().getLogoutAction(context, sessionStore, profile, targetUrl);
                             LOGGER.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {
                                 action = logoutAction.get();

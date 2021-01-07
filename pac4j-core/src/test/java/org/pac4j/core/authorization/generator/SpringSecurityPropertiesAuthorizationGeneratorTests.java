@@ -26,7 +26,7 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
         final SpringSecurityPropertiesAuthorizationGenerator generator = new SpringSecurityPropertiesAuthorizationGenerator(properties);
         final CommonProfile profile = new CommonProfile();
         profile.setId(USERNAME);
-        generator.generate(null, profile);
+        generator.generate(null, null, profile);
         return profile.getRoles();
     }
 

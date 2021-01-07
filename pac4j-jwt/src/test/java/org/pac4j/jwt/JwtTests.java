@@ -56,7 +56,7 @@ public final class JwtTests implements TestsConstants {
         final TokenCredentials credentials = new TokenCredentials(token);
         final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
-        authenticator.validate(credentials, null);
+        authenticator.validate(credentials, null, null);
         assertNotNull(credentials.getUserProfile());
     }
 
@@ -200,7 +200,7 @@ public final class JwtTests implements TestsConstants {
         final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
         final TokenCredentials credentials = new TokenCredentials(token);
-        authenticator.validate(credentials, null);
+        authenticator.validate(credentials, null, null);
         final FacebookProfile profile2 = (FacebookProfile) credentials.getUserProfile();
         generator.generate(profile2);
     }
@@ -331,7 +331,7 @@ public final class JwtTests implements TestsConstants {
 
     private UserProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
         final TokenCredentials credentials = new TokenCredentials(token);
-        authenticator.validate(credentials, null);
+        authenticator.validate(credentials, null, null);
         final UserProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
         final FacebookProfile fbProfile = (FacebookProfile) profile2;
@@ -356,7 +356,7 @@ public final class JwtTests implements TestsConstants {
         final JwtAuthenticator authenticator =
             new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         final TokenCredentials credentials = new TokenCredentials("fakeToken");
-        authenticator.validate(credentials, null);
+        authenticator.validate(credentials, null, null);
     }
 
     @Test

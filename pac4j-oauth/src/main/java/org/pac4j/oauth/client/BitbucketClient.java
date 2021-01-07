@@ -29,7 +29,7 @@ public class BitbucketClient extends OAuth10Client {
     protected void internalInit() {
         configuration.setApi(new BitBucketApi());
         configuration.setProfileDefinition(new BitbucketProfileDefinition());
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://bitbucket.org/account/signout/")));
 
         super.internalInit();

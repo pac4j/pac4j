@@ -80,10 +80,10 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            final Optional<Credentials> credentials = foundClient.getCredentials(webContext);
+            final Optional<Credentials> credentials = foundClient.getCredentials(webContext, sessionStore);
             LOGGER.debug("credentials: {}", credentials);
 
-            final Optional<UserProfile> optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext);
+            final Optional<UserProfile> optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);
             LOGGER.debug("optProfile: {}", optProfile);
             if (optProfile.isPresent()) {
                 final UserProfile profile = optProfile.get();

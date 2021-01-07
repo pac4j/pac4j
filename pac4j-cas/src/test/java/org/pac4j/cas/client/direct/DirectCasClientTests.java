@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -55,7 +56,7 @@ public final class DirectCasClientTests implements TestsConstants {
         final DirectCasClient client = new DirectCasClient(configuration);
         final MockWebContext context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL);
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context));
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
         assertEquals(302, action.getCode());
         assertEquals(addParameter(LOGIN_URL, CasConfiguration.SERVICE_PARAMETER, CALLBACK_URL),
             ((FoundAction) action).getLocation());
@@ -75,7 +76,7 @@ public final class DirectCasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context).get();
+        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
         assertEquals(TICKET, credentials.getToken());
         final UserProfile profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);

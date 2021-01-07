@@ -1,6 +1,7 @@
 package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
@@ -49,13 +50,13 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context) {
+    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
         Optional<UserProfile> optProfile = this.store.get(credentials);
         if (!optProfile.isPresent()) {
             logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
-            delegate.validate(credentials, context);
+            delegate.validate(credentials, context, sessionStore);
             final UserProfile profile = credentials.getUserProfile();
             logger.debug("Caching credential. Using profile {}...", profile);
             store.set(credentials, profile);

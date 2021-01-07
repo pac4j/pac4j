@@ -102,10 +102,11 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                         if (currentClient instanceof DirectClient) {
                             LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final Optional<Credentials> credentials = currentClient.getCredentials(context);
+                            final Optional<Credentials> credentials = currentClient.getCredentials(context, sessionStore);
                             LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
-                                final Optional<UserProfile> optProfile = currentClient.getUserProfile(credentials.get(), context);
+                                final Optional<UserProfile> optProfile =
+                                    currentClient.getUserProfile(credentials.get(), context, sessionStore);
                                 LOGGER.debug("profile: {}", optProfile);
                                 if (optProfile.isPresent()) {
                                     final UserProfile profile = optProfile.get();
@@ -214,7 +215,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      */
     protected void saveRequestedUrl(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients,
                                     final AjaxRequestResolver ajaxRequestResolver) {
-        if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context)) {
+        if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context, sessionStore)) {
             savedRequestHandler.save(context, sessionStore);
         }
     }
@@ -230,7 +231,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
     protected HttpAction redirectToIdentityProvider(final WebContext context, final SessionStore sessionStore,
                                                     final List<Client> currentClients) {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
-        return currentClient.getRedirectionAction(context).get();
+        return currentClient.getRedirectionAction(context, sessionStore).get();
     }
 
     /**

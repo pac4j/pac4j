@@ -8,6 +8,7 @@ import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.util.TestsConstants;
@@ -167,7 +168,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertTrue(formClient2.getAuthenticator() instanceof LdapProfileService);
             final LdapProfileService ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
             final UsernamePasswordCredentials ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-            ldapAuthenticator.validate(ldapCredentials, MockWebContext.create());
+            ldapAuthenticator.validate(ldapCredentials, MockWebContext.create(), new MockSessionStore());
             assertNotNull(ldapCredentials.getUserProfile());
 
             final IndirectBasicAuthClient indirectBasicAuthClient =
@@ -181,7 +182,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             final DbProfileService dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
             final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-            dbAuthenticator.validate(dbCredentials, MockWebContext.create());
+            dbAuthenticator.validate(dbCredentials, MockWebContext.create(), new MockSessionStore());
             assertNotNull(dbCredentials.getUserProfile());
 
             final DirectBasicAuthClient directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7").get();

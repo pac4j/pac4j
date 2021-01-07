@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
@@ -112,7 +113,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertFalse(action.getLocation().indexOf("renew=true") >= 0);
     }
 
@@ -124,7 +125,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         configuration.setRenew(true);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action.getLocation().indexOf("renew=true") >= 0);
     }
 
@@ -135,7 +136,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertFalse(action.getLocation().indexOf("gateway=true") >= 0);
     }
 
@@ -147,9 +148,9 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         configuration.setGateway(true);
-        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context).get();
+        final FoundAction action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action.getLocation().indexOf("gateway=true") >= 0);
-        final Optional<Credentials> credentials = casClient.getCredentials(context);
+        final Optional<Credentials> credentials = casClient.getCredentials(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 
@@ -163,7 +164,7 @@ public final class CasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod(HTTP_METHOD.POST.name());
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(204, action.getCode());
     }
 
@@ -188,7 +189,7 @@ public final class CasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod(HTTP_METHOD.GET.name());
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(200, action.getCode());
         assertEquals("", ((WithContentAction) action).getContent());
     }
@@ -203,7 +204,7 @@ public final class CasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HTTP_METHOD.GET.name());
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(FOUND, action.getCode());
     }
 

@@ -3,6 +3,7 @@ package org.pac4j.saml.logout;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.logout.LogoutActionBuilder;
@@ -46,8 +47,8 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
-                                                       final String targetUrl) {
+    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                       final UserProfile currentProfile, final String targetUrl) {
         if (currentProfile instanceof SAML2Profile) {
             final SAML2Profile saml2Profile = (SAML2Profile) currentProfile;
             final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);

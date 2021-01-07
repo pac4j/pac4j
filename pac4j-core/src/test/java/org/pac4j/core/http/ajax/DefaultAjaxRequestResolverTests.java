@@ -18,23 +18,23 @@ public final class DefaultAjaxRequestResolverTests {
     @Test
     public void testRealAjaxRequest() {
         final MockWebContext context = MockWebContext.create().addRequestHeader("X-Requested-With", "XMLHttpRequest");
-        assertTrue(resolver.isAjax(context));
+        assertTrue(resolver.isAjax(context, null));
     }
 
     @Test
     public void testForcedAjaxParameter() {
         final MockWebContext context = MockWebContext.create().addRequestParameter("is_ajax_request", "true");
-        assertTrue(resolver.isAjax(context));
+        assertTrue(resolver.isAjax(context, null));
     }
 
     @Test
     public void testForcedAjaxHeader() {
         final MockWebContext context = MockWebContext.create().addRequestHeader("is_ajax_request", "true");
-        assertTrue(resolver.isAjax(context));
+        assertTrue(resolver.isAjax(context, null));
     }
 
     @Test
     public void testNotAnAjaxRequest() {
-        assertFalse(resolver.isAjax(MockWebContext.create()));
+        assertFalse(resolver.isAjax(MockWebContext.create(), null));
     }
 }

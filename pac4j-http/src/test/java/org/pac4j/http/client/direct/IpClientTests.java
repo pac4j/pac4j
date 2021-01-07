@@ -2,6 +2,7 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -24,8 +25,8 @@ public final class IpClientTests implements TestsConstants {
     @Test
     public void testMissingTokendAuthenticator() {
         final IpClient client = new IpClient(null);
-        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class,
-            "authenticator cannot be null");
+        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create(), new MockSessionStore()),
+             TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
@@ -33,7 +34,7 @@ public final class IpClientTests implements TestsConstants {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
         TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
-                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+                MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -47,8 +48,8 @@ public final class IpClientTests implements TestsConstants {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.setRemoteAddress(IP);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
+        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(IP, profile.getId());
     }
 }

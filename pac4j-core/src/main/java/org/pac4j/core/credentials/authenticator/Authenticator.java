@@ -1,6 +1,7 @@
 package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 
@@ -18,6 +19,7 @@ public interface Authenticator {
      *
      * @param credentials the given credentials
      * @param context the web context
+     * @param sessionStore the session store
      */
-    void validate(Credentials credentials, WebContext context);
+    void validate(Credentials credentials, WebContext context, SessionStore sessionStore);
 }

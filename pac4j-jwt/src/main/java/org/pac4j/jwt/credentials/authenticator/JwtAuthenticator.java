@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinition;
@@ -124,7 +125,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     public UserProfile validateToken(final String token) {
         final TokenCredentials credentials = new TokenCredentials(token);
         try {
-            validate(credentials, null);
+            validate(credentials, null, null);
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         } catch (final CredentialsException e) {
@@ -136,7 +137,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final TokenCredentials credentials = (TokenCredentials) cred;

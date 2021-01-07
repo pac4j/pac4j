@@ -1,6 +1,7 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
@@ -33,19 +34,19 @@ public abstract class DirectClient extends BaseClient {
     }
 
     @Override
-    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
+    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         return Optional.empty();
     }
 
     @Override
-    public final Optional<Credentials> getCredentials(final WebContext context) {
+    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore) {
         init();
-        return retrieveCredentials(context);
+        return retrieveCredentials(context, sessionStore);
     }
 
     @Override
-    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
-                                                             final String targetUrl) {
+    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                             final UserProfile currentProfile, final String targetUrl) {
         return Optional.empty();
     }
 

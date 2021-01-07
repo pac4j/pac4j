@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -34,7 +35,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context) {
+    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final X509Certificate certificate = ((X509Credentials) credentials).getCertificate();

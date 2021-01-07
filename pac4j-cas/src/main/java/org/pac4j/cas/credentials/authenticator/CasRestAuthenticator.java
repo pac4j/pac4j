@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -39,7 +40,7 @@ public class CasRestAuthenticator implements Authenticator {
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");

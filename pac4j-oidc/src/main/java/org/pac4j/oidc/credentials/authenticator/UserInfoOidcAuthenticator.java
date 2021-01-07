@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.naming.AuthenticationException;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -53,7 +54,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final TokenCredentials credentials = (TokenCredentials) cred;

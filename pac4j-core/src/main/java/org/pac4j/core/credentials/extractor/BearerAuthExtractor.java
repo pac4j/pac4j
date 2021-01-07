@@ -2,6 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class BearerAuthExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(WebContext context) {
-        return this.extractor.extract(context);
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+        return this.extractor.extract(context, sessionStore);
     }
 }

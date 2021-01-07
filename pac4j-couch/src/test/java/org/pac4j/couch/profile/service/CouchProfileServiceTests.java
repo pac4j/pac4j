@@ -88,7 +88,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        couchProfileService.validate(credentials, null);
+        couchProfileService.validate(credentials, null, null);
     }
 
     @Test
@@ -96,7 +96,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        couchProfileService.validate(credentials, null);
+        couchProfileService.validate(credentials, null, null);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -119,7 +119,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         couchProfileService.create(profile, COUCH_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS);
-        couchProfileService.validate(credentials, null);
+        couchProfileService.validate(credentials, null, null);
         final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -150,7 +150,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         assertEquals(COUCH_USER2, result2.get(USERNAME));
         // check credentials
         final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2);
-        couchProfileService.validate(credentials2, null);
+        couchProfileService.validate(credentials2, null, null);
         UserProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // update with no password update
@@ -161,7 +161,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         assertEquals(5, result2.size());
         assertEquals(COUCH_USER2, result2.get(USERNAME));
         // check credentials
-        couchProfileService.validate(credentials2, null);
+        couchProfileService.validate(credentials2, null, null);
         profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // remove

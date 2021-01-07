@@ -7,6 +7,7 @@ import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -57,8 +58,9 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestParameter(client.getUsernameParameter(), USER);
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) client.getCredentials(context).get();
-        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context).get();
+        final UsernamePasswordCredentials credentials =
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -86,8 +88,9 @@ public final class CasRestClientIT implements TestsConstants {
         final String token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) client.getCredentials(context).get();
-        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context).get();
+        final UsernamePasswordCredentials credentials =
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 

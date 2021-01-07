@@ -4,6 +4,7 @@ import fi.iki.elonen.NanoHTTPD;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -38,7 +39,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
     public void testProfileOk() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        authenticator.validate(credentials, MockWebContext.create());
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
         final RestProfile profile = (RestProfile) credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(ID, profile.getId());
@@ -50,7 +51,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
     public void testNotFound() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        authenticator.validate(credentials, MockWebContext.create());
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
         final RestProfile profile = (RestProfile) credentials.getUserProfile();
         assertNull(profile);
     }
@@ -59,15 +60,15 @@ public final class RestAuthenticatorIT implements TestsConstants {
     public void testParsingError() {
         final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create()), TechnicalException.class,
-            "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting ('true', 'false' or 'null')\n"
-            + " at [Source: (String)\"bad\"; line: 1, column: 7]");
+        TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore()),
+            TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting " +
+                "('true', 'false' or 'null')\n at [Source: (String)\"bad\"; line: 1, column: 7]");
     }
 
     @Test
     public void testHttps() {
         final RestAuthenticator authenticator = new RestAuthenticator("https://www.google.com");
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        authenticator.validate(credentials, MockWebContext.create());
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
     }
 }

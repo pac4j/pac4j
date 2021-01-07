@@ -33,7 +33,7 @@ public class FoursquareClient extends OAuth20Client {
         configuration.setProfileDefinition(new FoursquareProfileDefinition());
         configuration.setScope("user");
         defaultProfileCreator(new FoursquareProfileCreator(configuration, this));
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+        defaultLogoutActionBuilder((ctx, store, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.foursquare.com/logout")));
 
         super.internalInit();

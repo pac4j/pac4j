@@ -6,13 +6,14 @@ import java.util.Map;
 import org.junit.Test;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link DefaultCasAuthorizationGenerator}.
- * 
+ *
  * @author Michael Remond
  * @since 1.5.1
  */
@@ -24,7 +25,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         final Map<String, Object> attributes = new HashMap<>();
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, profile);
+        generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -35,7 +36,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, profile);
+        generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -46,7 +47,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, profile);
+        generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -57,7 +58,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, profile);
+        generator.generate(null, new MockSessionStore(), profile);
         assertEquals(true, profile.isRemembered());
     }
 }

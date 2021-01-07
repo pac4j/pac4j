@@ -3,6 +3,7 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -49,13 +50,13 @@ public class DirectDigestAuthClient extends DirectClient {
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         // set the www-authenticate in case of error
         final String nonce = calculateNonce();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
             + nonce + "\"");
 
-        return super.retrieveCredentials(context);
+        return super.retrieveCredentials(context, sessionStore);
     }
 
     /**

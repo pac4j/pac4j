@@ -2,6 +2,7 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -28,15 +29,15 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectFormClient formClient = new DirectFormClient(null);
-        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create()), TechnicalException.class,
-            "authenticator cannot be null");
+        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
+            TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final DirectFormClient formClient = new DirectFormClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.expectException(() -> formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
-                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+                MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -54,14 +55,16 @@ public final class DirectFormClientTests implements TestsConstants {
     public void testGetCredentialsMissingUsername() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)).isPresent());
+        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME),
+            new MockSessionStore()).isPresent());
     }
 
     @Test
     public void testGetCredentialsMissingPassword() {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)).isPresent());
+        assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD),
+            new MockSessionStore()).isPresent());
     }
 
     @Test
@@ -69,7 +72,7 @@ public final class DirectFormClientTests implements TestsConstants {
         final DirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         assertFalse(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)).isPresent());
+                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD), new MockSessionStore()).isPresent());
     }
 
     @Test
@@ -77,7 +80,7 @@ public final class DirectFormClientTests implements TestsConstants {
         final DirectFormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), USERNAME)).get();
+                .addRequestParameter(formClient.getPasswordParameter(), USERNAME), new MockSessionStore()).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }
@@ -85,7 +88,7 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testGetUserProfile() {
         final DirectFormClient formClient = getFormClient();
-        formClient.setProfileCreator((credentials, context) -> {
+        formClient.setProfileCreator((credentials, context, session) -> {
             String username = ((UsernamePasswordCredentials) credentials).getUsername();
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);
@@ -93,8 +96,8 @@ public final class DirectFormClientTests implements TestsConstants {
             return Optional.of(profile);
         });
         final MockWebContext context = MockWebContext.create();
-        final CommonProfile profile =
-            (CommonProfile) formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME), context).get();
+        final CommonProfile profile = (CommonProfile) formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME),
+            context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
         assertEquals(CommonProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));

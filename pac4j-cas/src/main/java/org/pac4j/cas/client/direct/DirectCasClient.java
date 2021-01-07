@@ -7,6 +7,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
@@ -66,13 +67,13 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         init();
         try {
             String callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
-            final Optional<Credentials> credentials = getCredentialsExtractor().extract(context);
+            final Optional<Credentials> credentials = getCredentialsExtractor().extract(context, sessionStore);
             if (!credentials.isPresent()) {
                 // redirect to the login page
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
@@ -87,7 +88,7 @@ public class DirectCasClient extends DirectClient {
             final CasAuthenticator casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
-            casAuthenticator.validate(credentials.get(), context);
+            casAuthenticator.validate(credentials.get(), context, sessionStore);
 
             return credentials;
         } catch (CredentialsException e) {

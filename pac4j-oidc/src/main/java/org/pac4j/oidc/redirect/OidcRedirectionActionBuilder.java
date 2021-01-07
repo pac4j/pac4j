@@ -6,6 +6,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -69,12 +70,12 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         final Map<String, String> params = buildParams();
         final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
-        addStateAndNonceParameters(context, params);
+        addStateAndNonceParameters(context, sessionStore, params);
 
         if (configuration.getMaxAge() != null) {
             params.put(OidcConfiguration.MAX_AGE, configuration.getMaxAge().toString());
@@ -90,19 +91,19 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         return new HashMap<>(this.authParams);
     }
 
-    protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
+    protected void addStateAndNonceParameters(final WebContext context, final SessionStore sessionStore, final Map<String, String> params) {
         // Init state for CSRF mitigation
         if (configuration.isWithState()) {
             final State state = new State(configuration.getStateGenerator().generateValue(context));
             params.put(OidcConfiguration.STATE, state.getValue());
-            context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
+            sessionStore.set(context, client.getStateSessionAttributeName(), state);
         }
 
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             final Nonce nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
-            context.getSessionStore().set(context, client.getNonceSessionAttributeName(), nonce.getValue());
+            sessionStore.set(context, client.getNonceSessionAttributeName(), nonce.getValue());
         }
 
         CodeChallengeMethod pkceMethod = configuration.findPkceMethod();

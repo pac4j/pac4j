@@ -149,7 +149,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutActionBuilder((ctx, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
+        client.setLogoutActionBuilder((ctx, store, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();
@@ -168,7 +168,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutActionBuilder((ctx, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
+        client.setLogoutActionBuilder((ctx, store, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();

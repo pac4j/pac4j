@@ -3,6 +3,7 @@ package org.pac4j.kerberos.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -33,13 +34,13 @@ public class IndirectKerberosClient extends IndirectClient {
 
     @Override
     protected void internalInit() {
-        defaultRedirectionActionBuilder(webContext ->
+        defaultRedirectionActionBuilder((webContext, sessionStore) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
         defaultCredentialsExtractor(new KerberosExtractor());
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
@@ -49,13 +50,13 @@ public class IndirectKerberosClient extends IndirectClient {
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context);
+            credentials = getCredentialsExtractor().extract(context, sessionStore);
             logger.debug("kerberos credentials : {}", credentials);
             if (!credentials.isPresent()) {
                 throw HttpActionHelper.buildUnauthenticatedAction(context);
             }
             // validate credentials
-            getAuthenticator().validate(credentials.get(), context);
+            getAuthenticator().validate(credentials.get(), context, sessionStore);
         } catch (final CredentialsException e) {
             throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
