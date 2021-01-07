@@ -125,7 +125,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
                 final List<Client> clientList = clients.getClients();
                 for (final Client client : clientList) {
                     final BaseClient baseClient = (BaseClient) client;
-                    baseClient.notifySessionRenewal(oldSessionId, context);
+                    baseClient.notifySessionRenewal(oldSessionId, context, sessionStore);
                 }
             }
         } else {

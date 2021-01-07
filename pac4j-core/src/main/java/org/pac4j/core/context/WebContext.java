@@ -1,6 +1,5 @@
 package org.pac4j.core.context;
 
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.util.Collection;
@@ -8,19 +7,12 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This interface represents the web context to use HTTP request and session.
+ * This interface represents the web context to use HTTP request and response.
  *
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public interface WebContext {
-
-    /**
-     * Get the session store.
-     *
-     * @return the session store
-     */
-    SessionStore getSessionStore();
 
     /**
      * Return a request parameter.

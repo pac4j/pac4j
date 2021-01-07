@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
@@ -117,8 +118,9 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testRelayState() {
         final SAML2Client client = getClient();
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        context.getSessionStore().set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        final FoundAction action = (FoundAction) client.getRedirectionAction(context, new MockSessionStore()).get();
+        final SessionStore sessionStore = new MockSessionStore();
+        sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        final FoundAction action = (FoundAction) client.getRedirectionAction(context, sessionStore).get();
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }
 

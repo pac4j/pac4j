@@ -44,9 +44,9 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
 
             final String state;
             if (configuration.isWithState()) {
-                state = this.configuration.getStateGenerator().generateValue(context);
+                state = this.configuration.getStateGenerator().generateValue(context, sessionStore);
                 logger.debug("save sessionState: {}", state);
-                context.getSessionStore().set(context, client.getStateSessionAttributeName(), state);
+                sessionStore.set(context, client.getStateSessionAttributeName(), state);
             } else {
                 state = null;
             }

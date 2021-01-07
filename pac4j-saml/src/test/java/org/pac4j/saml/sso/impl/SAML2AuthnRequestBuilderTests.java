@@ -10,6 +10,7 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.saml.client.AbstractSAML2ClientTests;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -44,7 +45,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         final WebContext webContext = MockWebContext.create();
 
         final SAMLMessageStoreFactory messageStoreFactory = configuration.getSamlMessageStoreFactory();
-        final SAMLMessageStore store = messageStoreFactory.getMessageStore(webContext);
+        final SAMLMessageStore store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
 
         final SAML2AuthnRequestBuilder builder = new SAML2AuthnRequestBuilder(configuration);
 

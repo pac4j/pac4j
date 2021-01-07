@@ -1,6 +1,7 @@
 package org.pac4j.core.logout.handler;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 
 /**
  * This interface defines how to handle logout requests on client side.
@@ -16,9 +17,10 @@ public interface LogoutHandler {
      * Associates a key with the current web session.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param key the key
      */
-    default void recordSession(WebContext context, String key) {
+    default void recordSession(WebContext context, SessionStore sessionStore, String key) {
         // do nothing by default
     }
 
@@ -26,9 +28,10 @@ public interface LogoutHandler {
      * Destroys the current web session for the given key for a front channel logout.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param key the key
      */
-    default void destroySessionFront(WebContext context, String key) {
+    default void destroySessionFront(WebContext context, SessionStore sessionStore, String key) {
         // do nothing by default
     }
 
@@ -36,9 +39,10 @@ public interface LogoutHandler {
      * Destroys the current web session for the given key for a back channel logout.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @param key the key
      */
-    default void destroySessionBack(WebContext context, String key) {
+    default void destroySessionBack(WebContext context, SessionStore sessionStore, String key) {
         // do nothing by default
     }
 
@@ -47,8 +51,9 @@ public interface LogoutHandler {
      *
      * @param oldSessionId the old session identifier
      * @param context the web context
+     * @param sessionStore the session store
      */
-    default void renewSession(String oldSessionId, WebContext context) {
+    default void renewSession(String oldSessionId, WebContext context, SessionStore sessionStore) {
         // do nothing by default
     }
 }

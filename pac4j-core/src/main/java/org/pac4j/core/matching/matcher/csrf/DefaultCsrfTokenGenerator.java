@@ -19,11 +19,10 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
     private int ttlInSeconds = 4*60*60;
 
     @Override
-    public String get(final WebContext context) {
+    public String get(final WebContext context, final SessionStore sessionStore) {
         final String token = CommonHelper.randomString(32);
         final long expirationDate = new Date().getTime() + ttlInSeconds * 1000;
 
-        final SessionStore sessionStore = context.getSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, token);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         return token;

@@ -51,8 +51,8 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
                                                        final UserProfile currentProfile, final String targetUrl) {
         if (currentProfile instanceof SAML2Profile) {
             final SAML2Profile saml2Profile = (SAML2Profile) currentProfile;
-            final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
-            final String relayState = this.stateGenerator.generateValue(context);
+            final SAML2MessageContext samlContext = this.contextProvider.buildContext(context, sessionStore);
+            final String relayState = this.stateGenerator.generateValue(context, sessionStore);
 
             final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
             this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);

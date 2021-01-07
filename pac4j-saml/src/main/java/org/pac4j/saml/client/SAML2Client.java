@@ -11,6 +11,7 @@ import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -245,8 +246,8 @@ public class SAML2Client extends IndirectClient {
     }
 
     @Override
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
-        configuration.findLogoutHandler().renewSession(oldSessionId, context);
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
+        configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
     }
 
     public SAML2ResponseValidator getAuthnResponseValidator() {

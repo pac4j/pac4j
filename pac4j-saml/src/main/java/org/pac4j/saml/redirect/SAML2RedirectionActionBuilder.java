@@ -38,8 +38,8 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore) {
-        final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc);
-        final String relayState = this.client.getStateGenerator().generateValue(wc);
+        final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc, sessionStore);
+        final String relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
 
         final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
         this.client.getProfileHandler().send(context, authnRequest, relayState);

@@ -88,7 +88,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionStore().get(context, client.getNonceSessionAttributeName()).orElse(null));
+                nonce = new Nonce((String) sessionStore.get(context, client.getNonceSessionAttributeName()).orElse(null));
             } else {
                 nonce = null;
             }
@@ -139,7 +139,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             // keep the session ID if provided
             final String sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
             if (isNotBlank(sid)) {
-                configuration.findLogoutHandler().recordSession(context, sid);
+                configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
             }
 
             return Optional.of(profile);

@@ -34,8 +34,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
     }
 
     @Override
-    public void recordSession(final WebContext context, final String key) {
-        final SessionStore sessionStore = context.getSessionStore();
+    public void recordSession(final WebContext context, final SessionStore sessionStore, final String key) {
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
@@ -55,10 +54,9 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
     }
 
     @Override
-    public void destroySessionFront(final WebContext context, final String key) {
+    public void destroySessionFront(final WebContext context, final SessionStore sessionStore, final String key) {
         store.remove(key);
 
-        final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
@@ -93,7 +91,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
     }
 
     @Override
-    public void destroySessionBack(final WebContext context, final String key) {
+    public void destroySessionBack(final WebContext context, final SessionStore sessionStore, final String key) {
         final Optional<Object> optTrackableSession = store.get(key);
         logger.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
         if (!optTrackableSession.isPresent()) {
@@ -103,7 +101,6 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
             store.remove(key);
 
             // renew context with the original session store
-            final SessionStore sessionStore = context.getSessionStore();
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
@@ -125,14 +122,14 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
     }
 
     @Override
-    public void renewSession(final String oldSessionId, final WebContext context) {
+    public void renewSession(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
         final Optional optKey = store.get(oldSessionId);
         logger.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
         if (optKey.isPresent()) {
             final String key = (String) optKey.get();
             store.remove(key);
             store.remove(oldSessionId);
-            recordSession(context, key);
+            recordSession(context, sessionStore, key);
         }
     }
 

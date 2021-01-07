@@ -3,6 +3,7 @@ package org.pac4j.oauth.credentials.extractor;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -23,16 +24,16 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
     }
 
     @Override
-    protected Optional<Credentials> getOAuthCredentials(final WebContext context) {
+    protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
         if (((OAuth20Configuration) configuration).isWithState()) {
 
             final Optional<String> stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 
             if (stateParameter.isPresent()) {
                 final String stateSessionAttributeName = this.client.getStateSessionAttributeName();
-                final String sessionState = (String) context.getSessionStore().get(context, stateSessionAttributeName).orElse(null);
+                final String sessionState = (String) sessionStore.get(context, stateSessionAttributeName).orElse(null);
                 // clean from session after retrieving it
-                context.getSessionStore().set(context, stateSessionAttributeName, null);
+                sessionStore.set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
                 if (!stateParameter.get().equals(sessionState)) {
                     final String message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";

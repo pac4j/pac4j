@@ -54,7 +54,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             }
             logger.debug("requestToken: {}", requestToken);
             // save requestToken in user session
-            context.getSessionStore().set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
+            sessionStore.set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             final String authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));

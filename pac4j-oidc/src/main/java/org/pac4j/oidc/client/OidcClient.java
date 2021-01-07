@@ -75,8 +75,8 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
-        configuration.findLogoutHandler().renewSession(oldSessionId, context);
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
+        configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
     }
 
     public OidcConfiguration getConfiguration() {

@@ -1,6 +1,7 @@
 package org.pac4j.saml.store;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 
 /**
  * Factories implementing this interface provide services for storing and retrieval of SAML messages for
@@ -11,9 +12,10 @@ public interface SAMLMessageStoreFactory {
     /**
      * Provides message store related to the given request.
      *
-     * @param request currently processed context
+     * @param context the web context
+     * @param sessionStore the session store
      * @return store objects
      */
-    SAMLMessageStore getMessageStore(WebContext request);
+    SAMLMessageStore getMessageStore(WebContext context, SessionStore sessionStore);
 
 }

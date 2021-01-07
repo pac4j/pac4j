@@ -2,6 +2,7 @@ package org.pac4j.saml.store;
 
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     private final WebContext context;
 
+    private final SessionStore sessionStore;
+
     /**
      * Internal store for messages, corresponding to the object in session.
      */
@@ -48,11 +51,14 @@ public class HttpSessionStore implements SAMLMessageStore {
      *
      * In case request doesn't already have a started session, it will be created.
      *
-     * @param context context to load/store internalMessages from
+     * @param context the web context
+     * @param sessionStore the session store
      */
-    public HttpSessionStore(final WebContext context) {
+    public HttpSessionStore(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("context", context);
+        CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.context = context;
+        this.sessionStore = sessionStore;
     }
 
 
@@ -65,7 +71,7 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @Override
     public void set(final String messageID, final XMLObject message) {
-        log.debug("Storing message {} to session {}", messageID, context.getSessionStore().getSessionId(context, true).get());
+        log.debug("Storing message {} to session {}", messageID, sessionStore.getSessionId(context, true).get());
         final LinkedHashMap<String, String> messages = getMessages();
         messages.put(messageID, Configuration.serializeSamlObject(message).toString());
         updateSession(messages);
@@ -90,13 +96,11 @@ public class HttpSessionStore implements SAMLMessageStore {
         final LinkedHashMap<String, String> messages = getMessages();
         final String o = messages.get(messageID);
         if (o == null) {
-            log.debug("Message {} not found in session {}",
-                    messageID, context.getSessionStore().getSessionId(context, true).get());
+            log.debug("Message {} not found in session {}", messageID, sessionStore.getSessionId(context, true).get());
             return Optional.empty();
         }
 
-        log.debug("Message {} found in session {}, clearing",
-                messageID, context.getSessionStore().getSessionId(context, true).get());
+        log.debug("Message {} found in session {}, clearing", messageID, sessionStore.getSessionId(context, true).get());
         messages.clear();
         updateSession(messages);
 
@@ -124,10 +128,10 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @SuppressWarnings("unchecked")
     private LinkedHashMap<String, String> initializeSession() {
-        Optional<Object> messages = context.getSessionStore().get(context, SAML_STORAGE_KEY);
+        Optional<Object> messages = sessionStore.get(context, SAML_STORAGE_KEY);
         if (!messages.isPresent()) {
             synchronized (context) {
-                messages = context.getSessionStore().get(context, SAML_STORAGE_KEY);
+                messages = sessionStore.get(context, SAML_STORAGE_KEY);
                 if (!messages.isPresent()) {
                     messages = Optional.of(new LinkedHashMap<>());
                     updateSession((LinkedHashMap<String, String>) messages.get());
@@ -142,7 +146,7 @@ public class HttpSessionStore implements SAMLMessageStore {
      * in order to replicate the session across nodes or persist it correctly.
      */
     private void updateSession(final LinkedHashMap<String, String> messages) {
-        context.getSessionStore().set(context, SAML_STORAGE_KEY, messages);
+        sessionStore.set(context, SAML_STORAGE_KEY, messages);
     }
 
     @Override

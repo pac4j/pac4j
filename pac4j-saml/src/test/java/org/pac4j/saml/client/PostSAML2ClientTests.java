@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.WebContext;
@@ -100,8 +101,9 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testRelayState() {
         final SAML2Client client = getClient();
         final WebContext context = new JEEContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        context.getSessionStore().set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        final OkAction action = (OkAction) client.getRedirectionAction(context, new MockSessionStore()).get();
+        final SessionStore sessionStore = new MockSessionStore();
+        sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        final OkAction action = (OkAction) client.getRedirectionAction(context, sessionStore).get();
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 

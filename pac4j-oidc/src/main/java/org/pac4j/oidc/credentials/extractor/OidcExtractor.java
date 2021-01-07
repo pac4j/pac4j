@@ -62,7 +62,7 @@ public class OidcExtractor implements CredentialsExtractor {
                     //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     final String sid = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     logger.debug("Handling back-channel logout for sessionId: {}", sid);
-                    configuration.findLogoutHandler().destroySessionBack(context, sid);
+                    configuration.findLogoutHandler().destroySessionBack(context, sessionStore, sid);
                 } catch (final java.text.ParseException e) {
                     logger.error("Cannot validate JWT logout token", e);
                     throw BadRequestAction.INSTANCE;
@@ -71,7 +71,7 @@ public class OidcExtractor implements CredentialsExtractor {
                 final String sid = context.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
                 logger.debug("Handling front-channel logout for sessionId: {}", sid);
                 // front-channel logout
-                configuration.findLogoutHandler().destroySessionFront(context, sid);
+                configuration.findLogoutHandler().destroySessionFront(context, sessionStore, sid);
             }
             context.setResponseHeader("Cache-Control", "no-cache, no-store");
             context.setResponseHeader("Pragma", "no-cache");
@@ -98,7 +98,7 @@ public class OidcExtractor implements CredentialsExtractor {
             if (configuration.isWithState()) {
                 // Validate state for CSRF mitigation
                 final State requestState = (State) configuration.getValueRetriever()
-                    .retrieve(client.getStateSessionAttributeName(), client, context)
+                    .retrieve(client.getStateSessionAttributeName(), client, context, sessionStore)
                     .orElseThrow(() -> new TechnicalException("State cannot be determined"));
 
                 final State responseState = successResponse.getState();

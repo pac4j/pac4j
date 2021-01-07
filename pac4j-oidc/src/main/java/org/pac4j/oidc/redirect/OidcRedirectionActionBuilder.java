@@ -94,7 +94,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     protected void addStateAndNonceParameters(final WebContext context, final SessionStore sessionStore, final Map<String, String> params) {
         // Init state for CSRF mitigation
         if (configuration.isWithState()) {
-            final State state = new State(configuration.getStateGenerator().generateValue(context));
+            final State state = new State(configuration.getStateGenerator().generateValue(context, sessionStore));
             params.put(OidcConfiguration.STATE, state.getValue());
             sessionStore.set(context, client.getStateSessionAttributeName(), state);
         }
@@ -109,8 +109,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         CodeChallengeMethod pkceMethod = configuration.findPkceMethod();
         if (pkceMethod != null) {
             final CodeVerifier verfifier = new CodeVerifier(
-                    configuration.getCodeVerifierGenerator().generateValue(context));
-            context.getSessionStore().set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
+                    configuration.getCodeVerifierGenerator().generateValue(context, sessionStore));
+            sessionStore.set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
             params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());
             params.put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
         }

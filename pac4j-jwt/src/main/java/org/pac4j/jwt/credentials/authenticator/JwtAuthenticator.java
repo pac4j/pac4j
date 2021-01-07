@@ -225,7 +225,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 }
             }
 
-            createJwtProfile(credentials, jwt, context);
+            createJwtProfile(credentials, jwt, context, sessionStore);
 
         } catch (final ParseException e) {
             throw new CredentialsException("Cannot decrypt / verify JWT", e);
@@ -233,12 +233,13 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @SuppressWarnings("unchecked")
-    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt, final WebContext context) throws ParseException {
+    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt, final WebContext context,
+                                    final SessionStore sessionStore) throws ParseException {
         final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
         String subject = claimSet.getSubject();
         if (subject == null) {
             if (identifierGenerator != null) {
-                subject = identifierGenerator.generateValue(context);
+                subject = identifierGenerator.generateValue(context, sessionStore);
             }
             if (subject == null) {
                 throw new TechnicalException("The JWT must contain a subject or an id must be generated via the identifierGenerator");

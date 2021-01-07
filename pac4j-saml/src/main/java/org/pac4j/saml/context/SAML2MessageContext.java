@@ -22,6 +22,7 @@ import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.soap.messaging.context.SOAP11Context;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
@@ -45,6 +46,8 @@ public class SAML2MessageContext {
     private MessageContext messageContext = new MessageContext();
 
     private WebContext webContext;
+
+    private SessionStore sessionStore;
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
@@ -74,6 +77,14 @@ public class SAML2MessageContext {
 
     public void setWebContext(final WebContext webContext) {
         this.webContext = webContext;
+    }
+
+    public SessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    public void setSessionStore(final SessionStore sessionStore) {
+        this.sessionStore = sessionStore;
     }
 
     public final Assertion getSubjectAssertion() {

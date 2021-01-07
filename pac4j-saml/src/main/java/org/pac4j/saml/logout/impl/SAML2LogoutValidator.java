@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Validator for SAML logout requests/responses from the IdP.
- * 
+ *
  * @author Matthieu Taggiasco
  * @author Jerome Leleu
  * @since 2.0.0
@@ -110,9 +110,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         if (sloKey != null) {
             final String bindingUri = context.getSAMLBindingContext().getBindingUri();
             if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
-                logoutHandler.destroySessionBack(context.getWebContext(), sloKey);
+                logoutHandler.destroySessionBack(context.getWebContext(), context.getSessionStore(), sloKey);
             } else {
-                logoutHandler.destroySessionFront(context.getWebContext(), sloKey);
+                logoutHandler.destroySessionFront(context.getWebContext(), context.getSessionStore(), sloKey);
             }
         }
     }

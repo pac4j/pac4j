@@ -150,8 +150,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
      *
      * @param oldSessionId the old session identifier
      * @param context      the web context
+     * @param sessionStore the session store
      */
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
     }
 
     public List<AuthorizationGenerator> getAuthorizationGenerators() {

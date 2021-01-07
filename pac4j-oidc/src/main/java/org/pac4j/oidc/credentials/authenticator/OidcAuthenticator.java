@@ -151,7 +151,7 @@ public class OidcAuthenticator implements Authenticator {
             try {
                 final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
                 CodeVerifier verifier = (CodeVerifier) configuration.getValueRetriever()
-                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context).orElse(null);
+                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context, sessionStore).orElse(null);
                 // Token request
                 final TokenRequest request = new TokenRequest(
                         configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,

@@ -216,8 +216,9 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testCsrfCheckPost() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
-        generator.get(context);
-        assertFalse(checker.isAuthorized(context, new MockSessionStore(), profiles, DefaultAuthorizers.CSRF_CHECK, new HashMap<>(),
+        final SessionStore sessionStore = new MockSessionStore();
+        generator.get(context, sessionStore);
+        assertFalse(checker.isAuthorized(context, sessionStore, profiles, DefaultAuthorizers.CSRF_CHECK, new HashMap<>(),
             new ArrayList<>()));
     }
 
@@ -225,9 +226,9 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testCsrfCheckPostTokenParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
-        final String token = generator.get(context);
-        context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
         final SessionStore sessionStore = new MockSessionStore();
+        final String token = generator.get(context, sessionStore);
+        context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, token);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, new Date().getTime() + 1000 * generator.getTtlInSeconds());
         assertTrue(checker.isAuthorized(context, sessionStore, profiles, DefaultAuthorizers.CSRF_CHECK, new HashMap<>(),

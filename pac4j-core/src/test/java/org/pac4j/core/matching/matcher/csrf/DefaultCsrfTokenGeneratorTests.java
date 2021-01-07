@@ -3,6 +3,8 @@ package org.pac4j.core.matching.matcher.csrf;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Date;
@@ -22,11 +24,12 @@ public final class DefaultCsrfTokenGeneratorTests {
     @Test
     public void test() {
         final WebContext context = MockWebContext.create();
-        final String token = generator.get(context);
+        final SessionStore sessionStore = new MockSessionStore();
+        final String token = generator.get(context, sessionStore);
         assertNotNull(token);
-        final String token2 = (String) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN).orElse(null);
+        final String token2 = (String) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN).orElse(null);
         assertEquals(token, token2);
-        final long expirationDate = (Long) context.getSessionStore().get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE).orElse(null);
+        final long expirationDate = (Long) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE).orElse(null);
         final long nowPlusTtl = new Date().getTime() + 1000 * generator.getTtlInSeconds();
         assertTrue(expirationDate > nowPlusTtl - 1000);
         assertTrue(expirationDate < nowPlusTtl + 1000);

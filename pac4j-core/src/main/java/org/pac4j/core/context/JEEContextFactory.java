@@ -1,7 +1,5 @@
 package org.pac4j.core.context;
 
-import org.pac4j.core.context.session.SessionStore;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +15,6 @@ public class JEEContextFactory implements WebContextFactory {
 
     @Override
     public JEEContext newContext(final Object... parameters) {
-        return new JEEContext((HttpServletRequest) parameters[0], (HttpServletResponse) parameters[1],
-            (SessionStore) parameters[2]);
+        return new JEEContext((HttpServletRequest) parameters[0], (HttpServletResponse) parameters[1]);
     }
 }
