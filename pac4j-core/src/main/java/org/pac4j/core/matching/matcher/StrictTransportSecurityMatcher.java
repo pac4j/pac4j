@@ -2,6 +2,7 @@ package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -26,7 +27,7 @@ public class StrictTransportSecurityMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context) {
+    public boolean matches(final WebContext context, final SessionStore sessionStore) {
         if (ContextHelper.isHttpsOrSecure(context)) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }

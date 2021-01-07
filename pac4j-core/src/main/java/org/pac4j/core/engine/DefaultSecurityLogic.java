@@ -87,7 +87,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
             final List<Client> currentClients = clientFinder.find(configClients, context, clients);
             LOGGER.debug("currentClients: {}", currentClients);
 
-            if (matchingChecker.matches(context, matchers, config.getMatchers(), currentClients)) {
+            if (matchingChecker.matches(context, sessionStore, matchers, config.getMatchers(), currentClients)) {
 
                 final ProfileManager manager = getProfileManager(context, sessionStore);
                 manager.setConfig(config);

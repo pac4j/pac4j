@@ -1,6 +1,7 @@
 package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -92,7 +93,7 @@ public class PathMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context) {
+    public boolean matches(final WebContext context, final SessionStore sessionStore) {
         return matches(context.getPath());
     }
 

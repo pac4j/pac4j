@@ -2,6 +2,7 @@ package org.pac4j.core.matching.matcher;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -19,41 +20,42 @@ public final class HeaderMatcherTests implements TestsConstants {
     @Test
     public void testNullHeaderName() {
         final HeaderMatcher matcher = new HeaderMatcher();
-        TestsHelper.expectException(() -> matcher.matches(MockWebContext.create()), TechnicalException.class, "headerName cannot be blank");
+        TestsHelper.expectException(() -> matcher.matches(MockWebContext.create(), new MockSessionStore()),
+            TechnicalException.class, "headerName cannot be blank");
     }
 
     @Test
     public void testNullExpectedValueHeader() {
         final HeaderMatcher matcher = new HeaderMatcher(NAME, null);
         final MockWebContext context = MockWebContext.create().addRequestHeader(NAME, VALUE);
-        assertFalse(matcher.matches(context));
+        assertFalse(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testNullExpectedValueNull() {
         final HeaderMatcher matcher = new HeaderMatcher(NAME, null);
         final MockWebContext context = MockWebContext.create();
-        assertTrue(matcher.matches(context));
+        assertTrue(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testRegexExpectedRightValueHeader() {
         final HeaderMatcher matcher = new HeaderMatcher(NAME, ".*A.*");
         final MockWebContext context = MockWebContext.create().addRequestHeader(NAME, "BAC");
-        assertTrue(matcher.matches(context));
+        assertTrue(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testRegexExpectedBadValueHeader() {
         final HeaderMatcher matcher = new HeaderMatcher(NAME, ".*A.*");
         final MockWebContext context = MockWebContext.create().addRequestHeader(NAME, "BOC");
-        assertFalse(matcher.matches(context));
+        assertFalse(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testRegexExpectedNullHeader() {
         final HeaderMatcher matcher = new HeaderMatcher(NAME, ".*A.*");
         final MockWebContext context = MockWebContext.create();
-        assertFalse(matcher.matches(context));
+        assertFalse(matcher.matches(context, new MockSessionStore()));
     }
 }

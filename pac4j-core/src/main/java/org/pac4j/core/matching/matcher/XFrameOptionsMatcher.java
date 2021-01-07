@@ -1,6 +1,7 @@
 package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -12,7 +13,7 @@ import org.pac4j.core.util.CommonHelper;
 public class XFrameOptionsMatcher implements Matcher {
 
     @Override
-    public boolean matches(final WebContext context) {
+    public boolean matches(final WebContext context, final SessionStore sessionStore) {
         context.setResponseHeader("X-Frame-Options", "DENY");
         return true;
     }
