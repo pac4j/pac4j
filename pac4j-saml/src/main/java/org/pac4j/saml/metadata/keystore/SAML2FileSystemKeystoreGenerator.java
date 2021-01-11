@@ -83,7 +83,8 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
         validate();
 
         final File keystoreFile = saml2Configuration.getKeystoreResource().getFile();
-        if (!keystoreFile.getParentFile().exists() && !keystoreFile.getParentFile().mkdirs()) {
+        final File parentFile = keystoreFile.getParentFile();
+        if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
             logger.warn("Could not construct the directory structure for keystore: {}", keystoreFile.getCanonicalPath());
         }
         final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
