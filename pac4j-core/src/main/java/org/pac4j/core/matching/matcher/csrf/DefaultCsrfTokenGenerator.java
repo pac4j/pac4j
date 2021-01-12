@@ -29,9 +29,11 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
         LOGGER.debug("generated CSRF token: {}", token);
         final long expirationDate = new Date().getTime() + ttlInSeconds * 1000;
 
-        final Optional<Object> oldToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
-        if (oldToken.isPresent()) {
-            sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, oldToken.get());
+        final Optional<Object> currentToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
+        if (currentToken.isPresent()) {
+            sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, currentToken.get());
+        } else {
+            sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, "");
         }
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, token);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
