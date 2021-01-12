@@ -58,7 +58,7 @@ To compute the appropriate roles and permissions of the authenticated user profi
 **Example:**
 
 ```java
-AuthorizationGenerator authGen = (ctx, profile) -> {
+AuthorizationGenerator authGen = (ctx, session, profile) -> {
   String roles = profile.getAttribute("roles");
   for (String role: roles.split(",")) {
     profile.addRole(role);
@@ -167,11 +167,11 @@ The `Client` interface has the following methods:
 
 | Method | Usage |
 |--------|-------|
-| `Optional<RedirectionAction> getRedirectionAction(WebContext context)` | It returns the redirection action to redirect the user to the identity provider for login. It only makes sense for indirect clients.<br />The redirection of the user to the identity provider is internally computed via a [`RedirectionActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectionActionBuilder.java) |
-| `Optional<Credentials> getCredentials(WebContext context)` | It extracts the credentials from the HTTP request and validates them.<br />The extraction of the credentials are done by a [`CredentialsExtractor`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java) while the credentials validation is ensured by an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) |
-| `Optional<UserProfile> getUserProfile(Credentials credentials, WebContext context` | It builds the authenticated user profile.<br />The creation of the authenticated user profile is performed by a [`ProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java) |
-| `Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context)` | It returns the renewed user profile |
-| `Optional<RedirectionAction> getLogoutAction(WebContext context, UserProfile currentProfile, String targetUrl)` | It returns the redirection action to call the identity provider logout.<br />The logout redirection action computation is done by a [`LogoutActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/LogoutActionBuilder.java) |
+| `Optional<RedirectionAction> getRedirectionAction(WebContext context, SessionStore sessionStore)` | It returns the redirection action to redirect the user to the identity provider for login. It only makes sense for indirect clients.<br />The redirection of the user to the identity provider is internally computed via a [`RedirectionActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectionActionBuilder.java) |
+| `Optional<Credentials> getCredentials(WebContext context, SessionStore sessionStore)` | It extracts the credentials from the HTTP request and validates them.<br />The extraction of the credentials are done by a [`CredentialsExtractor`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java) while the credentials validation is ensured by an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) |
+| `Optional<UserProfile> getUserProfile(Credentials credentials, WebContext context, SessionStore sessionStore)` | It builds the authenticated user profile.<br />The creation of the authenticated user profile is performed by a [`ProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java) |
+| `Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context, SessionStore sessionStore)` | It returns the renewed user profile |
+| `Optional<RedirectionAction> getLogoutAction(WebContext context, SessionStore sessionStore, UserProfile currentProfile, String targetUrl)` | It returns the redirection action to call the identity provider logout.<br />The logout redirection action computation is done by a [`LogoutActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/LogoutActionBuilder.java) |
 {:.striped}
 
 Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder` and `Authenticator`, except for HTTP clients where the `Authenticator` must be explicitely defined. Sub-components can of course be changed for various [customizations](customizations.html).
