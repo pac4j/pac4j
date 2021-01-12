@@ -38,7 +38,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     @Test
     public void testNullPasswordEncoder() {
         final DbProfileService dbProfileService = new DbProfileService(ds, FIRSTNAME);
-        TestsHelper.expectException(() -> dbProfileService.validate(null, null), TechnicalException.class,
+        TestsHelper.expectException(() -> dbProfileService.validate(null, null, null), TechnicalException.class,
             "passwordEncoder cannot be null");
     }
 
@@ -46,7 +46,8 @@ public final class DbProfileServiceTests implements TestsConstants {
     public void testNullDataSource() {
         final DbProfileService dbProfileService = new DbProfileService(null, FIRSTNAME);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
-        TestsHelper.expectException(() -> dbProfileService.validate(null, null), TechnicalException.class, "dataSource cannot be null");
+        TestsHelper.expectException(() -> dbProfileService.validate(null, null, null),
+            TechnicalException.class, "dataSource cannot be null");
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
@@ -54,7 +55,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        dbProfileService.validate(credentials, null);
+        dbProfileService.validate(credentials, null, null);
 
         return credentials;
     }
@@ -113,7 +114,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.create(profile, DB_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
-        dbProfileService.validate(credentials, null);
+        dbProfileService.validate(credentials, null, null);
         final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -165,7 +166,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.create(profile, DB_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
-        dbProfileService.validate(credentials, null);
+        dbProfileService.validate(credentials, null, null);
         assertNotNull(credentials.getUserProfile());
 
         // clean up

@@ -6,6 +6,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
@@ -62,7 +63,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS20_PROXY);
         final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
-        assertFalse(client.getCredentials(MockWebContext.create()).isPresent());
+        assertFalse(client.getCredentials(MockWebContext.create(), new MockSessionStore()).isPresent());
     }
 
     @Test
@@ -80,7 +81,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context).get();
+        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
         assertEquals(TICKET, credentials.getToken());
         final UserProfile profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);

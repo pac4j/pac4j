@@ -3,6 +3,7 @@ package org.pac4j.cas.authorization;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator 
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         final String rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
         final boolean isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);

@@ -1,6 +1,7 @@
 package org.pac4j.core.http.ajax;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
@@ -19,7 +20,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     private boolean addRedirectionUrlAsHeader = false;
 
     @Override
-    public boolean isAjax(final WebContext context) {
+    public boolean isAjax(final WebContext context, final SessionStore sessionStore) {
         final boolean xmlHttpRequest = AJAX_HEADER_VALUE
             .equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
         final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString()
@@ -30,10 +31,11 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     }
 
     @Override
-    public HttpAction buildAjaxResponse(final WebContext context, final RedirectionActionBuilder redirectionActionBuilder) {
+    public HttpAction buildAjaxResponse(final WebContext context, final SessionStore sessionStore,
+                                        final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            final RedirectionAction action = redirectionActionBuilder.getRedirectionAction(context).orElse(null);
+            final RedirectionAction action = redirectionActionBuilder.getRedirectionAction(context, sessionStore).orElse(null);
             if (action instanceof WithLocationAction) {
                 url = ((WithLocationAction) action).getLocation();
             }

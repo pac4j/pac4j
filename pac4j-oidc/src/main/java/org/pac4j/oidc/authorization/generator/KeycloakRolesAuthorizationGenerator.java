@@ -7,6 +7,7 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
 
         if (profile instanceof KeycloakOidcProfile) {
             try {

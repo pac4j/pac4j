@@ -5,6 +5,7 @@ import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -45,11 +46,11 @@ public class DirectBearerAuthClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 
-        return super.retrieveCredentials(context);
+        return super.retrieveCredentials(context, sessionStore);
     }
 
     public String getRealmName() {

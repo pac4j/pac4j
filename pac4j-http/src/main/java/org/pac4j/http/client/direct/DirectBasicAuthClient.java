@@ -2,6 +2,7 @@ package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -44,10 +45,10 @@ public class DirectBasicAuthClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         addAuthenticateHeader(context);
 
-        return super.retrieveCredentials(context);
+        return super.retrieveCredentials(context, sessionStore);
     }
 
     protected void addAuthenticateHeader(final WebContext context) {

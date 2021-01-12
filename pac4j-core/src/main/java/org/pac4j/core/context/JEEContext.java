@@ -1,7 +1,5 @@
 package org.pac4j.core.context;
 
-import org.pac4j.core.context.session.JEESessionStore;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -22,8 +20,6 @@ public class JEEContext implements WebContext {
 
     private final HttpServletResponse response;
 
-    private SessionStore sessionStore;
-
     private String body;
 
     /**
@@ -33,28 +29,10 @@ public class JEEContext implements WebContext {
      * @param response the current response
      */
     public JEEContext(final HttpServletRequest request, final HttpServletResponse response) {
-        this(request, response, JEESessionStore.INSTANCE);
-    }
-
-    /**
-     * Build a JEE context from the current HTTP request and response and from a session store.
-     *
-     * @param request      the current request
-     * @param response     the current response
-     * @param sessionStore the session store to use
-     */
-    public JEEContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("request", request);
         CommonHelper.assertNotNull("response", response);
-        CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.request = request;
         this.response = response;
-        this.sessionStore = sessionStore;
-    }
-
-    @Override
-    public SessionStore getSessionStore() {
-        return this.sessionStore;
     }
 
     @Override

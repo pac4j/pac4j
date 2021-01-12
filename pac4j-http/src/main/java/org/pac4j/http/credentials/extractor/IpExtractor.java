@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -34,7 +35,7 @@ public class IpExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(WebContext context) {
+    public Optional<Credentials> extract(WebContext context, final SessionStore sessionStore) {
         final Optional<String> ip;
         if (alternateIpHeaders.isEmpty()) {
             ip = Optional.ofNullable(context.getRemoteAddr());

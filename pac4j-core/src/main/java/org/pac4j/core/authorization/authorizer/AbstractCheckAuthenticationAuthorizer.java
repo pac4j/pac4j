@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 
@@ -21,7 +22,7 @@ public abstract class AbstractCheckAuthenticationAuthorizer extends ProfileAutho
     }
 
     @Override
-    protected boolean handleError(final WebContext context) {
+    protected boolean handleError(final WebContext context, final SessionStore sessionStore) {
         if (this.redirectionUrl != null) {
             throw HttpActionHelper.buildRedirectUrlAction(context, this.redirectionUrl);
         } else {

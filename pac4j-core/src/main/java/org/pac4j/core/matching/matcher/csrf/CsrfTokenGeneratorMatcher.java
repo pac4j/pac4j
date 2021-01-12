@@ -1,6 +1,7 @@
 package org.pac4j.core.matching.matcher.csrf;
 
 import org.pac4j.core.context.Cookie;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.matching.matcher.Matcher;
@@ -31,9 +32,9 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context) {
+    public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("csrfTokenGenerator", csrfTokenGenerator);
-        final String token = csrfTokenGenerator.get(context);
+        final String token = csrfTokenGenerator.get(context, sessionStore);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
         final Cookie cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
         if (domain != null) {

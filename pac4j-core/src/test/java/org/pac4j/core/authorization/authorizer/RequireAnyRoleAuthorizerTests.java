@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -45,7 +46,7 @@ public final class RequireAnyRoleAuthorizerTests {
     public void testHasAnyRoleOneRole() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(ROLE1);
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -53,7 +54,7 @@ public final class RequireAnyRoleAuthorizerTests {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
         authorizer.setElements(ROLE1);
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -62,7 +63,7 @@ public final class RequireAnyRoleAuthorizerTests {
         authorizer.setElements(ROLE1);
         profile.addRole(ROLE1);
         profiles.add(new CommonProfile());
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -70,43 +71,43 @@ public final class RequireAnyRoleAuthorizerTests {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
         authorizer.setElements(Arrays.asList(ROLE1));
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyRoleOneRole4() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
-        authorizer.setElements(new HashSet<String>(Arrays.asList(ROLE1)));
+        authorizer.setElements(new HashSet<>(Arrays.asList(ROLE1)));
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyRoleOneRoleFail() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] {ROLE1});
         profile.addRole(ROLE2);
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyRoleNull() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer((List<String>) null);
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyRoleEmpty() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] {});
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyRoleOkTwoRoles() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(ROLE2, ROLE1);
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -114,6 +115,6 @@ public final class RequireAnyRoleAuthorizerTests {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] {ROLE2});
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 }

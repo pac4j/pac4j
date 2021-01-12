@@ -11,6 +11,7 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -142,7 +143,7 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         final OidcCredentials credentials = (OidcCredentials) cred;
         final AuthorizationCode code = credentials.getCode();
         // if we have a code
@@ -150,7 +151,7 @@ public class OidcAuthenticator implements Authenticator {
             try {
                 final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
                 CodeVerifier verifier = (CodeVerifier) configuration.getValueRetriever()
-                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context).orElse(null);
+                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context, sessionStore).orElse(null);
                 // Token request
                 final TokenRequest request = new TokenRequest(
                         configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,

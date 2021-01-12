@@ -86,7 +86,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setPasswordAttribute(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class,
+        TestsHelper.expectException(() -> authenticator.validate(credentials, null, null), TechnicalException.class,
             "passwordAttribute cannot be blank");
     }
 
@@ -98,7 +98,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), attribute);
         authenticator.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        authenticator.validate(credentials, null);
+        authenticator.validate(credentials, null, null);
 
         return credentials;
     }
@@ -159,7 +159,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         mongoProfileService.create(profile, MONGO_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
-        mongoProfileService.validate(credentials, null);
+        mongoProfileService.validate(credentials, null, null);
         final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -212,7 +212,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         mongoProfileService.create(profile, MONGO_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
-        mongoProfileService.validate(credentials, null);
+        mongoProfileService.validate(credentials, null, null);
         assertNotNull(credentials.getUserProfile());
     }
 

@@ -2,6 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -30,8 +31,8 @@ public class BasicAuthExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context) {
-        final Optional<Credentials> optCredentials = this.extractor.extract(context);
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+        final Optional<Credentials> optCredentials = this.extractor.extract(context, sessionStore);
         return optCredentials.map(cred -> {
 
             final TokenCredentials credentials = (TokenCredentials) cred;

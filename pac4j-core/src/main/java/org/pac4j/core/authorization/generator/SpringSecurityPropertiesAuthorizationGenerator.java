@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.generator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -43,7 +44,7 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final UserProfile profile) {
+    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         final String id = profile.getId();
         final List<String> roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {

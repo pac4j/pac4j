@@ -3,6 +3,7 @@ package org.pac4j.oidc.util;
 import java.util.Optional;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
 
 import com.nimbusds.oauth2.sdk.id.State;
@@ -20,5 +21,5 @@ import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
  */
 public interface ValueRetriever {
 
-    Optional<Object> retrieve(String key, OidcClient client, WebContext webContext);
+    Optional<Object> retrieve(String key, OidcClient client, WebContext webContext, SessionStore sessionStore);
 }

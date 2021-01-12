@@ -16,6 +16,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
@@ -32,7 +33,7 @@ import java.util.List;
 /**
  * Responsible for building a {@link SAML2MessageContext} from given SAML2 properties (idpEntityId and metadata
  * manager) and current {@link WebContext}.
- * 
+ *
  * @author Michael Remond
  * @author Misagh Moayyed
  * @since 1.7
@@ -62,22 +63,24 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     }
 
     @Override
-    public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext) {
+    public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext, final SessionStore sessionStore) {
         final SAML2MessageContext context = new SAML2MessageContext();
-        addTransportContext(webContext, context);
+        addTransportContext(webContext, sessionStore, context);
         addSPContext(context);
         return context;
     }
 
     @Override
-    public SAML2MessageContext buildContext(final WebContext webContext) {
-        final SAML2MessageContext context = buildServiceProviderContext(webContext);
+    public SAML2MessageContext buildContext(final WebContext webContext, final SessionStore sessionStore) {
+        final SAML2MessageContext context = buildServiceProviderContext(webContext, sessionStore);
         addIDPContext(context);
         context.setWebContext(webContext);
+        context.setSessionStore(sessionStore);
         return context;
     }
 
-    protected final void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
+    protected final void addTransportContext(final WebContext webContext, final SessionStore sessionStore,
+                                             final SAML2MessageContext context) {
         final ProfileRequestContext profile = context.getProfileRequestContext();
         profile.setOutboundMessageContext(prepareOutboundMessageContext(webContext));
         context.getSAMLProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
@@ -87,7 +90,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
         if (this.samlMessageStoreFactory != null) {
             logger.debug("Creating message store by {}", this.samlMessageStoreFactory.getClass().getName());
-            context.setSAMLMessageStore(this.samlMessageStoreFactory.getMessageStore(webContext));
+            context.setSAMLMessageStore(this.samlMessageStoreFactory.getMessageStore(webContext, sessionStore));
         }
     }
 

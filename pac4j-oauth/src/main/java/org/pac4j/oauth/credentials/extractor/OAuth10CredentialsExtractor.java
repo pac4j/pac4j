@@ -4,6 +4,7 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
@@ -24,12 +25,12 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor {
     }
 
     @Override
-    protected Optional<Credentials> getOAuthCredentials(final WebContext context) {
+    protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
         final Optional<String> tokenParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_TOKEN);
         final Optional<String> verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
         if (tokenParameter.isPresent() && verifierParameter.isPresent()) {
             // get request token from session
-            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) context.getSessionStore()
+            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) sessionStore
                     .get(context, ((OAuth10Configuration) configuration)
                     .getRequestTokenSessionAttributeName(client.getName())).orElse(null);
             logger.debug("tokenRequest: {}", tokenSession);

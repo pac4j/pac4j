@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -59,7 +60,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;

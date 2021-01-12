@@ -3,6 +3,7 @@ package org.pac4j.oauth.credentials.extractor;
 import com.github.scribejava.core.exceptions.OAuthException;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
@@ -36,7 +37,7 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {
@@ -58,7 +59,7 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
             if (errorFound) {
                 throw oauthCredentialsException;
             } else {
-                return getOAuthCredentials(context);
+                return getOAuthCredentials(context, sessionStore);
             }
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
@@ -69,7 +70,8 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
      * Get the OAuth credentials from the web context.
      *
      * @param context the web context
+     * @param sessionStore the session store
      * @return the OAuth credentials
      */
-    protected abstract Optional<Credentials> getOAuthCredentials(final WebContext context);
+    protected abstract Optional<Credentials> getOAuthCredentials(WebContext context, SessionStore sessionStore);
 }

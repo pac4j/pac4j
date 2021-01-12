@@ -51,7 +51,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     public void testNoConfigWithCollections() {
         final FromAttributesAuthorizationGenerator generator =
                 new FromAttributesAuthorizationGenerator(new ArrayList<>(), new HashSet<>());
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
     }
@@ -60,7 +60,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     public void testNoConfig() {
         final FromAttributesAuthorizationGenerator generator =
                 new FromAttributesAuthorizationGenerator(null, (String[]) null);
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
     }
@@ -75,7 +75,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         };
         final FromAttributesAuthorizationGenerator generator =
             new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
@@ -96,7 +96,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         };
         final FromAttributesAuthorizationGenerator generator =
             new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         final Set<String> permissions = this.profile.getPermissions();
         assertEquals(2, permissions.size());
@@ -114,7 +114,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         };
         final FromAttributesAuthorizationGenerator generator =
             new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
@@ -133,7 +133,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final FromAttributesAuthorizationGenerator generator =
             new FromAttributesAuthorizationGenerator(roleAttributes, permissionAttributes);
         generator.setSplitChar("|");
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(1, roles.size());
         assertTrue(roles.contains(VALUE1));
@@ -155,7 +155,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                 roleAttributes,
                 permissionAttributes);
 
-        generator.generate(null, this.profile);
+        generator.generate(null, null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
         for(String value : ATTRIB_ARRAY) {

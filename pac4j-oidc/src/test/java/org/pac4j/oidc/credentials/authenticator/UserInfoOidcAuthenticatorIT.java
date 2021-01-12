@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Answers;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -51,7 +52,7 @@ public class UserInfoOidcAuthenticatorIT implements TestsConstants {
         final UserInfoOidcAuthenticator authenticator = new UserInfoOidcAuthenticator(configuration);
         final TokenCredentials credentials = getCredentials();
 
-        authenticator.validate(credentials, MockWebContext.create());
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
         final OidcProfile profile = (OidcProfile) credentials.getUserProfile();
         assertEquals(GOOD_USERNAME, profile.getDisplayName());
@@ -66,7 +67,7 @@ public class UserInfoOidcAuthenticatorIT implements TestsConstants {
         final UserInfoOidcAuthenticator authenticator = new UserInfoOidcAuthenticator(configuration);
         final TokenCredentials credentials = getCredentials();
 
-        authenticator.validate(credentials, MockWebContext.create());
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
     }
 
     private TokenCredentials getCredentials() {

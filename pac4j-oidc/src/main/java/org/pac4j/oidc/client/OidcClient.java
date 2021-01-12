@@ -3,6 +3,7 @@ package org.pac4j.oidc.client;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -55,7 +56,7 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    public Optional<UserProfile> renewUserProfile(UserProfile profile, WebContext context) {
+    public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context, final SessionStore sessionStore) {
         OidcProfile oidcProfile = (OidcProfile) profile;
         RefreshToken refreshToken = oidcProfile.getRefreshToken();
         if (refreshToken != null) {
@@ -66,7 +67,7 @@ public class OidcClient extends IndirectClient {
 
             // Create a profile if the refresh grant was successful
             if (credentials.getAccessToken() != null) {
-                return getUserProfile(credentials, context);
+                return getUserProfile(credentials, context, sessionStore);
             }
         }
 
@@ -74,8 +75,8 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
-        configuration.findLogoutHandler().renewSession(oldSessionId, context);
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
+        configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
     }
 
     public OidcConfiguration getConfiguration() {

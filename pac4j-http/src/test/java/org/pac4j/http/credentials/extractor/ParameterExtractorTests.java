@@ -3,6 +3,7 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
@@ -31,7 +32,7 @@ public final class ParameterExtractorTests implements TestsConstants {
     public void testRetrieveGetParameterOk() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final TokenCredentials credentials = (TokenCredentials) getExtractor.extract(context).get();
+        final TokenCredentials credentials = (TokenCredentials) getExtractor.extract(context, new MockSessionStore()).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
@@ -39,7 +40,7 @@ public final class ParameterExtractorTests implements TestsConstants {
     public void testRetrievePostParameterOk() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final TokenCredentials credentials = (TokenCredentials) postExtractor.extract(context).get();
+        final TokenCredentials credentials = (TokenCredentials) postExtractor.extract(context, new MockSessionStore()).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
@@ -47,27 +48,29 @@ public final class ParameterExtractorTests implements TestsConstants {
     public void testRetrievePostParameterNotSupported() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        TestsHelper.expectException(() -> getExtractor.extract(context), CredentialsException.class, "POST requests not supported");
+        TestsHelper.expectException(() -> getExtractor.extract(context, new MockSessionStore()),
+            CredentialsException.class, "POST requests not supported");
     }
 
     @Test
     public void testRetrieveGetParameterNotSupported() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        TestsHelper.expectException(() -> postExtractor.extract(context), CredentialsException.class, "GET requests not supported");
+        TestsHelper.expectException(() -> postExtractor.extract(context, new MockSessionStore()),
+            CredentialsException.class, "GET requests not supported");
     }
 
     @Test
     public void testRetrieveNoGetParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
-        final Optional<Credentials> credentials = getExtractor.extract(context);
+        final Optional<Credentials> credentials = getExtractor.extract(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testRetrieveNoPostParameter() {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        final Optional<Credentials> credentials = postExtractor.extract(context);
+        final Optional<Credentials> credentials = postExtractor.extract(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 }

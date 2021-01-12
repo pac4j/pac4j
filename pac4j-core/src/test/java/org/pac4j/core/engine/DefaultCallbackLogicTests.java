@@ -10,6 +10,8 @@ import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.session.JEESessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -46,6 +48,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     private JEEContext context;
 
+    private SessionStore sessionStore;
+
     private Config config;
 
     private HttpActionAdapter httpActionAdapter;
@@ -64,6 +68,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         context = new JEEContext(request, response);
+        sessionStore = JEESessionStore.INSTANCE;
         config = new Config();
         httpActionAdapter = (act, ctx) -> { action = act; return null; };
         defaultUrl = null;
@@ -73,7 +78,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, renewSession, null);
+        logic.perform(context, sessionStore, config, httpActionAdapter, defaultUrl, renewSession, null);
         logic.setClientFinder(clientFinder);
     }
 
@@ -86,7 +91,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testNullContext() {
         context = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "context cannot be null");
+        TestsHelper.expectException(() -> call(), TechnicalException.class, "webContext cannot be null");
     }
 
     @Test

@@ -3,6 +3,7 @@ package org.pac4j.saml.redirect;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
@@ -36,9 +37,9 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext wc) {
-        final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc);
-        final String relayState = this.client.getStateGenerator().generateValue(wc);
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore) {
+        final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc, sessionStore);
+        final String relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
 
         final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
         this.client.getProfileHandler().send(context, authnRequest, relayState);

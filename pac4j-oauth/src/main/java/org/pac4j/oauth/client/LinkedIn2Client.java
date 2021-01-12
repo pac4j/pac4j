@@ -49,7 +49,7 @@ public class LinkedIn2Client extends OAuth20Client {
             }
             return false;
         });
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.linkedin.com/uas/logout")));
         defaultProfileCreator(new LinkedIn2ProfileCreator(configuration, this));
 

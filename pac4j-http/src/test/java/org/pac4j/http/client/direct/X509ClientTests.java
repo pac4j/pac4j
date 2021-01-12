@@ -2,6 +2,7 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
@@ -54,8 +55,8 @@ public final class X509ClientTests implements TestsConstants {
         final X509Certificate[]certs = new X509Certificate[1];
         certs[0] = cert;
         context.setRequestAttribute(X509CredentialsExtractor.CERTIFICATE_REQUEST_ATTRIBUTE, certs);
-        final X509Credentials credentials = (X509Credentials) client.getCredentials(context).get();
-        final X509Profile profile = (X509Profile) client.getUserProfile(credentials, context).get();
+        final X509Credentials credentials = (X509Credentials) client.getCredentials(context, new MockSessionStore()).get();
+        final X509Profile profile = (X509Profile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals("jerome", profile.getId());
     }
 }

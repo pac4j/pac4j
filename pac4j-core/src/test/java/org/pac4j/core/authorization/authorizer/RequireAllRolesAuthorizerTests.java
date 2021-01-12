@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -46,7 +47,7 @@ public final class RequireAllRolesAuthorizerTests {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(ROLE3, ROLE1);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -54,7 +55,7 @@ public final class RequireAllRolesAuthorizerTests {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(Arrays.asList(ROLE3, ROLE1));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -63,7 +64,7 @@ public final class RequireAllRolesAuthorizerTests {
         authorizer.setElements(ROLE3, ROLE1);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -72,7 +73,7 @@ public final class RequireAllRolesAuthorizerTests {
         authorizer.setElements(new HashSet<>(Arrays.asList(ROLE3, ROLE1)));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -81,7 +82,7 @@ public final class RequireAllRolesAuthorizerTests {
         authorizer.setElements(Arrays.asList(ROLE3, ROLE1));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -89,7 +90,7 @@ public final class RequireAllRolesAuthorizerTests {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer((List<String>) null);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -97,7 +98,7 @@ public final class RequireAllRolesAuthorizerTests {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(new String[]{});
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertTrue(authorizer.isAuthorized(context, profiles));
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -105,7 +106,7 @@ public final class RequireAllRolesAuthorizerTests {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
         profile.addRole(ROLE1);
         profile.addRole(ROLE2);
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
@@ -116,6 +117,6 @@ public final class RequireAllRolesAuthorizerTests {
         final CommonProfile profile2 = new CommonProfile();
         profile2.addRole(ROLE3);
         profiles.add(profile2);
-        assertFalse(authorizer.isAuthorized(context, profiles));
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 }

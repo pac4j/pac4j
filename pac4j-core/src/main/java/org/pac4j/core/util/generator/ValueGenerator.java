@@ -1,6 +1,7 @@
 package org.pac4j.core.util.generator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 
 /**
  * Value generator.
@@ -10,5 +11,5 @@ import org.pac4j.core.context.WebContext;
  */
 public interface ValueGenerator {
 
-    String generateValue(WebContext webContext);
+    String generateValue(WebContext webContext, SessionStore sessionStore);
 }

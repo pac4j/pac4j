@@ -15,6 +15,7 @@ public interface Pac4jConstants {
     String USER_PROFILES = "pac4jUserProfiles";
 
     /* CSRF token name saved in session */
+    String PREVIOUS_CSRF_TOKEN = "pac4jPreviousCsrfToken";
     String CSRF_TOKEN = "pac4jCsrfToken";
 
     /* CSRF token expiration date name saved in session */
@@ -84,7 +85,6 @@ public interface Pac4jConstants {
     String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
 
     String OIDC_CLAIM_SESSIONID = "sid";
-
 
     /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
     String IS_AJAX_REQUEST = "is_ajax_request";

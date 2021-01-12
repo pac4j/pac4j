@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     }
 
     @Override
-    protected boolean check(final WebContext context, final UserProfile profile, final Class element) {
+    protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final Class element) {
         return profile.getClass().isAssignableFrom(element);
     }
 

@@ -12,6 +12,7 @@ import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SingleLogoutServiceBuilder;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -55,6 +56,7 @@ public class SAML2LogoutMessageReceiverTest {
         EntityDescriptor entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
         context.setWebContext(webContext);
+        context.setSessionStore(new MockSessionStore());
 
         SPSSODescriptor spDescriptor = new SPSSODescriptorBuilder().buildObject();
         SingleLogoutService logoutService = new SingleLogoutServiceBuilder().buildObject();

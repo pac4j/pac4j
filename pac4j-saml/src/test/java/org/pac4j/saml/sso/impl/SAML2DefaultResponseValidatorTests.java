@@ -5,6 +5,7 @@ import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -53,9 +54,9 @@ public class SAML2DefaultResponseValidatorTests {
     public void testAssertionConsumingServiceWithMultipleIDP() throws Exception {
         final File file = new File(SAML2DefaultResponseValidatorTests.class.getClassLoader().
                 getResource(SAMPLE_RESPONSE_FILE_NAME).getFile());
-        
+
         final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(
-                Configuration.getParserPool(), 
+                Configuration.getParserPool(),
                 new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
 
         final Response response = (Response) xmlObject;
@@ -83,6 +84,7 @@ public class SAML2DefaultResponseValidatorTests {
         request.setParameter("RelayState", "TST-2-FZOsWEfjC-IH-h6Xb333DRbu5UPMHqfL");
         final WebContext webContext = new JEEContext(request, new MockHttpServletResponse());
         context.setWebContext(webContext);
+        context.setSessionStore(JEESessionStore.INSTANCE);
 
         final EntityDescriptor idpDescriptor = mock(EntityDescriptor.class);
         context.getSAMLPeerMetadataContext().setEntityDescriptor(idpDescriptor);
@@ -121,7 +123,7 @@ public class SAML2DefaultResponseValidatorTests {
         final SAML2SignatureTrustEngineProvider trustEngineProvider = mock(SAML2SignatureTrustEngineProvider.class);
         final LogoutHandler logoutHandler = mock(LogoutHandler.class);
         final SignatureTrustEngine engine = mock(SignatureTrustEngine.class);
-        
+
         try {
             when(engine.validate(any(Signature.class), any(CriteriaSet.class))).thenReturn(true);
         } catch (final SecurityException ex) {
@@ -211,20 +213,20 @@ public class SAML2DefaultResponseValidatorTests {
         validator.validateAssertionSignature(null, context, null);
         // expected no exceptions
     }
-    
+
     @Test(expected = SAMLSignatureValidationException.class)
-    public void testNotSignedAuthenticatedResponseThrowsException() 
+    public void testNotSignedAuthenticatedResponseThrowsException()
             throws FileNotFoundException, XMLParserException, UnmarshallingException {
         final File file = new File(SAML2DefaultResponseValidatorTests.class.getClassLoader().
                 getResource(SAMPLE_RESPONSE_FILE_NAME).getFile());
-        
+
         final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(
-                Configuration.getParserPool(), 
+                Configuration.getParserPool(),
                 new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
 
         final Response response = (Response) xmlObject;
         response.setSignature(null);
-        
+
         final SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(false, true);
         final SAML2MessageContext context = new SAML2MessageContext();
         final SAMLPeerEntityContext peerEntityContext = new SAMLPeerEntityContext();

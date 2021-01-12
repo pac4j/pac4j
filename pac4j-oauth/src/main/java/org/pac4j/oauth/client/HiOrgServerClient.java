@@ -44,7 +44,7 @@ public class HiOrgServerClient extends OAuth20Client {
             }
         });
         configuration.setWithState(true);
-        defaultLogoutActionBuilder((ctx, profile, targetUrl) ->
+        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, LOGOUT_URL)));
 
         super.internalInit();

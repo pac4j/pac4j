@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
@@ -48,33 +49,33 @@ public class IsAuthenticatedAuthorizerTests implements TestsConstants {
 
     @Test
     public void testNoProfile() {
-        assertFalse(authorizer.isAuthorized(null, profiles));
+        assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testAnonymousProfile() {
         profiles.add(new AnonymousProfile());
-        assertFalse(authorizer.isAuthorized(null, profiles));
+        assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testCommonProfileTwoProfiles() {
         profiles.add(new AnonymousProfile());
         profiles.add(profile);
-        assertTrue(authorizer.isAuthorized(null, profiles));
+        assertTrue(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testCommonProfile() {
         profiles.add(profile);
-        assertTrue(authorizer.isAuthorized(null, profiles));
+        assertTrue(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testAnonymousProfileRedirectionUrl() {
         profiles.add(new AnonymousProfile());
         ((IsAuthenticatedAuthorizer) authorizer).setRedirectionUrl(PAC4J_URL);
-        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class,
-            "Performing a 302 HTTP action");
+        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles),
+            HttpAction.class, "Performing a 302 HTTP action");
     }
 }

@@ -2,6 +2,8 @@ package org.pac4j.core.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.*;
@@ -30,7 +32,8 @@ public abstract class RunClient implements TestsConstants {
     public void run() {
         final IndirectClient client = getClient();
         final MockWebContext context = MockWebContext.create();
-        final String url = ((FoundAction) client.getRedirectionAction(context).get()).getLocation();
+        final SessionStore sessionStore = new MockSessionStore();
+        final String url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
         logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
         if (canCancel()) {
@@ -40,9 +43,9 @@ public abstract class RunClient implements TestsConstants {
         final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final Optional<Credentials> credentials = client.getCredentials(context);
+        final Optional<Credentials> credentials = client.getCredentials(context, sessionStore);
         if (credentials.isPresent()) {
-            final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context);
+            final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context, sessionStore);
             logger.debug("userProfile: {}", profile);
             if (profile.isPresent() || !canCancel()) {
                 verifyProfile((CommonProfile) profile.get());

@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
@@ -56,12 +57,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
         final GaeUserServiceClient localClient = new GaeUserServiceClient();
-        localClient.getRedirectionAction(context);
+        localClient.getRedirectionAction(context, new MockSessionStore());
     }
 
     @Test
     public void testRedirect() {
-        final HttpAction action = client.getRedirectionAction(context).get();
+        final HttpAction action = client.getRedirectionAction(context, new MockSessionStore()).get();
         assertEquals(HttpConstants.FOUND, action.getCode());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
             Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((FoundAction) action).getLocation());
@@ -69,11 +70,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final GaeUserCredentials credentials = (GaeUserCredentials) client.getCredentials(context).get();
+        final GaeUserCredentials credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore()).get();
         final User user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals("", user.getAuthDomain());
-        final GaeUserServiceProfile profile = (GaeUserServiceProfile) client.getUserProfile(credentials, context).get();
+        final GaeUserServiceProfile profile =
+            (GaeUserServiceProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         logger.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
         assertEquals(GaeUserServiceProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + EMAIL, profile.getTypedId());

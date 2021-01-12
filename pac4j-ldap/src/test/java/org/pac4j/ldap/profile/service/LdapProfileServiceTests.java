@@ -81,7 +81,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     public void authentFailed() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        ldapProfileService.validate(credentials, null);
+        ldapProfileService.validate(credentials, null, null);
     }
 
     @Test
@@ -90,7 +90,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
             new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        ldapProfileService.validate(credentials, null);
+        ldapProfileService.validate(credentials, null, null);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -106,7 +106,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
             new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        ldapProfileService.validate(credentials, null);
+        ldapProfileService.validate(credentials, null, null);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -123,7 +123,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
             + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD);
-        ldapProfileService.validate(credentials, null);
+        ldapProfileService.validate(credentials, null, null);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -152,7 +152,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         ldapProfileService.create(profile, LDAP_PASS);
         // check credentials
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS);
-        ldapProfileService.validate(credentials, null);
+        ldapProfileService.validate(credentials, null, null);
         final UserProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -183,7 +183,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         assertEquals(LDAP_USER2, result2.get(LdapServer.SN));
         // check credentials
         final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2);
-        ldapProfileService.validate(credentials2, null);
+        ldapProfileService.validate(credentials2, null, null);
         final UserProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // remove

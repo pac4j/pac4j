@@ -3,6 +3,7 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -26,15 +27,15 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null);
-        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class,
-            "authenticator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
+            TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
-            MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+            MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -50,8 +51,9 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) client.getCredentials(context).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
+        final UsernamePasswordCredentials credentials =
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
     }
 
@@ -62,8 +64,9 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER.toLowerCase(),
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) client.getCredentials(context).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context).get();
+        final UsernamePasswordCredentials credentials =
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
     }
 }

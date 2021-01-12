@@ -4,6 +4,7 @@ import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -31,11 +32,11 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     protected static final IsRememberedAuthorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
-                                final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
+    public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles,
+                                final String authorizersValue, final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
 
         final List<Authorizer> authorizers = computeAuthorizers(context, profiles, authorizersValue, authorizersMap, clients);
-        return isAuthorized(context, profiles, authorizers);
+        return isAuthorized(context, sessionStore, profiles, authorizers);
     }
 
     protected List<Authorizer> computeAuthorizers(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
@@ -117,13 +118,14 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return false;
     }
 
-    protected boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) {
+    protected boolean isAuthorized(final WebContext context, final SessionStore sessionStore,
+                                   final List<UserProfile> profiles, final List<Authorizer> authorizers) {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {
             // check authorizations using authorizers: all must be satisfied
             for (Authorizer authorizer : authorizers) {
-                final boolean isAuthorized = authorizer.isAuthorized(context, profiles);
+                final boolean isAuthorized = authorizer.isAuthorized(context, sessionStore, profiles);
                 LOGGER.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
                 if (!isAuthorized) {
                     return false;

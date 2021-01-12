@@ -3,6 +3,7 @@ package org.pac4j.http.client.indirect;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -29,8 +30,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testMissingUsernamePasswordAuthenticator() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class,
-            "authenticator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
+            TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
@@ -39,7 +40,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         basicAuthClient.setProfileCreator(null);
         TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
-                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
+                MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -73,7 +74,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) basicAuthClient.getRedirectionAction(context).get();
+        final FoundAction action = (FoundAction) basicAuthClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
     }
@@ -122,7 +123,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         final String header = USERNAME + ":" + USERNAME;
         final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) basicAuthClient
             .getCredentials(getContextWithAuthorizationHeader("Basic "
-                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)))).get();
+                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8))), new MockSessionStore()).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }
@@ -131,7 +132,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
             IndirectBasicAuthClient basicAuthClient,
             MockWebContext context) {
         try {
-            basicAuthClient.getCredentials(context);
+            basicAuthClient.getCredentials(context, new MockSessionStore());
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());

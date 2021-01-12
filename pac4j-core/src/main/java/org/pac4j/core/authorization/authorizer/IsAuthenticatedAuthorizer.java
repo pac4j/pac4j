@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -22,12 +23,12 @@ public class IsAuthenticatedAuthorizer extends AbstractCheckAuthenticationAuthor
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
-        return isAnyAuthorized(context, profiles);
+    public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
+        return isAnyAuthorized(context, sessionStore, profiles);
     }
 
     @Override
-    public boolean isProfileAuthorized(final WebContext context, final UserProfile profile) {
+    public boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         return profile != null && !(profile instanceof AnonymousProfile);
     }
 

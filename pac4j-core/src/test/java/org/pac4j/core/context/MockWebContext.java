@@ -1,8 +1,5 @@
 package org.pac4j.core.context;
 
-import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.context.session.SessionStore;
-
 import java.util.*;
 
 import static org.pac4j.core.context.HttpConstants.*;
@@ -18,8 +15,6 @@ public final class MockWebContext implements WebContext {
     protected final Map<String, String> parameters = new HashMap<>();
 
     protected final Map<String, String> headers = new HashMap<>();
-
-    protected SessionStore sessionStore = new MockSessionStore();
 
     protected final Map<String, Object> attributes = new HashMap<>();
 
@@ -52,11 +47,6 @@ public final class MockWebContext implements WebContext {
     protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
 
     protected MockWebContext() {
-    }
-
-    @Override
-    public SessionStore getSessionStore() {
-        return sessionStore;
     }
 
     /**
@@ -100,18 +90,6 @@ public final class MockWebContext implements WebContext {
      */
     public MockWebContext addRequestHeader(final String key, final String value) {
         this.headers.put(key, value);
-        return this;
-    }
-
-    /**
-     * Add a session attribute for mock purpose.
-     *
-     * @param name session attribute name
-     * @param value session attribute value
-     * @return this mock web context
-     */
-    public MockWebContext addSessionAttribute(final String name, final Object value) {
-        this.sessionStore.set(this, name, value);
         return this;
     }
 

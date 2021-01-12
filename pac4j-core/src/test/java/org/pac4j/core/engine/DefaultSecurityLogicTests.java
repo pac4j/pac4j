@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.pac4j.core.client.*;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -33,6 +35,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private MockWebContext context;
 
+    private SessionStore sessionStore;
+
     private Config config;
 
     private SecurityGrantedAccessAdapter securityGrantedAccessAdapter;
@@ -53,8 +57,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void setUp() {
         logic = new DefaultSecurityLogic();
         context = MockWebContext.create();
+        sessionStore = new MockSessionStore();
         config = new Config();
-        securityGrantedAccessAdapter = (context, profiles, parameters) -> { nbCall++; return null; };
+        securityGrantedAccessAdapter = (context, sessionStore, profiles, parameters) -> { nbCall++; return null; };
         httpActionAdapter = (act, ctx) -> { action = act; return null; };
         clients = null;
         authorizers = null;
@@ -63,7 +68,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, securityGrantedAccessAdapter, httpActionAdapter, clients, authorizers, matchers);
+        logic.perform(context, sessionStore, config, securityGrantedAccessAdapter, httpActionAdapter, clients, authorizers, matchers);
     }
 
     @Test
@@ -121,7 +126,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testNotAuthenticatedButMatcher() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addMatcher(NAME, context -> false);
+        config.addMatcher(NAME, (context, store) -> false);
         matchers = NAME;
         call();
         assertNull(action);
@@ -134,11 +139,11 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         profile.setId(ID);
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
+        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
         call();
         assertNull(action);
         assertEquals(1, nbCall);
@@ -149,11 +154,11 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final CommonProfile profile = new CommonProfile();
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
+        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
         call();
         assertEquals(403, action.getCode());
     }
@@ -163,11 +168,11 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         final CommonProfile profile = new CommonProfile();
         final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
-        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, prof) -> { throw new StatusAction(400); } );
+        config.addAuthorizer(NAME, (context, store, prof) -> { throw new StatusAction(400); } );
         call();
         assertEquals(400, action.getCode());
         assertEquals(0, nbCall);

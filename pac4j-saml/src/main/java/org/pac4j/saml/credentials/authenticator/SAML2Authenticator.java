@@ -1,6 +1,7 @@
 package org.pac4j.saml.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -62,7 +63,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context) {
+    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final SAML2Credentials credentials = (SAML2Credentials) cred;

@@ -1,6 +1,7 @@
 package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 
@@ -20,7 +21,8 @@ public interface CredentialsExtractor {
      * or throw a {@link CredentialsException} if it cannot get it.
      *
      * @param context the current web context
+     * @param sessionStore the session store
      * @return the credentials (optional)
      */
-    Optional<Credentials> extract(WebContext context);
+    Optional<Credentials> extract(WebContext context, SessionStore sessionStore);
 }

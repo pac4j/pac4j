@@ -2,6 +2,7 @@ package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -51,8 +52,8 @@ public class DigestAuthExtractor implements CredentialsExtractor {
      * @return the Digest credentials
      */
     @Override
-    public Optional<Credentials> extract(WebContext context) {
-        final Optional<Credentials> credentials = this.extractor.extract(context);
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+        final Optional<Credentials> credentials = this.extractor.extract(context, sessionStore);
         if (!credentials.isPresent()) {
             return Optional.empty();
         }

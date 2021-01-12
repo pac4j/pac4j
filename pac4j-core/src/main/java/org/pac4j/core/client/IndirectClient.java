@@ -1,5 +1,6 @@
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -87,36 +88,35 @@ public abstract class IndirectClient extends BaseClient {
      * @return the "redirection" action
      */
     @Override
-    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context) {
+    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         init();
         // it's an AJAX request -> appropriate action
-        if (ajaxRequestResolver.isAjax(context)) {
-            final HttpAction httpAction = ajaxRequestResolver.buildAjaxResponse(context, redirectionActionBuilder);
+        if (ajaxRequestResolver.isAjax(context, sessionStore)) {
+            final HttpAction httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore, redirectionActionBuilder);
             logger.debug("AJAX request detected -> returning " + httpAction + " for " + context.getFullRequestURL());
-            cleanRequestedUrl(context);
+            cleanRequestedUrl(context, sessionStore);
             throw httpAction;
         }
         // authentication has already been tried -> unauthorized
-        final Optional<Object> attemptedAuth = context.getSessionStore()
-            .get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        final Optional<Object> attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (attemptedAuth.isPresent() && !"".equals(attemptedAuth.get())) {
             logger.debug("authentication already attempted -> 401");
-            cleanAttemptedAuthentication(context);
-            cleanRequestedUrl(context);
+            cleanAttemptedAuthentication(context, sessionStore);
+            cleanRequestedUrl(context, sessionStore);
             throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
-        return redirectionActionBuilder.getRedirectionAction(context);
+        return redirectionActionBuilder.getRedirectionAction(context, sessionStore);
     }
 
-    private void cleanRequestedUrl(final WebContext context) {
+    private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
         logger.debug("clean requested URL");
-        context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, "");
+        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
     }
 
-    private void cleanAttemptedAuthentication(final WebContext context) {
+    private void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
         logger.debug("clean authentication attempt");
-        context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+        sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
     }
 
     /**
@@ -131,24 +131,24 @@ public abstract class IndirectClient extends BaseClient {
      * @return the credentials
      */
     @Override
-    public final Optional<Credentials> getCredentials(final WebContext context) {
+    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore) {
         init();
-        final Optional<Credentials> optCredentials = retrieveCredentials(context);
+        final Optional<Credentials> optCredentials = retrieveCredentials(context, sessionStore);
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");
-            context.getSessionStore().set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         } else {
-            cleanAttemptedAuthentication(context);
+            cleanAttemptedAuthentication(context, sessionStore);
         }
         return optCredentials;
     }
 
     @Override
-    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final UserProfile currentProfile,
-                                                             final String targetUrl) {
+    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                             final UserProfile currentProfile, final String targetUrl) {
         init();
-        return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
+        return logoutActionBuilder.getLogoutAction(context, sessionStore, currentProfile, targetUrl);
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {

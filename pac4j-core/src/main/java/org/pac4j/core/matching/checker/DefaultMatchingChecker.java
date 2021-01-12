@@ -3,6 +3,7 @@ package org.pac4j.core.matching.checker;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.matching.matcher.*;
@@ -53,22 +54,22 @@ public class DefaultMatchingChecker implements MatchingChecker {
     }
 
     @Override
-    public boolean matches(final WebContext context, final String matchersValue, final Map<String, Matcher> matchersMap,
-                           final List<Client> clients) {
+    public boolean matches(final WebContext context, final SessionStore sessionStore, final String matchersValue,
+                           final Map<String, Matcher> matchersMap, final List<Client> clients) {
 
-        final List<Matcher> matchers = computeMatchers(context, matchersValue, matchersMap, clients);
-        return matches(context, matchers);
+        final List<Matcher> matchers = computeMatchers(context, sessionStore, matchersValue, matchersMap, clients);
+        return matches(context, sessionStore, matchers);
     }
 
-    protected List<Matcher> computeMatchers(final WebContext context, final String matchersValue, final Map<String, Matcher> matchersMap,
-                                            final List<Client> clients) {
+    protected List<Matcher> computeMatchers(final WebContext context, final SessionStore sessionStore, final String matchersValue,
+                                            final Map<String, Matcher> matchersMap, final List<Client> clients) {
         final List<Matcher> matchers;
         if (isBlank(matchersValue)) {
-            matchers = computeDefaultMatchers(context, clients);
+            matchers = computeDefaultMatchers(context, sessionStore, clients);
         } else {
             if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
                 final String matcherNames = substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
-                matchers = computeDefaultMatchers(context, clients);
+                matchers = computeDefaultMatchers(context, sessionStore, clients);
                 matchers.addAll(computeMatchersFromNames(matcherNames, matchersMap));
             } else {
                 matchers = computeMatchersFromNames(matchersValue, matchersMap);
@@ -77,10 +78,10 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return matchers;
     }
 
-    protected List<Matcher> computeDefaultMatchers(final WebContext context, final List<Client> clients) {
+    protected List<Matcher> computeDefaultMatchers(final WebContext context, final SessionStore sessionStore, final List<Client> clients) {
         final List<Matcher> matchers = new ArrayList<>();
         matchers.addAll(SECURITY_HEADERS_MATCHERS);
-        if (context.getSessionStore().getSessionId(context, false).isPresent()) {
+        if (sessionStore.getSessionId(context, false).isPresent()) {
             matchers.add(CSRF_TOKEN_MATCHER);
             return matchers;
         }
@@ -150,11 +151,11 @@ public class DefaultMatchingChecker implements MatchingChecker {
     }
 
 
-    protected boolean matches(final WebContext context, final List<Matcher> matchers) {
+    protected boolean matches(final WebContext context, final SessionStore sessionStore, final List<Matcher> matchers) {
         if (!matchers.isEmpty()) {
             // check matching using matchers: all must be satisfied
             for (final Matcher matcher : matchers) {
-                final boolean matches = matcher.matches(context);
+                final boolean matches = matcher.matches(context, sessionStore);
                 LOGGER.debug("Checking matcher: {} -> {}", matcher, matches);
                 if (!matches) {
                     return false;

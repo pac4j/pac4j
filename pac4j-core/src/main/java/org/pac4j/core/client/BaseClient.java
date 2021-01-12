@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -26,10 +27,10 @@ import org.slf4j.LoggerFactory;
  * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by
  * using the appropriate {@link AuthorizationGenerator}</li>
- * <li>The credentials extraction and validation in the {@link #getCredentials(WebContext)} method are handled by the
+ * <li>The credentials extraction and validation in the {@link #getCredentials(WebContext, SessionStore)} method are handled by the
  * {@link #credentialsExtractor} and {@link #authenticator} components</li>
- * <li>The user profile retrieval in the {@link #getUserProfile(Credentials, WebContext)} method is ensured by the {@link #profileCreator}
- * component.</li>
+ * <li>The user profile retrieval in the {@link #getUserProfile(Credentials, WebContext, SessionStore)} method is ensured
+ * by the {@link #profileCreator} component.</li>
  * </ul>
  *
  * @author Jerome Leleu
@@ -65,13 +66,13 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @param context the web context
      * @return the credentials
      */
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         try {
-            final Optional<Credentials> optCredentials = this.credentialsExtractor.extract(context);
+            final Optional<Credentials> optCredentials = this.credentialsExtractor.extract(context, sessionStore);
             optCredentials.ifPresent(credentials -> {
                 final long t0 = System.currentTimeMillis();
                 try {
-                    this.authenticator.validate(credentials, context);
+                    this.authenticator.validate(credentials, context, sessionStore);
                 } finally {
                     final long t1 = System.currentTimeMillis();
                     logger.debug("Credentials validation took: {} ms", t1 - t0);
@@ -87,7 +88,8 @@ public abstract class BaseClient extends InitializableObject implements Client {
     }
 
     @Override
-    public final Optional<UserProfile> getUserProfile(final Credentials credentials, final WebContext context) {
+    public final Optional<UserProfile> getUserProfile(final Credentials credentials, final WebContext context,
+                                                      final SessionStore sessionStore) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
@@ -100,12 +102,12 @@ public abstract class BaseClient extends InitializableObject implements Client {
             }
         }
 
-        Optional<UserProfile> profile = retrieveUserProfile(credentials, context);
+        Optional<UserProfile> profile = retrieveUserProfile(credentials, context, sessionStore);
         if (profile.isPresent()) {
             profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
-                    profile = authorizationGenerator.generate(context, profile.get());
+                    profile = authorizationGenerator.generate(context, sessionStore, profile.get());
                 }
             }
         }
@@ -119,14 +121,15 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @param context     the web context
      * @return the user profile
      */
-    protected final Optional<UserProfile> retrieveUserProfile(final Credentials credentials, final WebContext context) {
-        final Optional<UserProfile> profile = this.profileCreator.create(credentials, context);
+    protected final Optional<UserProfile> retrieveUserProfile(final Credentials credentials, final WebContext context,
+                                                              final SessionStore sessionStore) {
+        final Optional<UserProfile> profile = this.profileCreator.create(credentials, context, sessionStore);
         logger.debug("profile: {}", profile);
         return profile;
     }
 
     @Override
-    public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context) {
+    public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context, final SessionStore sessionStore) {
         return Optional.empty();
     }
 
@@ -147,8 +150,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
      *
      * @param oldSessionId the old session identifier
      * @param context      the web context
+     * @param sessionStore the session store
      */
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
     }
 
     public List<AuthorizationGenerator> getAuthorizationGenerators() {

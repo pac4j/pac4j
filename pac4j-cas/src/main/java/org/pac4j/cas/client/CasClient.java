@@ -4,6 +4,7 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
@@ -61,8 +62,8 @@ public class CasClient extends IndirectClient {
     }
 
     @Override
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context) {
-        configuration.findLogoutHandler().renewSession(oldSessionId, context);
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
+        configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
     }
 
     public CasConfiguration getConfiguration() {

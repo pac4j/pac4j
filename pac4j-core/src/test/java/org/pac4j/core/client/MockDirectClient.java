@@ -33,7 +33,7 @@ public final class MockDirectClient extends DirectClient {
 
     @Override
     protected void internalInit() {
-        defaultCredentialsExtractor(ctx -> returnCredentials.get());
-        defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
+        defaultCredentialsExtractor((ctx, store) -> returnCredentials.get());
+        defaultAuthenticator((cred, ctx, store) -> cred.setUserProfile(profile));
     }
 }

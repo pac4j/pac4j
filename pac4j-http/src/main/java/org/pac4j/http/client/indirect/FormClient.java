@@ -1,6 +1,7 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -65,7 +66,7 @@ public class FormClient extends IndirectClient {
         assertNotBlank("usernameParameter", this.usernameParameter);
         assertNotBlank("passwordParameter", this.passwordParameter);
 
-        defaultRedirectionActionBuilder(ctx -> {
+        defaultRedirectionActionBuilder((ctx, session) -> {
             final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
         });
@@ -73,7 +74,7 @@ public class FormClient extends IndirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
@@ -81,25 +82,26 @@ public class FormClient extends IndirectClient {
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context);
+            credentials = getCredentialsExtractor().extract(context, sessionStore);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (!credentials.isPresent()) {
-                throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error",
-                    MISSING_FIELD_ERROR);
+                throw handleInvalidCredentials(context, sessionStore, username,
+                    "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR);
             }
             // validate credentials
-            getAuthenticator().validate(credentials.get(), context);
+            getAuthenticator().validate(credentials.get(), context, sessionStore);
         } catch (final CredentialsException e) {
-            throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error",
-                computeErrorMessage(e));
+            throw handleInvalidCredentials(context, sessionStore, username,
+                "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
         }
 
         return credentials;
     }
 
-    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage) {
+    protected HttpAction handleInvalidCredentials(final WebContext context, final SessionStore sessionStore,
+                                                  final String username, String message, String errorMessage) {
         // it's an AJAX request -> unauthorized (instead of a redirection)
-        if (getAjaxRequestResolver().isAjax(context)) {
+        if (getAjaxRequestResolver().isAjax(context, sessionStore)) {
             logger.info("AJAX request detected -> returning 401");
             return HttpActionHelper.buildUnauthenticatedAction(context);
         } else {

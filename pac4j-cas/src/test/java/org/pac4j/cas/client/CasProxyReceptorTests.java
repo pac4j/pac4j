@@ -2,6 +2,7 @@ package org.pac4j.cas.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -37,7 +38,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         final HttpAction action = (HttpAction) TestsHelper.expectException(
-            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)));
+            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE),
+                new MockSessionStore()));
         assertEquals(200, action.getCode());
     }
 
@@ -47,7 +49,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         final HttpAction action = (HttpAction) TestsHelper.expectException(
-            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)));
+            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE),
+                new MockSessionStore()));
         assertEquals(200, action.getCode());
     }
 
@@ -58,7 +61,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context));
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
         assertEquals(200, action.getCode());
     }
 }

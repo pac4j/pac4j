@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.UserProfile;
@@ -83,7 +84,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
-        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create()).isPresent());
+        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create(), new MockSessionStore()).isPresent());
     }
 
     @Test
@@ -101,7 +102,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         final MockWebContext context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertFalse(setupDirectKerberosClient().getCredentials(context).isPresent());
+        assertFalse(setupDirectKerberosClient().getCredentials(context, new MockSessionStore()).isPresent());
     }
 
     @Test
@@ -133,7 +134,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         MockWebContext context,
         String expectedMsg) {
         try {
-            kerbClient.getCredentials(context);
+            kerbClient.getCredentials(context, new MockSessionStore());
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());
@@ -147,11 +148,11 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
         // mock web request
         final MockWebContext context = mockWebRequestContext(spnegoWebTicket);
-        final Optional<Credentials> credentials = client.getCredentials(context);
+        final Optional<Credentials> credentials = client.getCredentials(context, new MockSessionStore());
         assertTrue(credentials.isPresent());
         System.out.println(credentials.get());
 
-        final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context);
+        final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context, new MockSessionStore());
         assertTrue(profile.isPresent());
         assertEquals(clientPrincipal, profile.get().getId());
     }

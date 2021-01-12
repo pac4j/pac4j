@@ -5,6 +5,7 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.util.HttpActionHelper;
@@ -51,10 +52,10 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
         final boolean logoutEndpoint = context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
             .isPresent();
-        final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
+        final SAML2MessageContext samlContext = this.contextProvider.buildContext(context, sessionStore);
         if (logoutEndpoint) {
             // SAML logout request/response
             this.logoutProfileHandler.receive(samlContext);
