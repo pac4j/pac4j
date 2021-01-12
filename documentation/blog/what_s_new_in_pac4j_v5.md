@@ -2,7 +2,7 @@
 layout: blog
 title: What's new in pac4j v5?
 author: Jérôme LELEU
-date: December 2020
+date: January 2021
 ---
 
 One of the primary goals of pac4j has always been to be easy. One must admit that along the versions, it has gained some complexity and weight and time has come for cleaning.
@@ -47,6 +47,8 @@ BTW, the multi-profile option is now also set at the `Client` level.
 client.setMultiProfile(true);
 client.setSaveProfileInSession(true);
 ```
+
+The `SessionStore` is no longer available via the `WebContext`, but it must be explicitly passed everywhere it is needed.
 
 ## 5) SAML SLO
 

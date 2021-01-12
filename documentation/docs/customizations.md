@@ -47,10 +47,10 @@ And this can be done by throwing an [`HttpAction`](https://github.com/pac4j/pac4
 public class ExampleAuthorizer implements Authorizer {
 
     @Override
-    public boolean isAuthorized(WebContext context, List<UserProfile> profiles) throws HttpAction {
+    public boolean isAuthorized(WebContext context, SessionStore sessionStore, List<UserProfile> profiles) {
         if ("specificValue".equals(context.getRequestHeader("specificHeader")))
         {
-            throw HttpAction.redirect("force redirection", context, "/message.html");
+            throw new FoundAction("/message.html");
         }
         return true;
     }

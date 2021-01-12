@@ -11,6 +11,8 @@ title: Main concepts and components&#58;
 
 4) A [**matcher**](matchers.html) defines whether the security must apply on the **security filter** or additional web processing (security headers for example)
 
+---
+
 5) A [**config**](config.html) defines the security configuration composed of clients, authorizers and matchers
 
 ---
@@ -19,11 +21,14 @@ title: Main concepts and components&#58;
 
 ---
 
-7) The [**web context**](web-context.html) is an abstraction of the HTTP request and response specific to the *pac4j* implementation and the associated [session store](session-store.html) represents an implementation of the session
+7) The [**web context**](web-context.html) is an abstraction of the HTTP request and response specific to the *pac4j* implementation
 
+8) The [**session store**](session-store.html) is an abstraction of the HTTP session specific to the *pac4j* implementation
 
-8) The ["**security filter**"](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url) (or whatever the mechanism used to intercept HTTP requests) protects an URL by checking that the user is authenticated and that the authorizations are valid, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients
+---
 
-9) The ["**callback endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client) finishes the login process for an indirect client
+9) The ["**security filter**"](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url) (or whatever the mechanism used to intercept HTTP requests) protects an URL by checking that the user is authenticated and that the authorizations are valid, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients
 
-10) The ["**logout endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#c-logout) handles the application and/or the identity server logouts
+10) The ["**callback endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client) finishes the login process for an indirect client
+
+11) The ["**logout endpoint**"](how-to-implement-pac4j-for-a-new-framework.html#c-logout) handles the application and/or the identity server logouts

@@ -5,7 +5,7 @@ title: Profile manager
 
 The profile manager is meant to deal with the user profile: it can be used to save or restore it.
 
-The profile manager is instantiated from the `WebContext`.
+The profile manager is instantiated from the `WebContext` and the `SessionStore`.
 
 ## 1) Retrieval
 
