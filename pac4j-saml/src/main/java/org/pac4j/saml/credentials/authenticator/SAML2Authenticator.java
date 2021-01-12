@@ -4,11 +4,11 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.profile.SAML2Profile;
+import org.pac4j.saml.profile.SAML2ProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
 
     @Override
     protected void internalInit() {
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new SAML2Profile()));
+        defaultProfileDefinition(new SAML2ProfileDefinition());
     }
 
     @Override

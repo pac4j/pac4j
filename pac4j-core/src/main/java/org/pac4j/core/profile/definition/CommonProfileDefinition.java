@@ -1,8 +1,11 @@
 package org.pac4j.core.profile.definition;
 
+import org.pac4j.core.profile.converter.ChainingConverter;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.factory.ProfileFactory;
+
+import java.util.List;
 
 /**
  * Profile definition with the common attributes.
@@ -31,10 +34,10 @@ public class CommonProfileDefinition extends ProfileDefinition {
         primary(FIRST_NAME, Converters.STRING);
         primary(FAMILY_NAME, Converters.STRING);
         primary(DISPLAY_NAME, Converters.STRING);
-        primary(GENDER, Converters.GENDER);
-        primary(LOCALE, Converters.LOCALE);
-        primary(PICTURE_URL, Converters.URL);
-        primary(PROFILE_URL, Converters.URL);
+        primary(GENDER, new ChainingConverter(List.of(Converters.GENDER, Converters.STRING)));
+        primary(LOCALE, new ChainingConverter(List.of(Converters.LOCALE, Converters.STRING)));
+        primary(PICTURE_URL, new ChainingConverter(List.of(Converters.URL, Converters.STRING)));
+        primary(PROFILE_URL, new ChainingConverter(List.of(Converters.URL, Converters.STRING)));
         primary(LOCATION, Converters.STRING);
         primary(Pac4jConstants.USERNAME, Converters.STRING);
     }
