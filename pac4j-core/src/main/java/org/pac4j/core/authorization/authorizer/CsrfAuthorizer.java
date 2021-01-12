@@ -45,13 +45,17 @@ public class CsrfAuthorizer implements Authorizer {
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
+            final Optional<Object> sessionPreviousToken = sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN);
             final Optional<Object> sessionToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
             final Optional<Object> sessionDate = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
             // all checks are always performed, conditional operations are turned into logical ones,
             // string comparisons are replaced by hash equalities to be protected against time-based attacks
             final boolean hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
             final String token = (String) sessionToken.orElse("");
-            final boolean isGoodToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
+            final String previousToken = (String) sessionPreviousToken.orElse("");
+            final boolean isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
+            final boolean isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);
+            final boolean isGoodToken = isGoodCurrentToken | isGoodPreviousToken;
             final Long expirationDate = (Long) sessionDate.orElse(0L);
             final long now = new Date().getTime();
             final boolean isDateExpired = expirationDate < now;

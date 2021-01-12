@@ -33,5 +33,8 @@ public final class DefaultCsrfTokenGeneratorTests {
         final long nowPlusTtl = new Date().getTime() + 1000 * generator.getTtlInSeconds();
         assertTrue(expirationDate > nowPlusTtl - 1000);
         assertTrue(expirationDate < nowPlusTtl + 1000);
+        generator.get(context, sessionStore);
+        final String token3 = (String) sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).orElse(null);
+        assertEquals(token, token3);
     }
 }

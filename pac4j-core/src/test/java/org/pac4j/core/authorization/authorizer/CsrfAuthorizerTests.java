@@ -43,6 +43,16 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     }
 
     @Test
+    public void testParameterOkPreviousToken() {
+        final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE);
+        final SessionStore sessionStore = new MockSessionStore();
+        sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, VALUE);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, KEY);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
+        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+    }
+
+    @Test
     public void testParameterNoExpirationDate() {
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE);
         final SessionStore sessionStore = new MockSessionStore();
