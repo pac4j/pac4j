@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(CasRedirectionActionBuilder.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected CasConfiguration configuration;
 
@@ -47,7 +47,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl));
     }
 
-    private String getServiceParameter() {
+    protected String getServiceParameter() {
         if (configuration.getProtocol() == CasProtocol.SAML) {
             return Protocol.SAML11.getServiceParameterName();
         } else {
