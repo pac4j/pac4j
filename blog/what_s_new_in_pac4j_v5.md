@@ -101,7 +101,7 @@ The new `Serializer` (`encode` + `decode` methods) used by the profile services 
 
 Before upgrading to a new major *pac4j* version, it might be necessary to re-encode all data in the `serializedprofile` attribute with the `ProfileServiceSerializer`.
 
-These fixes are available in v3.9.0, v4.2.0 and in the v5.x stream.
+These fixes are available in version 3.9.0 and version 4.2.0. In the v5.x stream, only the JSON format is used.
 
 ### c) Restoring the profile from the typed identifier
 
