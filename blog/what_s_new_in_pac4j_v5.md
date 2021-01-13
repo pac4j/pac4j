@@ -38,7 +38,7 @@ These latter generally don't write into the web session, they just read from it 
 Instead of explicitly requesting the use of the web session in several places (`ProfileManager`, `DefaultSecuritylogic`), the solution is to have session implementations (`SessionStore`) which don't create a new session for reads, they just try to find it back.
 This way, no need to explicitly define if you want to read from the web session or not. For writes, nothing changes: a session is always created if it doesn't exist.
 
-`profileManager.getProfiles()` replaces `profileManager.getAll(readFromSession)`
+`profileManager.getProfiles()` replaces `profileManager.getAll(readFromSession)` and `profileManager.getProfile()` replaces `profileManager.get(readFromSession)`
 
 The fact that a profile is saved in the session or not after a succesful login is now override at the `Client` level, and no longer in the "security filter" and "callback endpoint".
 BTW, the multi-profile option is now also set at the `Client` level.
