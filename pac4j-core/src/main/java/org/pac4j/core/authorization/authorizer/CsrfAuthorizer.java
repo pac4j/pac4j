@@ -49,6 +49,8 @@ public class CsrfAuthorizer implements Authorizer {
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
             final String headerToken = context.getRequestHeader(headerName).orElse(null);
+            LOGGER.debug("parameterToken: {}", parameterToken);
+            LOGGER.debug("headerToken: {}", headerToken);
             final Optional<Object> sessionPreviousToken = sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN);
             final Optional<Object> sessionToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
             final Optional<Object> sessionDate = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
