@@ -19,6 +19,8 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
 
     public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
 
+    protected JEEHttpActionAdapter() {}
+
     @Override
     public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {
