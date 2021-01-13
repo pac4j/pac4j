@@ -5,6 +5,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +21,8 @@ import static org.pac4j.core.context.ContextHelper.*;
  * @since 1.8.0
  */
 public class CsrfAuthorizer implements Authorizer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CsrfAuthorizer.class);
 
     private String parameterName = Pac4jConstants.CSRF_TOKEN;
 
@@ -54,8 +58,10 @@ public class CsrfAuthorizer implements Authorizer {
             // all checks are always performed, conditional operations are turned into logical ones,
             // string comparisons are replaced by hash equalities to be protected against time-based attacks
             final boolean hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
-            final String token = (String) sessionToken.orElse("");
             final String previousToken = (String) sessionPreviousToken.orElse("");
+            LOGGER.debug("previous token: {}", previousToken);
+            final String token = (String) sessionToken.orElse("");
+            LOGGER.debug("token: {}", token);
             final boolean isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
             final boolean isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);
             final boolean isGoodToken = isGoodCurrentToken | isGoodPreviousToken;
