@@ -13,7 +13,7 @@ title: Release notes&#58;
 - Refactored the session management (mainly `ProfileManager` and `SessionStore`): reading in the web session does not create it while writing a none-null value in the session always create it. The multi-profile and save-profile-in-session-or-not options can now be defined at the `Client` level, and no longer in the "security filter" and "callback endpoint". The `get(readFromSession)` and `getAll(readFromSession)` methods of the `ProfileManager` are replaced by the `getProfile()` and `getProfiles()` methods
 - The SAML central logout does not perform any local logout
 - When no authorizers is defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
-- Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports; Added a `JsonSerializer` and turned the `JavaSerializationHelper` into a `JavaSerializer`
+- Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports; Added a `JsonSerializer` and turned the `JavaSerializationHelper` into a `JavaSerializer`; Removed the `ProfileServiceSerializer`
 - Removed the 307 HTTP code for a new POST request after a POST request (use 200 instead)
 - Turned the `UserProfile` component into a pure interface and use it as much as possible (especially in the `JwtGenerator` and `JwtAuthenticator`)
 - The `ProfileHelper.restoreOrBuildProfile` method has been removed and the behavior is controlled by the `ProfileDefinition` and its `setRestoreProfileFromTypedId` method (enabled for JWT, disabled for others)
