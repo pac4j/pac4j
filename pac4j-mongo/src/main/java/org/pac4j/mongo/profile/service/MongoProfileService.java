@@ -9,7 +9,7 @@ import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.serializer.ProfileServiceSerializer;
+import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.mongo.profile.MongoProfile;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         CommonHelper.assertNotBlank("usersCollection", this.usersCollection);
 
         defaultProfileDefinition(new CommonProfileDefinition(x -> new MongoProfile()));
-        setSerializer(new ProfileServiceSerializer(MongoProfile.class));
+        setSerializer(new JsonSerializer(MongoProfile.class));
 
         super.internalInit();
     }
