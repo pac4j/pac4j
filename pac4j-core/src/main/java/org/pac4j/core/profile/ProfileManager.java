@@ -46,20 +46,12 @@ public class ProfileManager {
      * @return the user profile
      */
     public Optional<UserProfile> getProfile() {
-        return get(true);
+        final LinkedHashMap<String, UserProfile> allProfiles = retrieveAll(true);
+        return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
     public <U extends UserProfile> Optional<U> getProfile(final Class<U> clazz) {
         return (Optional<U>) getProfile();
-    }
-
-    /**
-     * Use {@link #getProfile()}.
-     */
-    @Deprecated
-    public Optional<UserProfile> get(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> allProfiles = retrieveAll(readFromSession);
-        return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
     /**
@@ -68,15 +60,7 @@ public class ProfileManager {
      * @return the user profiles
      */
     public List<UserProfile> getProfiles() {
-        return getAll(true);
-    }
-
-    /**
-     * Use {@link #getProfiles()}.
-     */
-    @Deprecated
-    public List<UserProfile> getAll(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
+        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(true);
         return ProfileHelper.flatIntoAProfileList(profiles);
     }
 
@@ -133,15 +117,7 @@ public class ProfileManager {
      */
     public void removeProfiles() {
         final boolean sessionExists = sessionStore.getSessionId(context, false).isPresent();
-        remove(sessionExists);
-    }
-
-    /**
-     * Use {@link #removeProfiles()}.
-     */
-    @Deprecated
-    public void remove(final boolean removeFromSession) {
-        if (removeFromSession) {
+        if (sessionExists) {
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
         }
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
