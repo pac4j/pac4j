@@ -55,7 +55,7 @@ public class CsrfAuthorizer implements Authorizer {
             final Optional<Object> sessionToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
             final Optional<Object> sessionDate = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
             if (sessionStore.getSessionId(context, false).isPresent()) {
-                sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, "");
+                sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
             }
             // all checks are always performed, conditional operations are turned into logical ones,
             // string comparisons are replaced by hash equalities to be protected against time-based attacks

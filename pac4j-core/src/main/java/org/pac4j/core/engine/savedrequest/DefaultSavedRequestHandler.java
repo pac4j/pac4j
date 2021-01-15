@@ -43,7 +43,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         final Optional<Object> optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
         HttpAction requestedAction = null;
         if (optRequestedUrl.isPresent()) {
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
             final Object requestedUrl = optRequestedUrl.get();
             if (requestedUrl instanceof FoundAction) {
                 requestedAction = (FoundAction) requestedUrl;

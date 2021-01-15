@@ -28,7 +28,7 @@ public class SAML2StateGenerator implements ValueGenerator {
         final Optional<Object> relayState = sessionStore.get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
         if (relayState.isPresent()) {
-            sessionStore.set(webContext, SAML_RELAY_STATE_ATTRIBUTE, "");
+            sessionStore.set(webContext, SAML_RELAY_STATE_ATTRIBUTE, null);
         }
         return relayState.isPresent() ? (String) relayState.get() : client.computeFinalCallbackUrl(webContext);
     }

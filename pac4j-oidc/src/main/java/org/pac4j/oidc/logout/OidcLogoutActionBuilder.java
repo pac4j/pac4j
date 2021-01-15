@@ -56,7 +56,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                 }
 
                 if (ajaxRequestResolver.isAjax(context, sessionStore)) {
-                    sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
+                    sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
                     context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
                     throw ForbiddenAction.INSTANCE;
                 }

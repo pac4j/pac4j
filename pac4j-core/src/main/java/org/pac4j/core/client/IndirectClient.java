@@ -111,12 +111,12 @@ public abstract class IndirectClient extends BaseClient {
 
     private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
         logger.debug("clean requested URL");
-        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, "");
+        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
     }
 
     private void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
         logger.debug("clean authentication attempt");
-        sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+        sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
     }
 
     /**

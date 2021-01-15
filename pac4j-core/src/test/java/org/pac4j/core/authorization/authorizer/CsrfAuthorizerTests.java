@@ -50,7 +50,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, KEY);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
-        Assert.assertEquals("", sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).get());
+        Assert.assertFalse(sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).isPresent());
     }
 
     @Test
