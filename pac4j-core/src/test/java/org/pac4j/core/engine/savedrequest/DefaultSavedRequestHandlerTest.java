@@ -41,8 +41,8 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL);
         final MockSessionStore sessionStore = new MockSessionStore();
         handler.save(context, sessionStore);
-        final FoundAction action = (FoundAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
-        assertEquals(PAC4J_URL, action.getLocation());
+        final String location = (String) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
+        assertEquals(PAC4J_URL, location);
     }
 
     @Test
@@ -73,6 +73,17 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL, ((FoundAction) action).getLocation());
+        assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
+    }
+
+    @Test
+    public void testRestoreURLString() {
+        final MockWebContext context = MockWebContext.create();
+        final MockSessionStore sessionStore = new MockSessionStore();
+        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, VALUE);
+        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        assertTrue(action instanceof FoundAction);
+        assertEquals(VALUE, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
     }
 

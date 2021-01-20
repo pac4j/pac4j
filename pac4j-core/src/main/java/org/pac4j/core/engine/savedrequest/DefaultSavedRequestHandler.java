@@ -30,7 +30,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(requestedUrl));
+            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
         }
     }
 
@@ -45,10 +45,10 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         if (optRequestedUrl.isPresent()) {
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
             final Object requestedUrl = optRequestedUrl.get();
-            if (requestedUrl instanceof FoundAction) {
-                requestedAction = (FoundAction) requestedUrl;
-            } else if (requestedUrl instanceof OkAction) {
-                requestedAction = (OkAction) requestedUrl;
+            if (requestedUrl instanceof String) {
+                requestedAction = new FoundAction((String) requestedUrl);
+            } else if (requestedUrl instanceof RedirectionAction) {
+                requestedAction = (RedirectionAction) requestedUrl;
             }
         }
         if (requestedAction == null) {
