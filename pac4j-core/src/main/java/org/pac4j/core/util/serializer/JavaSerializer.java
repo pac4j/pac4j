@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class JavaSerializer implements Serializer {
+public class JavaSerializer extends AbstractSerializer {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaSerializer.class);
 
@@ -32,22 +32,13 @@ public class JavaSerializer implements Serializer {
     }
 
     /**
-     * Serialize a Java object into a base64 String.
-     *
-     * @param o the object to serialize
-     * @return the base64 string of the serialized object
-     */
-    public String encode(final Object o) {
-        return Base64.getEncoder().encodeToString(encodeToBytes((Serializable) o));
-    }
-
-    /**
      * Serialize a Java object into a bytes array.
      *
      * @param o the object to serialize
      * @return the bytes array of the serialized object
      */
-    public byte[] encodeToBytes(final Serializable o) {
+    @Override
+    protected byte[] internalSerializeToBytes(final Object o) {
         byte[] bytes = null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ObjectOutputStream oos = new ObjectOutputStream(baos)) {
@@ -61,22 +52,13 @@ public class JavaSerializer implements Serializer {
     }
 
     /**
-     * Deserialize a base64 String into a Java object.
-     *
-     * @param base64 the serialized object as a base64 String
-     * @return the deserialized Java object
-     */
-    public Object decode(final String base64) {
-        return decodeFromBytes(Base64.getDecoder().decode(base64));
-    }
-
-    /**
      * Deserialize a bytes array into a Java object.
      *
      * @param bytes the serialized object as a bytes array
      * @return the deserialized Java object
      */
-    public Serializable decodeFromBytes(final byte[] bytes) {
+    @Override
+    protected Serializable internalDeserializeFromBytes(final byte[] bytes) {
         Serializable o = null;
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
              ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {

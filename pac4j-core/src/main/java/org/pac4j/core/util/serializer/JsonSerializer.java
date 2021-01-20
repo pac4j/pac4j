@@ -15,7 +15,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome LELEU
  * @since 3.9.0
  */
-public class JsonSerializer implements Serializer {
+public class JsonSerializer extends AbstractSerializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonSerializer.class);
 
@@ -33,10 +33,7 @@ public class JsonSerializer implements Serializer {
     }
 
     @Override
-    public String encode(final Object obj) {
-        if (obj == null) {
-            return null;
-        }
+    protected String internalSerializeToString(final Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (final JsonProcessingException e) {
@@ -46,10 +43,7 @@ public class JsonSerializer implements Serializer {
     }
 
     @Override
-    public Object decode(final String encoded) {
-        if (encoded == null) {
-            return null;
-        }
+    protected Object internalDeserializeFromString(final String encoded) {
         try {
             return objectMapper.readValue(encoded, clazz);
         } catch (final JsonProcessingException e) {

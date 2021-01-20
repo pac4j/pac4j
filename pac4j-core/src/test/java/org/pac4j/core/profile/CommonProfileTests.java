@@ -171,8 +171,8 @@ public final class CommonProfileTests implements TestsConstants {
     public void serializeProfile() {
         final JavaSerializer helper = new JavaSerializer();
         final CommonProfile profile = new CommonProfile();
-        final String s = helper.encode(profile);
-        final CommonProfile profile2 = (CommonProfile) helper.decode(s);
+        final String s = helper.serializeToString(profile);
+        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromString(s);
         assertNotNull(profile2);
     }
 

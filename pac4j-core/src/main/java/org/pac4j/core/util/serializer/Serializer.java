@@ -14,7 +14,15 @@ public interface Serializer {
      * @param obj the object to encode
      * @return the encoded string
      */
-    String encode(Object obj);
+    String serializeToString(Object obj);
+
+    /**
+     * Encode an object into a bytes array.
+     *
+     * @param obj the object to encode
+     * @return the encoded bytes array
+     */
+    byte[] serializeToBytes(Object obj);
 
     /**
      * Decode a string into an object.
@@ -22,5 +30,13 @@ public interface Serializer {
      * @param encoded the encoded string
      * @return the decoded object
      */
-    Object decode(String encoded);
+    Object deserializeFromString(String encoded);
+
+    /**
+     * Decode a bytes array into an object.
+     *
+     * @param encoded the encoded bytes array
+     * @return the decoded object
+     */
+    Object deserializeFromBytes(byte[] encoded);
 }

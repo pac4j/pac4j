@@ -145,7 +145,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             }
         } else {
             // new behaviour (>= v2.0): save the serialized profile
-            storageAttributes.put(SERIALIZED_PROFILE, serializer.encode(profile));
+            storageAttributes.put(SERIALIZED_PROFILE, serializer.serializeToString(profile));
         }
         return storageAttributes;
     }
@@ -248,7 +248,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you " +
                     "want to retrieve");
             }
-            final U profile = (U) serializer.decode(serializedProfile);
+            final U profile = (U) serializer.deserializeFromString(serializedProfile);
             if (profile == null) {
                 throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " +
                     "names you want to retrieve");

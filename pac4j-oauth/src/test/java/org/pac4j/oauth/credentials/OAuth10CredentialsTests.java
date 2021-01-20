@@ -26,9 +26,9 @@ public final class OAuth10CredentialsTests implements TestsConstants {
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getTokenSecret());
         // test serialization
-        final JavaSerializer javaSerializationHelper = new JavaSerializer();
-        final byte[] bytes = javaSerializationHelper.encodeToBytes(credentials);
-        final OAuth10Credentials credentials2 = (OAuth10Credentials) javaSerializationHelper.decodeFromBytes(bytes);
+        final JavaSerializer javaSerializer = new JavaSerializer();
+        final byte[] bytes = javaSerializer.serializeToBytes(credentials);
+        final OAuth10Credentials credentials2 = (OAuth10Credentials) javaSerializer.deserializeFromBytes(bytes);
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());

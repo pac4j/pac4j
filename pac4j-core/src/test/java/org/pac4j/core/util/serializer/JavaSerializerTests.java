@@ -28,8 +28,17 @@ public final class JavaSerializerTests implements TestsConstants {
     @Test
     public void testBytesSerialization() {
         final CommonProfile profile = getUserProfile();
-        final byte[] serialized = helper.encodeToBytes(profile);
-        final CommonProfile profile2 = (CommonProfile) helper.decodeFromBytes(serialized);
+        final byte[] serialized = helper.serializeToBytes(profile);
+        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromBytes(serialized);
+        assertEquals(profile.getId(), profile2.getId());
+        assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
+    }
+
+    @Test
+    public void testStringSerialization() {
+        final CommonProfile profile = getUserProfile();
+        final String serialized = helper.serializeToString(profile);
+        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromString(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
@@ -40,8 +49,8 @@ public final class JavaSerializerTests implements TestsConstants {
         h.clearTrustedClasses();
         h.clearTrustedPackages();
         final CommonProfile profile = getUserProfile();
-        final byte[] serialized = h.encodeToBytes(profile);
-        assertNull(h.decodeFromBytes(serialized));
+        final byte[] serialized = h.serializeToBytes(profile);
+        assertNull(h.deserializeFromBytes(serialized));
     }
 
     @Test
@@ -51,8 +60,8 @@ public final class JavaSerializerTests implements TestsConstants {
         h.clearTrustedClasses();
         h.addTrustedClass(SimplePrincipalCollection.class);
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
-        final byte[] serialized = h.encodeToBytes(spc);
-        assertEquals(spc, h.decodeFromBytes(serialized));
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertEquals(spc, h.deserializeFromBytes(serialized));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -66,15 +75,15 @@ public final class JavaSerializerTests implements TestsConstants {
         JavaSerializer h = new JavaSerializer();
         h.addTrustedPackage("org.apache");
         final SimplePrincipalCollection spc = new SimplePrincipalCollection();
-        final byte[] serialized = h.encodeToBytes(spc);
-        assertNotNull(h.decodeFromBytes(serialized));
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertNotNull(h.deserializeFromBytes(serialized));
     }
 
     @Test
     public void testBase64StringSerialization() {
         final CommonProfile profile = getUserProfile();
-        final String serialized = helper.encode(profile);
-        final CommonProfile profile2 = (CommonProfile) helper.decode(serialized);
+        final String serialized = helper.serializeToString(profile);
+        final CommonProfile profile2 = (CommonProfile) helper.deserializeFromString(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
@@ -82,8 +91,8 @@ public final class JavaSerializerTests implements TestsConstants {
     @Test
     public void testFoundActionSerialization() {
         final FoundAction action = new FoundAction(PAC4J_BASE_URL);
-        final byte[] serialized = helper.encodeToBytes(action);
-        final FoundAction action2 = (FoundAction) helper.decodeFromBytes(serialized);
+        final byte[] serialized = helper.serializeToBytes(action);
+        final FoundAction action2 = (FoundAction) helper.deserializeFromBytes(serialized);
         assertEquals(action.getLocation(), action2.getLocation());
     }
 }
