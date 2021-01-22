@@ -77,7 +77,7 @@ public class OidcProfile extends AbstractJwtProfile {
     }
 
     public Date getUpdatedAt() {
-        return (Date) getAttribute(OidcProfileDefinition.UPDATED_AT);
+        return getAttributeAsDate(OidcProfileDefinition.UPDATED_AT);
     }
 
     public Date getAuthTime() {
@@ -170,7 +170,7 @@ public class OidcProfile extends AbstractJwtProfile {
     }
 
     public Date getExpiration() {
-        return (Date) getAttribute(OidcProfileDefinition.EXPIRATION);
+        return getAttributeAsDate(OidcProfileDefinition.EXPIRATION);
     }
 
     @Override
