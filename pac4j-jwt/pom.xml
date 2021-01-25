@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>4.3.0-SNAPSHOT</version>
+        <version>4.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-jwt</artifactId>
@@ -13,7 +13,7 @@
     <name>pac4j: Java web security via JWT</name>
 
     <properties>
-        <bcprov.version>1.66</bcprov.version>
+        <bcprov.version>1.68</bcprov.version>
     </properties>
 
     <dependencies>

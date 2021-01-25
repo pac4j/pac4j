@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.3.0**:
+
+- Added a `ChainingConverter` for attributes
+- Fix expired access tokens for the OIDC protocol
+
 **v4.2.0**:
 
 - Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports
