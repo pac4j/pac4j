@@ -1,10 +1,10 @@
 package org.pac4j.saml.profile;
 
-import org.joda.time.DateTime;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -45,12 +45,12 @@ public class SAML2Profile extends CommonProfile {
         super(canMergeAttributes);
     }
 
-    public DateTime getNotBefore() {
-        return (DateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
+    public ZonedDateTime getNotBefore() {
+        return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
     }
 
-    public DateTime getNotOnOrAfter() {
-        return (DateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
+    public ZonedDateTime getNotOnOrAfter() {
+        return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
     }
 
     public String getSessionIndex() {
