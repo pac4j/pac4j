@@ -1,30 +1,23 @@
 package org.pac4j.cas.config;
 
+import org.jasig.cas.client.util.PrivateKeyUtils;
+import org.jasig.cas.client.validation.*;
+import org.pac4j.cas.client.CasProxyReceptor;
+import org.pac4j.core.client.config.BaseClientConfiguration;
+import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.cas.store.ProxyGrantingTicketStore;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.url.DefaultUrlResolver;
+import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.util.CommonHelper;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jasig.cas.client.util.PrivateKeyUtils;
-import org.jasig.cas.client.validation.Cas10TicketValidator;
-import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
-import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
-import org.jasig.cas.client.validation.Cas30ProxyTicketValidator;
-import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
-import org.jasig.cas.client.validation.ProxyList;
-import org.jasig.cas.client.validation.Saml11TicketValidator;
-import org.jasig.cas.client.validation.TicketValidator;
-import org.pac4j.cas.client.CasProxyReceptor;
-import org.pac4j.cas.store.ProxyGrantingTicketStore;
-import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.url.DefaultUrlResolver;
-import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.logout.handler.LogoutHandler;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * CAS configuration.
