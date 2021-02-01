@@ -1,22 +1,30 @@
 package org.pac4j.cas.config;
 
+import java.nio.charset.StandardCharsets;
+import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.jasig.cas.client.util.PrivateKeyUtils;
-import org.jasig.cas.client.validation.*;
+import org.jasig.cas.client.validation.Cas10TicketValidator;
+import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
+import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
+import org.jasig.cas.client.validation.Cas30ProxyTicketValidator;
+import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
+import org.jasig.cas.client.validation.ProxyList;
+import org.jasig.cas.client.validation.Saml11TicketValidator;
+import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.client.CasProxyReceptor;
-import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.logout.handler.LogoutHandler;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
-
-import java.nio.charset.StandardCharsets;
-import java.security.PrivateKey;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * CAS configuration.
@@ -279,7 +287,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     public void setCustomParams(final Map<String, String> customParams) {
         this.customParams = customParams;
     }
-    
+
     public long getTimeTolerance() {
         return timeTolerance;
     }
@@ -326,6 +334,16 @@ public class CasConfiguration extends BaseClientConfiguration {
 
     public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
         this.allowedProxyChains = allowedProxyChains;
+    }
+
+    public void setAllowedProxies(List<String> allowedProxies) {
+        List<String[]> proxyChains = new ArrayList<>();
+        for (String allowedProxyChain : allowedProxies) {
+            String[] proxyChain = new String[1];
+            proxyChain[0] = allowedProxyChain;
+            proxyChains.add(proxyChain);
+        }
+        this.allowedProxyChains = new ProxyList(proxyChains);
     }
 
     public LogoutHandler getLogoutHandler() {

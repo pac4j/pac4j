@@ -93,7 +93,7 @@ Read the [CAS documentation](https://apereo.github.io/cas/5.0.x/installation/Ser
 For proxy support, the `CasProxyReceptor` component must be used, defined on the same or a new callback URL (via the [security configuration](../config.html)) and declared in the `CasConfiguration`:
 
 ```java
-CasProxyReceptor casProxy = new CasProxyReceptor(); 
+CasProxyReceptor casProxy = new CasProxyReceptor();
 config.setProxyReceptor(casProxy);
 // config.setAcceptAnyProxy(false);
 // config.setAllowedProxyChains(proxies);
@@ -114,7 +114,7 @@ To correlate proxy information, the `CasProxyReceptor` uses an internal [`Store`
 To handle CAS logout requests, a [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java) is automatically created. Unless you specify your own implementation of the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface.
 
 The `DefaultLogoutHandler`:
- 
+
 - relies on the capabilities of the `SessionStore` (`destroySession`, `getTrackableSession` and `buildFromTrackableSession`  methods)
 - stores data in a [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
 
@@ -141,7 +141,9 @@ config.setProtocol(CasProtocol.CAS30_PROXY);
 DirectCasProxyClient directCasProxyClient = new DirectCasProxyClient(config, "http://localhost:8080/webservices");
 ```
 
-After generating a proxy ticket (like `PT-1`), the web service will be called on a URL similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`. 
+After generating a proxy ticket (like `PT-1`), the web service will be called on a URL similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`.
+
+You can define a list of URL patterns using the `setAllowedProxies(List<String>)` method on the `CasConfiguration` object which applications are allowed to act as an proxy for this application.
 
 The `DirectCasProxyClient` will validate the proxy ticket and the service URL (defined in the constructor: `http://localhost:8080/webservices`) on the CAS server to get the identity of the user.
 
@@ -174,7 +176,7 @@ After a successful authentication via the `CasRestBasicAuthClient`/`CasRestFormC
 This profile has no attributes as it was built by validating the CAS credentials on the REST API. You must request a service ticket and validate it to get a `CasProfile` with attributes (as the default protocol used is CAS v3.0).
 
 Indeed, with the `CasRestProfile`, you'll be able to:
- 
+
 - request service tickets: `TokenCredentials tokenCredentials = casRestClient.requestServiceTicket(serviceUrl, casRestProfile, context)`
 - validate them: `CasProfile casProfile = casRestClient.validateServiceTicket(serviceUrl, tokenCredentials, context)`
 - or destroy the previous authentication: `casRestClient.destroyTicketGrantingTicket(casRestProfile, context)`.
