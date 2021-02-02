@@ -73,7 +73,7 @@
         <unboundid.version>5.1.3</unboundid.version>
         <h2.version>1.4.200</h2.version>
 		<java.version>11</java.version>
-        <jackson.version>2.11.3</jackson.version>
+        <jackson.version>2.12.1</jackson.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -182,7 +182,7 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-			<!-- for testing -->
+            <!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-core</artifactId>
