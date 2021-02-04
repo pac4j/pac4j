@@ -23,6 +23,9 @@ title: Release notes&#58;
 - Default authorizers and matchers can be re-defined by users
 - Separate the `SessionStore` from the `WebContext`
 
+**v4.4.0**:
+- For SAML IdP metadata defined as files, the metadata are reloaded if the file is changed
+
 **v4.3.0**:
 
 - Added a `ChainingConverter` for attributes

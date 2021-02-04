@@ -20,6 +20,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
         final SAML2Configuration configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
+        metadataResolver.init();
     }
 
     @Test
