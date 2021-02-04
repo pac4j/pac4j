@@ -15,7 +15,6 @@ import org.pac4j.oidc.profile.apple.AppleProfile;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
@@ -98,7 +97,7 @@ public class RunAppleClient extends RunClient {
             throw new TechnicalException(e);
         }
 
-        try (FileReader keyReader = new FileReader(file, StandardCharsets.UTF_8);
+        try (FileReader keyReader = new FileReader(file);
              PemReader pemReader = new PemReader(keyReader)) {
             PemObject pemObject = pemReader.readPemObject();
             byte[] content = pemObject.getContent();
