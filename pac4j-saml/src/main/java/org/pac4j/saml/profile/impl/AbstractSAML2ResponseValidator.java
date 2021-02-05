@@ -109,6 +109,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             final String entityId = context.getSAMLPeerEntityContext().getEntityId();
             validateSignature(signature, entityId, engine);
             context.getSAMLPeerEntityContext().setAuthenticated(true);
+            logger.debug("Successfully validated signature for entity id {}", entityId);
+        } else {
+            logger.debug("Cannot locate a signature from the message; skipping validation");
         }
     }
 
@@ -122,8 +125,10 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected void validateSignature(final Signature signature, final String idpEntityId,
                                      final SignatureTrustEngine trustEngine) {
 
+
         final SAMLSignatureProfileValidator validator = new SAMLSignatureProfileValidator();
         try {
+            logger.debug("Validating profile signature for entity id {}", idpEntityId);
             validator.validate(signature);
         } catch (final SignatureException e) {
             throw new SAMLSignatureValidationException("SAMLSignatureProfileValidator failed to validate signature", e);
@@ -136,6 +141,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         criteriaSet.add(new EntityIdCriterion(idpEntityId));
         final boolean valid;
         try {
+            logger.debug("Validating signature via trust engine for entity id {}", idpEntityId);
             valid = trustEngine.validate(signature, criteriaSet);
         } catch (final SecurityException e) {
             throw new SAMLSignatureValidationException("An error occurred during signature validation", e);
@@ -163,6 +169,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
 
         final String entityId = context.getSAMLPeerEntityContext().getEntityId();
+        logger.debug("Comparing issuer {} against {}", issuer.getValue(), entityId);
         if (entityId == null || !entityId.equals(issuer.getValue())) {
             throw new SAMLIssuerException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
@@ -242,6 +249,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
 
         try {
+            logger.debug("Decrypting name id {}", encryptedId);
             final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (final DecryptionException e) {

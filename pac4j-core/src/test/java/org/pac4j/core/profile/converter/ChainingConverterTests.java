@@ -2,7 +2,7 @@ package org.pac4j.core.profile.converter;
 
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Locale;
 
 import static org.junit.Assert.assertNotNull;
@@ -17,10 +17,10 @@ public final class ChainingConverterTests {
 
     @Test
     public void testChain() {
-        ChainingConverter chain = new ChainingConverter(List.of(Converters.STRING, Converters.LOCALE));
+        ChainingConverter chain = new ChainingConverter(Arrays.asList(Converters.STRING, Converters.LOCALE));
         assertNotNull(chain.convert("english"));
-        assertNotNull(chain.convert(List.of("english")));
+        assertNotNull(chain.convert(Arrays.asList("english")));
         assertNotNull(chain.convert(Locale.ENGLISH));
-        assertNotNull(chain.convert(List.of(Locale.ENGLISH)));
+        assertNotNull(chain.convert(Arrays.asList(Locale.ENGLISH)));
     }
 }
