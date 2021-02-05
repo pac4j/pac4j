@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
-    private final String postLogoutURL;
+    private String postLogoutURL;
 
     /**
      * When set to false, will cause the validator
@@ -44,7 +44,8 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     private boolean actionOnSuccess = true;
 
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                final LogoutHandler logoutHandler, final String postLogoutURL, final ReplayCacheProvider replayCache) {
+                                final LogoutHandler logoutHandler, final String postLogoutURL,
+                                final ReplayCacheProvider replayCache) {
         super(engine, decrypter, logoutHandler, replayCache);
         this.postLogoutURL = postLogoutURL;
     }
@@ -160,6 +161,10 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
     public void setActionOnSuccess(final boolean actionOnSuccess) {
         this.actionOnSuccess = actionOnSuccess;
+    }
+
+    public void setPostLogoutURL(final String postLogoutURL) {
+        this.postLogoutURL = postLogoutURL;
     }
 
     @Override

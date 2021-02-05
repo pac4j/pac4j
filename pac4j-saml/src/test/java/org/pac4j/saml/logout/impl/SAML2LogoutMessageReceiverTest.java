@@ -15,11 +15,17 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
+import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
+import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -83,8 +89,22 @@ public class SAML2LogoutMessageReceiverTest {
     }
 
     private SAML2LogoutValidator getLogoutValidator(final String postLogoutUrl) {
-        ChainingMetadataResolver metadataResolver = new ChainingMetadataResolver();
-        SAML2SignatureTrustEngineProvider engine = new ExplicitSignatureTrustEngineProvider(metadataResolver);
+        SAML2Configuration config = new SAML2Configuration();
+        config.setForceKeystoreGeneration(true);
+        config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        config.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
+        config.setForceServiceProviderMetadataGeneration(true);
+        config.setKeystorePath("target/keystore.jks");
+        config.setKeystorePassword("pac4j");
+        config.setPrivateKeyPassword("pac4j");
+        config.init();
+
+        SAML2IdentityProviderMetadataResolver idp = new SAML2IdentityProviderMetadataResolver(config);
+        idp.init();
+
+        SAML2ServiceProviderMetadataResolver sp = new SAML2ServiceProviderMetadataResolver(config);
+
+        SAML2SignatureTrustEngineProvider engine = new ExplicitSignatureTrustEngineProvider(idp, sp);
 
         SAML2LogoutValidator validator = new SAML2LogoutValidator(
             engine,
