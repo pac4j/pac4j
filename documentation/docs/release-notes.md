@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.4.0**:
+
+- For SAML IdP metadata defined as files, the metadata are reloaded if the file is changed
+
 **v4.3.0**:
 
 - Added a `ChainingConverter` for attributes

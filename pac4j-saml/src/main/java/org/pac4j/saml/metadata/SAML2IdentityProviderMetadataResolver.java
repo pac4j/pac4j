@@ -18,6 +18,7 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,12 +29,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Misagh Moayyed
  * @since 1.7
  */
 public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
+    private static final long NO_LAST_MODIFIED = -1;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Resource idpMetadataResource;
@@ -41,6 +45,10 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     private String idpEntityId;
 
     private DOMMetadataResolver idpMetadataProvider;
+
+    private long lastModified = NO_LAST_MODIFIED;
+
+    private ReentrantLock lock = new ReentrantLock();
 
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
         this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderEntityId());
@@ -52,34 +60,59 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         this.idpEntityId = idpEntityId;
     }
 
-    /**
-     * No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
-     * Usage of locks will adversely impact performance.
-     *
-     * @return
-     */
+    public void init() {
+        this.idpMetadataProvider = buildMetadata();
+        if (idpMetadataResource instanceof FileSystemResource) {
+            hasChanged();
+        }
+    }
+
     @Override
     public final MetadataResolver resolve() {
-        if (idpMetadataProvider != null) {
-            return idpMetadataProvider;
+        if (idpMetadataResource instanceof FileSystemResource && lock.tryLock()) {
+            try {
+                if (hasChanged()) {
+                    this.idpMetadataProvider = buildMetadata();
+                }
+            } finally {
+                lock.unlock();
+            }
         }
+        return idpMetadataProvider;
+    }
+
+    protected boolean hasChanged() {
+        long newLastModified;
         try {
+            newLastModified = this.idpMetadataResource.lastModified();
+        } catch (final IOException e) {
+            newLastModified = NO_LAST_MODIFIED;
+        }
+        final boolean hasChanged = lastModified != newLastModified;
+        logger.debug("lastModified: {} / newLastModified: {} -> hasChanged: {}", lastModified, newLastModified, hasChanged);
+        lastModified = newLastModified;
+        return hasChanged;
+    }
+
+    protected DOMMetadataResolver buildMetadata() {
+        try {
+            final DOMMetadataResolver resolver;
             try (InputStream in = this.idpMetadataResource.getInputStream()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
                 final Element metadataRoot = inCommonMDDoc.getDocumentElement();
-                idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
-                idpMetadataProvider.setIndexes(Collections.singleton(new RoleMetadataIndex()));
-                idpMetadataProvider.setParserPool(Configuration.getParserPool());
-                idpMetadataProvider.setFailFastInitialization(true);
-                idpMetadataProvider.setRequireValidMetadata(true);
-                idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
-                idpMetadataProvider.initialize();
+                resolver = new DOMMetadataResolver(metadataRoot);
+                resolver.setIndexes(Collections.singleton(new RoleMetadataIndex()));
+                resolver.setParserPool(Configuration.getParserPool());
+                resolver.setFailFastInitialization(true);
+                resolver.setRequireValidMetadata(true);
+                resolver.setId(resolver.getClass().getCanonicalName());
+                resolver.initialize();
             } catch (final FileNotFoundException e) {
                 throw new TechnicalException("Error loading idp Metadata");
             }
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
             if (this.idpEntityId == null) {
-                final Iterator<EntityDescriptor> it = idpMetadataProvider.iterator();
+                final Iterator<EntityDescriptor> it = resolver.iterator();
 
                 while (it.hasNext()) {
                     final EntityDescriptor entityDescriptor = it.next();
@@ -93,6 +126,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 throw new SAMLException("No idp entityId found");
             }
 
+            return resolver;
+
         } catch (final ComponentInitializationException e) {
             throw new SAMLException("Error initializing idpMetadataProvider", e);
         } catch (final XMLParserException e) {
@@ -100,7 +135,6 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         } catch (final IOException e) {
             throw new TechnicalException("Error getting idp Metadata resource", e);
         }
-        return idpMetadataProvider;
     }
 
     @Override

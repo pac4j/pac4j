@@ -9,6 +9,8 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
+import org.pac4j.saml.util.SAML2Utils;
 
 /**
  * Provider returning well configured {@link SignatureTrustEngine} instances.
@@ -18,15 +20,20 @@ import org.pac4j.saml.exceptions.SAMLException;
  */
 public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrustEngineProvider {
 
-    private final MetadataResolver metadataResolver;
+    private final SAML2MetadataResolver idpMetadataResolver;
 
-    public ExplicitSignatureTrustEngineProvider(final MetadataResolver metadataResolver) {
-        this.metadataResolver = metadataResolver;
+    private final SAML2MetadataResolver spMetadataResolver;
+
+    public ExplicitSignatureTrustEngineProvider(final SAML2MetadataResolver idpMetadataResolver,
+                                                final SAML2MetadataResolver spMetadataResolver) {
+        this.idpMetadataResolver = idpMetadataResolver;
+        this.spMetadataResolver = spMetadataResolver;
     }
 
     @Override
     public SignatureTrustEngine build() {
         final MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
+        final MetadataResolver metadataResolver = SAML2Utils.buildChainingMetadataResolver(idpMetadataResolver, spMetadataResolver);
         final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
 
         final KeyInfoCredentialResolver keyResolver =

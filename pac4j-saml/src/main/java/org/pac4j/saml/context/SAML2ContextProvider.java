@@ -10,7 +10,6 @@ import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
@@ -22,6 +21,7 @@ import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.pac4j.saml.transport.DefaultPac4jSAMLResponse;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
+import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Responsible for building a {@link SAML2MessageContext} from given SAML2 properties (idpEntityId and metadata
  * manager) and current {@link WebContext}.
- * 
+ *
  * @author Michael Remond
  * @author Misagh Moayyed
  * @since 1.7
@@ -43,19 +43,15 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final static Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
-    protected final MetadataResolver metadata;
-
     protected final SAML2MetadataResolver idpEntityId;
 
     protected final SAML2MetadataResolver spEntityId;
 
     protected final SAMLMessageStoreFactory samlMessageStoreFactory;
 
-    public SAML2ContextProvider(final MetadataResolver metadata,
-                                final SAML2MetadataResolver idpEntityId,
+    public SAML2ContextProvider(final SAML2MetadataResolver idpEntityId,
                                 final SAML2MetadataResolver spEntityId,
                                 @Nullable final SAMLMessageStoreFactory samlMessageStoreFactory) {
-        this.metadata = metadata;
         this.idpEntityId = idpEntityId;
         this.spEntityId = spEntityId;
         this.samlMessageStoreFactory = samlMessageStoreFactory;
@@ -121,7 +117,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
             final String entityId = metadata.getEntityId();
             set.add(new EntityIdCriterion(entityId));
 
-            entityDescriptor = this.metadata.resolveSingle(set);
+            entityDescriptor = SAML2Utils.buildChainingMetadataResolver(this.idpEntityId, this.spEntityId).resolveSingle(set);
             if (entityDescriptor == null) {
                 throw new SAMLException("Cannot find entity " + entityId + " in metadata provider");
             }

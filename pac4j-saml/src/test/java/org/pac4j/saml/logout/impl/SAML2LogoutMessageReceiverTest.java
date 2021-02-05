@@ -2,7 +2,6 @@ package org.pac4j.saml.logout.impl;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
@@ -17,7 +16,6 @@ import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
@@ -132,5 +130,4 @@ public class SAML2LogoutMessageReceiverTest {
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         return context;
     }
-
 }
