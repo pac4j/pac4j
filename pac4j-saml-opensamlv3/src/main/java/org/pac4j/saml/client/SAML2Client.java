@@ -1,11 +1,6 @@
 package org.pac4j.saml.client;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
-
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
-import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
@@ -48,9 +43,6 @@ import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
 import org.pac4j.saml.sso.impl.*;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class is the client to authenticate and logout users with a SAML2 Identity Provider.
@@ -116,11 +108,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
-        final MetadataResolver metadataManager = initChainingMetadataResolver(
-                initIdentityProviderMetadataResolver(),
-                initServiceProviderMetadataResolver());
-        initSAMLContextProvider(metadataManager);
-        initSignatureTrustEngineProvider(metadataManager);
+        initIdentityProviderMetadataResolver();
+        initServiceProviderMetadataResolver();
+        initSAMLContextProvider();
+        initSignatureTrustEngineProvider();
         initSAMLReplayCache();
         initSAMLResponseValidator();
         initSOAPPipelineProvider();
@@ -185,31 +176,30 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
         this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
-    protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
+    protected void initSignatureTrustEngineProvider() {
         // Build provider for digital signature validation and encryption
-        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(this.idpMetadataResolver, this.spMetadataResolver);
         if (this.configuration.isAllSignatureValidationDisabled()) {
             this.signatureTrustEngineProvider = new LogOnlySignatureTrustEngineProvider(this.signatureTrustEngineProvider);
         }
     }
 
-    protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
+    protected void initSAMLContextProvider() {
         // Build the contextProvider
-        this.contextProvider = new SAML2ContextProvider(metadataManager,
-                this.idpMetadataResolver, this.spMetadataResolver,
+        this.contextProvider = new SAML2ContextProvider(this.idpMetadataResolver, this.spMetadataResolver,
                 this.configuration.getSamlMessageStoreFactory());
     }
 
-    protected MetadataResolver initServiceProviderMetadataResolver() {
+    protected void initServiceProviderMetadataResolver() {
         this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration,
             computeFinalCallbackUrl(null),
             this.credentialProvider);
-        return this.spMetadataResolver.resolve();
+        this.spMetadataResolver.resolve();
     }
 
-    protected MetadataResolver initIdentityProviderMetadataResolver() {
+    protected void initIdentityProviderMetadataResolver() {
         this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration);
-        return this.idpMetadataResolver.resolve();
+        ((SAML2IdentityProviderMetadataResolver) this.idpMetadataResolver).init();
     }
 
     protected void initCredentialProvider() {
@@ -223,24 +213,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
     protected void initSignatureSigningParametersProvider() {
         this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(
                 this.credentialProvider, this.configuration);
-    }
-
-    protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
-                                                                          final MetadataResolver spMetadataProvider) {
-        final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
-        metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
-        try {
-            final List<MetadataResolver> list = new ArrayList<>();
-            list.add(idpMetadataProvider);
-            list.add(spMetadataProvider);
-            metadataManager.setResolvers(list);
-            metadataManager.initialize();
-        } catch (final ResolverException e) {
-            throw new TechnicalException("Error adding idp or sp metadatas to manager", e);
-        } catch (final ComponentInitializationException e) {
-            throw new TechnicalException("Error initializing manager", e);
-        }
-        return metadataManager;
     }
 
     protected void initSAMLReplayCache() {
