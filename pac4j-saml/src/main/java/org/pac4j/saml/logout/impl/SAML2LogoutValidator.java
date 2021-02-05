@@ -12,6 +12,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -19,6 +20,7 @@ import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
+import org.pac4j.saml.util.Configuration;
 
 import java.util.List;
 
@@ -33,8 +35,17 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
     private String postLogoutURL;
 
+    /**
+     * When set to false, will cause the validator
+     * to not throw back exceptions and expect adaptations of those exceptions
+     * when the response is successfully validated. Instead, the validator should successfully
+     * move on without throwing {@link OkAction}.
+     */
+    private boolean actionOnSuccess = true;
+
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                final LogoutHandler logoutHandler, final String postLogoutURL, final ReplayCacheProvider replayCache) {
+                                final LogoutHandler logoutHandler, final String postLogoutURL,
+                                final ReplayCacheProvider replayCache) {
         super(engine, decrypter, logoutHandler, replayCache);
         this.postLogoutURL = postLogoutURL;
     }
@@ -47,31 +58,34 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     @Override
     public Credentials validate(final SAML2MessageContext context) {
         final SAMLObject message = (SAMLObject) context.getMessageContext().getMessage();
-
         // IDP-initiated
         if (message instanceof LogoutRequest) {
             final LogoutRequest logoutRequest = (LogoutRequest) message;
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutRequest(logoutRequest, context, engine);
-
             return null;
-
         } else if (message instanceof LogoutResponse) {
             // SP-initiated
             final LogoutResponse logoutResponse = (LogoutResponse) message;
             final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
 
-            if (StringUtils.isNotBlank(postLogoutURL)){
-                // if custom post logout URL is present then redirect to it
-                throw new FoundAction(postLogoutURL);
-            } else {
-                // nothing to reply to the logout response
-                throw new OkAction("");
+            final HttpAction action = handlePostLogoutResponse(context);
+            if (action != null) {
+                throw action;
             }
-        } else {
-            throw new SAMLException("Must be a LogoutRequest or LogoutResponse type");
+            return null;
         }
+        throw new SAMLException("SAML message must be a LogoutRequest or LogoutResponse type");
+    }
+
+    protected HttpAction handlePostLogoutResponse(final SAML2MessageContext context) {
+        if (StringUtils.isNotBlank(postLogoutURL)) {
+            // if custom post logout URL is present then redirect to it
+            return new FoundAction(postLogoutURL);
+        }
+        // nothing to reply to the logout response
+        return this.actionOnSuccess ? new OkAction("") : null;
     }
 
     /**
@@ -82,8 +96,11 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      * @param engine the signature engine
      */
     protected void validateLogoutRequest(final LogoutRequest logoutRequest, final SAML2MessageContext context,
-                                               final SignatureTrustEngine engine) {
+                                         final SignatureTrustEngine engine) {
 
+        if (logger.isTraceEnabled()) {
+            logger.trace("Validating logout request:\n{}", Configuration.serializeSamlObject(logoutRequest));
+        }
         validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
 
         // don't check because of CAS v5
@@ -109,6 +126,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         final String sloKey = computeSloKey(sessionIndex, nameId);
         if (sloKey != null) {
             final String bindingUri = context.getSAMLBindingContext().getBindingUri();
+            logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
             if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
                 logoutHandler.destroySessionBack(context.getWebContext(), context.getSessionStore(), sloKey);
             } else {
@@ -127,6 +145,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     protected void validateLogoutResponse(final LogoutResponse logoutResponse, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
 
+        if (logger.isTraceEnabled()) {
+            logger.trace("Validating logout response:\n{}", Configuration.serializeSamlObject(logoutResponse));
+        }
         validateSuccess(logoutResponse.getStatus());
 
         validateSignatureIfItExists(logoutResponse.getSignature(), context, engine);
@@ -136,6 +157,14 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         validateIssuerIfItExists(logoutResponse.getIssuer(), context);
 
         verifyEndpoint(context.getSPSSODescriptor().getSingleLogoutServices().get(0), logoutResponse.getDestination());
+    }
+
+    public void setActionOnSuccess(final boolean actionOnSuccess) {
+        this.actionOnSuccess = actionOnSuccess;
+    }
+
+    public void setPostLogoutURL(final String postLogoutURL) {
+        this.postLogoutURL = postLogoutURL;
     }
 
     @Override

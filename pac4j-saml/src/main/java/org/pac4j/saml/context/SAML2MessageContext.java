@@ -114,7 +114,7 @@ public class SAML2MessageContext {
                 return service;
             }
         }
-        throw new SAMLException("Identity provider has no single logout service available for the selected profile"
+        throw new SAMLException("Identity provider has no single logout service available for the selected profile "
             + binding);
     }
 
@@ -125,7 +125,7 @@ public class SAML2MessageContext {
                 return service;
             }
         }
-        throw new SAMLException("Identity provider has no single sign on service available for the selected profile"
+        throw new SAMLException("Identity provider has no single sign on service available for the selected profile "
             + binding);
     }
 
