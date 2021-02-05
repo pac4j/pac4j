@@ -16,7 +16,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CasProfileDefinition extends CommonProfileDefinition<CommonProfile> {
+public class CasProfileDefinition extends CommonProfileDefinition {
 
     public CasProfileDefinition() {
         super(parameters -> {
