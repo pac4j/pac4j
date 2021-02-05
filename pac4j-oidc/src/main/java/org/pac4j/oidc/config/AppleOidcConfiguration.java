@@ -64,10 +64,10 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         CommonHelper.assertNotNull("privateKey", privateKey);
         CommonHelper.assertNotBlank("teamID", teamID);
         if (timeout.compareTo(MAX_TIMEOUT) > 0) {
-            throw new IllegalArgumentException(String.format("timeout must not be greater then %d seconds", MAX_TIMEOUT.getSeconds()));
+            throw new IllegalArgumentException(String.format("timeout must not be greater then %d seconds", MAX_TIMEOUT.toSeconds()));
         }
         if (store == null) {
-            store = new GuavaStore<>(1000, (int) timeout.getSeconds(), TimeUnit.SECONDS);
+            store = new GuavaStore<>(1000, (int) timeout.toSeconds(), TimeUnit.SECONDS);
         }
         final OIDCProviderMetadata providerMetadata =
             new OIDCProviderMetadata(
@@ -102,7 +102,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
             .audience("https://appleid.apple.com")
             .subject(getClientId())
             .issueTime(Date.from(Instant.now()))
-            .expirationTime(Date.from(Instant.now().plusSeconds(timeout.getSeconds())))
+            .expirationTime(Date.from(Instant.now().plusSeconds(timeout.toSeconds())))
             .build();
         SignedJWT signedJWT = new SignedJWT(
             new JWSHeader.Builder(JWSAlgorithm.ES256).keyID(privateKeyID).build(),
