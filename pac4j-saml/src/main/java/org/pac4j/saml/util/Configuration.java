@@ -74,7 +74,7 @@ public final class Configuration {
         final ServiceLoader<ConfigurationManager> configurationManagers = ServiceLoader.load(ConfigurationManager.class);
         final List<ConfigurationManager> configurationManagerList = new ArrayList();
         configurationManagers.forEach(configurationManagerList::add);
-        if (configurationManagerList.size() > 0) {
+        if (!configurationManagerList.isEmpty()) {
             configurationManagerList.sort(Configuration::compareManagers);
             configurationManagerList.get(0).configure();
         }
@@ -117,7 +117,7 @@ public final class Configuration {
         }
         return writer;
     }
-    
+
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
         try ( StringReader reader = new StringReader(obj)) {
             return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
