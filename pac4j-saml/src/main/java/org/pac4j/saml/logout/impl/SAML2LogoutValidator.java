@@ -197,6 +197,18 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         this.expectedDestination = expectedDestination;
     }
 
+    public String getPostLogoutURL() {
+        return postLogoutURL;
+    }
+
+    public boolean isActionOnSuccess() {
+        return actionOnSuccess;
+    }
+
+    public String getExpectedDestination() {
+        return expectedDestination;
+    }
+
     @Override
     public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
     }
