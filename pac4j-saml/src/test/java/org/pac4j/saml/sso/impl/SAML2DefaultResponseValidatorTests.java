@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
+import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import org.junit.Test;
 import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
@@ -140,7 +141,8 @@ public class SAML2DefaultResponseValidatorTests {
                 wantsAssertionsSigned,
                 wantsResponsesSigned,
                 new InMemoryReplayCacheProvider(),
-                false);
+                false,
+                new BasicURLComparator());
     }
 
     @Test

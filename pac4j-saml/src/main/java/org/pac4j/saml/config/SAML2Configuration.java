@@ -1,5 +1,8 @@
 package org.pac4j.saml.config;
 
+import net.shibboleth.utilities.java.support.net.URIComparator;
+import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.HttpClient;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -24,6 +27,7 @@ import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
+import org.pac4j.saml.metadata.SAML2MetadataSigner;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
@@ -71,6 +75,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2Configuration.class);
 
     private final List<SAML2ServiceProviderRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
+
+    private SAML2MetadataSigner metadataSigner;
+
+    private String singleSignOutServiceUrl;
 
     private String callbackUrl;
 
@@ -159,6 +167,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private String attributeAsId;
 
     private Map<String, String> mappedAttributes = new LinkedHashMap<>();
+
+    private URIComparator uriComparator = new BasicURLComparator();
 
     private LogoutHandler logoutHandler;
 
@@ -582,6 +592,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.authnContextClassRefs = authnContextClassRefs;
     }
 
+    public URIComparator getUriComparator() {
+        return uriComparator;
+    }
+
+    public void setUriComparator(final URIComparator uriComparator) {
+        this.uriComparator = uriComparator;
+    }
+
     public String getNameIdPolicyFormat() {
         return nameIdPolicyFormat;
     }
@@ -716,6 +734,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.authnRequestExtensions = authnRequestExtensions;
     }
 
+    public SAML2MetadataSigner getMetadataSigner() {
+        return metadataSigner;
+    }
+
+    public void setMetadataSigner(final SAML2MetadataSigner metadataSigner) {
+        this.metadataSigner = metadataSigner;
+    }
+
     public String getAttributeAsId() {
         return attributeAsId;
     }
@@ -806,6 +832,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.issuerFormat = issuerFormat;
     }
 
+    public String getSingleSignOutServiceUrl() {
+        return singleSignOutServiceUrl;
+    }
+
+    public void setSingleSignOutServiceUrl(final String singleSignOutServiceUrl) {
+        this.singleSignOutServiceUrl = singleSignOutServiceUrl;
+    }
+
     public HttpClient getHttpClient() {
         if (httpClient == null) {
             httpClient = new SAML2HttpClientBuilder().build();
@@ -832,16 +866,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 generator.setNameIdPolicyFormat(getNameIdPolicyFormat());
                 generator.setRequestedAttributes(getRequestedServiceProviderAttributes());
                 generator.setCredentialProvider(getCredentialProvider());
-
+                generator.setMetadataSigner(getMetadataSigner());
                 generator.setEntityId(getServiceProviderEntityId());
                 generator.setRequestInitiatorLocation(callbackUrl);
                 // Assertion consumer service url is the callback URL
                 generator.setAssertionConsumerServiceUrl(callbackUrl);
                 generator.setResponseBindingType(getResponseBindingType());
-                final String logoutUrl = CommonHelper.addParameter(callbackUrl,
-                    Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
-                // the logout URL is callback URL with an extra parameter
-                generator.setSingleLogoutServiceUrl(logoutUrl);
+
+                determineSingleSignOutServiceUrl(generator);
 
                 if (getBlackListedSignatureSigningAlgorithms() != null) {
                     generator.setBlackListedSignatureSigningAlgorithms(
@@ -858,6 +890,13 @@ public class SAML2Configuration extends BaseClientConfiguration {
         } catch (final Exception e) {
             throw new TechnicalException(e);
         }
+    }
+
+    protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
+        final String url = StringUtils.defaultIfBlank(this.singleSignOutServiceUrl, callbackUrl);
+        final String logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
+        // the logout URL is callback URL with an extra parameter
+        generator.setSingleLogoutServiceUrl(logoutUrl);
     }
 
     public SAML2MetadataGenerator getMetadataGenerator() throws Exception {

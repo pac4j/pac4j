@@ -2,7 +2,6 @@ package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.net.URIComparator;
-import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.messaging.handler.MessageHandlerException;
@@ -18,7 +17,6 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.StatusMessage;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
 import org.opensaml.security.SecurityException;
@@ -47,6 +45,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * The abstract class for all SAML response validators.
@@ -73,12 +72,6 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final LogoutHandler logoutHandler,
-                                             final ReplayCacheProvider replayCache) {
-        this(signatureTrustEngineProvider, decrypter, logoutHandler, replayCache, new BasicURLComparator());
-    }
-
-    protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
-                                             final Decrypter decrypter, final LogoutHandler logoutHandler,
                                              final ReplayCacheProvider replayCache, final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = signatureTrustEngineProvider;
         this.decrypter = decrypter;
@@ -93,6 +86,10 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param status the response status.
      */
     protected void validateSuccess(final Status status) {
+        if (status == null || status.getStatusCode() == null) {
+            throw new SAMLException("Missing response status or status code");
+        }
+
         String statusValue = status.getStatusCode().getValue();
         if (!StatusCode.SUCCESS.equals(statusValue)) {
             final StatusMessage statusMessage = status.getStatusMessage();
@@ -199,14 +196,19 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return isDateValid;
     }
 
-    protected void verifyEndpoint(final Endpoint endpoint, final String destination) {
+    protected void verifyEndpoint(final List<String> endpoints, final String destination) {
+        final boolean verified = endpoints.stream()
+            .allMatch(endpoint -> compareEndpoints(destination, endpoint));
+        if (!verified) {
+            throw new SAMLEndpointMismatchException("Intended destination " + destination
+                + " doesn't match any of the endpoint URLs  "
+                + endpoints);
+        }
+    }
+
+    protected boolean compareEndpoints(final String destination, final String endpoint) {
         try {
-            if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
-                && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
-                throw new SAMLEndpointMismatchException("Intended destination " + destination
-                    + " doesn't match any of the endpoint URLs on endpoint "
-                    + endpoint.getLocation());
-            }
+            return uriComparator.compare(destination, endpoint);
         } catch (final Exception e) {
             throw new SAMLEndpointMismatchException(e);
         }
