@@ -1,7 +1,7 @@
 package org.pac4j.saml.sso.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import net.shibboleth.utilities.java.support.net.URIComparator;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.SAMLObject;
@@ -32,13 +32,14 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
 import org.pac4j.saml.exceptions.SAMLAssertionAudienceException;
 import org.pac4j.saml.exceptions.SAMLAssertionConditionException;
+import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
 import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
 import org.pac4j.saml.exceptions.SAMLAuthnSessionCriteriaException;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -59,6 +60,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -76,27 +78,15 @@ import java.util.Set;
  */
 public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator {
 
-    private final boolean wantsAssertionsSigned;
-    private final boolean wantsResponsesSigned;
-    private final boolean allSignatureValidationDisabled;
-    /* maximum lifetime after a successful authentication on an IDP */
-    private int maximumAuthenticationLifetime;
+    private final SAML2Configuration saml2Configuration;
 
     public SAML2AuthnResponseValidator(
         final SAML2SignatureTrustEngineProvider engine,
         final Decrypter decrypter,
-        final LogoutHandler logoutHandler,
-        final int maximumAuthenticationLifetime,
-        final boolean wantsAssertionsSigned,
-        final boolean wantsResponsesSigned,
         final ReplayCacheProvider replayCache,
-        final boolean allSignatureValidationDisabled,
-        final URIComparator uriComparator) {
-        super(engine, decrypter, logoutHandler, replayCache, uriComparator);
-        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
-        this.wantsAssertionsSigned = wantsAssertionsSigned;
-        this.wantsResponsesSigned = wantsResponsesSigned;
-        this.allSignatureValidationDisabled = allSignatureValidationDisabled;
+        final SAML2Configuration saml2Configuration) {
+        super(engine, decrypter, saml2Configuration.getLogoutHandler(), replayCache, saml2Configuration.getUriComparator());
+        this.saml2Configuration = saml2Configuration;
     }
 
     @Override
@@ -203,7 +193,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             throw new SAMLException("Invalid SAML version assigned to the response " + response.getVersion());
         }
 
-        if (wantsResponsesSigned && response.getSignature() == null) {
+        if (saml2Configuration.isWantsResponsesSigned() && response.getSignature() == null) {
             logger.debug(
                 "Unable to find a signature on the SAML response returned. Pac4j is configured to enforce "
                     + "signatures on SAML2 responses from identity providers and the returned response\n{}\n"
@@ -213,7 +203,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             throw new SAMLSignatureValidationException("Unable to find a signature on the SAML response returned");
         }
 
-        validateSignatureIfItExists(response.getSignature(), context, engine);
+        if (saml2Configuration.isWantsResponsesSigned()) {
+            validateSignatureIfItExists(response.getSignature(), context, engine);
+        }
 
         validateIssueInstant(response.getIssueInstant());
 
@@ -221,7 +213,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
         if (messageStorage != null && response.getInResponseTo() != null) {
             final Optional<XMLObject> xmlObject = messageStorage.get(response.getInResponseTo());
-            if (!xmlObject.isPresent()) {
+            if (xmlObject.isEmpty()) {
                 throw new SAMLInResponseToMismatchException(
                     "InResponseToField of the Response doesn't correspond to sent message "
                         + response.getInResponseTo());
@@ -613,7 +605,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      */
     protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
                                                     final SAML2MessageContext context) {
-
+        final List<String> authnClassRefs = new ArrayList<>();
         final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
         for (final AuthnStatement statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
@@ -625,7 +617,23 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                     throw new SAMLAuthnSessionCriteriaException("Authentication session between IDP and subject has ended");
                 }
             }
-            // TODO implement authnContext validation
+            authnClassRefs.add(statement.getAuthnContext().getAuthnContextClassRef().getURI());
+        }
+
+        validateAuthnContextClassRefs(authnClassRefs);
+    }
+
+    protected void validateAuthnContextClassRefs(final List<String> providedAuthnContextClassRefs) {
+        if (!saml2Configuration.getAuthnContextClassRefs().isEmpty()) {
+            logger.debug("Required authentication context class refs are {}", saml2Configuration.getAuthnContextClassRefs());
+            logger.debug("Found authentication context class refs are {}", providedAuthnContextClassRefs);
+
+            final Collection<String> results = CollectionUtils.intersection(
+                saml2Configuration.getAuthnContextClassRefs(), providedAuthnContextClassRefs);
+            if (results.size() != saml2Configuration.getAuthnContextClassRefs().size()) {
+                throw new SAMLAuthnContextClassRefException("Requested authentication context class refs do not match "
+                + " those in authentication statements from IDP.");
+            }
         }
     }
 
@@ -649,7 +657,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             if (wantsAssertionsSigned(context)) {
                 throw new SAMLSignatureRequiredException("Assertion must be explicitly signed");
             }
-            if (!peerContext.isAuthenticated() && !allSignatureValidationDisabled) {
+            if (!peerContext.isAuthenticated() && !saml2Configuration.isAllSignatureValidationDisabled()) {
                 throw new SAMLSignatureRequiredException("Unauthenticated response contains an unsigned assertion");
             }
         }
@@ -658,21 +666,16 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     @VisibleForTesting
     Boolean wantsAssertionsSigned(final SAML2MessageContext context) {
         if (context == null) {
-            return wantsAssertionsSigned;
+            return saml2Configuration.isWantsAssertionsSigned();
         }
         final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
         if (spDescriptor == null) {
-            return wantsAssertionsSigned;
+            return saml2Configuration.isWantsAssertionsSigned();
         }
         return spDescriptor.getWantAssertionsSigned();
     }
 
     private boolean isAuthnInstantValid(final Instant authnInstant) {
-        return isDateValid(authnInstant, this.maximumAuthenticationLifetime);
-    }
-
-    @Override
-    public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
-        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
+        return isDateValid(authnInstant, saml2Configuration.getMaximumAuthenticationLifetime());
     }
 }

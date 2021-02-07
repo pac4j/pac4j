@@ -20,7 +20,7 @@ import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
-import org.pac4j.saml.util.HostOnlyURIComparator;
+import org.pac4j.saml.util.ExcludingParametersURIComparator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
@@ -101,7 +101,7 @@ public class SAML2LogoutValidatorTests {
                 mock(LogoutHandler.class),
                 null,
                 mock(ReplayCacheProvider.class),
-                new HostOnlyURIComparator()
+                new ExcludingParametersURIComparator()
             );
             validator.setActionOnSuccess(false);
             validator.validate(context);

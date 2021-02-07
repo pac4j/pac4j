@@ -20,7 +20,5 @@ public interface SAML2ResponseValidator {
      */
     Credentials validate(SAML2MessageContext context);
 
-    void setMaximumAuthenticationLifetime(int maximumAuthenticationLifetime);
-
     void setAcceptedSkew(int acceptedSkew);
 }

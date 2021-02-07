@@ -7,12 +7,12 @@ import org.apache.http.client.utils.URIBuilder;
 import javax.annotation.Nullable;
 
 /**
- * This is {@link HostOnlyURIComparator}.
+ * This is {@link ExcludingParametersURIComparator}.
  *
  * @author Misagh Moayyed
  * @since 6.4.0
  */
-public class HostOnlyURIComparator implements URIComparator {
+public class ExcludingParametersURIComparator implements URIComparator {
     @Override
     public boolean compare(@Nullable final String destination, @Nullable final String endpoint) throws URIException {
         try {

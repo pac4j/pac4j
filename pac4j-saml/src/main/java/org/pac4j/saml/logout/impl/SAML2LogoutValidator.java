@@ -208,8 +208,4 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     public String getExpectedDestination() {
         return expectedDestination;
     }
-
-    @Override
-    public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
-    }
 }

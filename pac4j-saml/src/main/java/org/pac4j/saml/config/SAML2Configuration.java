@@ -114,7 +114,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String spLogoutResponseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
-    private List<String> authnContextClassRefs = null;
+    private List<String> authnContextClassRefs = new ArrayList<>();
 
     private String nameIdPolicyFormat = null;
 
