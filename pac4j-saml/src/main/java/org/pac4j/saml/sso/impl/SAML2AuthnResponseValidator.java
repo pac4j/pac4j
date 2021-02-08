@@ -112,12 +112,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     }
 
     protected SAML2Credentials buildSAML2Credentials(final SAML2MessageContext context) {
-
-        final NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
         final Assertion subjectAssertion = context.getSubjectAssertion();
 
+        final List<Attribute> attributes = collectAssertionAttributes(subjectAssertion);
+        final SAML2Credentials.SAMLNameID samlNameId = determineNameID(context, SAML2Credentials.SAMLAttribute.from(attributes));
         final String sessionIndex = getSessionIndex(subjectAssertion);
-        final String sloKey = computeSloKey(sessionIndex, nameId);
+        final String sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
             logoutHandler.recordSession(context.getWebContext(), context.getSessionStore(), sloKey);
         }
@@ -130,7 +130,11 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getURI());
             }
         }
+        return new SAML2Credentials(samlNameId, issuerEntityId, SAML2Credentials.SAMLAttribute.from(attributes),
+            subjectAssertion.getConditions(), sessionIndex, authnContexts);
+    }
 
+    protected List<Attribute> collectAssertionAttributes(final Assertion subjectAssertion) {
         final List<Attribute> attributes = new ArrayList<>();
         for (final AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
             for (final Attribute attribute : attributeStatement.getAttributes()) {
@@ -150,8 +154,23 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 }
             }
         }
-        return new SAML2Credentials(nameId, issuerEntityId, attributes,
-            subjectAssertion.getConditions(), sessionIndex, authnContexts);
+        return attributes;
+    }
+
+    protected SAML2Credentials.SAMLNameID determineNameID(final SAML2MessageContext context,
+                                                          final List<SAML2Credentials.SAMLAttribute> attributes) {
+        if (saml2Configuration.getNameIdAttribute() != null) {
+            final Optional<SAML2Credentials.SAMLNameID> nameId = attributes
+                .stream()
+                .filter(attribute -> attribute.getName().equals(saml2Configuration.getNameIdAttribute()))
+                .findFirst()
+                .map(SAML2Credentials.SAMLNameID::from);
+            if (nameId.isPresent()) {
+                return nameId.get();
+            }
+        }
+        final NameID nameId = Objects.requireNonNull(context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID());
+        return SAML2Credentials.SAMLNameID.from(nameId);
     }
 
     /**
@@ -316,11 +335,18 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
-        final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
-        if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
-            && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
-            throw new SAMLException(
-                "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
+
+        if (subjectConfirmations == null || subjectConfirmations.isEmpty()) {
+            if (saml2Configuration.getNameIdAttribute() != null) {
+                logger.debug("NameID will be determined from attribute {}", saml2Configuration.getNameIdAttribute());
+            } else {
+                final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
+                if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
+                    && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
+                    throw new SAMLException(
+                        "Subject NameID, BaseID and EncryptedID cannot be all null at the same time without Subject Confirmations.");
+                }
+            }
         }
     }
 
@@ -632,7 +658,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 saml2Configuration.getAuthnContextClassRefs(), providedAuthnContextClassRefs);
             if (results.size() != saml2Configuration.getAuthnContextClassRefs().size()) {
                 throw new SAMLAuthnContextClassRefException("Requested authentication context class refs do not match "
-                + " those in authentication statements from IDP.");
+                    + " those in authentication statements from IDP.");
             }
         }
     }

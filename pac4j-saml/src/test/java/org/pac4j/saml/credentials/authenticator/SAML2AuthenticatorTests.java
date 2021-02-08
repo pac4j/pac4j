@@ -60,8 +60,9 @@ public class SAML2AuthenticatorTests {
         attributes.add(createAttribute("givenName", "urn:oid:2.5.4.42", "developer"));
         attributes.add(createAttribute("surname", "urn:oid:2.5.4.4", "security"));
 
-        final SAML2Credentials credentials = new SAML2Credentials(nameid, "example.issuer.com",
-            attributes, conditions, "session-index", contexts);
+        final SAML2Credentials credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
+            "example.issuer.com",
+            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
 
         final Map<String, String> mappedAttributes = new LinkedHashMap<>();
         mappedAttributes.put("urn:oid:2.16.840.1.113730.3.1.241", "mapped-display-name");

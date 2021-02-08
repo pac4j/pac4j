@@ -29,6 +29,7 @@ import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -217,15 +218,47 @@ public class SAML2DefaultResponseValidatorTests {
         assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(context));
     }
 
+    @Test
+    public void testNameIdAsAttribute() throws Exception {
+        final SAML2Configuration saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setUriComparator(new ExcludingParametersURIComparator());
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+        saml2Configuration.setNameIdAttribute("email");
+
+        final Response response = getResponse();
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+        final SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        final SAML2MessageContext context = new SAML2MessageContext();
+        context.getMessageContext().setMessage(response);
+
+        final SAMLSelfEntityContext samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+        final SAMLMetadataContext samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
+        final SPSSODescriptor roleDescriptor = mock(SPSSODescriptor.class);
+        when(roleDescriptor.getWantAssertionsSigned()).thenReturn(false);
+        samlSelfMetadataContext.setRoleDescriptor(roleDescriptor);
+
+        final SAMLEndpointContext samlEndpointContext = context.getSAMLEndpointContext();
+        final Endpoint endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+        samlEndpointContext.setEndpoint(endpoint);
+
+        SAML2Credentials credentials = (SAML2Credentials) validator.validate(context);
+        assertEquals("longosibilla@libero.it", credentials.getNameId().getValue());
+    }
 
     @Test
     public void testAuthnContextClassRefValidation() throws Exception {
         final SAML2Configuration saml2Configuration = getSaml2Configuration(false, false);
         saml2Configuration.setUriComparator(new ExcludingParametersURIComparator());
+        saml2Configuration.setAllSignatureValidationDisabled(true);
         saml2Configuration.getAuthnContextClassRefs().add(AuthnContext.PASSWORD_AUTHN_CTX);
         saml2Configuration.getAuthnContextClassRefs().add(AuthnContext.PPT_AUTHN_CTX);
 
         final Response response = getResponse();
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
         final SAML2AuthnResponseValidator validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final SAML2MessageContext context = new SAML2MessageContext();
         context.getMessageContext().setMessage(response);

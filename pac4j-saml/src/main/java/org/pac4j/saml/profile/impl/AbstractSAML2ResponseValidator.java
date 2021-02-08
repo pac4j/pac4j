@@ -28,6 +28,7 @@ import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -259,10 +260,12 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
-    protected String computeSloKey(final String sessionIndex, final NameID nameId) {
+    protected String computeSloKey(final String sessionIndex, final SAML2Credentials.SAMLNameID nameId) {
         if (sessionIndex != null) {
             return sessionIndex;
-        } else if (nameId != null) {
+        }
+
+        if (nameId != null) {
             return nameId.getValue();
         }
 

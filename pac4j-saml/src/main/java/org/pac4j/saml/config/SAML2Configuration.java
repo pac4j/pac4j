@@ -80,6 +80,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String singleSignOutServiceUrl;
 
+    private String nameIdAttribute;
+
     private String callbackUrl;
 
     private Resource keystoreResource;
@@ -788,6 +790,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public void setPostLogoutURL(final String postLogoutURL) {
         this.postLogoutURL = postLogoutURL;
+    }
+
+    public String getNameIdAttribute() {
+        return nameIdAttribute;
+    }
+
+    public void setNameIdAttribute(final String nameIdAttribute) {
+        this.nameIdAttribute = nameIdAttribute;
     }
 
     public LogoutHandler findLogoutHandler() {

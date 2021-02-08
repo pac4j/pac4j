@@ -18,6 +18,7 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
@@ -124,6 +125,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             nameId = decryptEncryptedId(encryptedID, decrypter);
         }
 
+        final SAML2Credentials.SAMLNameID samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
         String sessionIndex = null;
         final List<SessionIndex> sessionIndexes = logoutRequest.getSessionIndexes();
         if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
@@ -133,7 +135,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             }
         }
 
-        final String sloKey = computeSloKey(sessionIndex, nameId);
+        final String sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
             final String bindingUri = context.getSAMLBindingContext().getBindingUri();
             logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
