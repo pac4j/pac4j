@@ -66,7 +66,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
 
     protected SAML2ResponseValidator authnResponseValidator;
 
-    protected SAML2ResponseValidator logoutValidator;
+    protected SAML2LogoutValidator logoutValidator;
 
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
@@ -253,6 +253,18 @@ public class SAML2Client extends IndirectClient<SAML2Credentials> {
 
     public SAMLContextProvider getContextProvider() {
         return contextProvider;
+    }
+
+    public SAML2LogoutValidator getLogoutValidator() {
+        return logoutValidator;
+    }
+
+    public SAML2MetadataResolver getIdpMetadataResolver() {
+        return idpMetadataResolver;
+    }
+
+    public SAML2MetadataResolver getSpMetadataResolver() {
+        return spMetadataResolver;
     }
 
     public SAML2ProfileHandler<AuthnRequest> getProfileHandler() {
