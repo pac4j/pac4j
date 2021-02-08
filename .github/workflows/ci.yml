@@ -1,7 +1,7 @@
 name: Java CI
 
 env:
-    JDK_CURRENT: 1.8
+    JDK_CURRENT: 11.0.10
 
 on: [push, pull_request]
 
