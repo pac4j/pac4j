@@ -1,6 +1,5 @@
 package org.pac4j.oidc.run;
 
-import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;

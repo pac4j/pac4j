@@ -4,7 +4,6 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.FileOutputStream;

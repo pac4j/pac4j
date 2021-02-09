@@ -11,7 +11,6 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.model.WechatToken;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.exceptions.OAuthException;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;

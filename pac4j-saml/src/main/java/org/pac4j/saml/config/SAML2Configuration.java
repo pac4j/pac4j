@@ -8,7 +8,6 @@ import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
-import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;

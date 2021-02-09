@@ -1,6 +1,5 @@
 package org.pac4j.cas.client;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.pac4j.core.client.IndirectClient;

@@ -11,7 +11,6 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
-import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import java.io.IOException;
 import java.util.Optional;

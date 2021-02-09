@@ -1,6 +1,5 @@
 package org.pac4j.saml.transport;
 
-import org.opensaml.core.xml.XMLObject;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.SAMLObject;

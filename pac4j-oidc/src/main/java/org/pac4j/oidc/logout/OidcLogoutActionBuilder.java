@@ -1,6 +1,5 @@
 package org.pac4j.oidc.logout;
 
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.openid.connect.sdk.LogoutRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.HttpConstants;

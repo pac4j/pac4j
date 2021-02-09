@@ -10,7 +10,6 @@ import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostSimpleSignEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.OutputStreamWriter;
 import java.net.URI;
 
 /**

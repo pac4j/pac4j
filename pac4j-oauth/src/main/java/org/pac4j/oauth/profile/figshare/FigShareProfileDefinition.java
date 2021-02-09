@@ -8,7 +8,6 @@ import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**

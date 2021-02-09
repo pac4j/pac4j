@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.ok;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;

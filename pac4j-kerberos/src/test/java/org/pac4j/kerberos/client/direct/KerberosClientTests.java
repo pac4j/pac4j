@@ -7,7 +7,6 @@ import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

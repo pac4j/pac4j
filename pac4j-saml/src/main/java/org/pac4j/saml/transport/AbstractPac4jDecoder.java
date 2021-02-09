@@ -6,7 +6,6 @@ import net.shibboleth.utilities.java.support.logic.Constraint;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.UnmarshallingException;
@@ -27,8 +26,6 @@ import com.google.common.collect.Multimap;
 import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**

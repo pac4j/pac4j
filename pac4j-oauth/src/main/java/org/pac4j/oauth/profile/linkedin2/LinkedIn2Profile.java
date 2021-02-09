@@ -4,11 +4,6 @@ import java.net.URI;
 
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileEmails.Email;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileEmails.Email.HandleTilde;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde.Element;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde.Element.Identifier;
 
 /**
  *

@@ -8,7 +8,6 @@ import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;

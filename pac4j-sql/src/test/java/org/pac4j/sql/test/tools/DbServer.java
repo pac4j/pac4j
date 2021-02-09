@@ -7,7 +7,6 @@ import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.Handle;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import javax.sql.DataSource;

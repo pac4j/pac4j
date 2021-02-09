@@ -10,7 +10,6 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
-import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import java.util.Optional;
 

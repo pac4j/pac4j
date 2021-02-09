@@ -5,8 +5,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 
-import java.util.Map;
-
 /**
  * Helper to build the appropriate {@link HttpAction}.
  *

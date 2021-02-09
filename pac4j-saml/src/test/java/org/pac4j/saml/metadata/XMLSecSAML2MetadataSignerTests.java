@@ -1,7 +1,6 @@
 package org.pac4j.saml.metadata;
 
 import org.junit.Test;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.ConfigurationManager;
 import org.pac4j.saml.util.DefaultConfigurationManager;

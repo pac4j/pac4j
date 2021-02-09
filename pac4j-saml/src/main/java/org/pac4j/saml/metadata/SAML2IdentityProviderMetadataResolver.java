@@ -20,15 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**

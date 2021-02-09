@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.pac4j.core.context.ContextHelper.*;
 

@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile;
 
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile;

@@ -2,7 +2,6 @@ package org.pac4j.sql.profile.service;
 
 import org.junit.*;
 import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;

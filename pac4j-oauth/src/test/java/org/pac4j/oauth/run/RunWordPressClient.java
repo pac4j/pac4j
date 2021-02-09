@@ -8,7 +8,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WordPressClient;
-import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 
 import static org.junit.Assert.*;

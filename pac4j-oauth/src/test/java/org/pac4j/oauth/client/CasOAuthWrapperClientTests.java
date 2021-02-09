@@ -1,11 +1,9 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
 
 import java.io.IOException;

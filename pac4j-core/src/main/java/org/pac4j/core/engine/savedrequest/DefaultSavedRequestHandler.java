@@ -9,8 +9,6 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 /**
  * The default {@link SavedRequestHandler} which handles GET and POST requests.
  *

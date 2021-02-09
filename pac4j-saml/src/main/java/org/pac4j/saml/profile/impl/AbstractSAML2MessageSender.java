@@ -2,7 +2,6 @@ package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
@@ -16,7 +15,6 @@ import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessag
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
@@ -24,11 +22,9 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2MessageSender;
-import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPPostSimpleSignEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
-import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

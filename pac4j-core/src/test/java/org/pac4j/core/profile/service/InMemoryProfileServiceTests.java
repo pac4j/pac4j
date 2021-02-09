@@ -4,7 +4,6 @@ import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.junit.*;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;

@@ -1,7 +1,6 @@
 package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;

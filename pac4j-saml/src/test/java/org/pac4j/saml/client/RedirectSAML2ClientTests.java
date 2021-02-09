@@ -1,6 +1,5 @@
 package org.pac4j.saml.client;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -21,7 +20,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 

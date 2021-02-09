@@ -1,7 +1,6 @@
 package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;

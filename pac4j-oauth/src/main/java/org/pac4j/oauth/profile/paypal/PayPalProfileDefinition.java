@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.paypal;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;

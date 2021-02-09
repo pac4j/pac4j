@@ -1,23 +1,17 @@
 package org.pac4j.core.engine;
 
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.List;
 
 import static org.pac4j.core.util.CommonHelper.*;
 

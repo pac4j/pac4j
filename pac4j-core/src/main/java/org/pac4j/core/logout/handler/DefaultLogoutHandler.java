@@ -2,7 +2,6 @@ package org.pac4j.core.logout.handler;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;

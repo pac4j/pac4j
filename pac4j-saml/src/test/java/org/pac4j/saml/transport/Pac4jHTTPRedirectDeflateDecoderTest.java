@@ -1,7 +1,6 @@
 package org.pac4j.saml.transport;
 
 import org.junit.Test;
-import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;

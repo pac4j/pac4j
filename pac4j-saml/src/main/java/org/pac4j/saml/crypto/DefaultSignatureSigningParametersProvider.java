@@ -9,7 +9,6 @@ import org.opensaml.xmlsec.SignatureSigningConfiguration;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.criterion.SignatureSigningConfigurationCriterion;
-import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;

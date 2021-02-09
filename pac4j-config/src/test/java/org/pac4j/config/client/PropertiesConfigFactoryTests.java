@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
-import org.pac4j.core.client.Clients;
-import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
@@ -24,7 +22,6 @@ import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.sql.profile.service.DbProfileService;
 import org.pac4j.sql.test.tools.DbServer;
 

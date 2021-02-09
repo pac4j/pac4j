@@ -9,7 +9,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.GitHubClient;
-import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 
 import java.text.SimpleDateFormat;

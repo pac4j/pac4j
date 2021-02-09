@@ -7,8 +7,6 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.http.callback.PathParameterCallbackUrlResolver;
 import org.pac4j.core.util.TestsConstants;
 
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 /**

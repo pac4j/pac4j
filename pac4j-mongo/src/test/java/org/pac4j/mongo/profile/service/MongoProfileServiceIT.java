@@ -6,7 +6,6 @@ import org.bson.types.ObjectId;
 import org.junit.*;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;

@@ -19,7 +19,6 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.MessageException;
-import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.decoder.AbstractMessageDecoder;
 import org.opensaml.messaging.decoder.MessageDecodingException;
@@ -56,7 +55,6 @@ import org.opensaml.soap.common.SOAPException;
 import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

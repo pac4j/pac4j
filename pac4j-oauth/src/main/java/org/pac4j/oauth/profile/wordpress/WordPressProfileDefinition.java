@@ -1,7 +1,5 @@
 package org.pac4j.oauth.profile.wordpress;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import com.github.scribejava.core.model.Token;

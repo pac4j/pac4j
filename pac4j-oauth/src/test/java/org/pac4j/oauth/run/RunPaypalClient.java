@@ -8,7 +8,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.PayPalClient;
-import org.pac4j.oauth.profile.paypal.PayPalAddress;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
 
 import java.util.Locale;

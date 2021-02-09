@@ -11,12 +11,10 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestBuilder;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
-import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.Optional;
 

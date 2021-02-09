@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.vk;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;

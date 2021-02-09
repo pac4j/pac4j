@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.google2;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;

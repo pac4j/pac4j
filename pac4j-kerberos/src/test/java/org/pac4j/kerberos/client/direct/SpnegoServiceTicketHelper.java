@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.security.PrivilegedExceptionAction;
 import java.util.Base64;
-import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

@@ -3,7 +3,6 @@ package org.pac4j.saml.credentials.extractor;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
-import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -17,7 +16,6 @@ import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseMessageSender;
-import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.Optional;
 

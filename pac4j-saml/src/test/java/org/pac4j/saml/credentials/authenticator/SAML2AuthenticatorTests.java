@@ -9,7 +9,6 @@ import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;

@@ -5,7 +5,6 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.WithContentAction;
@@ -16,7 +15,6 @@ import org.pac4j.core.util.TestsHelper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Optional;
 import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;

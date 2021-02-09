@@ -10,7 +10,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 

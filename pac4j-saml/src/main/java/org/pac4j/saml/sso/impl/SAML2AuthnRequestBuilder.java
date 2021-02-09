@@ -2,7 +2,6 @@ package org.pac4j.saml.sso.impl;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang3.StringUtils;
@@ -13,14 +12,11 @@ import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
-import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Extensions;
 import org.opensaml.saml.saml2.core.Issuer;
-import org.opensaml.saml.saml2.core.NameIDPolicy;
-import org.opensaml.saml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;

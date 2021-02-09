@@ -2,7 +2,6 @@ package org.pac4j.core.profile;
 
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
-import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;

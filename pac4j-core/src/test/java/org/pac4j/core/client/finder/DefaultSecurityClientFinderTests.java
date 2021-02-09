@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.util.Pac4jConstants;
@@ -14,7 +13,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;

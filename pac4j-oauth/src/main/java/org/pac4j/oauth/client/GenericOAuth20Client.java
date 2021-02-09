@@ -1,12 +1,9 @@
 package org.pac4j.oauth.client;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
-import java.util.stream.Stream;
 
 import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;

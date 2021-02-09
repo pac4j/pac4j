@@ -6,8 +6,6 @@ import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 

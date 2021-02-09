@@ -26,7 +26,6 @@ import org.pac4j.core.util.TestsHelper;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 

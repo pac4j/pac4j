@@ -6,8 +6,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
-import org.opensaml.saml.metadata.resolver.MetadataResolver;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.ConfigurationManager;
 import org.pac4j.saml.util.DefaultConfigurationManager;

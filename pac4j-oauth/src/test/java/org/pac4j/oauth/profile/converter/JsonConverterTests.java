@@ -1,7 +1,6 @@
 package org.pac4j.oauth.profile.converter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.JsonHelper;

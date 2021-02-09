@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.generic;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 

@@ -4,8 +4,6 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
-import org.opensaml.saml.metadata.resolver.MetadataResolver;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.springframework.core.io.ClassPathResource;
 

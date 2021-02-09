@@ -9,11 +9,8 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
-import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.Optional;
 

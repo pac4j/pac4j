@@ -9,10 +9,6 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
 
-import java.security.Principal;
-import java.security.cert.X509Certificate;
-import java.util.regex.Matcher;
-
 /**
  * Authenticates {@link X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
  *

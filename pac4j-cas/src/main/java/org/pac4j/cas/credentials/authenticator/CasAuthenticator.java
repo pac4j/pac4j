@@ -1,7 +1,5 @@
 package org.pac4j.cas.credentials.authenticator;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
@@ -14,7 +12,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;

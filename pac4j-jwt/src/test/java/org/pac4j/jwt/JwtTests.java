@@ -27,7 +27,6 @@ import com.nimbusds.jose.JWSAlgorithm;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
-import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;

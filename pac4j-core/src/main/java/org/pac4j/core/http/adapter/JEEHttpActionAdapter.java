@@ -6,7 +6,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**

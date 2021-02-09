@@ -1,7 +1,6 @@
 package org.pac4j.oauth.profile.qq;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.scribejava.core.model.Token;
@@ -12,7 +11,6 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;

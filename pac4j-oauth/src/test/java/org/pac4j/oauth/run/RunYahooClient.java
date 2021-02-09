@@ -12,7 +12,6 @@ import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oauth.profile.yahoo.*;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;

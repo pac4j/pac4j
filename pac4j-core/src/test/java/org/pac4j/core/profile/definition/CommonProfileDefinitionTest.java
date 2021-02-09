@@ -3,7 +3,6 @@ package org.pac4j.core.profile.definition;
 import org.junit.Test;
 import org.pac4j.core.profile.BasicUserProfile;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 
 import static org.junit.Assert.*;
 

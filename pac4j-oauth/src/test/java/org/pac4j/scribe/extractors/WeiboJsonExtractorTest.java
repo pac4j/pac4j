@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.pac4j.scribe.model.WeiboToken;
 
 import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import java.io.IOException;
 

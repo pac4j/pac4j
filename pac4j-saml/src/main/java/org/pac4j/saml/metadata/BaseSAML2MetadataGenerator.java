@@ -49,7 +49,6 @@ import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Element;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

@@ -1,8 +1,6 @@
 package org.pac4j.core.engine;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Clients;
 
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
@@ -10,18 +8,13 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.*;
 

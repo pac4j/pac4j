@@ -9,7 +9,6 @@ import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 

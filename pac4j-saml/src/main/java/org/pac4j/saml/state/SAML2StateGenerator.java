@@ -5,8 +5,6 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
 
-import java.util.Optional;
-
 /**
  * State generator for SAML 2.
  *

@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.hiorgserver;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.HashSet;
 import java.util.Set;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;

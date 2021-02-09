@@ -1,11 +1,8 @@
 package org.pac4j.oidc.credentials.extractor;
 
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.id.State;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;

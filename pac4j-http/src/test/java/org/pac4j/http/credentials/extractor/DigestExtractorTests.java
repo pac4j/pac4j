@@ -4,11 +4,8 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.DigestCredentials;
-
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 

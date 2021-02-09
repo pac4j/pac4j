@@ -1,6 +1,5 @@
 package org.pac4j.gae.client;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import org.junit.After;

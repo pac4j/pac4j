@@ -11,7 +11,6 @@ import org.pac4j.core.util.generator.StaticValueGenerator;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 

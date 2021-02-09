@@ -10,9 +10,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
@@ -21,7 +19,6 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 

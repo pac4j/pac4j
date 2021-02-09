@@ -1,6 +1,5 @@
 package org.pac4j.http.credentials.extractor;
 
-import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -8,7 +7,6 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.Collection;
 import java.util.Optional;
 
 /**

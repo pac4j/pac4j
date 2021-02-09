@@ -1,6 +1,5 @@
 package org.pac4j.oidc.client;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;

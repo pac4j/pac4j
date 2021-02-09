@@ -3,12 +3,9 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
