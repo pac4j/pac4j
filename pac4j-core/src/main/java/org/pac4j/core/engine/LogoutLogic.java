@@ -11,6 +11,7 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@FunctionalInterface
 public interface LogoutLogic {
 
     /**

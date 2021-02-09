@@ -41,7 +41,7 @@ public class DefaultCallbackClientFinder implements ClientFinder {
                 }
             }
         }
-        logger.debug("result: {}", result.stream().map(c -> c.getName()).collect(Collectors.toList()));
+        logger.debug("result: {}", result.stream().map(Client::getName).collect(Collectors.toList()));
 
         // fallback: no client found and we have a default client, use it
         if (result.isEmpty() && CommonHelper.isNotBlank(clientNames)) {

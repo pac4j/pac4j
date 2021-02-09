@@ -19,6 +19,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
  * @author Emond Papegaaij
  * @since 4.0.3
  */
+@FunctionalInterface
 public interface ValueRetriever {
 
     Optional<Object> retrieve(String key, OidcClient client, WebContext webContext, SessionStore sessionStore);

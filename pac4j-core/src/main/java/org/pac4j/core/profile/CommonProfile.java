@@ -71,6 +71,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the username of the user
      */
+    @Override
     public String getUsername() {
         return (String) getAttribute(Pac4jConstants.USERNAME);
     }
@@ -125,6 +126,7 @@ public class CommonProfile extends BasicUserProfile {
         return (String) getAttribute(CommonProfileDefinition.LOCATION);
     }
 
+    @Override
     public boolean isExpired() {
         return false;
     }

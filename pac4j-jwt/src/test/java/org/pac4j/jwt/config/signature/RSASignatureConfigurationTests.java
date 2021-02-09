@@ -28,6 +28,7 @@ public final class RSASignatureConfigurationTests extends AbstractKeyEncryptionC
         return new JWTClaimsSet.Builder().subject(VALUE).build();
     }
 
+    @Override
     protected String getAlgorithm() {
         return "RSA";
     }

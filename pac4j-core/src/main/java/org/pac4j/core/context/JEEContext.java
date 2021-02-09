@@ -206,7 +206,7 @@ public class JEEContext implements WebContext {
             try {
                 body = request.getReader()
                     .lines()
-                    .reduce("", (accumulator, actual) -> accumulator.concat(actual));
+                    .reduce("", String::concat);
             } catch (final IOException e) {
                 throw new TechnicalException(e);
             }

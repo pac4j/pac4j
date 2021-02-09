@@ -133,7 +133,7 @@ public class OidcAuthenticator implements Authenticator {
      */
     private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
         Optional<ClientAuthenticationMethod> firstSupported =
-            metadataMethods.stream().filter((m) -> SUPPORTED_METHODS.contains(m)).findFirst();
+            metadataMethods.stream().filter(SUPPORTED_METHODS::contains).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
         } else {

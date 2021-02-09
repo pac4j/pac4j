@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
  */
 public final class ECSignatureConfigurationTests extends AbstractKeyEncryptionConfigurationTests {
 
+    @Override
     protected String getAlgorithm() {
         return "EC";
     }

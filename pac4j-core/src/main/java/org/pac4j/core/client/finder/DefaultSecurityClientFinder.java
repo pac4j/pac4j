@@ -76,7 +76,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
                 }
             }
         }
-        logger.debug("result: {}", result.stream().map(c -> c.getName()).collect(Collectors.toList()));
+        logger.debug("result: {}", result.stream().map(Client::getName).collect(Collectors.toList()));
         return result;
     }
 

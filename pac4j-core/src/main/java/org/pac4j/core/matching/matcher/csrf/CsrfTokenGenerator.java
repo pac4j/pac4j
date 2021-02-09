@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.SessionStore;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@FunctionalInterface
 public interface CsrfTokenGenerator {
 
     /**

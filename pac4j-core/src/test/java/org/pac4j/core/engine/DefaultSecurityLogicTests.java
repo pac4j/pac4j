@@ -74,43 +74,43 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testNullConfig() {
         config = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "config cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "config cannot be null");
     }
 
     @Test
     public void testNullContext() {
         context = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "context cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "context cannot be null");
     }
 
     @Test
     public void testNullHttpActionAdapter() {
         httpActionAdapter = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "httpActionAdapter cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 
     @Test
     public void testNullClients() {
         config.setClients(null);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "configClients cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "configClients cannot be null");
     }
 
     @Test
     public void testNullClientFinder() {
         logic.setClientFinder(null);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "clientFinder cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "clientFinder cannot be null");
     }
 
     @Test
     public void testNullAuthorizationChecker() {
         logic.setAuthorizationChecker(null);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "authorizationChecker cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "authorizationChecker cannot be null");
     }
 
     @Test
     public void testNullMatchingChecker() {
         logic.setMatchingChecker(null);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "matchingChecker cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "matchingChecker cannot be null");
     }
 
     @Test

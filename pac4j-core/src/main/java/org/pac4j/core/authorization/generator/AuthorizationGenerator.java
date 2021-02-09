@@ -12,6 +12,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.5.0
  */
+@FunctionalInterface
 public interface AuthorizationGenerator {
 
     /**

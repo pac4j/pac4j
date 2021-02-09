@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
  */
 public final class RSAEncryptionConfigurationTests extends AbstractKeyEncryptionConfigurationTests {
 
+    @Override
     protected String getAlgorithm() {
         return "RSA";
     }

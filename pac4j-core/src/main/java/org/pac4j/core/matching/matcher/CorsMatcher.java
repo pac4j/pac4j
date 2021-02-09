@@ -47,7 +47,7 @@ public class CorsMatcher implements Matcher {
         }
 
         if (allowMethods != null) {
-            final String methods = allowMethods.stream().map(m -> m.toString()).collect(Collectors.joining(", "));
+            final String methods = allowMethods.stream().map(Enum::toString).collect(Collectors.joining(", "));
             context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER, methods);
         }
 

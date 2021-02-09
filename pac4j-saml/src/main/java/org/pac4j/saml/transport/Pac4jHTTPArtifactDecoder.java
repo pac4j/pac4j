@@ -161,6 +161,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void decode() throws MessageDecodingException {
         log.debug("Beginning to decode message from WebContext");
 
@@ -176,6 +177,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void doDestroy() {
         super.doDestroy();
         parserPool = null;
@@ -191,6 +193,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void doDecode() throws MessageDecodingException {
         final MessageContext messageContext = new MessageContext();
 
@@ -228,6 +231,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
 
@@ -470,6 +474,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     @NotEmpty
     public String getBindingURI() {

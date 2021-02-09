@@ -12,6 +12,7 @@ import org.pac4j.core.exception.CredentialsException;
  * @author Jerome Leleu
  * @since 1.7.0
  */
+@FunctionalInterface
 public interface Authenticator {
 
     /**

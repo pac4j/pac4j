@@ -61,19 +61,19 @@ public final class LdapProfileServiceTests implements TestsConstants {
     @Test
     public void testNullAuthenticator() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, null, LdapServer.BASE_PEOPLE_DN);
-        TestsHelper.expectException(() -> ldapProfileService.init(), TechnicalException.class, "ldapAuthenticator cannot be null");
+        TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "ldapAuthenticator cannot be null");
     }
 
     @Test
     public void testNullConnectionFactory() {
         final LdapProfileService ldapProfileService = new LdapProfileService(null, authenticator, LdapServer.BASE_PEOPLE_DN);
-        TestsHelper.expectException(() -> ldapProfileService.init(), TechnicalException.class, "connectionFactory cannot be null");
+        TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "connectionFactory cannot be null");
     }
 
     @Test
     public void testBlankUsersDn() {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "");
-        TestsHelper.expectException(() -> ldapProfileService.init(), TechnicalException.class, "usersDn cannot be blank");
+        TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "usersDn cannot be blank");
     }
 
 

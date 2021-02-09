@@ -9,6 +9,7 @@ import org.pac4j.core.exception.http.HttpAction;
  * @author Jerome Leleu
  * @since 1.8.2
  */
+@FunctionalInterface
 public interface HttpActionAdapter {
 
     /**

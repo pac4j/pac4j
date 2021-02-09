@@ -139,7 +139,7 @@ public class JEESessionStore implements SessionStore {
         }
         final HttpSession newSession = request.getSession(true);
         LOGGER.debug("And copy all data to the new one: {}", newSession.getId());
-        attributes.forEach((k, v) -> newSession.setAttribute(k, v));
+        attributes.forEach(newSession::setAttribute);
         return true;
     }
 }

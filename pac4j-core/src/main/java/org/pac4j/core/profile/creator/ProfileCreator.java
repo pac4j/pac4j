@@ -14,6 +14,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.7.0
  */
+@FunctionalInterface
 public interface ProfileCreator {
 
     /**

@@ -60,7 +60,7 @@ public class SAML2LogoutMessageReceiver extends AbstractSAML2MessageReceiver {
     }
 
     @Override
-    protected Optional<Endpoint> getEndpoint(SAML2MessageContext context, StatusResponseType response) {
+    protected Optional<Endpoint> getEndpoint(final SAML2MessageContext context, final StatusResponseType response) {
         return Optional.empty();
     }
 

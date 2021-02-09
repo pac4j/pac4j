@@ -51,34 +51,34 @@ public final class MongoProfileServiceIT implements TestsConstants {
     public void testNullPasswordEncoder() {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME);
         authenticator.setPasswordEncoder(null);
-        TestsHelper.expectException(() -> authenticator.init(), TechnicalException.class, "passwordEncoder cannot be null");
+        TestsHelper.expectException(authenticator::init, TechnicalException.class, "passwordEncoder cannot be null");
     }
 
     @Test
     public void testNullMongoClient() {
         final MongoProfileService authenticator = new MongoProfileService(null, FIRSTNAME, MongoServer.PASSWORD_ENCODER);
-        TestsHelper.expectException(() -> authenticator.init(), TechnicalException.class, "mongoClient cannot be null");
+        TestsHelper.expectException(authenticator::init, TechnicalException.class, "mongoClient cannot be null");
     }
 
     @Test
     public void testNullDatabase() {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsersDatabase(null);
-        TestsHelper.expectException(() -> authenticator.init(), TechnicalException.class, "usersDatabase cannot be blank");
+        TestsHelper.expectException(authenticator::init, TechnicalException.class, "usersDatabase cannot be blank");
     }
 
     @Test
     public void testNullCollection() {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsersCollection(null);
-        TestsHelper.expectException(() -> authenticator.init(), TechnicalException.class, "usersCollection cannot be blank");
+        TestsHelper.expectException(authenticator::init, TechnicalException.class, "usersCollection cannot be blank");
     }
 
     @Test
     public void testNullUsername() {
         final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsernameAttribute(null);
-        TestsHelper.expectException(() -> authenticator.init(), TechnicalException.class, "usernameAttribute cannot be blank");
+        TestsHelper.expectException(authenticator::init, TechnicalException.class, "usernameAttribute cannot be blank");
     }
 
     @Test

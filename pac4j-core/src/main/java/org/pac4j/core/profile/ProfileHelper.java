@@ -61,7 +61,7 @@ public final class ProfileHelper {
         if (profile.isPresent()) {
             return profile;
         } else {
-            return profiles.stream().filter(p -> p != null).findFirst();
+            return profiles.stream().filter(Objects::nonNull).findFirst();
         }
     }
 

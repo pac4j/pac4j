@@ -43,6 +43,12 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
 
         final AbstractPac4jDecoder decoder = getDecoder(webContext);
 
+        final SAML2MessageContext decodedCtx = prepareDecodedContext(context, decoder);
+
+        return this.validator.validate(decodedCtx);
+    }
+
+    protected SAML2MessageContext prepareDecodedContext(final SAML2MessageContext context, final AbstractPac4jDecoder decoder) {
         final SAML2MessageContext decodedCtx = new SAML2MessageContext();
         decodedCtx.setMessageContext(decoder.getMessageContext());
         final SAMLObject message = (SAMLObject) decoder.getMessageContext().getMessage();
@@ -53,16 +59,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         context.getMessageContext().setMessage(message);
         decodedCtx.setSAMLMessageStore(context.getSAMLMessageStore());
 
-        final SAMLBindingContext bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
-        CommonHelper.assertNotNull("SAMLBindingContext", bindingContext);
-        decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
-        decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
-        decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
-        decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext
-            .isIntendedDestinationEndpointURIRequired());
-        final String relayState = bindingContext.getRelayState();
-        decodedCtx.getSAMLBindingContext().setRelayState(relayState);
-        context.getSAMLBindingContext().setRelayState(relayState);
+        final SAMLBindingContext bindingContext = prepareBindingContext(context, decoder, decodedCtx);
 
         if (decodedCtx.getMessageContext().getMessage() instanceof StatusResponseType) {
             final StatusResponseType response = (StatusResponseType) decodedCtx.getMessageContext().getMessage();
@@ -74,24 +71,47 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
             throw new SAMLException("IDP Metadata cannot be null");
         }
 
+        preparePeerEntityContext(decoder, decodedCtx, bindingContext, metadata);
+        prepareSelfEntityContext(context, decodedCtx);
+
+        decodedCtx.getProfileRequestContext().setProfileId(getProfileUri());
+        decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
+        decodedCtx.setWebContext(context.getWebContext());
+        decodedCtx.setSessionStore(context.getSessionStore());
+        return decodedCtx;
+    }
+
+    protected void prepareSelfEntityContext(final SAML2MessageContext context, final SAML2MessageContext decodedCtx) {
+        decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
+        decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
+        decodedCtx.getSAMLSelfEntityContext().setRole(context.getSAMLSelfEntityContext().getRole());
+    }
+
+    protected void preparePeerEntityContext(final AbstractPac4jDecoder decoder,
+                                            final SAML2MessageContext decodedCtx,
+                                            final SAMLBindingContext bindingContext,
+                                            final EntityDescriptor metadata) {
         final SAMLPeerEntityContext decodedPeerContext = decoder.getMessageContext().getSubcontext(SAMLPeerEntityContext.class);
         CommonHelper.assertNotNull("SAMLPeerEntityContext", bindingContext);
 
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
         decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext != null && decodedPeerContext.isAuthenticated());
+    }
 
-        decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
-        decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
-        decodedCtx.getSAMLSelfEntityContext().setRole(context.getSAMLSelfEntityContext().getRole());
-
-        decodedCtx.getProfileRequestContext().setProfileId(getProfileUri());
-
-        decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
-
-        decodedCtx.setWebContext(context.getWebContext());
-        decodedCtx.setSessionStore(context.getSessionStore());
-
-        return this.validator.validate(decodedCtx);
+    protected SAMLBindingContext prepareBindingContext(final SAML2MessageContext context,
+                                                       final AbstractPac4jDecoder decoder,
+                                                       final SAML2MessageContext decodedCtx) {
+        final SAMLBindingContext bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
+        CommonHelper.assertNotNull("SAMLBindingContext", bindingContext);
+        decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
+        decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
+        decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
+        decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext
+            .isIntendedDestinationEndpointURIRequired());
+        final String relayState = bindingContext.getRelayState();
+        decodedCtx.getSAMLBindingContext().setRelayState(relayState);
+        context.getSAMLBindingContext().setRelayState(relayState);
+        return bindingContext;
     }
 
     public void setValidator(final SAML2ResponseValidator validator) {

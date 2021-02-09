@@ -1,6 +1,7 @@
 package org.pac4j.core.exception.http;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * A "See Other" HTTP action.
@@ -21,5 +22,10 @@ public class SeeOtherAction extends RedirectionAction implements WithLocationAct
     @Override
     public String getLocation() {
         return location;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(FoundAction.class, "code", this.code, "location", location);
     }
 }

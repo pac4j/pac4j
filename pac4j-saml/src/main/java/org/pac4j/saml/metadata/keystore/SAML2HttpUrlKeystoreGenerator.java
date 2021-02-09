@@ -92,7 +92,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
                 } else if (code == HttpStatus.SC_OK || code == HttpStatus.SC_CREATED) {
                     logger.info("Successfully submitted/created keystore to {}", url);
                 } else if (code == HttpStatus.SC_NOT_MODIFIED) {
-                    logger.info("Keystore was not modified/updated", url);
+                    logger.info("Keystore was not modified/updated: {}", url);
                 } else {
                     logger.error("Unable to store keystore successfully via {}", url);
                 }

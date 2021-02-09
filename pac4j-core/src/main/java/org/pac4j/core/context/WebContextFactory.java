@@ -6,6 +6,7 @@ package org.pac4j.core.context;
  * @author Jerome LELEU
  * @since 4.0.1
  */
+@FunctionalInterface
 public interface WebContextFactory {
 
     WebContext newContext(Object... parameters);

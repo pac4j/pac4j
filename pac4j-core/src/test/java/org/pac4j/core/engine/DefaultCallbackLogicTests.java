@@ -85,37 +85,37 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testNullConfig() {
         config = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "config cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "config cannot be null");
     }
 
     @Test
     public void testNullContext() {
         context = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "webContext cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "webContext cannot be null");
     }
 
     @Test
     public void testNullHttpActionAdapter() {
         httpActionAdapter = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "httpActionAdapter cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 
     @Test
     public void testBlankDefaultUrl() {
         defaultUrl = "";
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "defaultUrl cannot be blank");
+        TestsHelper.expectException(this::call, TechnicalException.class, "defaultUrl cannot be blank");
     }
 
     @Test
     public void testNullClients() {
         config.setClients(null);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "clients cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "clients cannot be null");
     }
 
     @Test
     public void testNullClientFinder() {
         clientFinder = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "clients cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "clients cannot be null");
     }
 
     @Test
@@ -123,7 +123,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         request.addParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final MockDirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(directClient));
-        TestsHelper.expectException(() -> call(), TechnicalException.class,
+        TestsHelper.expectException(this::call, TechnicalException.class,
             "unable to find one indirect client for the callback: check the callback URL for a client name parameter or" +
                 " suffix path or ensure that your configuration defaults to one indirect client");
     }

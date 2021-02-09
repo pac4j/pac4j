@@ -13,6 +13,7 @@ import org.pac4j.kerberos.client.direct.DirectKerberosClient;
  * originally from spring-kerberos project
  * @since 2.1.0
  */
+@FunctionalInterface
 public interface KerberosTicketValidator {
 
     /**

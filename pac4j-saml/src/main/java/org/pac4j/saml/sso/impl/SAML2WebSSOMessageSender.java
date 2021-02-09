@@ -36,6 +36,7 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
         return signOutboundContext;
     }
 
+    @Override
     protected Endpoint getEndpoint(final SAML2MessageContext context) {
         return context.getIDPSingleSignOnService(destinationBindingType);
     }

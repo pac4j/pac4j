@@ -37,6 +37,7 @@ public class OAuth20Configuration extends OAuthConfiguration {
      * @param client the client
      * @return the OAuth service
      */
+    @Override
     public OAuthService buildService(final WebContext context, final IndirectClient client) {
         init();
 

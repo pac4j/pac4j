@@ -80,7 +80,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     public void testNullConnector() {
         final CouchProfileService couchProfileService = new CouchProfileService(null);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        TestsHelper.expectException(() -> couchProfileService.init(), TechnicalException.class, "couchDbConnector cannot be null");
+        TestsHelper.expectException(couchProfileService::init, TechnicalException.class, "couchDbConnector cannot be null");
     }
 
     @Test(expected = AccountNotFoundException.class)

@@ -74,25 +74,25 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     @Test
     public void testNullConfig() {
         config = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "config cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "config cannot be null");
     }
 
     @Test
     public void testNullContext() {
         context = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "context cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "context cannot be null");
     }
 
     @Test
     public void testNullHttpActionAdapter() {
         httpActionAdapter = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "httpActionAdapter cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 
     @Test
     public void testBlankLogoutUrlPattern() {
         logoutUrlPattern = "";
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "logoutUrlPattern cannot be blank");
+        TestsHelper.expectException(this::call, TechnicalException.class, "logoutUrlPattern cannot be blank");
     }
 
     private void addProfilesToContext() {

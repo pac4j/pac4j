@@ -28,6 +28,7 @@ public abstract class AbstractConfigFilter implements Filter {
 
     private Config config;
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         final String configFactoryParam = filterConfig.getInitParameter(Pac4jConstants.CONFIG_FACTORY);
         if (configFactoryParam != null) {
@@ -60,6 +61,7 @@ public abstract class AbstractConfigFilter implements Filter {
         return value;
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
         throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) request;
@@ -71,6 +73,7 @@ public abstract class AbstractConfigFilter implements Filter {
     protected abstract void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException;
 
+    @Override
     public void destroy() {}
 
     public Config getSharedConfig() {

@@ -16,7 +16,7 @@ import java.util.Map;
 public final class TestsHelper {
 
     public static void initShouldFail(final InitializableObject obj, final String message) {
-        expectException(() -> obj.init(), TechnicalException.class, message);
+        expectException(obj::init, TechnicalException.class, message);
     }
 
     public static Exception expectException(final Executable executable) {

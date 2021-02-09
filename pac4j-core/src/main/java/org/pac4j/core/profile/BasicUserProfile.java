@@ -85,6 +85,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @param id user identifier
      */
+    @Override
     public void setId(final String id) {
         CommonHelper.assertNotBlank("id", id);
         this.id = id;
@@ -106,6 +107,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @return the typed user identifier
      */
+    @Override
     public String getTypedId() {
         return this.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR + this.id;
     }
@@ -157,6 +159,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key key of the attribute
      * @param value value of the attribute
      */
+    @Override
     public void addAttribute(final String key, final Object value) {
         addAttributeToMap(this.attributes, key, value);
     }
@@ -167,6 +170,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key the attribute key
      * @param value the attribute value
      */
+    @Override
     public void addAuthenticationAttribute(final String key, final Object value) {
         addAttributeToMap(this.authenticationAttributes, key, value);
     }
@@ -222,6 +226,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @return the immutable attributes
      */
+    @Override
     public Map<String, Object> getAttributes() {
         return getAttributeMap(this.attributes);
     }

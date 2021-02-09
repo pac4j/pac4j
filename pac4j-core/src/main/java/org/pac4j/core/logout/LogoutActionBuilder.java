@@ -13,6 +13,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@FunctionalInterface
 public interface LogoutActionBuilder {
 
     /**

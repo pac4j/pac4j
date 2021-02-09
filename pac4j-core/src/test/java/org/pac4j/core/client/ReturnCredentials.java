@@ -10,6 +10,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@FunctionalInterface
 public interface ReturnCredentials {
 
     Optional<Credentials> get();

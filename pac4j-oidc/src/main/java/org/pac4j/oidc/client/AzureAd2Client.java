@@ -36,6 +36,7 @@ public class AzureAd2Client extends AzureAdClient {
      * <p>Refresh the access token</p>
      * <p>https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token</p>
      */
+    @Override
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
         final AzureAd2OidcConfiguration azureConfig = (AzureAd2OidcConfiguration) getConfiguration();
         HttpURLConnection connection = null;

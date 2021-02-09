@@ -12,6 +12,7 @@ import org.pac4j.core.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@FunctionalInterface
 public interface SecurityGrantedAccessAdapter {
 
     /**

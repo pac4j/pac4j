@@ -12,6 +12,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@FunctionalInterface
 public interface Authorizer {
 
     /**

@@ -125,12 +125,12 @@ public class PathMatcher implements Matcher {
 
     public void setExcludedPaths(Collection<String> paths) {
         excludedPaths.clear();
-        paths.forEach(path -> excludePath(path));
+        paths.forEach(this::excludePath);
     }
 
     public void setExcludedPatterns(Collection<String> regularExpressions) {
         excludedPatterns.clear();
-        regularExpressions.forEach(regex -> excludeRegex(regex));
+        regularExpressions.forEach(this::excludeRegex);
     }
 
     public void setExcludedPath(final String path) {
