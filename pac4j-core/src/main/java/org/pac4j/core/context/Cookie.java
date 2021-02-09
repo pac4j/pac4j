@@ -1,6 +1,11 @@
 package org.pac4j.core.context;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -13,13 +18,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class Cookie {
 
+    private static final ZoneId GMT = ZoneId.of("GMT");
+    /**
+     * Date formats with time zone as specified in the HTTP RFC to use for formatting.
+     * @see <a href="https://tools.ietf.org/html/rfc7231#section-7.1.1.1">Section 7.1.1.1 of RFC 7231</a>
+     */
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
+
     private String name;
     private String value;
-    private int version = 0;
-    private String comment;
     private String domain;
     private int maxAge = -1;
-    private Date expiry;
     private String path;
     private boolean secure;
     private boolean isHttpOnly = false;
@@ -49,22 +58,6 @@ public final class Cookie {
         this.value = value;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public String getDomain() {
         return domain;
     }
@@ -79,14 +72,6 @@ public final class Cookie {
 
     public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
-    }
-
-    public Date getExpiry() {
-        return expiry == null ? null : new Date(expiry.getTime());
-    }
-
-    public void setExpiry(Date expiry) {
-        this.expiry = expiry == null ? null : new Date(expiry.getTime());
     }
 
     public String getPath() {
@@ -123,6 +108,10 @@ public final class Cookie {
 
         if (cookie.getMaxAge() > -1) {
             builder.append(String.format(" Max-Age=%s;", cookie.getMaxAge()));
+            long millis = cookie.getMaxAge() > 0 ? System.currentTimeMillis() + (cookie.getMaxAge() * 1000) : 0;
+            Instant instant = Instant.ofEpochMilli(millis);
+            ZonedDateTime time = ZonedDateTime.ofInstant(instant, GMT);
+            builder.append(String.format(" Expires=%s;", DATE_FORMATTER.format(time)));
         }
         if (CommonHelper.isNotBlank(cookie.getDomain())) {
             builder.append(String.format(" Domain=%s;", cookie.getDomain()));
