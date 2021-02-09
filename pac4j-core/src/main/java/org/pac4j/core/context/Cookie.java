@@ -3,6 +3,9 @@ package org.pac4j.core.context;
 import java.util.Date;
 
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Misagh Moayyed
@@ -20,6 +23,7 @@ public final class Cookie {
     private String path;
     private boolean secure;
     private boolean isHttpOnly = false;
+    private String sameSitePolicy;
 
     public Cookie(final String name, final String value) {
         if (name == null || name.length() == 0) {
@@ -101,12 +105,53 @@ public final class Cookie {
         this.secure = secure;
     }
 
-
     public boolean isHttpOnly() {
         return isHttpOnly;
     }
 
     public void setHttpOnly(boolean httpOnly) {
         isHttpOnly = httpOnly;
+    }
+
+    public String getSameSitePolicy() { return sameSitePolicy; }
+
+    public void setSameSitePolicy(String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
+
+    public static void addCookieHeaderToResponse(Cookie cookie, final HttpServletResponse response) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format("%s=%s;", cookie.getName(), cookie.getValue()));
+
+        if (cookie.getMaxAge() > -1) {
+            builder.append(String.format(" Max-Age=%s;", cookie.getMaxAge()));
+        }
+        if (CommonHelper.isNotBlank(cookie.getDomain())) {
+            builder.append(String.format(" Domain=%s;", cookie.getDomain()));
+        }
+        builder.append(String.format(" Path=%s;", CommonHelper.isNotBlank(cookie.getPath()) ? cookie.getPath() : "/"));
+
+        String sameSitePolicy = cookie.getSameSitePolicy() == null ? null : cookie.getSameSitePolicy().toLowerCase();
+        switch (sameSitePolicy) {
+            case "strict":
+                builder.append(" SameSite=Strict;");
+                break;
+            case "lax":
+                builder.append(" SameSite=Lax;");
+                break;
+            case "none":
+            default:
+                builder.append(" SameSite=None;");
+                break;
+        }
+        if (cookie.isSecure() || "none".equals(sameSitePolicy)) {
+            builder.append(" Secure;");
+        }
+        if (cookie.isHttpOnly()) {
+            builder.append(" HttpOnly;");
+        }
+        String value = builder.toString();
+        if (value.endsWith(";")) {
+            value = value.substring(0, value.length() - 1);
+        }
+        response.addHeader("Set-Cookie", value);
     }
 }

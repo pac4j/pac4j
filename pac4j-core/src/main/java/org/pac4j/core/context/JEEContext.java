@@ -165,15 +165,7 @@ public class JEEContext implements WebContext {
 
     @Override
     public void addResponseCookie(final Cookie cookie) {
-        final var c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
-        c.setVersion(cookie.getVersion());
-        c.setSecure(cookie.isSecure());
-        c.setPath(cookie.getPath());
-        c.setMaxAge(cookie.getMaxAge());
-        c.setHttpOnly(cookie.isHttpOnly());
-        c.setComment(cookie.getComment());
-        c.setDomain(cookie.getDomain());
-        this.response.addCookie(c);
+        Cookie.addCookieHeaderToResponse(cookie, response);
     }
 
     /**

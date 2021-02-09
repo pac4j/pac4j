@@ -27,6 +27,8 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
 
     private Integer maxAge;
 
+    private String sameSitePolicy;
+
     public CsrfTokenGeneratorMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;
     }
@@ -53,6 +55,9 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
         }
         if (maxAge != null) {
             cookie.setMaxAge(maxAge.intValue());
+        }
+        if (sameSitePolicy != null) {
+            cookie.setSameSitePolicy(sameSitePolicy);
         }
         context.addResponseCookie(cookie);
         return true;
@@ -105,6 +110,10 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     public void setMaxAge(Integer maxAge) {
         this.maxAge = maxAge;
     }
+
+    public String getSameSitePolicy() { return sameSitePolicy; }
+
+    public void setSameSitePolicy(String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
 
     @Override
     public String toString() {
