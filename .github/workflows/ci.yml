@@ -34,7 +34,10 @@ jobs:
               with:
                   java-version: ${{ env.JDK_CURRENT }}
                   server-id: sonatype-nexus-snapshots
-                  server-username: ${{ secrets.SONATYPE_USER }}
-                  server-password: ${{ secrets.SONATYPE_PWD }}
+                  server-username: MAVEN_USERNAME
+                  server-password: MAVEN_PASSWORD
             - name: Deploy to Sonatype
               run: mvn -B -DskipTests deploy
+              env:
+                  MAVEN_USERNAME: ${{ secrets.SONATYPE_USER }}
+                  MAVEN_PASSWORD: ${{ secrets.SONATYPE_PWD }}
