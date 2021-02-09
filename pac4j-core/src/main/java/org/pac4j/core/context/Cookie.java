@@ -129,7 +129,7 @@ public final class Cookie {
         }
         builder.append(String.format(" Path=%s;", CommonHelper.isNotBlank(cookie.getPath()) ? cookie.getPath() : "/"));
 
-        String sameSitePolicy = cookie.getSameSitePolicy() == null ? null : cookie.getSameSitePolicy().toLowerCase();
+        String sameSitePolicy = cookie.getSameSitePolicy() == null ? "none" : cookie.getSameSitePolicy().toLowerCase();
         switch (sameSitePolicy) {
             case "strict":
                 builder.append(" SameSite=Strict;");
