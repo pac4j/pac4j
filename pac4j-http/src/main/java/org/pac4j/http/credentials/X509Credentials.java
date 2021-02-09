@@ -30,7 +30,7 @@ public class X509Credentials extends Credentials {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        X509Credentials that = (X509Credentials) o;
+        var that = (X509Credentials) o;
         return Objects.equals(certificate, that.certificate);
     }
 

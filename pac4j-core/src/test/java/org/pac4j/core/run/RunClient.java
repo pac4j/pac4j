@@ -4,7 +4,6 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.*;
 import org.pac4j.core.util.serializer.JavaSerializer;
@@ -30,29 +29,29 @@ public abstract class RunClient implements TestsConstants {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public void run() {
-        final IndirectClient client = getClient();
-        final MockWebContext context = MockWebContext.create();
+        final var client = getClient();
+        final var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        final String url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
+        final var url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
         logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
         if (canCancel()) {
             logger.warn("You can CANCEL the authentication.");
         }
         logger.warn("Returned url (copy/paste the fragment starting before the question mark of the query string):");
-        final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
-        final String returnedUrl = scanner.nextLine().trim();
+        final var scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
+        final var returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final Optional<Credentials> credentials = client.getCredentials(context, sessionStore);
+        final var credentials = client.getCredentials(context, sessionStore);
         if (credentials.isPresent()) {
-            final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context, sessionStore);
+            final var profile = client.getUserProfile(credentials.get(), context, sessionStore);
             logger.debug("userProfile: {}", profile);
             if (profile.isPresent() || !canCancel()) {
                 verifyProfile((CommonProfile) profile.get());
                 logger.warn("## Java serialization");
-                final JavaSerializer javaSerializer = new JavaSerializer();
-                byte[] bytes = javaSerializer.serializeToBytes(profile.get());
-                final CommonProfile profile2 = (CommonProfile) javaSerializer.deserializeFromBytes(bytes);
+                final var javaSerializer = new JavaSerializer();
+                var bytes = javaSerializer.serializeToBytes(profile.get());
+                final var profile2 = (CommonProfile) javaSerializer.deserializeFromBytes(bytes);
                 verifyProfile(profile2);
             }
         }
@@ -90,14 +89,14 @@ public abstract class RunClient implements TestsConstants {
         if (profileUrl == null) {
             assertNull(profile.getProfileUrl());
         } else {
-            final String profUrl = profile.getProfileUrl().toString();
+            final var profUrl = profile.getProfileUrl().toString();
             assertTrue(profUrl.startsWith(profileUrl));
         }
         assertEquals(location, profile.getLocation());
     }
 
     protected void populateContextWithUrl(final MockWebContext context, String url) {
-        int pos = url.indexOf("?");
+        var pos = url.indexOf("?");
         if (pos >= 0) {
             url = url.substring(pos + 1);
 
@@ -114,10 +113,10 @@ public abstract class RunClient implements TestsConstants {
             }
         }
         final Map<String, String> parameters = new HashMap<>();
-        final StringTokenizer st = new StringTokenizer(url, "&");
+        final var st = new StringTokenizer(url, "&");
         while (st.hasMoreTokens()) {
-            final String keyValue = st.nextToken();
-            final String[] parts = keyValue.split("=");
+            final var keyValue = st.nextToken();
+            final var parts = keyValue.split("=");
             if (parts != null && parts.length >= 2) {
                 try {
                     parameters.put(parts[0], URLDecoder.decode(parts[1], StandardCharsets.UTF_8.name()));

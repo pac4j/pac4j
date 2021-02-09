@@ -35,7 +35,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final CasOAuthWrapperClient client = new CasOAuthWrapperClient();
+        final var client = new CasOAuthWrapperClient();
         client.setKey("key");
         client.setSecret("secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
@@ -47,7 +47,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) userProfile;
+        final var profile = (CasOAuthWrapperProfile) userProfile;
         assertEquals(getLogin(), profile.getId());
         assertEquals(CasOAuthWrapperProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + getLogin(),
                 profile.getTypedId());

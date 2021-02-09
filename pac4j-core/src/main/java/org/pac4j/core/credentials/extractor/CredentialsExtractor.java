@@ -13,6 +13,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@FunctionalInterface
 public interface CredentialsExtractor {
 
     /**

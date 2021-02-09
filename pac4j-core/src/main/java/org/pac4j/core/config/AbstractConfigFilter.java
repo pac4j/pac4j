@@ -28,16 +28,17 @@ public abstract class AbstractConfigFilter implements Filter {
 
     private Config config;
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        final String configFactoryParam = filterConfig.getInitParameter(Pac4jConstants.CONFIG_FACTORY);
+        final var configFactoryParam = filterConfig.getInitParameter(Pac4jConstants.CONFIG_FACTORY);
         if (configFactoryParam != null) {
-            final Config config = ConfigBuilder.build(configFactoryParam);
+            final var config = ConfigBuilder.build(configFactoryParam);
             setSharedConfig(config);
         }
     }
 
     protected String getStringParam(final FilterConfig filterConfig, final String name, final String defaultValue) {
-        final String param = filterConfig.getInitParameter(name);
+        final var param = filterConfig.getInitParameter(name);
         final String value;
         if (param != null) {
             value = param;
@@ -49,7 +50,7 @@ public abstract class AbstractConfigFilter implements Filter {
     }
 
     protected Boolean getBooleanParam(final FilterConfig filterConfig, final String name, final Boolean defaultValue) {
-        final String param = filterConfig.getInitParameter(name);
+        final var param = filterConfig.getInitParameter(name);
         final Boolean value;
         if (param != null) {
             value = Boolean.parseBoolean(param);
@@ -60,10 +61,11 @@ public abstract class AbstractConfigFilter implements Filter {
         return value;
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
         throws IOException, ServletException {
-        final HttpServletRequest req = (HttpServletRequest) request;
-        final HttpServletResponse resp = (HttpServletResponse) response;
+        final var req = (HttpServletRequest) request;
+        final var resp = (HttpServletResponse) response;
 
         internalFilter(req, resp, chain);
     }
@@ -71,6 +73,7 @@ public abstract class AbstractConfigFilter implements Filter {
     protected abstract void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException;
 
+    @Override
     public void destroy() {}
 
     public Config getSharedConfig() {

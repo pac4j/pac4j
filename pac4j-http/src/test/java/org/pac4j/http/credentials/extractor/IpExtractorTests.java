@@ -3,12 +3,9 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -28,49 +25,49 @@ public final class IpExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveIpOk() {
-        final MockWebContext context = MockWebContext.create().setRemoteAddress(GOOD_IP);
-        final TokenCredentials credentials = (TokenCredentials) extractor.extract(context, new MockSessionStore()).get();
+        final var context = MockWebContext.create().setRemoteAddress(GOOD_IP);
+        final var credentials = (TokenCredentials) extractor.extract(context, new MockSessionStore()).get();
         assertEquals(GOOD_IP, credentials.getToken());
     }
 
     @Test
     public void testRetrieveIpFromHeaderWithProxyIpCheck() {
-        final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
-        final IpExtractor ipExtractor = new IpExtractor();
+        final var context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
+        final var ipExtractor = new IpExtractor();
         ipExtractor.setProxyIp(LOCALHOST);
         // test for varargs
         ipExtractor.setAlternateIpHeaders("fooBar", HEADER_NAME, "barFoo");
-        final TokenCredentials credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
+        final var credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
         ipExtractor.setAlternateIpHeaders(HEADER_NAME);
-        final TokenCredentials credentials2 = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
+        final var credentials2 = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
     @Test
     public void testRetrieveIpFromHeaderUsingConstructor() {
-        final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
+        final var context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         // test for varargs
-        final IpExtractor ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
-        final TokenCredentials credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
+        final var ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
+        final var credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
-        final IpExtractor ipExtractor2 = new IpExtractor(HEADER_NAME);
-        final TokenCredentials credentials2 = (TokenCredentials) ipExtractor2.extract(context, new MockSessionStore()).get();
+        final var ipExtractor2 = new IpExtractor(HEADER_NAME);
+        final var credentials2 = (TokenCredentials) ipExtractor2.extract(context, new MockSessionStore()).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
     @Test(expected = TechnicalException.class)
     public void testSetNullIpHeaderChain() {
-        final IpExtractor ipExtractor = new IpExtractor();
+        final var ipExtractor = new IpExtractor();
         ipExtractor.setAlternateIpHeaders((String[]) null);
     }
 
     @Test
     public void testNoIp() {
-        final MockWebContext context = MockWebContext.create();
-        final Optional<Credentials> credentials = extractor.extract(context, new MockSessionStore());
+        final var context = MockWebContext.create();
+        final var credentials = extractor.extract(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 }

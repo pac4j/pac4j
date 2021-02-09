@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.paypal;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;
@@ -41,12 +40,12 @@ public class PayPalProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public PayPalProfile extractUserProfile(final String body) {
-        final PayPalProfile profile = (PayPalProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (PayPalProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            final String userId = (String) JsonHelper.getElement(json, "user_id");
+            final var userId = (String) JsonHelper.getElement(json, "user_id");
             profile.setId(CommonHelper.substringAfter(userId, "/user/"));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

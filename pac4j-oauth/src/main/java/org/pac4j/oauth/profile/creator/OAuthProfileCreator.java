@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
@@ -18,7 +17,6 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
-import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +55,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     @Override
     public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         try {
-            final Token token = getAccessToken(credentials);
+            final var token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(context, token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
@@ -80,10 +78,10 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      * @return the user profile
      */
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
-        final OAuthProfileDefinition profileDefinition = configuration.getProfileDefinition();
-        final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final OAuthService service = this.configuration.buildService(context, client);
-        final String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
+        final var profileDefinition = configuration.getProfileDefinition();
+        final var profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
+        final var service = this.configuration.buildService(context, client);
+        final var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {
             throw new HttpCommunicationException("No data found for accessToken: " + accessToken);
@@ -104,19 +102,19 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      */
     protected String sendRequestForData(final OAuthService service, final Token accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
-        final long t0 = System.currentTimeMillis();
-        final OAuthRequest request = createOAuthRequest(dataUrl, verb);
+        final var t0 = System.currentTimeMillis();
+        final var request = createOAuthRequest(dataUrl, verb);
         signRequest(service, accessToken, request);
         final String body;
         final int code;
         try {
-            Response response = service.execute(request);
+            var response = service.execute(request);
             code = response.getCode();
             body = response.getBody();
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting body: " + e.getMessage());
         }
-        final long t1 = System.currentTimeMillis();
+        final var t1 = System.currentTimeMillis();
         logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
         logger.debug("response code: {} / response body: {}", code, body);
         if (code != 200) {

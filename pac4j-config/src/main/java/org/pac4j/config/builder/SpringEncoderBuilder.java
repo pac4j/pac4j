@@ -30,8 +30,8 @@ public class SpringEncoderBuilder extends AbstractBuilder {
     }
 
     public void tryCreatePasswordEncoder(final Map<String, org.pac4j.core.credentials.password.PasswordEncoder> encoders) {
-        for (int i = 0; i <= MAX_NUM_ENCODERS; i++) {
-            final String type = getProperty(SPRING_ENCODER_TYPE, i);
+        for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
+            final var type = getProperty(SPRING_ENCODER_TYPE, i);
             if (isNotBlank(type)) {
                 final PasswordEncoder encoder;
                 if (SpringEncoderType.NOOP.toString().equalsIgnoreCase(type)) {
@@ -45,7 +45,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                     }
                 } else if (SpringEncoderType.PBKDF2.toString().equalsIgnoreCase(type)) {
                     if (containsProperty(SPRING_ENCODER_PBKDF2_SECRET, i)) {
-                        final String secret = getProperty(SPRING_ENCODER_PBKDF2_SECRET, i);
+                        final var secret = getProperty(SPRING_ENCODER_PBKDF2_SECRET, i);
                         if (containsProperty(SPRING_ENCODER_PBKDF2_ITERATIONS, i)
                             && containsProperty(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i)) {
                             encoder = new Pbkdf2PasswordEncoder(secret, getPropertyAsInteger(SPRING_ENCODER_PBKDF2_ITERATIONS, i),

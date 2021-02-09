@@ -23,10 +23,10 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnProfile() {
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN);
         credentials.setUserProfile(profile);
-        final CommonProfile profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(credentials, null, null).get();
+        final var profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(credentials, null, null).get();
         assertEquals(profile, profile2);
     }
 }

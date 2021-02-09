@@ -28,13 +28,13 @@ public final class LocaleConverterTests {
 
     @Test
     public void testLanguage() {
-        final Locale locale = (Locale) this.converter.convert("fr");
+        final var locale = (Locale) this.converter.convert("fr");
         assertEquals("fr", locale.getLanguage());
     }
 
     @Test
     public void testLanguageCountry() {
-        final Locale locale = (Locale) this.converter.convert(Locale.FRANCE.toString());
+        final var locale = (Locale) this.converter.convert(Locale.FRANCE.toString());
         assertEquals(Locale.FRANCE.getLanguage(), locale.getLanguage());
         assertEquals(Locale.FRANCE.getCountry(), locale.getCountry());
     }

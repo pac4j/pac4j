@@ -1,7 +1,6 @@
 package org.pac4j.saml.metadata;
 
 import org.junit.Test;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.ConfigurationManager;
 import org.pac4j.saml.util.DefaultConfigurationManager;
@@ -21,7 +20,7 @@ public class SAML2FileSystemMetadataGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -32,9 +31,9 @@ public class SAML2FileSystemMetadataGeneratorTests {
         configuration.init();
 
         final SAML2MetadataGenerator metadataGenerator = new SAML2FileSystemMetadataGenerator();
-        final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
+        final var entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
-        final String metadata = metadataGenerator.getMetadata(entity);
+        final var metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
         metadataGenerator.storeMetadata(metadata, configuration.getServiceProviderMetadataResource(), true);

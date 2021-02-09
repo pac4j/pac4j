@@ -32,14 +32,14 @@ public class BasicAuthExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final Optional<Credentials> optCredentials = this.extractor.extract(context, sessionStore);
+        final var optCredentials = this.extractor.extract(context, sessionStore);
         return optCredentials.map(cred -> {
 
-            final TokenCredentials credentials = (TokenCredentials) cred;
-            final byte[] decoded = Base64.getDecoder().decode(credentials.getToken());
-            final String token = new String(decoded, StandardCharsets.UTF_8);
+            final var credentials = (TokenCredentials) cred;
+            final var decoded = Base64.getDecoder().decode(credentials.getToken());
+            final var token = new String(decoded, StandardCharsets.UTF_8);
 
-            final int delim = token.indexOf(":");
+            final var delim = token.indexOf(":");
             if (delim < 0) {
                 throw new CredentialsException("Bad format of the basic auth header");
             }

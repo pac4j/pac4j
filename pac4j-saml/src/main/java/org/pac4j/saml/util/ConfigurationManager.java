@@ -10,6 +10,7 @@ package org.pac4j.saml.util;
  *
  * @since 3.3.0
  */
+@FunctionalInterface
 public interface ConfigurationManager {
     void configure();
 }

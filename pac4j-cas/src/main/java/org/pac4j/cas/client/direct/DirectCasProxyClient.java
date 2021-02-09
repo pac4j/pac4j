@@ -50,7 +50,7 @@ public class DirectCasProxyClient extends DirectClient {
         assertNotBlank("serviceUrl", this.serviceUrl);
         assertNotNull("configuration", this.configuration);
         // must be a CAS proxy protocol
-        final CasProtocol protocol = configuration.getProtocol();
+        final var protocol = configuration.getProtocol();
         assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY,
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
 

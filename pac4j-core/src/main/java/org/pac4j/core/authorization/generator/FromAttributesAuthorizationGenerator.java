@@ -57,16 +57,16 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
             return;
         }
 
-        for (final String attribute : attributes) {
-            final Object value = profile.getAttribute(attribute);
+        for (final var attribute : attributes) {
+            final var value = profile.getAttribute(attribute);
             if (value != null) {
                 if (value instanceof String) {
-                    final StringTokenizer st = new StringTokenizer((String) value, this.splitChar);
+                    final var st = new StringTokenizer((String) value, this.splitChar);
                     while (st.hasMoreTokens()) {
                         addRoleOrPermissionToProfile(profile, st.nextToken(), isRole);
                     }
                 } else if (value.getClass().isArray() && value.getClass().getComponentType().isAssignableFrom(String.class)) {
-                    for (Object item : (Object[]) value) {
+                    for (var item : (Object[]) value) {
                         addRoleOrPermissionToProfile(profile, item.toString(), isRole);
                     }
                 } else if (Collection.class.isAssignableFrom(value.getClass())) {

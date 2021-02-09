@@ -49,7 +49,6 @@ import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Element;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -125,8 +124,8 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         if (metadataResource != null) {
             resolver = createMetadataResolver(metadataResource);
         } else {
-            final EntityDescriptor md = buildEntityDescriptor();
-            final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+            final var md = buildEntityDescriptor();
+            final var entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
             resolver = new DOMMetadataResolver(entityDescriptorElement);
         }
         resolver.setRequireValidMetadata(true);
@@ -141,16 +140,16 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     @Override
     public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
-        final Element entityDescriptorElement = this.marshallerFactory
+        final var entityDescriptorElement = this.marshallerFactory
             .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME).marshall(entityDescriptor);
         return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
     @Override
     public EntityDescriptor buildEntityDescriptor() {
-        final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>)
+        final var builder = (SAMLObjectBuilder<EntityDescriptor>)
             this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
-        final EntityDescriptor descriptor = Objects.requireNonNull(builder).buildObject();
+        final var descriptor = Objects.requireNonNull(builder).buildObject();
         descriptor.setEntityID(this.entityId);
         descriptor.setValidUntil(ZonedDateTime.now(ZoneOffset.UTC).plusYears(20).toInstant());
         descriptor.setID(SAML2Utils.generateID());
@@ -172,29 +171,29 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     }
 
     protected Extensions generateMetadataExtensions() {
-        final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
+        final var builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
-        final Extensions extensions = builderExt.buildObject();
+        final var extensions = builderExt.buildObject();
         extensions.getNamespaceManager().registerAttributeName(SigningMethod.TYPE_NAME);
         extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
 
-        final SAMLObjectBuilder<SigningMethod> signingMethodBuilder = (SAMLObjectBuilder<SigningMethod>)
+        final var signingMethodBuilder = (SAMLObjectBuilder<SigningMethod>)
             this.builderFactory.getBuilder(SigningMethod.DEFAULT_ELEMENT_NAME);
 
-        final List<String> filteredSignatureAlgorithms = filterSignatureAlgorithms(getSignatureAlgorithms());
+        final var filteredSignatureAlgorithms = filterSignatureAlgorithms(getSignatureAlgorithms());
         filteredSignatureAlgorithms.forEach(signingMethod -> {
-            final SigningMethod method = Objects.requireNonNull(signingMethodBuilder).buildObject();
+            final var method = Objects.requireNonNull(signingMethodBuilder).buildObject();
             method.setAlgorithm(signingMethod);
             extensions.getUnknownXMLObjects().add(method);
         });
 
-        final SAMLObjectBuilder<DigestMethod> digestMethodBuilder = (SAMLObjectBuilder<DigestMethod>)
+        final var digestMethodBuilder = (SAMLObjectBuilder<DigestMethod>)
             this.builderFactory.getBuilder(DigestMethod.DEFAULT_ELEMENT_NAME);
 
-        final List<String> filteredSignatureReferenceDigestMethods = filterSignatureAlgorithms(getSignatureReferenceDigestMethods());
+        final var filteredSignatureReferenceDigestMethods = filterSignatureAlgorithms(getSignatureReferenceDigestMethods());
         filteredSignatureReferenceDigestMethods.forEach(digestMethod -> {
-            final DigestMethod method = Objects.requireNonNull(digestMethodBuilder).buildObject();
+            final var method = Objects.requireNonNull(digestMethodBuilder).buildObject();
             method.setAlgorithm(digestMethod);
             extensions.getUnknownXMLObjects().add(method);
         });
@@ -203,24 +202,24 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     }
 
     protected SPSSODescriptor buildSPSSODescriptor() {
-        final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>)
+        final var builder = (SAMLObjectBuilder<SPSSODescriptor>)
             this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
-        final SPSSODescriptor spDescriptor = Objects.requireNonNull(builder).buildObject();
+        final var spDescriptor = Objects.requireNonNull(builder).buildObject();
 
         spDescriptor.setAuthnRequestsSigned(this.authnRequestSigned);
         spDescriptor.setWantAssertionsSigned(this.wantAssertionSigned);
         supportedProtocols.forEach(spDescriptor::addSupportedProtocol);
 
-        final SAMLObjectBuilder<Extensions> builderExt = (SAMLObjectBuilder<Extensions>)
+        final var builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
-        final Extensions extensions = Objects.requireNonNull(builderExt).buildObject();
+        final var extensions = Objects.requireNonNull(builderExt).buildObject();
         extensions.getNamespaceManager().registerAttributeName(RequestInitiator.DEFAULT_ELEMENT_NAME);
 
-        final SAMLObjectBuilder<RequestInitiator> builderReq = (SAMLObjectBuilder<RequestInitiator>)
+        final var builderReq = (SAMLObjectBuilder<RequestInitiator>)
             this.builderFactory.getBuilder(RequestInitiator.DEFAULT_ELEMENT_NAME);
 
-        final RequestInitiator requestInitiator = Objects.requireNonNull(builderReq).buildObject();
+        final var requestInitiator = Objects.requireNonNull(builderReq).buildObject();
         requestInitiator.setLocation(this.requestInitiatorLocation);
         requestInitiator.setBinding(RequestInitiator.DEFAULT_ELEMENT_NAME.getNamespaceURI());
 
@@ -229,7 +228,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
-        int index = 0;
+        var index = 0;
         spDescriptor.getAssertionConsumerServices()
             .add(getAssertionConsumerService(responseBindingType, index++, this.defaultACSIndex == index));
         spDescriptor.getSingleLogoutServices().add(getSingleLogoutService(SAMLConstants.SAML2_POST_BINDING_URI));
@@ -243,16 +242,16 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         }
 
         if (!requestedAttributes.isEmpty()) {
-            final SAMLObjectBuilder<AttributeConsumingService> attrServiceBuilder =
+            final var attrServiceBuilder =
                 (SAMLObjectBuilder<AttributeConsumingService>) this.builderFactory
                     .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
 
-            final AttributeConsumingService attributeService =
+            final var attributeService =
                 attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
-            for (final SAML2ServiceProviderRequestedAttribute attr : this.requestedAttributes) {
-                final SAMLObjectBuilder<RequestedAttribute> attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
+            for (final var attr : this.requestedAttributes) {
+                final var attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
                     .getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
-                final RequestedAttribute requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+                final var requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
                 requestAttribute.setIsRequired(attr.isRequired());
                 requestAttribute.setName(attr.getName());
                 requestAttribute.setFriendlyName(attr.getFriendlyName());
@@ -261,9 +260,9 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 attributeService.getRequestedAttributes().add(requestAttribute);
 
                 if (StringUtils.isNotBlank(attr.getServiceName())) {
-                    final SAMLObjectBuilder<ServiceName> serviceBuilder = (SAMLObjectBuilder<ServiceName>)
+                    final var serviceBuilder = (SAMLObjectBuilder<ServiceName>)
                         this.builderFactory.getBuilder(ServiceName.DEFAULT_ELEMENT_NAME);
-                    final ServiceName serviceName = Objects.requireNonNull(serviceBuilder).buildObject();
+                    final var serviceName = Objects.requireNonNull(serviceBuilder).buildObject();
                     serviceName.setValue(attr.getServiceName());
                     if (StringUtils.isNotBlank(attr.getServiceLang())) {
                         serviceName.setXMLLang(attr.getServiceLang());
@@ -275,11 +274,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
             spDescriptor.getAttributeConsumingServices().add(attributeService);
         }
 
-        final SAMLObjectBuilder<ContactPerson> contactPersonBuilder =
+        final var contactPersonBuilder =
             (SAMLObjectBuilder<ContactPerson>) this.builderFactory
                 .getBuilder(ContactPerson.DEFAULT_ELEMENT_NAME);
         this.contactPersons.forEach(p -> {
-            final ContactPerson person = Objects.requireNonNull(contactPersonBuilder).buildObject();
+            final var person = Objects.requireNonNull(contactPersonBuilder).buildObject();
             switch (p.getType().toLowerCase()) {
                 case "technical":
                     person.setType(ContactPersonTypeEnumeration.TECHNICAL);
@@ -299,49 +298,49 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
             }
 
             if (StringUtils.isNotBlank(p.getSurname())) {
-                final SAMLObjectBuilder<SurName> surnameBuilder =
+                final var surnameBuilder =
                     (SAMLObjectBuilder<SurName>) this.builderFactory
                         .getBuilder(SurName.DEFAULT_ELEMENT_NAME);
-                final SurName surName = Objects.requireNonNull(surnameBuilder).buildObject();
+                final var surName = Objects.requireNonNull(surnameBuilder).buildObject();
                 surName.setValue(p.getSurname());
                 person.setSurName(surName);
             }
 
             if (StringUtils.isNotBlank(p.getGivenName())) {
-                final SAMLObjectBuilder<GivenName> givenNameBuilder =
+                final var givenNameBuilder =
                     (SAMLObjectBuilder<GivenName>) this.builderFactory
                         .getBuilder(GivenName.DEFAULT_ELEMENT_NAME);
-                final GivenName givenName = Objects.requireNonNull(givenNameBuilder).buildObject();
+                final var givenName = Objects.requireNonNull(givenNameBuilder).buildObject();
                 givenName.setValue(p.getGivenName());
                 person.setGivenName(givenName);
             }
 
             if (StringUtils.isNotBlank(p.getCompanyName())) {
-                final SAMLObjectBuilder<Company> companyBuilder =
+                final var companyBuilder =
                     (SAMLObjectBuilder<Company>) this.builderFactory
                         .getBuilder(Company.DEFAULT_ELEMENT_NAME);
-                final Company company = Objects.requireNonNull(companyBuilder).buildObject();
+                final var company = Objects.requireNonNull(companyBuilder).buildObject();
                 company.setValue(p.getCompanyName());
                 person.setCompany(company);
             }
 
             if (!p.getEmailAddresses().isEmpty()) {
-                final SAMLObjectBuilder<EmailAddress> emailBuilder =
+                final var emailBuilder =
                     (SAMLObjectBuilder<EmailAddress>) this.builderFactory
                         .getBuilder(EmailAddress.DEFAULT_ELEMENT_NAME);
                 p.getEmailAddresses().forEach(email -> {
-                    final EmailAddress emailAddr = Objects.requireNonNull(emailBuilder).buildObject();
+                    final var emailAddr = Objects.requireNonNull(emailBuilder).buildObject();
                     emailAddr.setURI(email);
                     person.getEmailAddresses().add(emailAddr);
                 });
             }
 
             if (!p.getTelephoneNumbers().isEmpty()) {
-                final SAMLObjectBuilder<TelephoneNumber> phoneBuilder =
+                final var phoneBuilder =
                     (SAMLObjectBuilder<TelephoneNumber>) this.builderFactory
                         .getBuilder(TelephoneNumber.DEFAULT_ELEMENT_NAME);
                 p.getTelephoneNumbers().forEach(ph -> {
-                    final TelephoneNumber phone = Objects.requireNonNull(phoneBuilder).buildObject();
+                    final var phone = Objects.requireNonNull(phoneBuilder).buildObject();
                     phone.setValue(ph);
                     person.getTelephoneNumbers().add(phone);
                 });
@@ -351,64 +350,64 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         });
 
         if (!metadataUIInfos.isEmpty()) {
-            final SAMLObjectBuilder<UIInfo> uiInfoBuilder =
+            final var uiInfoBuilder =
                 (SAMLObjectBuilder<UIInfo>) this.builderFactory
                     .getBuilder(UIInfo.DEFAULT_ELEMENT_NAME);
 
-            final UIInfo uiInfo = uiInfoBuilder.buildObject();
+            final var uiInfo = uiInfoBuilder.buildObject();
 
             metadataUIInfos.forEach(info -> {
 
                 info.getDescriptions().forEach(desc -> {
-                    final SAMLObjectBuilder<Description> uiBuilder =
+                    final var uiBuilder =
                         (SAMLObjectBuilder<Description>) this.builderFactory
                             .getBuilder(Description.DEFAULT_ELEMENT_NAME);
-                    final Description description = uiBuilder.buildObject();
+                    final var description = uiBuilder.buildObject();
                     description.setValue(desc);
                     uiInfo.getDescriptions().add(description);
                 });
 
                 info.getDisplayNames().forEach(name -> {
-                    final SAMLObjectBuilder<DisplayName> uiBuilder =
+                    final var uiBuilder =
                         (SAMLObjectBuilder<DisplayName>) this.builderFactory
                             .getBuilder(DisplayName.DEFAULT_ELEMENT_NAME);
-                    final DisplayName displayName = uiBuilder.buildObject();
+                    final var displayName = uiBuilder.buildObject();
                     displayName.setValue(name);
                     uiInfo.getDisplayNames().add(displayName);
                 });
 
                 info.getInformationUrls().forEach(url -> {
-                    final SAMLObjectBuilder<InformationURL> uiBuilder =
+                    final var uiBuilder =
                         (SAMLObjectBuilder<InformationURL>) this.builderFactory
                             .getBuilder(InformationURL.DEFAULT_ELEMENT_NAME);
-                    final InformationURL informationURL = uiBuilder.buildObject();
+                    final var informationURL = uiBuilder.buildObject();
                     informationURL.setURI(url);
                     uiInfo.getInformationURLs().add(informationURL);
                 });
 
                 info.getPrivacyUrls().forEach(privacy -> {
-                    final SAMLObjectBuilder<PrivacyStatementURL> uiBuilder =
+                    final var uiBuilder =
                         (SAMLObjectBuilder<PrivacyStatementURL>) this.builderFactory
                             .getBuilder(PrivacyStatementURL.DEFAULT_ELEMENT_NAME);
-                    final PrivacyStatementURL privacyStatementURL = uiBuilder.buildObject();
+                    final var privacyStatementURL = uiBuilder.buildObject();
                     privacyStatementURL.setURI(privacy);
                     uiInfo.getPrivacyStatementURLs().add(privacyStatementURL);
                 });
 
                 info.getKeywords().forEach(kword -> {
-                    final SAMLObjectBuilder<Keywords> uiBuilder =
+                    final var uiBuilder =
                         (SAMLObjectBuilder<Keywords>) this.builderFactory
                             .getBuilder(Keywords.DEFAULT_ELEMENT_NAME);
-                    final Keywords keyword = uiBuilder.buildObject();
+                    final var keyword = uiBuilder.buildObject();
                     keyword.setKeywords(new ArrayList<>(org.springframework.util.StringUtils.commaDelimitedListToSet(kword)));
                     uiInfo.getKeywords().add(keyword);
                 });
 
                 info.getLogos().forEach(lg -> {
-                    final SAMLObjectBuilder<Logo> uiBuilder =
+                    final var uiBuilder =
                         (SAMLObjectBuilder<Logo>) this.builderFactory
                             .getBuilder(Logo.DEFAULT_ELEMENT_NAME);
-                    final Logo logo = uiBuilder.buildObject();
+                    final var logo = uiBuilder.buildObject();
                     logo.setURI(lg.getUrl());
                     logo.setHeight(lg.getHeight());
                     logo.setWidth(lg.getWidth());
@@ -426,25 +425,25 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     protected Collection<NameIDFormat> buildNameIDFormat() {
 
-        final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
+        final var builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
             .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
         final Collection<NameIDFormat> formats = new ArrayList<>();
 
         if (this.nameIdPolicyFormat != null) {
-            final NameIDFormat nameID = Objects.requireNonNull(builder).buildObject();
+            final var nameID = Objects.requireNonNull(builder).buildObject();
             nameID.setURI(this.nameIdPolicyFormat);
             formats.add(nameID);
         } else {
-            final NameIDFormat transientNameID = Objects.requireNonNull(builder).buildObject();
+            final var transientNameID = Objects.requireNonNull(builder).buildObject();
             transientNameID.setURI(NameIDType.TRANSIENT);
             formats.add(transientNameID);
-            final NameIDFormat persistentNameID = builder.buildObject();
+            final var persistentNameID = builder.buildObject();
             persistentNameID.setURI(NameIDType.PERSISTENT);
             formats.add(persistentNameID);
-            final NameIDFormat emailNameID = builder.buildObject();
+            final var emailNameID = builder.buildObject();
             emailNameID.setURI(NameIDType.EMAIL);
             formats.add(emailNameID);
-            final NameIDFormat unspecNameID = builder.buildObject();
+            final var unspecNameID = builder.buildObject();
             unspecNameID.setURI(NameIDType.UNSPECIFIED);
             formats.add(unspecNameID);
         }
@@ -453,9 +452,9 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
                                                                    final boolean isDefault) {
-        final SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
+        final var builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
             .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
-        final AssertionConsumerService consumer = Objects.requireNonNull(builder).buildObject();
+        final var consumer = Objects.requireNonNull(builder).buildObject();
         consumer.setLocation(this.assertionConsumerServiceUrl);
         consumer.setBinding(binding);
         if (isDefault) {
@@ -466,19 +465,19 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     }
 
     protected SingleLogoutService getSingleLogoutService(final String binding) {
-        final SAMLObjectBuilder<SingleLogoutService> builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
+        final var builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
             .getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
-        final SingleLogoutService logoutService = Objects.requireNonNull(builder).buildObject();
+        final var logoutService = Objects.requireNonNull(builder).buildObject();
         logoutService.setLocation(this.singleLogoutServiceUrl);
         logoutService.setBinding(binding);
         return logoutService;
     }
 
     protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
-        final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>)
+        final var builder = (SAMLObjectBuilder<KeyDescriptor>)
             Configuration.getBuilderFactory()
                 .getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
-        final KeyDescriptor descriptor = Objects.requireNonNull(builder).buildObject();
+        final var descriptor = Objects.requireNonNull(builder).buildObject();
         descriptor.setUse(type);
         descriptor.setKeyInfo(key);
         return descriptor;
@@ -633,7 +632,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     }
 
     private List<String> filterSignatureAlgorithms(final List<String> algorithms) {
-        final List<String> filteredAlgorithms = filterForRuntimeSupportedAlgorithms(algorithms);
+        final var filteredAlgorithms = filterForRuntimeSupportedAlgorithms(algorithms);
         if (blackListedSignatureSigningAlgorithms != null) {
             filteredAlgorithms.removeAll(this.blackListedSignatureSigningAlgorithms);
         }

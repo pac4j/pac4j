@@ -72,7 +72,7 @@ public class HttpSessionStore implements SAMLMessageStore {
     @Override
     public void set(final String messageID, final XMLObject message) {
         log.debug("Storing message {} to session {}", messageID, sessionStore.getSessionId(context, true).get());
-        final LinkedHashMap<String, String> messages = getMessages();
+        final var messages = getMessages();
         messages.put(messageID, Configuration.serializeSamlObject(message).toString());
         updateSession(messages);
     }
@@ -93,8 +93,8 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @Override
     public Optional<XMLObject> get(final String messageID) {
-        final LinkedHashMap<String, String> messages = getMessages();
-        final String o = messages.get(messageID);
+        final var messages = getMessages();
+        final var o = messages.get(messageID);
         if (o == null) {
             log.debug("Message {} not found in session {}", messageID, sessionStore.getSessionId(context, true).get());
             return Optional.empty();
@@ -128,7 +128,7 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @SuppressWarnings("unchecked")
     private LinkedHashMap<String, String> initializeSession() {
-        Optional<Object> messages = sessionStore.get(context, SAML_STORAGE_KEY);
+        var messages = sessionStore.get(context, SAML_STORAGE_KEY);
         if (!messages.isPresent()) {
             synchronized (context) {
                 messages = sessionStore.get(context, SAML_STORAGE_KEY);

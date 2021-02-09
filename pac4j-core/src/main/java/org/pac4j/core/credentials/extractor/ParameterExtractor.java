@@ -43,7 +43,7 @@ public class ParameterExtractor implements CredentialsExtractor {
             throw new CredentialsException("POST requests not supported");
         }
 
-        final Optional<String> value = context.getRequestParameter(this.parameterName);
+        final var value = context.getRequestParameter(this.parameterName);
         if (!value.isPresent()) {
             return Optional.empty();
         }

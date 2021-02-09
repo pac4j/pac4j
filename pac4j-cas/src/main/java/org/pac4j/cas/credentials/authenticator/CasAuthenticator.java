@@ -1,7 +1,5 @@
 package org.pac4j.cas.credentials.authenticator;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
@@ -14,7 +12,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -67,20 +64,20 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final TokenCredentials credentials = (TokenCredentials) cred;
-        final String ticket = credentials.getToken();
+        final var credentials = (TokenCredentials) cred;
+        final var ticket = credentials.getToken();
         try {
-            final String finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, context);
-            final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
-            final AttributePrincipal principal = assertion.getPrincipal();
+            final var finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, context);
+            final var assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
+            final var principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);
 
-            final String id = principal.getName();
+            final var id = principal.getName();
             final Map<String, Object> newPrincipalAttributes = new HashMap<>();
             final Map<String, Object> newAuthenticationAttributes = new HashMap<>();
             // restore both sets of attributes
-            final Map<String, Object> oldPrincipalAttributes = principal.getAttributes();
-            final Map<String, Object> oldAuthenticationAttributes = assertion.getAttributes();
+            final var oldPrincipalAttributes = principal.getAttributes();
+            final var oldAuthenticationAttributes = assertion.getAttributes();
             if (oldPrincipalAttributes != null) {
                 oldPrincipalAttributes.entrySet().stream()
                     .forEach(e -> newPrincipalAttributes.put(e.getKey(), e.getValue()));
@@ -90,14 +87,14 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
                     .forEach(e -> newAuthenticationAttributes.put(e.getKey(), e.getValue()));
             }
 
-            final UserProfile profile = getProfileDefinition().newProfile(id, configuration.getProxyReceptor(), principal);
+            final var profile = getProfileDefinition().newProfile(id, configuration.getProxyReceptor(), principal);
             profile.setId(ProfileHelper.sanitizeIdentifier(id));
             getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
             logger.debug("profile returned by CAS: {}", profile);
 
             credentials.setUserProfile(profile);
         } catch (final TicketValidationException e) {
-            String message = "cannot validate CAS ticket: " + ticket;
+            var message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);
         }
     }

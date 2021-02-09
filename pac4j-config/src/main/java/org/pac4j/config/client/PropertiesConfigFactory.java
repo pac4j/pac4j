@@ -42,27 +42,27 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
         // spring-security-crypto dependency required
         if (hasSpringEncoder()) {
-            final SpringEncoderBuilder springEncoderBuilder = new SpringEncoderBuilder(properties);
+            final var springEncoderBuilder = new SpringEncoderBuilder(properties);
             springEncoderBuilder.tryCreatePasswordEncoder(encoders);
         }
         // shiro-core dependency required
         if (hasShiroEncoder()) {
-            final ShiroEncoderBuilder shiroEncoderBuilder = new ShiroEncoderBuilder(properties);
+            final var shiroEncoderBuilder = new ShiroEncoderBuilder(properties);
             shiroEncoderBuilder.tryCreatePasswordEncoder(encoders);
         }
         // pac4j-ldap dependency required
         if (hasLdapAuthenticator()) {
-            final LdapAuthenticatorBuilder ldapAuthenticatorBuilder = new LdapAuthenticatorBuilder(properties);
+            final var ldapAuthenticatorBuilder = new LdapAuthenticatorBuilder(properties);
             ldapAuthenticatorBuilder.tryBuildLdapAuthenticator(authenticators);
         }
         // pac4j-sql dependency required
         if (hasDbAuthenticator()) {
-            final DbAuthenticatorBuilder dbAuthenticatorBuilder = new DbAuthenticatorBuilder(properties);
+            final var dbAuthenticatorBuilder = new DbAuthenticatorBuilder(properties);
             dbAuthenticatorBuilder.tryBuildDbAuthenticator(authenticators, encoders);
         }
         // pac4j-oauth dependency required
         if (hasOAuthClients()) {
-            final OAuthBuilder oAuthBuilder = new OAuthBuilder(properties);
+            final var oAuthBuilder = new OAuthBuilder(properties);
             oAuthBuilder.tryCreateFacebookClient(clients);
             oAuthBuilder.tryCreateTwitterClient(clients);
             oAuthBuilder.tryCreateDropboxClient(clients);
@@ -76,28 +76,28 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         }
         // pac4j-saml dependency required
         if (hasSaml2Clients()) {
-            final Saml2ClientBuilder saml2ClientBuilder = new Saml2ClientBuilder(properties);
+            final var saml2ClientBuilder = new Saml2ClientBuilder(properties);
             saml2ClientBuilder.tryCreateSaml2Client(clients);
         }
         // pac4j-cas dependency required
         if (hasCasClients()) {
-            final CasClientBuilder casClientBuilder = new CasClientBuilder(properties);
+            final var casClientBuilder = new CasClientBuilder(properties);
             casClientBuilder.tryCreateCasClient(clients);
         }
         // pac4j-oidc dependency required
         if (hasOidcClients()) {
-            final OidcClientBuilder oidcClientBuilder = new OidcClientBuilder(properties);
+            final var oidcClientBuilder = new OidcClientBuilder(properties);
             oidcClientBuilder.tryCreateOidcClient(clients);
         }
         // pac4j-http dependency required
         if (hasHttpAuthenticatorsOrClients()) {
-            final RestAuthenticatorBuilder restAuthenticatorBuilder = new RestAuthenticatorBuilder(properties);
+            final var restAuthenticatorBuilder = new RestAuthenticatorBuilder(properties);
             restAuthenticatorBuilder.tryBuildRestAuthenticator(authenticators);
 
-            final IndirectHttpClientBuilder indirectHttpClientBuilder = new IndirectHttpClientBuilder(properties, authenticators);
+            final var indirectHttpClientBuilder = new IndirectHttpClientBuilder(properties, authenticators);
             indirectHttpClientBuilder.tryCreateLoginFormClient(clients);
             indirectHttpClientBuilder.tryCreateIndirectBasicAuthClient(clients);
-            final DirectClientBuilder directClientBuilder = new DirectClientBuilder(properties, authenticators);
+            final var directClientBuilder = new DirectClientBuilder(properties, authenticators);
             directClientBuilder.tryCreateAnonymousClient(clients);
             directClientBuilder.tryCreateDirectBasciAuthClient(clients);
         }
@@ -105,7 +105,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasShiroEncoder() {
-        for (int i = 0; i <= MAX_NUM_ENCODERS; i++) {
+        for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             if (isNotBlank(getProperty(SHIRO_ENCODER, i)) || containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i) || containsProperty(SHIRO_ENCODER_HASH_ITERATIONS, i)
                 || containsProperty(SHIRO_ENCODER_PRIVATE_SALT, i)) {
@@ -116,8 +116,8 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasSpringEncoder() {
-        for (int i = 0; i <= MAX_NUM_ENCODERS; i++) {
-            final String type = getProperty(SPRING_ENCODER_TYPE, i);
+        for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
+            final var type = getProperty(SPRING_ENCODER_TYPE, i);
             if (isNotBlank(type)) {
                 return true;
             }
@@ -126,8 +126,8 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasLdapAuthenticator() {
-        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            final String type = getProperty(LDAP_TYPE, i);
+        for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+            final var type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
                 return true;
             }
@@ -136,9 +136,9 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasDbAuthenticator() {
-        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            final String className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
-            final String jdbcUrl = getProperty(DB_JDBC_URL, i);
+        for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+            final var className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
+            final var jdbcUrl = getProperty(DB_JDBC_URL, i);
             if (isNotBlank(className) || isNotBlank(jdbcUrl)) {
                 return true;
             }
@@ -182,7 +182,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasSaml2Clients() {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(SAML_KEYSTORE_PASSWORD, i)) &&
                     isNotBlank(getProperty(SAML_PRIVATE_KEY_PASSWORD, i)) &&
                     isNotBlank(getProperty(SAML_KEYSTORE_PATH, i)) &&
@@ -194,7 +194,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasCasClients() {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(CAS_LOGIN_URL, i))) {
                 return true;
             }
@@ -203,7 +203,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     }
 
     protected boolean hasOidcClients() {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(OIDC_ID, i)) && isNotBlank(getProperty(OIDC_SECRET, i))) {
                 return true;
             }
@@ -215,12 +215,12 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         if (isNotBlank(getProperty(ANONYMOUS))) {
             return true;
         }
-        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+        for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             if (isNotBlank(getProperty(REST_URL, i))) {
                 return true;
             }
         }
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(FORMCLIENT_LOGIN_URL, i)) && isNotBlank(getProperty(FORMCLIENT_AUTHENTICATOR, i))) {
                 return true;
             }

@@ -42,7 +42,7 @@ public class KerberosCredentials extends Credentials {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        KerberosCredentials that = (KerberosCredentials) o;
+        var that = (KerberosCredentials) o;
 
         return !(kerberosTicket != null ? !getTicketAsString(kerberosTicket).equals(getTicketAsString(that.kerberosTicket))
             : that.kerberosTicket != null);

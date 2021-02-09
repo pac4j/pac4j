@@ -8,7 +8,6 @@ import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 /**
@@ -32,13 +31,13 @@ public class FigShareProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public FigShareProfile extractUserProfile(final String body) {
-        final FigShareProfile profile = (FigShareProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (FigShareProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             if (getProfileId() != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, getProfileId())));
             }
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

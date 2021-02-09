@@ -31,10 +31,10 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
 
     @Override
     protected void addAccessTokenToProfile(final UserProfile userProfile, final Token tok) {
-        final OAuth10Profile profile = (OAuth10Profile) userProfile;
-        final OAuth1AccessToken accessToken = (OAuth1AccessToken) tok;
+        final var profile = (OAuth10Profile) userProfile;
+        final var accessToken = (OAuth1AccessToken) tok;
         if (profile != null) {
-            final String token = accessToken.getToken();
+            final var token = accessToken.getToken();
             logger.debug("add access_token: {} to profile", token);
             profile.setAccessToken(token);
             profile.setAccessSecret(accessToken.getTokenSecret());
@@ -43,7 +43,7 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
 
     @Override
     protected void signRequest(final OAuthService service, final Token tok, final OAuthRequest request) {
-        final OAuth1AccessToken token = (OAuth1AccessToken) tok;
+        final var token = (OAuth1AccessToken) tok;
         ((OAuth10aService) service).signRequest(token, request);
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader("Authorization", "Bearer " + token.getToken());

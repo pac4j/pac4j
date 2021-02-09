@@ -9,8 +9,6 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 /**
  * The default {@link SavedRequestHandler} which handles GET and POST requests.
  *
@@ -23,10 +21,10 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
     @Override
     public void save(final WebContext context, final SessionStore sessionStore) {
-        final String requestedUrl = getRequestedUrl(context, sessionStore);
+        final var requestedUrl = getRequestedUrl(context, sessionStore);
         if (ContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
-            final String formPost = HttpActionHelper.buildFormPostContent(context);
+            final var formPost = HttpActionHelper.buildFormPostContent(context);
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
@@ -40,11 +38,11 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
     @Override
     public HttpAction restore(final WebContext context, final SessionStore sessionStore, final String defaultUrl) {
-        final Optional<Object> optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
+        final var optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
         HttpAction requestedAction = null;
         if (optRequestedUrl.isPresent()) {
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
-            final Object requestedUrl = optRequestedUrl.get();
+            final var requestedUrl = optRequestedUrl.get();
             if (requestedUrl instanceof String) {
                 requestedAction = new FoundAction((String) requestedUrl);
             } else if (requestedUrl instanceof RedirectionAction) {

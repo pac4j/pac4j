@@ -16,7 +16,7 @@ import org.springframework.core.io.FileSystemResource;
 public class SAML2ConfigurationTests {
     @Test
     public void verifySigningCertExported() {
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -24,19 +24,19 @@ public class SAML2ConfigurationTests {
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
-        final File signingCertPem = new File("target/saml-signing-cert.pem");
+        final var signingCertPem = new File("target/saml-signing-cert.pem");
         assertTrue(signingCertPem.exists());
-        final File signingCert = new File("target/saml-signing-cert.crt");
+        final var signingCert = new File("target/saml-signing-cert.crt");
         assertTrue(signingCert.exists());
-        final File signingCertKey = new File("target/saml-signing-cert.key");
+        final var signingCertKey = new File("target/saml-signing-cert.key");
         assertTrue(signingCertKey.exists());
     }
 
     @Test
     public void verifySigningCertNamedExported() {
-        final String certNamePart = "id-09 _*#AD";
-        final String certNameResult = "id-09_AD";
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var certNamePart = "id-09 _*#AD";
+        final var certNameResult = "id-09_AD";
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setCertificateNameToAppend(certNamePart);
@@ -45,11 +45,11 @@ public class SAML2ConfigurationTests {
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
-        final File signingCertPem = new File("target/saml-signing-cert-" + certNameResult + ".pem");
+        final var signingCertPem = new File("target/saml-signing-cert-" + certNameResult + ".pem");
         assertTrue(signingCertPem.exists());
-        final File signingCert = new File("target/saml-signing-cert-" + certNameResult + ".crt");
+        final var signingCert = new File("target/saml-signing-cert-" + certNameResult + ".crt");
         assertTrue(signingCert.exists());
-        final File signingCertKey = new File("target/saml-signing-cert-" + certNameResult + ".key");
+        final var signingCertKey = new File("target/saml-signing-cert-" + certNameResult + ".key");
         assertTrue(signingCertKey.exists());
     }
 }

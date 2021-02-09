@@ -6,7 +6,6 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
@@ -37,9 +36,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
-            final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
-            final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
-            final String metadata = metadataGenerator.getMetadata(entity);
+            final var metadataGenerator = configuration.toMetadataGenerator();
+            final var entity = metadataGenerator.buildEntityDescriptor();
+            final var metadata = metadataGenerator.getMetadata(entity);
             metadataGenerator.storeMetadata(metadata,
                 configuration.getServiceProviderMetadataResource(),
                 configuration.isForceServiceProviderMetadataGeneration());
@@ -62,8 +61,8 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     @Override
     public String getMetadata() {
         try {
-            final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
-            final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
+            final var metadataGenerator = configuration.toMetadataGenerator();
+            final var entity = metadataGenerator.buildEntityDescriptor();
             return metadataGenerator.getMetadata(entity);
         } catch (final Exception e) {
             throw new SAMLException("Unable to fetch metadata", e);

@@ -5,8 +5,6 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
 
-import java.util.Optional;
-
 /**
  * State generator for SAML 2.
  *
@@ -25,7 +23,7 @@ public class SAML2StateGenerator implements ValueGenerator {
 
     @Override
     public String generateValue(final WebContext webContext, final SessionStore sessionStore) {
-        final Optional<Object> relayState = sessionStore.get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
+        final var relayState = sessionStore.get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
         if (relayState.isPresent()) {
             sessionStore.set(webContext, SAML_RELAY_STATE_ATTRIBUTE, null);

@@ -8,20 +8,20 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link JsonHelper} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class JsonHelperTests implements TestsConstants {
-    
+
     private static final String GOOD_TEXT_JSON = "{ \"" + KEY + "\" : \"" + VALUE + "\" }";
-    
+
     private static final String GOOD_BOOLEAN_JSON = "{ \"" + KEY + "\" : " + Boolean.TRUE + " }";
-    
+
     private static final String GOOD_NUMBER_JSON = "{ \"" + KEY + "\" : 1 }";
-    
+
     private static final String GOOD_NODE_JSON = "{ \"" + KEY + "\" : " + GOOD_TEXT_JSON + " }";
-    
+
     private static final String BAD_JSON = "this_is_definitively_not_a_json_text";
 
     @Test
@@ -67,7 +67,7 @@ public final class JsonHelperTests implements TestsConstants {
 
     @Test
     public void testToJSONString() {
-        final FacebookObject object = new FacebookObject();
+        final var object = new FacebookObject();
         object.setId(ID);
         object.setName(NAME);
         assertEquals("\"{\\\"id\\\":\\\"id\\\",\\\"name\\\":\\\"name\\\"}\"", JsonHelper.toJSONString(JsonHelper.toJSONString(object)));

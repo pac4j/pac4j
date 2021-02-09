@@ -24,17 +24,17 @@ public class DefaultUrlResolver implements UrlResolver {
     public String compute(final String url, WebContext context) {
         if (this.completeRelativeUrl) {
 
-            final boolean relativeUrl = url != null
+            final var relativeUrl = url != null
                 && !url.startsWith(HttpConstants.SCHEME_HTTP) && !url.startsWith(HttpConstants.SCHEME_HTTPS);
 
             if (context != null && relativeUrl) {
-                final StringBuilder sb = new StringBuilder();
+                final var sb = new StringBuilder();
 
                 sb.append(context.getScheme()).append("://").append(context.getServerName());
 
-                final boolean notDefaultHttpPort = ContextHelper.isHttp(context) &&
+                final var notDefaultHttpPort = ContextHelper.isHttp(context) &&
                     context.getServerPort() != HttpConstants.DEFAULT_HTTP_PORT;
-                final boolean notDefaultHttpsPort = ContextHelper.isHttps(context) &&
+                final var notDefaultHttpsPort = ContextHelper.isHttps(context) &&
                     context.getServerPort() != HttpConstants.DEFAULT_HTTPS_PORT;
                 if (notDefaultHttpPort || notDefaultHttpsPort) {
                     sb.append(":").append(context.getServerPort());

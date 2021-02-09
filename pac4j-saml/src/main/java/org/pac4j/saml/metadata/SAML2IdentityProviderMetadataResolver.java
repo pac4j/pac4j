@@ -20,15 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -88,7 +84,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         } catch (final IOException e) {
             newLastModified = NO_LAST_MODIFIED;
         }
-        final boolean hasChanged = lastModified != newLastModified;
+        final var hasChanged = lastModified != newLastModified;
         logger.debug("lastModified: {} / newLastModified: {} -> hasChanged: {}", lastModified, newLastModified, hasChanged);
         lastModified = newLastModified;
         return hasChanged;
@@ -97,9 +93,9 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     protected DOMMetadataResolver buildMetadata() {
         try {
             final DOMMetadataResolver resolver;
-            try (InputStream in = this.idpMetadataResource.getInputStream()) {
-                final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
-                final Element metadataRoot = inCommonMDDoc.getDocumentElement();
+            try (var in = this.idpMetadataResource.getInputStream()) {
+                final var inCommonMDDoc = Configuration.getParserPool().parse(in);
+                final var metadataRoot = inCommonMDDoc.getDocumentElement();
                 resolver = new DOMMetadataResolver(metadataRoot);
                 resolver.setIndexes(Collections.singleton(new RoleMetadataIndex()));
                 resolver.setParserPool(Configuration.getParserPool());
@@ -112,10 +108,10 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
             }
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
             if (this.idpEntityId == null) {
-                final Iterator<EntityDescriptor> it = resolver.iterator();
+                final var it = resolver.iterator();
 
                 while (it.hasNext()) {
-                    final EntityDescriptor entityDescriptor = it.next();
+                    final var entityDescriptor = it.next();
                     if (this.idpEntityId == null) {
                         this.idpEntityId = entityDescriptor.getEntityID();
                     }
@@ -139,7 +135,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     @Override
     public String getEntityId() {
-        final XMLObject md = getEntityDescriptorElement();
+        final var md = getEntityDescriptorElement();
         if (md instanceof EntitiesDescriptor) {
             return ((EntitiesDescriptor) md).getEntityDescriptors().get(0).getEntityID();
         }

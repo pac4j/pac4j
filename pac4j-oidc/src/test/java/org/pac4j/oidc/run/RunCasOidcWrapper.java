@@ -35,19 +35,19 @@ public class RunCasOidcWrapper extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OidcConfiguration configuration = new OidcConfiguration();
+        final var configuration = new OidcConfiguration();
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret("secret");
         //configuration.setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration");
         configuration.setDiscoveryURI("http://localhost:8888/cas/oidc/.well-known/openid-configuration");
-        final OidcClient client = new OidcClient(configuration);
+        final var client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final OidcProfile profile = (OidcProfile) userProfile;
+        final var profile = (OidcProfile) userProfile;
         assertEquals(getLogin(), profile.getId());
         assertNotNull(profile.getIdToken());
         assertEquals("http://localhost:8080/cas/oidc", profile.getIssuer());

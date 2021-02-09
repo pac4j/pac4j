@@ -38,7 +38,7 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
         this.setLogoutUrl(oidcConfiguration.getLogoutUrl());
 
         if (oidcConfiguration instanceof AzureAdOidcConfiguration) {
-            final AzureAdOidcConfiguration azureConfig = (AzureAdOidcConfiguration) oidcConfiguration;
+            final var azureConfig = (AzureAdOidcConfiguration) oidcConfiguration;
             this.setTenant(azureConfig.getTenant());
         }
     }
@@ -64,7 +64,7 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
     }
 
     public String makeOauth2TokenRequest(String refreshToken) {
-        final String payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
+        final var payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
             + "&" + HttpUtils.encodeQueryParam("client_secret",this.getSecret())
             + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")
             + "&" + HttpUtils.encodeQueryParam("refresh_token",refreshToken)

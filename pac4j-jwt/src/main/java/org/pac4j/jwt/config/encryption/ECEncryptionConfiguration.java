@@ -103,7 +103,7 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
     }
 
     public void setKeysFromJwk(final String json) {
-        final KeyPair pair = JWKHelper.buildECKeyPairFromJwk(json);
+        final var pair = JWKHelper.buildECKeyPairFromJwk(json);
         this.publicKey = (ECPublicKey) pair.getPublic();
         this.privateKey = (ECPrivateKey) pair.getPrivate();
     }

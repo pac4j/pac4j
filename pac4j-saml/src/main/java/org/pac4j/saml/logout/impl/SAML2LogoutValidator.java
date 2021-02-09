@@ -4,11 +4,8 @@ import net.shibboleth.utilities.java.support.net.URIComparator;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.EncryptedID;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
-import org.opensaml.saml.saml2.core.NameID;
-import org.opensaml.saml.saml2.core.SessionIndex;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
@@ -68,20 +65,20 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      */
     @Override
     public Credentials validate(final SAML2MessageContext context) {
-        final SAMLObject message = (SAMLObject) context.getMessageContext().getMessage();
+        final var message = (SAMLObject) context.getMessageContext().getMessage();
         // IDP-initiated
         if (message instanceof LogoutRequest) {
-            final LogoutRequest logoutRequest = (LogoutRequest) message;
-            final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
+            final var logoutRequest = (LogoutRequest) message;
+            final var engine = this.signatureTrustEngineProvider.build();
             validateLogoutRequest(logoutRequest, context, engine);
             return null;
         } else if (message instanceof LogoutResponse) {
             // SP-initiated
-            final LogoutResponse logoutResponse = (LogoutResponse) message;
-            final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
+            final var logoutResponse = (LogoutResponse) message;
+            final var engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
 
-            final HttpAction action = handlePostLogoutResponse(context);
+            final var action = handlePostLogoutResponse(context);
             if (action != null) {
                 throw action;
             }
@@ -119,25 +116,25 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
         validateIssuerIfItExists(logoutRequest.getIssuer(), context);
 
-        NameID nameId = logoutRequest.getNameID();
-        final EncryptedID encryptedID = logoutRequest.getEncryptedID();
+        var nameId = logoutRequest.getNameID();
+        final var encryptedID = logoutRequest.getEncryptedID();
         if (encryptedID != null) {
             nameId = decryptEncryptedId(encryptedID, decrypter);
         }
 
-        final SAML2Credentials.SAMLNameID samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
+        final var samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
         String sessionIndex = null;
-        final List<SessionIndex> sessionIndexes = logoutRequest.getSessionIndexes();
+        final var sessionIndexes = logoutRequest.getSessionIndexes();
         if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
-            final SessionIndex sessionIndexObject = sessionIndexes.get(0);
+            final var sessionIndexObject = sessionIndexes.get(0);
             if (sessionIndexObject != null) {
                 sessionIndex = sessionIndexObject.getValue();
             }
         }
 
-        final String sloKey = computeSloKey(sessionIndex, samlNameId);
+        final var sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
-            final String bindingUri = context.getSAMLBindingContext().getBindingUri();
+            final var bindingUri = context.getSAMLBindingContext().getBindingUri();
             logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
             if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
                 logoutHandler.destroySessionBack(context.getWebContext(), context.getSessionStore(), sloKey);

@@ -32,7 +32,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     @Override
     protected void addAccessTokenToProfile(final UserProfile profile, final Token tok) {
         if (profile != null) {
-            final String token = ((OAuth2AccessToken) tok).getAccessToken();
+            final var token = ((OAuth2AccessToken) tok).getAccessToken();
             logger.debug("add access_token: {} to profile", token);
             ((OAuth20Profile) profile).setAccessToken(token);
         }
@@ -41,7 +41,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     @Override
     protected void signRequest(final OAuthService service, final Token token, final OAuthRequest request) {
         ((OAuth20Service) service).signRequest((OAuth2AccessToken) token, request);
-        final String accessToken = ((OAuth2AccessToken) token).getAccessToken();
+        final var accessToken = ((OAuth2AccessToken) token).getAccessToken();
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken);
         }

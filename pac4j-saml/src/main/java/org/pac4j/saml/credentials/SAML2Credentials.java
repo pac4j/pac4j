@@ -78,7 +78,7 @@ public class SAML2Credentials extends Credentials {
             return false;
         }
 
-        final SAML2Credentials that = (SAML2Credentials) o;
+        final var that = (SAML2Credentials) o;
 
         if (nameId != null ? !nameId.equals(that.nameId) : that.nameId != null) {
             return false;
@@ -95,7 +95,7 @@ public class SAML2Credentials extends Credentials {
 
     @Override
     public int hashCode() {
-        int result = nameId != null ? nameId.hashCode() : 0;
+        var result = nameId != null ? nameId.hashCode() : 0;
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         result = 31 * result + (sessionIndex != null ? sessionIndex.hashCode() : 0);
         result = 31 * result + (conditions != null ? conditions.hashCode() : 0);
@@ -131,7 +131,7 @@ public class SAML2Credentials extends Credentials {
         private String value;
 
         public static SAMLNameID from(final NameID nameId) {
-            final SAMLNameID result = new SAMLNameID();
+            final var result = new SAMLNameID();
             result.setNameQualifier(nameId.getNameQualifier());
             result.setFormat(nameId.getFormat());
             result.setSpNameQualifier(nameId.getSPNameQualifier());
@@ -141,7 +141,7 @@ public class SAML2Credentials extends Credentials {
         }
 
         public static SAMLNameID from(final SAMLAttribute attribute) {
-            final SAMLNameID result = new SAMLNameID();
+            final var result = new SAMLNameID();
             result.setValue(attribute.getAttributeValues().get(0));
             result.setFormat(attribute.getNameFormat());
             result.setNameQualifier(attribute.getName());
@@ -210,7 +210,7 @@ public class SAML2Credentials extends Credentials {
 
         public static List<SAMLAttribute> from(final List<Attribute> samlAttributes) {
             return samlAttributes.stream().map(attribute -> {
-                final SAMLAttribute samlAttribute = new SAMLAttribute();
+                final var samlAttribute = new SAMLAttribute();
                 samlAttribute.setFriendlyName(attribute.getFriendlyName());
                 samlAttribute.setName(attribute.getName());
                 samlAttribute.setNameFormat(attribute.getNameFormat());

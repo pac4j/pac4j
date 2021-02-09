@@ -7,6 +7,7 @@ import org.pac4j.core.context.session.SessionStore;
  * Factories implementing this interface provide services for storing and retrieval of SAML messages for
  * e.g. verification of retrieved responses.
  */
+@FunctionalInterface
 public interface SAMLMessageStoreFactory {
 
     /**

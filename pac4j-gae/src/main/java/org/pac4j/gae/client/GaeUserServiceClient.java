@@ -10,7 +10,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -35,20 +34,20 @@ public class GaeUserServiceClient extends IndirectClient {
         service = UserServiceFactory.getUserService();
         CommonHelper.assertNotNull("service", this.service);
         defaultRedirectionActionBuilder((ctx, session) -> {
-            final String destinationUrl = computeFinalCallbackUrl(ctx);
-            final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
+            final var destinationUrl = computeFinalCallbackUrl(ctx);
+            final var loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
                 : service.createLoginURL(destinationUrl, authDomain);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, loginUrl));
         });
         defaultCredentialsExtractor((ctx, session) -> {
-            final GaeUserCredentials credentials = new GaeUserCredentials();
+            final var credentials = new GaeUserCredentials();
             credentials.setUser(service.getCurrentUser());
             return Optional.of(credentials);
         });
         defaultAuthenticator((credentials, ctx, session) -> {
-            final User user = ((GaeUserCredentials) credentials).getUser();
+            final var user = ((GaeUserCredentials) credentials).getUser();
             if (user != null) {
-                final GaeUserServiceProfile profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
+                final var profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
                 profile.setId(user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.EMAIL, user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());

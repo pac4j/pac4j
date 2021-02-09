@@ -25,14 +25,14 @@ public class DirectDigestAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(null);
+        final var digestAuthClient = new DirectDigestAuthClient(null);
         TestsHelper.expectException(() -> digestAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
+        final var digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, HTTP_METHOD.POST.name(),
                 null, null, null, null, null, null, null), MockWebContext.create(), new MockSessionStore()), TechnicalException.class,
                 "profileCreator cannot be null");
@@ -40,26 +40,26 @@ public class DirectDigestAuthClientTests implements TestsConstants {
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator());
+        final var digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator());
         digestAuthClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final DirectDigestAuthClient client = new DirectDigestAuthClient(new SimpleTestDigestAuthenticator());
+        final var client = new DirectDigestAuthClient(new SimpleTestDigestAuthenticator());
         client.setRealm(REALM);
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.addRequestHeader(AUTHORIZATION_HEADER,
                 DIGEST_AUTHORIZATION_HEADER_VALUE);
         context.setRequestMethod(HTTP_METHOD.GET.name());
 
-        final DigestCredentials credentials = (DigestCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var credentials = (DigestCredentials) client.getCredentials(context, new MockSessionStore()).get();
 
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
 
-        String ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
-        String serverDigest1 = credentials.calculateServerDigest(true, ha1);
-        String serverDigest2 = credentials.calculateServerDigest(false, PASSWORD);
+        var ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
+        var serverDigest1 = credentials.calculateServerDigest(true, ha1);
+        var serverDigest2 = credentials.calculateServerDigest(false, PASSWORD);
         assertEquals(DIGEST_RESPONSE, serverDigest1);
         assertEquals(DIGEST_RESPONSE, serverDigest2);
         assertEquals(USERNAME, profile.getId());

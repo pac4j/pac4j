@@ -2,7 +2,6 @@ package org.pac4j.core.profile;
 
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
-import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -46,7 +45,7 @@ public class ProfileManager {
      * @return the user profile
      */
     public Optional<UserProfile> getProfile() {
-        final LinkedHashMap<String, UserProfile> allProfiles = retrieveAll(true);
+        final var allProfiles = retrieveAll(true);
         return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
@@ -60,7 +59,7 @@ public class ProfileManager {
      * @return the user profiles
      */
     public List<UserProfile> getProfiles() {
-        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(true);
+        final var profiles = retrieveAll(true);
         return ProfileHelper.flatIntoAProfileList(profiles);
     }
 
@@ -71,7 +70,7 @@ public class ProfileManager {
      * @return the map of profiles
      */
     protected LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> profiles = new LinkedHashMap<>();
+        final var profiles = new LinkedHashMap<String, UserProfile>();
         this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
             .ifPresent(requestAttribute -> profiles.putAll((Map<String, UserProfile>) requestAttribute));
         if (readFromSession) {
@@ -85,18 +84,18 @@ public class ProfileManager {
     }
 
     protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, UserProfile> profiles, final boolean readFromSession) {
-        boolean profilesUpdated = false;
-        for (final Map.Entry<String, UserProfile> entry : profiles.entrySet()) {
-            final String key = entry.getKey();
-            final UserProfile profile = entry.getValue();
+        var profilesUpdated = false;
+        for (final var entry : profiles.entrySet()) {
+            final var key = entry.getKey();
+            final var profile = entry.getValue();
             if (profile.isExpired()) {
                 profilesUpdated = true;
                 profiles.remove(key);
                 if (config != null && profile.getClientName() != null) {
-                    final Optional<Client> client = config.getClients().findClient(profile.getClientName());
+                    final var client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
                         try {
-                            final Optional<UserProfile> newProfile = client.get().renewUserProfile(profile, context, sessionStore);
+                            final var newProfile = client.get().renewUserProfile(profile, context, sessionStore);
                             if (newProfile.isPresent()) {
                                 profiles.put(key, newProfile.get());
                             }
@@ -116,7 +115,7 @@ public class ProfileManager {
      * Remove the current user profile(s).
      */
     public void removeProfiles() {
-        final boolean sessionExists = sessionStore.getSessionId(context, false).isPresent();
+        final var sessionExists = sessionStore.getSessionId(context, false).isPresent();
         if (sessionExists) {
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
         }
@@ -133,7 +132,7 @@ public class ProfileManager {
     public void save(final boolean saveInSession, final UserProfile profile, final boolean multiProfile) {
         final LinkedHashMap<String, UserProfile> profiles;
 
-        final String clientName = retrieveClientName(profile);
+        final var clientName = retrieveClientName(profile);
         if (multiProfile) {
             profiles = retrieveAll(saveInSession);
             profiles.remove(clientName);
@@ -146,7 +145,7 @@ public class ProfileManager {
     }
 
     protected String retrieveClientName(final UserProfile profile) {
-        String clientName = profile.getClientName();
+        var clientName = profile.getClientName();
         if (clientName == null) {
             clientName = "DEFAULT";
         }

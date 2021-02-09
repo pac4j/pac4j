@@ -31,7 +31,7 @@ public class RequireAllPermissionsAuthorizer extends AbstractRequireAllAuthorize
 
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final String element) {
-        final Set<String> profilePermissions = profile.getPermissions();
+        final var profilePermissions = profile.getPermissions();
         return profilePermissions.contains(element);
     }
 

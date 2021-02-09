@@ -17,9 +17,9 @@ public final class LocaleConverter extends AbstractAttributeConverter {
     @Override
     protected Locale internalConvert(final Object attribute) {
         if (attribute instanceof String) {
-            final String s = ((String) attribute).replaceAll("-", "_");
-            final String[] parts = s.split("_");
-            final int length = parts.length;
+            final var s = ((String) attribute).replaceAll("-", "_");
+            final var parts = s.split("_");
+            final var length = parts.length;
             if (length == 2) {
                 return new Locale(parts[0], parts[1]);
             } else if (length == 1) {

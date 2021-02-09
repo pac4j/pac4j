@@ -3,7 +3,6 @@ package org.pac4j.core.engine;
 import org.pac4j.core.authorization.checker.AuthorizationChecker;
 import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
@@ -11,7 +10,6 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
@@ -78,41 +76,41 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
-            final Clients configClients = config.getClients();
+            final var configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
             // logic
             LOGGER.debug("url: {}", context.getFullRequestURL());
             LOGGER.debug("clients: {} | matchers: {}", clients, matchers);
-            final List<Client> currentClients = clientFinder.find(configClients, context, clients);
+            final var currentClients = clientFinder.find(configClients, context, clients);
             LOGGER.debug("currentClients: {}", currentClients);
 
             if (matchingChecker.matches(context, sessionStore, matchers, config.getMatchers(), currentClients)) {
 
-                final ProfileManager manager = getProfileManager(context, sessionStore);
+                final var manager = getProfileManager(context, sessionStore);
                 manager.setConfig(config);
-                List<UserProfile> profiles = loadProfiles(manager, context, sessionStore, currentClients);
+                var profiles = loadProfiles(manager, context, sessionStore, currentClients);
                 LOGGER.debug("Loaded profiles: {}", profiles);
 
                 // no profile and some current clients
                 if (isEmpty(profiles) && isNotEmpty(currentClients)) {
-                    boolean updated = false;
+                    var updated = false;
                     // loop on all clients searching direct ones to perform authentication
-                    for (final Client currentClient : currentClients) {
+                    for (final var currentClient : currentClients) {
                         if (currentClient instanceof DirectClient) {
                             LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final Optional<Credentials> credentials = currentClient.getCredentials(context, sessionStore);
+                            final var credentials = currentClient.getCredentials(context, sessionStore);
                             LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
-                                final Optional<UserProfile> optProfile =
+                                final var optProfile =
                                     currentClient.getUserProfile(credentials.get(), context, sessionStore);
                                 LOGGER.debug("profile: {}", optProfile);
                                 if (optProfile.isPresent()) {
-                                    final UserProfile profile = optProfile.get();
-                                    final DirectClient directClient = (DirectClient) currentClient;
+                                    final var profile = optProfile.get();
+                                    final var directClient = (DirectClient) currentClient;
                                     final boolean saveProfileInSession = directClient.getSaveProfileInSession(context, profile);
-                                    final boolean multiProfile = directClient.isMultiProfile(context, profile);
+                                    final var multiProfile = directClient.isMultiProfile(context, profile);
                                     LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                     manager.save(saveProfileInSession, profile, multiProfile);
                                     updated = true;
@@ -230,7 +228,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      */
     protected HttpAction redirectToIdentityProvider(final WebContext context, final SessionStore sessionStore,
                                                     final List<Client> currentClients) {
-        final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
+        final var currentClient = (IndirectClient) currentClients.get(0);
         return currentClient.getRedirectionAction(context, sessionStore).get();
     }
 

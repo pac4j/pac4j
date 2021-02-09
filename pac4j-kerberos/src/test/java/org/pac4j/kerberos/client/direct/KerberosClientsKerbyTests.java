@@ -10,9 +10,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
@@ -21,7 +19,6 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -100,7 +97,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectIncorrectAuth() {
         // a request with an incorrect Kerberos token, yields NULL credentials also
-        final MockWebContext context = MockWebContext.create()
+        final var context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
         assertFalse(setupDirectKerberosClient().getCredentials(context, new MockSessionStore()).isPresent());
     }
@@ -114,7 +111,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testIndirectIncorrectAuth() {
         // a request with an incorrect Kerberos token, yields NULL credentials also
-        final MockWebContext context = MockWebContext.create()
+        final var context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
         assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), context, "Performing a 401 HTTP action");
     }
@@ -144,15 +141,15 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     }
 
     private void checkWithGoodTicket(Client client) throws Exception {
-        String spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
+        var spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
 
         // mock web request
-        final MockWebContext context = mockWebRequestContext(spnegoWebTicket);
-        final Optional<Credentials> credentials = client.getCredentials(context, new MockSessionStore());
+        final var context = mockWebRequestContext(spnegoWebTicket);
+        final var credentials = client.getCredentials(context, new MockSessionStore());
         assertTrue(credentials.isPresent());
         System.out.println(credentials.get());
 
-        final Optional<UserProfile> profile = client.getUserProfile(credentials.get(), context, new MockSessionStore());
+        final var profile = client.getUserProfile(credentials.get(), context, new MockSessionStore());
         assertTrue(profile.isPresent());
         assertEquals(clientPrincipal, profile.get().getId());
     }
@@ -162,13 +159,13 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     }
 
     private IndirectKerberosClient setupIndirectKerberosClient() {
-        IndirectKerberosClient client = new IndirectKerberosClient(new KerberosAuthenticator(getKerberosValidator()));
+        var client = new IndirectKerberosClient(new KerberosAuthenticator(getKerberosValidator()));
         client.setCallbackUrl("http://dummy.com/");
         return client;
     }
 
     private SunJaasKerberosTicketValidator getKerberosValidator() {
-        SunJaasKerberosTicketValidator validator = new SunJaasKerberosTicketValidator();
+        var validator = new SunJaasKerberosTicketValidator();
         validator.setServicePrincipal(servicePrincipal);
         validator.setKeyTabLocation(new FileSystemResource(serviceKeytabFile));
         validator.setDebug(true);
@@ -177,7 +174,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
     private MockWebContext mockWebRequestContext(String spnegoWebTicket) {
         System.out.println("spnegoWebTicket:" + spnegoWebTicket);
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + spnegoWebTicket);
         return context;
     }

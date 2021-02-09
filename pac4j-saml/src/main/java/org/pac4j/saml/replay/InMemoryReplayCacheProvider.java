@@ -16,7 +16,7 @@ public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
 
     public InMemoryReplayCacheProvider() {
         try {
-            final MemoryStorageService storageService = new MemoryStorageService();
+            final var storageService = new MemoryStorageService();
             storageService.setId("pac4j-replay-storage");
             storageService.initialize();
 

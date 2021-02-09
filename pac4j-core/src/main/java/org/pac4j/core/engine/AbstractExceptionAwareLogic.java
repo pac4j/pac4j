@@ -38,7 +38,7 @@ public abstract class AbstractExceptionAwareLogic extends ProfileManagerFactoryA
         if (httpActionAdapter == null || context == null) {
             throw runtimeException(e);
         } else if (e instanceof HttpAction) {
-            final HttpAction action = (HttpAction) e;
+            final var action = (HttpAction) e;
             LOGGER.debug("extra HTTP action required in security: {}", action.getCode());
             return httpActionAdapter.adapt(action, context);
         } else {

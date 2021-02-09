@@ -26,22 +26,22 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
-        final TokenCredentials credentials = new TokenCredentials(GOOD_IP);
-        IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
+        final var credentials = new TokenCredentials(GOOD_IP);
+        var authenticator = new IpRegexpAuthenticator();
         authenticator.validate(credentials, null, new MockSessionStore());
     }
 
     @Test
     public void testValidateGoodIP() {
-        final TokenCredentials credentials = new TokenCredentials(GOOD_IP);
+        final var credentials = new TokenCredentials(GOOD_IP);
         authenticator.validate(credentials, null, new MockSessionStore());
-        final IpProfile profile = (IpProfile) credentials.getUserProfile();
+        final var profile = (IpProfile) credentials.getUserProfile();
         assertEquals(GOOD_IP, profile.getId());
     }
 
     @Test
     public void testValidateBadIP() {
-        final TokenCredentials credentials = new TokenCredentials(BAD_IP);
+        final var credentials = new TokenCredentials(BAD_IP);
         TestsHelper.expectException(() -> authenticator.validate(credentials, null, new MockSessionStore()), CredentialsException.class,
             "Unauthorized IP address: " + BAD_IP);
     }

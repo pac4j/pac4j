@@ -19,14 +19,14 @@ public final class CasProxyReceptorTests implements TestsConstants {
 
     @Test
     public void testMissingCallbackUrl() {
-        final CasProxyReceptor client = new CasProxyReceptor();
+        final var client = new CasProxyReceptor();
         TestsHelper.initShouldFail(client,
                 "callbackUrl cannot be blank: set it up either on this IndirectClient or on the global Config");
     }
 
     @Test
     public void testMissingStorage() {
-        final CasProxyReceptor client = new CasProxyReceptor();
+        final var client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         client.setStore(null);
         TestsHelper.initShouldFail(client, "store cannot be null");
@@ -34,10 +34,10 @@ public final class CasProxyReceptorTests implements TestsConstants {
 
     @Test
     public void testMissingPgt() {
-        final CasProxyReceptor client = new CasProxyReceptor();
+        final var client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create();
-        final HttpAction action = (HttpAction) TestsHelper.expectException(
+        final var context = MockWebContext.create();
+        final var action = (HttpAction) TestsHelper.expectException(
             () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE),
                 new MockSessionStore()));
         assertEquals(200, action.getCode());
@@ -45,10 +45,10 @@ public final class CasProxyReceptorTests implements TestsConstants {
 
     @Test
     public void testMissingPgtiou() {
-        final CasProxyReceptor client = new CasProxyReceptor();
+        final var client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create();
-        final HttpAction action = (HttpAction) TestsHelper.expectException(
+        final var context = MockWebContext.create();
+        final var action = (HttpAction) TestsHelper.expectException(
             () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE),
                 new MockSessionStore()));
         assertEquals(200, action.getCode());
@@ -56,12 +56,12 @@ public final class CasProxyReceptorTests implements TestsConstants {
 
     @Test
     public void testOk() {
-        final CasProxyReceptor client = new CasProxyReceptor();
+        final var client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create()
+        final var context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
+        final var action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
         assertEquals(200, action.getCode());
     }
 }

@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
-import org.pac4j.core.client.Clients;
-import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
@@ -24,7 +22,6 @@ import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.sql.profile.service.DbProfileService;
 import org.pac4j.sql.test.tools.DbServer;
 
@@ -116,40 +113,40 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             properties.put(REST_URL.concat(".3"), PAC4J_BASE_URL);
             properties.put(DIRECTBASICAUTH_AUTHENTICATOR.concat(".7"), "rest.3");
 
-            final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
-            final Config config = factory.build();
-            final Clients clients = config.getClients();
+            final var factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
+            final var config = factory.build();
+            final var clients = config.getClients();
             assertEquals(13, clients.getClients().size());
 
-            final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient").get();
+            final var fbClient = (FacebookClient) clients.findClient("FacebookClient").get();
             assertEquals(ID, fbClient.getKey());
             assertEquals(SECRET, fbClient.getSecret());
 
             assertNotNull(clients.findClient("AnonymousClient"));
 
-            final TwitterClient twClient = (TwitterClient) clients.findClient("TwitterClient").get();
+            final var twClient = (TwitterClient) clients.findClient("TwitterClient").get();
             assertEquals(ID, twClient.getKey());
             assertEquals(SECRET, twClient.getSecret());
 
-            final CasClient casClient = (CasClient) clients.findClient("CasClient").get();
+            final var casClient = (CasClient) clients.findClient("CasClient").get();
             assertEquals(CALLBACK_URL, casClient.getConfiguration().getLoginUrl());
             assertEquals(CasProtocol.CAS20, casClient.getConfiguration().getProtocol());
 
-            final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client").get();
+            final var saml2client = (SAML2Client) clients.findClient("SAML2Client").get();
             assertNotNull(saml2client);
-            final SAML2Configuration saml2Config = saml2client.getConfiguration();
+            final var saml2Config = saml2client.getConfiguration();
             assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2Config.getAuthnRequestBindingType());
             assertEquals(VALUE, saml2Config.getKeyStoreAlias());
 
-            final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient").get();
+            final var oidcClient = (OidcClient) clients.findClient("OidcClient").get();
             assertNotNull(oidcClient);
             assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(),
                 oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
 
-            final CasClient casClient1 = (CasClient) clients.findClient("CasClient.1").get();
+            final var casClient1 = (CasClient) clients.findClient("CasClient.1").get();
             assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
 
-            final GoogleOidcClient googleOidcClient = (GoogleOidcClient) clients.findClient("GoogleOidcClient.1").get();
+            final var googleOidcClient = (GoogleOidcClient) clients.findClient("GoogleOidcClient.1").get();
             googleOidcClient.init();
             assertEquals(ID, googleOidcClient.getConfiguration().getClientId());
             assertEquals(SECRET, googleOidcClient.getConfiguration().getSecret());
@@ -159,35 +156,35 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
                 .compute(googleOidcClient.getUrlResolver(), googleOidcClient.getCallbackUrl(),
                     googleOidcClient.getName(), MockWebContext.create()));
 
-            final FormClient formClient = (FormClient) clients.findClient("FormClient").get();
+            final var formClient = (FormClient) clients.findClient("FormClient").get();
             assertEquals(LOGIN_URL, formClient.getLoginUrl());
             assertTrue(formClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
 
-            final FormClient formClient2 = (FormClient) clients.findClient("FormClient.2").get();
+            final var formClient2 = (FormClient) clients.findClient("FormClient.2").get();
             assertEquals(PAC4J_BASE_URL, formClient2.getLoginUrl());
             assertTrue(formClient2.getAuthenticator() instanceof LdapProfileService);
-            final LdapProfileService ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
-            final UsernamePasswordCredentials ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+            final var ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
+            final var ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             ldapAuthenticator.validate(ldapCredentials, MockWebContext.create(), new MockSessionStore());
             assertNotNull(ldapCredentials.getUserProfile());
 
-            final IndirectBasicAuthClient indirectBasicAuthClient =
+            final var indirectBasicAuthClient =
                 (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.2").get();
             assertEquals("authentication required", indirectBasicAuthClient.getRealmName());
             assertTrue(indirectBasicAuthClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
 
-            final IndirectBasicAuthClient indirectBasicAuthClient2 =
+            final var indirectBasicAuthClient2 =
                 (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.5").get();
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
-            final DbProfileService dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
+            final var dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
-            final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+            final var dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             dbAuthenticator.validate(dbCredentials, MockWebContext.create(), new MockSessionStore());
             assertNotNull(dbCredentials.getUserProfile());
 
-            final DirectBasicAuthClient directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7").get();
+            final var directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7").get();
             assertNotNull(directBasicAuthClient);
-            final RestAuthenticator restAuthenticator = (RestAuthenticator) directBasicAuthClient.getAuthenticator();
+            final var restAuthenticator = (RestAuthenticator) directBasicAuthClient.getAuthenticator();
             assertEquals(PAC4J_BASE_URL, restAuthenticator.getUrl());
 
         } finally {

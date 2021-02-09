@@ -96,20 +96,20 @@ public class SAML2MessageContext {
     }
 
     public final SPSSODescriptor getSPSSODescriptor() {
-        final SAMLMetadataContext selfContext = getSAMLSelfMetadataContext();
-        final SPSSODescriptor spDescriptor = (SPSSODescriptor) selfContext.getRoleDescriptor();
+        final var selfContext = getSAMLSelfMetadataContext();
+        final var spDescriptor = (SPSSODescriptor) selfContext.getRoleDescriptor();
         return spDescriptor;
     }
 
     public final IDPSSODescriptor getIDPSSODescriptor() {
-        final SAMLMetadataContext peerContext = getSAMLPeerMetadataContext();
-        final IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
+        final var peerContext = getSAMLPeerMetadataContext();
+        final var idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
         return idpssoDescriptor;
     }
 
     public final SingleLogoutService getIDPSingleLogoutService(final String binding) {
-        final List<SingleLogoutService> services = getIDPSSODescriptor().getSingleLogoutServices();
-        for (final SingleLogoutService service : services) {
+        final var services = getIDPSSODescriptor().getSingleLogoutServices();
+        for (final var service : services) {
             if (service.getBinding().equals(binding)) {
                 return service;
             }
@@ -119,8 +119,8 @@ public class SAML2MessageContext {
     }
 
     public SingleSignOnService getIDPSingleSignOnService(final String binding) {
-        final List<SingleSignOnService> services = getIDPSSODescriptor().getSingleSignOnServices();
-        for (final SingleSignOnService service : services) {
+        final var services = getIDPSSODescriptor().getSingleSignOnServices();
+        for (final var service : services) {
             if (service.getBinding().equals(binding)) {
                 return service;
             }
@@ -130,17 +130,17 @@ public class SAML2MessageContext {
     }
 
     public AssertionConsumerService getSPAssertionConsumerService() {
-        final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
+        final var spssoDescriptor = getSPSSODescriptor();
         return getSPAssertionConsumerService(spssoDescriptor, spssoDescriptor.getAssertionConsumerServices());
     }
 
     public AssertionConsumerService getSPAssertionConsumerService(final StatusResponseType response) {
-        final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
-        final List<AssertionConsumerService> services = spssoDescriptor.getAssertionConsumerServices();
+        final var spssoDescriptor = getSPSSODescriptor();
+        final var services = spssoDescriptor.getAssertionConsumerServices();
 
         // Get by index
         if (response != null && StringUtils.isNotEmpty(response.getDestination())) {
-            for (final AssertionConsumerService service : services) {
+            for (final var service : services) {
                 if (response.getDestination().equals(service.getLocation())) {
                     return service;
                 }
@@ -153,12 +153,12 @@ public class SAML2MessageContext {
     }
 
     public AssertionConsumerService getSPAssertionConsumerService(final String acsIndex) {
-        final SPSSODescriptor spssoDescriptor = getSPSSODescriptor();
-        final List<AssertionConsumerService> services = spssoDescriptor.getAssertionConsumerServices();
+        final var spssoDescriptor = getSPSSODescriptor();
+        final var services = spssoDescriptor.getAssertionConsumerServices();
 
         // Get by index
         if (acsIndex != null) {
-            for (final AssertionConsumerService service : services) {
+            for (final var service : services) {
                 if (Integer.valueOf(acsIndex).equals(service.getIndex())) {
                     return service;
                 }

@@ -10,5 +10,6 @@ import java.util.function.Function;
  * @author Jerome LELEU
  * @since 4.0.0
  */
+@FunctionalInterface
 public interface HasBeenCancelledFactory extends Function<WebContext, Boolean> {
 }

@@ -1,7 +1,6 @@
 package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
@@ -28,21 +27,21 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
 
     @Override
     protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
-        OAuth10Credentials oAuth10Credentials = (OAuth10Credentials) credentials;
-        final OAuth1RequestToken tokenRequest = oAuth10Credentials.getRequestToken();
-        final String token = oAuth10Credentials.getToken();
-        final String verifier = oAuth10Credentials.getVerifier();
+        var oAuth10Credentials = (OAuth10Credentials) credentials;
+        final var tokenRequest = oAuth10Credentials.getRequestToken();
+        final var token = oAuth10Credentials.getToken();
+        final var verifier = oAuth10Credentials.getVerifier();
         logger.debug("tokenRequest: {}", tokenRequest);
         logger.debug("token: {}", token);
         logger.debug("verifier: {}", verifier);
         if (tokenRequest == null) {
-            final String message = "Token request expired";
+            final var message = "Token request expired";
             throw new OAuthCredentialsException(message);
         }
-        final String savedToken = tokenRequest.getToken();
+        final var savedToken = tokenRequest.getToken();
         logger.debug("savedToken: {}", savedToken);
         if (savedToken == null || !savedToken.equals(token)) {
-            final String message = "Token received: " + token + " is different from saved token: " + savedToken;
+            final var message = "Token received: " + token + " is different from saved token: " + savedToken;
             throw new OAuthCredentialsException(message);
         }
         final OAuth1AccessToken accessToken;

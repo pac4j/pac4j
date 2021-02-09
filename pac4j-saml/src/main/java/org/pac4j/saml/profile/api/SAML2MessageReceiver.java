@@ -8,6 +8,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@FunctionalInterface
 public interface SAML2MessageReceiver {
     Credentials receiveMessage(SAML2MessageContext context);
 }

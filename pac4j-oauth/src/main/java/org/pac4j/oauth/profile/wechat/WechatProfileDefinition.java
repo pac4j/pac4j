@@ -11,7 +11,6 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.model.WechatToken;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.exceptions.OAuthException;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -74,7 +73,7 @@ public class WechatProfileDefinition extends OAuthProfileDefinition {
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (accessToken instanceof WechatToken) {
-            WechatToken token = (WechatToken) accessToken;
+            var token = (WechatToken) accessToken;
             String profileUrl;
             if (WechatClient.WechatScope.SNSAPI_BASE.toString().equalsIgnoreCase(token.getScope())) {
                 profileUrl = "https://api.weixin.qq.com/sns/auth?openid=" + token.getOpenid();
@@ -89,16 +88,16 @@ public class WechatProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public WechatProfile extractUserProfile(String body) {
-        final WechatProfile profile = new WechatProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = new WechatProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            Integer errcode = (Integer) JsonHelper.getElement(json, "errcode");
+            var errcode = (Integer) JsonHelper.getElement(json, "errcode");
             if (errcode != null && errcode > 0) {
-                Object errmsg = JsonHelper.getElement(json, "errmsg");
+                var errmsg = JsonHelper.getElement(json, "errmsg");
                 throw new OAuthException(
                     errmsg != null ? errmsg.toString() : "error code " + errcode);
             }
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }

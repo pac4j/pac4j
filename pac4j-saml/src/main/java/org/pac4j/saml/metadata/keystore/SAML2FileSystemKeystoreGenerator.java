@@ -4,7 +4,6 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,12 +32,12 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
 
     private void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
-            final boolean res = file.delete();
+            final var res = file.delete();
             logger.debug("Deleted file [{}]:{}", file, res);
         }
-        try (PemWriter pemWriter = new PemWriter(
+        try (var pemWriter = new PemWriter(
             new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            final PemObject pemObject = new PemObject(file.getName(), certificate);
+            final var pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);
@@ -47,7 +46,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
 
     private void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
-            final boolean res = file.delete();
+            final var res = file.delete();
             logger.debug("Deleted file [{}]:{}", file, res);
         }
         try (OutputStream fos = new FileOutputStream(file)) {
@@ -61,7 +60,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
     @Override
     public boolean shouldGenerate() {
         validate();
-        final Resource keystoreFile = saml2Configuration.getKeystoreResource();
+        final var keystoreFile = saml2Configuration.getKeystoreResource();
         return keystoreFile != null && !keystoreFile.exists() || super.shouldGenerate();
     }
 
@@ -82,24 +81,24 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
                          final PrivateKey privateKey) throws Exception {
         validate();
 
-        final File keystoreFile = saml2Configuration.getKeystoreResource().getFile();
-        final File parentFile = keystoreFile.getParentFile();
+        final var keystoreFile = saml2Configuration.getKeystoreResource().getFile();
+        final var parentFile = keystoreFile.getParentFile();
         if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
             logger.warn("Could not construct the directory structure for keystore: {}", keystoreFile.getCanonicalPath());
         }
-        final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
+        final var password = saml2Configuration.getKeystorePassword().toCharArray();
         try (OutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {
             ks.store(fos, password);
             fos.flush();
         }
 
-        final File signingCertEncoded = getSigningBase64CertificatePath();
+        final var signingCertEncoded = getSigningBase64CertificatePath();
         writeEncodedCertificateToFile(signingCertEncoded, certificate.getEncoded());
 
-        final File signingCertBinary = getSigningBinaryCertificatePath();
+        final var signingCertBinary = getSigningBinaryCertificatePath();
         writeBinaryCertificateToFile(signingCertBinary, certificate.getEncoded());
 
-        final File signingKeyEncoded = getSigningKeyFile();
+        final var signingKeyEncoded = getSigningKeyFile();
         writeEncodedCertificateToFile(signingKeyEncoded, privateKey.getEncoded());
     }
 
@@ -107,7 +106,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
      * Sanitize String to use it as fileName for Signing Certificate Names
      */
     private String getNormalizedCertificateName() {
-        final StringBuilder certName = new StringBuilder(CERTIFICATES_PREFIX);
+        final var certName = new StringBuilder(CERTIFICATES_PREFIX);
         if (CommonHelper.isNotBlank(saml2Configuration.getCertificateNameToAppend())) {
             certName.append('-');
             certName.append(NORMALIZE_PATTERN.matcher(saml2Configuration.getCertificateNameToAppend())

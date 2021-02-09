@@ -45,7 +45,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsOkDifferentOrder() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
+        final var authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -53,7 +53,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsOkDifferentOrderTwoProfiles() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
+        final var authorizer = new RequireAllPermissionsAuthorizer(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         profiles.add(new CommonProfile());
@@ -62,7 +62,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsOkDifferentOrder2() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(Arrays.asList(PERMISSION3, PERMISSION1));
+        final var authorizer = new RequireAllPermissionsAuthorizer(Arrays.asList(PERMISSION3, PERMISSION1));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -70,7 +70,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsOkDifferentOrder3() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
+        final var authorizer = new RequireAllPermissionsAuthorizer();
         authorizer.setElements(PERMISSION3, PERMISSION1);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -79,7 +79,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsOkDifferentOrder4() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
+        final var authorizer = new RequireAllPermissionsAuthorizer();
         authorizer.setElements(new HashSet<>(Arrays.asList(PERMISSION3, PERMISSION1)));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -88,7 +88,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsOkDifferentOrder5() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
+        final var authorizer = new RequireAllPermissionsAuthorizer();
         authorizer.setElements(Arrays.asList(PERMISSION3, PERMISSION1));
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -97,7 +97,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsNull() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer((List<String>) null);
+        final var authorizer = new RequireAllPermissionsAuthorizer((List<String>) null);
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -105,7 +105,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsEmpty() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(new String[]{});
+        final var authorizer = new RequireAllPermissionsAuthorizer(new String[]{});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -113,7 +113,7 @@ public final class RequireAllPermissionsAuthorizerTests {
 
     @Test
     public void testHasAllPermissionsTwoPermissionsFail() {
-        final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer(new String[]{PERMISSION3, PERMISSION1});
+        final var authorizer = new RequireAllPermissionsAuthorizer(new String[]{PERMISSION3, PERMISSION1});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION2);
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));

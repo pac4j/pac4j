@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.junit.Test;
 
@@ -15,7 +14,7 @@ public class VelocityEngineFactoryTest {
 
     @Test
     public void defaultProperties()  {
-        final VelocityEngine engine = VelocityEngineFactory.getEngine();
+        final var engine = VelocityEngineFactory.getEngine();
         assertNotNull(engine);
         assertEquals("org.apache.velocity.runtime.resource.loader.StringResourceLoader",
             engine.getProperty("resource.loader.string.class"));

@@ -1,7 +1,5 @@
 package org.pac4j.oauth.profile.wordpress;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import com.github.scribejava.core.model.Token;
@@ -42,16 +40,16 @@ public class WordPressProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public WordPressProfile extractUserProfile(final String body) {
-        final WordPressProfile profile = (WordPressProfile) newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (WordPressProfile) newProfile();
+        var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "ID")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             json = json.get("meta");
             if (json != null) {
-                final String attribute = WordPressProfileDefinition.LINKS;
+                final var attribute = WordPressProfileDefinition.LINKS;
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

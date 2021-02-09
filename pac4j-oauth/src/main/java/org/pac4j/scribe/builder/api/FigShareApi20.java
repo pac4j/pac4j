@@ -24,7 +24,7 @@ public class FigShareApi20 extends DefaultApi20 {
 
         @Override
         protected OAuthRequest createAccessTokenRequest(AccessTokenRequestParams params) {
-            final OAuthRequest request = super.createAccessTokenRequest(params);
+            final var request = super.createAccessTokenRequest(params);
             request.addParameter(OAuthConstants.CLIENT_ID, getApiKey());
             request.addParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
             return request;

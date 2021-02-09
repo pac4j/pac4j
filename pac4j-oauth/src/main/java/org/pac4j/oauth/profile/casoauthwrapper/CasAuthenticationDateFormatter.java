@@ -16,10 +16,10 @@ public class CasAuthenticationDateFormatter extends DateConverter {
 
     @Override
     public Object convert(final Object attribute) {
-        Object a = attribute;
+        var a = attribute;
         if (a instanceof String) {
-            String s = (String) a;
-            int pos = s.lastIndexOf("[");
+            var s = (String) a;
+            var pos = s.lastIndexOf("[");
             if (pos > 0) {
                 s = s.substring(0, pos);
                 pos = s.lastIndexOf(":");

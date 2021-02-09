@@ -26,47 +26,47 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null);
+        final var basicAuthClient = new DirectBasicAuthClient(null);
         TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
+        final var basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
             MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final var basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        final MockWebContext context = MockWebContext.create();
-        final String header = USERNAME + ":" + USERNAME;
+        final var client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final var context = MockWebContext.create();
+        final var header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final UsernamePasswordCredentials credentials =
+        final var credentials =
             (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
     }
 
     @Test
     public void testAuthenticationLowercase() {
-        final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        final MockWebContext context = MockWebContext.create();
-        final String header = USERNAME + ":" + USERNAME;
+        final var client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final var context = MockWebContext.create();
+        final var header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER.toLowerCase(),
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final UsernamePasswordCredentials credentials =
+        final var credentials =
             (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
     }
 }

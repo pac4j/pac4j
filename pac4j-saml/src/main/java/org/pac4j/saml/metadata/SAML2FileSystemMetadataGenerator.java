@@ -7,12 +7,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -45,22 +42,22 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
             logger.info("Metadata file already exists at {}.", metadataResource.getFile());
         } else {
             logger.info("Writing metadata to {}", metadataResource.getFilename());
-            final File parent = metadataResource.getFile().getParentFile();
+            final var parent = metadataResource.getFile().getParentFile();
             if (parent != null) {
                 logger.debug("Attempting to create directory structure for: {}", parent.getCanonicalPath());
                 if (!parent.exists() && !parent.mkdirs()) {
                     logger.warn("Could not construct the directory structure for metadata: {}", parent.getCanonicalPath());
                 }
             }
-            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            final var transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            final StreamResult result = new StreamResult(new StringWriter());
-            final StreamSource source = new StreamSource(new StringReader(metadata));
+            final var result = new StreamResult(new StringWriter());
+            final var source = new StreamSource(new StringReader(metadata));
             transformer.transform(source, result);
 
-            final WritableResource destination = WritableResource.class.cast(metadataResource);
-            try (OutputStream spMetadataOutputStream = destination.getOutputStream()) {
+            final var destination = WritableResource.class.cast(metadataResource);
+            try (var spMetadataOutputStream = destination.getOutputStream()) {
                 spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
             }
             if (destination.exists()) {

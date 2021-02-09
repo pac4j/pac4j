@@ -32,7 +32,7 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner{
 
     @Override
     public void sign(final EntityDescriptor descriptor) {
-        final SignatureSigningParameters signingParameters = new SignatureSigningParameters();
+        final var signingParameters = new SignatureSigningParameters();
         signingParameters.setKeyInfoGenerator(credentialProvider.getKeyInfoGenerator());
         signingParameters.setSigningCredential(credentialProvider.getCredential());
         signingParameters.setSignatureAlgorithm(signatureAlgorithm);

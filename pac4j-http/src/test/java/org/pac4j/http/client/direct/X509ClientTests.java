@@ -48,15 +48,15 @@ public final class X509ClientTests implements TestsConstants {
 
     @Test
     public void testOk() throws CertificateException {
-        final MockWebContext context = MockWebContext.create();
-        final byte[] certificateData = Base64.getDecoder().decode(CERTIFICATE);
-        final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X.509")
+        final var context = MockWebContext.create();
+        final var certificateData = Base64.getDecoder().decode(CERTIFICATE);
+        final var cert = (X509Certificate) CertificateFactory.getInstance("X.509")
             .generateCertificate(new ByteArrayInputStream(certificateData));
-        final X509Certificate[]certs = new X509Certificate[1];
+        final var certs = new X509Certificate[1];
         certs[0] = cert;
         context.setRequestAttribute(X509CredentialsExtractor.CERTIFICATE_REQUEST_ATTRIBUTE, certs);
-        final X509Credentials credentials = (X509Credentials) client.getCredentials(context, new MockSessionStore()).get();
-        final X509Profile profile = (X509Profile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var credentials = (X509Credentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var profile = (X509Profile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals("jerome", profile.getId());
     }
 }

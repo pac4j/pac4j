@@ -19,9 +19,9 @@ public class CasProfileDefinition extends CommonProfileDefinition {
 
     @Override
     public UserProfile newProfile(final Object... parameters) {
-        final CasProxyReceptor proxyReceptor = (CasProxyReceptor) getParameter(parameters, 1);
+        final var proxyReceptor = (CasProxyReceptor) getParameter(parameters, 1);
         if (proxyReceptor != null) {
-            final CasProxyProfile profile = new CasProxyProfile();
+            final var profile = new CasProxyProfile();
             profile.setPrincipal((AttributePrincipal) getParameter(parameters, 2));
             return profile;
         } else {

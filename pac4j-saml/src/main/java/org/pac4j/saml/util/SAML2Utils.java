@@ -63,9 +63,9 @@ public final class SAML2Utils implements HttpConstants {
         }
 
         try {
-            final URI normalizedUri1 = normalizePortNumbersInUri(uri1);
-            final URI normalizedUri2 = normalizePortNumbersInUri(uri2);
-            final boolean eq = normalizedUri1.equals(normalizedUri2);
+            final var normalizedUri1 = normalizePortNumbersInUri(uri1);
+            final var normalizedUri2 = normalizePortNumbersInUri(uri2);
+            final var eq = normalizedUri1.equals(normalizedUri2);
             return eq;
         } catch (final URISyntaxException use) {
             logger.error("Cannot compare 2 URIs.", use);
@@ -85,8 +85,8 @@ public final class SAML2Utils implements HttpConstants {
      *             If a URI cannot be created because of wrong syntax.
      */
     private static URI normalizePortNumbersInUri(final URI uri) throws URISyntaxException {
-        int port = uri.getPort();
-        final String scheme = uri.getScheme();
+        var port = uri.getPort();
+        final var scheme = uri.getScheme();
 
         if (SCHEME_HTTP.equals(scheme) && port == DEFAULT_HTTP_PORT) {
             port = -1;
@@ -95,13 +95,13 @@ public final class SAML2Utils implements HttpConstants {
             port = -1;
         }
 
-        final URI result = new URI(scheme, uri.getUserInfo(), uri.getHost(), port, uri.getPath(), uri.getQuery(), uri.getFragment());
+        final var result = new URI(scheme, uri.getUserInfo(), uri.getHost(), port, uri.getPath(), uri.getQuery(), uri.getFragment());
         return result;
     }
 
     public static ChainingMetadataResolver buildChainingMetadataResolver(final SAML2MetadataResolver idpMetadataProvider,
                                                                          final SAML2MetadataResolver spMetadataProvider) {
-        final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
+        final var metadataManager = new ChainingMetadataResolver();
         metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
         try {
             final List<MetadataResolver> list = new ArrayList<>();

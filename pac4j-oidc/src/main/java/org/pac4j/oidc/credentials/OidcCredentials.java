@@ -61,7 +61,7 @@ public class OidcCredentials extends Credentials {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final OidcCredentials that = (OidcCredentials) o;
+        final var that = (OidcCredentials) o;
         return !(code != null ? !code.equals(that.code) : that.code != null);
     }
 

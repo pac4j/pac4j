@@ -3,7 +3,6 @@ package org.pac4j.core.authorization.generator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +48,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfigWithCollections() {
-        final FromAttributesAuthorizationGenerator generator =
+        final var generator =
                 new FromAttributesAuthorizationGenerator(new ArrayList<>(), new HashSet<>());
         generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
@@ -58,7 +57,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfig() {
-        final FromAttributesAuthorizationGenerator generator =
+        final var generator =
                 new FromAttributesAuthorizationGenerator(null, (String[]) null);
         generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
@@ -67,20 +66,20 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testRolePermission() {
-        final String[] roleAttributes = new String[] {
+        final var roleAttributes = new String[] {
             ATTRIB1
         };
-        final String[] permissionAttributes = new String[] {
+        final var permissionAttributes = new String[] {
             ATTRIB2
         };
-        final FromAttributesAuthorizationGenerator generator =
+        final var generator =
             new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
         generator.generate(null, null, this.profile);
-        final Set<String> roles = this.profile.getRoles();
+        final var roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
         assertTrue(roles.contains("info12"));
-        final Set<String> permissions = this.profile.getPermissions();
+        final var permissions = this.profile.getPermissions();
         assertEquals(2, permissions.size());
         assertTrue(permissions.contains("info21"));
         assertTrue(permissions.contains("info22"));
@@ -88,17 +87,17 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoRolePermission() {
-        final String[] roleAttributes = new String[] {
+        final var roleAttributes = new String[] {
             ATTRIB5
         };
-        final String[] permissionAttributes = new String[] {
+        final var permissionAttributes = new String[] {
             ATTRIB2
         };
-        final FromAttributesAuthorizationGenerator generator =
+        final var generator =
             new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
         generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
-        final Set<String> permissions = this.profile.getPermissions();
+        final var permissions = this.profile.getPermissions();
         assertEquals(2, permissions.size());
         assertTrue(permissions.contains("info21"));
         assertTrue(permissions.contains("info22"));
@@ -106,16 +105,16 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testRoleNoPermission() {
-        final String[] roleAttributes = new String[] {
+        final var roleAttributes = new String[] {
             ATTRIB1
         };
-        final String[] permissionAttributes = new String[] {
+        final var permissionAttributes = new String[] {
             ATTRIB5
         };
-        final FromAttributesAuthorizationGenerator generator =
+        final var generator =
             new FromAttributesAuthorizationGenerator(roleAttributes,permissionAttributes);
         generator.generate(null, null, this.profile);
-        final Set<String> roles = this.profile.getRoles();
+        final var roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
         assertTrue(roles.contains("info12"));
@@ -124,52 +123,52 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testRolePermissionChangeSplit() {
-        final String[] roleAttributes = new String[] {
+        final var roleAttributes = new String[] {
             ATTRIB1
         };
-        final String[] permissionAttributes = new String[] {
+        final var permissionAttributes = new String[] {
             ATTRIB2
         };
-        final FromAttributesAuthorizationGenerator generator =
+        final var generator =
             new FromAttributesAuthorizationGenerator(roleAttributes, permissionAttributes);
         generator.setSplitChar("|");
         generator.generate(null, null, this.profile);
-        final Set<String> roles = this.profile.getRoles();
+        final var roles = this.profile.getRoles();
         assertEquals(1, roles.size());
         assertTrue(roles.contains(VALUE1));
-        final Set<String> permissions = this.profile.getPermissions();
+        final var permissions = this.profile.getPermissions();
         assertEquals(1, permissions.size());
         assertTrue(permissions.contains(VALUE2));
     }
 
     @Test
     public void testListRolesPermissions() {
-        final String[] roleAttributes = new String[] {
+        final var roleAttributes = new String[] {
                 ATTRIB3, ATTRIB4
         };
-        final String[] permissionAttributes = new String[] {
+        final var permissionAttributes = new String[] {
                 ATTRIB3, ATTRIB4
         };
 
-        final FromAttributesAuthorizationGenerator generator = new FromAttributesAuthorizationGenerator(
+        final var generator = new FromAttributesAuthorizationGenerator(
                 roleAttributes,
                 permissionAttributes);
 
         generator.generate(null, null, this.profile);
-        final Set<String> roles = this.profile.getRoles();
+        final var roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
-        for(String value : ATTRIB_ARRAY) {
+        for(var value : ATTRIB_ARRAY) {
             assertTrue(roles.contains(value));
         }
-        for(String value : ATTRIB_LIST) {
+        for(var value : ATTRIB_LIST) {
             assertTrue(roles.contains(value));
         }
-        final Set<String> permissions = this.profile.getPermissions();
+        final var permissions = this.profile.getPermissions();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
-        for(String value : ATTRIB_ARRAY) {
+        for(var value : ATTRIB_ARRAY) {
             assertTrue(permissions.contains(value));
         }
-        for(String value : ATTRIB_LIST) {
+        for(var value : ATTRIB_LIST) {
             assertTrue(permissions.contains(value));
         }
     }

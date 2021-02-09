@@ -25,16 +25,16 @@ public final class DefaultCsrfTokenGeneratorTests {
     public void test() {
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        final String token = generator.get(context, sessionStore);
+        final var token = generator.get(context, sessionStore);
         assertNotNull(token);
-        final String token2 = (String) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN).orElse(null);
+        final var token2 = (String) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN).orElse(null);
         assertEquals(token, token2);
         final long expirationDate = (Long) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE).orElse(null);
-        final long nowPlusTtl = new Date().getTime() + 1000 * generator.getTtlInSeconds();
+        final var nowPlusTtl = new Date().getTime() + 1000 * generator.getTtlInSeconds();
         assertTrue(expirationDate > nowPlusTtl - 1000);
         assertTrue(expirationDate < nowPlusTtl + 1000);
         generator.get(context, sessionStore);
-        final String token3 = (String) sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).orElse(null);
+        final var token3 = (String) sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).orElse(null);
         assertEquals(token, token3);
     }
 }

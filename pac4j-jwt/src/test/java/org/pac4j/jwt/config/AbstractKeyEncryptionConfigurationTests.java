@@ -17,9 +17,9 @@ import java.security.NoSuchAlgorithmException;
 public abstract class AbstractKeyEncryptionConfigurationTests implements TestsConstants {
 
     protected KeyPair buildKeyPair() {
-        final String algorithm = getAlgorithm();
+        final var algorithm = getAlgorithm();
         try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(algorithm);
+            final var keyGen = KeyPairGenerator.getInstance(algorithm);
             if (CommonHelper.areEquals(algorithm, "RSA")) {
                 keyGen.initialize(2048);
             }

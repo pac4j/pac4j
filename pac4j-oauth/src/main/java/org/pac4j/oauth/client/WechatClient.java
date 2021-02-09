@@ -64,7 +64,7 @@ public class WechatClient extends OAuth20Client {
             scopes.add(WechatScope.SNSAPI_BASE);
         }
         if (scopes != null) {
-            for (WechatScope value : scopes) {
+            for (var value : scopes) {
                 if (builder == null) {
                     builder = new StringBuilder();
                 } else {

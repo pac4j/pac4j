@@ -31,15 +31,15 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
     @Override
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         super.retrieveUserProfileFromToken(context, accessToken);
-        final LinkedIn2ProfileDefinition profileDefinition = (LinkedIn2ProfileDefinition) configuration.getProfileDefinition();
-        final LinkedIn2Configuration linkedin2Configuration = (LinkedIn2Configuration) configuration;
-        final String profileUrl = profileDefinition.getProfileUrl(accessToken, linkedin2Configuration);
-        final OAuth20Service service = (OAuth20Service) configuration.buildService(context, client);
-        String body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
+        final var profileDefinition = (LinkedIn2ProfileDefinition) configuration.getProfileDefinition();
+        final var linkedin2Configuration = (LinkedIn2Configuration) configuration;
+        final var profileUrl = profileDefinition.getProfileUrl(accessToken, linkedin2Configuration);
+        final var service = (OAuth20Service) configuration.buildService(context, client);
+        var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
-        final LinkedIn2Profile profile = profileDefinition.extractUserProfile(body);
+        final var profile = profileDefinition.extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
 
         if (profile == null || !linkedin2Configuration.getScope().contains("r_emailaddress")) {
@@ -52,7 +52,7 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
         }
 
         try {
-            final LinkedIn2ProfileEmails profileEmails = JsonHelper.getMapper().readValue(body, LinkedIn2ProfileEmails.class);
+            final var profileEmails = JsonHelper.getMapper().readValue(body, LinkedIn2ProfileEmails.class);
             profile.addAttribute(LinkedIn2ProfileDefinition.PROFILE_EMAILS, profileEmails);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

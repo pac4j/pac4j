@@ -23,9 +23,9 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
             if (clazz.isAssignableFrom(attribute.getClass())) {
                 t = attribute;
             } else if (attribute instanceof List) {
-                final List l = (List) attribute;
+                final var l = (List) attribute;
                 if (l.size() > 0) {
-                    final Object element = l.get(0);
+                    final var element = l.get(0);
                     if (clazz.isAssignableFrom(element.getClass())) {
                         t = element;
                     }

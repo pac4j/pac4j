@@ -70,13 +70,13 @@ public class DirectCasClient extends DirectClient {
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         init();
         try {
-            String callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
-            final String loginUrl = configuration.computeFinalLoginUrl(context);
+            var callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
+            final var loginUrl = configuration.computeFinalLoginUrl(context);
 
-            final Optional<Credentials> credentials = getCredentialsExtractor().extract(context, sessionStore);
+            final var credentials = getCredentialsExtractor().extract(context, sessionStore);
             if (!credentials.isPresent()) {
                 // redirect to the login page
-                final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
+                final var redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                         callbackUrl, configuration.isRenew(), false, null);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
                 throw HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl);
@@ -85,7 +85,7 @@ public class DirectCasClient extends DirectClient {
             // clean url from ticket parameter
             callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            final CasAuthenticator casAuthenticator =
+            final var casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
             casAuthenticator.validate(credentials.get(), context, sessionStore);

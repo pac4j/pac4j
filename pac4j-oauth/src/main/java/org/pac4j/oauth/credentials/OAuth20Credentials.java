@@ -35,7 +35,7 @@ public class OAuth20Credentials extends Credentials {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OAuth20Credentials that = (OAuth20Credentials) o;
+        var that = (OAuth20Credentials) o;
 
         return code != null ? code.equals(that.code) : that.code == null;
 

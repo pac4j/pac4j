@@ -22,7 +22,7 @@ public final class IpRegexpAuthorizerTests {
 
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
-        final IpRegexpAuthorizer authorizer = new IpRegexpAuthorizer();
+        final var authorizer = new IpRegexpAuthorizer();
         authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), null);
     }
 

@@ -8,6 +8,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@FunctionalInterface
 public interface UrlResolver {
 
     /**

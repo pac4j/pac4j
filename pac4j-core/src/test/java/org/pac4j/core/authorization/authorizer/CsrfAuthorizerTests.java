@@ -63,7 +63,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     @Test
     public void testParameterExpiredDate() {
-        final long expiredDate = new Date().getTime() - 1000;
+        final var expiredDate = new Date().getTime() - 1000;
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE);
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
@@ -111,7 +111,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     @Test
     public void testNoTokenCheckAll() {
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
@@ -128,7 +128,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     }
 
     private void internalTestNoTokenRequest(final HttpConstants.HTTP_METHOD method) {
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);

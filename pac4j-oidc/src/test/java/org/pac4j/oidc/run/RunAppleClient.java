@@ -1,6 +1,5 @@
 package org.pac4j.oidc.run;
 
-import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
@@ -49,10 +48,10 @@ public class RunAppleClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final AppleOidcConfiguration configuration = new AppleOidcConfiguration();
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("apple.pem")).getFile());
-        ECPrivateKey privateKey = readPrivateKey(file);
+        final var configuration = new AppleOidcConfiguration();
+        var classLoader = getClass().getClassLoader();
+        var file = new File(Objects.requireNonNull(classLoader.getResource("apple.pem")).getFile());
+        var privateKey = readPrivateKey(file);
         assert privateKey != null;
         configuration.setClientId("org.pac4j.test");
         configuration.setTeamID("67D9XQG2LJ");
@@ -62,7 +61,7 @@ public class RunAppleClient extends RunClient {
         configuration.setResponseMode("form_post");
         configuration.setScope("openid name email");
         configuration.setUseNonce(true); // Required in the implicit and hybrid flows
-        final AppleClient client = new AppleClient(configuration);
+        final var client = new AppleClient(configuration);
         // MUST begin with https://
         client.setCallbackUrl(CommonHelper.addParameter("https://www.pac4j.org/test.html",
             DEFAULT_CLIENT_NAME_PARAMETER, client.getName()));
@@ -72,8 +71,8 @@ public class RunAppleClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final AppleProfile profile = (AppleProfile) userProfile;
-        final String id = profile.getId();
+        final var profile = (AppleProfile) userProfile;
+        final var id = profile.getId();
         assertNotNull(id);
         assertEquals(AppleProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + id,
             profile.getTypedId());
@@ -99,11 +98,11 @@ public class RunAppleClient extends RunClient {
             throw new TechnicalException(e);
         }
 
-        try (FileReader keyReader = new FileReader(file, StandardCharsets.UTF_8);
-             PemReader pemReader = new PemReader(keyReader)) {
-            PemObject pemObject = pemReader.readPemObject();
-            byte[] content = pemObject.getContent();
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(content);
+        try (var keyReader = new FileReader(file, StandardCharsets.UTF_8);
+             var pemReader = new PemReader(keyReader)) {
+            var pemObject = pemReader.readPemObject();
+            var content = pemObject.getContent();
+            var keySpec = new PKCS8EncodedKeySpec(content);
             return (ECPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (InvalidKeySpecException | IOException e) {
             throw new TechnicalException(e);

@@ -5,16 +5,13 @@ import net.shibboleth.utilities.java.support.xml.ParserPool;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-import org.opensaml.core.xml.io.Marshaller;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -51,13 +48,13 @@ public final class Configuration {
     }
 
     private static int compareManagers(final Object obj1, final Object obj2) {
-        int p1 = 100;
-        int p2 = 100;
-        final Priority p1a = obj1.getClass().getAnnotation(Priority.class);
+        var p1 = 100;
+        var p2 = 100;
+        final var p1a = obj1.getClass().getAnnotation(Priority.class);
         if (p1a != null) {
             p1 = p1a.value();
         }
-        final Priority p2a = obj2.getClass().getAnnotation(Priority.class);
+        final var p2a = obj2.getClass().getAnnotation(Priority.class);
         if (p2a != null) {
             p2 = p2a.value();
         }
@@ -71,7 +68,7 @@ public final class Configuration {
     }
 
     private static void bootstrap() {
-        final ServiceLoader<ConfigurationManager> configurationManagers = ServiceLoader.load(ConfigurationManager.class);
+        final var configurationManagers = ServiceLoader.load(ConfigurationManager.class);
         final List<ConfigurationManager> configurationManagerList = new ArrayList<>();
         configurationManagers.forEach(configurationManagerList::add);
         if (!configurationManagerList.isEmpty()) {
@@ -98,16 +95,16 @@ public final class Configuration {
     }
 
     public static StringWriter serializeSamlObject(final XMLObject samlObject) {
-        final StringWriter writer = new StringWriter();
+        final var writer = new StringWriter();
         try {
-            final Marshaller marshaller = getMarshallerFactory().getMarshaller(samlObject.getElementQName());
+            final var marshaller = getMarshallerFactory().getMarshaller(samlObject.getElementQName());
             if (marshaller != null) {
-                final Element element = marshaller.marshall(samlObject);
-                final DOMSource domSource = new DOMSource(element);
+                final var element = marshaller.marshall(samlObject);
+                final var domSource = new DOMSource(element);
 
-                final StreamResult result = new StreamResult(writer);
-                final TransformerFactory tf = TransformerFactory.newInstance();
-                final Transformer transformer = tf.newTransformer();
+                final var result = new StreamResult(writer);
+                final var tf = TransformerFactory.newInstance();
+                final var transformer = tf.newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
                 transformer.transform(domSource, result);
@@ -119,7 +116,7 @@ public final class Configuration {
     }
 
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
-        try ( StringReader reader = new StringReader(obj)) {
+        try (var reader = new StringReader(obj)) {
             return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
         } catch (final Exception e) {
             logger.error("Error unmarshalling message from input stream", e);

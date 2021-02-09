@@ -20,7 +20,7 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
  * @since 4.0.0
  */
 public class Pac4jHTTPPostDecoderTest {
-    
+
     private static final String  SAML_RESPONSE = "PHNhbWxwOlJlc3BvbnNlIHhtbG5zOnNhbWxwPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6"
             + "%0D%0AcHJvdG9jb2wiIElEPSJzMjc0ZmUwOWVkMTRkOTYwZjk4MzkwODgwOTIyOTU4NzRiOTJmZmQ1Yjgi%0D%0AIEluUmVzcG9uc2VUbz0iX3Rq"
             + "OTN6bnE2ZWc5d2c2Y29nb3hhcWplOHJucGI5bWlnd2pmeXRweiIg%0D%0AVmVyc2lvbj0iMi4wIiBJc3N1ZUluc3RhbnQ9IjIwMTktMTItMDRUMDA"
@@ -91,51 +91,51 @@ public class Pac4jHTTPPostDecoderTest {
             + "95Y2U8L3NhbWw6QXR0cmlidXRlVmFs%0D%0AdWU%2BPC9zYW1sOkF0dHJpYnV0ZT48L3NhbWw6QXR0cmlidXRlU3RhdGVtZW50Pjwvc2FtbDpBc3Nl"
             + "%0D%0AcnRpb24%2BPC9zYW1scDpSZXNwb25zZT4%3D";
 
-    
+
     @Test
     public void testDecodeBody() throws Exception {
-        final MockWebContext webContext = MockWebContext.create();
+        final var webContext = MockWebContext.create();
 
         webContext.setRequestMethod("POST");
-        final Pac4jHTTPPostDecoder decoder =
+        final var decoder =
             new Pac4jHTTPPostDecoder(webContext);
-        final String message = "SAMLResponse=" + SAML_RESPONSE
+        final var message = "SAMLResponse=" + SAML_RESPONSE
                 + "&RelayState=https%3A%2F%2Flocalhost%3A8443%2Fanzo_authenticate%3Fclient_name%3DGSAML";
 
         webContext.setRequestContent(message);
 
         decode(decoder);
     }
-    
+
     @Test
     public void testDecodeBodyNotAsQueryString() throws Exception {
-        final MockWebContext webContext = MockWebContext.create();
+        final var webContext = MockWebContext.create();
 
         webContext.setRequestMethod("POST");
-        final Pac4jHTTPPostDecoder decoder =
+        final var decoder =
             new Pac4jHTTPPostDecoder(webContext);
-        final String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
-        
+        final var message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
+
         webContext.setRequestContent(message);
 
         decode(decoder);
     }
-    
+
     @Test
     public void testDecodeParam() throws Exception {
-        final MockWebContext webContext = MockWebContext.create();
+        final var webContext = MockWebContext.create();
 
         webContext.setRequestMethod("POST");
-        final Pac4jHTTPPostDecoder decoder =
+        final var decoder =
             new Pac4jHTTPPostDecoder(webContext);
-        final String message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
+        final var message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
         webContext.addRequestParameter("SAMLResponse", message);
         decode(decoder);
     }
 
     private void decode(final Pac4jHTTPPostDecoder decoder)
             throws ComponentInitializationException, MessageDecodingException {
-        
+
         decoder.setParserPool(Configuration.getParserPool());
         decoder.initialize();
         decoder.decode();

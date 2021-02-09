@@ -6,6 +6,7 @@ package org.pac4j.core.exception.http;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@FunctionalInterface
 public interface WithContentAction {
 
     String getContent();

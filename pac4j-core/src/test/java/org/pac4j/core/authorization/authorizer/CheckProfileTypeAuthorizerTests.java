@@ -32,7 +32,7 @@ public final class CheckProfileTypeAuthorizerTests {
 
     @Test
     public void testGoodProfile() {
-        final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
+        final var authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile1());
         assertTrue(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
@@ -40,7 +40,7 @@ public final class CheckProfileTypeAuthorizerTests {
 
     @Test
     public void testBadProfileType() {
-        final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
+        final var authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile2());
         assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));

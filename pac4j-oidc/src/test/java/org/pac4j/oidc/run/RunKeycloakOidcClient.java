@@ -51,13 +51,13 @@ public class RunKeycloakOidcClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final KeycloakOidcConfiguration configuration = new KeycloakOidcConfiguration();
+        final var configuration = new KeycloakOidcConfiguration();
 
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret(SECRET_VALUE);
         configuration.setBaseUri(AUTH_URL);
         configuration.setRealm(REALM_VALUE);
-        KeycloakOidcClient client = new KeycloakOidcClient(configuration);
+        var client = new KeycloakOidcClient(configuration);
         client.setCallbackUrl(CALLBACK_VALUE);
 
         return client;
@@ -65,7 +65,7 @@ public class RunKeycloakOidcClient extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final OidcProfile profile = (OidcProfile) userProfile;
+        final var profile = (OidcProfile) userProfile;
         assertEquals(IDENTIFIER, profile.getId());
         assertNotNull(profile.getIdToken());
         assertNotNull(profile.getNotBefore());

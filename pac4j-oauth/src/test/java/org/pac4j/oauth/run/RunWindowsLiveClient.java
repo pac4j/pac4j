@@ -38,7 +38,7 @@ public final class RunWindowsLiveClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final WindowsLiveClient liveClient = new WindowsLiveClient();
+        final var liveClient = new WindowsLiveClient();
         liveClient.setKey("00000000400BFE75");
         liveClient.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");
         liveClient.setCallbackUrl(PAC4J_URL);
@@ -47,7 +47,7 @@ public final class RunWindowsLiveClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
+        final var profile = (WindowsLiveProfile) userProfile;
         assertEquals("416c383b220392d8", profile.getId());
         assertEquals(WindowsLiveProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "416c383b220392d8",
                 profile.getTypedId());

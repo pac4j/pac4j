@@ -85,6 +85,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @param id user identifier
      */
+    @Override
     public void setId(final String id) {
         CommonHelper.assertNotBlank("id", id);
         this.id = id;
@@ -106,6 +107,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @return the typed user identifier
      */
+    @Override
     public String getTypedId() {
         return this.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR + this.id;
     }
@@ -119,7 +121,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
-            Object valueForMap = getValueForMap(map, key, value);
+            var valueForMap = getValueForMap(map, key, value);
             map.put(key, valueForMap);
         }
     }
@@ -130,8 +132,8 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         // https://github.com/pac4j/pac4j/issues/1145
         if (canMergeAttributes(map, key, preparedValue))
         {
-            Collection existingCollection = (Collection) map.get(key);
-            Collection newCollection = (Collection) preparedValue;
+            var existingCollection = (Collection) map.get(key);
+            var newCollection = (Collection) preparedValue;
             return mergeCollectionAttributes(existingCollection, newCollection);
         } else
         {
@@ -157,6 +159,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key key of the attribute
      * @param value value of the attribute
      */
+    @Override
     public void addAttribute(final String key, final Object value) {
         addAttributeToMap(this.attributes, key, value);
     }
@@ -167,6 +170,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param key the attribute key
      * @param value the attribute value
      */
+    @Override
     public void addAuthenticationAttribute(final String key, final Object value) {
         addAttributeToMap(this.authenticationAttributes, key, value);
     }
@@ -179,7 +183,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public void addAttributes(final Map<String, Object> attributes) {
         if (attributes != null) {
-            for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+            for (final var entry : attributes.entrySet()) {
                 addAttribute(entry.getKey(), entry.getValue());
             }
         }
@@ -192,7 +196,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public void addAuthenticationAttributes(final Map<String, Object> attributeMap) {
         if (attributeMap != null) {
-            for (final Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+            for (final var entry : attributeMap.entrySet()) {
                 addAuthenticationAttribute(entry.getKey(), entry.getValue());
             }
         }
@@ -222,6 +226,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      *
      * @return the immutable attributes
      */
+    @Override
     public Map<String, Object> getAttributes() {
         return getAttributeMap(this.attributes);
     }
@@ -237,9 +242,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
 
     private static Map<String, Object> getAttributeMap(final Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
-        for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
-            final String key = entries.getKey();
-            final Object value = attributeMap.get(key);
+        for (var entries : attributeMap.entrySet()) {
+            final var key = entries.getKey();
+            final var value = attributeMap.get(key);
             newAttributes.put(key, value);
         }
         return newAttributes;
@@ -263,7 +268,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @return the attribute values as List of strings.
      */
     public List<String> extractAttributeValues(final String name) {
-        final Object value = getAttribute(name);
+        final var value = getAttribute(name);
         if (value instanceof String) {
             return Collections.singletonList((String) value);
         } else if (value instanceof String[]) {
@@ -318,7 +323,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @since 1.8
      */
     public <T> T getAttribute(final String name, final Class<T> clazz) {
-        final Object attribute = getAttribute(name);
+        final var attribute = getAttribute(name);
         return getAttributeByType(name, clazz, attribute);
     }
 
@@ -332,7 +337,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public <T> T getAuthenticationAttribute(final String name, final Class<T> clazz)
     {
-        final Object attribute = getAuthenticationAttribute(name);
+        final var attribute = getAuthenticationAttribute(name);
         return getAttributeByType(name, clazz, attribute);
     }
 

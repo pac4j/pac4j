@@ -29,7 +29,7 @@ public final class GenderConverter extends AbstractAttributeConverter {
 
     @Override
     protected Gender internalConvert(final Object attribute) {
-        final String s = attribute.toString().toLowerCase();
+        final var s = attribute.toString().toLowerCase();
         if (maleText.matcher(s).matches()) {
             return Gender.MALE;
         } else if (femaleText.matcher(s).matches()) {

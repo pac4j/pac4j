@@ -8,7 +8,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WordPressClient;
-import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 
 import static org.junit.Assert.*;
@@ -37,7 +36,7 @@ public final class RunWordPressClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final WordPressClient wordPressClient = new WordPressClient();
+        final var wordPressClient = new WordPressClient();
         wordPressClient.setKey("209");
         wordPressClient.setSecret("xJBXMRVvKrvHqyvM6BpzkenJVMIdQrIWKjPJsezjGYu71y7sDgt8ibz6s9IFLqU8");
         wordPressClient.setCallbackUrl(PAC4J_URL);
@@ -46,7 +45,7 @@ public final class RunWordPressClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final WordPressProfile profile = (WordPressProfile) userProfile;
+        final var profile = (WordPressProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("35944437", profile.getId());
         assertEquals(WordPressProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "35944437", profile.getTypedId());
@@ -57,7 +56,7 @@ public final class RunWordPressClient extends RunClient {
                 "https://0.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",
                 "http://en.gravatar.com/testscribeup", null);
         assertEquals(36224958, profile.getPrimaryBlog().intValue());
-        final WordPressLinks links = profile.getLinks();
+        final var links = profile.getLinks();
         assertEquals("https://public-api.wordpress.com/rest/v1/me", links.getSelf());
         assertEquals("https://public-api.wordpress.com/rest/v1/me/help", links.getHelp());
         assertEquals("https://public-api.wordpress.com/rest/v1/sites/36224958", links.getSite());

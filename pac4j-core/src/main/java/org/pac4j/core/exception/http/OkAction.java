@@ -1,6 +1,7 @@
 package org.pac4j.core.exception.http;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * An OK HTTP action.
@@ -21,5 +22,10 @@ public class OkAction extends RedirectionAction implements WithContentAction {
     @Override
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toNiceString(FoundAction.class, "code", this.code, "content", content);
     }
 }

@@ -79,7 +79,7 @@ public class QQClient extends OAuth20Client {
     private String getOAuthScope() {
         StringBuilder builder = null;
         if (scopes != null) {
-            for (QQScope value : scopes) {
+            for (var value : scopes) {
                 if (builder == null) {
                     builder = new StringBuilder();
                 } else {

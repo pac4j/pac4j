@@ -39,7 +39,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testAttributeNotFound() {
-        final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
+        final var authorizer = new RequireAnyAttributeAuthorizer("");
         authorizer.setElements("name1");
         profile.addAttribute("name2", "anything-goes-here");
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -47,7 +47,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testNoValueProvided() {
-        final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
+        final var authorizer = new RequireAnyAttributeAuthorizer("");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "anything-goes-here");
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -55,7 +55,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testPatternSingleValuedAttribute() {
-        final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^value.+");
+        final var authorizer = new RequireAnyAttributeAuthorizer("^value.+");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "valueAddedHere");
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -63,7 +63,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testPatternFails() {
-        final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v");
+        final var authorizer = new RequireAnyAttributeAuthorizer("^v");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -71,7 +71,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testMatchesPattern() {
-        final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v\\d");
+        final var authorizer = new RequireAnyAttributeAuthorizer("^v\\d");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
         profile.addAttribute("name2", "v3");
@@ -80,7 +80,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testMatchesEverythingByDefault() {
-        final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer();
+        final var authorizer = new RequireAnyAttributeAuthorizer();
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2"));
         profile.addAttribute("name2", "v3");

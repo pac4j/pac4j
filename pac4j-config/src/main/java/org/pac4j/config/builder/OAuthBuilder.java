@@ -21,12 +21,12 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateLinkedInClient(final List<Client> clients) {
-        final String id = getProperty(LINKEDIN_ID);
-        final String secret = getProperty(LINKEDIN_SECRET);
-        final String scope = getProperty(LINKEDIN_SCOPE);
+        final var id = getProperty(LINKEDIN_ID);
+        final var secret = getProperty(LINKEDIN_SECRET);
+        final var scope = getProperty(LINKEDIN_SCOPE);
 
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final LinkedIn2Client linkedInClient = new LinkedIn2Client(id, secret);
+            final var linkedInClient = new LinkedIn2Client(id, secret);
             if (isNotBlank(scope)) {
                 linkedInClient.setScope(scope);
             }
@@ -35,12 +35,12 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateFacebookClient(final List<Client> clients) {
-        final String id = getProperty(FACEBOOK_ID);
-        final String secret = getProperty(FACEBOOK_SECRET);
-        final String scope = getProperty(FACEBOOK_SCOPE);
-        final String fields = getProperty(FACEBOOK_FIELDS);
+        final var id = getProperty(FACEBOOK_ID);
+        final var secret = getProperty(FACEBOOK_SECRET);
+        final var scope = getProperty(FACEBOOK_SCOPE);
+        final var fields = getProperty(FACEBOOK_FIELDS);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final FacebookClient facebookClient = new FacebookClient(id, secret);
+            final var facebookClient = new FacebookClient(id, secret);
             if (isNotBlank(scope)) {
                 facebookClient.setScope(scope);
             }
@@ -52,29 +52,29 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateWindowsLiveClient(final List<Client> clients) {
-        final String id = getProperty(WINDOWSLIVE_ID);
-        final String secret = getProperty(WINDOWSLIVE_SECRET);
+        final var id = getProperty(WINDOWSLIVE_ID);
+        final var secret = getProperty(WINDOWSLIVE_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final WindowsLiveClient client = new WindowsLiveClient(id, secret);
+            final var client = new WindowsLiveClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateFoursquareClient(final List<Client> clients) {
-        final String id = getProperty(FOURSQUARE_ID);
-        final String secret = getProperty(FOURSQUARE_SECRET);
+        final var id = getProperty(FOURSQUARE_ID);
+        final var secret = getProperty(FOURSQUARE_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final FoursquareClient client = new FoursquareClient(id, secret);
+            final var client = new FoursquareClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateGoogleClient(final List<Client> clients) {
-        final String id = getProperty(GOOGLE_ID);
-        final String secret = getProperty(GOOGLE_SECRET);
+        final var id = getProperty(GOOGLE_ID);
+        final var secret = getProperty(GOOGLE_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final Google2Client client = new Google2Client(id, secret);
-            final String scope = getProperty(GOOGLE_SCOPE);
+            final var client = new Google2Client(id, secret);
+            final var scope = getProperty(GOOGLE_SCOPE);
             if (isNotBlank(scope)) {
                 client.setScope(Google2Client.Google2Scope.valueOf(scope.toUpperCase()));
             }
@@ -83,48 +83,48 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateYahooClient(final List<Client> clients) {
-        final String id = getProperty(YAHOO_ID);
-        final String secret = getProperty(YAHOO_SECRET);
+        final var id = getProperty(YAHOO_ID);
+        final var secret = getProperty(YAHOO_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final YahooClient client = new YahooClient(id, secret);
+            final var client = new YahooClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateDropboxClient(final List<Client> clients) {
-        final String id = getProperty(DROPBOX_ID);
-        final String secret = getProperty(DROPBOX_SECRET);
+        final var id = getProperty(DROPBOX_ID);
+        final var secret = getProperty(DROPBOX_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final DropBoxClient client = new DropBoxClient(id, secret);
+            final var client = new DropBoxClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateGithubClient(final List<Client> clients) {
-        final String id = getProperty(GITHUB_ID);
-        final String secret = getProperty(GITHUB_SECRET);
+        final var id = getProperty(GITHUB_ID);
+        final var secret = getProperty(GITHUB_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final GitHubClient client = new GitHubClient(id, secret);
+            final var client = new GitHubClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateTwitterClient(final List<Client> clients) {
-        final String id = getProperty(TWITTER_ID);
-        final String secret = getProperty(TWITTER_SECRET);
+        final var id = getProperty(TWITTER_ID);
+        final var secret = getProperty(TWITTER_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final TwitterClient twitterClient = new TwitterClient(id, secret);
+            final var twitterClient = new TwitterClient(id, secret);
             clients.add(twitterClient);
         }
     }
 
     public void tryCreateGenericOAuth2Clients(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String id = getProperty(OAUTH2_ID, i);
-            final String secret = getProperty(OAUTH2_SECRET, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var id = getProperty(OAUTH2_ID, i);
+            final var secret = getProperty(OAUTH2_SECRET, i);
 
             if (isNotBlank(id) && isNotBlank(secret)) {
-                final GenericOAuth20Client client = new GenericOAuth20Client();
+                final var client = new GenericOAuth20Client();
                 client.setName(concat(client.getName(), i));
 
                 client.setKey(id);

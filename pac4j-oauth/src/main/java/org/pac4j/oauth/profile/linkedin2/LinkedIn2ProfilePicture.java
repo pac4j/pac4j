@@ -426,10 +426,10 @@ public class LinkedIn2ProfilePicture implements Serializable {
     }
 
     public static <T> T[] deepCopy(T[] array) {
-        final ObjectMapper mapper = new ObjectMapper();
+        final var mapper = new ObjectMapper();
         // per https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects
         // per https://stackoverflow.com/questions/49903859/deep-copy-using-jackson-string-or-jsonnode
-        final TokenBuffer tb = new TokenBuffer(mapper, false);
+        final var tb = new TokenBuffer(mapper, false);
         try {
             mapper.writeValue(tb, array);
             return (T[]) mapper.readValue(tb.asParser(), array.getClass());

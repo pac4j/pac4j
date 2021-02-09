@@ -68,26 +68,26 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         final List<String> names = new ArrayList<>();
         final List<String> questionMarks = new ArrayList<>();
         final List<Object> values = new ArrayList<>();
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+        for (final var entry : attributes.entrySet()) {
             names.add(entry.getKey());
             questionMarks.add("?");
             values.add(entry.getValue());
         }
 
-        final String query = "insert into " + usersTable + " (" + buildAttributesList(names) + ") values ("
+        final var query = "insert into " + usersTable + " (" + buildAttributesList(names) + ") values ("
             + buildAttributesList(questionMarks) + ")";
         execute(query, values.toArray());
     }
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final StringBuilder attributesList = new StringBuilder();
+        final var attributesList = new StringBuilder();
         String id = null;
         final List<Object> values = new ArrayList<>();
-        int i = 0;
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
-            final String name = entry.getKey();
-            final Object value = entry.getValue();
+        var i = 0;
+        for (final var entry : attributes.entrySet()) {
+            final var name = entry.getKey();
+            final var value = entry.getValue();
             if (ID.equals(name)) {
                 id = (String) value;
             } else {
@@ -104,13 +104,13 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
         assertNotNull(ID, id);
         values.add(id);
-        final String query = "update " + usersTable + " set " + attributesList.toString() + " where " + getIdAttribute() + " = :id";
+        final var query = "update " + usersTable + " set " + attributesList.toString() + " where " + getIdAttribute() + " = :id";
         execute(query, values.toArray());
     }
 
     @Override
     protected void deleteById(final String id) {
-        final String query = "delete from " + usersTable + " where " + getIdAttribute() + " = :id";
+        final var query = "delete from " + usersTable + " where " + getIdAttribute() + " = :id";
         execute(query, id);
     }
 
@@ -129,9 +129,9 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
-        final String attributesList = buildAttributesList(names);
+        final var attributesList = buildAttributesList(names);
 
-        final String query = "select " + attributesList + " from " + usersTable + " where " + key + " = :" + key;
+        final var query = "select " + attributesList + " from " + usersTable + " where " + key + " = :" + key;
         return query(query, key, value);
     }
 
@@ -149,9 +149,9 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     protected String buildAttributesList(final List<String> names) {
-        final StringBuilder sb = new StringBuilder();
-        boolean firstOne = true;
-        for (final String name : names) {
+        final var sb = new StringBuilder();
+        var firstOne = true;
+        for (final var name : names) {
             if (!firstOne) {
                 sb.append(",");
             }

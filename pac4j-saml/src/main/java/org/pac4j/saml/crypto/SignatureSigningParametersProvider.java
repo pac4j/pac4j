@@ -8,6 +8,7 @@ import org.opensaml.xmlsec.SignatureSigningParameters;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@FunctionalInterface
 public interface SignatureSigningParametersProvider {
 
     SignatureSigningParameters build(final SSODescriptor descriptor);

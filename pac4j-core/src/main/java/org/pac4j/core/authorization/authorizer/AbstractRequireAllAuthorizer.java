@@ -18,7 +18,7 @@ public abstract class AbstractRequireAllAuthorizer<E extends Object> extends Abs
         if (elements == null || elements.isEmpty()) {
             return true;
         }
-        for (final E element : elements) {
+        for (final var element : elements) {
             if (!check(context, sessionStore, profile, element)) {
                 return false;
             }

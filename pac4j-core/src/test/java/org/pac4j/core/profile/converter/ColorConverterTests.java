@@ -43,7 +43,7 @@ public final class ColorConverterTests {
 
     @Test
     public void testGoodString() {
-        final Color color = (Color) this.converter.convert(GOOD_COLOR);
+        final var color = (Color) this.converter.convert(GOOD_COLOR);
         assertEquals(255, color.getRed());
         assertEquals(0, color.getGreen());
         assertEquals(5, color.getBlue());
@@ -51,8 +51,8 @@ public final class ColorConverterTests {
 
     @Test
     public void testColorToString() {
-        final Color color = new Color(10, 20, 30);
-        final Color color2 = (Color) this.converter.convert(color.toString());
+        final var color = new Color(10, 20, 30);
+        final var color2 = (Color) this.converter.convert(color.toString());
         assertEquals(color.getRed(), color2.getRed());
         assertEquals(color.getGreen(), color2.getGreen());
         assertEquals(color.getBlue(), color2.getBlue());

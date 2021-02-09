@@ -20,13 +20,13 @@ public class VelocityEngineFactory {
 
         try {
 
-            final Properties props =
+            final var props =
                     new Properties();
             props.putAll(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
             props.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 
-            final VelocityEngine velocityEngine =
+            final var velocityEngine =
                     net.shibboleth.utilities.java.support.velocity.VelocityEngine
                     .newVelocityEngine(props);
             return velocityEngine;

@@ -22,7 +22,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,7 +68,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         if (store == null) {
             store = new GuavaStore<>(1000, (int) timeout.toSeconds(), TimeUnit.SECONDS);
         }
-        final OIDCProviderMetadata providerMetadata =
+        final var providerMetadata =
             new OIDCProviderMetadata(
                 new Issuer("https://appleid.apple.com"),
                 Collections.singletonList(SubjectType.PAIRWISE),
@@ -91,20 +90,20 @@ public class AppleOidcConfiguration extends OidcConfiguration {
     @Override
     public String getSecret() {
         if (store != null) {
-            Optional<String> cache = store.get(getClientId());
+            var cache = store.get(getClientId());
             if (cache.isPresent()) {
                 return cache.get();
             }
         }
         // https://developer.apple.com/documentation/sign_in_with_apple/generate_and_validate_tokens#3262048
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+        var claimsSet = new JWTClaimsSet.Builder()
             .issuer(getTeamID())
             .audience("https://appleid.apple.com")
             .subject(getClientId())
             .issueTime(Date.from(Instant.now()))
             .expirationTime(Date.from(Instant.now().plusSeconds(timeout.toSeconds())))
             .build();
-        SignedJWT signedJWT = new SignedJWT(
+        var signedJWT = new SignedJWT(
             new JWSHeader.Builder(JWSAlgorithm.ES256).keyID(privateKeyID).build(),
             claimsSet);
         JWSSigner signer;
@@ -114,7 +113,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         } catch (JOSEException e) {
             throw new TechnicalException(e);
         }
-        String secret = signedJWT.serialize();
+        var secret = signedJWT.serialize();
         if (store != null) {
             store.set(getClientId(), secret);
         }

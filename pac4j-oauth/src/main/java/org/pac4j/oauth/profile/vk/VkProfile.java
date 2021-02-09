@@ -26,7 +26,7 @@ public class VkProfile extends OAuth20Profile {
 
     @Override
     public String getUsername() {
-        String domain = getDomain();
+        var domain = getDomain();
         if (domain != null && !domain.isEmpty())
             return domain;
         return getId();
@@ -54,7 +54,7 @@ public class VkProfile extends OAuth20Profile {
 
     @Override
     public Gender getGender() {
-        final Gender gender = (Gender) getAttribute(VkProfileDefinition.SEX);
+        final var gender = (Gender) getAttribute(VkProfileDefinition.SEX);
         if (gender == null) {
             return Gender.UNSPECIFIED;
         } else {

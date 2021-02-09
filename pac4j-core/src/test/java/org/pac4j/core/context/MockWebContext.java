@@ -138,9 +138,9 @@ public final class MockWebContext implements WebContext {
     @Override
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<>();
-        for (final Map.Entry<String, String> entry : this.parameters.entrySet()) {
-            final String value = entry.getValue();
-            final String[] values = new String[] {value};
+        for (final var entry : this.parameters.entrySet()) {
+            final var value = entry.getValue();
+            final var values = new String[] {value};
             map.put(entry.getKey(), values);
         }
         return map;

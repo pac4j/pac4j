@@ -22,11 +22,11 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     private static SAML2Configuration initializeConfiguration(final Resource serviceProviderMetadataResource,
                                                               final String keystorePath) {
-        SAML2HttpClientBuilder httpClient = new SAML2HttpClientBuilder();
+        var httpClient = new SAML2HttpClientBuilder();
         httpClient.setConnectionTimeout(Duration.ofSeconds(1));
         httpClient.setSocketTimeout(Duration.ofSeconds(1));
 
-        final SAML2Configuration config = new SAML2Configuration();
+        final var config = new SAML2Configuration();
         config.setHttpClient(httpClient.build());
         config.setKeystorePath(keystorePath);
         config.setKeystorePassword("pac4j");
@@ -36,7 +36,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
         config.setForceServiceProviderMetadataGeneration(true);
         config.setServiceProviderMetadataResource(serviceProviderMetadataResource);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
-        SAML2ServiceProviderRequestedAttribute attribute =
+        var attribute =
             new SAML2ServiceProviderRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName");
         attribute.setServiceLang("fr");
         attribute.setServiceName("MySAML2ServiceProvider");
@@ -47,7 +47,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     @Test
     public void resolveServiceProviderMetadataViaFile() {
-        final SAML2Configuration configuration =
+        final var configuration =
             initializeConfiguration(new FileSystemResource("target/out.xml"), "target/keystore.jks");
         final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         assertNotNull(metadataResolver.resolve());
@@ -55,9 +55,9 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     @Test
     public void resolveServiceProviderMetadataViaUrl() throws Exception {
-        final String restBody = IOUtils.toString(
+        final var restBody = IOUtils.toString(
             new ClassPathResource("sample-sp-metadata.xml").getInputStream(), StandardCharsets.UTF_8);
-        final WireMockServer wireMockServer = new WireMockServer(8081);
+        final var wireMockServer = new WireMockServer(8081);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/saml"))
                 .willReturn(aResponse()
@@ -68,7 +68,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
             post(urlPathEqualTo("/saml"))
                 .willReturn(aResponse().withStatus(200)));
 
-        final String keystore = IOUtils.toString(
+        final var keystore = IOUtils.toString(
             new ClassPathResource("dummy-keystore.txt").getInputStream(), StandardCharsets.UTF_8);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/keystore"))
@@ -79,7 +79,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
         try {
             wireMockServer.start();
-            final SAML2Configuration configuration =
+            final var configuration =
                 initializeConfiguration(new FileUrlResource(new URL("http://localhost:8081/saml")),
                     "http://localhost:8081/keystore");
             final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);

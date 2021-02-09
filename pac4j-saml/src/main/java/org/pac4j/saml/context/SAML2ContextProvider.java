@@ -5,10 +5,7 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.messaging.context.BaseContext;
 import org.opensaml.messaging.context.MessageContext;
-import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
-import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
-import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -28,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
-import java.util.List;
 
 /**
  * Responsible for building a {@link SAML2MessageContext} from given SAML2 properties (idpEntityId and metadata
@@ -60,7 +56,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     @Override
     public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext, final SessionStore sessionStore) {
-        final SAML2MessageContext context = new SAML2MessageContext();
+        final var context = new SAML2MessageContext();
         addTransportContext(webContext, sessionStore, context);
         addSPContext(context);
         return context;
@@ -68,7 +64,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     @Override
     public SAML2MessageContext buildContext(final WebContext webContext, final SessionStore sessionStore) {
-        final SAML2MessageContext context = buildServiceProviderContext(webContext, sessionStore);
+        final var context = buildServiceProviderContext(webContext, sessionStore);
         addIDPContext(context);
         context.setWebContext(webContext);
         context.setSessionStore(sessionStore);
@@ -77,11 +73,11 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final void addTransportContext(final WebContext webContext, final SessionStore sessionStore,
                                              final SAML2MessageContext context) {
-        final ProfileRequestContext profile = context.getProfileRequestContext();
+        final var profile = context.getProfileRequestContext();
         profile.setOutboundMessageContext(prepareOutboundMessageContext(webContext));
         context.getSAMLProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
-        final ProfileRequestContext request = context.getProfileRequestContext();
+        final var request = context.getProfileRequestContext();
         request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
 
         if (this.samlMessageStoreFactory != null) {
@@ -92,20 +88,20 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected MessageContext prepareOutboundMessageContext(final WebContext webContext) {
         final Pac4jSAMLResponse outTransport = new DefaultPac4jSAMLResponse(webContext);
-        final MessageContext outCtx = new MessageContext();
+        final var outCtx = new MessageContext();
         outCtx.setMessage(outTransport);
         return outCtx;
     }
 
     protected final void addSPContext(final SAML2MessageContext context) {
-        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
+        final var selfContext = context.getSAMLSelfEntityContext();
         selfContext.setEntityId(this.spEntityId.getEntityId());
         selfContext.setRole(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.spEntityId, selfContext, SPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
     protected final void addIDPContext(final SAML2MessageContext context) {
-        final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
+        final var peerContext = context.getSAMLPeerEntityContext();
         peerContext.setEntityId(this.idpEntityId.getEntityId());
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.idpEntityId, peerContext, IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
@@ -116,15 +112,15 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         final EntityDescriptor entityDescriptor;
         final RoleDescriptor roleDescriptor;
         try {
-            final CriteriaSet set = new CriteriaSet();
-            final String entityId = metadata.getEntityId();
+            final var set = new CriteriaSet();
+            final var entityId = metadata.getEntityId();
             set.add(new EntityIdCriterion(entityId));
 
             entityDescriptor = SAML2Utils.buildChainingMetadataResolver(this.idpEntityId, this.spEntityId).resolveSingle(set);
             if (entityDescriptor == null) {
                 throw new SAMLException("Cannot find entity " + entityId + " in metadata provider");
             }
-            final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
+            final var list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
             roleDescriptor = CommonHelper.isNotEmpty(list) ? list.get(0) : null;
 
@@ -136,7 +132,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         } catch (final ResolverException e) {
             throw new SAMLException("An error occurred while getting IDP descriptors", e);
         }
-        final SAMLMetadataContext mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);
+        final var mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);
         mdCtx.setEntityDescriptor(entityDescriptor);
         mdCtx.setRoleDescriptor(roleDescriptor);
     }

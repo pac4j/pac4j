@@ -44,7 +44,7 @@ public class WeiboProfile extends OAuth20Profile {
 
     @Override
     public URI getProfileUrl() {
-        final URI attribute = (URI) getAttribute(WeiboProfileDefinition.PROFILE_URL);
+        final var attribute = (URI) getAttribute(WeiboProfileDefinition.PROFILE_URL);
         if (attribute.isAbsolute()) {
             return attribute;
         } else {

@@ -10,7 +10,6 @@ import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostSimpleSignEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.OutputStreamWriter;
 import java.net.URI;
 
 /**
@@ -50,13 +49,13 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
         log.debug("Invoking Velocity template to create POST body");
 
         try {
-            final VelocityContext velocityContext = new VelocityContext();
+            final var velocityContext = new VelocityContext();
             this.populateVelocityContext(velocityContext, messageContext, endpointURL);
 
             responseAdapter.setContentType("text/html");
             responseAdapter.init();
 
-            final OutputStreamWriter out = responseAdapter.getOutputStreamWriter();
+            final var out = responseAdapter.getOutputStreamWriter();
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", velocityContext, out);
             out.flush();
         } catch (final Exception e) {

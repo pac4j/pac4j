@@ -44,14 +44,14 @@ public final class RequireAnyPermissionAuthorizerTests {
 
     @Test
     public void testHasAnyPermissionOnePermission() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(PERMISSION1);
+        final var authorizer = new RequireAnyPermissionAuthorizer(PERMISSION1);
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyPermissionOnePermission2() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
+        final var authorizer = new RequireAnyPermissionAuthorizer();
         authorizer.setElements(PERMISSION1);
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -59,7 +59,7 @@ public final class RequireAnyPermissionAuthorizerTests {
 
     @Test
     public void testHasAnyPermissionOnePermission3() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
+        final var authorizer = new RequireAnyPermissionAuthorizer();
         authorizer.setElements(Arrays.asList(PERMISSION1));
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -67,7 +67,7 @@ public final class RequireAnyPermissionAuthorizerTests {
 
     @Test
     public void testHasAnyPermissionOnePermission4() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
+        final var authorizer = new RequireAnyPermissionAuthorizer();
         authorizer.setElements(new HashSet<>(Arrays.asList(PERMISSION1)));
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -75,16 +75,16 @@ public final class RequireAnyPermissionAuthorizerTests {
 
     @Test
     public void testHasAnyPermissionOnePermissionFail() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION1});
+        final var authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION1});
         profile.addPermission(PERMISSION2);
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyPermissionOnePermissionTwoProfiles() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION1});
+        final var authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION1});
         profile.addPermission(PERMISSION2);
-        final CommonProfile profile2 = new CommonProfile();
+        final var profile2 = new CommonProfile();
         profile2.addPermission(PERMISSION1);
         profiles.add(profile2);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -92,28 +92,28 @@ public final class RequireAnyPermissionAuthorizerTests {
 
     @Test
     public void testHasAnyPermissionNull() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer((List<String>) null);
+        final var authorizer = new RequireAnyPermissionAuthorizer((List<String>) null);
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyPermissionEmpty() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {});
+        final var authorizer = new RequireAnyPermissionAuthorizer(new String[] {});
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyPermissionOkTwoPermissions() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(PERMISSION2, PERMISSION1);
+        final var authorizer = new RequireAnyPermissionAuthorizer(PERMISSION2, PERMISSION1);
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 
     @Test
     public void testHasAnyPermissionProfileTwoPermissionsFail() {
-        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION2});
+        final var authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION2});
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));

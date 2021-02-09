@@ -36,7 +36,7 @@ public class RunHiOrgServerClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final HiOrgServerClient client = new HiOrgServerClient();
+        final var client = new HiOrgServerClient();
         client.setKey("your client id");
         client.setSecret("your secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
@@ -45,7 +45,7 @@ public class RunHiOrgServerClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final HiOrgServerProfile profile = (HiOrgServerProfile) userProfile;
+        final var profile = (HiOrgServerProfile) userProfile;
         assertEquals("1a396c7895f10eac304a81eef63ca0e2", profile.getId());
         assertEquals("doej", profile.getUsername().toLowerCase());
         assertEquals("John", profile.getFirstName());

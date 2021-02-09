@@ -21,20 +21,20 @@ public class KerberosExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final Optional<String> optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
+        final var optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (!optHeader.isPresent()) {
             return Optional.empty();
         }
 
-        final String header = optHeader.get();
+        final var header = optHeader.get();
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
             // "Authorization" header do not indicate Kerberos mechanism yet,
             // so the extractor shouldn't throw an exception
             return Optional.empty();
         }
 
-        byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
-        byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
+        var base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
+        var kerberosTicket = Base64.getDecoder().decode(base64Token);
 
         return Optional.of(new KerberosCredentials(kerberosTicket));
     }

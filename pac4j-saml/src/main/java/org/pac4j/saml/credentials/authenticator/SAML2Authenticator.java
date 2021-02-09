@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -66,10 +65,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final SAML2Credentials credentials = (SAML2Credentials) cred;
-        final SAML2Profile profile = (SAML2Profile) getProfileDefinition().newProfile();
+        final var credentials = (SAML2Credentials) cred;
+        final var profile = (SAML2Profile) getProfileDefinition().newProfile();
 
-        final SAML2Credentials.SAMLNameID nameId = credentials.getNameId();
+        final var nameId = credentials.getNameId();
         profile.setId(nameId.getValue());
 
         profile.addAuthenticationAttribute(SESSION_INDEX, credentials.getSessionIndex());
@@ -78,13 +77,13 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         profile.addAuthenticationAttribute(SAML_NAME_ID_SP_NAME_QUALIFIER, nameId.getSpNameQualifier());
         profile.addAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID, nameId.getSpProviderId());
 
-        for (final SAML2Credentials.SAMLAttribute attribute : credentials.getAttributes()) {
+        for (final var attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
-            final String name = attribute.getName();
-            final String friendlyName = attribute.getFriendlyName();
+            final var name = attribute.getName();
+            final var friendlyName = attribute.getFriendlyName();
 
-            final List<String> values = attribute.getAttributeValues();
+            final var values = attribute.getAttributeValues();
             if (!values.isEmpty()) {
                 if (CommonHelper.isNotBlank(attributeAsId)
                     && (attributeAsId.equalsIgnoreCase(name) || attributeAsId.equalsIgnoreCase(friendlyName))) {
@@ -96,7 +95,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
                 }
 
                 if (mappedAttributes != null && !mappedAttributes.isEmpty() && mappedAttributes.containsKey(name)) {
-                    final String newName = mappedAttributes.get(name);
+                    final var newName = mappedAttributes.get(name);
                     logger.debug("Mapping attribute {} as {} with values {} to profile", name, newName, values);
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, newName, values);
                 } else {
@@ -118,7 +117,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         profile.addAuthenticationAttribute(AUTHN_CONTEXT, credentials.getAuthnContexts());
         // Retrieve conditions attributes
         // Adding them to both the "regular" and authentication attributes so we don't break anyone currently using it.
-        final SAML2Credentials.SAMLConditions conditions = credentials.getConditions();
+        final var conditions = credentials.getConditions();
         if (conditions != null) {
             profile.addAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());
             profile.addAuthenticationAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());

@@ -19,10 +19,10 @@ public class FigShareClient extends OAuth20Client {
 
     @Override
     protected void internalInit() {
-        final FigShareApi20 api = new FigShareApi20();
+        final var api = new FigShareApi20();
         configuration.setApi(api);
 
-        final FigShareProfileDefinition profileDefinition = new FigShareProfileDefinition();
+        final var profileDefinition = new FigShareProfileDefinition();
 
         profileDefinition.setProfileId("id");
 

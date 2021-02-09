@@ -14,6 +14,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@FunctionalInterface
 public interface MatchingChecker {
 
     /**

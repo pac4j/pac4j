@@ -92,13 +92,13 @@ public abstract class IndirectClient extends BaseClient {
         init();
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context, sessionStore)) {
-            final HttpAction httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore, redirectionActionBuilder);
+            final var httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore, redirectionActionBuilder);
             logger.debug("AJAX request detected -> returning " + httpAction + " for " + context.getFullRequestURL());
             cleanRequestedUrl(context, sessionStore);
             throw httpAction;
         }
         // authentication has already been tried -> unauthorized
-        final Optional<Object> attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        final var attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (attemptedAuth.isPresent() && !"".equals(attemptedAuth.get())) {
             logger.debug("authentication already attempted -> 401");
             cleanAttemptedAuthentication(context, sessionStore);
@@ -133,7 +133,7 @@ public abstract class IndirectClient extends BaseClient {
     @Override
     public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore) {
         init();
-        final Optional<Credentials> optCredentials = retrieveCredentials(context, sessionStore);
+        final var optCredentials = retrieveCredentials(context, sessionStore);
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");

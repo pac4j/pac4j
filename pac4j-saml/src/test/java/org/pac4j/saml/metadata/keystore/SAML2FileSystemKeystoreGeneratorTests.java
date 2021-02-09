@@ -25,10 +25,10 @@ public class SAML2FileSystemKeystoreGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
 
-        final String path = RandomStringUtils.randomAlphabetic(4);
+        final var path = RandomStringUtils.randomAlphabetic(4);
         configuration.setKeystorePath(String.format("%s/%s/keystore.jks", FileUtils.getTempDirectoryPath(), path));
 
         configuration.setKeystorePassword("pac4j");
@@ -48,7 +48,7 @@ public class SAML2FileSystemKeystoreGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");

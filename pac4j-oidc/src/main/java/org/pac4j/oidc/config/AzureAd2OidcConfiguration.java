@@ -36,12 +36,12 @@ public class AzureAd2OidcConfiguration extends AzureAdOidcConfiguration {
 
     @Override
     public String makeOauth2TokenRequest(String refreshToken) {
-        String scope = this.getScope();
+        var scope = this.getScope();
         if (isBlank(scope)){
             // default values
             scope = "openid profile email";
         }
-        final String payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
+        final var payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
             + "&" + HttpUtils.encodeQueryParam("client_secret",this.getSecret())
             + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")
             + "&" + HttpUtils.encodeQueryParam("refresh_token",refreshToken)

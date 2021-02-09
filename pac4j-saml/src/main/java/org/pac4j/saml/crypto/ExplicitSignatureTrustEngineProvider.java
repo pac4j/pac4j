@@ -5,7 +5,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver;
 import org.opensaml.saml.security.impl.MetadataCredentialResolver;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -32,11 +31,11 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
 
     @Override
     public SignatureTrustEngine build() {
-        final MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
+        final var metadataCredentialResolver = new MetadataCredentialResolver();
         final MetadataResolver metadataResolver = SAML2Utils.buildChainingMetadataResolver(idpMetadataResolver, spMetadataResolver);
-        final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
+        final var roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
 
-        final KeyInfoCredentialResolver keyResolver =
+        final var keyResolver =
                 DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
 
         metadataCredentialResolver.setKeyInfoCredentialResolver(keyResolver);

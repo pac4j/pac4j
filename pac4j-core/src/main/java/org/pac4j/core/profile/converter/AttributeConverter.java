@@ -6,6 +6,7 @@ package org.pac4j.core.profile.converter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface AttributeConverter {
 
     /**

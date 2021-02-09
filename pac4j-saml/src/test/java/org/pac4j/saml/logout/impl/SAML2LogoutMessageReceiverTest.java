@@ -4,9 +4,6 @@ import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.saml.saml2.metadata.impl.EntityDescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SingleLogoutServiceBuilder;
@@ -40,11 +37,11 @@ public class SAML2LogoutMessageReceiverTest {
 
     @Test
     public void shouldAcceptLogoutResponse() {
-        MockWebContext webContext = getMockWebContext();
-        SAML2MessageContext context = getSaml2MessageContext(webContext);
+        var webContext = getMockWebContext();
+        var context = getSaml2MessageContext(webContext);
         SAML2ResponseValidator validator = getLogoutValidator("/logoutUrl");
 
-        SAML2LogoutMessageReceiver unit = new SAML2LogoutMessageReceiver(validator);
+        var unit = new SAML2LogoutMessageReceiver(validator);
         try {
             unit.receiveMessage(context);
             fail("Should have thrown a FoundAction");
@@ -58,11 +55,11 @@ public class SAML2LogoutMessageReceiverTest {
 
     @Test
     public void shouldAcceptLogoutResponseWithNoRedirect() {
-        MockWebContext webContext = getMockWebContext();
-        SAML2MessageContext context = getSaml2MessageContext(webContext);
+        var webContext = getMockWebContext();
+        var context = getSaml2MessageContext(webContext);
         SAML2ResponseValidator validator = getLogoutValidator("");
 
-        SAML2LogoutMessageReceiver unit = new SAML2LogoutMessageReceiver(validator);
+        var unit = new SAML2LogoutMessageReceiver(validator);
         try {
             unit.receiveMessage(context);
             fail("Should have thrown a FoundAction");
@@ -76,12 +73,12 @@ public class SAML2LogoutMessageReceiverTest {
 
     @Test
     public void shouldAcceptLogoutResponseWithNoActionOnSuccess() {
-        MockWebContext webContext = getMockWebContext();
-        SAML2MessageContext context = getSaml2MessageContext(webContext);
-        SAML2LogoutValidator validator = getLogoutValidator("");
+        var webContext = getMockWebContext();
+        var context = getSaml2MessageContext(webContext);
+        var validator = getLogoutValidator("");
         validator.setActionOnSuccess(false);
 
-        SAML2LogoutMessageReceiver unit = new SAML2LogoutMessageReceiver(validator);
+        var unit = new SAML2LogoutMessageReceiver(validator);
         try {
             unit.receiveMessage(context);
         } catch (Exception e) {
@@ -90,7 +87,7 @@ public class SAML2LogoutMessageReceiverTest {
     }
 
     private SAML2LogoutValidator getLogoutValidator(final String postLogoutUrl) {
-        SAML2Configuration config = new SAML2Configuration();
+        var config = new SAML2Configuration();
         config.setForceKeystoreGeneration(true);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         config.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
@@ -100,14 +97,14 @@ public class SAML2LogoutMessageReceiverTest {
         config.setPrivateKeyPassword("pac4j");
         config.init();
 
-        SAML2IdentityProviderMetadataResolver idp = new SAML2IdentityProviderMetadataResolver(config);
+        var idp = new SAML2IdentityProviderMetadataResolver(config);
         idp.init();
 
-        SAML2ServiceProviderMetadataResolver sp = new SAML2ServiceProviderMetadataResolver(config);
+        var sp = new SAML2ServiceProviderMetadataResolver(config);
 
         SAML2SignatureTrustEngineProvider engine = new ExplicitSignatureTrustEngineProvider(idp, sp);
 
-        SAML2LogoutValidator validator = new SAML2LogoutValidator(
+        var validator = new SAML2LogoutValidator(
             engine,
             mock(Decrypter.class),
             mock(LogoutHandler.class),
@@ -119,7 +116,7 @@ public class SAML2LogoutMessageReceiverTest {
     }
 
     private MockWebContext getMockWebContext() {
-        MockWebContext webContext = MockWebContext.create();
+        var webContext = MockWebContext.create();
         webContext.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         webContext.setRequestContent(
             String.format(
@@ -140,15 +137,15 @@ public class SAML2LogoutMessageReceiverTest {
     }
 
     private SAML2MessageContext getSaml2MessageContext(MockWebContext webContext) {
-        SAML2MessageContext context = new SAML2MessageContext();
+        var context = new SAML2MessageContext();
 
-        EntityDescriptor entityDescriptor = new EntityDescriptorBuilder().buildObject();
+        var entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
         context.setWebContext(webContext);
         context.setSessionStore(new MockSessionStore());
 
-        SPSSODescriptor spDescriptor = new SPSSODescriptorBuilder().buildObject();
-        SingleLogoutService logoutService = new SingleLogoutServiceBuilder().buildObject();
+        var spDescriptor = new SPSSODescriptorBuilder().buildObject();
+        var logoutService = new SingleLogoutServiceBuilder().buildObject();
         logoutService.setLocation("http://sp.example.com/demo1/logout");
         spDescriptor.getSingleLogoutServices().add(logoutService);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);

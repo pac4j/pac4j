@@ -40,8 +40,8 @@ public class JavaSerializer extends AbstractSerializer {
     @Override
     protected byte[] internalSerializeToBytes(final Object o) {
         byte[] bytes = null;
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        try (var baos = new ByteArrayOutputStream();
+             var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(o);
             oos.flush();
             bytes = baos.toByteArray();
@@ -60,7 +60,7 @@ public class JavaSerializer extends AbstractSerializer {
     @Override
     protected Serializable internalDeserializeFromBytes(final byte[] bytes) {
         Serializable o = null;
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        try (var bais = new ByteArrayInputStream(bytes);
              ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {
             o = (Serializable) ois.readObject();
         } catch (final IOException | ClassNotFoundException e) {
@@ -134,8 +134,8 @@ public class JavaSerializer extends AbstractSerializer {
 
         @Override
         protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-            final String qualifiedClassName = desc.getName();
-            final Class<?> clazz = trustedClasses.get(qualifiedClassName);
+            final var qualifiedClassName = desc.getName();
+            final var clazz = trustedClasses.get(qualifiedClassName);
             if (Objects.nonNull(clazz)) {
                 return clazz;
             } else if (trustedPackages.stream().anyMatch(qualifiedClassName::startsWith)) {

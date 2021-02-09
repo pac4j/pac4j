@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.SessionStore;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@FunctionalInterface
 public interface ValueGenerator {
 
     String generateValue(WebContext webContext, SessionStore sessionStore);

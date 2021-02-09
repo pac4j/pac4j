@@ -20,8 +20,8 @@ import static org.junit.Assert.*;
 public final class KeyStoreCredentialProviderTests implements TestsConstants {
 
     private KeyStore prepareKeyStore() throws Exception {
-        final KeyStoreSpi keyStoreSpiMock = mock(KeyStoreSpi.class);
-        final KeyStore keyStore = new KeyStore(keyStoreSpiMock, null, "test"){ };
+        final var keyStoreSpiMock = mock(KeyStoreSpi.class);
+        final var keyStore = new KeyStore(keyStoreSpiMock, null, "test"){ };
         keyStore.load(null);
         when(keyStore.aliases()).thenReturn(Collections.enumeration(Arrays.asList(KEY, VALUE)));
         when(keyStore.entryInstanceOf(KEY, KeyStore.PrivateKeyEntry.class)).thenReturn(false);
@@ -31,13 +31,13 @@ public final class KeyStoreCredentialProviderTests implements TestsConstants {
 
     @Test
     public void testReturnFirstAliasWhenNoKeystoreAlias() throws Exception {
-        final KeyStore keyStore = prepareKeyStore();
+        final var keyStore = prepareKeyStore();
         assertEquals(VALUE, KeyStoreCredentialProvider.getPrivateKeyAlias(keyStore, null));
     }
 
     @Test
     public void testReturnMatchingAlias() throws Exception {
-        final KeyStore keyStore = prepareKeyStore();
+        final var keyStore = prepareKeyStore();
         assertEquals(VALUE, KeyStoreCredentialProvider.getPrivateKeyAlias(keyStore, VALUE.toLowerCase()));
     }
 }

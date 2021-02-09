@@ -57,10 +57,10 @@ public class JEEContext implements WebContext {
 
     @Override
     public Optional<String> getRequestHeader(final String name) {
-        final Enumeration<String> names = request.getHeaderNames();
+        final var names = request.getHeaderNames();
         if (names != null) {
             while (names.hasMoreElements()) {
-                final String headerName = names.nextElement();
+                final var headerName = names.nextElement();
                 if (headerName != null && headerName.equalsIgnoreCase(name)) {
                     return Optional.ofNullable(this.request.getHeader(headerName));
                 }
@@ -134,8 +134,8 @@ public class JEEContext implements WebContext {
 
     @Override
     public String getFullRequestURL() {
-        final StringBuffer requestURL = request.getRequestURL();
-        final String queryString = request.getQueryString();
+        final var requestURL = request.getRequestURL();
+        final var queryString = request.getQueryString();
         if (queryString == null) {
             return requestURL.toString();
         }
@@ -145,11 +145,11 @@ public class JEEContext implements WebContext {
     @Override
     public Collection<Cookie> getRequestCookies() {
         final Collection<Cookie> pac4jCookies = new LinkedHashSet<>();
-        final javax.servlet.http.Cookie[] cookies = this.request.getCookies();
+        final var cookies = this.request.getCookies();
 
         if (cookies != null) {
-            for (final javax.servlet.http.Cookie c : cookies) {
-                final Cookie cookie = new Cookie(c.getName(), c.getValue());
+            for (final var c : cookies) {
+                final var cookie = new Cookie(c.getName(), c.getValue());
                 cookie.setVersion(c.getVersion());
                 cookie.setComment(c.getComment());
                 cookie.setDomain(c.getDomain());
@@ -165,7 +165,7 @@ public class JEEContext implements WebContext {
 
     @Override
     public void addResponseCookie(final Cookie cookie) {
-        final javax.servlet.http.Cookie c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
+        final var c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
         c.setVersion(cookie.getVersion());
         c.setSecure(cookie.isSecure());
         c.setPath(cookie.getPath());
@@ -183,7 +183,7 @@ public class JEEContext implements WebContext {
      */
     @Override
     public String getPath() {
-        String fullPath = request.getRequestURI();
+        var fullPath = request.getRequestURI();
         // it shouldn't be null, but in case it is, it's better to return empty string
         if (fullPath == null) {
             return "";
@@ -192,7 +192,7 @@ public class JEEContext implements WebContext {
         if (fullPath.startsWith("//")) {
             fullPath = fullPath.substring(1);
         }
-        final String context = request.getContextPath();
+        final var context = request.getContextPath();
         // this one shouldn't be null either, but in case it is, then let's consider it is empty
         if (context != null) {
             return fullPath.substring(context.length());
@@ -206,7 +206,7 @@ public class JEEContext implements WebContext {
             try {
                 body = request.getReader()
                     .lines()
-                    .reduce("", (accumulator, actual) -> accumulator.concat(actual));
+                    .reduce("", String::concat);
             } catch (final IOException e) {
                 throw new TechnicalException(e);
             }

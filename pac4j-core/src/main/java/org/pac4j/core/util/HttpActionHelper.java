@@ -5,8 +5,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 
-import java.util.Map;
-
 /**
  * Helper to build the appropriate {@link HttpAction}.
  *
@@ -26,7 +24,7 @@ public final class HttpActionHelper {
      * @return the appropriate HTTP action
      */
     public static HttpAction buildUnauthenticatedAction(final WebContext context) {
-        final boolean hasHeader = context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isPresent();
+        final var hasHeader = context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isPresent();
         if (alwaysUse401ForUnauthenticated) {
             // add the WWW-Authenticate header to be compliant with the HTTP spec if it does not already exist
             if (!hasHeader) {
@@ -75,15 +73,15 @@ public final class HttpActionHelper {
      * @return the form POST content
      */
     public static String buildFormPostContent(final WebContext context) {
-        final String requestedUrl = context.getFullRequestURL();
-        final Map<String, String[]> parameters = context.getRequestParameters();
-        final StringBuilder buffer = new StringBuilder();
+        final var requestedUrl = context.getFullRequestURL();
+        final var parameters = context.getRequestParameters();
+        final var buffer = new StringBuilder();
         buffer.append("<html>\n");
         buffer.append("<body>\n");
         buffer.append("<form action=\"" + escapeHtml(requestedUrl) + "\" name=\"f\" method=\"post\">\n");
         if (parameters != null) {
-            for (final Map.Entry<String, String[]> entry : parameters.entrySet()) {
-                final String[] values = entry.getValue();
+            for (final var entry : parameters.entrySet()) {
+                final var values = entry.getValue();
                 if (values != null && values.length > 0) {
                     buffer.append("<input type='hidden' name=\"" + escapeHtml(entry.getKey()) + "\" value=\"" + values[0] + "\" />\n");
                 }

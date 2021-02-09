@@ -9,7 +9,6 @@ import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,12 +42,12 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
         CommonHelper.assertNotBlank("keystorePassword", configuration.getPrivateKeyPassword());
         CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
-        
-        try (InputStream inputStream = configuration.getKeystoreGenerator().retrieve()) {
-            final String keyStoreType = configuration.getKeyStoreType() == null
+
+        try (var inputStream = configuration.getKeystoreGenerator().retrieve()) {
+            final var keyStoreType = configuration.getKeyStoreType() == null
                 ? DEFAULT_KEYSTORE_TYPE
                 : configuration.getKeyStoreType();
-            final KeyStore keyStore = loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
+            final var keyStore = loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
             this.privateKeyAlias = getPrivateKeyAlias(keyStore, configuration.getKeyStoreAlias());
             final Map<String, String> passwords = new HashMap<>();
             passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());
@@ -62,7 +60,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     private static KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
         try {
             logger.debug("Loading keystore with type {}", keyStoreType);
-            final KeyStore ks = KeyStore.getInstance(keyStoreType);
+            final var ks = KeyStore.getInstance(keyStoreType);
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             logger.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
             return ks;
@@ -73,9 +71,9 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
-            final Enumeration<String> aliases = keyStore.aliases();
+            final var aliases = keyStore.aliases();
             while (aliases.hasMoreElements()) {
-                final String currentAlias = aliases.nextElement();
+                final var currentAlias = aliases.nextElement();
                 if (keyStoreAlias != null) {
                     if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
                         return currentAlias;
@@ -92,7 +90,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     @Override
     public KeyInfo getKeyInfo() {
-        final Credential serverCredential = getCredential();
+        final var serverCredential = getCredential();
         return generateKeyInfoForCredential(serverCredential);
     }
 
@@ -108,16 +106,16 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     @Override
     public final KeyInfoGenerator getKeyInfoGenerator() {
-        final NamedKeyInfoGeneratorManager mgmr = DefaultSecurityConfigurationBootstrap.buildBasicKeyInfoGeneratorManager();
-        final Credential credential = getCredential();
+        final var mgmr = DefaultSecurityConfigurationBootstrap.buildBasicKeyInfoGeneratorManager();
+        final var credential = getCredential();
         return mgmr.getDefaultManager().getFactory(credential).newInstance();
     }
 
     @Override
     public final Credential getCredential() {
         try {
-            final CriteriaSet cs = new CriteriaSet();
-            final EntityIdCriterion criteria = new EntityIdCriterion(this.privateKeyAlias);
+            final var cs = new CriteriaSet();
+            final var criteria = new EntityIdCriterion(this.privateKeyAlias);
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
         } catch (final ResolverException e) {

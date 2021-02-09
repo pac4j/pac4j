@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -30,7 +29,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
         final List<Client> result = new ArrayList<>();
 
-        String securityClientNames = clientNames;
+        var securityClientNames = clientNames;
         // we don't have defined clients to secure the URL, use the general default security ones from the Clients if they exist
         // we check the nullity and not the blankness to allow the blank string to mean no client
         // so no clients parameter -> use the default security ones; clients=blank string -> no clients defined
@@ -46,19 +45,19 @@ public class DefaultSecurityClientFinder implements ClientFinder {
         }
 
         if (CommonHelper.isNotBlank(securityClientNames)) {
-            final List<String> names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
-            final Optional<String> clientOnRequest = context.getRequestParameter(clientNameParameter);
+            final var names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
+            final var clientOnRequest = context.getRequestParameter(clientNameParameter);
 
             // if a client is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
             logger.debug("clientNameOnRequest: {}", clientOnRequest);
             if (clientOnRequest.isPresent()) {
                 // from the request
-                final Optional<Client> client = clients.findClient(clientOnRequest.get());
+                final var client = clients.findClient(clientOnRequest.get());
                 if (client.isPresent()) {
-                    final String nameFound = client.get().getName();
+                    final var nameFound = client.get().getName();
                     // if allowed -> return it
-                    for (final String name : names) {
+                    for (final var name : names) {
                         if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, nameFound)) {
                             result.add(client.get());
                             break;
@@ -67,16 +66,16 @@ public class DefaultSecurityClientFinder implements ClientFinder {
                 }
             } else {
                 // no client provided, return all
-                for (final String name : names) {
+                for (final var name : names) {
                     // from its name
-                    final Optional<Client> client = clients.findClient(name);
+                    final var client = clients.findClient(name);
                     if (client.isPresent()) {
                         result.add(client.get());
                     }
                 }
             }
         }
-        logger.debug("result: {}", result.stream().map(c -> c.getName()).collect(Collectors.toList()));
+        logger.debug("result: {}", result.stream().map(Client::getName).collect(Collectors.toList()));
         return result;
     }
 

@@ -8,7 +8,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.PayPalClient;
-import org.pac4j.oauth.profile.paypal.PayPalAddress;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
 
 import java.util.Locale;
@@ -39,7 +38,7 @@ public final class RunPaypalClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final PayPalClient payPalClient = new PayPalClient(
+        final var payPalClient = new PayPalClient(
                 "ARQFlBAOdRsb1NhZlutHT_PORP2F-TQpU-Laz-osaBwAHUIBIdg-C8DEsTWY",
                 "EAMZPBBfYJGeCBHYkm30xqC-VZ1kePnWZzPLdXyzY43rh-q0OQUH5eucXI6R");
         payPalClient.setCallbackUrl(PAC4J_BASE_URL);
@@ -48,7 +47,7 @@ public final class RunPaypalClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final PayPalProfile profile = (PayPalProfile) userProfile;
+        final var profile = (PayPalProfile) userProfile;
         assertEquals("YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getId());
         assertEquals(PayPalProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR
                 + "YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getTypedId());
@@ -56,12 +55,12 @@ public final class RunPaypalClient extends RunClient {
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", "Test", "ScribeUP", "Test ScribeUP", null,
                 Gender.UNSPECIFIED, Locale.FRANCE, null, null, "Europe/Berlin");
-        final PayPalAddress address = profile.getAddress();
+        final var address = profile.getAddress();
         assertEquals("FR", address.getCountry());
         assertEquals("Paris", address.getLocality());
         assertEquals("75001", address.getPostalCode());
         assertEquals("Adr1", address.getStreetAddress());
-        final Locale language = profile.getLanguage();
+        final var language = profile.getLanguage();
         assertEquals(Locale.FRANCE, language);
         assertEquals(9, profile.getAttributes().size());
     }

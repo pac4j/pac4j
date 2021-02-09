@@ -23,7 +23,7 @@ public class AppleClient extends OidcClient {
 
     @Override
     protected void internalInit() {
-        final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
+        final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new AppleProfile()));
         defaultProfileCreator(profileCreator);
         super.internalInit();

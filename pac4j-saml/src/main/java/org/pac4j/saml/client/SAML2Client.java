@@ -103,7 +103,7 @@ public class SAML2Client extends IndirectClient {
         assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
-        final String callbackUrl = computeFinalCallbackUrl(null);
+        final var callbackUrl = computeFinalCallbackUrl(null);
         configuration.setCallbackUrl(callbackUrl);
         configuration.init();
 
@@ -151,10 +151,17 @@ public class SAML2Client extends IndirectClient {
     }
 
     protected void initSAMLLogoutProfileHandler() {
-        this.logoutProfileHandler = new SAML2LogoutProfileHandler(
-            new SAML2LogoutRequestMessageSender(this.signatureSigningParametersProvider,
-                this.configuration.getSpLogoutRequestBindingType(), false, this.configuration.isSpLogoutRequestSigned()),
-            new SAML2LogoutMessageReceiver(this.logoutValidator));
+        this.logoutProfileHandler = new SAML2LogoutProfileHandler(getLogoutRequestMessageSender(), getLogoutMessageReceiver());
+    }
+
+    protected SAML2LogoutMessageReceiver getLogoutMessageReceiver() {
+        return new SAML2LogoutMessageReceiver(this.logoutValidator);
+    }
+
+    protected SAML2LogoutRequestMessageSender getLogoutRequestMessageSender() {
+        return new SAML2LogoutRequestMessageSender(this.signatureSigningParametersProvider,
+            this.configuration.getSpLogoutRequestBindingType(), false,
+            this.configuration.isSpLogoutRequestSigned());
     }
 
     protected void initSAMLLogoutResponseValidator() {

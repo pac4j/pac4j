@@ -53,7 +53,7 @@ public class OAuth10Credentials extends Credentials {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OAuth10Credentials that = (OAuth10Credentials) o;
+        var that = (OAuth10Credentials) o;
 
         if (requestToken != null ? !requestToken.equals(that.requestToken) : that.requestToken != null) return false;
         if (token != null ? !token.equals(that.token) : that.token != null) return false;
@@ -63,7 +63,7 @@ public class OAuth10Credentials extends Credentials {
 
     @Override
     public int hashCode() {
-        int result = requestToken != null ? requestToken.hashCode() : 0;
+        var result = requestToken != null ? requestToken.hashCode() : 0;
         result = 31 * result + (token != null ? token.hashCode() : 0);
         result = 31 * result + (verifier != null ? verifier.hashCode() : 0);
         return result;

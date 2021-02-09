@@ -45,11 +45,11 @@ public class DropBoxProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public DropBoxProfile extractUserProfile(final String body) {
-        final DropBoxProfile profile = (DropBoxProfile) newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (DropBoxProfile) newProfile();
+        var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "account_id")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             json = (JsonNode) JsonHelper.getElement(json, "name");

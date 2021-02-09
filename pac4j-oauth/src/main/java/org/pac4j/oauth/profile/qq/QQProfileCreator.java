@@ -30,14 +30,14 @@ public class QQProfileCreator extends OAuth20ProfileCreator {
 
     @Override
     public Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
-        QQProfileDefinition profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
-        String openidUrl = profileDefinition.getOpenidUrl((OAuth2AccessToken) accessToken, (OAuth20Configuration) configuration);
-        final OAuth20Service service = (OAuth20Service) this.configuration.buildService(context, client);
+        var profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
+        var openidUrl = profileDefinition.getOpenidUrl((OAuth2AccessToken) accessToken, (OAuth20Configuration) configuration);
+        final var service = (OAuth20Service) this.configuration.buildService(context, client);
 
-        String body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
-        String openid = profileDefinition.extractOpenid(body);
+        var body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
+        var openid = profileDefinition.extractOpenid(body);
 
-        String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
+        var profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         profileUrl = CommonHelper.addParameter(profileUrl, "openid", openid);
         profileUrl = CommonHelper.addParameter(profileUrl, "oauth_consumer_key",
             configuration.getKey());
@@ -45,7 +45,7 @@ public class QQProfileCreator extends OAuth20ProfileCreator {
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
-        final QQProfile profile = profileDefinition.extractUserProfile(body);
+        final var profile = profileDefinition.extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         profile.setId(openid);
         return Optional.of(profile);

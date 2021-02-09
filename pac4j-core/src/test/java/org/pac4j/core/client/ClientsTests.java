@@ -38,15 +38,15 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testMissingClient() {
-        final Clients clients = new Clients();
+        final var clients = new Clients();
         clients.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(clients, "clients cannot be null");
     }
 
     @Test
     public void testNoValuesSet() {
-        MockIndirectClient facebookClient = newFacebookClient();
-        final Clients clients = new Clients(facebookClient);
+        var facebookClient = newFacebookClient();
+        final var clients = new Clients(facebookClient);
         clients.init();
         assertNull(facebookClient.getCallbackUrl());
         assertNull(facebookClient.getUrlResolver());
@@ -57,8 +57,8 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testValuesSet() {
-        MockIndirectClient facebookClient = newFacebookClient();
-        final Clients clients = new Clients(facebookClient);
+        var facebookClient = newFacebookClient();
+        final var clients = new Clients(facebookClient);
         final AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
         final UrlResolver urlResolver = new DefaultUrlResolver();
         final CallbackUrlResolver callbackUrlResolver = new QueryParameterCallbackUrlResolver();
@@ -78,15 +78,15 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testAllClients() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final MockIndirectClient yahooClient = newYahooClient();
+        final var facebookClient = newFacebookClient();
+        final var yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<>();
         clients.add(facebookClient);
         clients.add(yahooClient);
-        final Clients clientsGroup = new Clients();
+        final var clientsGroup = new Clients();
         clientsGroup.setClients(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
-        final List<Client> clients2 = clientsGroup.findAllClients();
+        final var clients2 = clientsGroup.findAllClients();
         assertEquals(2, clients2.size());
         assertTrue(clients2.containsAll(clients));
     }
@@ -102,8 +102,8 @@ public final class ClientsTests implements TestsConstants {
     }
 
     private void internalTestByClass(final boolean fakeFirst) {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final MockDirectClient fakeClient = new MockDirectClient(NAME, Optional.empty(), null);
+        final var facebookClient = newFacebookClient();
+        final var fakeClient = new MockDirectClient(NAME, Optional.empty(), null);
         final Clients clients;
         if (fakeFirst) {
             clients = new Clients(CALLBACK_URL, fakeClient, facebookClient);
@@ -116,45 +116,45 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void rejectSameName() {
-        final MockIndirectClient client1 =
+        final var client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final MockIndirectClient client2 =
+        final var client2 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final Clients clients = new Clients(CALLBACK_URL, client1, client2);
+        final var clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: name");
     }
 
     @Test
     public void rejectSameNameDifferentCase() {
-        final MockIndirectClient client1 =
+        final var client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final MockIndirectClient client2 =
+        final var client2 =
             new MockIndirectClient(NAME.toUpperCase(), new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final Clients clients = new Clients(CALLBACK_URL, client1, client2);
+        final var clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: NAME");
     }
 
     @Test
     public void testFindByName() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final MockIndirectClient yahooClient = newYahooClient();
-        final Clients clients = new Clients(facebookClient, yahooClient);
+        final var facebookClient = newFacebookClient();
+        final var yahooClient = newYahooClient();
+        final var clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient("FacebookClient"));
     }
 
     @Test
     public void testFindByNameCase() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final MockIndirectClient yahooClient = newYahooClient();
-        final Clients clients = new Clients(facebookClient, yahooClient);
+        final var facebookClient = newFacebookClient();
+        final var yahooClient = newYahooClient();
+        final var clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient("FACEBOOKclient"));
     }
 
     @Test
     public void testFindByNameBlankSpaces() {
-        final MockIndirectClient facebookClient = newFacebookClient();
-        final MockIndirectClient yahooClient = newYahooClient();
-        final Clients clients = new Clients(facebookClient, yahooClient);
+        final var facebookClient = newFacebookClient();
+        final var yahooClient = newYahooClient();
+        final var clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient(" FacebookClient          "));
     }
 }

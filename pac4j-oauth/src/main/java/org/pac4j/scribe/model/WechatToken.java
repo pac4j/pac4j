@@ -49,7 +49,7 @@ public class WechatToken extends OAuth2AccessToken {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        WechatToken that = (WechatToken) o;
+        var that = (WechatToken) o;
 
         if (openid != null ? !openid.equals(that.openid) : that.openid != null) return false;
         return unionid != null ? unionid.equals(that.unionid) : that.unionid == null;
@@ -57,7 +57,7 @@ public class WechatToken extends OAuth2AccessToken {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + (openid != null ? openid.hashCode() : 0);
         result = 31 * result + (unionid != null ? unionid.hashCode() : 0);
         return result;

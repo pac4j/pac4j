@@ -23,11 +23,11 @@ public class IndirectHttpClientBuilder extends AbstractBuilder {
     }
 
     public void tryCreateLoginFormClient(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String loginUrl = getProperty(FORMCLIENT_LOGIN_URL, i);
-            final String authenticator = getProperty(FORMCLIENT_AUTHENTICATOR, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var loginUrl = getProperty(FORMCLIENT_LOGIN_URL, i);
+            final var authenticator = getProperty(FORMCLIENT_AUTHENTICATOR, i);
             if (isNotBlank(loginUrl) && isNotBlank(authenticator)) {
-                final FormClient formClient = new FormClient();
+                final var formClient = new FormClient();
                 formClient.setLoginUrl(loginUrl);
                 formClient.setAuthenticator(getAuthenticator(authenticator));
                 if (containsProperty(FORMCLIENT_USERNAME_PARAMETER, i)) {
@@ -43,10 +43,10 @@ public class IndirectHttpClientBuilder extends AbstractBuilder {
     }
 
     public void tryCreateIndirectBasicAuthClient(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String authenticator = getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var authenticator = getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i);
             if (isNotBlank(authenticator)) {
-                final IndirectBasicAuthClient indirectBasicAuthClient = new IndirectBasicAuthClient();
+                final var indirectBasicAuthClient = new IndirectBasicAuthClient();
                 indirectBasicAuthClient.setAuthenticator(getAuthenticator(authenticator));
                 if (containsProperty(INDIRECTBASICAUTH_REALM_NAME, i)) {
                     indirectBasicAuthClient.setRealmName(getProperty(INDIRECTBASICAUTH_REALM_NAME, i));

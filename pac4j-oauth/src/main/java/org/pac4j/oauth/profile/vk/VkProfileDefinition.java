@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.vk;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
@@ -72,16 +71,16 @@ public class VkProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public VkProfile extractUserProfile(final String body) {
-        final VkProfile profile = (VkProfile) newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (VkProfile) newProfile();
+        var json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            ArrayNode array = (ArrayNode) json.get("response");
-            JsonNode userNode = array.get(0);
+            var array = (ArrayNode) json.get("response");
+            var userNode = array.get(0);
             if (userNode == null) {
                 raiseProfileExtractionJsonError(body, "response");
             }
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, "uid")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
         } else {

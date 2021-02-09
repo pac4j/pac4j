@@ -25,18 +25,18 @@ public class SimpleTestDigestAuthenticator implements Authenticator {
         if (!(cred instanceof DigestCredentials)) {
             throw new CredentialsException ("Unsupported credentials type " + cred.getClass());
         }
-        DigestCredentials digestCredentials = (DigestCredentials) cred;
-        String username = digestCredentials.getUsername();
+        var digestCredentials = (DigestCredentials) cred;
+        var username = digestCredentials.getUsername();
         if (CommonHelper.isBlank(username)) {
             throw new CredentialsException("Username cannot be blank");
         }
 
-        String token = digestCredentials.getToken();
+        var token = digestCredentials.getToken();
         if (CommonHelper.isBlank(token)) {
             throw new CredentialsException("Token cannot be blank");
         }
 
-        CommonProfile profile = new CommonProfile();
+        var profile = new CommonProfile();
         profile.setId(username);
         digestCredentials.setUserProfile(profile);
     }

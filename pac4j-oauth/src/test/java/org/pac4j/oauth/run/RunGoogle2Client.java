@@ -38,7 +38,7 @@ public final class RunGoogle2Client extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final Google2Client google2Client = new Google2Client();
+        final var google2Client = new Google2Client();
         google2Client.setKey("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         google2Client.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
         google2Client.setCallbackUrl(PAC4J_BASE_URL);
@@ -53,7 +53,7 @@ public final class RunGoogle2Client extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final Google2Profile profile = (Google2Profile) userProfile;
+        final var profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(Google2Profile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "113675986756217860428",
             profile.getTypedId());

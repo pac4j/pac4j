@@ -1,12 +1,9 @@
 package org.pac4j.oauth.client;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
-import java.util.stream.Stream;
 
 import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;
@@ -45,7 +42,7 @@ public class GenericOAuth20Client extends OAuth20Client {
 
     @Override
     protected void internalInit() {
-        final GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
+        final var genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
         if (clientAuthenticationMethod != null) {
@@ -54,7 +51,7 @@ public class GenericOAuth20Client extends OAuth20Client {
 
         configuration.setCustomParams(customParams);
 
-        GenericOAuth20ProfileDefinition profileDefinition = new GenericOAuth20ProfileDefinition();
+        var profileDefinition = new GenericOAuth20ProfileDefinition();
         profileDefinition.setFirstNodePath(profilePath);
         profileDefinition.setProfileVerb(profileVerb);
         profileDefinition.setProfileUrl(profileUrl);
@@ -65,10 +62,10 @@ public class GenericOAuth20Client extends OAuth20Client {
             profileDefinition.setProfileId("id");
         }
         if (profileAttrs != null) {
-            for (Map.Entry<String, String> entry : profileAttrs.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                String[] tokens = value.split("\\|");
+            for (var entry : profileAttrs.entrySet()) {
+                var key = entry.getKey();
+                var value = entry.getValue();
+                var tokens = value.split("\\|");
                 if (tokens.length == 2) {
                     profileDefinition.profileAttribute(key, tokens[1], getConverter(tokens[0]));
                 } else if (tokens.length == 1) {
@@ -89,14 +86,14 @@ public class GenericOAuth20Client extends OAuth20Client {
     private Class[] getConverters() {
         if (converterClasses == null) {
             try {
-                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                var classLoader = Thread.currentThread().getContextClassLoader();
                 Class cla = classLoader.getClass();
                 while (cla != ClassLoader.class) {
                     cla = cla.getSuperclass();
                 }
-                Field field = cla.getDeclaredField("classes");
+                var field = cla.getDeclaredField("classes");
                 field.setAccessible(true);
-                Vector<Class> classes = (Vector<Class>) field.get(classLoader);
+                var classes = (Vector<Class>) field.get(classLoader);
                 converterClasses = classes.stream()
                     .filter(x -> AbstractAttributeConverter.class.isAssignableFrom(x) && !Modifier.isAbstract(x.getModifiers()))
                     .toArray(Class[]::new);
@@ -110,18 +107,18 @@ public class GenericOAuth20Client extends OAuth20Client {
 
     private AbstractAttributeConverter getConverter(final String typeName) {
         try {
-            Stream<Class> acceptableConverters = Arrays.stream(getConverters())
+            var acceptableConverters = Arrays.stream(getConverters())
                 .filter(x -> {
                     try {
-                        AbstractAttributeConverter converter = (AbstractAttributeConverter) x.getDeclaredConstructor().newInstance();
-                        Method accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
+                        var converter = (AbstractAttributeConverter) x.getDeclaredConstructor().newInstance();
+                        var accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
                     } catch (ReflectiveOperationException e) {
                         LOG.warn("Ignore type which no parameterless constructor:" + x.getName());
                     }
                     return false;
                 });
-            Class converterClazz = acceptableConverters.findFirst().get();
+            var converterClazz = acceptableConverters.findFirst().get();
             return (AbstractAttributeConverter) converterClazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             LOG.warn(e.toString());

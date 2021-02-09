@@ -34,7 +34,7 @@ public class QQProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        final String location = getAttribute(QQProfileDefinition.PROVINCE) + " " + getAttribute(QQProfileDefinition.CITY);
+        final var location = getAttribute(QQProfileDefinition.PROVINCE) + " " + getAttribute(QQProfileDefinition.CITY);
         return location;
     }
 

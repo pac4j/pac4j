@@ -3,7 +3,6 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.ProfileService;
 import org.pac4j.core.util.CommonHelper;
@@ -32,7 +31,7 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         CommonHelper.assertNotNull("profileService", profileService);
 
-        final CommonProfile linkedProfile = profileService.findByLinkedId(profile.getId());
+        final var linkedProfile = profileService.findByLinkedId(profile.getId());
 
         if (linkedProfile != null) {
             return Optional.ofNullable(linkedProfile);

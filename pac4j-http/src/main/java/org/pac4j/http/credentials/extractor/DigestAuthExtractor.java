@@ -53,39 +53,39 @@ public class DigestAuthExtractor implements CredentialsExtractor {
      */
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final Optional<Credentials> credentials = this.extractor.extract(context, sessionStore);
+        final var credentials = this.extractor.extract(context, sessionStore);
         if (!credentials.isPresent()) {
             return Optional.empty();
         }
 
-        String token = ((TokenCredentials) credentials.get()).getToken();
-        Map<String, String> valueMap = parseTokenValue(token);
-        String username = valueMap.get("username");
-        String response = valueMap.get("response");
+        var token = ((TokenCredentials) credentials.get()).getToken();
+        var valueMap = parseTokenValue(token);
+        var username = valueMap.get("username");
+        var response = valueMap.get("response");
 
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
             throw new CredentialsException("Bad format of the digest auth header");
         }
-        String realm = valueMap.get("realm");
-        String nonce = valueMap.get("nonce");
-        String uri = valueMap.get("uri");
-        String cnonce = valueMap.get("cnonce");
-        String nc = valueMap.get("nc");
-        String qop = valueMap.get("qop");
-        String method = context.getRequestMethod();
+        var realm = valueMap.get("realm");
+        var nonce = valueMap.get("nonce");
+        var uri = valueMap.get("uri");
+        var cnonce = valueMap.get("cnonce");
+        var nc = valueMap.get("nc");
+        var qop = valueMap.get("qop");
+        var method = context.getRequestMethod();
 
         return Optional.of(new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop));
     }
 
     private Map<String, String> parseTokenValue(String token) {
-        StringTokenizer tokenizer = new StringTokenizer(token, ", ");
+        var tokenizer = new StringTokenizer(token, ", ");
         String keyval;
         final Map<String, String> map = new HashMap<>();
         while (tokenizer.hasMoreElements()) {
             keyval = tokenizer.nextToken();
             if (keyval.contains("=")) {
-                String key = keyval.substring(0, keyval.indexOf("="));
-                String value = keyval.substring(keyval.indexOf("=") + 1);
+                var key = keyval.substring(0, keyval.indexOf("="));
+                var value = keyval.substring(keyval.indexOf("=") + 1);
                 map.put(key.trim(), value.replaceAll("\"", "").trim());
             }
         }

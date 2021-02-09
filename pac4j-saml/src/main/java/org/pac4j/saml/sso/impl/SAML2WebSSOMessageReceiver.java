@@ -26,7 +26,7 @@ public class SAML2WebSSOMessageReceiver extends AbstractSAML2MessageReceiver {
 
     @Override
     protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
-        final Pac4jHTTPPostDecoder decoder = new Pac4jHTTPPostDecoder(webContext);
+        final var decoder = new Pac4jHTTPPostDecoder(webContext);
         try {
             decoder.setParserPool(Configuration.getParserPool());
             decoder.initialize();

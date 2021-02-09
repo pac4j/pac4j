@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.hiorgserver;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.HashSet;
 import java.util.Set;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -59,12 +58,12 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public HiOrgServerProfile extractUserProfile(String body) {
-        final HiOrgServerProfile profile = (HiOrgServerProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (HiOrgServerProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             logger.debug("Extracting user profile from JSON node " + json);
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, USER_ID)));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             // Secondary attributes are generated from primary attributes
@@ -80,9 +79,9 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
     protected void extractRoles(HiOrgServerProfile profile) {
         final Integer rolesAsInt = profile.getRolesAsInteger();
         Set<String> roles = new HashSet<>();
-        for (int i = 0; i <= 10; i++) {
-            int groupId = (int) Math.pow(2, i);
-            boolean isGroupSet = (rolesAsInt & groupId) == groupId;
+        for (var i = 0; i <= 10; i++) {
+            var groupId = (int) Math.pow(2, i);
+            var isGroupSet = (rolesAsInt & groupId) == groupId;
             if (isGroupSet) {
                 logger.debug("Extracted role " + groupId);
                 roles.add(String.valueOf(groupId));

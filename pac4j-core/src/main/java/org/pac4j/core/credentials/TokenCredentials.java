@@ -27,7 +27,7 @@ public class TokenCredentials extends Credentials {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final TokenCredentials that = (TokenCredentials) o;
+        final var that = (TokenCredentials) o;
 
         return !(token != null ? !token.equals(that.token) : that.token != null);
     }

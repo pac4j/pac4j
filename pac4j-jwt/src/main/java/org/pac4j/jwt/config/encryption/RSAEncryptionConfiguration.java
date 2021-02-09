@@ -93,7 +93,7 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
     }
 
     public void setKeysFromJwk(final String json) {
-        final KeyPair pair = JWKHelper.buildRSAKeyPairFromJwk(json);
+        final var pair = JWKHelper.buildRSAKeyPairFromJwk(json);
         this.publicKey = (RSAPublicKey) pair.getPublic();
         this.privateKey = (RSAPrivateKey) pair.getPrivate();
     }

@@ -40,20 +40,20 @@ public class RunTestshib extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final SAML2Configuration cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
+        final var cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
                 "pac4j-demo-passwd", "pac4j-demo-passwd", new ClassPathResource("testshib-providers.xml"));
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "test-sp-metadata.xml").getAbsolutePath()));
         cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-        final SAML2Client client = new SAML2Client(cfg);
+        final var client = new SAML2Client(cfg);
         client.setCallbackUrl(PAC4J_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final SAML2Profile profile = (SAML2Profile) userProfile;
+        final var profile = (SAML2Profile) userProfile;
         assertEquals("[Member, Staff]", profile.getAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").toString());
         assertEquals("[myself]", profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.1").toString());
         assertEquals("[Me Myself And I]", profile.getAttribute("urn:oid:2.5.4.3").toString());

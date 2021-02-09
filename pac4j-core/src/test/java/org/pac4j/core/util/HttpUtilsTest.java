@@ -25,9 +25,9 @@ public class HttpUtilsTest {
         HttpURLConnection connectionMock = null ;
 
         // expected test data for mock connection
-        String testResponseBody = "{\"error_description\":\"MSIS9612: The authorization code received in [code] parameter is invalid. \"}";
-        int testConnectionResponseCode =400;
-        String testConnResponseMessage = "Bad Request.";
+        var testResponseBody = "{\"error_description\":\"MSIS9612: The authorization code received in [code] parameter is invalid. \"}";
+        var testConnectionResponseCode =400;
+        var testConnResponseMessage = "Bad Request.";
 
         // mocking expected test data
         try(InputStream in = new ByteArrayInputStream(testResponseBody.getBytes(StandardCharsets.UTF_8))) {
@@ -37,8 +37,8 @@ public class HttpUtilsTest {
             Mockito.when(connectionMock.getErrorStream()).thenReturn(in);
 
             //evaluating test
-            String actual = HttpUtils.buildHttpErrorMessage(connectionMock);
-            String expected = String.format("(%d) %s[%s]", testConnectionResponseCode, testConnResponseMessage, testResponseBody);
+            var actual = HttpUtils.buildHttpErrorMessage(connectionMock);
+            var expected = String.format("(%d) %s[%s]", testConnectionResponseCode, testConnResponseMessage, testResponseBody);
             Assert.assertTrue(expected.equals(actual));
         }
 

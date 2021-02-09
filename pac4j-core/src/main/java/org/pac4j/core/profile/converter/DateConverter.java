@@ -41,7 +41,7 @@ public class DateConverter extends AbstractAttributeConverter {
             } else {
                 simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
             }
-            final String s = (String) attribute;
+            final var s = (String) attribute;
             try {
                 return simpleDateFormat.parse(s);
             } catch (final ParseException e) {

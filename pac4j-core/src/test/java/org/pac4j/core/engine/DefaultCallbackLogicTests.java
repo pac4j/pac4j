@@ -26,7 +26,6 @@ import org.pac4j.core.util.TestsHelper;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -85,61 +84,61 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testNullConfig() {
         config = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "config cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "config cannot be null");
     }
 
     @Test
     public void testNullContext() {
         context = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "webContext cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "webContext cannot be null");
     }
 
     @Test
     public void testNullHttpActionAdapter() {
         httpActionAdapter = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "httpActionAdapter cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 
     @Test
     public void testBlankDefaultUrl() {
         defaultUrl = "";
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "defaultUrl cannot be blank");
+        TestsHelper.expectException(this::call, TechnicalException.class, "defaultUrl cannot be blank");
     }
 
     @Test
     public void testNullClients() {
         config.setClients(null);
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "clients cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "clients cannot be null");
     }
 
     @Test
     public void testNullClientFinder() {
         clientFinder = null;
-        TestsHelper.expectException(() -> call(), TechnicalException.class, "clients cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "clients cannot be null");
     }
 
     @Test
     public void testDirectClient() {
         request.addParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final MockDirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
+        final var directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(directClient));
-        TestsHelper.expectException(() -> call(), TechnicalException.class,
+        TestsHelper.expectException(this::call, TechnicalException.class,
             "unable to find one indirect client for the callback: check the callback URL for a client name parameter or" +
                 " suffix path or ensure that your configuration defaults to one indirect client");
     }
 
     @Test
     public void testCallback() {
-        final String originalSessionId = request.getSession().getId();
+        final var originalSessionId = request.getSession().getId();
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.getClients().init();
         call();
-        final HttpSession session = request.getSession();
-        final String newSessionId = session.getId();
-        final LinkedHashMap<String, CommonProfile> profiles =
+        final var session = request.getSession();
+        final var newSessionId = session.getId();
+        final var profiles =
             (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
@@ -160,18 +159,18 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void internalTestCallbackWithOriginallyRequestedUrl(final int code) {
-        HttpSession session = request.getSession();
-        final String originalSessionId = session.getId();
+        var session = request.getSession();
+        final var originalSessionId = session.getId();
         session.setAttribute(Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.getClients().init();
         call();
         session = request.getSession();
-        final String newSessionId = session.getId();
-        final LinkedHashMap<String, CommonProfile> profiles =
+        final var newSessionId = session.getId();
+        final var profiles =
             (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
@@ -186,17 +185,17 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallbackNoRenew() {
-        final String originalSessionId = request.getSession().getId();
+        final var originalSessionId = request.getSession().getId();
         request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
         config.getClients().init();
         call();
-        final HttpSession session = request.getSession();
-        final String newSessionId = session.getId();
-        final LinkedHashMap<String, CommonProfile> profiles =
+        final var session = request.getSession();
+        final var newSessionId = session.getId();
+        final var profiles =
             (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());

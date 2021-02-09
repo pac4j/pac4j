@@ -28,11 +28,11 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
-        String newUrl = urlResolver.compute(url, context);
+        var newUrl = urlResolver.compute(url, context);
         if (newUrl != null && !newUrl.contains(this.clientNameParameter + '=')) {
             newUrl = CommonHelper.addParameter(newUrl, this.clientNameParameter, clientName);
         }
-        for (final Map.Entry<String, String> entry : this.customParams.entrySet()) {
+        for (final var entry : this.customParams.entrySet()) {
             newUrl = CommonHelper.addParameter(newUrl, entry.getKey(), entry.getValue());
         }
         return newUrl;
@@ -40,7 +40,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public boolean matches(final String clientName, final WebContext context) {
-        final String name = context.getRequestParameter(this.clientNameParameter).orElse(null);
+        final var name = context.getRequestParameter(this.clientNameParameter).orElse(null);
         return CommonHelper.areEqualsIgnoreCaseAndTrim(name, clientName);
     }
 

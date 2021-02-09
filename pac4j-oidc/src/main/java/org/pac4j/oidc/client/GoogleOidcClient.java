@@ -25,7 +25,7 @@ public class GoogleOidcClient extends OidcClient {
     @Override
     protected void internalInit() {
         getConfiguration().defaultDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
-        final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
+        final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new GoogleOidcProfile()));
         defaultProfileCreator(profileCreator);
         defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());

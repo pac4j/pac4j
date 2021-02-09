@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import java.util.Optional;
 
 /**
  * Default CSRF token generator.
@@ -25,13 +24,13 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
     @Override
     public String get(final WebContext context, final SessionStore sessionStore) {
-        final String token = CommonHelper.randomString(32);
+        final var token = CommonHelper.randomString(32);
         LOGGER.debug("generated CSRF token: {} for current URL: {}", token, context.getFullRequestURL());
-        final long expirationDate = new Date().getTime() + ttlInSeconds * 1000;
+        final var expirationDate = new Date().getTime() + ttlInSeconds * 1000;
 
-        final Optional<Object> optCurrentToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
+        final var optCurrentToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
         if (optCurrentToken.isPresent()) {
-            final String currentToken = (String) optCurrentToken.get();
+            final var currentToken = (String) optCurrentToken.get();
             LOGGER.debug("previous CSRF token: {}", currentToken);
             sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, currentToken);
         } else {

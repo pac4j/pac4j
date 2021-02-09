@@ -37,15 +37,15 @@ public class KerberosAuthenticator implements Authenticator {
 
     @Override
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
-        final KerberosCredentials credentials = (KerberosCredentials) cred;
+        final var credentials = (KerberosCredentials) cred;
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
-        KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
+        var ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
 
-        String subject = ticketValidation.username();
+        var subject = ticketValidation.username();
         logger.debug("Succesfully validated " + subject);
 
-        KerberosProfile profile = new KerberosProfile(ticketValidation.getGssContext());
+        var profile = new KerberosProfile(ticketValidation.getGssContext());
         profile.setId(subject);
         credentials.setUserProfile(profile);
     }

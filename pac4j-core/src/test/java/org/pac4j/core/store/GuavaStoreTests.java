@@ -21,7 +21,7 @@ public final class GuavaStoreTests extends AbstractStoreTests<GuavaStore> {
 
     @Test
     public void testBadSize() {
-        final GuavaStore store = new GuavaStore();
+        final var store = new GuavaStore();
         store.setTimeout(15);
         store.setTimeUnit(TimeUnit.SECONDS);
         TestsHelper.expectException(store::init, TechnicalException.class, "size mut be greater than zero");
@@ -29,7 +29,7 @@ public final class GuavaStoreTests extends AbstractStoreTests<GuavaStore> {
 
     @Test
     public void testBadTimeout() {
-        final GuavaStore store = new GuavaStore();
+        final var store = new GuavaStore();
         store.setSize(15);
         store.setTimeUnit(TimeUnit.SECONDS);
         TestsHelper.expectException(store::init, TechnicalException.class, "timeout must be greater than zero");
@@ -37,7 +37,7 @@ public final class GuavaStoreTests extends AbstractStoreTests<GuavaStore> {
 
     @Test
     public void testBadTimeUnit() {
-        final GuavaStore store = new GuavaStore();
+        final var store = new GuavaStore();
         store.setSize(15);
         store.setTimeout(20);
         TestsHelper.expectException(store::init, TechnicalException.class, "timeUnit cannot be null");

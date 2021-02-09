@@ -45,7 +45,7 @@ public class PathMatcher implements Matcher {
 
     public PathMatcher excludePaths(final String... paths) {
         if (paths != null && paths.length > 0) {
-            for (final String path : paths) {
+            for (final var path : paths) {
                 excludePath(path);
             }
         }
@@ -106,7 +106,7 @@ public class PathMatcher implements Matcher {
             return false;
         }
 
-        for (Pattern pattern : excludedPatterns) {
+        for (var pattern : excludedPatterns) {
             if (pattern.matcher(path).matches()) {
                 return false;
             }
@@ -125,12 +125,12 @@ public class PathMatcher implements Matcher {
 
     public void setExcludedPaths(Collection<String> paths) {
         excludedPaths.clear();
-        paths.forEach(path -> excludePath(path));
+        paths.forEach(this::excludePath);
     }
 
     public void setExcludedPatterns(Collection<String> regularExpressions) {
         excludedPatterns.clear();
-        regularExpressions.forEach(regex -> excludeRegex(regex));
+        regularExpressions.forEach(this::excludeRegex);
     }
 
     public void setExcludedPath(final String path) {

@@ -36,7 +36,7 @@ public class RunBitbucketClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        BitbucketClient client = new BitbucketClient();
+        var client = new BitbucketClient();
         client.setKey("bjEt8BMpLwFDqZUvp6");
         client.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
         client.setCallbackUrl(PAC4J_BASE_URL);
@@ -45,7 +45,7 @@ public class RunBitbucketClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        BitbucketProfile profile = (BitbucketProfile) userProfile;
+        var profile = (BitbucketProfile) userProfile;
         assertEquals("testscribeup", profile.getId());
         assertEquals(BitbucketProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "testscribeup", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), BitbucketProfile.class));

@@ -24,7 +24,7 @@ public class SAML2HttpClientBuilder {
 
     public HttpClient build() {
         try {
-            final Pac4jHttpClientBuilder builder = new Pac4jHttpClientBuilder();
+            final var builder = new Pac4jHttpClientBuilder();
             builder.resetDefaults();
 
             if (this.connectionTimeout != null) {
@@ -106,7 +106,7 @@ public class SAML2HttpClientBuilder {
     private static class Pac4jHttpClientBuilder extends HttpClientBuilder {
         @Override
         protected org.apache.http.impl.client.HttpClientBuilder getApacheBuilder() {
-            final org.apache.http.impl.client.HttpClientBuilder builder = super.getApacheBuilder();
+            final var builder = super.getApacheBuilder();
             return builder;
         }
     }

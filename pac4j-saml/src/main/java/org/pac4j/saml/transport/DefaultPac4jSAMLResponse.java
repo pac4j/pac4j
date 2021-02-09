@@ -81,7 +81,7 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
 
         public final String getOutgoingContent() {
             try {
-                final String result = new String(this.outputStream.toByteArray(), StandardCharsets.UTF_8);
+                final var result = new String(this.outputStream.toByteArray(), StandardCharsets.UTF_8);
                 return result;
             } catch (final Exception e) {
                 throw new RuntimeException(e);

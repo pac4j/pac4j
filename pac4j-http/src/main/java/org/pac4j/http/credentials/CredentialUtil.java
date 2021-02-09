@@ -26,7 +26,7 @@ public final class CredentialUtil {
      */
     public static String encryptMD5(String data) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
+            var digest = MessageDigest.getInstance("MD5");
             return copyValueOf(Hex.encodeHex(digest.digest(data.getBytes(StandardCharsets.UTF_8))));
         } catch (final NoSuchAlgorithmException ex) {
             throw new TechnicalException("Failed to instantiate an MD5 algorithm", ex);

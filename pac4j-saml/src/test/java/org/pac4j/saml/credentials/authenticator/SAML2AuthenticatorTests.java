@@ -9,7 +9,6 @@ import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;
@@ -40,13 +39,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void verifyAttributeMapping() {
-        final NameID nameid = nameIdBuilder.buildObject();
+        final var nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
         nameid.setSPNameQualifier("pac4j");
         nameid.setNameQualifier("pac4j");
         nameid.setSPProvidedID("pac4j");
 
-        final Conditions conditions = conditionsBuilder.buildObject();
+        final var conditions = conditionsBuilder.buildObject();
         conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
 
@@ -60,7 +59,7 @@ public class SAML2AuthenticatorTests {
         attributes.add(createAttribute("givenName", "urn:oid:2.5.4.42", "developer"));
         attributes.add(createAttribute("surname", "urn:oid:2.5.4.4", "security"));
 
-        final SAML2Credentials credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
+        final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
             SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
 
@@ -69,25 +68,25 @@ public class SAML2AuthenticatorTests {
         mappedAttributes.put("urn:oid:2.5.4.42", "mapped-given-name");
         mappedAttributes.put("urn:oid:2.5.4.4", "mapped-surname");
 
-        final SAML2Authenticator authenticator = new SAML2Authenticator("username", mappedAttributes);
+        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final UserProfile finalProfile = credentials.getUserProfile();
+        final var finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
     }
 
     private Attribute createAttribute(final String friendlyName, final String name, final String value) {
-        final SAMLObjectBuilder<Attribute> attributeBuilder = (SAMLObjectBuilder<Attribute>)
+        final var attributeBuilder = (SAMLObjectBuilder<Attribute>)
             this.builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
 
-        final Attribute attr = attributeBuilder.buildObject();
+        final var attr = attributeBuilder.buildObject();
         attr.setFriendlyName(friendlyName);
         attr.setName(name);
 
-        final XMLObject attrValue = mock(XMLObject.class);
-        final Element dom = mock(Element.class);
+        final var attrValue = mock(XMLObject.class);
+        final var dom = mock(Element.class);
         when(dom.getTextContent()).thenReturn(value);
         when(attrValue.getDOM()).thenReturn(dom);
 

@@ -23,11 +23,11 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
     }
 
     public void tryBuildDbAuthenticator(final Map<String, Authenticator> authenticators, final Map<String, PasswordEncoder> encoders) {
-        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+        for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             if (containsProperty(DB_DATASOURCE_CLASS_NAME, i) || containsProperty(DB_JDBC_URL, i)) {
                 try {
-                    final DataSource ds = buildDataSource(i);
-                    final DbProfileService authenticator = new DbProfileService(ds);
+                    final var ds = buildDataSource(i);
+                    final var authenticator = new DbProfileService(ds);
                     if (containsProperty(DB_ATTRIBUTES, i)) {
                         authenticator.setAttributes(getProperty(DB_ATTRIBUTES, i));
                     }
@@ -55,7 +55,7 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
     }
 
     private DataSource buildDataSource(final int i) throws SQLException {
-        final HikariDataSource ds = new HikariDataSource();
+        final var ds = new HikariDataSource();
         if (containsProperty(DB_DATASOURCE_CLASS_NAME, i)) {
             ds.setDataSourceClassName(getProperty(DB_DATASOURCE_CLASS_NAME, i));
         } else if (containsProperty(DB_JDBC_URL, i)) {
@@ -126,7 +126,7 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
         if (containsProperty(DB_LEAK_DETECTION_THRESHOLD, i)) {
             ds.setLeakDetectionThreshold(getPropertyAsLong(DB_LEAK_DETECTION_THRESHOLD, i));
         }
-        for (int j = 1; j <= MAX_NUM_CUSTOM_PROPERTIES; j++) {
+        for (var j = 1; j <= MAX_NUM_CUSTOM_PROPERTIES; j++) {
             if (containsProperty(DB_CUSTOM_PARAM_KEY + j, i)) {
                 ds.addDataSourceProperty(getProperty(DB_CUSTOM_PARAM_KEY + j, i), getProperty(DB_CUSTOM_PARAM_VALUE + j, i));
             }

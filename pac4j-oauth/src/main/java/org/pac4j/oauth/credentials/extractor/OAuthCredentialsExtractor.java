@@ -46,11 +46,11 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
         }
         // check errors
         try {
-            boolean errorFound = false;
-            final OAuthCredentialsException oauthCredentialsException =
+            var errorFound = false;
+            final var oauthCredentialsException =
                 new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
-            for (final String key : OAuthCredentialsException.ERROR_NAMES) {
-                final Optional<String> value = context.getRequestParameter(key);
+            for (final var key : OAuthCredentialsException.ERROR_NAMES) {
+                final var value = context.getRequestParameter(key);
                 if (value.isPresent()) {
                     errorFound = true;
                     oauthCredentialsException.setErrorMessage(key, value.get());

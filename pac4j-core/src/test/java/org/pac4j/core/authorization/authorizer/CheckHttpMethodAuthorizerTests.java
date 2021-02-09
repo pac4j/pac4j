@@ -31,7 +31,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     @Test
     public void testGoodHttpMethod() {
-        final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
+        final var authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
             HttpConstants.HTTP_METHOD.POST);
         assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name()),
             new MockSessionStore(), profiles));
@@ -39,7 +39,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     @Test
     public void testBadHttpMethod() {
-        final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
+        final var authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
         assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.DELETE.name()),
             new MockSessionStore(), profiles));
     }

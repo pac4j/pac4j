@@ -21,13 +21,13 @@ public final class RunOAuth20Client extends RunGithubClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OAuth20Configuration config = new OAuth20Configuration();
+        final var config = new OAuth20Configuration();
         config.setApi(GitHubApi.instance());
         config.setProfileDefinition(new GitHubProfileDefinition());
         config.setScope("user");
         config.setKey("62374f5573a89a8f9900");
         config.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
-        final OAuth20Client client = new OAuth20Client();
+        final var client = new OAuth20Client();
         client.setConfiguration(config);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;

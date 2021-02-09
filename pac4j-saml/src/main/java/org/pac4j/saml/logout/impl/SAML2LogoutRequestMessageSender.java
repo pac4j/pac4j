@@ -8,7 +8,7 @@ import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
 
 /**
  * Sender for SAML logout requests.
- * 
+ *
  * @author Matthieu Taggiasco
  * @author Jerome Leleu
  * @since 2.0.0
@@ -22,6 +22,7 @@ public class SAML2LogoutRequestMessageSender extends AbstractSAML2MessageSender<
         super(signatureSigningParametersProvider, destinationBindingType, signErrorResponses, isRequestSigned);
     }
 
+    @Override
     protected Endpoint getEndpoint(final SAML2MessageContext context) {
         return context.getIDPSingleLogoutService(destinationBindingType);
     }

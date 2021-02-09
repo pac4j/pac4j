@@ -7,6 +7,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@FunctionalInterface
 public interface DecryptionProvider {
     Decrypter build();
 }

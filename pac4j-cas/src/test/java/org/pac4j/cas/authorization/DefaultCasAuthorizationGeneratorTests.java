@@ -23,7 +23,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
     public void testNoAttribute() {
         final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
         final Map<String, Object> attributes = new HashMap<>();
-        final CasProfile profile = new CasProfile();
+        final var profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
@@ -34,7 +34,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
-        final CasProfile profile = new CasProfile();
+        final var profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
@@ -45,7 +45,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
-        final CasProfile profile = new CasProfile();
+        final var profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
@@ -56,7 +56,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
-        final CasProfile profile = new CasProfile();
+        final var profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(true, profile.isRemembered());

@@ -23,17 +23,17 @@ public class DirectClientBuilder extends AbstractBuilder {
     }
 
     public void tryCreateAnonymousClient(final List<Client> clients) {
-        final String anonymous = getProperty(ANONYMOUS);
+        final var anonymous = getProperty(ANONYMOUS);
         if (isNotBlank(anonymous)) {
             clients.add(new AnonymousClient());
         }
     }
 
     public void tryCreateDirectBasciAuthClient(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String authenticator = getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var authenticator = getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i);
             if (isNotBlank(authenticator)) {
-                final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient();
+                final var directBasicAuthClient = new DirectBasicAuthClient();
                 directBasicAuthClient.setAuthenticator(getAuthenticator(authenticator));
                 directBasicAuthClient.setName(concat(directBasicAuthClient.getName(), i));
                 clients.add(directBasicAuthClient);

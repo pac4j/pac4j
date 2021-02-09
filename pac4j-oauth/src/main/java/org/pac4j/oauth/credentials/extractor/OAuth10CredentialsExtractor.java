@@ -26,20 +26,20 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor {
 
     @Override
     protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
-        final Optional<String> tokenParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_TOKEN);
-        final Optional<String> verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
+        final var tokenParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_TOKEN);
+        final var verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
         if (tokenParameter.isPresent() && verifierParameter.isPresent()) {
             // get request token from session
-            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) sessionStore
+            final var tokenSession = (OAuth1RequestToken) sessionStore
                     .get(context, ((OAuth10Configuration) configuration)
                     .getRequestTokenSessionAttributeName(client.getName())).orElse(null);
             logger.debug("tokenRequest: {}", tokenSession);
-            final String token = OAuthEncoder.decode(tokenParameter.get());
-            final String verifier = OAuthEncoder.decode(verifierParameter.get());
+            final var token = OAuthEncoder.decode(tokenParameter.get());
+            final var verifier = OAuthEncoder.decode(verifierParameter.get());
             logger.debug("token: {} / verifier: {}", token, verifier);
             return Optional.of(new OAuth10Credentials(tokenSession, token, verifier));
         } else {
-            final String message = "No credential found";
+            final var message = "No credential found";
             throw new OAuthCredentialsException(message);
         }
     }

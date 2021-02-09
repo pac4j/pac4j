@@ -7,6 +7,7 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@FunctionalInterface
 public interface SAML2SignatureTrustEngineProvider {
     SignatureTrustEngine build();
 }

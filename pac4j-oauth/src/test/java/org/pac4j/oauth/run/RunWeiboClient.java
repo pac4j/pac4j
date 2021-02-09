@@ -46,10 +46,10 @@ public final class RunWeiboClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final String apiKey = "3722350620";
-        final String apiSecret = "3edbe998b0d53130db83928c330c879b";
+        final var apiKey = "3722350620";
+        final var apiSecret = "3edbe998b0d53130db83928c330c879b";
 
-        final WeiboClient weiboClient = new WeiboClient();
+        final var weiboClient = new WeiboClient();
         weiboClient.setKey(apiKey);
         weiboClient.setSecret(apiSecret);
         weiboClient.setCallbackUrl("https://git.xjiakao.com/cas/login?client_name=WeiboClient");
@@ -64,7 +64,7 @@ public final class RunWeiboClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final WeiboProfile profile = (WeiboProfile) userProfile;
+        final var profile = (WeiboProfile) userProfile;
         assertEquals("6591860688", profile.getId());
         assertEquals(WeiboProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "6591860688",
             profile.getTypedId());

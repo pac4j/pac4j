@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.SessionStore;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@FunctionalInterface
 public interface Matcher {
 
     /**

@@ -40,7 +40,7 @@ public class LocalCachingAuthenticatorTests {
 
         @Override
         public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
-            final CommonProfile profile = new CommonProfile();
+            final var profile = new CommonProfile();
             profile.setId(((UsernamePasswordCredentials) credentials).getUsername());
             credentials.setUserProfile(profile);
         }
@@ -52,8 +52,8 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testDoubleCalls() {
-        final OnlyOneCallAuthenticator authenticator = new OnlyOneCallAuthenticator();
-        final LocalCachingAuthenticator localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
+        final var authenticator = new OnlyOneCallAuthenticator();
+        final var localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
         localCachingAuthenticator.init();
         final Credentials credentials1 = new UsernamePasswordCredentials("a", "a");
         localCachingAuthenticator.validate(credentials1, null, null);
@@ -63,7 +63,7 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testNoCache() {
-        final LocalCachingAuthenticator authenticator = new
+        final var authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init();
 
@@ -72,7 +72,7 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testValidateAndCache() {
-        final LocalCachingAuthenticator authenticator = new
+        final var authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init();
 
@@ -82,7 +82,7 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testValidateAndCacheSwitchDelegate() {
-        final LocalCachingAuthenticator authenticator = new
+        final var authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init();
 
@@ -95,7 +95,7 @@ public class LocalCachingAuthenticatorTests {
 
     @Test(expected=CredentialsException.class)
     public void testValidateAndNoCacheSwitchDelegate() {
-        final LocalCachingAuthenticator authenticator = new
+        final var authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.MINUTES);
         authenticator.init();
         authenticator.validate(this.credentials, null, null);
@@ -107,7 +107,7 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testValidateAndCacheAndRemove() {
-        final LocalCachingAuthenticator authenticator = new
+        final var authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init();
 
@@ -119,7 +119,7 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testValidateAndExpire() {
-        final LocalCachingAuthenticator authenticator = new
+        final var authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 500, TimeUnit.MILLISECONDS);
         authenticator.init();
 

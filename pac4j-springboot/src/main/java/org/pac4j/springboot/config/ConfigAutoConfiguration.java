@@ -24,7 +24,7 @@ public class ConfigAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Config config() {
-        final PropertiesConfigFactory factory =
+        final var factory =
             new PropertiesConfigFactory(pac4j.getCallbackUrl(), pac4j.getProperties());
         return factory.build();
     }

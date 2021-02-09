@@ -24,7 +24,7 @@ public final class ConfigTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testNullAuthorizersSetter() {
-        final Config config = new Config();
+        final var config = new Config();
         config.setAuthorizers(null);
     }
 
@@ -35,17 +35,17 @@ public final class ConfigTests implements TestsConstants {
 
     @Test
     public void testAddAuthorizer() {
-        final Config config = new Config();
-        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
+        final var config = new Config();
+        final var authorizer = new RequireAnyRoleAuthorizer();
         config.addAuthorizer(NAME, authorizer);
         assertEquals(authorizer, config.getAuthorizers().get(NAME));
     }
 
     @Test
     public void testConstructor() {
-        final MockIndirectClient client =
+        final var client =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final Config config = new Config(CALLBACK_URL, client);
+        final var config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));
     }

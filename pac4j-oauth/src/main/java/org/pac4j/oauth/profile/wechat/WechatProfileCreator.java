@@ -23,8 +23,8 @@ public class WechatProfileCreator extends OAuth20ProfileCreator {
 
     @Override
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
-        final WechatToken token = (WechatToken) accessToken;
-        final Optional<UserProfile> profile = super.retrieveUserProfileFromToken(context, token);
+        final var token = (WechatToken) accessToken;
+        final var profile = super.retrieveUserProfileFromToken(context, token);
         ((WechatProfile) profile.get()).setId(token.getOpenid());
         return profile;
     }

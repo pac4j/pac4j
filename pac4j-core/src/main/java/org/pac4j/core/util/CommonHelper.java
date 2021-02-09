@@ -159,7 +159,7 @@ public final class CommonHelper {
      */
     public static String addParameter(final String url, final String name, final String value) {
         if (url != null) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             sb.append(url);
             if (name != null) {
                 if (url.indexOf("?") >= 0) {
@@ -188,7 +188,7 @@ public final class CommonHelper {
         try {
             return URLEncoder.encode(text, StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
-            final String message = "Unable to encode text : " + text;
+            final var message = "Unable to encode text : " + text;
             throw new TechnicalException(message, e);
         }
     }
@@ -201,12 +201,12 @@ public final class CommonHelper {
      * @return a "nice toString" text
      */
     public static String toNiceString(final Class<?> clazz, final Object... args) {
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         sb.append("#");
         sb.append(clazz.getSimpleName());
         sb.append("# |");
-        boolean b = true;
-        for (final Object arg : args) {
+        var b = true;
+        for (final var arg : args) {
             if (b) {
                 sb.append(" ");
                 sb.append(arg);
@@ -228,9 +228,9 @@ public final class CommonHelper {
      * @return the random size
      */
     public static String randomString(final int size) {
-        final StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         while (builder.length() < size) {
-            final String suffix = java.util.UUID.randomUUID().toString().replace("-", "");
+            final var suffix = java.util.UUID.randomUUID().toString().replace("-", "");
             builder.append(suffix);
         }
         return builder.substring(0, size);
@@ -271,9 +271,9 @@ public final class CommonHelper {
         if (str == null || open == null || close == null) {
             return null;
         }
-        int start = str.indexOf(open);
+        var start = str.indexOf(open);
         if (start != INDEX_NOT_FOUND) {
-            int end = str.indexOf(close, start + open.length());
+            var end = str.indexOf(close, start + open.length());
             if (end != INDEX_NOT_FOUND) {
                 return str.substring(start + open.length(), end);
             }
@@ -288,7 +288,7 @@ public final class CommonHelper {
         if (separator == null) {
             return EMPTY;
         }
-        int pos = str.indexOf(separator);
+        var pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
             return EMPTY;
         }
@@ -302,7 +302,7 @@ public final class CommonHelper {
         if (separator.length() == 0) {
             return EMPTY;
         }
-        int pos = str.indexOf(separator);
+        var pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
             return str;
         }
@@ -324,12 +324,12 @@ public final class CommonHelper {
      * @throws NoSuchMethodException  method not found
      */
     public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
-        Constructor constructor = constructorsCache.get(name);
+        var constructor = constructorsCache.get(name);
         if (constructor == null) {
             synchronized (constructorsCache) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
-                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    var tccl = Thread.currentThread().getContextClassLoader();
 
                     if (tccl == null) {
                         constructor = Class.forName(name).getDeclaredConstructor();

@@ -21,29 +21,29 @@ public final class QueryParameterCallbackUrlResolverTests implements TestsConsta
 
     @Test
     public void testParams() {
-        final String url = new QueryParameterCallbackUrlResolver(ImmutableMap.of("param1", "value", "param2", "value2"))
+        final var url = new QueryParameterCallbackUrlResolver(ImmutableMap.of("param1", "value", "param2", "value2"))
             .compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
         assertEquals(CALLBACK_URL +'?' + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER
             + '=' + MY_CLIENT_NAME + "&param1=value&param2=value2", url);
     }
     @Test
     public void testCompute() {
-        final String url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
+        final var url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
         assertEquals(CALLBACK_URL +'?' + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + '=' + MY_CLIENT_NAME, url);
     }
 
     @Test
     public void testComputeSpecificParameter() {
-        final QueryParameterCallbackUrlResolver resolver = new QueryParameterCallbackUrlResolver();
+        final var resolver = new QueryParameterCallbackUrlResolver();
         resolver.setClientNameParameter(KEY);
-        final String url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
+        final var url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
         assertEquals(CALLBACK_URL +'?' + KEY + '=' + MY_CLIENT_NAME, url);
     }
 
     @Test
     public void testComputeCallbackUrlAlreadyDefined() {
-        final String callbackUrl = CALLBACK_URL +'?' + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=cn";
-        final String url = resolver.compute(new DefaultUrlResolver(), callbackUrl, MY_CLIENT_NAME, MockWebContext.create());
+        final var callbackUrl = CALLBACK_URL +'?' + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=cn";
+        final var url = resolver.compute(new DefaultUrlResolver(), callbackUrl, MY_CLIENT_NAME, MockWebContext.create());
         assertEquals(callbackUrl, url);
     }
 
@@ -54,7 +54,7 @@ public final class QueryParameterCallbackUrlResolverTests implements TestsConsta
 
     @Test
     public void testMatches() {
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, MY_CLIENT_NAME);
         assertTrue(resolver.matches(MY_CLIENT_NAME, context));
     }

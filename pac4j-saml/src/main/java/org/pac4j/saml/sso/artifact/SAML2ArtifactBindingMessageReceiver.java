@@ -45,7 +45,7 @@ public class SAML2ArtifactBindingMessageReceiver extends AbstractSAML2MessageRec
 
     @Override
     protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
-        final SAML2ArtifactBindingDecoder decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
+        final var decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
                 spMetadataResolver, soapPipelineProvider);
         try {
             decoder.setParserPool(Configuration.getParserPool());

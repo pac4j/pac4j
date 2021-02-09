@@ -25,7 +25,7 @@ public class AndAuthorizer implements Authorizer {
 
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
-        for (Authorizer authorizer : authorizers) {
+        for (var authorizer : authorizers) {
             if (!authorizer.isAuthorized(context, sessionStore, profiles)) return false;
         }
         return true;

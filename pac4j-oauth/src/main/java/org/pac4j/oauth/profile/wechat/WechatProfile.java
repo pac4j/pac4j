@@ -33,7 +33,7 @@ public class WechatProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        final String location = getAttribute(WechatProfileDefinition.CITY) + ","
+        final var location = getAttribute(WechatProfileDefinition.CITY) + ","
             + getAttribute(WechatProfileDefinition.PROVINCE) + ","
             + getAttribute(WechatProfileDefinition.COUNTRY);
         return location;

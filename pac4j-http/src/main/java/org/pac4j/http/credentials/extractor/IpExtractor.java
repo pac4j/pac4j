@@ -40,7 +40,7 @@ public class IpExtractor implements CredentialsExtractor {
         if (alternateIpHeaders.isEmpty()) {
             ip = Optional.ofNullable(context.getRemoteAddr());
         } else {
-            String requestSourceIp = context.getRemoteAddr();
+            var requestSourceIp = context.getRemoteAddr();
             if (this.proxyIp.isEmpty()) {
                 ip = ipFromHeaders(context);
             }
@@ -61,7 +61,7 @@ public class IpExtractor implements CredentialsExtractor {
 
     private Optional<String> ipFromHeaders(WebContext context) {
         Optional<String> ip;
-        for (String header : alternateIpHeaders) {
+        for (var header : alternateIpHeaders) {
             ip = context.getRequestHeader(header);
             if (ip.isPresent() && !ip.get().isEmpty()) {
                 return ip;

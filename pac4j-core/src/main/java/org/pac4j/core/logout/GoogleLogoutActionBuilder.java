@@ -24,7 +24,7 @@ public class GoogleLogoutActionBuilder implements LogoutActionBuilder {
     public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
                                                        final UserProfile currentProfile, final String targetUrl) {
 
-        final String redirectUrl = "https://accounts.google.com/Logout";
+        final var redirectUrl = "https://accounts.google.com/Logout";
         logger.debug("redirectUrl: {}", redirectUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectUrl));
     }

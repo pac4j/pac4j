@@ -38,18 +38,18 @@ public class RunOkta extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OidcConfiguration configuration = new OidcConfiguration();
+        final var configuration = new OidcConfiguration();
         configuration.setClientId("ZuxDX1Gw2Kvx4gFyDNWC");
         configuration.setSecret("77kjmDs94pA4UOVkeuYY7XyHnsDmSWoezrc3XZFU");
         configuration.setDiscoveryURI("https://dev-425954.oktapreview.com/.well-known/openid-configuration");
-        final OidcClient client = new OidcClient(configuration);
+        final var client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final OidcProfile profile = (OidcProfile) userProfile;
+        final var profile = (OidcProfile) userProfile;
         assertEquals("00u5h0czw1aIjTQtM0h7", profile.getId());
         assertEquals(OidcProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "00u5h0czw1aIjTQtM0h7",
                 profile.getTypedId());

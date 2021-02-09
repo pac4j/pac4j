@@ -68,13 +68,13 @@ public abstract class BaseClient extends InitializableObject implements Client {
      */
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         try {
-            final Optional<Credentials> optCredentials = this.credentialsExtractor.extract(context, sessionStore);
+            final var optCredentials = this.credentialsExtractor.extract(context, sessionStore);
             optCredentials.ifPresent(credentials -> {
-                final long t0 = System.currentTimeMillis();
+                final var t0 = System.currentTimeMillis();
                 try {
                     this.authenticator.validate(credentials, context, sessionStore);
                 } finally {
-                    final long t1 = System.currentTimeMillis();
+                    final var t1 = System.currentTimeMillis();
                     logger.debug("Credentials validation took: {} ms", t1 - t0);
                 }
             });
@@ -94,7 +94,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             if (profileFactoryWhenNotAuthenticated != null) {
-                final UserProfile customProfile = profileFactoryWhenNotAuthenticated.apply(new Object[] {context});
+                final var customProfile = profileFactoryWhenNotAuthenticated.apply(new Object[] {context});
                 logger.debug("force custom profile when not authenticated: {}", customProfile);
                 return Optional.ofNullable(customProfile);
             } else {
@@ -102,11 +102,11 @@ public abstract class BaseClient extends InitializableObject implements Client {
             }
         }
 
-        Optional<UserProfile> profile = retrieveUserProfile(credentials, context, sessionStore);
+        var profile = retrieveUserProfile(credentials, context, sessionStore);
         if (profile.isPresent()) {
             profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
-                for (final AuthorizationGenerator authorizationGenerator : this.authorizationGenerators) {
+                for (final var authorizationGenerator : this.authorizationGenerators) {
                     profile = authorizationGenerator.generate(context, sessionStore, profile.get());
                 }
             }
@@ -123,7 +123,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      */
     protected final Optional<UserProfile> retrieveUserProfile(final Credentials credentials, final WebContext context,
                                                               final SessionStore sessionStore) {
-        final Optional<UserProfile> profile = this.profileCreator.create(credentials, context, sessionStore);
+        final var profile = this.profileCreator.create(credentials, context, sessionStore);
         logger.debug("profile: {}", profile);
         return profile;
     }

@@ -1,23 +1,17 @@
 package org.pac4j.core.engine;
 
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.*;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.List;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -60,26 +54,26 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             } else {
                 logoutUrlPattern = inputLogoutUrlPattern;
             }
-            final boolean localLogout = inputLocalLogout == null || inputLocalLogout;
-            final boolean destroySession = inputDestroySession != null && inputDestroySession;
-            final boolean centralLogout = inputCentralLogout != null && inputCentralLogout;
+            final var localLogout = inputLocalLogout == null || inputLocalLogout;
+            final var destroySession = inputDestroySession != null && inputDestroySession;
+            final var centralLogout = inputCentralLogout != null && inputCentralLogout;
 
             // checks
             assertNotNull("context", context);
             assertNotNull("config", config);
             assertNotNull("httpActionAdapter", httpActionAdapter);
             assertNotBlank(Pac4jConstants.LOGOUT_URL_PATTERN, logoutUrlPattern);
-            final Clients configClients = config.getClients();
+            final var configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
             // logic
-            final ProfileManager manager = getProfileManager(context, sessionStore);
+            final var manager = getProfileManager(context, sessionStore);
             manager.setConfig(config);
-            final List<UserProfile> profiles = manager.getProfiles();
+            final var profiles = manager.getProfiles();
 
             // compute redirection URL
-            final Optional<String> url = context.getRequestParameter(Pac4jConstants.URL);
-            String redirectUrl = defaultUrl;
+            final var url = context.getRequestParameter(Pac4jConstants.URL);
+            var redirectUrl = defaultUrl;
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
             }
@@ -96,7 +90,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                 manager.removeProfiles();
                 if (destroySession) {
                     if (sessionStore != null) {
-                        final boolean removed = sessionStore.destroySession(context);
+                        final var removed = sessionStore.destroySession(context);
                         if (!removed) {
                             LOGGER.error("Unable to destroy the web session. The session store may not support this feature");
                         }
@@ -109,11 +103,11 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             // central logout
             if (centralLogout) {
                 LOGGER.debug("Performing central logout");
-                for (final UserProfile profile : profiles) {
+                for (final var profile : profiles) {
                     LOGGER.debug("Profile: {}", profile);
-                    final String clientName = profile.getClientName();
+                    final var clientName = profile.getClientName();
                     if (clientName != null) {
-                        final Optional<Client> client = configClients.findClient(clientName);
+                        final var client = configClients.findClient(clientName);
                         if (client.isPresent()) {
                             final String targetUrl;
                             if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
@@ -122,7 +116,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                             } else {
                                 targetUrl = null;
                             }
-                            final Optional<RedirectionAction> logoutAction =
+                            final var logoutAction =
                                 client.get().getLogoutAction(context, sessionStore, profile, targetUrl);
                             LOGGER.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {

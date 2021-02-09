@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.casoauthwrapper;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.scribejava.core.model.Token;
@@ -13,8 +12,6 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
-import java.util.Iterator;
 
 /**
  * {@link CasOAuthWrapperProfile} profile definition.
@@ -46,26 +43,26 @@ public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public CasOAuthWrapperProfile extractUserProfile(final String body) {
-        final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) newProfile();
-        final String attributesNode = "attributes";
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (CasOAuthWrapperProfile) newProfile();
+        final var attributesNode = "attributes";
+        var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
             json = json.get(attributesNode);
             if (json != null) {
                 // CAS <= v4.2
                 if (json instanceof ArrayNode) {
-                    final Iterator<JsonNode> nodes = json.iterator();
+                    final var nodes = json.iterator();
                     while (nodes.hasNext()) {
                         json = nodes.next();
-                        final String attribute = json.fieldNames().next();
+                        final var attribute = json.fieldNames().next();
                         convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                     }
                     // CAS v5
                 } else if (json instanceof ObjectNode) {
-                    final Iterator<String> keys = json.fieldNames();
+                    final var keys = json.fieldNames();
                     while (keys.hasNext()) {
-                        final String key = keys.next();
+                        final var key = keys.next();
                         convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, key));
                     }
                 }

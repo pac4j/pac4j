@@ -20,15 +20,15 @@ public class PayPalApi20 extends DefaultApi20 {
             Map<String, String> additionalParams) {
         CommonHelper.assertNotBlank("callback", callback,
             "Must provide a valid url as callback. PayPal does not support OOB");
-        
+
         if (additionalParams == null) {
             additionalParams = new HashMap<>();
         }
-        final String nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
+        final var nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
         additionalParams.put("nonce", nonce);
         return super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
     }
-    
+
     @Override
     protected String getAuthorizationBaseUrl() {
         return "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize";

@@ -8,6 +8,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@FunctionalInterface
 public interface SAML2MessageSender<T extends SAMLObject> {
     void sendMessage(SAML2MessageContext context,
                      T request,

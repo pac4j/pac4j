@@ -48,10 +48,10 @@ public class JwtGenerator {
      */
     public String generate(final Map<String, Object> claims) {
         // claims builder
-        final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
+        final var builder = new JWTClaimsSet.Builder();
 
         // add claims
-        for (final Map.Entry<String, Object> entry : claims.entrySet()) {
+        for (final var entry : claims.entrySet()) {
             builder.claim(entry.getKey(), entry.getValue());
         }
         if (this.expirationTime != null) {
@@ -104,7 +104,7 @@ public class JwtGenerator {
 
     protected JWTClaimsSet buildJwtClaimsSet(final UserProfile profile) {
         // claims builder with subject and issue time
-        final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
+        final var builder = new JWTClaimsSet.Builder()
                 .issueTime(new Date());
 
         if (this.expirationTime != null) {
@@ -112,8 +112,8 @@ public class JwtGenerator {
         }
 
         // add attributes
-        final Map<String, Object> attributes = profile.getAttributes();
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+        final var attributes = profile.getAttributes();
+        for (final var entry : attributes.entrySet()) {
             builder.claim(entry.getKey(), entry.getValue());
         }
         builder.claim(INTERNAL_ROLES, profile.getRoles());

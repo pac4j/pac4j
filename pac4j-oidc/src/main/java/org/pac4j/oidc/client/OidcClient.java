@@ -1,6 +1,5 @@
 package org.pac4j.oidc.client;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -57,12 +56,12 @@ public class OidcClient extends IndirectClient {
 
     @Override
     public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context, final SessionStore sessionStore) {
-        OidcProfile oidcProfile = (OidcProfile) profile;
-        RefreshToken refreshToken = oidcProfile.getRefreshToken();
+        var oidcProfile = (OidcProfile) profile;
+        var refreshToken = oidcProfile.getRefreshToken();
         if (refreshToken != null) {
-            OidcCredentials credentials = new OidcCredentials();
+            var credentials = new OidcCredentials();
             credentials.setRefreshToken(refreshToken);
-            OidcAuthenticator authenticator = new OidcAuthenticator(getConfiguration(), this);
+            var authenticator = new OidcAuthenticator(getConfiguration(), this);
             authenticator.refresh(credentials);
 
             // Create a profile if the refresh grant was successful

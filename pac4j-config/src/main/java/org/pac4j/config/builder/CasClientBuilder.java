@@ -23,12 +23,12 @@ public class CasClientBuilder extends AbstractBuilder {
     }
 
     public void tryCreateCasClient(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String loginUrl = getProperty(CAS_LOGIN_URL, i);
-            final String protocol = getProperty(CAS_PROTOCOL, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var loginUrl = getProperty(CAS_LOGIN_URL, i);
+            final var protocol = getProperty(CAS_PROTOCOL, i);
             if (isNotBlank(loginUrl)) {
-                CasConfiguration configuration = new CasConfiguration();
-                final CasClient casClient = new CasClient(configuration);
+                var configuration = new CasConfiguration();
+                final var casClient = new CasClient(configuration);
                 configuration.setLoginUrl(loginUrl);
                 if (isNotBlank(protocol)) {
                     configuration.setProtocol(CasProtocol.valueOf(protocol));

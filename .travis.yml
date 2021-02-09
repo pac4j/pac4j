@@ -2,8 +2,11 @@ language: java
 
 sudo: false
 
-install: "mvn install --settings travis/settings.xml -B -V"
-script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/settings.xml -B -V"
+#install: "mvn install --settings travis/settings.xml -B -V"
+#script: "mvn compile -DskipTests -Dmaven.javadoc.skip=true --settings travis/settings.xml -B -V"
+
+install: "echo 'Travis CI is no longer used'"
+script: "echo 'Travis CI is no longer used'"
 
 dist: trusty
 
@@ -13,14 +16,14 @@ jdk:
 cache:
   directories:
     - '$HOME/.m2/repository'
-env:
-  global:
-  - secure: "cDN6+bwe7NVMjvevGMwk9tdglhGf66yi3nvbnfSgio207FuNG4duF/RNOUOMsuWX1Sc79ZMDuOttZ5AvL3ZHKPtmzTBMvCdDkf1FwFmzU6N+x84rT4zyos+gZLgHbV0M0M28y8aJIJq2kcwiqVwuMBay5tjrpJ8IMPoY6eDl4uE="
-  - secure: "Ti1BykkCxqBW7s1l+yB8TDqfsJ66olEfLswisSbPu+oFCaSGD9opCLcJ3YpGEPQlbviplAiLVeNZosCqhR3gUiN7sjd7ZA+n5oVxcL7AzraTWOEU6y7kq+Edrv+6B667zusTHN+r7qWVZt497OwlYr/AkbAnpTY05ltUAeu5NSg="
-  - secure: "Bfsln02ZgO9ho/7Q8cjhGp5+sLXHtszkEK6L6TZ9xTywpPPO1ytmqKsL7TtuA4c30g1LZTJGGTvHD0RWENRCPZQqwp5TjpijS03lgoj4GSiycNYRi8FDSnwuzZcz6n1ZAKkmYQTMPmZYINYforN+wX3BMUDqGb0pjJnwrmHtm4I="
-
-after_success:
-- chmod -R 777 ./travis/push-doc-to-gh-pages.sh
-- ./travis/push-doc-to-gh-pages.sh
-- chmod -R 777 ./travis/deploy-to-sonatype.sh
-- ./travis/deploy-to-sonatype.sh
+#env:
+#  global:
+#  - secure: "cDN6+bwe7NVMjvevGMwk9tdglhGf66yi3nvbnfSgio207FuNG4duF/RNOUOMsuWX1Sc79ZMDuOttZ5AvL3ZHKPtmzTBMvCdDkf1FwFmzU6N+x84rT4zyos+gZLgHbV0M0M28y8aJIJq2kcwiqVwuMBay5tjrpJ8IMPoY6eDl4uE="
+#  - secure: "Ti1BykkCxqBW7s1l+yB8TDqfsJ66olEfLswisSbPu+oFCaSGD9opCLcJ3YpGEPQlbviplAiLVeNZosCqhR3gUiN7sjd7ZA+n5oVxcL7AzraTWOEU6y7kq+Edrv+6B667zusTHN+r7qWVZt497OwlYr/AkbAnpTY05ltUAeu5NSg="
+#  - secure: "Bfsln02ZgO9ho/7Q8cjhGp5+sLXHtszkEK6L6TZ9xTywpPPO1ytmqKsL7TtuA4c30g1LZTJGGTvHD0RWENRCPZQqwp5TjpijS03lgoj4GSiycNYRi8FDSnwuzZcz6n1ZAKkmYQTMPmZYINYforN+wX3BMUDqGb0pjJnwrmHtm4I="
+#
+#after_success:
+#- chmod -R 777 ./travis/push-doc-to-gh-pages.sh
+#- ./travis/push-doc-to-gh-pages.sh
+#- chmod -R 777 ./travis/deploy-to-sonatype.sh
+#- ./travis/deploy-to-sonatype.sh

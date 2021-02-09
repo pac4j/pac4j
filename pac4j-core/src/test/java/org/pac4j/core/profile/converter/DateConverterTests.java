@@ -35,8 +35,8 @@ public final class DateConverterTests {
 
     @Test
     public void testGoodDate() {
-        final Date d = (Date) this.converter.convert(GOOD_DATE);
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT);
+        final var d = (Date) this.converter.convert(GOOD_DATE);
+        final var simpleDateFormat = new SimpleDateFormat(FORMAT);
         assertEquals(GOOD_DATE, simpleDateFormat.format(d));
     }
 

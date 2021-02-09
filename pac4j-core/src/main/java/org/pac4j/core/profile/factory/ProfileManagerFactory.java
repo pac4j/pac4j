@@ -12,7 +12,8 @@ import java.util.function.BiFunction;
  * @author Jerome LELEU
  * @since 4.0.0
  */
+@FunctionalInterface
 public interface ProfileManagerFactory extends BiFunction<WebContext, SessionStore, ProfileManager> {
 
-    ProfileManagerFactory DEFAULT = (context, sessionStore) -> new ProfileManager(context, sessionStore);
+    ProfileManagerFactory DEFAULT = ProfileManager::new;
 }

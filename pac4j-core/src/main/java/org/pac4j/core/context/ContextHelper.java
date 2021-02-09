@@ -21,7 +21,7 @@ public final class ContextHelper implements HttpConstants {
      */
     public static Cookie getCookie(final Collection<Cookie> cookies, final String name) {
         if (cookies != null) {
-            for (final Cookie cookie : cookies) {
+            for (final var cookie : cookies) {
                 if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
                     return cookie;
                 }

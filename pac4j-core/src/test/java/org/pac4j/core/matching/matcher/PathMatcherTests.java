@@ -23,21 +23,21 @@ public class PathMatcherTests {
 
     @Test
     public void testBlankPath() {
-        final PathMatcher pathMatcher = new PathMatcher();
+        final var pathMatcher = new PathMatcher();
         assertTrue(pathMatcher.matches(MockWebContext.create().setPath("/page.html"), new MockSessionStore()));
         assertTrue(pathMatcher.matches(MockWebContext.create(), new MockSessionStore()));
     }
 
     @Test
     public void testFixedPath() {
-        final PathMatcher pathMatcher = new PathMatcher().excludePath("/foo");
+        final var pathMatcher = new PathMatcher().excludePath("/foo");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo"), new MockSessionStore()));
         assertTrue(pathMatcher.matches(MockWebContext.create().setPath("/foo/bar"), new MockSessionStore()));
     }
 
     @Test
     public void testBranch() {
-        final PathMatcher pathMatcher = new PathMatcher().excludeBranch("/foo");
+        final var pathMatcher = new PathMatcher().excludeBranch("/foo");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo"), new MockSessionStore()));
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo/"), new MockSessionStore()));
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo/bar"), new MockSessionStore()));
@@ -62,13 +62,13 @@ public class PathMatcherTests {
 
     @Test
     public void testNoPath() {
-        final PathMatcher pathMatcher = new PathMatcher().excludeRegex("^/$");
+        final var pathMatcher = new PathMatcher().excludeRegex("^/$");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/"), new MockSessionStore()));
     }
 
     @Test
     public void testMatch() {
-        final PathMatcher matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
+        final var matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
         assertTrue(matcher.matches(MockWebContext.create().setPath("/js/app.js"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/page.htm"), new MockSessionStore()));
@@ -76,7 +76,7 @@ public class PathMatcherTests {
 
     @Test
     public void testDontMatch() {
-        final PathMatcher matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
+        final var matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
         assertFalse(matcher.matches(MockWebContext.create().setPath("/css/app.css"), new MockSessionStore()));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/img/"), new MockSessionStore()));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/page.html"), new MockSessionStore()));
@@ -89,7 +89,7 @@ public class PathMatcherTests {
         final Set<String> excludedRegexs = new HashSet<>();
         excludedRegexs.add("^/(img/.*|css/.*|page\\.html)$");
 
-        final PathMatcher matcher = new PathMatcher();
+        final var matcher = new PathMatcher();
         matcher.setExcludedPaths(excludedPaths);
         matcher.setExcludedPatterns(excludedRegexs);
 

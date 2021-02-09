@@ -35,7 +35,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
 
     @Override
     protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
-        final HTTPMetadataResolver resolver = new HTTPMetadataResolver(httpClient, this.metadataUrl.toExternalForm());
+        final var resolver = new HTTPMetadataResolver(httpClient, this.metadataUrl.toExternalForm());
         if (minRefreshDelay != null) {
             resolver.setMinRefreshDelay(minRefreshDelay);
         }
@@ -55,14 +55,14 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
         try {
             logger.debug("Posting metadata to {}", this.metadataUrl.toURI());
 
-            final HttpPost httpPost = new HttpPost(this.metadataUrl.toURI());
+            final var httpPost = new HttpPost(this.metadataUrl.toURI());
             httpPost.addHeader("Accept", ContentType.APPLICATION_XML.getMimeType());
             httpPost.addHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType());
             httpPost.setEntity(new StringEntity(metadata, ContentType.APPLICATION_XML));
 
             response = httpClient.execute(httpPost);
             if (response != null) {
-                final int code = response.getStatusLine().getStatusCode();
+                final var code = response.getStatusLine().getStatusCode();
                 if (code == HttpStatus.SC_NOT_IMPLEMENTED) {
                     logger.info("Storing metadata is not supported/implemented by {}", metadataUrl);
                     return false;

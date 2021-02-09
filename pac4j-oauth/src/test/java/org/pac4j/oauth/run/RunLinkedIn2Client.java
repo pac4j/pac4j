@@ -36,7 +36,7 @@ public final class RunLinkedIn2Client extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final LinkedIn2Client client = new LinkedIn2Client();
+        final var client = new LinkedIn2Client();
         client.setKey("86xtdkj897xk7d");
         client.setSecret("lU5w96OOs4hJ7HqU");
         client.setScope("r_liteprofile r_emailaddress");
@@ -51,7 +51,7 @@ public final class RunLinkedIn2Client extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final LinkedIn2Profile profile = (LinkedIn2Profile) userProfile;
+        final var profile = (LinkedIn2Profile) userProfile;
         assertEquals("X_0RQBLXtJ", profile.getId());
         assertEquals(LinkedIn2Profile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "X_0RQBLXtJ",
                 profile.getTypedId());

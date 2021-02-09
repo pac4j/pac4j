@@ -76,9 +76,9 @@ public class Clients extends InitializableObject {
     protected void internalInit() {
         CommonHelper.assertNotNull("clients", getClients());
         _clients = new HashMap<>();
-        for (final Client client : getClients()) {
-            final String name = client.getName();
-            final String lowerTrimmedName = name.toLowerCase().trim();
+        for (final var client : getClients()) {
+            final var name = client.getName();
+            final var lowerTrimmedName = name.toLowerCase().trim();
             if (_clients.containsKey(lowerTrimmedName)) {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
@@ -86,7 +86,7 @@ public class Clients extends InitializableObject {
             if (client instanceof IndirectClient) {
                 updateIndirectClient((IndirectClient) client);
             }
-            final BaseClient baseClient = (BaseClient) client;
+            final var baseClient = (BaseClient) client;
             if (!authorizationGenerators.isEmpty()) {
                 baseClient.addAuthorizationGenerators(this.authorizationGenerators);
             }
@@ -123,8 +123,8 @@ public class Clients extends InitializableObject {
     public Optional<Client> findClient(final String name) {
         CommonHelper.assertNotBlank("name", name);
         init();
-        final String lowerTrimmedName = name.toLowerCase().trim();
-        final Client client = _clients.get(lowerTrimmedName);
+        final var lowerTrimmedName = name.toLowerCase().trim();
+        final var client = _clients.get(lowerTrimmedName);
         if (client != null) {
             return Optional.of(client);
         }
@@ -144,7 +144,7 @@ public class Clients extends InitializableObject {
         CommonHelper.assertNotNull("clazz", clazz);
         init();
         if (clazz != null) {
-            for (final Client client : getClients()) {
+            for (final var client : getClients()) {
                 if (clazz.isAssignableFrom(client.getClass())) {
                     return Optional.of((C) client);
                 }

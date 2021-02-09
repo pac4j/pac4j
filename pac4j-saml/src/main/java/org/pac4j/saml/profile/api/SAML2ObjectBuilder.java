@@ -9,6 +9,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@FunctionalInterface
 public interface SAML2ObjectBuilder<T extends SAMLObject> {
 
     T build(SAML2MessageContext context);

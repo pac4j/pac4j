@@ -1,7 +1,6 @@
 package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
@@ -63,7 +62,7 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
         primary(CREATED_AT, Converters.DATE_TZ_RFC822);
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(CLUBS, new JsonConverter(List.class, new TypeReference<List<StravaClub>>() {}));
-        final JsonConverter multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
+        final var multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
         primary(BIKES, multiGearConverter);
         primary(SHOES, multiGearConverter);
         primary(PROFILE, Converters.URL);
@@ -76,11 +75,11 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public StravaProfile extractUserProfile(String body) {
-        final StravaProfile profile = (StravaProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (StravaProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, StravaProfileDefinition.ID)));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

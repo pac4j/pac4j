@@ -22,12 +22,12 @@ public class SimpleTestTokenAuthenticator implements Authenticator {
         if (cred == null) {
             throw new CredentialsException("credentials must not be null");
         }
-        final TokenCredentials credentials = (TokenCredentials) cred;
+        final var credentials = (TokenCredentials) cred;
         if (CommonHelper.isBlank(credentials.getToken())) {
             throw new CredentialsException("token must not be blank");
         }
-        final String token = credentials.getToken();
-        final CommonProfile profile = new CommonProfile();
+        final var token = credentials.getToken();
+        final var profile = new CommonProfile();
         profile.setId(token);
         credentials.setUserProfile(profile);
     }
