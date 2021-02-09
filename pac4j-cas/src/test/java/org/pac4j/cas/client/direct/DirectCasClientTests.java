@@ -27,36 +27,36 @@ public final class DirectCasClientTests implements TestsConstants {
 
     @Test
     public void testInitOk() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final DirectCasClient client = new DirectCasClient(configuration);
+        final var client = new DirectCasClient(configuration);
         client.init();
     }
 
     @Test
     public void testInitMissingConfiguration() {
-        final DirectCasClient client = new DirectCasClient();
+        final var client = new DirectCasClient();
         TestsHelper.expectException(client::init, TechnicalException.class, "configuration cannot be null");
     }
 
     @Test
     public void testInitGatewayForbidden() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setGateway(true);
-        final DirectCasClient client = new DirectCasClient(configuration);
+        final var client = new DirectCasClient(configuration);
         TestsHelper.expectException(client::init, TechnicalException.class,
             "the DirectCasClient can not support gateway to avoid infinite loops");
     }
 
     @Test
     public void testNoTokenRedirectionExpected() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final DirectCasClient client = new DirectCasClient(configuration);
-        final MockWebContext context = MockWebContext.create();
+        final var client = new DirectCasClient(configuration);
+        final var context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL);
-        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
+        final var action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
         assertEquals(302, action.getCode());
         assertEquals(addParameter(LOGIN_URL, CasConfiguration.SERVICE_PARAMETER, CALLBACK_URL),
             ((FoundAction) action).getLocation());
@@ -64,7 +64,7 @@ public final class DirectCasClientTests implements TestsConstants {
 
     @Test
     public void testTicketExistsValidationOccurs() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setDefaultTicketValidator((ticket, service) -> {
             if (TICKET.equals(ticket) && CALLBACK_URL.equals(service)) {
@@ -72,13 +72,13 @@ public final class DirectCasClientTests implements TestsConstants {
             }
             throw new TechnicalException("Bad ticket or service");
         });
-        final DirectCasClient client = new DirectCasClient(configuration);
-        final MockWebContext context = MockWebContext.create();
+        final var client = new DirectCasClient(configuration);
+        final var context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
         assertEquals(TICKET, credentials.getToken());
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);
         assertEquals(TICKET, profile.getId());
     }

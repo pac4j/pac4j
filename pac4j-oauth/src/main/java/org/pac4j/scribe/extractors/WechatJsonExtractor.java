@@ -33,9 +33,9 @@ public class WechatJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     @Override
     protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
                                             JsonNode response, String rawResponse) {
-        String openid = extractRequiredParameter(response, "openid", rawResponse).asText();
-        String unionid = extractRequiredParameter(response, "unionid", rawResponse).asText();
-        WechatToken token = new WechatToken(accessToken, tokenType, expiresIn, refreshToken, scope, rawResponse, openid, unionid);
+        var openid = extractRequiredParameter(response, "openid", rawResponse).asText();
+        var unionid = extractRequiredParameter(response, "unionid", rawResponse).asText();
+        var token = new WechatToken(accessToken, tokenType, expiresIn, refreshToken, scope, rawResponse, openid, unionid);
         return token;
     }
 }

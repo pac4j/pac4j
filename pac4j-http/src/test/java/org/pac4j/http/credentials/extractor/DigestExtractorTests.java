@@ -23,17 +23,17 @@ public class DigestExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveDigestHeaderComponents() {
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, DIGEST_AUTHORIZATION_HEADER_VALUE);
-        final DigestCredentials credentials = (DigestCredentials) digestExtractor.extract(context, new MockSessionStore()).get();
+        final var credentials = (DigestCredentials) digestExtractor.extract(context, new MockSessionStore()).get();
         assertEquals(DIGEST_RESPONSE, credentials.getToken());
         assertEquals(USERNAME, credentials.getUsername());
     }
 
     @Test
     public void testNotDigest() {
-        final MockWebContext context = MockWebContext.create();
-        final Optional<Credentials> credentials = digestExtractor.extract(context, new MockSessionStore());
+        final var context = MockWebContext.create();
+        final var credentials = digestExtractor.extract(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 

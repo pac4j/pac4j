@@ -34,13 +34,13 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
     public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final String ip = ((TokenCredentials) credentials).getToken();
+        final var ip = ((TokenCredentials) credentials).getToken();
 
         if (!this.pattern.matcher(ip).matches()) {
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
 
-        final IpProfile profile = (IpProfile) getProfileDefinition().newProfile();
+        final var profile = (IpProfile) getProfileDefinition().newProfile();
         profile.setId(ip);
         logger.debug("profile: {}", profile);
 

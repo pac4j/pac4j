@@ -10,7 +10,7 @@ import org.opensaml.saml.saml2.core.StatusResponseType;
 /**
  * A simple function that returns the issuer set on the {@link MessageContext}.
  * This is read from the message in the context.
- * 
+ *
  * @since 3.8.0
  */
 @SuppressWarnings("rawtypes")
@@ -20,7 +20,7 @@ public class IssuerFunction implements Function<MessageContext, String> {
         if (context == null) {
             return null;
         }
-        final SAMLObject message = (SAMLObject) context.getMessage();
+        final var message = (SAMLObject) context.getMessage();
         Issuer issuer = null;
         if (message instanceof RequestAbstractType) {
             issuer = ((RequestAbstractType) message).getIssuer();

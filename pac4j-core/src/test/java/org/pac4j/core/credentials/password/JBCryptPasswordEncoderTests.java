@@ -17,7 +17,7 @@ public final class JBCryptPasswordEncoderTests implements TestsConstants {
 
     @Test
     public void test() {
-        final String hashedPwd = encoder.encode(PASSWORD);
+        final var hashedPwd = encoder.encode(PASSWORD);
         assertTrue(encoder.matches(PASSWORD, hashedPwd));
         assertFalse(encoder.matches(VALUE, hashedPwd));
     }

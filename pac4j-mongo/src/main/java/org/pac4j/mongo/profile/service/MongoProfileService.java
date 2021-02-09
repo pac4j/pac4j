@@ -69,8 +69,8 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
     @Override
     protected void insert(final Map<String, Object> attributes) {
-        final Document doc = new Document();
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+        final var doc = new Document();
+        for (final var entry : attributes.entrySet()) {
             doc.append(entry.getKey(), entry.getValue());
         }
 
@@ -81,10 +81,10 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     @Override
     protected void update(final Map<String, Object> attributes) {
         String id = null;
-        final Document doc = new Document();
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
-            final String name = entry.getKey();
-            final Object value = entry.getValue();
+        final var doc = new Document();
+        for (final var entry : attributes.entrySet()) {
+            final var name = entry.getKey();
+            final var value = entry.getValue();
             if (getIdAttribute().equals(name)) {
                 id = (String) value;
             } else {
@@ -109,14 +109,14 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
         logger.debug("Reading key / value: {} / {}", key, value);
         final List<Map<String, Object>> listAttributes = new ArrayList<>();
-        try (MongoCursor<Document> cursor = getCollection().find(eq(key, value)).iterator()) {
-            int i = 0;
+        try (var cursor = getCollection().find(eq(key, value)).iterator()) {
+            var i = 0;
             while (cursor.hasNext() && i <= 2) {
-                final Document result = cursor.next();
+                final var result = cursor.next();
                 final Map<String, Object> newAttributes = new HashMap<>();
                 // filter on names
-                for (final Map.Entry<String, Object> entry : result.entrySet()) {
-                    final String name = entry.getKey();
+                for (final var entry : result.entrySet()) {
+                    final var name = entry.getKey();
                     if (names == null || names.contains(name)) {
                         newAttributes.put(name, entry.getValue());
                     }
@@ -131,7 +131,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     }
 
     protected MongoCollection<Document> getCollection() {
-        final MongoDatabase db = mongoClient.getDatabase(usersDatabase);
+        final var db = mongoClient.getDatabase(usersDatabase);
         return db.getCollection(usersCollection);
     }
 

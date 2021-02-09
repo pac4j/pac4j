@@ -27,7 +27,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @BeforeClass
     public static void setUp() {
-        final WebServer webServer = new WebServer(PORT)
+        final var webServer = new WebServer(PORT)
             .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json",
                 "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }"))
             .defineResponse("notfound", new ServerResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found"))
@@ -37,10 +37,10 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testProfileOk() {
-        final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        final var authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
-        final RestProfile profile = (RestProfile) credentials.getUserProfile();
+        final var profile = (RestProfile) credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(ID, profile.getId());
         assertEquals(1, profile.getRoles().size());
@@ -49,17 +49,17 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testNotFound() {
-        final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        final var authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
-        final RestProfile profile = (RestProfile) credentials.getUserProfile();
+        final var profile = (RestProfile) credentials.getUserProfile();
         assertNull(profile);
     }
 
     @Test
     public void testParsingError() {
-        final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        final var authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting " +
                 "('true', 'false' or 'null')\n at [Source: (String)\"bad\"; line: 1, column: 7]");
@@ -67,8 +67,8 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testHttps() {
-        final RestAuthenticator authenticator = new RestAuthenticator("https://www.google.com");
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        final var authenticator = new RestAuthenticator("https://www.google.com");
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
     }
 }

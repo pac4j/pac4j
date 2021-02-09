@@ -17,14 +17,14 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  */
 @SuppressWarnings("unchecked")
 public class YahooProfile extends OAuth10Profile {
-    
+
     private static final long serialVersionUID = 791758805376191144L;
 
     @Override
     public String getEmail() {
-        final List<YahooEmail> emails = getEmails();
+        final var emails = getEmails();
         if (emails != null) {
-            for (final YahooEmail email : emails) {
+            for (final var email : emails) {
                 if (email != null && (Boolean.TRUE.equals(email.getPrimary()) || emails.size() == 1)) {
                     return email.getHandle();
                 }
@@ -32,102 +32,102 @@ public class YahooProfile extends OAuth10Profile {
         }
         return null;
     }
-    
+
     @Override
     public String getFirstName() {
         return (String) getAttribute(YahooProfileDefinition.GIVEN_NAME);
     }
-    
+
     @Override
     public String getFamilyName() {
         return (String) getAttribute(YahooProfileDefinition.FAMILY_NAME);
     }
-    
+
     @Override
     public String getDisplayName() {
         return getFirstName() + " " + getFamilyName();
     }
-    
+
     @Override
     public String getUsername() {
         return (String) getAttribute(YahooProfileDefinition.NICKNAME);
     }
-    
+
     @Override
     public Locale getLocale() {
         return (Locale) getAttribute(YahooProfileDefinition.LANG);
     }
-    
+
     @Override
     public URI getPictureUrl() {
-        final YahooImage yahooImage = (YahooImage) getAttribute(YahooProfileDefinition.IMAGE);
+        final var yahooImage = (YahooImage) getAttribute(YahooProfileDefinition.IMAGE);
         if (yahooImage != null) {
             return CommonHelper.asURI(yahooImage.getImageUrl());
         }
         return null;
     }
-    
+
     @Override
     public URI getProfileUrl() {
         return (URI) getAttribute(YahooProfileDefinition.PROFILE_URL);
     }
-    
+
     public String getAboutMe() {
         return (String) getAttribute(YahooProfileDefinition.ABOUT_ME);
     }
-    
+
     public List<YahooAddress> getAddresses() {
         return (List<YahooAddress>) getAttribute(YahooProfileDefinition.ADDRESSES);
     }
-    
+
     public Integer getBirthYear() {
         return (Integer) getAttribute(YahooProfileDefinition.BIRTH_YEAR);
     }
-    
+
     public Date getBirthdate() {
         return (Date) getAttribute(YahooProfileDefinition.BIRTHDATE);
     }
-    
+
     public Date getCreated() {
         return (Date) getAttribute(YahooProfileDefinition.CREATED);
     }
-    
+
     public Integer getDisplayAge() {
         return (Integer) getAttribute(YahooProfileDefinition.DISPLAY_AGE);
     }
-    
+
     public List<YahooDisclosure> getDisclosures() {
         return (List<YahooDisclosure>) getAttribute(YahooProfileDefinition.DISCLOSURES);
     }
-    
+
     public List<YahooEmail> getEmails() {
         return (List<YahooEmail>) getAttribute(YahooProfileDefinition.EMAILS);
     }
-    
+
     public YahooImage getImage() {
         return (YahooImage) getAttribute(YahooProfileDefinition.IMAGE);
     }
-    
+
     public List<YahooInterest> getInterests() {
         return (List<YahooInterest>) getAttribute(YahooProfileDefinition.INTERESTS);
     }
-    
+
     public Boolean getIsConnected() {
         return (Boolean) getAttribute(YahooProfileDefinition.IS_CONNECTED);
     }
-    
+
     public Date getMemberSince() {
         return (Date) getAttribute(YahooProfileDefinition.MEMBER_SINCE);
     }
-    
+
     public String getTimeZone() {
         return (String) getAttribute(YahooProfileDefinition.TIME_ZONE);
     }
-    
+
     public Date getUpdated() {
         return (Date) getAttribute(YahooProfileDefinition.UPDATED);
     }
-    
+
     public String getUri() {
         return (String) getAttribute(YahooProfileDefinition.URI);
     }

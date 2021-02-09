@@ -66,7 +66,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
 
         try {
             final JWSSigner signer = new MACSigner(this.secret);
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            final var signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
         } catch (final JOSEException e) {

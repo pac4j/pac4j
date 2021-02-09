@@ -38,7 +38,7 @@ import static org.mockito.Mockito.mock;
  */
 public class SAML2LogoutValidatorTests {
     private static ExplicitSignatureTrustEngineProvider getTrustEngine() {
-        final SAML2Configuration config = new SAML2Configuration();
+        final var config = new SAML2Configuration();
         config.setForceKeystoreGeneration(true);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         config.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
@@ -48,9 +48,9 @@ public class SAML2LogoutValidatorTests {
         config.setPrivateKeyPassword("pac4j");
         config.init();
 
-        SAML2IdentityProviderMetadataResolver idp = new SAML2IdentityProviderMetadataResolver(config);
+        var idp = new SAML2IdentityProviderMetadataResolver(config);
         idp.init();
-        SAML2ServiceProviderMetadataResolver sp = new SAML2ServiceProviderMetadataResolver(config);
+        var sp = new SAML2ServiceProviderMetadataResolver(config);
         return new ExplicitSignatureTrustEngineProvider(idp, sp);
     }
 
@@ -59,10 +59,10 @@ public class SAML2LogoutValidatorTests {
     }
 
     private static SAML2MessageContext getSaml2MessageContext(final MockWebContext webContext) {
-        final SAML2MessageContext context = new SAML2MessageContext();
+        final var context = new SAML2MessageContext();
 
-        final MessageContext samlMessage = new MessageContext();
-        final String xml = "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
+        final var samlMessage = new MessageContext();
+        final var xml = "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
             "xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" " +
             "ID=\"_6c3737282f007720e736f0f4028feed8cb9b40291c\" Version=\"2.0\" " +
             "IssueInstant=\"" + ZonedDateTime.now(ZoneOffset.UTC)
@@ -73,17 +73,17 @@ public class SAML2LogoutValidatorTests {
             "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>%n" +
             "  </samlp:Status>%n" +
             "</samlp:LogoutResponse>";
-        final LogoutResponse samlResponse = (LogoutResponse) Configuration.deserializeSamlObject(xml).get();
+        final var samlResponse = (LogoutResponse) Configuration.deserializeSamlObject(xml).get();
 
         samlMessage.setMessage(samlResponse);
         context.setMessageContext(samlMessage);
-        final EntityDescriptor entityDescriptor = new EntityDescriptorBuilder().buildObject();
+        final var entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
         context.setWebContext(webContext);
         context.setSessionStore(new MockSessionStore());
 
-        final SPSSODescriptor spDescriptor = new SPSSODescriptorBuilder().buildObject();
-        final SingleLogoutService logoutService = new SingleLogoutServiceBuilder().buildObject();
+        final var spDescriptor = new SPSSODescriptorBuilder().buildObject();
+        final var logoutService = new SingleLogoutServiceBuilder().buildObject();
         logoutService.setLocation("http://sp.example.com/demo1/logout");
         spDescriptor.getSingleLogoutServices().add(logoutService);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
@@ -93,9 +93,9 @@ public class SAML2LogoutValidatorTests {
     @Test
     public void verifyHostComparison() {
         try {
-            final MockWebContext webContext = getMockWebContext();
-            final SAML2MessageContext context = getSaml2MessageContext(webContext);
-            final SAML2LogoutValidator validator = new SAML2LogoutValidator(
+            final var webContext = getMockWebContext();
+            final var context = getSaml2MessageContext(webContext);
+            final var validator = new SAML2LogoutValidator(
                 getTrustEngine(),
                 mock(Decrypter.class),
                 mock(LogoutHandler.class),

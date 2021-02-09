@@ -28,7 +28,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, null);
+        final var basicAuthClient = new IndirectBasicAuthClient(NAME, null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
@@ -36,7 +36,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingProfileCreator() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
+        final var basicAuthClient = new IndirectBasicAuthClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         basicAuthClient.setProfileCreator(null);
         TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
@@ -45,83 +45,83 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingRealm() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null, new SimpleTestUsernamePasswordAuthenticator());
+        final var basicAuthClient = new IndirectBasicAuthClient(null, new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "realmName cannot be blank");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final var basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         basicAuthClient.init();
     }
 
     @Test
     public void testMissingCallbackUrl() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final var basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         TestsHelper.initShouldFail(basicAuthClient,
             "callbackUrl cannot be blank: set it up either on this IndirectClient or on the global Config");
     }
 
     private IndirectBasicAuthClient getBasicAuthClient() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        final var basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         return basicAuthClient;
     }
 
     @Test
     public void testRedirectionUrl() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) basicAuthClient.getRedirectionAction(context, new MockSessionStore()).get();
+        final var basicAuthClient = getBasicAuthClient();
+        var context = MockWebContext.create();
+        final var action = (FoundAction) basicAuthClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
     }
 
     @Test
     public void testGetCredentialsMissingHeader() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = MockWebContext.create();
+        final var basicAuthClient = getBasicAuthClient();
+        final var context = MockWebContext.create();
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
     public void testGetCredentialsNotABasicHeader() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = getContextWithAuthorizationHeader("fakeHeader");
+        final var basicAuthClient = getBasicAuthClient();
+        final var context = getContextWithAuthorizationHeader("fakeHeader");
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
     public void testGetCredentialsBadFormatHeader() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = getContextWithAuthorizationHeader("Basic fakeHeader");
+        final var basicAuthClient = getBasicAuthClient();
+        final var context = getContextWithAuthorizationHeader("Basic fakeHeader");
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
     public void testGetCredentialsMissingSemiColon() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = getContextWithAuthorizationHeader(
+        final var basicAuthClient = getBasicAuthClient();
+        final var context = getContextWithAuthorizationHeader(
                 "Basic " + Base64.getEncoder().encodeToString("fake".getBytes(StandardCharsets.UTF_8)));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
     public void testGetCredentialsBadCredentials() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final String header = USERNAME + ":" + PASSWORD;
-        final MockWebContext context = getContextWithAuthorizationHeader("Basic "
+        final var basicAuthClient = getBasicAuthClient();
+        final var header = USERNAME + ":" + PASSWORD;
+        final var context = getContextWithAuthorizationHeader("Basic "
                 + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
     public void testGetCredentialsGoodCredentials() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final String header = USERNAME + ":" + USERNAME;
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) basicAuthClient
+        final var basicAuthClient = getBasicAuthClient();
+        final var header = USERNAME + ":" + USERNAME;
+        final var credentials = (UsernamePasswordCredentials) basicAuthClient
             .getCredentials(getContextWithAuthorizationHeader("Basic "
                 + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8))), new MockSessionStore()).get();
         assertEquals(USERNAME, credentials.getUsername());
@@ -142,7 +142,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     }
 
     private MockWebContext getContextWithAuthorizationHeader(String value) {
-        MockWebContext context = MockWebContext.create();
+        var context = MockWebContext.create();
         return context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, value);
     }
 }

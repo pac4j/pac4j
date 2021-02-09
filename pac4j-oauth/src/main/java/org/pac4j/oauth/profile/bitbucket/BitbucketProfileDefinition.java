@@ -42,13 +42,13 @@ public class BitbucketProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public BitbucketProfile extractUserProfile(final String body) {
-        final BitbucketProfile profile = (BitbucketProfile) newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (BitbucketProfile) newProfile();
+        var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = (JsonNode) JsonHelper.getElement(json, "user");
             if (json != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, Pac4jConstants.USERNAME)));
-                for (final String attribute : getPrimaryAttributes()) {
+                for (final var attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }
             } else {

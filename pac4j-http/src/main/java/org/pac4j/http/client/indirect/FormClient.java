@@ -67,7 +67,7 @@ public class FormClient extends IndirectClient {
         assertNotBlank("passwordParameter", this.passwordParameter);
 
         defaultRedirectionActionBuilder((ctx, session) -> {
-            final String finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
+            final var finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
@@ -78,7 +78,7 @@ public class FormClient extends IndirectClient {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
-        final String username = context.getRequestParameter(this.usernameParameter).orElse(null);
+        final var username = context.getRequestParameter(this.usernameParameter).orElse(null);
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
@@ -105,7 +105,7 @@ public class FormClient extends IndirectClient {
             logger.info("AJAX request detected -> returning 401");
             return HttpActionHelper.buildUnauthenticatedAction(context);
         } else {
-            String redirectionUrl = addParameter(this.loginUrl, this.usernameParameter, username);
+            var redirectionUrl = addParameter(this.loginUrl, this.usernameParameter, username);
             redirectionUrl = addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
             logger.debug("redirectionUrl: {}", redirectionUrl);
             return HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl);

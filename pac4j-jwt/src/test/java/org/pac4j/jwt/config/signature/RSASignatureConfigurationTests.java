@@ -35,42 +35,42 @@ public final class RSASignatureConfigurationTests extends AbstractKeyEncryptionC
 
     @Test
     public void testMissingPrivateKey() {
-        final RSASignatureConfiguration config = new RSASignatureConfiguration();
+        final var config = new RSASignatureConfiguration();
         TestsHelper.expectException(() -> config.sign(buildClaims()), TechnicalException.class, "privateKey cannot be null");
     }
 
     @Test
     public void testMissingPublicKey() {
-        final RSASignatureConfiguration config = new RSASignatureConfiguration();
+        final var config = new RSASignatureConfiguration();
         config.setPrivateKey((RSAPrivateKey) buildKeyPair().getPrivate());
-        final SignedJWT signedJWT = config.sign(buildClaims());
+        final var signedJWT = config.sign(buildClaims());
         TestsHelper.expectException(() -> config.verify(signedJWT), TechnicalException.class, "publicKey cannot be null");
     }
 
     @Test
     public void testMissingAlgorithm() {
-        final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair(), null);
+        final var config = new RSASignatureConfiguration(buildKeyPair(), null);
         TestsHelper.expectException(config::init, TechnicalException.class, "algorithm cannot be null");
     }
 
     @Test
     public void testBadAlgorithm() {
-        final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair(), JWSAlgorithm.HS256);
+        final var config = new RSASignatureConfiguration(buildKeyPair(), JWSAlgorithm.HS256);
         TestsHelper.expectException(config::init, TechnicalException.class,
             "Only the RS256, RS384, RS512, PS256, PS384 and PS512 algorithms are supported for RSA signature");
     }
 
     @Test
     public void buildFromJwk() {
-        final String json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONString();
+        final var json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONString();
         JWKHelper.buildRSAKeyPairFromJwk(json);
     }
 
     @Test
     public void testSignVerify() throws JOSEException {
-        final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair());
-        final JWTClaimsSet claims = new JWTClaimsSet.Builder().subject(VALUE).build();
-        final SignedJWT signedJwt = config.sign(claims);
+        final var config = new RSASignatureConfiguration(buildKeyPair());
+        final var claims = new JWTClaimsSet.Builder().subject(VALUE).build();
+        final var signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));
     }
 }

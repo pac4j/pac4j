@@ -33,7 +33,7 @@ public final class RunStravaClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final StravaClient stravaClient = new StravaClient();
+        final var stravaClient = new StravaClient();
         stravaClient.setApprovalPrompt("force");
         stravaClient.setKey("3945");
         stravaClient.setSecret("f03df80582396cddfbe0b895a726bac27c8cf739");
@@ -44,7 +44,7 @@ public final class RunStravaClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final StravaProfile profile = (StravaProfile) userProfile;
+        final var profile = (StravaProfile) userProfile;
         assertEquals("7319316", profile.getId());
         assertEquals(Gender.MALE, profile.getGender());
         assertEquals(Integer.valueOf(3), profile.getResourceState());

@@ -30,7 +30,7 @@ public class AndAuthorizerTests {
 
     @Before
     public void setUp() {
-        CommonProfile profile = new CommonProfile();
+        var profile = new CommonProfile();
         profile.setId("profile_id");
         profile.addRole("profile_role");
         profile.addPermission("profile_permission");
@@ -39,7 +39,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint1() {
-        final Authorizer authorizer = and(
+        final var authorizer = and(
             isAuthenticated(),
             requireAnyRole("profile_role"),
             requireAnyPermission("profile_permission")
@@ -49,7 +49,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint2() {
-        final Authorizer authorizer = and(
+        final var authorizer = and(
             requireAnyRole("profile_role2"),
             requireAnyPermission("profile_permission")
         );
@@ -58,7 +58,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint3() {
-        final Authorizer authorizer = and(
+        final var authorizer = and(
             requireAnyRole("profile_role"),
             requireAnyPermission("profile_permission2")
         );

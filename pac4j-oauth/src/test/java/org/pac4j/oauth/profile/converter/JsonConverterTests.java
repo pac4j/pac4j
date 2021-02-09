@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  * Tests the {@link JsonConverter}.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.9.0
  */
@@ -40,7 +40,7 @@ public final class JsonConverterTests implements TestsConstants {
 
     @Test
     public void testString() {
-        final FacebookObject object = (FacebookObject) OBJECT_CONVERTER.convert(ONE_JSON);
+        final var object = (FacebookObject) OBJECT_CONVERTER.convert(ONE_JSON);
         assertNotNull(object);
         assertEquals("x", object.getId());
         assertEquals("y", object.getName());
@@ -48,8 +48,8 @@ public final class JsonConverterTests implements TestsConstants {
 
     @Test
     public void testJsonNode() {
-        final JsonNode node = JsonHelper.getFirstNode(ONE_JSON);
-        final FacebookObject object = (FacebookObject) OBJECT_CONVERTER.convert(node);
+        final var node = JsonHelper.getFirstNode(ONE_JSON);
+        final var object = (FacebookObject) OBJECT_CONVERTER.convert(node);
         assertNotNull(object);
         assertEquals("x", object.getId());
         assertEquals("y", object.getName());
@@ -62,21 +62,21 @@ public final class JsonConverterTests implements TestsConstants {
 
     @Test
     public void testStringForListConverter() {
-        final List<FacebookObject> objects = (List<FacebookObject>) LIST_CONVERTER.convert(JSON);
+        final var objects = (List<FacebookObject>) LIST_CONVERTER.convert(JSON);
         assertNotNull(objects);
         assertEquals(1, objects.size());
-        final FacebookObject object = objects.get(0);
+        final var object = objects.get(0);
         assertEquals("x", object.getId());
         assertEquals("y", object.getName());
     }
 
     @Test
     public void testJsonNodeForListConverter() {
-        final JsonNode node = JsonHelper.getFirstNode(JSON);
-        final List<FacebookObject> objects = (List<FacebookObject>) LIST_CONVERTER.convert(node);
+        final var node = JsonHelper.getFirstNode(JSON);
+        final var objects = (List<FacebookObject>) LIST_CONVERTER.convert(node);
         assertNotNull(objects);
         assertEquals(1, objects.size());
-        final FacebookObject object = objects.get(0);
+        final var object = objects.get(0);
         assertEquals("x", object.getId());
         assertEquals("y", object.getName());
     }
@@ -85,7 +85,7 @@ public final class JsonConverterTests implements TestsConstants {
     public void testListObjectForListConverter() {
         final List<FacebookObject> list = new ArrayList<>();
         list.add(new FacebookObject());
-        final List<FacebookObject> objects = (List<FacebookObject>) LIST_CONVERTER.convert(list);
+        final var objects = (List<FacebookObject>) LIST_CONVERTER.convert(list);
         assertNotNull(objects);
         assertEquals(1, objects.size());
         assertNotNull(objects.get(0));

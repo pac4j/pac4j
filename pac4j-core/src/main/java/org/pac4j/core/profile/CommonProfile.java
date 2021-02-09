@@ -82,7 +82,7 @@ public class CommonProfile extends BasicUserProfile {
      * @return the gender of the user
      */
     public Gender getGender() {
-        final Gender gender = (Gender) getAttribute(CommonProfileDefinition.GENDER);
+        final var gender = (Gender) getAttribute(CommonProfileDefinition.GENDER);
         if (gender == null) {
             return Gender.UNSPECIFIED;
         } else {
@@ -132,7 +132,7 @@ public class CommonProfile extends BasicUserProfile {
     }
 
     protected Date getAttributeAsDate(final String name) {
-        final Object value = getAttribute(name);
+        final var value = getAttribute(name);
         // it should be a Date, but in case it's a Long (Vertx issue with profiles serialized to JSON and restored)
         if (value instanceof Long) {
             return new Date((long) value);

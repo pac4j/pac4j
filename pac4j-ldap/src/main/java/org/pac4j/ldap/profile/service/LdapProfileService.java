@@ -75,13 +75,13 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void insert(final Map<String, Object> attributes) {
         attributes.put("objectClass", "person");
-        final LdapEntry ldapEntry = LdapEntry.builder()
+        final var ldapEntry = LdapEntry.builder()
             .dn(getEntryId(attributes))
             .attributes(getLdapAttributes(attributes))
             .build();
 
         try {
-            final AddOperation add = new AddOperation(connectionFactory);
+            final var add = new AddOperation(connectionFactory);
             add.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             add.execute(new AddRequest(ldapEntry.getDn(), ldapEntry.getAttributes()));
         } catch (final LdapException e) {
@@ -95,15 +95,15 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     protected List<LdapAttribute> getLdapAttributes(final Map<String, Object> attributes) {
         final List<LdapAttribute> ldapAttributes = new ArrayList<>();
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
-            final Object value = entry.getValue();
+        for (final var entry : attributes.entrySet()) {
+            final var value = entry.getValue();
             if (value != null) {
-                final String key = entry.getKey();
+                final var key = entry.getKey();
                 final LdapAttribute ldapAttribute;
                 if (value instanceof String) {
                     ldapAttribute = new LdapAttribute(key, (String) value);
                 } else if (value instanceof List) {
-                    final List<String> list = (List<String>) value;
+                    final var list = (List<String>) value;
                     ldapAttribute = new LdapAttribute(key, list.toArray(new String[list.size()]));
                 } else {
                     ldapAttribute = new LdapAttribute(key, value.toString());
@@ -117,13 +117,13 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void update(final Map<String, Object> attributes) {
         try {
-            final ModifyOperation modify = new ModifyOperation(connectionFactory);
+            final var modify = new ModifyOperation(connectionFactory);
             modify.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             final List<AttributeModification> modifications = new ArrayList<>();
-            for (final LdapAttribute attribute : getLdapAttributes(attributes)) {
+            for (final var attribute : getLdapAttributes(attributes)) {
                 modifications.add(new AttributeModification(AttributeModification.Type.REPLACE, attribute));
             }
-            final ModifyRequest modifyRequest = new ModifyRequest(
+            final var modifyRequest = new ModifyRequest(
                 getEntryId(attributes), modifications.toArray(new AttributeModification[modifications.size()]));
             modify.execute(modifyRequest);
         } catch (final LdapException e) {
@@ -134,7 +134,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void deleteById(final String id) {
         try {
-            final DeleteOperation delete = new DeleteOperation(connectionFactory);
+            final var delete = new DeleteOperation(connectionFactory);
             delete.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
         } catch (final LdapException e) {
@@ -146,10 +146,10 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         final List<Map<String, Object>> listAttributes = new ArrayList<>();
         try {
-            final SearchOperation search = new SearchOperation(connectionFactory);
-            final SearchResponse result = search.execute(new SearchRequest(usersDn,key + "=" + value,
+            final var search = new SearchOperation(connectionFactory);
+            final var result = search.execute(new SearchRequest(usersDn,key + "=" + value,
                 names.toArray(new String[names.size()])));
-            for (final LdapEntry entry : result.getEntries()) {
+            for (final var entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }
         } catch (final LdapException e) {
@@ -160,8 +160,8 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     protected Map<String, Object> getAttributesFromEntry(final LdapEntry entry) {
         final Map<String, Object> attributes = new HashMap<>();
-        for (final LdapAttribute attribute : entry.getAttributes()) {
-            final String name = attribute.getName();
+        for (final var attribute : entry.getAttributes()) {
+            final var name = attribute.getName();
             if (attribute.size() > 1) {
                 attributes.put(name, attribute.getStringValues());
             } else {
@@ -175,14 +175,14 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
-        final String username = credentials.getUsername();
+        final var credentials = (UsernamePasswordCredentials) cred;
+        final var username = credentials.getUsername();
         assertNotBlank(Pac4jConstants.USERNAME, username);
         final AuthenticationResponse response;
         try {
             logger.debug("Attempting LDAP authentication for: {}", credentials);
-            final List<String> attributesToRead = defineAttributesToRead();
-            final AuthenticationRequest request = new AuthenticationRequest(username, new Credential(credentials.getPassword()),
+            final var attributesToRead = defineAttributesToRead();
+            final var request = new AuthenticationRequest(username, new Credential(credentials.getPassword()),
                     attributesToRead.toArray(new String[attributesToRead.size()]));
             response = this.ldapAuthenticator.authenticate(request);
         } catch (final LdapException e) {
@@ -191,10 +191,10 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         logger.debug("LDAP response: {}", response);
 
         if (response.isSuccess()) {
-            final LdapEntry entry = response.getLdapEntry();
+            final var entry = response.getLdapEntry();
             final List<Map<String, Object>> listAttributes = new ArrayList<>();
             listAttributes.add(getAttributesFromEntry(entry));
-            final LdapProfile profile = convertAttributesToProfile(listAttributes, username);
+            final var profile = convertAttributesToProfile(listAttributes, username);
             credentials.setUserProfile(profile);
             return;
         }

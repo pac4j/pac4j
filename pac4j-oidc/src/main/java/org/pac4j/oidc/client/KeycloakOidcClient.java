@@ -29,7 +29,7 @@ public class KeycloakOidcClient extends OidcClient {
 
     @Override
     protected void internalInit() {
-        final OidcProfileCreator profileCreator = new OidcProfileCreator(getConfiguration(), this);
+        final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 

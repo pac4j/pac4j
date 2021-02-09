@@ -48,12 +48,12 @@ public class OrcidProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public OrcidProfile extractUserProfile(String body) {
-        OrcidProfile profile = (OrcidProfile) newProfile();
+        var profile = (OrcidProfile) newProfile();
         if (body == null || body.isEmpty()) {
             raiseProfileExtractionError(body);
         }
         profile.setId(CommonHelper.substringBetween(body, "<path>", "</path>"));
-        for(final String attribute : getPrimaryAttributes()) {
+        for(final var attribute : getPrimaryAttributes()) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
         }

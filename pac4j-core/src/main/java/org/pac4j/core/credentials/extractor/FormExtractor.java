@@ -26,8 +26,8 @@ public class FormExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final Optional<String> username = context.getRequestParameter(this.usernameParameter);
-        final Optional<String> password = context.getRequestParameter(this.passwordParameter);
+        final var username = context.getRequestParameter(this.usernameParameter);
+        final var password = context.getRequestParameter(this.passwordParameter);
         if (!username.isPresent() || !password.isPresent()) {
             return Optional.empty();
         }

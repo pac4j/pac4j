@@ -22,7 +22,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  * @since 3.1.0
  */
 public class WechatService extends OAuth20Service {
-    
+
     private final String apiKey;
     private final String apiSecrect;
 
@@ -38,7 +38,7 @@ public class WechatService extends OAuth20Service {
      * @param userAgent the user agent
      * @param httpClientConfig the HTTP client configuration
      * @param httpClient  the HTTP client
-     * 
+     *
      */
     public WechatService(DefaultApi20 api, String apiKey, String apiSecret, String callback, String scope,
             String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
@@ -50,14 +50,14 @@ public class WechatService extends OAuth20Service {
     @Override
     public <R> Future<R> execute(OAuthRequest request, OAuthAsyncRequestCallback<R> callback,
                                  OAuthRequest.ResponseConverter<R> converter) {
-        OAuthRequest authRequest = addClientAuthentication(request);
+        var authRequest = addClientAuthentication(request);
         return super.execute(authRequest, callback, converter);
     }
 
     @Override
     public Response execute(OAuthRequest request)
         throws InterruptedException, ExecutionException, IOException {
-        OAuthRequest authRequest = addClientAuthentication(request);
+        var authRequest = addClientAuthentication(request);
         return super.execute(authRequest);
     }
 

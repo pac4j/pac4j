@@ -15,7 +15,7 @@ public final class CasRestProfileTests implements TestsConstants {
 
     @Test
     public void testClearProfile() {
-        final CasRestProfile profile = new CasRestProfile(ID, USERNAME);
+        final var profile = new CasRestProfile(ID, USERNAME);
         profile.removeLoginData();
         assertNull(profile.getTicketGrantingTicketId());
     }

@@ -59,7 +59,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
         if (isNotBlank(attributes)) {
             attributeNames = attributes.split(",");
-            for (final String attributeName : attributeNames) {
+            for (final var attributeName : attributeNames) {
                 if (getIdAttribute().equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
                         getUsernameAttribute().equalsIgnoreCase(attributeName) || getPasswordAttribute().equalsIgnoreCase(attributeName) ||
                         SERIALIZED_PROFILE.equalsIgnoreCase(attributeName)) {
@@ -81,7 +81,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank(ID, profile.getId());
         assertNotBlank(USERNAME, profile.getUsername());
 
-        final Map<String, Object> attributes = convertProfileAndPasswordToAttributes(profile, password);
+        final var attributes = convertProfileAndPasswordToAttributes(profile, password);
         insert(attributes);
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank(ID, profile.getId());
         assertNotBlank(USERNAME, profile.getUsername());
 
-        final Map<String, Object> attributes = convertProfileAndPasswordToAttributes(profile, password);
+        final var attributes = convertProfileAndPasswordToAttributes(profile, password);
         update(attributes);
     }
 
@@ -140,7 +140,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         }
         // legacy mode: save the defined attributes
         if (isLegacyMode()) {
-            for (final String attributeName : attributeNames) {
+            for (final var attributeName : attributeNames) {
                 storageAttributes.put(attributeName, profile.getAttribute(attributeName));
             }
         } else {
@@ -177,7 +177,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
         assertNotBlank(getIdAttribute(), id);
 
-        final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), getIdAttribute(), id);
+        final var listAttributes = read(defineAttributesToRead(), getIdAttribute(), id);
         return convertAttributesToProfile(listAttributes, null);
     }
 
@@ -187,7 +187,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
         assertNotBlank(LINKEDID, linkedId);
 
-        final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), LINKEDID, linkedId);
+        final var listAttributes = read(defineAttributesToRead(), LINKEDID, linkedId);
         return convertAttributesToProfile(listAttributes, null);
     }
 
@@ -222,16 +222,16 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         if (listStorageAttributes == null || listStorageAttributes.size() == 0) {
             return null;
         }
-        final Map<String, Object> storageAttributes = listStorageAttributes.get(0);
+        final var storageAttributes = listStorageAttributes.get(0);
 
-        final String linkedId = (String) storageAttributes.get(LINKEDID);
+        final var linkedId = (String) storageAttributes.get(LINKEDID);
         // legacy mode: only read the defined attributes
         if (isLegacyMode()) {
-            final U profile = (U) getProfileDefinition().newProfile();
-            for (final String attributeName : attributeNames) {
+            final var profile = (U) getProfileDefinition().newProfile();
+            for (final var attributeName : attributeNames) {
                 getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, attributeName, storageAttributes.get(attributeName));
             }
-            final Object retrievedUsername = storageAttributes.get(getUsernameAttribute());
+            final var retrievedUsername = storageAttributes.get(getUsernameAttribute());
             if (retrievedUsername != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(retrievedUsername));
             } else {
@@ -243,17 +243,17 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             return profile;
         } else {
             // new behaviour (>= v2.0): read the serialized profile
-            final String serializedProfile = (String) storageAttributes.get(SERIALIZED_PROFILE);
+            final var serializedProfile = (String) storageAttributes.get(SERIALIZED_PROFILE);
             if (serializedProfile == null) {
                 throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you " +
                     "want to retrieve");
             }
-            final U profile = (U) serializer.deserializeFromString(serializedProfile);
+            final var profile = (U) serializer.deserializeFromString(serializedProfile);
             if (profile == null) {
                 throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " +
                     "names you want to retrieve");
             }
-            final Object id = storageAttributes.get(getIdAttribute());
+            final var id = storageAttributes.get(getIdAttribute());
             if (isBlank(profile.getId()) && id != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(id));
             }
@@ -279,29 +279,29 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         init();
 
         assertNotNull("credentials", cred);
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
-        final String username = credentials.getUsername();
-        final String password = credentials.getPassword();
+        final var credentials = (UsernamePasswordCredentials) cred;
+        final var username = credentials.getUsername();
+        final var password = credentials.getPassword();
         assertNotBlank(USERNAME, username);
         assertNotBlank(PASSWORD, password);
 
-        final List<String> attributesToRead = defineAttributesToRead();
+        final var attributesToRead = defineAttributesToRead();
         // + password to check
         attributesToRead.add(getPasswordAttribute());
 
         try {
-            final List<Map<String, Object>> listAttributes = read(attributesToRead, getUsernameAttribute(), username);
+            final var listAttributes = read(attributesToRead, getUsernameAttribute(), username);
             if (listAttributes == null || listAttributes.isEmpty()) {
                 throw new AccountNotFoundException("No account found for: " + username);
             } else if (listAttributes.size() > 1) {
                 throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
             } else {
-                final String retrievedPassword = (String) listAttributes.get(0).get(getPasswordAttribute());
+                final var retrievedPassword = (String) listAttributes.get(0).get(getPasswordAttribute());
                 // check password
                 if (!passwordEncoder.matches(password, retrievedPassword)) {
                     throw new BadCredentialsException("Bad credentials for: " + username);
                 } else {
-                    final U profile = convertAttributesToProfile(listAttributes, null);
+                    final var profile = convertAttributesToProfile(listAttributes, null);
                     credentials.setUserProfile(profile);
                 }
             }

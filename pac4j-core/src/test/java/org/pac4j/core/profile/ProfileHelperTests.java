@@ -28,10 +28,10 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testBuildUserProfileByClassCompleteName() {
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
-        final UserProfile profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
+        final var profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
         assertNotNull(profile2);
     }
 
@@ -69,17 +69,17 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testFlatIntoOneProfileOneProfile() {
-        final CommonProfile profile1 = new CommonProfile();
+        final var profile1 = new CommonProfile();
         profile1.setId("ONE");
-        final List<CommonProfile> profiles = Arrays.asList( profile1 );
+        final var profiles = Arrays.asList( profile1 );
         assertEquals(profile1, ProfileHelper.flatIntoOneProfile(profiles).get());
     }
 
     @Test
     public void testFlatIntoOneProfileNProfiles() {
-        final CommonProfile profile2 = new CommonProfile();
+        final var profile2 = new CommonProfile();
         profile2.setId("TWO");
-        final List<CommonProfile> profiles = Arrays.asList( AnonymousProfile.INSTANCE, null, profile2 );
+        final var profiles = Arrays.asList( AnonymousProfile.INSTANCE, null, profile2 );
         assertEquals(profile2, ProfileHelper.flatIntoOneProfile(profiles).get());
     }
 }

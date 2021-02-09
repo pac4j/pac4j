@@ -50,19 +50,19 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
                                                        final UserProfile currentProfile, final String targetUrl) {
         if (currentProfile instanceof SAML2Profile) {
-            final SAML2Profile saml2Profile = (SAML2Profile) currentProfile;
-            final SAML2MessageContext samlContext = this.contextProvider.buildContext(context, sessionStore);
-            final String relayState = this.stateGenerator.generateValue(context, sessionStore);
+            final var saml2Profile = (SAML2Profile) currentProfile;
+            final var samlContext = this.contextProvider.buildContext(context, sessionStore);
+            final var relayState = this.stateGenerator.generateValue(context, sessionStore);
 
-            final LogoutRequest logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
+            final var logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
             this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
-            final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
+            final var adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
             if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-                final String content = adapter.getOutgoingContent();
+                final var content = adapter.getOutgoingContent();
                 return Optional.of(HttpActionHelper.buildFormPostContentAction(context, content));
             }
-            final String location = adapter.getRedirectUrl();
+            final var location = adapter.getRedirectUrl();
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
         } else {
             return Optional.empty();

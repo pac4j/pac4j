@@ -56,14 +56,14 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
 
     @Override
     protected void doEncode() throws MessageEncodingException {
-        final MessageContext messageContext = this.getMessageContext();
-        final SAMLObject outboundMessage = (SAMLObject)messageContext.getMessage();
-        final String endpointURL = this.getEndpointURL(messageContext).toString();
+        final var messageContext = this.getMessageContext();
+        final var outboundMessage = (SAMLObject)messageContext.getMessage();
+        final var endpointURL = this.getEndpointURL(messageContext).toString();
 
         this.removeSignature(outboundMessage);
 
-        final String encodedMessage = this.deflateAndBase64Encode(outboundMessage);
-        final String redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
+        final var encodedMessage = this.deflateAndBase64Encode(outboundMessage);
+        final var redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
 
         responseAdapter.init();
         responseAdapter.setRedirectUrl(redirectURL);
@@ -98,7 +98,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      */
     protected void removeSignature(final SAMLObject message) {
         if (message instanceof SignableSAMLObject) {
-            final SignableSAMLObject signableMessage = (SignableSAMLObject) message;
+            final var signableMessage = (SignableSAMLObject) message;
             if (signableMessage.isSigned()) {
                 log.debug("Removing SAML protocol message signature");
                 signableMessage.setSignature(null);
@@ -118,12 +118,12 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
     String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
         log.debug("Deflating and Base64 encoding SAML message");
         try {
-            final String messageStr = SerializeSupport.nodeToString(marshallMessage(message));
+            final var messageStr = SerializeSupport.nodeToString(marshallMessage(message));
             log.trace("Output XML message: {}", messageStr);
 
-            final ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-            final Deflater deflater = new Deflater(Deflater.DEFLATED, true);
-            final DeflaterOutputStream deflaterStream = new DeflaterOutputStream(bytesOut, deflater);
+            final var bytesOut = new ByteArrayOutputStream();
+            final var deflater = new Deflater(Deflater.DEFLATED, true);
+            final var deflaterStream = new DeflaterOutputStream(bytesOut, deflater);
             deflaterStream.write(messageStr.getBytes(StandardCharsets.UTF_8));
             deflaterStream.finish();
 
@@ -174,7 +174,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
             throw new MessageEncodingException("Endpoint URL " + endpoint + " is not a valid URL", e);
         }
 
-        final List<Pair<String, String>> queryParams = urlBuilder.getQueryParams();
+        final var queryParams = urlBuilder.getQueryParams();
         // remove the query parameters set below
         queryParams.removeIf(p ->
             p.getFirst().equals("SAMLRequest") ||
@@ -183,7 +183,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
             p.getFirst().equals("SigAlg") ||
             p.getFirst().equals("Signature"));
 
-        final SAMLObject outboundMessage = (SAMLObject) messageContext.getMessage();
+        final var outboundMessage = (SAMLObject) messageContext.getMessage();
 
         if (outboundMessage instanceof RequestAbstractType) {
             queryParams.add(new Pair<>("SAMLRequest", message));
@@ -194,20 +194,20 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
                     "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
         }
 
-        final String relayState = SAMLBindingSupport.getRelayState(messageContext);
+        final var relayState = SAMLBindingSupport.getRelayState(messageContext);
         if (SAMLBindingSupport.checkRelayState(relayState)) {
             queryParams.add(new Pair<>("RelayState", relayState));
         }
 
         if (isAuthnRequestSigned) {
-            final SignatureSigningParameters signingParameters =
+            final var signingParameters =
                     SAMLMessageSecuritySupport.getContextSigningParameters(messageContext);
             if (signingParameters != null && signingParameters.getSigningCredential() != null) {
-                final String sigAlgURI =  getSignatureAlgorithmURI(signingParameters);
-                final Pair<String, String> sigAlg = new Pair<>("SigAlg", sigAlgURI);
+                final var sigAlgURI =  getSignatureAlgorithmURI(signingParameters);
+                final var sigAlg = new Pair<String, String>("SigAlg", sigAlgURI);
                 queryParams.add(sigAlg);
-                final String sigMaterial = urlBuilder.buildQueryString();
-    
+                final var sigMaterial = urlBuilder.buildQueryString();
+
                 queryParams.add(new Pair<>("Signature", generateSignature(
                         signingParameters.getSigningCredential(), sigAlgURI, sigMaterial)));
             } else {
@@ -257,7 +257,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
 
         final String b64Signature;
         try {
-            final byte[] rawSignature =
+            final var rawSignature =
                     XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes(StandardCharsets.UTF_8));
             b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
             log.debug("Generated digital signature value (base64-encoded) {}", b64Signature);

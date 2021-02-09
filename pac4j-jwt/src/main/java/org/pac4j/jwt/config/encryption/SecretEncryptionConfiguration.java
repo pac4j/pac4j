@@ -50,9 +50,9 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     @Override
     public boolean supports(final JWEAlgorithm algorithm, final EncryptionMethod method) {
         if (algorithm != null && method != null) {
-            final boolean isDirect = DirectDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
+            final var isDirect = DirectDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
                 && DirectDecrypter.SUPPORTED_ENCRYPTION_METHODS.contains(method);
-            final boolean isAes = AESDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
+            final var isAes = AESDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
                 && AESDecrypter.SUPPORTED_ENCRYPTION_METHODS.contains(method);
             return isDirect || isAes;
         }

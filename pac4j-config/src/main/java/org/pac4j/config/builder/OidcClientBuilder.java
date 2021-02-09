@@ -27,50 +27,50 @@ public class OidcClientBuilder extends AbstractBuilder {
     }
 
     public void tryCreateOidcClient(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String id = getProperty(OIDC_ID, i);
-            final String secret = getProperty(OIDC_SECRET, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var id = getProperty(OIDC_ID, i);
+            final var secret = getProperty(OIDC_SECRET, i);
             if (isNotBlank(id) && isNotBlank(secret)) {
-                final OidcConfiguration configuration = new OidcConfiguration();
+                final var configuration = new OidcConfiguration();
                 configuration.setClientId(id);
                 configuration.setSecret(secret);
 
-                final String scope = getProperty(OIDC_SCOPE, i);
+                final var scope = getProperty(OIDC_SCOPE, i);
                 if (isNotBlank(scope)) {
                     configuration.setScope(scope);
                 }
-                final String discoveryUri = getProperty(OIDC_DISCOVERY_URI, i);
+                final var discoveryUri = getProperty(OIDC_DISCOVERY_URI, i);
                 if (isNotBlank(discoveryUri)) {
                     configuration.setDiscoveryURI(discoveryUri);
                 }
-                final String useNonce = getProperty(OIDC_USE_NONCE, i);
+                final var useNonce = getProperty(OIDC_USE_NONCE, i);
                 if (isNotBlank(useNonce)) {
                     configuration.setUseNonce(Boolean.parseBoolean(useNonce));
                 }
-                final String jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM, i);
+                final var jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM, i);
                 if (isNotBlank(jwsAlgo)) {
                     configuration.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
                 }
-                final String maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW, i);
+                final var maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW, i);
                 if (isNotBlank(maxClockSkew)) {
                     configuration.setMaxClockSkew(Integer.parseInt(maxClockSkew));
                 }
-                final String clientAuthenticationMethod = getProperty(OIDC_CLIENT_AUTHENTICATION_METHOD, i);
+                final var clientAuthenticationMethod = getProperty(OIDC_CLIENT_AUTHENTICATION_METHOD, i);
                 if (isNotBlank(clientAuthenticationMethod)) {
                     configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.parse(clientAuthenticationMethod));
                 }
-                for (int j = 1; j <= MAX_NUM_CUSTOM_PROPERTIES; j++) {
+                for (var j = 1; j <= MAX_NUM_CUSTOM_PROPERTIES; j++) {
                     if (containsProperty(OIDC_CUSTOM_PARAM_KEY + j, i)) {
                         configuration.addCustomParam(getProperty(OIDC_CUSTOM_PARAM_KEY + j, i),
                             getProperty(OIDC_CUSTOM_PARAM_VALUE + j, i));
                     }
                 }
 
-                final String type = getProperty(OIDC_TYPE, i);
+                final var type = getProperty(OIDC_TYPE, i);
                 final OidcClient oidcClient;
                 if (OIDC_AZURE_TYPE.equalsIgnoreCase(type)) {
-                    final AzureAdOidcConfiguration azureAdConfiguration = new AzureAdOidcConfiguration(configuration);
-                    final String tenant = getProperty(OIDC_AZURE_TENANT, i);
+                    final var azureAdConfiguration = new AzureAdOidcConfiguration(configuration);
+                    final var tenant = getProperty(OIDC_AZURE_TENANT, i);
                     if (isNotBlank(tenant)) {
                         azureAdConfiguration.setTenant(tenant);
                     }

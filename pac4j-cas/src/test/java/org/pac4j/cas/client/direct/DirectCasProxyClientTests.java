@@ -25,50 +25,50 @@ public final class DirectCasProxyClientTests implements TestsConstants {
 
     @Test
     public void testInitOk() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS20_PROXY);
-        final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
+        final var client = new DirectCasProxyClient(configuration, CALLBACK_URL);
         client.init();
     }
 
     @Test
     public void testInitMissingConfiguration() {
-        final DirectCasProxyClient client = new DirectCasProxyClient();
+        final var client = new DirectCasProxyClient();
         client.setServiceUrl(CALLBACK_URL);
         TestsHelper.expectException(client::init, TechnicalException.class, "configuration cannot be null");
     }
 
     @Test
     public void testInitMissingServiceUrl() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final DirectCasProxyClient client = new DirectCasProxyClient();
+        final var client = new DirectCasProxyClient();
         client.setConfiguration(configuration);
         TestsHelper.expectException(client::init, TechnicalException.class, "serviceUrl cannot be blank");
     }
 
     @Test
     public void testInitFailsBadProtocol() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
+        final var client = new DirectCasProxyClient(configuration, CALLBACK_URL);
         TestsHelper.expectException(client::init, TechnicalException.class,
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
     }
 
     @Test
     public void testNoTicket() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS20_PROXY);
-        final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
+        final var client = new DirectCasProxyClient(configuration, CALLBACK_URL);
         assertFalse(client.getCredentials(MockWebContext.create(), new MockSessionStore()).isPresent());
     }
 
     @Test
     public void testTokenExistsValidationOccurs() {
-        final CasConfiguration configuration = new CasConfiguration();
+        final var configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS30_PROXY);
         configuration.setDefaultTicketValidator((ticket, service) -> {
@@ -77,13 +77,13 @@ public final class DirectCasProxyClientTests implements TestsConstants {
             }
             throw new TechnicalException("Bad ticket or service");
         });
-        final DirectCasProxyClient client = new DirectCasProxyClient(configuration, CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create();
+        final var client = new DirectCasProxyClient(configuration, CALLBACK_URL);
+        final var context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
         assertEquals(TICKET, credentials.getToken());
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);
         assertEquals(TICKET, profile.getId());
     }

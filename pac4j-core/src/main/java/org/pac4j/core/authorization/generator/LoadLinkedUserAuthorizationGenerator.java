@@ -32,7 +32,7 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         CommonHelper.assertNotNull("profileService", profileService);
 
-        final CommonProfile linkedProfile = profileService.findByLinkedId(profile.getId());
+        final var linkedProfile = profileService.findByLinkedId(profile.getId());
 
         if (linkedProfile != null) {
             return Optional.ofNullable(linkedProfile);

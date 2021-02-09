@@ -145,9 +145,9 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     @Test
     public void testCentralLogout() {
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         profile.setClientName(NAME);
-        final MockIndirectClient client = new MockIndirectClient(NAME);
+        final var client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setLogoutActionBuilder((ctx, store, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));
@@ -164,9 +164,9 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     @Test
     public void testCentralLogoutWithRelativeUrl() {
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         profile.setClientName(NAME);
-        final MockIndirectClient client = new MockIndirectClient(NAME);
+        final var client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setLogoutActionBuilder((ctx, store, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));

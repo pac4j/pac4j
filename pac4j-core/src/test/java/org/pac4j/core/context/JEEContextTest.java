@@ -46,25 +46,25 @@ public final class JEEContextTest implements TestsConstants {
     }
 
     private void internalTestGetHeader(final String key) {
-        HashSet<String> headerNames = new HashSet<>();
+        var headerNames = new HashSet<String>();
         headerNames.add(KEY);
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(headerNames));
         when(request.getHeader(KEY)).thenReturn(VALUE);
-        final JEEContext context = new JEEContext(request, response);
+        final var context = new JEEContext(request, response);
         assertEquals(VALUE, context.getRequestHeader(key).get());
     }
 
     @Test
     public void testGetPathNullFullPath() {
         when(request.getRequestURI()).thenReturn(null);
-        final JEEContext context = new JEEContext(request, response);
+        final var context = new JEEContext(request, response);
         assertEquals("", context.getPath());
     }
 
     @Test
     public void testGetPathFullpath() {
         when(request.getRequestURI()).thenReturn(CTX_PATH);
-        final JEEContext context = new JEEContext(request, response);
+        final var context = new JEEContext(request, response);
         assertEquals(CTX_PATH, context.getPath());
     }
 
@@ -72,7 +72,7 @@ public final class JEEContextTest implements TestsConstants {
     public void testGetPathFullpathContext() {
         when(request.getRequestURI()).thenReturn(CTX_PATH);
         when(request.getContextPath()).thenReturn(CTX);
-        final JEEContext context = new JEEContext(request, response);
+        final var context = new JEEContext(request, response);
         assertEquals(PATH, context.getPath());
     }
 
@@ -80,7 +80,7 @@ public final class JEEContextTest implements TestsConstants {
     public void testGetPathDoubleSlashFullpathContext() {
         when(request.getRequestURI()).thenReturn("/" + CTX_PATH);
         when(request.getContextPath()).thenReturn(CTX);
-        final JEEContext context = new JEEContext(request, response);
+        final var context = new JEEContext(request, response);
         assertEquals(PATH, context.getPath());
     }
 }

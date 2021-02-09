@@ -39,7 +39,7 @@ public final class RunTwitterClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final TwitterClient twitterClient = new TwitterClient();
+        final var twitterClient = new TwitterClient();
         twitterClient.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterClient.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
         twitterClient.setCallbackUrl(PAC4J_URL);
@@ -53,7 +53,7 @@ public final class RunTwitterClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final TwitterProfile profile = (TwitterProfile) userProfile;
+        final var profile = (TwitterProfile) userProfile;
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));

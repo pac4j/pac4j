@@ -41,11 +41,11 @@ public class CasRestAuthenticator implements Authenticator {
 
     @Override
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
+        final var credentials = (UsernamePasswordCredentials) cred;
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");
         }
-        final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), context);
+        final var ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), context);
         if (CommonHelper.isNotBlank(ticketGrantingTicketId)) {
             credentials.setUserProfile(new CasRestProfile(ticketGrantingTicketId, credentials.getUsername()));
         }
@@ -55,15 +55,15 @@ public class CasRestAuthenticator implements Authenticator {
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openPostConnection(new URL(this.configuration.computeFinalRestUrl(context)));
-            final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
+            final var payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
+            final var out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
             out.write(payload);
             out.close();
 
-            final String locationHeader = connection.getHeaderField("location");
-            final int responseCode = connection.getResponseCode();
+            final var locationHeader = connection.getHeaderField("location");
+            final var responseCode = connection.getResponseCode();
             if (locationHeader != null && responseCode == HttpConstants.CREATED) {
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }

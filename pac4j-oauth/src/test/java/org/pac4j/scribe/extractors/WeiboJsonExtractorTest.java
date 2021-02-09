@@ -37,7 +37,7 @@ public class WeiboJsonExtractorTest {
 
     @Test
     public void createTokenHasUid() throws IOException {
-        OAuth2AccessToken accessToken = extractor.createToken("ACCESS_TOKEN", null,
+        var accessToken = extractor.createToken("ACCESS_TOKEN", null,
             123, null, null, mapper.readTree(responseOk), responseOk);
         Assert.assertEquals("ACCESS_TOKEN", accessToken.getAccessToken());
         assertTrue(accessToken instanceof WeiboToken);

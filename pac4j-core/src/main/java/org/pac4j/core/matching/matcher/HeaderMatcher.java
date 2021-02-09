@@ -32,9 +32,9 @@ public class HeaderMatcher implements Matcher {
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotBlank("headerName", headerName);
 
-        final Optional<String> headerValue = context.getRequestHeader(this.headerName);
-        final boolean headerNull = expectedValue == null && !headerValue.isPresent();
-        final boolean headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
+        final var headerValue = context.getRequestHeader(this.headerName);
+        final var headerNull = expectedValue == null && !headerValue.isPresent();
+        final var headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
         return headerNull || headerMatches;
     }
 

@@ -38,7 +38,7 @@ public final class RunDropboxClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final DropBoxClient dropBoxClient = new DropBoxClient();
+        final var dropBoxClient = new DropBoxClient();
         dropBoxClient.setKey("0194c6m79qll0ia");
         dropBoxClient.setSecret("a0ylze9a0bhsvxv");
         dropBoxClient.setCallbackUrl("https://www.google.com");
@@ -47,7 +47,7 @@ public final class RunDropboxClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final DropBoxProfile profile = (DropBoxProfile) userProfile;
+        final var profile = (DropBoxProfile) userProfile;
         assertEquals("dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU", profile.getId());
         assertEquals(DropBoxProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU",
             profile.getTypedId());

@@ -121,7 +121,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSAMLProtocolAndRoleHandler(final QName roleName)
         throws ComponentInitializationException {
-        final SAMLProtocolAndRoleHandler protocolAndRoleHandler = new SAMLProtocolAndRoleHandler();
+        final var protocolAndRoleHandler = new SAMLProtocolAndRoleHandler();
         protocolAndRoleHandler.setProtocol(SAMLConstants.SAML20P_NS);
         protocolAndRoleHandler.setRole(roleName);
         protocolAndRoleHandler.initialize();
@@ -130,10 +130,10 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSAMLMetadataLookupHandler(final SAML2MetadataResolver metadataResolver)
         throws ComponentInitializationException {
-        final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(metadataResolver.resolve());
+        final var roleResolver = new PredicateRoleDescriptorResolver(metadataResolver.resolve());
         roleResolver.initialize();
 
-        final SAMLMetadataLookupHandler metadataLookupHandler = new SAMLMetadataLookupHandler();
+        final var metadataLookupHandler = new SAMLMetadataLookupHandler();
         metadataLookupHandler.setRoleDescriptorResolver(roleResolver);
         metadataLookupHandler.initialize();
         return metadataLookupHandler;
@@ -141,7 +141,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSchemaValidateXMLMessage() throws ComponentInitializationException {
         try {
-            final SchemaValidateXMLMessage validateXMLHandler = new SchemaValidateXMLMessage(
+            final var validateXMLHandler = new SchemaValidateXMLMessage(
                 new SAMLSchemaBuilder(SAML1Version.SAML_11).getSAMLSchema());
             validateXMLHandler.initialize();
             return validateXMLHandler;
@@ -151,26 +151,26 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
     }
 
     protected MessageHandler buildCheckMessageVersionHandler() throws ComponentInitializationException {
-        final CheckMessageVersionHandler messageVersionHandler = new CheckMessageVersionHandler();
+        final var messageVersionHandler = new CheckMessageVersionHandler();
         messageVersionHandler.initialize();
         return messageVersionHandler;
     }
 
     protected MessageHandler buildMessageLifetimeSecurityHandler() throws ComponentInitializationException {
-        final MessageLifetimeSecurityHandler lifetimeHandler = new MessageLifetimeSecurityHandler();
+        final var lifetimeHandler = new MessageLifetimeSecurityHandler();
         lifetimeHandler.setClockSkew(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
         lifetimeHandler.initialize();
         return lifetimeHandler;
     }
 
     protected MessageHandler buildInResponseToSecurityHandler() throws ComponentInitializationException {
-        final InResponseToSecurityHandler inResponseToHandler = new InResponseToSecurityHandler();
+        final var inResponseToHandler = new InResponseToSecurityHandler();
         inResponseToHandler.initialize();
         return inResponseToHandler;
     }
 
     protected MessageHandler buildMessageReplaySecurityHandler() throws ComponentInitializationException {
-        final MessageReplaySecurityHandler messageReplayHandler = new MessageReplaySecurityHandler();
+        final var messageReplayHandler = new MessageReplaySecurityHandler();
         messageReplayHandler.setExpires(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
         messageReplayHandler.setReplayCache(replayCache.get());
         messageReplayHandler.initialize();
@@ -178,14 +178,14 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
     }
 
     protected MessageHandler buildCheckMandatoryIssuer() throws ComponentInitializationException {
-        final CheckMandatoryIssuer mandatoryIssuer = new CheckMandatoryIssuer();
+        final var mandatoryIssuer = new CheckMandatoryIssuer();
         mandatoryIssuer.setIssuerLookupStrategy(new IssuerFunction());
         mandatoryIssuer.initialize();
         return mandatoryIssuer;
     }
 
     protected MessageHandler buildCheckExpectedIssuer() throws ComponentInitializationException {
-        final CheckExpectedIssuer expectedIssuer = new CheckExpectedIssuer();
+        final var expectedIssuer = new CheckExpectedIssuer();
         expectedIssuer.setIssuerLookupStrategy(new IssuerFunction());
         expectedIssuer.setExpectedIssuerLookupStrategy(messageContext -> idpMetadataResolver.getEntityId());
         expectedIssuer.initialize();
@@ -194,7 +194,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildPopulateSignatureSigningParametersHandler()
         throws ComponentInitializationException {
-        final PopulateSignatureSigningParametersHandler signatureSigningParameters = new PopulateSignatureSigningParametersHandler();
+        final var signatureSigningParameters = new PopulateSignatureSigningParametersHandler();
         signatureSigningParameters.setSignatureSigningParametersResolver(
             new DefaultSignatureSigningParametersResolver(signingParametersProvider));
         signatureSigningParameters.initialize();
@@ -203,7 +203,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildPopulateSignatureValidationParametersHandler()
         throws ComponentInitializationException {
-        final PopulateSignatureValidationParametersHandler signatureValidationParameters =
+        final var signatureValidationParameters =
             new PopulateSignatureValidationParametersHandler();
         signatureValidationParameters
             .setSignatureValidationParametersResolver(new BasicSignatureValidationParametersResolver() {
@@ -218,7 +218,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSAMLProtocolMessageXMLSignatureSecurityHandler()
         throws ComponentInitializationException {
-        final SAMLProtocolMessageXMLSignatureSecurityHandler messageXMLSignatureHandler =
+        final var messageXMLSignatureHandler =
             new SAMLProtocolMessageXMLSignatureSecurityHandler();
         messageXMLSignatureHandler.initialize();
         return messageXMLSignatureHandler;
@@ -226,34 +226,34 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildCheckAndRecordServerTLSEntityAuthenticationtHandler()
         throws ComponentInitializationException {
-        final CheckAndRecordServerTLSEntityAuthenticationtHandler tlsHandler =
+        final var tlsHandler =
             new CheckAndRecordServerTLSEntityAuthenticationtHandler();
         tlsHandler.initialize();
         return tlsHandler;
     }
 
     protected MessageHandler buildCheckMandatoryAuthentication() {
-        final CheckMandatoryAuthentication mandatoryAuthentication = new CheckMandatoryAuthentication();
+        final var mandatoryAuthentication = new CheckMandatoryAuthentication();
         mandatoryAuthentication.setAuthenticationLookupStrategy(
             context -> context.getSubcontext(SAMLPeerEntityContext.class).isAuthenticated());
         return mandatoryAuthentication;
     }
 
     protected MessageHandler buildSAMLSOAPDecoderBodyHandler() throws ComponentInitializationException {
-        final SAMLSOAPDecoderBodyHandler soapDecoderBody = new SAMLSOAPDecoderBodyHandler();
+        final var soapDecoderBody = new SAMLSOAPDecoderBodyHandler();
         soapDecoderBody.initialize();
         return soapDecoderBody;
     }
 
     protected MessageHandler buildSAMLOutboundProtocolMessageSigningHandler()
         throws ComponentInitializationException {
-        final SAMLOutboundProtocolMessageSigningHandler messageSigner = new SAMLOutboundProtocolMessageSigningHandler();
+        final var messageSigner = new SAMLOutboundProtocolMessageSigningHandler();
         messageSigner.initialize();
         return messageSigner;
     }
 
     protected BasicMessageHandlerChain toHandlerChain(final List<MessageHandler> handlers) {
-        final BasicMessageHandlerChain ret = new BasicMessageHandlerChain();
+        final var ret = new BasicMessageHandlerChain();
         ret.setHandlers(handlers);
         return ret;
     }
@@ -261,7 +261,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
     @Override
     @Nonnull
     public HttpClientMessagePipeline newInstance() {
-        final BasicHttpClientMessagePipeline ret = new BasicHttpClientMessagePipeline(
+        final var ret = new BasicHttpClientMessagePipeline(
             new HttpClientRequestSOAP11Encoder(), new HttpClientResponseSOAP11Decoder());
         try {
             ret.setInboundHandler(toHandlerChain(getInboundHandlers()));

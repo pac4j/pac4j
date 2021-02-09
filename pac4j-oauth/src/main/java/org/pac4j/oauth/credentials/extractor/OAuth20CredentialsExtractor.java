@@ -27,32 +27,32 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
     protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
         if (((OAuth20Configuration) configuration).isWithState()) {
 
-            final Optional<String> stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
+            final var stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 
             if (stateParameter.isPresent()) {
-                final String stateSessionAttributeName = this.client.getStateSessionAttributeName();
-                final String sessionState = (String) sessionStore.get(context, stateSessionAttributeName).orElse(null);
+                final var stateSessionAttributeName = this.client.getStateSessionAttributeName();
+                final var sessionState = (String) sessionStore.get(context, stateSessionAttributeName).orElse(null);
                 // clean from session after retrieving it
                 sessionStore.set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
                 if (!stateParameter.get().equals(sessionState)) {
-                    final String message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
+                    final var message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
                     throw new OAuthCredentialsException(message);
                 }
             } else {
-                final String message = "Missing state parameter: session expired or possible threat of cross-site request forgery";
+                final var message = "Missing state parameter: session expired or possible threat of cross-site request forgery";
                 throw new OAuthCredentialsException(message);
             }
 
         }
 
-        final Optional<String> codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
+        final var codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
         if (codeParameter.isPresent()) {
-            final String code = OAuthEncoder.decode(codeParameter.get());
+            final var code = OAuthEncoder.decode(codeParameter.get());
             logger.debug("code: {}", code);
             return Optional.of(new OAuth20Credentials(code));
         } else {
-            final String message = "No credential found";
+            final var message = "No credential found";
             throw new OAuthCredentialsException(message);
         }
     }

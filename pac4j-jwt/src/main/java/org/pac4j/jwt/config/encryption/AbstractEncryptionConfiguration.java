@@ -27,7 +27,7 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
 
         if (jwt instanceof SignedJWT) {
             // Create JWE object with signed JWT as payload
-            final JWEObject jweObject = new JWEObject(
+            final var jweObject = new JWEObject(
                     new JWEHeader.Builder(this.algorithm, this.method).contentType("JWT").build(),
                     new Payload((SignedJWT) jwt));
 
@@ -42,11 +42,11 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
             return jweObject.serialize();
         } else {
             // create header
-            final JWEHeader header = new JWEHeader(this.algorithm, this.method);
+            final var header = new JWEHeader(this.algorithm, this.method);
 
             try {
                 // encrypted jwt
-                EncryptedJWT encryptedJwt = new EncryptedJWT(header, jwt.getJWTClaimsSet());
+                var encryptedJwt = new EncryptedJWT(header, jwt.getJWTClaimsSet());
 
                 // Perform encryption
                 encryptedJwt.encrypt(buildEncrypter());

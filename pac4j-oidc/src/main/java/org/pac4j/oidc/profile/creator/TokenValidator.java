@@ -34,11 +34,11 @@ public class TokenValidator {
     public TokenValidator(final OidcConfiguration configuration) {
 
         // check algorithms
-        final List<JWSAlgorithm> metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
+        final var metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
             "There must at least one JWS algorithm supported on the OpenID Connect provider side");
         List<JWSAlgorithm> jwsAlgorithms = new ArrayList<>();
-        final JWSAlgorithm preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
+        final var preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
         if (metadataAlgorithms.contains(preferredAlgorithm)) {
             jwsAlgorithms.add(preferredAlgorithm);
         } else {
@@ -48,10 +48,10 @@ public class TokenValidator {
         }
 
         idTokenValidators = new ArrayList<>();
-        final ClientID _clientID = new ClientID(configuration.getClientId());
-        final Secret _secret = new Secret(configuration.getSecret());
+        final var _clientID = new ClientID(configuration.getClientId());
+        final var _secret = new Secret(configuration.getSecret());
 
-        for (JWSAlgorithm jwsAlgorithm : jwsAlgorithms) {
+        for (var jwsAlgorithm : jwsAlgorithms) {
             if ("none".equals(jwsAlgorithm.getName())) {
                 jwsAlgorithm = null;
             }
@@ -92,7 +92,7 @@ public class TokenValidator {
 
         BadJOSEException badJOSEException = null;
         JOSEException joseException = null;
-        for (final IDTokenValidator idTokenValidator : idTokenValidators) {
+        for (final var idTokenValidator : idTokenValidators) {
             try {
                 return idTokenValidator.validate(idToken, expectedNonce);
             } catch (final BadJOSEException e1) {

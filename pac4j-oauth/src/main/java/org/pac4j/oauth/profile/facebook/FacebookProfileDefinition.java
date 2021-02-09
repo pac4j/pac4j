@@ -82,9 +82,9 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
         primary(LINK, Converters.URL);
-        final JsonConverter objectConverter = new JsonConverter(FacebookObject.class);
-        final JsonConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
-        final JsonConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
+        final var objectConverter = new JsonConverter(FacebookObject.class);
+        final var multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
+        final var multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
@@ -111,8 +111,8 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
-        final FacebookConfiguration fbConfiguration = (FacebookConfiguration) configuration;
-        String url = BASE_URL + "?fields=" + fbConfiguration.getFields();
+        final var fbConfiguration = (FacebookConfiguration) configuration;
+        var url = BASE_URL + "?fields=" + fbConfiguration.getFields();
         if (fbConfiguration.getLimit() > DEFAULT_LIMIT) {
             url += "&limit=" + fbConfiguration.getLimit();
         }
@@ -135,12 +135,12 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
      */
     public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final FacebookConfiguration configuration) {
         try {
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            var sha256_HMAC = Mac.getInstance("HmacSHA256");
+            var secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secret_key);
-            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
+            var proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
                 .getBytes(StandardCharsets.UTF_8)));
-            final String computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
+            final var computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return computedUrl;
         } catch (final InvalidKeyException | NoSuchAlgorithmException e) {
             throw new TechnicalException("Unable to compute appsecret_proof", e);
@@ -149,11 +149,11 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public FacebookProfile extractUserProfile(final String body) {
-        final FacebookProfile profile = (FacebookProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (FacebookProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             extractData(profile, json, FacebookProfileDefinition.FRIENDS);
@@ -173,7 +173,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
     }
 
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
-        final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
+        final var data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, name, JsonHelper.getElement(data, "data"));
         }

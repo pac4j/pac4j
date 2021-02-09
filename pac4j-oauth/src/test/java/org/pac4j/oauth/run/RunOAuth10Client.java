@@ -20,12 +20,12 @@ public final class RunOAuth10Client extends RunBitbucketClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OAuth10Configuration config = new OAuth10Configuration();
+        final var config = new OAuth10Configuration();
         config.setKey("bjEt8BMpLwFDqZUvp6");
         config.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
         config.setApi(new BitBucketApi());
         config.setProfileDefinition(new BitbucketProfileDefinition());
-        final OAuth10Client client = new OAuth10Client();
+        final var client = new OAuth10Client();
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setConfiguration(config);
         return client;

@@ -33,13 +33,13 @@ public final class HttpUtils {
      * @throws IOException an IO exception
      */
     public static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
-        final StringBuilder messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
+        final var messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
         if (connection.getResponseMessage() != null) {
             messageBuilder.append(" ");
             messageBuilder.append(connection.getResponseMessage());
         }
-        try (InputStreamReader isr = new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(isr)) {
+        try (var isr = new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8);
+             var br = new BufferedReader(isr)) {
             String output;
             messageBuilder.append("[");
             while ((output = br.readLine()) != null) {
@@ -66,14 +66,14 @@ public final class HttpUtils {
 
     protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers)
         throws IOException {
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        final var connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestMethod(requestMethod);
         connection.setConnectTimeout(connectTimeout);
         connection.setReadTimeout(readTimeout);
         if (headers != null) {
-            for (final Map.Entry<String, String> entry : headers.entrySet()) {
+            for (final var entry : headers.entrySet()) {
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
         }
@@ -81,9 +81,9 @@ public final class HttpUtils {
     }
 
     public static String readBody(final HttpURLConnection connection) throws IOException {
-        try (InputStreamReader isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(isr)) {
-            final StringBuilder sb = new StringBuilder();
+        try (var isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
+             var br = new BufferedReader(isr)) {
+            final var sb = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null) {
                 sb.append(output);

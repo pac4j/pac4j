@@ -63,14 +63,14 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                             final T request,
                             final Object relayState) {
 
-        final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
-        final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
+        final var spDescriptor = context.getSPSSODescriptor();
+        final var idpssoDescriptor = context.getIDPSSODescriptor();
 
-        final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
+        final var acsService = context.getSPAssertionConsumerService();
 
-        final MessageEncoder encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
+        final var encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
 
-        final SAML2MessageContext outboundContext = new SAML2MessageContext();
+        final var outboundContext = new SAML2MessageContext();
         outboundContext.setMessageContext(context.getMessageContext());
         outboundContext.getProfileRequestContext().setProfileId(outboundContext.getProfileRequestContext().getProfileId());
 
@@ -94,7 +94,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
 
         try {
-            final MessageContext messageContext = outboundContext.getMessageContext();
+            final var messageContext = outboundContext.getMessageContext();
             invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, messageContext);
 
             encoder.setMessageContext(messageContext);
@@ -114,7 +114,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
     }
 
     protected void storeMessage(final SAML2MessageContext context, final T request) {
-        final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
+        final var messageStorage = context.getSAMLMessageStore();
         if (messageStorage != null) {
             if (request instanceof RequestAbstractType) {
                 messageStorage.set(((RequestAbstractType) request).getID(), request);
@@ -126,7 +126,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
     protected void logProtocolMessage(final XMLObject object) throws MarshallingException {
         if (protocolMessageLog.isDebugEnabled()) {
-            final String requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
+            final var requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
             protocolMessageLog.debug(requestXml);
         }
     }
@@ -137,12 +137,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                                                        final IDPSSODescriptor idpssoDescriptor,
                                                        final MessageContext messageContext) {
         try {
-            final EndpointURLSchemeSecurityHandler handlerEnd =
+            final var handlerEnd =
                 new EndpointURLSchemeSecurityHandler();
             handlerEnd.initialize();
             handlerEnd.invoke(messageContext);
 
-            final SAMLOutboundDestinationHandler handlerDest =
+            final var handlerDest =
                 new SAMLOutboundDestinationHandler();
             handlerDest.initialize();
             handlerDest.invoke(messageContext);
@@ -150,7 +150,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             if (!destinationBindingType.equals(SAMLConstants.SAML2_REDIRECT_BINDING_URI) &&
                     mustSignRequest(spDescriptor, idpssoDescriptor)) {
                 logger.debug("Signing SAML2 outbound context...");
-                final SAMLOutboundProtocolMessageSigningHandler handler = new
+                final var handler = new
                     SAMLOutboundProtocolMessageSigningHandler();
                 handler.setSignErrorResponses(this.signErrorResponses);
                 handler.invoke(messageContext);
@@ -168,17 +168,17 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             final IDPSSODescriptor idpssoDescriptor,
             final SAML2MessageContext ctx) {
 
-        final Pac4jSAMLResponse adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
+        final var adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
 
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
-            final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
-            final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(adapter);
+            final var velocityEngine = VelocityEngineFactory.getEngine();
+            final var encoder = new Pac4jHTTPPostEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
 
         } else if (SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equals(destinationBindingType)) {
-            final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
-            final Pac4jHTTPPostSimpleSignEncoder encoder = new Pac4jHTTPPostSimpleSignEncoder(adapter);
+            final var velocityEngine = VelocityEngineFactory.getEngine();
+            final var encoder = new Pac4jHTTPPostSimpleSignEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
 

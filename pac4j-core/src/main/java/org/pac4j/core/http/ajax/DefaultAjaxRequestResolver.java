@@ -21,11 +21,11 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
     @Override
     public boolean isAjax(final WebContext context, final SessionStore sessionStore) {
-        final boolean xmlHttpRequest = AJAX_HEADER_VALUE
+        final var xmlHttpRequest = AJAX_HEADER_VALUE
             .equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
-        final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString()
+        final var hasDynamicAjaxParameter = Boolean.TRUE.toString()
             .equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
-        final boolean hasDynamicAjaxHeader = Boolean.TRUE.toString()
+        final var hasDynamicAjaxHeader = Boolean.TRUE.toString()
             .equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
@@ -35,7 +35,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
                                         final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            final RedirectionAction action = redirectionActionBuilder.getRedirectionAction(context, sessionStore).orElse(null);
+            final var action = redirectionActionBuilder.getRedirectionAction(context, sessionStore).orElse(null);
             if (action instanceof WithLocationAction) {
                 url = ((WithLocationAction) action).getLocation();
             }
@@ -48,7 +48,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
-        final StringBuilder buffer = new StringBuilder();
+        final var buffer = new StringBuilder();
         buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
         buffer.append("<partial-response>");
         if (CommonHelper.isNotBlank(url)) {

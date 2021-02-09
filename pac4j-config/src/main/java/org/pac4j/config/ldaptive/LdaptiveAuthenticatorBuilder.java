@@ -71,7 +71,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getSaslAuthenticator(final LdapAuthenticationProperties l) {
-        final SearchDnResolver resolver = new SearchDnResolver();
+        final var resolver = new SearchDnResolver();
         resolver.setBaseDn(l.getBaseDn());
         resolver.setSubtreeSearch(l.isSubtreeSearch());
         resolver.setAllowMultipleDns(l.isAllowMultipleDns());
@@ -81,7 +81,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getAuthenticatedOrAnonSearchAuthenticator(final LdapAuthenticationProperties l) {
-        final SearchDnResolver resolver = new SearchDnResolver();
+        final var resolver = new SearchDnResolver();
         resolver.setBaseDn(l.getBaseDn());
         resolver.setSubtreeSearch(l.isSubtreeSearch());
         resolver.setAllowMultipleDns(l.isAllowMultipleDns());
@@ -105,8 +105,8 @@ public class LdaptiveAuthenticatorBuilder {
         if (CommonHelper.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for direct bind authentication");
         }
-        final FormatDnResolver resolver = new FormatDnResolver(l.getDnFormat());
-        final Authenticator authenticator = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
+        final var resolver = new FormatDnResolver(l.getDnFormat());
+        final var authenticator = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
 
         if (l.isEnhanceWithEntryResolver()) {
             authenticator.setEntryResolver(newSearchEntryResolver(l));
@@ -118,8 +118,8 @@ public class LdaptiveAuthenticatorBuilder {
         if (CommonHelper.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for active directory authentication");
         }
-        final FormatDnResolver resolver = new FormatDnResolver(l.getDnFormat());
-        final Authenticator authn = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
+        final var resolver = new FormatDnResolver(l.getDnFormat());
+        final var authn = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
 
         if (l.isEnhanceWithEntryResolver()) {
             authn.setEntryResolver(newSearchEntryResolver(l));
@@ -128,13 +128,13 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static SimpleBindAuthenticationHandler getPooledBindAuthenticationHandler(final LdapAuthenticationProperties l) {
-        final SimpleBindAuthenticationHandler handler = new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
+        final var handler = new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
         handler.setAuthenticationControls(new PasswordPolicyControl());
         return handler;
     }
 
     private static CompareAuthenticationHandler getPooledCompareAuthenticationHandler(final LdapAuthenticationProperties l) {
-        final CompareAuthenticationHandler handler = new CompareAuthenticationHandler(newPooledConnectionFactory(l));
+        final var handler = new CompareAuthenticationHandler(newPooledConnectionFactory(l));
         handler.setPasswordAttribute(l.getPrincipalAttributePassword());
         return handler;
     }
@@ -154,7 +154,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the entry resolver
      */
     public static EntryResolver newSearchEntryResolver(final LdapAuthenticationProperties l) {
-        final SearchEntryResolver entryResolver = new SearchEntryResolver();
+        final var entryResolver = new SearchEntryResolver();
         entryResolver.setBaseDn(l.getBaseDn());
         entryResolver.setUserFilter(l.getUserFilter());
         entryResolver.setSubtreeSearch(l.isSubtreeSearch());
@@ -170,19 +170,19 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the connection config
      */
     public static ConnectionConfig newConnectionConfig(final AbstractLdapProperties l) {
-        final ConnectionConfig cc = new ConnectionConfig();
-        final String urls = Arrays.stream(l.getLdapUrl().split(",")).collect(Collectors.joining(" "));
+        final var cc = new ConnectionConfig();
+        final var urls = Arrays.stream(l.getLdapUrl().split(",")).collect(Collectors.joining(" "));
         LOGGER.debug("Transformed LDAP urls from [{}] to [{}]", l.getLdapUrl(), urls);
         cc.setLdapUrl(urls);
         cc.setUseStartTLS(l.isUseStartTls());
         cc.setConnectTimeout(newDuration(l.getConnectTimeout()));
 
         if (l.getTrustCertificates() != null) {
-            final X509CredentialConfig cfg = new X509CredentialConfig();
+            final var cfg = new X509CredentialConfig();
             cfg.setTrustCertificates(l.getTrustCertificates());
             cc.setSslConfig(new SslConfig(cfg));
         } else if (l.getKeystore() != null) {
-            final KeyStoreCredentialConfig cfg = new KeyStoreCredentialConfig();
+            final var cfg = new KeyStoreCredentialConfig();
             cfg.setKeyStore(l.getKeystore());
             cfg.setKeyStorePassword(l.getKeystorePassword());
             cfg.setKeyStoreType(l.getKeystoreType());
@@ -191,7 +191,7 @@ public class LdaptiveAuthenticatorBuilder {
             cc.setSslConfig(new SslConfig());
         }
         if (l.getSaslMechanism() != null) {
-            final BindConnectionInitializer bc = new BindConnectionInitializer();
+            final var bc = new BindConnectionInitializer();
             final SaslConfig sc;
             switch (l.getSaslMechanism()) {
                 case DIGEST_MD5:
@@ -230,27 +230,27 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the pooled connection factory
      */
     public static PooledConnectionFactory newPooledConnectionFactory(final AbstractLdapProperties l) {
-        final ConnectionConfig cc = newConnectionConfig(l);
-        final PooledConnectionFactory cf = new PooledConnectionFactory(cc);
+        final var cc = newConnectionConfig(l);
+        final var cf = new PooledConnectionFactory(cc);
         cf.setBlockWaitTime(newDuration(l.getBlockWaitTime()));
         cf.setMinPoolSize(l.getMinPoolSize());
         cf.setMaxPoolSize(l.getMaxPoolSize());
         cf.setValidateOnCheckOut(l.isValidateOnCheckout());
         cf.setValidatePeriodically(l.isValidatePeriodically());
 
-        final IdlePruneStrategy strategy = new IdlePruneStrategy();
+        final var strategy = new IdlePruneStrategy();
         strategy.setIdleTime(newDuration(l.getIdleTime()));
         strategy.setPrunePeriod(newDuration(l.getPrunePeriod()));
         cf.setPruneStrategy(strategy);
 
         cf.setFailFastInitialize(l.isFailFast());
 
-        final SearchConnectionValidator validator = new SearchConnectionValidator();
+        final var validator = new SearchConnectionValidator();
         validator.setValidatePeriod(newDuration(l.getValidatePeriod()));
         cf.setValidator(validator);
 
         if (CommonHelper.isNotBlank(l.getPoolPassivator())) {
-            final AbstractLdapProperties.LdapConnectionPoolPassivator pass =
+            final var pass =
                 AbstractLdapProperties.LdapConnectionPoolPassivator.valueOf(l.getPoolPassivator().toUpperCase());
             switch (pass) {
                 case CLOSE:
@@ -263,7 +263,7 @@ public class LdaptiveAuthenticatorBuilder {
                     break;
                 case BIND:
                     LOGGER.debug("Creating a bind passivator instance for the connection pool");
-                    final SimpleBindRequest bindRequest = new SimpleBindRequest(l.getBindDn(), new Credential(l.getBindCredential()));
+                    final var bindRequest = new SimpleBindRequest(l.getBindDn(), new Credential(l.getBindCredential()));
                     cf.setPassivator(new BindConnectionPassivator(bindRequest));
                     break;
                 default:
@@ -294,7 +294,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the search request
      */
     public static SearchRequest newSearchRequest(final String baseDn, final FilterTemplate filter) {
-        final SearchRequest sr = new SearchRequest(baseDn, filter);
+        final var sr = new SearchRequest(baseDn, filter);
         // TODO: this argument should be a list of individual attribute names
         //sr.setBinaryAttributes(ReturnAttributes.ALL_USER.value());
         sr.setReturnAttributes(ReturnAttributes.ALL_USER.value());
@@ -310,10 +310,10 @@ public class LdaptiveAuthenticatorBuilder {
      * @return Search filter with parameters applied.
      */
     public static FilterTemplate newSearchFilter(final String filterQuery, final String... params) {
-        final FilterTemplate filter = new FilterTemplate();
+        final var filter = new FilterTemplate();
         filter.setFilter(filterQuery);
         if (params != null) {
-            for (int i = 0; i < params.length; i++) {
+            for (var i = 0; i < params.length; i++) {
                 if (filter.getFilter().contains("{" + i + "}")) {
                     filter.setParameter(i, params[i]);
                 } else {
@@ -334,7 +334,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the search executor
      */
     public static SearchOperation newSearchOperation(final String baseDn, final String filterQuery, final String... params) {
-        final SearchOperation operation = new SearchOperation();
+        final var operation = new SearchOperation();
         operation.setRequest(SearchRequest.builder()
             .dn(baseDn)
             .filter(newSearchFilter(filterQuery, params))

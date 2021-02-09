@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public final class OAuth20ClientTests implements TestsConstants {
 
     private OAuth20Client getClient() {
-        final GitHubClient client = new GitHubClient();
+        final var client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
         client.setCallbackUrl(CALLBACK_URL);
@@ -33,27 +33,27 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testState() throws MalformedURLException {
-        FacebookClient client = new FacebookClient(KEY, SECRET);
+        var client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.getConfiguration().setStateGenerator(new StaticValueGenerator("OK"));
-        final FoundAction action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        URL url = new URL(action.getLocation());
+        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        var url = new URL(action.getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
     }
 
     @Test
     public void testSetState() throws MalformedURLException {
-        FacebookClient client = new FacebookClient(KEY, SECRET);
+        var client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.getConfiguration().setStateGenerator(new StaticValueGenerator("oldstate"));
-        final MockWebContext mockWebContext = MockWebContext.create();
-        FoundAction action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore()).get();
-        URL url = new URL(action.getLocation());
-        final Map<String, String> stringMap = TestsHelper.splitQuery(url);
+        final var mockWebContext = MockWebContext.create();
+        var action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore()).get();
+        var url = new URL(action.getLocation());
+        final var stringMap = TestsHelper.splitQuery(url);
         assertEquals(stringMap.get("state"), "oldstate");
         action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore()).get();
-        URL url2 = new URL(action.getLocation());
-        final Map<String, String> stringMap2 = TestsHelper.splitQuery(url2);
+        var url2 = new URL(action.getLocation());
+        final var stringMap2 = TestsHelper.splitQuery(url2);
         assertEquals(stringMap2.get("state"), "oldstate");
     }
 
@@ -61,22 +61,22 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testStateRandom() throws MalformedURLException {
         OAuth20Client client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        FoundAction action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        URL url = new URL(action.getLocation());
-        final Map<String, String> stringMap = TestsHelper.splitQuery(url);
+        var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        var url = new URL(action.getLocation());
+        final var stringMap = TestsHelper.splitQuery(url);
         assertNotNull(stringMap.get("state"));
 
         action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        URL url2 = new URL(action.getLocation());
-        final Map<String, String> stringMap2 = TestsHelper.splitQuery(url2);
+        var url2 = new URL(action.getLocation());
+        final var stringMap2 = TestsHelper.splitQuery(url2);
         assertNotNull(stringMap2.get("state"));
         assertNotEquals(stringMap.get("state"), stringMap2.get("state"));
     }
 
     @Test
     public void testGetRedirectionGithub() {
-        final FoundAction action = (FoundAction) getClient().getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        final String url = action.getLocation();
+        final var action = (FoundAction) getClient().getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        final var url = action.getLocation();
         assertTrue(url != null && !url.isEmpty());
     }
 
@@ -95,7 +95,7 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testMissingKey() {
-        final OAuth20Client client = getClient();
+        final var client = getClient();
         client.setKey(null);
         TestsHelper.expectException(() -> client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "key cannot be blank");
@@ -103,7 +103,7 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testMissingSecret() {
-        final OAuth20Client client = getClient();
+        final var client = getClient();
         client.setSecret(null);
         TestsHelper.expectException(() -> client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "secret cannot be blank");
@@ -111,21 +111,21 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testMissingFieldsFacebook() {
-        final FacebookClient client = new FacebookClient(KEY, SECRET);
+        final var client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setFields(null);
         TestsHelper.initShouldFail(client, "fields cannot be blank");
     }
 
     private Google2Client getGoogleClient() {
-        final Google2Client google2Client = new Google2Client(KEY, SECRET);
+        final var google2Client = new Google2Client(KEY, SECRET);
         google2Client.setCallbackUrl(CALLBACK_URL);
         return google2Client;
     }
 
     @Test
     public void testMissingScopeGoogle() {
-        final Google2Client client = getGoogleClient();
+        final var client = getGoogleClient();
         client.setScope(null);
         TestsHelper.initShouldFail(client, "scope cannot be null");
     }
@@ -137,7 +137,7 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testMissingFieldsOk() {
-        final OkClient client = new OkClient();
+        final var client = new OkClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
         client.setCallbackUrl(CALLBACK_URL);
@@ -146,21 +146,21 @@ public final class OAuth20ClientTests implements TestsConstants {
     }
 
     private LinkedIn2Client getLinkedInClient() {
-        final LinkedIn2Client client = new LinkedIn2Client(KEY, SECRET);
+        final var client = new LinkedIn2Client(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         return client;
     }
 
     @Test
     public void testMissingScopeLinkedIn() {
-        final LinkedIn2Client client = getLinkedInClient();
+        final var client = getLinkedInClient();
         client.setScope(null);
         TestsHelper.initShouldFail(client, "scope cannot be blank");
     }
 
     @Test
     public void testMissingFieldsPaypal() {
-        final PayPalClient client = new PayPalClient(KEY, SECRET);
+        final var client = new PayPalClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setScope(null);
         TestsHelper.initShouldFail(client, "scope cannot be blank");

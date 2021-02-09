@@ -58,7 +58,7 @@ public class WechatApi20 extends DefaultApi20 {
     @Override
     public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
             Map<String, String> additionalParams) {
-        String authorizationUrl = super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
+        var authorizationUrl = super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
         authorizationUrl = authorizationUrl.replace(OAuthConstants.CLIENT_ID, APPID);
         if (scope != null && scope.contains(
             WechatClient.WechatScope.SNSAPI_LOGIN.toString().toLowerCase())) {

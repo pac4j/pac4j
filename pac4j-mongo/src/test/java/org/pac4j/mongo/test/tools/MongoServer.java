@@ -34,10 +34,10 @@ public final class MongoServer implements TestsConstants {
     private MongodExecutable mongodExecutable;
 
     public void start(final int port) {
-        MongodStarter starter = MongodStarter.getDefaultInstance();
+        var starter = MongodStarter.getDefaultInstance();
 
         try {
-            IMongodConfig mongodConfig = new MongodConfigBuilder()
+            var mongodConfig = new MongodConfigBuilder()
                     .version(Version.Main.PRODUCTION)
                     .net(new Net(port, Network.localhostIsIPv6()))
                     .build();
@@ -46,11 +46,11 @@ public final class MongoServer implements TestsConstants {
             mongodExecutable.start();
 
             // populate
-            final MongoClient mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
-            final MongoDatabase db = mongo.getDatabase("users");
+            final var mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
+            final var db = mongo.getDatabase("users");
             db.createCollection("users");
-            final MongoCollection<Document> collection = db.getCollection("users");
-            final String password = PASSWORD_ENCODER.encode(PASSWORD);
+            final var collection = db.getCollection("users");
+            final var password = PASSWORD_ENCODER.encode(PASSWORD);
             Map<String, Object> properties1 = new HashMap<>();
             properties1.put(USERNAME, GOOD_USERNAME);
             properties1.put(PASSWORD, password);

@@ -31,7 +31,7 @@ public class FacebookProfile extends OAuth20Profile {
 
     @Override
     public URI getPictureUrl() {
-        final FacebookPicture picture = (FacebookPicture) getAttribute(FacebookProfileDefinition.PICTURE);
+        final var picture = (FacebookPicture) getAttribute(FacebookProfileDefinition.PICTURE);
         if (picture != null) {
             return CommonHelper.asURI(picture.getUrl());
         }
@@ -45,7 +45,7 @@ public class FacebookProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        final FacebookObject location = (FacebookObject) getAttribute(FacebookProfileDefinition.LOCATION);
+        final var location = (FacebookObject) getAttribute(FacebookProfileDefinition.LOCATION);
         if (location != null) {
             return location.getName();
         }

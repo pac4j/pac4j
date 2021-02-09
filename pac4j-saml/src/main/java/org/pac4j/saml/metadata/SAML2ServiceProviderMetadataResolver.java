@@ -37,9 +37,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
-            final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
-            final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
-            final String metadata = metadataGenerator.getMetadata(entity);
+            final var metadataGenerator = configuration.toMetadataGenerator();
+            final var entity = metadataGenerator.buildEntityDescriptor();
+            final var metadata = metadataGenerator.getMetadata(entity);
             metadataGenerator.storeMetadata(metadata,
                 configuration.getServiceProviderMetadataResource(),
                 configuration.isForceServiceProviderMetadataGeneration());
@@ -62,8 +62,8 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     @Override
     public String getMetadata() {
         try {
-            final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
-            final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
+            final var metadataGenerator = configuration.toMetadataGenerator();
+            final var entity = metadataGenerator.buildEntityDescriptor();
             return metadataGenerator.getMetadata(entity);
         } catch (final Exception e) {
             throw new SAMLException("Unable to fetch metadata", e);

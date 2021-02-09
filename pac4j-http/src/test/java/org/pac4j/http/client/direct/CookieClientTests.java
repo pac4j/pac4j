@@ -26,14 +26,14 @@ public final class CookieClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final CookieClient cookieClient = new CookieClient("testcookie", null);
+        final var cookieClient = new CookieClient("testcookie", null);
         TestsHelper.expectException(() -> cookieClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
+        final var cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
         cookieClient.setProfileCreator(null);
         TestsHelper.expectException(() -> cookieClient.getUserProfile(new TokenCredentials(TOKEN), MockWebContext.create(),
             new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
@@ -41,25 +41,25 @@ public final class CookieClientTests implements TestsConstants {
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
+        final var cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
         cookieClient.init();
     }
 
     @Test(expected=Exception.class)
     public void testMissingCookieName() {
-        final CookieClient cookieClient = new CookieClient(null, new SimpleTestTokenAuthenticator());
+        final var cookieClient = new CookieClient(null, new SimpleTestTokenAuthenticator());
         cookieClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final CookieClient client = new CookieClient(USERNAME, new SimpleTestTokenAuthenticator());
-        final MockWebContext context = MockWebContext.create();
+        final var client = new CookieClient(USERNAME, new SimpleTestTokenAuthenticator());
+        final var context = MockWebContext.create();
 
-        final Cookie c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes(StandardCharsets.UTF_8)));
+        final var c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes(StandardCharsets.UTF_8)));
         context.getRequestCookies().add(c);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(c.getValue(), profile.getId());
     }
 }

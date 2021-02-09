@@ -91,9 +91,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLException("Missing response status or status code");
         }
 
-        String statusValue = status.getStatusCode().getValue();
+        var statusValue = status.getStatusCode().getValue();
         if (!StatusCode.SUCCESS.equals(statusValue)) {
-            final StatusMessage statusMessage = status.getStatusMessage();
+            final var statusMessage = status.getStatusMessage();
             if (statusMessage != null) {
                 statusValue += " / " + statusMessage.getValue();
             }
@@ -104,7 +104,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected void validateSignatureIfItExists(final Signature signature, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
         if (signature != null) {
-            final String entityId = context.getSAMLPeerEntityContext().getEntityId();
+            final var entityId = context.getSAMLPeerEntityContext().getEntityId();
             validateSignature(signature, entityId, engine);
             context.getSAMLPeerEntityContext().setAuthenticated(true);
             logger.debug("Successfully validated signature for entity id {}", entityId);
@@ -124,7 +124,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
                                      final SignatureTrustEngine trustEngine) {
 
 
-        final SAMLSignatureProfileValidator validator = new SAMLSignatureProfileValidator();
+        final var validator = new SAMLSignatureProfileValidator();
         try {
             logger.debug("Validating profile signature for entity id {}", idpEntityId);
             validator.validate(signature);
@@ -132,7 +132,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLSignatureValidationException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
-        final CriteriaSet criteriaSet = new CriteriaSet();
+        final var criteriaSet = new CriteriaSet();
         criteriaSet.add(new UsageCriterion(UsageType.SIGNING));
         criteriaSet.add(new EntityRoleCriterion(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
         criteriaSet.add(new ProtocolCriterion(SAMLConstants.SAML20P_NS));
@@ -166,7 +166,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLIssuerException("Issuer type is not entity but " + issuer.getFormat());
         }
 
-        final String entityId = context.getSAMLPeerEntityContext().getEntityId();
+        final var entityId = context.getSAMLPeerEntityContext().getEntityId();
         logger.debug("Comparing issuer {} against {}", issuer.getValue(), entityId);
         if (entityId == null || !entityId.equals(issuer.getValue())) {
             throw new SAMLIssuerException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
@@ -184,13 +184,13 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     }
 
     protected boolean isDateValid(final Instant issueInstant, final int interval) {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime before = now.plusSeconds(acceptedSkew);
-        final ZonedDateTime after = now.minusSeconds(acceptedSkew + interval);
+        final var now = ZonedDateTime.now(ZoneOffset.UTC);
+        final var before = now.plusSeconds(acceptedSkew);
+        final var after = now.minusSeconds(acceptedSkew + interval);
 
-        final ZonedDateTime issueInstanceUtc = ZonedDateTime.ofInstant(issueInstant, ZoneOffset.UTC);
+        final var issueInstanceUtc = ZonedDateTime.ofInstant(issueInstant, ZoneOffset.UTC);
 
-        final boolean isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
+        final var isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {
             logger.warn("interval={},before={},after={},issueInstant={}", interval, before, after, issueInstanceUtc);
         }
@@ -198,7 +198,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     }
 
     protected void verifyEndpoint(final List<String> endpoints, final String destination) {
-        final boolean verified = endpoints.stream()
+        final var verified = endpoints.stream()
             .allMatch(endpoint -> compareEndpoints(destination, endpoint));
         if (!verified) {
             throw new SAMLEndpointMismatchException("Intended destination " + destination
@@ -222,7 +222,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
 
         try {
-            final MessageReplaySecurityHandler messageReplayHandler = new MessageReplaySecurityHandler();
+            final var messageReplayHandler = new MessageReplaySecurityHandler();
             messageReplayHandler.setExpires(Duration.ofMillis(acceptedSkew * 1000));
             messageReplayHandler.setReplayCache(replayCache.get());
             messageReplayHandler.initialize();
@@ -253,7 +253,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
         try {
             logger.debug("Decrypting name id {}", encryptedId);
-            final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
+            final var decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (final DecryptionException e) {
             throw new SAMLNameIdDecryptionException("Decryption of an EncryptedID failed.", e);

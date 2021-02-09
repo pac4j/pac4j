@@ -29,17 +29,17 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
 
     @Override
     protected void doDecode() throws MessageDecodingException {
-        final SAML2MessageContext messageContext = new SAML2MessageContext();
+        final var messageContext = new SAML2MessageContext();
 
         if (ContextHelper.isPost(context)) {
-            final String relayState = this.context.getRequestParameter("RelayState").orElse(null);
+            final var relayState = this.context.getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
-            final byte[] base64DecodedMessage = this.getBase64DecodedMessage();
-            final XMLObject xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
+            final var base64DecodedMessage = this.getBase64DecodedMessage();
+            final var xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
             final SAMLObject inboundMessage;
             if (xmlObject instanceof Envelope) {
-                final Envelope soapMessage = (Envelope) xmlObject;
+                final var soapMessage = (Envelope) xmlObject;
                 messageContext.getSOAP11Context().setEnvelope(soapMessage);
                 try {
                     new SAMLSOAPDecoderBodyHandler().invoke(messageContext.getMessageContext());

@@ -15,7 +15,7 @@ public class VelocityEngineFactoryTest {
 
     @Test
     public void defaultProperties()  {
-        final VelocityEngine engine = VelocityEngineFactory.getEngine();
+        final var engine = VelocityEngineFactory.getEngine();
         assertNotNull(engine);
         assertEquals("org.apache.velocity.runtime.resource.loader.StringResourceLoader",
             engine.getProperty("resource.loader.string.class"));

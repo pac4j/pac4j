@@ -37,11 +37,11 @@ public class WindowsLiveProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public WindowsLiveProfile extractUserProfile(final String body) {
-        final WindowsLiveProfile profile = (WindowsLiveProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (WindowsLiveProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

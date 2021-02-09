@@ -28,12 +28,12 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
     @Override
     protected void doDecode() throws MessageDecodingException {
-        final SAML2MessageContext messageContext = new SAML2MessageContext();
+        final var messageContext = new SAML2MessageContext();
 
         if (ContextHelper.isGet(context)) {
-            final byte[] base64DecodedMessage = this.getBase64DecodedMessage();
-            final InputStream inflatedMessage = inflate(base64DecodedMessage);
-            final SAMLObject inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
+            final var base64DecodedMessage = this.getBase64DecodedMessage();
+            final var inflatedMessage = inflate(base64DecodedMessage);
+            final var inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
             messageContext.getMessageContext().setMessage(inboundMessage);
             logger.debug("Decoded SAML message");
             this.populateBindingContext(messageContext);
@@ -58,16 +58,16 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
     }
 
     protected InputStream internalInflate(final byte[] input, final Inflater inflater) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
+        final var baos = new ByteArrayOutputStream();
+        final var iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
         try {
-            final byte[] buffer = new byte[1000];
+            final var buffer = new byte[1000];
             int length;
             while ((length = iis.read(buffer)) > 0) {
                 baos.write(buffer, 0, length);
             }
-            final byte[] decodedBytes = baos.toByteArray();
-            final String decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
+            final var decodedBytes = baos.toByteArray();
+            final var decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
             logger.debug("Inflated SAML message: {}", decodedMessage);
             return new ByteArrayInputStream(decodedBytes);
         } finally {

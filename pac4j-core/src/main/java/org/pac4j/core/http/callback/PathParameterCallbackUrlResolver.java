@@ -14,7 +14,7 @@ public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
-        String newUrl = urlResolver.compute(url, context);
+        var newUrl = urlResolver.compute(url, context);
         if (newUrl != null) {
             if (!newUrl.endsWith("/")) {
                 newUrl += "/";
@@ -26,9 +26,9 @@ public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public boolean matches(final String clientName, final WebContext context) {
-        final String path = context.getPath();
+        final var path = context.getPath();
         if (path != null) {
-            final int pos = path.lastIndexOf("/");
+            final var pos = path.lastIndexOf("/");
             final String name;
             if (pos >= 0) {
                 name = path.substring(pos + 1);

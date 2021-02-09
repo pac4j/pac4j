@@ -50,37 +50,37 @@ public class LinkedIn2Profile extends OAuth20Profile {
 
     @Override
     public URI getPictureUrl() {
-        final LinkedIn2ProfilePicture pp = getProfilePicture();
+        final var pp = getProfilePicture();
         if (pp == null) {
             return null;
         }
 
-        final DisplayImageTilde displayImageTilde = pp.getDisplayImageTilde();
+        final var displayImageTilde = pp.getDisplayImageTilde();
         if (displayImageTilde == null) {
             return null;
         }
 
-        final Element[] elements = displayImageTilde.getElements();
+        final var elements = displayImageTilde.getElements();
         if (elements == null || elements.length == 0) {
             return null;
         }
 
-        final Element element = elements[0];
+        final var element = elements[0];
         if (element == null) {
             return null;
         }
 
-        final Identifier[] identifiers = element.getIdentifiers();
+        final var identifiers = element.getIdentifiers();
         if (identifiers == null || identifiers.length == 0) {
             return null;
         }
 
-        final Identifier identifier = identifiers[0];
+        final var identifier = identifiers[0];
         if (identifier == null) {
             return null;
         }
 
-        final String identifier2 = identifier.getIdentifier();
+        final var identifier2 = identifier.getIdentifier();
         if (identifier2 == null) {
             return null;
         }
@@ -90,23 +90,23 @@ public class LinkedIn2Profile extends OAuth20Profile {
 
     @Override
     public String getEmail() {
-        final LinkedIn2ProfileEmails pe = getProfileEmails();
+        final var pe = getProfileEmails();
 
         if (pe == null) {
             return null;
         }
 
-        final Email[] elements = pe.getElements();
+        final var elements = pe.getElements();
         if (elements == null || elements.length == 0) {
             return null;
         }
 
-        final Email element = elements[0];
+        final var element = elements[0];
         if (element == null) {
             return null;
         }
 
-        final HandleTilde handleTilde = element.getHandleTilde();
+        final var handleTilde = element.getHandleTilde();
         if (handleTilde == null) {
             return null;
         }

@@ -54,14 +54,14 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
-        final String accessToken = ((OAuth2AccessToken) token).getAccessToken();
-        String baseParams =
+        final var accessToken = ((OAuth2AccessToken) token).getAccessToken();
+        var baseParams =
                 "application_key=" + ((OkConfiguration) configuration).getPublicKey() +
                         "&format=json" +
                         "&method=users.getCurrentUser";
         final String finalSign;
         try {
-            final String preSign = getMD5SignAsHexString(accessToken + configuration.getSecret());
+            final var preSign = getMD5SignAsHexString(accessToken + configuration.getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -71,9 +71,9 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
     }
 
     protected String getMD5SignAsHexString(final String strForEncoding) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        StringBuilder result = new StringBuilder();
-        for (byte aByte : md.digest(strForEncoding.getBytes(StandardCharsets.UTF_8))) {
+        var md = MessageDigest.getInstance("MD5");
+        var result = new StringBuilder();
+        for (var aByte : md.digest(strForEncoding.getBytes(StandardCharsets.UTF_8))) {
             if ((0xff & aByte) < 0x10) {
                 result.append("0").append(Integer.toHexString(0xFF & aByte));
             } else {
@@ -85,11 +85,11 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public OkProfile extractUserProfile(String body) {
-        final OkProfile profile = (OkProfile) newProfile();
-        JsonNode userNode = JsonHelper.getFirstNode(body);
+        final var profile = (OkProfile) newProfile();
+        var userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, OkProfileDefinition.UID)));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
         } else {

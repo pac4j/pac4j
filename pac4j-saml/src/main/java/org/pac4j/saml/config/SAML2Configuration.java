@@ -279,7 +279,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.callbackUrl = callbackUrl;
         try {
             if (CommonHelper.isBlank(getServiceProviderEntityId())) {
-                final URL url = new URL(callbackUrl);
+                final var url = new URL(callbackUrl);
                 if (url.getQuery() != null) {
                     setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), ""));
                 } else {
@@ -294,7 +294,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     @Override
     protected void internalInit() {
-        final SAML2KeystoreGenerator keystoreGenerator = getKeystoreGenerator();
+        final var keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
             keystoreGenerator.generate();
@@ -506,7 +506,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     public void setServiceProviderMetadataPath(final String path) {
-        final Resource resource = mapPathToResource(path);
+        final var resource = mapPathToResource(path);
         if (!(resource instanceof WritableResource)) {
             throw new TechnicalException(path + " must be a writable resource");
         } else {
@@ -808,7 +808,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private void initSignatureSigningConfiguration() {
         // Bootstrap signature signing configuration if not manually set
-        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
+        final var config = DefaultSecurityConfigurationBootstrap
             .buildDefaultSignatureSigningConfiguration();
         if (this.blackListedSignatureSigningAlgorithms == null) {
             this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
@@ -867,9 +867,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public SAML2MetadataGenerator toMetadataGenerator() {
         try {
-            final SAML2MetadataGenerator instance = getMetadataGenerator();
+            final var instance = getMetadataGenerator();
             if (instance instanceof BaseSAML2MetadataGenerator) {
-                final BaseSAML2MetadataGenerator generator = (BaseSAML2MetadataGenerator) instance;
+                final var generator = (BaseSAML2MetadataGenerator) instance;
                 generator.setWantAssertionSigned(isWantsAssertionsSigned());
                 generator.setAuthnRequestSigned(isAuthnRequestSigned());
                 generator.setSignMetadata(isSignMetadata());
@@ -903,8 +903,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
-        final String url = StringUtils.defaultIfBlank(this.singleSignOutServiceUrl, callbackUrl);
-        final String logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
+        final var url = StringUtils.defaultIfBlank(this.singleSignOutServiceUrl, callbackUrl);
+        final var logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
         // the logout URL is callback URL with an extra parameter
         generator.setSingleLogoutServiceUrl(logoutUrl);
     }

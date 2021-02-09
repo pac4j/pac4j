@@ -21,15 +21,15 @@ public final class ColorConverter extends AbstractAttributeConverter {
     @Override
     protected Color internalConvert(final Object attribute) {
         if (attribute instanceof String) {
-            final String s = (String) attribute;
+            final var s = (String) attribute;
             if (s.length() == 6) {
                 try {
-                    String hex = s.substring(0, 2);
-                    final int r = Integer.parseInt(hex, 16);
+                    var hex = s.substring(0, 2);
+                    final var r = Integer.parseInt(hex, 16);
                     hex = s.substring(2, 4);
-                    final int g = Integer.parseInt(hex, 16);
+                    final var g = Integer.parseInt(hex, 16);
                     hex = s.substring(4, 6);
-                    final int b = Integer.parseInt(hex, 16);
+                    final var b = Integer.parseInt(hex, 16);
                     return new Color(r, g, b);
                 } catch (final NumberFormatException e) {
                     logger.error("Cannot convert " + s + " into color", e);

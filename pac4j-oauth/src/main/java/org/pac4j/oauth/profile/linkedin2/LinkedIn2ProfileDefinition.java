@@ -38,13 +38,13 @@ public class LinkedIn2ProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public LinkedIn2Profile extractUserProfile(final String body) {
-        final LinkedIn2Profile profile = (LinkedIn2Profile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (LinkedIn2Profile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json == null) {
             raiseProfileExtractionJsonError(body);
         }
         profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-        for (final String attribute : getPrimaryAttributes()) {
+        for (final var attribute : getPrimaryAttributes()) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
         }
         return profile;

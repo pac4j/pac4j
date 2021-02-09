@@ -21,10 +21,10 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
     private final static String ROLE2 = "role2";
 
     private Set<String> test(final String value) {
-        final Properties properties = new Properties();
+        final var properties = new Properties();
         properties.put(USERNAME, PASSWORD + value);
-        final SpringSecurityPropertiesAuthorizationGenerator generator = new SpringSecurityPropertiesAuthorizationGenerator(properties);
-        final CommonProfile profile = new CommonProfile();
+        final var generator = new SpringSecurityPropertiesAuthorizationGenerator(properties);
+        final var profile = new CommonProfile();
         profile.setId(USERNAME);
         generator.generate(null, null, profile);
         return profile.getRoles();
@@ -32,45 +32,45 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
 
     @Test
     public void testOnlyPassword() {
-        final Set<String> roles = test("");
+        final var roles = test("");
         assertEquals(0, roles.size());
     }
 
     @Test
     public void testEnabled() {
-        final Set<String> roles = test(SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
+        final var roles = test(SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
         assertEquals(0, roles.size());
     }
 
     @Test
     public void testDisabled() {
-        final Set<String> roles = test(SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
+        final var roles = test(SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
         assertEquals(0, roles.size());
     }
 
     @Test
     public void testOneRole() {
-        final Set<String> roles = test(SEPARATOR + ROLE);
+        final var roles = test(SEPARATOR + ROLE);
         assertEquals(1, roles.size());
         assertTrue(roles.contains(ROLE));
     }
 
     @Test
     public void testOneRoleEnabled() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
+        final var roles = test(SEPARATOR + ROLE + SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
         assertEquals(1, roles.size());
         assertTrue(roles.contains(ROLE));
     }
 
     @Test
     public void testOneRoleDisabled() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
+        final var roles = test(SEPARATOR + ROLE + SEPARATOR + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
         assertEquals(0, roles.size());
     }
 
     @Test
     public void testTwoRoles() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2);
+        final var roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2);
         assertEquals(2, roles.size());
         assertTrue(roles.contains(ROLE));
         assertTrue(roles.contains(ROLE2));
@@ -78,7 +78,7 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
 
     @Test
     public void testTwoRolesEnabled() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR
+        final var roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR
             + SpringSecurityPropertiesAuthorizationGenerator.ENABLED);
         assertEquals(2, roles.size());
         assertTrue(roles.contains(ROLE));
@@ -87,7 +87,7 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
 
     @Test
     public void testTwoRolesDisabled() {
-        final Set<String> roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR
+        final var roles = test(SEPARATOR + ROLE + SEPARATOR + ROLE2 + SEPARATOR
             + SpringSecurityPropertiesAuthorizationGenerator.DISABLED);
         assertEquals(0, roles.size());
     }

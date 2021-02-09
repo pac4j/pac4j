@@ -22,14 +22,14 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
     private Map<String, List<String>> rolesByUsers = new HashMap<>();
 
     public SpringSecurityPropertiesAuthorizationGenerator(final Properties properties) {
-        final Set<String> keys = properties.stringPropertyNames();
-        for (final String key : keys) {
-            final String value = properties.getProperty(key);
+        final var keys = properties.stringPropertyNames();
+        for (final var key : keys) {
+            final var value = properties.getProperty(key);
             if (CommonHelper.isNotBlank(value)) {
-                final String[] parts = value.split(",");
-                final int nb = parts.length;
+                final var parts = value.split(",");
+                final var nb = parts.length;
                 if (nb > 1) {
-                    final String latest = parts[nb - 1];
+                    final var latest = parts[nb - 1];
                     if (!DISABLED.equals(latest)) {
                         final List<String> roles = new ArrayList<>(Arrays.asList(parts));
                         if (ENABLED.equals(latest)) {
@@ -45,8 +45,8 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
 
     @Override
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
-        final String id = profile.getId();
-        final List<String> roles = rolesByUsers.get(id);
+        final var id = profile.getId();
+        final var roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {
             profile.addRoles(roles);
         }

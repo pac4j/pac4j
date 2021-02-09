@@ -20,8 +20,8 @@ public class RestAuthenticatorBuilder extends AbstractBuilder {
     }
 
     public void tryBuildRestAuthenticator(final Map<String, Authenticator> authenticators) {
-        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            final String url = getProperty(REST_URL, i);
+        for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+            final var url = getProperty(REST_URL, i);
             if (isNotBlank(url)) {
                 authenticators.put(concat("rest", i), new RestAuthenticator(url));
             }

@@ -49,38 +49,38 @@ public class KerberosClientTests implements TestsConstants {
 
     @Test
     public void testMissingKerberosAuthenticator() {
-        final DirectKerberosClient kerberosClient = new DirectKerberosClient(null);
+        final var kerberosClient = new DirectKerberosClient(null);
         TestsHelper.initShouldFail(kerberosClient, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final DirectKerberosClient kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
+        final var kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
         kerberosClient.setProfileCreator(null);
         TestsHelper.initShouldFail(kerberosClient, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final DirectKerberosClient kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
+        final var kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
         kerberosClient.init();
     }
 
     @Test
     public void testMissingKerberosHeader() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final Optional<Credentials> credentials = client.getCredentials(new JEEContext(request, response), JEESessionStore.INSTANCE);
+        var request = mock(HttpServletRequest.class);
+        var response = mock(HttpServletResponse.class);
+        final var client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
+        final var credentials = client.getCredentials(new JEEContext(request, response), JEESessionStore.INSTANCE);
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final Optional<Credentials> credentials = client.getCredentials(new JEEContext(request, response), JEESessionStore.INSTANCE);
+        var request = mock(HttpServletRequest.class);
+        var response = mock(HttpServletResponse.class);
+        final var client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
+        final var credentials = client.getCredentials(new JEEContext(request, response), JEESessionStore.INSTANCE);
         assertFalse(credentials.isPresent());
         verify(response).setHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
     }
@@ -88,15 +88,15 @@ public class KerberosClientTests implements TestsConstants {
     @Test
     public void testAuthentication() {
         when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null, null, null));
-        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final MockWebContext context = MockWebContext.create();
+        final var client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
+        final var context = MockWebContext.create();
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
-        final KerberosCredentials credentials = (KerberosCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var credentials = (KerberosCredentials) client.getCredentials(context, new MockSessionStore()).get();
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals("garry", profile.getId());
     }
 }

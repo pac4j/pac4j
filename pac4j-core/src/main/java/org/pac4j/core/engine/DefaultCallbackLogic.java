@@ -60,7 +60,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             } else {
                 defaultUrl = inputDefaultUrl;
             }
-            final boolean renewSession = inputRenewSession == null || inputRenewSession;
+            final var renewSession = inputRenewSession == null || inputRenewSession;
 
             // checks
             assertNotNull("clientFinder", clientFinder);
@@ -68,27 +68,27 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("config", config);
             assertNotNull("httpActionAdapter", httpActionAdapter);
             assertNotBlank(Pac4jConstants.DEFAULT_URL, defaultUrl);
-            final Clients clients = config.getClients();
+            final var clients = config.getClients();
             assertNotNull("clients", clients);
 
             // logic
-            final List<Client> foundClients = clientFinder.find(clients, webContext, defaultClient);
+            final var foundClients = clientFinder.find(clients, webContext, defaultClient);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
                     + " or ensure that your configuration defaults to one indirect client");
-            final Client foundClient = foundClients.get(0);
+            final var foundClient = foundClients.get(0);
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            final Optional<Credentials> credentials = foundClient.getCredentials(webContext, sessionStore);
+            final var credentials = foundClient.getCredentials(webContext, sessionStore);
             LOGGER.debug("credentials: {}", credentials);
 
-            final Optional<UserProfile> optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);
+            final var optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);
             LOGGER.debug("optProfile: {}", optProfile);
             if (optProfile.isPresent()) {
-                final UserProfile profile = optProfile.get();
+                final var profile = optProfile.get();
                 final boolean saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(webContext, profile);
-                final boolean multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
+                final var multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
                 LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                 saveUserProfile(webContext, sessionStore, config, profile, saveProfileInSession, multiProfile, renewSession);
             }
@@ -105,7 +105,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     protected void saveUserProfile(final WebContext context, final SessionStore sessionStore, final Config config,
                                    final UserProfile profile, final boolean saveProfileInSession, final boolean multiProfile,
                                    final boolean renewSession) {
-        final ProfileManager manager = getProfileManager(context, sessionStore);
+        final var manager = getProfileManager(context, sessionStore);
         if (profile != null) {
             manager.save(saveProfileInSession, profile, multiProfile);
             if (renewSession) {
@@ -115,16 +115,16 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     }
 
     protected void renewSession(final WebContext context, final SessionStore sessionStore, final Config config) {
-        final String oldSessionId = sessionStore.getSessionId(context, true).get();
-        final boolean renewed = sessionStore.renewSession(context);
+        final var oldSessionId = sessionStore.getSessionId(context, true).get();
+        final var renewed = sessionStore.renewSession(context);
         if (renewed) {
-            final String newSessionId = sessionStore.getSessionId(context, true).get();
+            final var newSessionId = sessionStore.getSessionId(context, true).get();
             LOGGER.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
-            final Clients clients = config.getClients();
+            final var clients = config.getClients();
             if (clients != null) {
-                final List<Client> clientList = clients.getClients();
-                for (final Client client : clientList) {
-                    final BaseClient baseClient = (BaseClient) client;
+                final var clientList = clients.getClients();
+                for (final var client : clientList) {
+                    final var baseClient = (BaseClient) client;
                     baseClient.notifySessionRenewal(oldSessionId, context, sessionStore);
                 }
             }

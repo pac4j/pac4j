@@ -63,15 +63,15 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
-        final String username = credentials.getUsername();
-        final String password = credentials.getPassword();
+        final var credentials = (UsernamePasswordCredentials) cred;
+        final var username = credentials.getUsername();
+        final var password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
             logger.info("Empty username or password");
             return;
         }
 
-        final String body = callRestApi(username, password);
+        final var body = callRestApi(username, password);
         logger.debug("body: {}", body);
         if (body != null) {
             buildProfile(credentials, body);
@@ -79,7 +79,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     }
 
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
-        final RestProfile profileClass = (RestProfile) getProfileDefinition().newProfile();
+        final var profileClass = (RestProfile) getProfileDefinition().newProfile();
         final RestProfile profile;
         try {
             profile = mapper.readValue(body, profileClass.getClass());
@@ -100,14 +100,14 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
      */
     protected String callRestApi(final String username, final String password) {
 
-        final String basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+        final var basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
         final Map<String, String> headers = new HashMap<>();
         headers.put(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX + basicAuth);
 
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openPostConnection(new URL(url), headers);
-            int code = connection.getResponseCode();
+            var code = connection.getResponseCode();
             if (code == 200) {
                 logger.debug("Authentication success for username: {}", username);
                 return HttpUtils.readBody(connection);

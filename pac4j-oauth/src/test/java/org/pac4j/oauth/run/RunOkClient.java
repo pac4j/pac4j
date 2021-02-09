@@ -64,7 +64,7 @@ public final class RunOkClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OkClient okClient = new OkClient();
+        final var okClient = new OkClient();
         okClient.setKey("1139019264");
         okClient.setPublicKey("CBAPAFOEEBABABABA");
         okClient.setSecret("479452FD7CA726DF558B4303");
@@ -74,7 +74,7 @@ public final class RunOkClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final OkProfile profile = (OkProfile) userProfile;
+        final var profile = (OkProfile) userProfile;
         assertEquals(TEST_PROFILE_ID, profile.getId());
         assertEquals(OkProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());

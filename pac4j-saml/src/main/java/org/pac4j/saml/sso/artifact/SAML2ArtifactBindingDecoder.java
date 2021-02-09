@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * Decodes a SAML artifact binding request by fetching the actual artifact via
  * SOAP.
- * 
+ *
  * @since 3.8.0
  */
 public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
@@ -48,16 +48,16 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     @Override
     protected void doDecode() throws MessageDecodingException {
         try {
-            final DefaultEndpointResolver<ArtifactResolutionService> endpointResolver = new DefaultEndpointResolver<>();
+            final var endpointResolver = new DefaultEndpointResolver<ArtifactResolutionService>();
             endpointResolver.initialize();
 
-            final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(
+            final var roleResolver = new PredicateRoleDescriptorResolver(
                     idpMetadataResolver.resolve());
             roleResolver.initialize();
 
-            final SAML2MessageContext messageContext = new SAML2MessageContext();
+            final var messageContext = new SAML2MessageContext();
 
-            final PipelineFactoryHttpSOAPClient soapClient = new PipelineFactoryHttpSOAPClient() {
+            final var soapClient = new PipelineFactoryHttpSOAPClient() {
                 @SuppressWarnings("rawtypes")
                 @Override
                 public void send(final String endpoint, final InOutOperationContext operationContext)
@@ -69,7 +69,7 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
             soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
 
-            final Pac4jHTTPArtifactDecoder artifactDecoder = new Pac4jHTTPArtifactDecoder();
+            final var artifactDecoder = new Pac4jHTTPArtifactDecoder();
             artifactDecoder.setWebContext(context);
             artifactDecoder.setSelfEntityIDResolver(new FixedEntityIdResolver(spMetadataResolver));
             artifactDecoder.setRoleDescriptorResolver(roleResolver);

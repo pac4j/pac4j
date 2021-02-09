@@ -45,7 +45,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
     public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         try {
 
-            final OAuth10aService service = (OAuth10aService) this.configuration.buildService(context, client);
+            final var service = (OAuth10aService) this.configuration.buildService(context, client);
             final OAuth1RequestToken requestToken;
             try {
                 requestToken = service.getRequestToken();
@@ -55,7 +55,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             logger.debug("requestToken: {}", requestToken);
             // save requestToken in user session
             sessionStore.set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
-            final String authorizationUrl = service.getAuthorizationUrl(requestToken);
+            final var authorizationUrl = service.getAuthorizationUrl(requestToken);
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));
 

@@ -22,22 +22,22 @@ public class Saml2ClientBuilder extends AbstractBuilder {
     }
 
     public void tryCreateSaml2Client(final List<Client> clients) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String keystorePassword = getProperty(SAML_KEYSTORE_PASSWORD, i);
-            final String privateKeyPassword = getProperty(SAML_PRIVATE_KEY_PASSWORD, i);
-            final String keystorePath = getProperty(SAML_KEYSTORE_PATH, i);
-            final String identityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH, i);
+        for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final var keystorePassword = getProperty(SAML_KEYSTORE_PASSWORD, i);
+            final var privateKeyPassword = getProperty(SAML_PRIVATE_KEY_PASSWORD, i);
+            final var keystorePath = getProperty(SAML_KEYSTORE_PATH, i);
+            final var identityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH, i);
 
             if (isNotBlank(keystorePassword) && isNotBlank(privateKeyPassword)
                     && isNotBlank(keystorePath) && isNotBlank(identityProviderMetadataPath)) {
 
-                final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME, i);
-                final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID, i);
-                final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH, i);
-                final String destinationBindingType = getProperty(SAML_AUTHN_REQUEST_BINDING_TYPE, i);
-                final String keystoreAlias = getProperty(SAML_KEYSTORE_ALIAS, i);
+                final var maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME, i);
+                final var serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID, i);
+                final var serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH, i);
+                final var destinationBindingType = getProperty(SAML_AUTHN_REQUEST_BINDING_TYPE, i);
+                final var keystoreAlias = getProperty(SAML_KEYSTORE_ALIAS, i);
 
-                final SAML2Configuration cfg = new SAML2Configuration(keystorePath, keystorePassword,
+                final var cfg = new SAML2Configuration(keystorePath, keystorePassword,
                         privateKeyPassword, identityProviderMetadataPath);
                 if (isNotBlank(maximumAuthenticationLifetime)) {
                     cfg.setMaximumAuthenticationLifetime(Integer.parseInt(maximumAuthenticationLifetime));
@@ -54,7 +54,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                 if (isNotBlank(keystoreAlias)) {
                     cfg.setKeystoreAlias(keystoreAlias);
                 }
-                final SAML2Client saml2Client = new SAML2Client(cfg);
+                final var saml2Client = new SAML2Client(cfg);
                 saml2Client.setName(concat(saml2Client.getName(), i));
 
                 clients.add(saml2Client);

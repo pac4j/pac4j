@@ -33,7 +33,7 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile,
                             final HttpConstants.HTTP_METHOD element) {
-        final String requestMethod = context.getRequestMethod();
+        final var requestMethod = context.getRequestMethod();
         return requestMethod.equalsIgnoreCase(element.toString());
     }
 

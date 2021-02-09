@@ -79,8 +79,8 @@ public class DigestCredentials extends TokenCredentials {
                                  String realm, String password, String httpMethod, String uri, String qop,
                                  String nonce, String nc, String cnonce) {
         String ha1;
-        String a2 = httpMethod + ":" + uri;
-        String ha2 = CredentialUtil.encryptMD5(a2);
+        var a2 = httpMethod + ":" + uri;
+        var ha2 = CredentialUtil.encryptMD5(a2);
 
         if (passwordAlreadyEncoded) {
             ha1 = password;
@@ -111,7 +111,7 @@ public class DigestCredentials extends TokenCredentials {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        final DigestCredentials that = (DigestCredentials) o;
+        final var that = (DigestCredentials) o;
 
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
         if (realm != null ? !realm.equals(that.realm) : that.realm != null) return false;
@@ -125,7 +125,7 @@ public class DigestCredentials extends TokenCredentials {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (realm != null ? realm.hashCode() : 0);
         result = 31 * result + (nonce != null ? nonce.hashCode() : 0);

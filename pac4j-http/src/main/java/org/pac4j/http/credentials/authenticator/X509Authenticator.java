@@ -38,24 +38,24 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
     public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final X509Certificate certificate = ((X509Credentials) credentials).getCertificate();
+        final var certificate = ((X509Credentials) credentials).getCertificate();
         if (certificate == null) {
             throw new CredentialsException("No X509 certificate");
         }
 
-        final Principal principal = certificate.getSubjectDN();
+        final var principal = certificate.getSubjectDN();
         if (principal == null) {
             throw new CredentialsException("No X509 principal");
         }
 
-        final String subjectDN = principal.getName();
+        final var subjectDN = principal.getName();
         logger.debug("subjectDN: {}", subjectDN);
 
         if (subjectDN == null) {
             throw new CredentialsException("No X509 subjectDN");
         }
 
-        final Matcher matcher = this.pattern.matcher(subjectDN);
+        final var matcher = this.pattern.matcher(subjectDN);
 
         if (!matcher.find()) {
             throw new CredentialsException("No matching for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
@@ -65,8 +65,8 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
             throw new CredentialsException("Too many matchings for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
-        final String id = matcher.group(1);
-        final X509Profile profile = (X509Profile) getProfileDefinition().newProfile();
+        final var id = matcher.group(1);
+        final var profile = (X509Profile) getProfileDefinition().newProfile();
         profile.setId(id);
         logger.debug("profile: {}", profile);
 

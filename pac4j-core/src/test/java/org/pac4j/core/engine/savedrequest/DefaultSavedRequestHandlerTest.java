@@ -38,28 +38,28 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testSaveGet() {
-        final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL);
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var context = MockWebContext.create().setFullRequestURL(PAC4J_URL);
+        final var sessionStore = new MockSessionStore();
         handler.save(context, sessionStore);
-        final String location = (String) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
+        final var location = (String) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
         assertEquals(PAC4J_URL, location);
     }
 
     @Test
     public void testSavePost() {
-        final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL).setRequestMethod("POST");
+        final var context = MockWebContext.create().setFullRequestURL(PAC4J_URL).setRequestMethod("POST");
         context.addRequestParameter(KEY, VALUE);
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var sessionStore = new MockSessionStore();
         handler.save(context, sessionStore);
-        final OkAction action = (OkAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
+        final var action = (OkAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
         assertEquals(FORM_DATA, action.getContent());
     }
 
     @Test
     public void testRestoreNoRequestedUrl() {
-        final MockWebContext context = MockWebContext.create();
-        final MockSessionStore sessionStore = new MockSessionStore();
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var context = MockWebContext.create();
+        final var sessionStore = new MockSessionStore();
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -67,10 +67,10 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testRestoreEmptyString() {
-        final MockWebContext context = MockWebContext.create();
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var context = MockWebContext.create();
+        final var sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -78,10 +78,10 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testRestoreURLString() {
-        final MockWebContext context = MockWebContext.create();
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var context = MockWebContext.create();
+        final var sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, VALUE);
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(VALUE, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -89,10 +89,10 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testRestoreFoundAction() {
-        final MockWebContext context = MockWebContext.create();
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var context = MockWebContext.create();
+        final var sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(PAC4J_URL, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -100,11 +100,11 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testRestoreFoundActionAfterPost() {
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.setRequestMethod("POST");
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof SeeOtherAction);
         assertEquals(PAC4J_URL, ((SeeOtherAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -112,11 +112,11 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testRestoreOkAction() {
-        final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL).addRequestParameter(KEY, VALUE);
-        final String formPost = HttpActionHelper.buildFormPostContent(context);
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var context = MockWebContext.create().setFullRequestURL(PAC4J_URL).addRequestParameter(KEY, VALUE);
+        final var formPost = HttpActionHelper.buildFormPostContent(context);
+        final var sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof OkAction);
         assertEquals(FORM_DATA, ((OkAction) action).getContent());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -124,12 +124,12 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     @Test
     public void testRestoreOkActionAfterPost() {
-        final MockWebContext context = MockWebContext.create().setFullRequestURL(PAC4J_URL).addRequestParameter(KEY, VALUE);
-        final String formPost = HttpActionHelper.buildFormPostContent(context);
+        final var context = MockWebContext.create().setFullRequestURL(PAC4J_URL).addRequestParameter(KEY, VALUE);
+        final var formPost = HttpActionHelper.buildFormPostContent(context);
         context.setRequestMethod("POST");
-        final MockSessionStore sessionStore = new MockSessionStore();
+        final var sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
-        final HttpAction action = handler.restore(context, sessionStore, LOGIN_URL);
+        final var action = handler.restore(context, sessionStore, LOGIN_URL);
         assertTrue(action instanceof OkAction);
         assertEquals(FORM_DATA, ((OkAction) action).getContent());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());

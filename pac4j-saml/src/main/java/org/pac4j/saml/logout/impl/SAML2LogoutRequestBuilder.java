@@ -43,7 +43,7 @@ public class SAML2LogoutRequestBuilder {
     }
 
     public LogoutRequest build(final SAML2MessageContext context, final SAML2Profile profile) {
-        final SingleLogoutService ssoService = context.getIDPSingleLogoutService(this.bindingType);
+        final var ssoService = context.getIDPSingleLogoutService(this.bindingType);
         return buildLogoutRequest(context, ssoService, profile);
     }
 
@@ -52,11 +52,11 @@ public class SAML2LogoutRequestBuilder {
                                                      final SingleLogoutService ssoService,
                                                      final SAML2Profile profile) {
 
-        final SAMLObjectBuilder<LogoutRequest> builder = (SAMLObjectBuilder<LogoutRequest>) this.builderFactory
+        final var builder = (SAMLObjectBuilder<LogoutRequest>) this.builderFactory
             .getBuilder(LogoutRequest.DEFAULT_ELEMENT_NAME);
-        final LogoutRequest request = builder.buildObject();
+        final var request = builder.buildObject();
 
-        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
+        final var selfContext = context.getSAMLSelfEntityContext();
 
         request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
@@ -65,9 +65,9 @@ public class SAML2LogoutRequestBuilder {
         request.setDestination(ssoService.getLocation());
 
         // name id added (id of profile)
-        final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory
+        final var nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory
             .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
-        final NameID nameId = nameIdBuilder.buildObject();
+        final var nameId = nameIdBuilder.buildObject();
         nameId.setValue(profile.getId());
         nameId.setFormat(profile.getSamlNameIdFormat());
         if (this.useNameQualifier) {
@@ -77,10 +77,10 @@ public class SAML2LogoutRequestBuilder {
         }
         request.setNameID(nameId);
         // session index added
-        final String sessIdx = profile.getSessionIndex();
-        final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
+        final var sessIdx = profile.getSessionIndex();
+        final var sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
             .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
-        final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
+        final var sessionIdx = sessionIndexBuilder.buildObject();
         sessionIdx.setValue(sessIdx);
         request.getSessionIndexes().add(sessionIdx);
 
@@ -89,9 +89,9 @@ public class SAML2LogoutRequestBuilder {
 
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {
-        final SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
+        final var issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
             .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
-        final Issuer issuer = issuerBuilder.buildObject();
+        final var issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         return issuer;
     }

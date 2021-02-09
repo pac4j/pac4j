@@ -98,11 +98,11 @@ public class TwitterProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public TwitterProfile extractUserProfile(final String body) {
-        final TwitterProfile profile = (TwitterProfile) newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (TwitterProfile) newProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

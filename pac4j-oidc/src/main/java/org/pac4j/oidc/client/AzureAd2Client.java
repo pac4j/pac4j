@@ -38,26 +38,26 @@ public class AzureAd2Client extends AzureAdClient {
      */
     @Override
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
-        final AzureAd2OidcConfiguration azureConfig = (AzureAd2OidcConfiguration) getConfiguration();
+        final var azureConfig = (AzureAd2OidcConfiguration) getConfiguration();
         HttpURLConnection connection = null;
         try {
             final Map<String, String> headers = new HashMap<>();
             headers.put(HttpConstants.CONTENT_TYPE_HEADER, HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE);
             headers.put(HttpConstants.ACCEPT_HEADER, HttpConstants.APPLICATION_JSON);
             // get the token endpoint from discovery URI
-            final URL tokenEndpointURL = azureConfig.findProviderMetadata().getTokenEndpointURI().toURL();
+            final var tokenEndpointURL = azureConfig.findProviderMetadata().getTokenEndpointURI().toURL();
             connection = HttpUtils.openPostConnection(tokenEndpointURL, headers);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
+            final var out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
                 StandardCharsets.UTF_8));
             out.write(azureConfig.makeOauth2TokenRequest(azureAdProfile.getRefreshToken().getValue()));
             out.close();
 
-            final int responseCode = connection.getResponseCode();
+            final var responseCode = connection.getResponseCode();
             if (responseCode != 200) {
                 throw new TechnicalException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
             }
-            String body = HttpUtils.readBody(connection);
+            var body = HttpUtils.readBody(connection);
             final Map<String, Object> res = objectMapper.readValue(body, typeRef);
             return (String) res.get("access_token");
         } catch (final IOException e) {

@@ -36,14 +36,14 @@ public class WeiboToken extends OAuth2AccessToken {
         if (!(o instanceof WeiboToken)) return false;
         if (!super.equals(o)) return false;
 
-        WeiboToken that = (WeiboToken) o;
+        var that = (WeiboToken) o;
 
         return uid != null ? uid.equals(that.uid) : that.uid == null;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + (uid != null ? uid.hashCode() : 0);
         return result;
     }

@@ -45,7 +45,7 @@ public class PathMatcher implements Matcher {
 
     public PathMatcher excludePaths(final String... paths) {
         if (paths != null && paths.length > 0) {
-            for (final String path : paths) {
+            for (final var path : paths) {
                 excludePath(path);
             }
         }
@@ -106,7 +106,7 @@ public class PathMatcher implements Matcher {
             return false;
         }
 
-        for (Pattern pattern : excludedPatterns) {
+        for (var pattern : excludedPatterns) {
             if (pattern.matcher(path).matches()) {
                 return false;
             }

@@ -37,16 +37,16 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
 
     @Test
     public void testEncodeDecode() throws Exception {
-        final MockWebContext webContext = MockWebContext.create();
+        final var webContext = MockWebContext.create();
 
-        final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
+        final var xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
 
-        final Pac4jHTTPRedirectDeflateEncoder encoder =
+        final var encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
-        final String message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        final var message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
 
         webContext.addRequestParameter("SAMLResponse", message);
-        final Pac4jHTTPRedirectDeflateDecoder decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
+        final var decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
         decoder.setParserPool(Configuration.getParserPool());
         decoder.initialize();
         decoder.decode();
@@ -56,17 +56,17 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
 
     @Test
     public void testBuildRedirectUrlWithExistingQueryParameters() throws Exception {
-        final MockWebContext webContext = MockWebContext.create();
+        final var webContext = MockWebContext.create();
 
-        final XMLObject xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
+        final var xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
 
-        final Pac4jHTTPRedirectDeflateEncoder encoder =
+        final var encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
-        final MessageContext messageContext = new MessageContext();
+        final var messageContext = new MessageContext();
         messageContext.setMessage((SAMLObject) xmlObject);
 
-        final String encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
-        final String redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);
+        final var encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        final var redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);
 
         assertTrue(redirectURL.contains("qp=0000"));
         assertTrue(redirectURL.contains("SAMLRequest"));

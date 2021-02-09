@@ -49,18 +49,18 @@ public class OidcExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final boolean logoutEndpoint = context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
+        final var logoutEndpoint = context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
             .isPresent();
         if (logoutEndpoint) {
-            final Optional<String> logoutToken = context.getRequestParameter("logout_token");
+            final var logoutToken = context.getRequestParameter("logout_token");
             // back-channel logout
             if (logoutToken.isPresent()) {
                 try {
-                    final JWT jwt = JWTParser.parse(logoutToken.get());
+                    final var jwt = JWTParser.parse(logoutToken.get());
                     // we should use the tokenValidator, but we can't as validation fails on missing claims: exp, iat...
                     //final IDTokenClaimsSet claims = configuration.findTokenValidator().validate(jwt, null);
                     //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                    final String sid = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                    final var sid = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     logger.debug("Handling back-channel logout for sessionId: {}", sid);
                     configuration.findLogoutHandler().destroySessionBack(context, sessionStore, sid);
                 } catch (final java.text.ParseException e) {
@@ -68,7 +68,7 @@ public class OidcExtractor implements CredentialsExtractor {
                     throw BadRequestAction.INSTANCE;
                 }
             } else {
-                final String sid = context.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
+                final var sid = context.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
                 logger.debug("Handling front-channel logout for sessionId: {}", sid);
                 // front-channel logout
                 configuration.findLogoutHandler().destroySessionFront(context, sessionStore, sid);
@@ -77,8 +77,8 @@ public class OidcExtractor implements CredentialsExtractor {
             context.setResponseHeader("Pragma", "no-cache");
             throw new OkAction("");
         } else {
-            final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
-            final Map<String, List<String>> parameters = retrieveParameters(context);
+            final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
+            final var parameters = retrieveParameters(context);
             AuthenticationResponse response;
             try {
                 response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
@@ -93,15 +93,15 @@ public class OidcExtractor implements CredentialsExtractor {
             }
 
             logger.debug("Authentication response successful");
-            AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) response;
+            var successResponse = (AuthenticationSuccessResponse) response;
 
             if (configuration.isWithState()) {
                 // Validate state for CSRF mitigation
-                final State requestState = (State) configuration.getValueRetriever()
+                final var requestState = (State) configuration.getValueRetriever()
                     .retrieve(client.getStateSessionAttributeName(), client, context, sessionStore)
                     .orElseThrow(() -> new TechnicalException("State cannot be determined"));
 
-                final State responseState = successResponse.getState();
+                final var responseState = successResponse.getState();
                 if (responseState == null) {
                     throw new TechnicalException("Missing state parameter");
                 }
@@ -113,19 +113,19 @@ public class OidcExtractor implements CredentialsExtractor {
                 }
             }
 
-            final OidcCredentials credentials = new OidcCredentials();
+            final var credentials = new OidcCredentials();
             // get authorization code
-            final AuthorizationCode code = successResponse.getAuthorizationCode();
+            final var code = successResponse.getAuthorizationCode();
             if (code != null) {
                 credentials.setCode(code);
             }
             // get ID token
-            final JWT idToken = successResponse.getIDToken();
+            final var idToken = successResponse.getIDToken();
             if (idToken != null) {
                 credentials.setIdToken(idToken);
             }
             // get access token
-            final AccessToken accessToken = successResponse.getAccessToken();
+            final var accessToken = successResponse.getAccessToken();
             if (accessToken != null) {
                 credentials.setAccessToken(accessToken);
             }
@@ -135,9 +135,9 @@ public class OidcExtractor implements CredentialsExtractor {
     }
 
     protected Map<String, List<String>> retrieveParameters(final WebContext context) {
-        final Map<String, String[]> requestParameters = context.getRequestParameters();
+        final var requestParameters = context.getRequestParameters();
         final Map<String, List<String>> map = new HashMap<>();
-        for (final Map.Entry<String, String[]> entry : requestParameters.entrySet()) {
+        for (final var entry : requestParameters.entrySet()) {
             map.put(entry.getKey(), Arrays.asList(entry.getValue()));
         }
         return map;

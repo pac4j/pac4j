@@ -27,41 +27,41 @@ public final class ParameterClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokenAuthenticator() {
-        final ParameterClient client = new ParameterClient(PARAMETER_NAME, null);
+        final var client = new ParameterClient(PARAMETER_NAME, null);
         TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator(), null);
+        final var client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator(), null);
         TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
                 MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
+        final var client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
         client.setParameterName(PARAMETER_NAME);
         client.init();
     }
 
     @Test
     public void testMissingParameterName() {
-        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
+        final var client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
         TestsHelper.initShouldFail(client, "parameterName cannot be blank");
     }
 
     @Test
     public void testAuthentication() {
-        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator());
+        final var client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator());
         client.setSupportGetRequest(SUPPORT_GET);
         client.setSupportPostRequest(SUPPORT_POST);
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.addRequestParameter(PARAMETER_NAME, VALUE);
         context.setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(VALUE, profile.getId());
     }
 }

@@ -27,8 +27,8 @@ public class CookieExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final Collection<Cookie> col = context.getRequestCookies();
-        for (final Cookie c : col) {
+        final var col = context.getRequestCookies();
+        for (final var c : col) {
             if (c.getName().equals(this.cookieName)) {
                 return Optional.of(new TokenCredentials(c.getValue()));
             }

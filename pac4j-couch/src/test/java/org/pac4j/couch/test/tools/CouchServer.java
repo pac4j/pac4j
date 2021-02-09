@@ -27,19 +27,19 @@ public final class CouchServer implements TestsConstants {
     public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
 
     public CouchDbConnector start() {
-        InMemoryCouchDb couchDbClient = new InMemoryCouchDb();
+        var couchDbClient = new InMemoryCouchDb();
         couchDbClient.createDatabase("users");
-        StdHttpClient stdHttpClient = new StdHttpClient(couchDbClient);
-        StdCouchDbInstance stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
-        StdCouchDbConnector couchDbConnector = new StdCouchDbConnector("users", stdCouchDbInstance);
+        var stdHttpClient = new StdHttpClient(couchDbClient);
+        var stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
+        var couchDbConnector = new StdCouchDbConnector("users", stdCouchDbInstance);
 
         couchDbConnector.createDatabaseIfNotExists();
 
         // uploading design doc:
-        String designDocString = "{\"_id\":\"_design/pac4j\",\"language\":\"javascript\",\"views\":{\"by_username\":{\"map\":\""
+        var designDocString = "{\"_id\":\"_design/pac4j\",\"language\":\"javascript\",\"views\":{\"by_username\":{\"map\":\""
             + "function(doc){if (doc.username) emit(doc.username, doc);}\"},\"by_linkedid\":{\"map\":\"function(doc) {"
             + "if (doc.linkedid) emit(doc.linkedid, doc);}\"}}}";
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         try {
             couchDbConnector.create(objectMapper.readTree(designDocString));
         } catch (IOException e) {

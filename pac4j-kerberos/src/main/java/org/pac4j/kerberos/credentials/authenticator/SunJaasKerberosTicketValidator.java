@@ -58,18 +58,18 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
             CommonHelper.assertNotNull("keyTab must be specified", this.keyTabLocation);
 
-            String keyTabLocationAsString = this.keyTabLocation.getURL().toExternalForm();
+            var keyTabLocationAsString = this.keyTabLocation.getURL().toExternalForm();
             // We need to remove the file prefix (if there is one), as it is not supported in Java 7 anymore.
             // As Java 6 accepts it with and without the prefix, we don't need to check for Java 7
             if (keyTabLocationAsString.startsWith("file:")) {
                 keyTabLocationAsString = keyTabLocationAsString.substring(5);
             }
-            LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
+            var loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
                 this.debug);
             Set<Principal> princ = new HashSet<>(1);
             princ.add(new KerberosPrincipal(this.servicePrincipal));
-            Subject sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
-            LoginContext lc = new LoginContext("", sub, null, loginConfig);
+            var sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
+            var lc = new LoginContext("", sub, null, loginConfig);
             lc.login();
             this.serviceSubject = lc.getSubject();
         } catch (final LoginException | IOException e) {
@@ -140,10 +140,10 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
         @Override
         public KerberosTicketValidation run() throws Exception {
-            byte[] responseToken = new byte[0];
+            var responseToken = new byte[0];
             GSSName gssName = null;
-            GSSContext context = GSSManager.getInstance().createContext((GSSCredential) null);
-            boolean first = true;
+            var context = GSSManager.getInstance().createContext((GSSCredential) null);
+            var first = true;
             while (!context.isEstablished()) {
                 if (first) {
                     kerberosTicket = tweakJdkRegression(kerberosTicket);
@@ -179,7 +179,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
         @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
-            HashMap<String, String> options = new HashMap<>();
+            var options = new HashMap<String, String>();
             options.put("useKeyTab", "true");
             options.put("keyTab", this.keyTabLocation);
             options.put("principal", this.servicePrincipalName);
@@ -228,16 +228,16 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             return token;
         }
 
-        int[] toCheck = new int[]{0x06, 0x09, 0x2A, 0x86, 0x48, 0x82, 0xF7, 0x12, 0x01, 0x02, 0x02, 0x06, 0x09, 0x2A,
+        var toCheck = new int[]{0x06, 0x09, 0x2A, 0x86, 0x48, 0x82, 0xF7, 0x12, 0x01, 0x02, 0x02, 0x06, 0x09, 0x2A,
             0x86, 0x48, 0x86, 0xF7, 0x12, 0x01, 0x02, 0x02};
 
-        for (int i = 0; i < 22; i++) {
+        for (var i = 0; i < 22; i++) {
             if ((byte) toCheck[i] != token[i + 24]) {
                 return token;
             }
         }
 
-        byte[] nt = new byte[token.length];
+        var nt = new byte[token.length];
         System.arraycopy(token, 0, nt, 0, 24);
         System.arraycopy(token, 35, nt, 24, 11);
         System.arraycopy(token, 24, nt, 35, 11);

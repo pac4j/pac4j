@@ -22,7 +22,7 @@ public class XMLSecSAML2MetadataSignerTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -34,10 +34,10 @@ public class XMLSecSAML2MetadataSignerTests {
         configuration.init();
 
 
-        final SAML2MetadataGenerator metadataGenerator = configuration.toMetadataGenerator();
-        final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
+        final var metadataGenerator = configuration.toMetadataGenerator();
+        final var entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
-        final String metadata = metadataGenerator.getMetadata(entity);
+        final var metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
         metadataGenerator.storeMetadata(metadata, configuration.getServiceProviderMetadataResource(), true);

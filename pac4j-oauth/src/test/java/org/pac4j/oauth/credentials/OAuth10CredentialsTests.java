@@ -19,16 +19,16 @@ public final class OAuth10CredentialsTests implements TestsConstants {
 
     @Test
     public void testOAuth10Credentials() {
-        final OAuth10Credentials credentials = new OAuth10Credentials(REQUEST_TOKEN, TOKEN, VERIFIER);
+        final var credentials = new OAuth10Credentials(REQUEST_TOKEN, TOKEN, VERIFIER);
         assertEquals(TOKEN, credentials.getToken());
         assertEquals(VERIFIER, credentials.getVerifier());
-        final OAuth1RequestToken requestToken = credentials.getRequestToken();
+        final var requestToken = credentials.getRequestToken();
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getTokenSecret());
         // test serialization
-        final JavaSerializer javaSerializer = new JavaSerializer();
-        final byte[] bytes = javaSerializer.serializeToBytes(credentials);
-        final OAuth10Credentials credentials2 = (OAuth10Credentials) javaSerializer.deserializeFromBytes(bytes);
+        final var javaSerializer = new JavaSerializer();
+        final var bytes = javaSerializer.serializeToBytes(credentials);
+        final var credentials2 = (OAuth10Credentials) javaSerializer.deserializeFromBytes(bytes);
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());

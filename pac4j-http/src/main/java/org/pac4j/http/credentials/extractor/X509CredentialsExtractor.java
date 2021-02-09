@@ -25,11 +25,11 @@ public class X509CredentialsExtractor implements CredentialsExtractor  {
 
     @Override
     public Optional<Credentials> extract(WebContext context, final SessionStore sessionStore) {
-        final Optional<X509Certificate[]> certificates =
+        final var certificates =
             (Optional<X509Certificate[]>) context.getRequestAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 
         if (certificates.isPresent() && certificates.get().length > 0) {
-            final X509Certificate certificate = certificates.get()[0];
+            final var certificate = certificates.get()[0];
             logger.debug("X509 certificate: {}", certificate);
 
             return Optional.of(new X509Credentials(certificate));

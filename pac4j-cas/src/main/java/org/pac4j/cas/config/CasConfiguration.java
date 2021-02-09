@@ -164,7 +164,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildSAMLTicketValidator(final WebContext context) {
-        final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
+        final var saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
         saml11TicketValidator.setTolerance(getTimeTolerance());
         saml11TicketValidator.setEncoding(this.encoding);
         saml11TicketValidator.setRenew(this.renew);
@@ -178,7 +178,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas30ProxyTicketValidator(final WebContext context) {
-        final Cas30ProxyTicketValidator cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
+        final var cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas30ProxyTicketValidator.setEncoding(this.encoding);
         cas30ProxyTicketValidator.setRenew(this.renew);
         cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
@@ -192,7 +192,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas30TicketValidator(final WebContext context) {
-        final Cas30ServiceTicketValidator cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
+        final var cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas30ServiceTicketValidator.setEncoding(this.encoding);
         cas30ServiceTicketValidator.setRenew(this.renew);
         if (this.proxyReceptor != null) {
@@ -204,7 +204,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas20ProxyTicketValidator(final WebContext context) {
-        final Cas20ProxyTicketValidator cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
+        final var cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas20ProxyTicketValidator.setEncoding(this.encoding);
         cas20ProxyTicketValidator.setRenew(this.renew);
         cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
@@ -218,7 +218,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas20TicketValidator(final WebContext context) {
-        final Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
+        final var cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas20ServiceTicketValidator.setEncoding(this.encoding);
         cas20ServiceTicketValidator.setRenew(this.renew);
         if (this.proxyReceptor != null) {
@@ -230,7 +230,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas10TicketValidator(final WebContext context) {
-        final Cas10TicketValidator cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
+        final var cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
         cas10TicketValidator.setEncoding(this.encoding);
         cas10TicketValidator.setRenew(this.renew);
         return cas10TicketValidator;
@@ -279,7 +279,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     public void setCustomParams(final Map<String, String> customParams) {
         this.customParams = customParams;
     }
-    
+
     public long getTimeTolerance() {
         return timeTolerance;
     }

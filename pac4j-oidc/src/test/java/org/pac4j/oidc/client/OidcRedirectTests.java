@@ -35,15 +35,15 @@ public final class OidcRedirectTests implements TestsConstants {
 
     private OidcClient getClient() throws URISyntaxException {
 
-        OIDCProviderMetadata providerMetadata = mock(OIDCProviderMetadata.class);
+        var providerMetadata = mock(OIDCProviderMetadata.class);
         when(providerMetadata.getAuthorizationEndpointURI()).thenReturn(new java.net.URI("http://localhost:8080/auth"));
 
-        OidcConfiguration configuration = new OidcConfiguration();
+        var configuration = new OidcConfiguration();
         configuration.setClientId("testClient");
         configuration.setSecret("secret");
         configuration.setProviderMetadata(providerMetadata);
 
-        final OidcClient client = new OidcClient();
+        final var client = new OidcClient();
         client.setConfiguration(configuration);
         client.setCallbackUrl(CALLBACK_URL);
 
@@ -52,7 +52,7 @@ public final class OidcRedirectTests implements TestsConstants {
 
     @Test
     public void testAjaxRequestAfterStandardRequestShouldNotOverrideState() throws MalformedURLException, URISyntaxException {
-        OidcClient client = getClient();
+        var client = getClient();
         client.setCallbackUrl(CALLBACK_URL);
         client.setAjaxRequestResolver(new AjaxRequestResolver() {
             boolean first = true;
@@ -75,18 +75,18 @@ public final class OidcRedirectTests implements TestsConstants {
             }
         });
 
-        MockWebContext context = MockWebContext.create();
+        var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
 
-        final FoundAction firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore).orElse(null);
-        String state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
+        final var firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore).orElse(null);
+        var state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
 
         try {
             //noinspection ThrowableNotThrown
             client.getRedirectionAction(context, sessionStore);
             fail("Ajax request should throw exception");
         } catch (Exception e) {
-            State stateAfterAjax = (State) sessionStore.get(context, client.getStateSessionAttributeName()).orElse(null);
+            var stateAfterAjax = (State) sessionStore.get(context, client.getStateSessionAttributeName()).orElse(null);
             assertEquals("subsequent ajax request should not override the state in the session store", state, stateAfterAjax.toString());
         }
 

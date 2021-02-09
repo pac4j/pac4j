@@ -38,17 +38,17 @@ public class RunGoogleOidcClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OidcConfiguration configuration = new OidcConfiguration();
+        final var configuration = new OidcConfiguration();
         configuration.setClientId("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         configuration.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
-        final GoogleOidcClient client = new GoogleOidcClient(configuration);
+        final var client = new GoogleOidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final GoogleOidcProfile profile = (GoogleOidcProfile) userProfile;
+        final var profile = (GoogleOidcProfile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(GoogleOidcProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "113675986756217860428",
                 profile.getTypedId());

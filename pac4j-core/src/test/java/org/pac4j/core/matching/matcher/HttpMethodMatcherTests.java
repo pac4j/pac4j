@@ -19,36 +19,36 @@ public final class HttpMethodMatcherTests implements TestsConstants {
 
     @Test
     public void testNullMethods() {
-        final HttpMethodMatcher matcher = new HttpMethodMatcher();
+        final var matcher = new HttpMethodMatcher();
         TestsHelper.expectException(() -> matcher.matches(MockWebContext.create(), null),
             TechnicalException.class, "methods cannot be null");
     }
 
     @Test
     public void testBadMethod() {
-        final HttpMethodMatcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        final var matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
+        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertFalse(matcher.matches(context, null));
     }
 
     @Test
     public void testGoodMethod() {
-        final HttpMethodMatcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        final var matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
+        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertTrue(matcher.matches(context, null));
     }
 
     @Test
     public void testBadMethod2() {
-        final HttpMethodMatcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET, HttpConstants.HTTP_METHOD.PUT);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        final var matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET, HttpConstants.HTTP_METHOD.PUT);
+        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertFalse(matcher.matches(context, null));
     }
 
     @Test
     public void testGoodMethod2() {
-        final HttpMethodMatcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE, HttpConstants.HTTP_METHOD.POST);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        final var matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE, HttpConstants.HTTP_METHOD.POST);
+        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertTrue(matcher.matches(context, null));
     }
 }

@@ -17,7 +17,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
 
     @Before
     public void setUp() {
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         metadataResolver.init();
@@ -25,15 +25,15 @@ public class SAML2IdentityProviderMetadataResolverTest {
 
     @Test
     public void resolveMetadataEntityId() throws Exception {
-        final MetadataResolver resolver = metadataResolver.resolve();
-        final CriteriaSet criteria = new CriteriaSet(new EntityIdCriterion("mmoayyed.example.net"));
-        final EntityDescriptor entity = resolver.resolveSingle(criteria);
+        final var resolver = metadataResolver.resolve();
+        final var criteria = new CriteriaSet(new EntityIdCriterion("mmoayyed.example.net"));
+        final var entity = resolver.resolveSingle(criteria);
         assertEquals(entity.getEntityID(), "mmoayyed.example.net");
     }
 
     @Test
     public void resolveMetadataDocumentAsString() {
-        final String metadata = metadataResolver.getMetadata();
+        final var metadata = metadataResolver.getMetadata();
         assertNotNull(metadata);
     }
 }

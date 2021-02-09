@@ -26,9 +26,9 @@ public class OAuth20Authenticator extends OAuthAuthenticator {
 
     @Override
     protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
-        OAuth20Credentials oAuth20Credentials = (OAuth20Credentials) credentials;
+        var oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
-        final String code = oAuth20Credentials.getCode();
+        final var code = oAuth20Credentials.getCode();
         logger.debug("code: {}", code);
         final OAuth2AccessToken accessToken;
         try {

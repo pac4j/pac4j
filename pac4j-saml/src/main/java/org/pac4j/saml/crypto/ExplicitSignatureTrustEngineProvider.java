@@ -32,11 +32,11 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
 
     @Override
     public SignatureTrustEngine build() {
-        final MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
+        final var metadataCredentialResolver = new MetadataCredentialResolver();
         final MetadataResolver metadataResolver = SAML2Utils.buildChainingMetadataResolver(idpMetadataResolver, spMetadataResolver);
-        final PredicateRoleDescriptorResolver roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
+        final var roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
 
-        final KeyInfoCredentialResolver keyResolver =
+        final var keyResolver =
                 DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
 
         metadataCredentialResolver.setKeyInfoCredentialResolver(keyResolver);

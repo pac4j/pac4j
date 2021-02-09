@@ -30,7 +30,7 @@ public class GaeUserCredentials extends Credentials {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final GaeUserCredentials that = (GaeUserCredentials) o;
+        final var that = (GaeUserCredentials) o;
 
         return !(user != null ? !user.equals(that.user) : that.user != null);
 

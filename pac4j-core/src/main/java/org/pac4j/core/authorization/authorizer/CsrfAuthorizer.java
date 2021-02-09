@@ -45,31 +45,31 @@ public class CsrfAuthorizer implements Authorizer {
 
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
-        final boolean checkRequest = checkAllRequests || isPost(context) || isPut(context) || isPatch(context) || isDelete(context);
+        final var checkRequest = checkAllRequests || isPost(context) || isPut(context) || isPatch(context) || isDelete(context);
         if (checkRequest) {
-            final String parameterToken = context.getRequestParameter(parameterName).orElse(null);
-            final String headerToken = context.getRequestHeader(headerName).orElse(null);
+            final var parameterToken = context.getRequestParameter(parameterName).orElse(null);
+            final var headerToken = context.getRequestHeader(headerName).orElse(null);
             LOGGER.debug("parameterToken: {}", parameterToken);
             LOGGER.debug("headerToken: {}", headerToken);
-            final Optional<Object> sessionPreviousToken = sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN);
-            final Optional<Object> sessionToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
-            final Optional<Object> sessionDate = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
+            final var sessionPreviousToken = sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN);
+            final var sessionToken = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN);
+            final var sessionDate = sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE);
             if (sessionStore.getSessionId(context, false).isPresent()) {
                 sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
             }
             // all checks are always performed, conditional operations are turned into logical ones,
             // string comparisons are replaced by hash equalities to be protected against time-based attacks
-            final boolean hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
-            final String previousToken = (String) sessionPreviousToken.orElse("");
+            final var hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
+            final var previousToken = (String) sessionPreviousToken.orElse("");
             LOGGER.debug("previous token: {}", previousToken);
-            final String token = (String) sessionToken.orElse("");
+            final var token = (String) sessionToken.orElse("");
             LOGGER.debug("token: {}", token);
-            final boolean isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
-            final boolean isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);
-            final boolean isGoodToken = isGoodCurrentToken | isGoodPreviousToken;
-            final Long expirationDate = (Long) sessionDate.orElse(0L);
-            final long now = new Date().getTime();
-            final boolean isDateExpired = expirationDate < now;
+            final var isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
+            final var isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);
+            final var isGoodToken = isGoodCurrentToken | isGoodPreviousToken;
+            final var expirationDate = (Long) sessionDate.orElse(0L);
+            final var now = new Date().getTime();
+            final var isDateExpired = expirationDate < now;
             if (!hasSessionData | !isGoodToken | isDateExpired) {
                 return false;
             }

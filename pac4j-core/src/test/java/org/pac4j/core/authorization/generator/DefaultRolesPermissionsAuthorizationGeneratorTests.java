@@ -25,13 +25,13 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     @Test
     public void testNullArrays() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator =
+        final var generator =
             new DefaultRolesPermissionsAuthorizationGenerator((String[]) null, null);
         checkEmptyProfile(generator);
     }
 
     private void checkEmptyProfile(final DefaultRolesPermissionsAuthorizationGenerator generator) {
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         generator.generate(null, null, profile);
         assertEquals(0, profile.getRoles().size());
         assertEquals(0, profile.getPermissions().size());
@@ -39,32 +39,32 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     @Test
     public void testNullLists() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator =
+        final var generator =
             new DefaultRolesPermissionsAuthorizationGenerator((List<String>) null, null);
         checkEmptyProfile(generator);
     }
 
     @Test
     public void testDefaultValuesArrays() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator =
+        final var generator =
             new DefaultRolesPermissionsAuthorizationGenerator(DEFAULT_ROLES_ARRAY, DEFAULT_PERMISSIONS_ARRAY);
         checkProfile(generator);
     }
 
     private void checkProfile(final DefaultRolesPermissionsAuthorizationGenerator generator) {
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         generator.generate(null, null, profile);
-        final Set<String> roles = profile.getRoles();
+        final var roles = profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.containsAll(DEFAULT_ROLES_LIST));
-        final Set<String> permissions = profile.getPermissions();
+        final var permissions = profile.getPermissions();
         assertEquals(2, permissions.size());
         assertTrue(permissions.containsAll(DEFAULT_PERMISSIONS_LIST));
     }
 
     @Test
     public void testDefaultValuesLists() {
-        final DefaultRolesPermissionsAuthorizationGenerator generator =
+        final var generator =
             new DefaultRolesPermissionsAuthorizationGenerator(DEFAULT_ROLES_LIST, DEFAULT_PERMISSIONS_LIST);
         checkProfile(generator);
     }

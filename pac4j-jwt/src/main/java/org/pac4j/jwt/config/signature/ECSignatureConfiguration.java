@@ -61,7 +61,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
 
         try {
             final JWSSigner signer = new ECDSASigner(this.privateKey);
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            final var signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
         } catch (final JOSEException e) {
@@ -101,7 +101,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
     }
 
     public void setKeysFromJwk(final String json) {
-        final KeyPair pair = JWKHelper.buildECKeyPairFromJwk(json);
+        final var pair = JWKHelper.buildECKeyPairFromJwk(json);
         this.publicKey = (ECPublicKey) pair.getPublic();
         this.privateKey = (ECPrivateKey) pair.getPrivate();
     }

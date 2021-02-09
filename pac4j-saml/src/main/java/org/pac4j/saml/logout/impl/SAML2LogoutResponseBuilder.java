@@ -38,7 +38,7 @@ public class SAML2LogoutResponseBuilder {
     }
 
     public LogoutResponse build(final SAML2MessageContext context) {
-        final SingleLogoutService ssoService = context.getIDPSingleLogoutService(this.bindingType);
+        final var ssoService = context.getIDPSingleLogoutService(this.bindingType);
         return buildLogoutResponse(context, ssoService);
     }
 
@@ -46,11 +46,11 @@ public class SAML2LogoutResponseBuilder {
     protected final LogoutResponse buildLogoutResponse(final SAML2MessageContext context,
                                                       final SingleLogoutService ssoService) {
 
-        final SAMLObjectBuilder<LogoutResponse> builder = (SAMLObjectBuilder<LogoutResponse>) this.builderFactory
+        final var builder = (SAMLObjectBuilder<LogoutResponse>) this.builderFactory
             .getBuilder(LogoutResponse.DEFAULT_ELEMENT_NAME);
-        final LogoutResponse response = builder.buildObject();
+        final var response = builder.buildObject();
 
-        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
+        final var selfContext = context.getSAMLSelfEntityContext();
 
         response.setID(SAML2Utils.generateID());
         response.setIssuer(getIssuer(selfContext.getEntityId()));
@@ -58,7 +58,7 @@ public class SAML2LogoutResponseBuilder {
         response.setVersion(SAMLVersion.VERSION_20);
         response.setDestination(ssoService.getLocation());
         response.setStatus(getSuccess());
-        final SAMLObject originalMessage = (SAMLObject) context.getMessageContext().getMessage();
+        final var originalMessage = (SAMLObject) context.getMessageContext().getMessage();
         if (originalMessage instanceof RequestAbstractTypeImpl) {
             response.setInResponseTo(((RequestAbstractTypeImpl) originalMessage).getID());
         }
@@ -67,10 +67,10 @@ public class SAML2LogoutResponseBuilder {
     }
 
     protected Status getSuccess() {
-        final SAMLObjectBuilder<Status> statusBuilder = (SAMLObjectBuilder<Status>) this.builderFactory
+        final var statusBuilder = (SAMLObjectBuilder<Status>) this.builderFactory
             .getBuilder(Status.DEFAULT_ELEMENT_NAME);
-        final Status status = statusBuilder.buildObject();
-        final StatusCode statusCode = new StatusCodeBuilder().buildObject();
+        final var status = statusBuilder.buildObject();
+        final var statusCode = new StatusCodeBuilder().buildObject();
         statusCode.setValue(StatusCode.SUCCESS);
         status.setStatusCode(statusCode);
         return status;
@@ -78,9 +78,9 @@ public class SAML2LogoutResponseBuilder {
 
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {
-        final SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
+        final var issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
                 .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
-        final Issuer issuer = issuerBuilder.buildObject();
+        final var issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         return issuer;
     }

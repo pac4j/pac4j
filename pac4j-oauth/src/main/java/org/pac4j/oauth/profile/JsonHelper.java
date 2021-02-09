@@ -48,7 +48,7 @@ public final class JsonHelper {
      */
     public static JsonNode getFirstNode(final String text, final String path) {
         try {
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            var node = mapper.readValue(text, JsonNode.class);
             if (path != null) {
                 node = (JsonNode) getElement(node, path);
             }
@@ -68,8 +68,8 @@ public final class JsonHelper {
      */
     public static Object getElement(final JsonNode json, final String name) {
         if (json != null && name != null) {
-            JsonNode node = json;
-            for (String nodeName : name.split("\\.")) {
+            var node = json;
+            for (var nodeName : name.split("\\.")) {
                 if (node != null) {
                     if (nodeName.matches("\\d+")) {
                         node = node.get(Integer.parseInt(nodeName));

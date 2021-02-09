@@ -46,7 +46,7 @@ public final class LdapServer implements TestsConstants {
     }
 
     protected void startServer() throws LDAPException, LDIFException {
-        final InMemoryDirectoryServerConfig dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
+        final var dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
         dsConfig.setSchema(null);
         dsConfig.setEnforceAttributeSyntaxCompliance(false);
         dsConfig.setEnforceSingleStructuralObjectClass(false);

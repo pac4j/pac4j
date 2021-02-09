@@ -57,7 +57,7 @@ public class RunIdentityServer4 extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OidcConfiguration configuration = new OidcConfiguration();
+        final var configuration = new OidcConfiguration();
         configuration.setClientId("test");
         configuration.setSecret("secret");
         configuration.setDiscoveryURI("http://localhost:1941/.well-known/openid-configuration");
@@ -81,14 +81,14 @@ public class RunIdentityServer4 extends RunClient {
         } else if (flow != Flow.AUTHORIZATION_CODE) {
             throw new TechnicalException("Unsupported flow for tests");
         }
-        final OidcClient client = new OidcClient(configuration);
+        final var client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final OidcProfile profile = (OidcProfile) userProfile;
+        final var profile = (OidcProfile) userProfile;
         assertEquals("818727", profile.getId());
         assertNotNull(profile.getIdToken());
         assertEquals("test", profile.getAudience().get(0));

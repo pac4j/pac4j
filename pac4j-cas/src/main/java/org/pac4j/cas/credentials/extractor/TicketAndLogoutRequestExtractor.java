@@ -46,21 +46,21 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final LogoutHandler logoutHandler = configuration.findLogoutHandler();
+        final var logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
-            final String ticket = getArtifactParameter(context).get();
+            final var ticket = getArtifactParameter(context).get();
             logoutHandler.recordSession(context, sessionStore, ticket);
-            final TokenCredentials casCredentials = new TokenCredentials(ticket);
+            final var casCredentials = new TokenCredentials(ticket);
             logger.debug("casCredentials: {}", casCredentials);
             return Optional.of(casCredentials);
 
         } else if (isBackLogoutRequest(context)) {
-            final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
+            final var logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
             logger.trace("Logout request:\n{}", logoutMessage);
 
-            final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
+            final var ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonUtils.isNotBlank(ticket)) {
                 logoutHandler.destroySessionBack(context, sessionStore, ticket);
             }
@@ -68,11 +68,11 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             throw NoContentAction.INSTANCE;
 
         } else if (isFrontLogoutRequest(context)) {
-            final String logoutMessage = uncompressLogoutMessage(
+            final var logoutMessage = uncompressLogoutMessage(
                 context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get());
             logger.trace("Logout request:\n{}", logoutMessage);
 
-            final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
+            final var ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonUtils.isNotBlank(ticket)) {
                 logoutHandler.destroySessionFront(context, sessionStore, ticket);
             }
@@ -89,7 +89,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
 
     protected Optional<String> getArtifactParameter(final WebContext context) {
         if (configuration.getProtocol() == CasProtocol.SAML) {
-            final Optional<String> optValue = context.getRequestParameter(Protocol.SAML11.getArtifactParameterName());
+            final var optValue = context.getRequestParameter(Protocol.SAML11.getArtifactParameterName());
             if (optValue.isPresent()) {
                 return optValue;
             }
@@ -104,7 +104,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     protected boolean isMultipartRequest(final WebContext context) {
-        final Optional<String> contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
+        final var contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
         return contentType.isPresent() && contentType.get().toLowerCase().startsWith("multipart");
     }
 
@@ -114,16 +114,16 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     protected String uncompressLogoutMessage(final String originalMessage) {
-        final byte[] binaryMessage = Base64.getMimeDecoder().decode(originalMessage);
+        final var binaryMessage = Base64.getMimeDecoder().decode(originalMessage);
 
         Inflater decompresser = null;
         try {
             // decompress the bytes
             decompresser = new Inflater();
             decompresser.setInput(binaryMessage);
-            final byte[] result = new byte[binaryMessage.length * DECOMPRESSION_FACTOR];
+            final var result = new byte[binaryMessage.length * DECOMPRESSION_FACTOR];
 
-            final int resultLength = decompresser.inflate(result);
+            final var resultLength = decompresser.inflate(result);
 
             // decode the bytes into a String
             return new String(result, 0, resultLength, "UTF-8");
@@ -138,10 +138,10 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     protected void throwFinalActionForFrontChannelLogout(final WebContext context) {
-        final Optional<String> relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
+        final var relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (relayStateValue.isPresent()) {
-            final StringBuilder buffer = new StringBuilder();
+            final var buffer = new StringBuilder();
             buffer.append(configuration.getPrefixUrl());
             if (!configuration.getPrefixUrl().endsWith("/")) {
                 buffer.append("/");
@@ -150,7 +150,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             buffer.append(CasConfiguration.RELAY_STATE_PARAMETER);
             buffer.append("=");
             buffer.append(CommonUtils.urlEncode(relayStateValue.get()));
-            final String redirectUrl = buffer.toString();
+            final var redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
             throw HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
         } else {

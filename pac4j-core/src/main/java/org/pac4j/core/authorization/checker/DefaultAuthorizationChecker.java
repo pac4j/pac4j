@@ -35,7 +35,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles,
                                 final String authorizersValue, final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
 
-        final List<Authorizer> authorizers = computeAuthorizers(context, profiles, authorizersValue, authorizersMap, clients);
+        final var authorizers = computeAuthorizers(context, profiles, authorizersValue, authorizersMap, clients);
         return isAuthorized(context, sessionStore, profiles, authorizers);
     }
 
@@ -46,7 +46,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
         } else {
             if (authorizersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
-                final String authorizerNames = substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
+                final var authorizerNames = substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
                 authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
                 authorizers.addAll(computeAuthorizersFromNames(authorizerNames, authorizersMap));
             } else {
@@ -71,12 +71,12 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     protected List<Authorizer> computeAuthorizersFromNames(final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
         assertNotNull("authorizersMap", authorizersMap);
         final List<Authorizer> authorizers = new ArrayList<>();
-        final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
-        final int nb = names.length;
-        for (int i = 0; i < nb; i++) {
-            final String name = names[i].trim();
+        final var names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
+        final var nb = names.length;
+        for (var i = 0; i < nb; i++) {
+            final var name = names[i].trim();
             if (!DefaultAuthorizers.NONE.equalsIgnoreCase(name)){
-                final Authorizer result = retrieveAuthorizer(name, authorizersMap);
+                final var result = retrieveAuthorizer(name, authorizersMap);
                 // we must have an authorizer defined for this name
                 assertTrue(result != null, "The authorizer '" + name + "' must be defined in the security configuration");
                 authorizers.add(result);
@@ -87,7 +87,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
     protected Authorizer retrieveAuthorizer(final String authorizerName, final Map<String, Authorizer> authorizersMap) {
         Authorizer authorizer = null;
-        for (final Map.Entry<String, Authorizer> entry : authorizersMap.entrySet()) {
+        for (final var entry : authorizersMap.entrySet()) {
             if (areEqualsIgnoreCaseAndTrim(entry.getKey(), authorizerName)) {
                 authorizer = entry.getValue();
                 break;
@@ -110,7 +110,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     protected boolean containsClientType(final List<Client> clients, final Class<? extends Client> clazz) {
-        for (final Client client : clients) {
+        for (final var client : clients) {
             if (clazz.isAssignableFrom(client.getClass())) {
                 return true;
             }
@@ -124,8 +124,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {
             // check authorizations using authorizers: all must be satisfied
-            for (Authorizer authorizer : authorizers) {
-                final boolean isAuthorized = authorizer.isAuthorized(context, sessionStore, profiles);
+            for (var authorizer : authorizers) {
+                final var isAuthorized = authorizer.isAuthorized(context, sessionStore, profiles);
                 LOGGER.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
                 if (!isAuthorized) {
                     return false;

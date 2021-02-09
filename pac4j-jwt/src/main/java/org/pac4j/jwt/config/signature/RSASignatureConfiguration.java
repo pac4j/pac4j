@@ -60,7 +60,7 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
 
         try {
             final JWSSigner signer = new RSASSASigner(this.privateKey);
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            final var signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
         } catch (final JOSEException e) {
@@ -100,7 +100,7 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
     }
 
     public void setKeysFromJwk(final String json) {
-        final KeyPair pair = JWKHelper.buildRSAKeyPairFromJwk(json);
+        final var pair = JWKHelper.buildRSAKeyPairFromJwk(json);
         this.publicKey = (RSAPublicKey) pair.getPublic();
         this.privateKey = (RSAPrivateKey) pair.getPrivate();
     }

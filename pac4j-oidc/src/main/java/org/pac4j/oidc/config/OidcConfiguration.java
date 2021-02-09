@@ -273,7 +273,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             if (getProviderMetadata() == null) {
                 return null;
             }
-            List<CodeChallengeMethod> methods = getProviderMetadata().getCodeChallengeMethods();
+            var methods = getProviderMetadata().getCodeChallengeMethods();
             if (methods == null || methods.isEmpty()) {
                 return null;
             }

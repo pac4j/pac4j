@@ -83,10 +83,10 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public QQProfile extractUserProfile(String body) {
-        final QQProfile profile = new QQProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = new QQProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }
@@ -97,14 +97,14 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
     }
 
     public String extractOpenid(String body) {
-        String openid = extractParameter(body, OPENID_REGEX, true);
+        var openid = extractParameter(body, OPENID_REGEX, true);
         return openid;
     }
 
     protected static String extractParameter(String response, Pattern regexPattern,
                                              boolean required)
         throws OAuthException {
-        final Matcher matcher = regexPattern.matcher(response);
+        final var matcher = regexPattern.matcher(response);
         if (matcher.find()) {
             return matcher.group(1);
         }

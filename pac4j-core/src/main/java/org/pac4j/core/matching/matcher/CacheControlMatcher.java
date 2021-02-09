@@ -14,7 +14,7 @@ public class CacheControlMatcher implements Matcher {
 
     @Override
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
-        final String url = context.getFullRequestURL().toLowerCase();
+        final var url = context.getFullRequestURL().toLowerCase();
         if (!url.endsWith(".css")
                 && !url.endsWith(".js")
                 && !url.endsWith(".png")

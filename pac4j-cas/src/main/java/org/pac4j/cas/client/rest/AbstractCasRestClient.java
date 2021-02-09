@@ -38,10 +38,10 @@ public abstract class AbstractCasRestClient extends DirectClient {
     public void destroyTicketGrantingTicket(final CasRestProfile profile, final WebContext context) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = new URL(configuration.computeFinalRestUrl(context));
-            final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
+            final var endpointURL = new URL(configuration.computeFinalRestUrl(context));
+            final var deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
             connection = HttpUtils.openDeleteConnection(deleteURL);
-            final int responseCode = connection.getResponseCode();
+            final var responseCode = connection.getResponseCode();
             if (responseCode != HttpConstants.OK) {
                 throw new TechnicalException("TGT delete request for `" + profile + "` failed: " +
                         HttpUtils.buildHttpErrorMessage(connection));
@@ -56,19 +56,19 @@ public abstract class AbstractCasRestClient extends DirectClient {
     public TokenCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile, final WebContext context) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = new URL(configuration.computeFinalRestUrl(context));
-            final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
+            final var endpointURL = new URL(configuration.computeFinalRestUrl(context));
+            final var ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
 
             connection = HttpUtils.openPostConnection(ticketURL);
-            final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
+            final var payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
+            final var out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
             out.write(payload);
             out.close();
 
-            final int responseCode = connection.getResponseCode();
+            final var responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+                try (var in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     return new TokenCredentials(in.readLine());
                 }
             }
@@ -83,9 +83,9 @@ public abstract class AbstractCasRestClient extends DirectClient {
 
     public CasProfile validateServiceTicket(final String serviceURL, final TokenCredentials ticket, final WebContext context) {
         try {
-            final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket.getToken(), serviceURL);
-            final AttributePrincipal principal = assertion.getPrincipal();
-            final CasProfile casProfile = new CasProfile();
+            final var assertion = configuration.retrieveTicketValidator(context).validate(ticket.getToken(), serviceURL);
+            final var principal = assertion.getPrincipal();
+            final var casProfile = new CasProfile();
             casProfile.setId(ProfileHelper.sanitizeIdentifier(principal.getName()));
             casProfile.addAttributes(principal.getAttributes());
             return casProfile;

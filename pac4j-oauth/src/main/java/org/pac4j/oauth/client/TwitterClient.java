@@ -43,7 +43,7 @@ public class TwitterClient extends OAuth10Client {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition(includeEmail));
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final Optional<String> denied = ctx.getRequestParameter("denied");
+            final var denied = ctx.getRequestParameter("denied");
             if (denied.isPresent()) {
                 return true;
             } else {

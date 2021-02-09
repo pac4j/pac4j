@@ -41,17 +41,17 @@ class SpnegoServiceTicketHelper {
 
         @Override
         public byte[] run() throws GSSException {
-            GSSManager gssManager = GSSManager.getInstance();
+            var gssManager = GSSManager.getInstance();
 
-            GSSName gssService = gssManager.createName(serviceName, GSSName.NT_HOSTBASED_SERVICE);
-            Oid oid = new Oid(JGSS_KERBEROS_TICKET_OID);
-            GSSName gssClient = gssManager.createName(clientPrincipal.getName(), GSSName.NT_USER_NAME);
-            GSSCredential credentials =
+            var gssService = gssManager.createName(serviceName, GSSName.NT_HOSTBASED_SERVICE);
+            var oid = new Oid(JGSS_KERBEROS_TICKET_OID);
+            var gssClient = gssManager.createName(clientPrincipal.getName(), GSSName.NT_USER_NAME);
+            var credentials =
                 gssManager.createCredential(
                     gssClient, GSSCredential.DEFAULT_LIFETIME, oid, GSSCredential.INITIATE_ONLY
                 );
 
-            GSSContext secContext =
+            var secContext =
                 gssManager.createContext(
                     gssService, oid, credentials, GSSContext.DEFAULT_LIFETIME
                 );
@@ -59,8 +59,8 @@ class SpnegoServiceTicketHelper {
             secContext.requestMutualAuth(false);
             secContext.requestCredDeleg(false);
 
-            byte[] token = new byte[0];
-            byte[] returnedToken = secContext.initSecContext(token, 0, token.length);
+            var token = new byte[0];
+            var returnedToken = secContext.initSecContext(token, 0, token.length);
 
             secContext.dispose();
 
@@ -69,21 +69,21 @@ class SpnegoServiceTicketHelper {
     }
 
     public static String getGSSTicket(String clientPrincipal, String clientPassword, String serviceName) throws Exception {
-        Subject clientSubject = JaasKrbUtil.loginUsingPassword(clientPrincipal, clientPassword);
+        var clientSubject = JaasKrbUtil.loginUsingPassword(clientPrincipal, clientPassword);
 
-        Set<Principal> clientPrincipals = clientSubject.getPrincipals();
+        var clientPrincipals = clientSubject.getPrincipals();
         assertFalse(clientPrincipals.isEmpty());
 
         // Get the TGT
-        Set<KerberosTicket> privateCredentials = clientSubject.getPrivateCredentials(KerberosTicket.class);
+        var privateCredentials = clientSubject.getPrivateCredentials(KerberosTicket.class);
         assertFalse(privateCredentials.isEmpty());
-        KerberosTicket tgt = privateCredentials.iterator().next();
+        var tgt = privateCredentials.iterator().next();
         assertNotNull(tgt);
 
         // Get the service ticket
-        KerberosClientExceptionAction action =
+        var action =
             new KerberosClientExceptionAction(clientPrincipals.iterator().next(), serviceName);
-        byte[] ticketBytes = Subject.doAs(clientSubject, action);
+        var ticketBytes = Subject.doAs(clientSubject, action);
         assertNotNull(ticketBytes);
 
         return new String(Base64.getEncoder().encode(ticketBytes), StandardCharsets.UTF_8);

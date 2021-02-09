@@ -50,7 +50,7 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
         CommonHelper.assertNotNull("clientName", clientName);
 
         SAML2Client client;
-        final Optional<Client> result = getSharedConfig().getClients().findClient(this.clientName);
+        final var result = getSharedConfig().getClients().findClient(this.clientName);
         if (result.isPresent()) {
             client = (SAML2Client) result.get();
         } else {

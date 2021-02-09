@@ -195,9 +195,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      */
     @Override
     protected void doDecode() throws MessageDecodingException {
-        final MessageContext messageContext = new MessageContext();
+        final var messageContext = new MessageContext();
 
-        final String relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
+        final var relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
         log.debug("Decoded SAML relay state of: {}", relayState);
         SAMLBindingSupport.setRelayState(messageContext, relayState);
 
@@ -513,23 +513,23 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     private void processArtifact(final MessageContext messageContext, final WebContext webContext)
         throws MessageDecodingException {
 
-        final String encodedArtifact = StringSupport.trimOrNull(webContext.getRequestParameter("SAMLart").orElse(null));
+        final var encodedArtifact = StringSupport.trimOrNull(webContext.getRequestParameter("SAMLart").orElse(null));
         if (encodedArtifact == null) {
             log.error("URL SAMLart parameter was missing or did not contain a value.");
             throw new MessageDecodingException("URL SAMLart parameter was missing or did not contain a value.");
         }
 
         try {
-            final SAML2Artifact artifact = parseArtifact(encodedArtifact);
+            final var artifact = parseArtifact(encodedArtifact);
 
-            final RoleDescriptor peerRoleDescriptor = resolvePeerRoleDescriptor(artifact);
+            final var peerRoleDescriptor = resolvePeerRoleDescriptor(artifact);
             if (peerRoleDescriptor == null) {
                 throw new MessageDecodingException("Failed to resolve peer RoleDescriptor based on inbound artifact");
             }
 
-            final ArtifactResolutionService ars = resolveArtifactEndpoint(artifact, peerRoleDescriptor);
+            final var ars = resolveArtifactEndpoint(artifact, peerRoleDescriptor);
 
-            final SAMLObject inboundMessage = dereferenceArtifact(artifact, peerRoleDescriptor, ars);
+            final var inboundMessage = dereferenceArtifact(artifact, peerRoleDescriptor, ars);
 
             messageContext.setMessage(inboundMessage);
         } catch (final MessageDecodingException e) {
@@ -555,10 +555,10 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         throws MessageDecodingException {
 
         try {
-            final String selfEntityID = resolveSelfEntityID(peerRoleDescriptor);
+            final var selfEntityID = resolveSelfEntityID(peerRoleDescriptor);
 
             // TODO can assume/enforce response as ArtifactResponse here?
-            final InOutOperationContext opContext = new SAMLSOAPClientContextBuilder()
+            final var opContext = new SAMLSOAPClientContextBuilder()
                 .setOutboundMessage(buildArtifactResolveRequestMessage(
                     artifact, ars.getLocation(), selfEntityID))
                 .setProtocol(SAMLConstants.SAML20P_NS)
@@ -570,7 +570,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
             log.trace("Executing ArtifactResolve over SOAP 1.1 binding to endpoint: {}", ars.getLocation());
             soapClient.send(ars.getLocation(), opContext);
-            final SAMLObject response = (SAMLObject) opContext.getInboundMessageContext().getMessage();
+            final var response = (SAMLObject) opContext.getInboundMessageContext().getMessage();
             if (response instanceof ArtifactResponse) {
                 return validateAndExtractResponseMessage((ArtifactResponse) response);
             } else {
@@ -623,10 +623,10 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
                                                                @Nonnull final String endpoint,
                                                                @Nonnull final String selfEntityID) {
 
-        final ArtifactResolve request =
+        final var request =
             (ArtifactResolve) XMLObjectSupport.buildXMLObject(ArtifactResolve.DEFAULT_ELEMENT_NAME);
 
-        final Artifact requestArtifact = (Artifact) XMLObjectSupport.buildXMLObject(Artifact.DEFAULT_ELEMENT_NAME);
+        final var requestArtifact = (Artifact) XMLObjectSupport.buildXMLObject(Artifact.DEFAULT_ELEMENT_NAME);
         try {
             requestArtifact.setValue(Base64Support.encode(artifact.getArtifactBytes(), false));
         } catch (final Exception e) {
@@ -654,9 +654,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     private String resolveSelfEntityID(@Nonnull final RoleDescriptor peerRoleDescriptor)
         throws MessageDecodingException {
 
-        final CriteriaSet criteria = new CriteriaSet(new RoleDescriptorCriterion(peerRoleDescriptor));
+        final var criteria = new CriteriaSet(new RoleDescriptorCriterion(peerRoleDescriptor));
         try {
-            final String selfEntityID = getSelfEntityIDResolver().resolveSingle(criteria);
+            final var selfEntityID = getSelfEntityIDResolver().resolveSingle(criteria);
             if (selfEntityID == null) {
                 throw new MessageDecodingException("Unable to resolve self entityID from peer RoleDescriptor");
             } else {
@@ -675,7 +675,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      */
     @Nonnull
     private Issuer buildIssuer(@Nonnull final String selfEntityID) {
-        final Issuer issuer = (Issuer) XMLObjectSupport.buildXMLObject(Issuer.DEFAULT_ELEMENT_NAME);
+        final var issuer = (Issuer) XMLObjectSupport.buildXMLObject(Issuer.DEFAULT_ELEMENT_NAME);
         issuer.setValue(selfEntityID);
         return issuer;
     }
@@ -694,9 +694,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
                                                               @Nonnull final RoleDescriptor peerRoleDescriptor)
         throws MessageDecodingException {
 
-        final RoleDescriptorCriterion roleDescriptorCriterion = new RoleDescriptorCriterion(peerRoleDescriptor);
+        final var roleDescriptorCriterion = new RoleDescriptorCriterion(peerRoleDescriptor);
 
-        final ArtifactResolutionService arsTemplate =
+        final var arsTemplate =
             (ArtifactResolutionService) XMLObjectSupport.buildXMLObject(
                 ArtifactResolutionService.DEFAULT_ELEMENT_NAME);
 
@@ -709,13 +709,13 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         final Integer endpointIndex = SAMLBindingSupport.convertSAML2ArtifactEndpointIndex(artifact.getEndpointIndex());
         arsTemplate.setIndex(endpointIndex);
 
-        final EndpointCriterion<ArtifactResolutionService> endpointCriterion =
-            new EndpointCriterion<>(arsTemplate, false);
+        final var endpointCriterion =
+            new EndpointCriterion<ArtifactResolutionService>(arsTemplate, false);
 
-        final CriteriaSet criteriaSet = new CriteriaSet(roleDescriptorCriterion, endpointCriterion);
+        final var criteriaSet = new CriteriaSet(roleDescriptorCriterion, endpointCriterion);
 
         try {
-            final ArtifactResolutionService ars = artifactEndpointResolver.resolveSingle(criteriaSet);
+            final var ars = artifactEndpointResolver.resolveSingle(criteriaSet);
             if (ars != null) {
                 return ars;
             } else {
@@ -738,12 +738,12 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     private RoleDescriptor resolvePeerRoleDescriptor(@Nonnull final SAML2Artifact artifact)
         throws MessageDecodingException {
 
-        final CriteriaSet criteriaSet = new CriteriaSet(
+        final var criteriaSet = new CriteriaSet(
             new ArtifactCriterion(artifact),
             new ProtocolCriterion(SAMLConstants.SAML20P_NS),
             new EntityRoleCriterion(getPeerEntityRole()));
         try {
-            final RoleDescriptor rd = roleDescriptorResolver.resolveSingle(criteriaSet);
+            final var rd = roleDescriptorResolver.resolveSingle(criteriaSet);
             if (rd == null) {
                 throw new MessageDecodingException("Unable to resolve peer RoleDescriptor from supplied artifact");
             }
@@ -766,7 +766,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         //TODO not sure if this handles well bad input.  Determine if can throw an unchecked and handle here.
         try {
-            final SAML2Artifact artifact = artifactBuilderFactory.buildArtifact(encodedArtifact);
+            final var artifact = artifactBuilderFactory.buildArtifact(encodedArtifact);
             if (artifact == null) {
                 throw new MessageDecodingException("Could not build SAML2Artifact instance from encoded artifact");
             }
@@ -782,7 +782,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      * @param messageContext the current message context
      */
     protected void populateBindingContext(final MessageContext messageContext) {
-        final SAMLBindingContext bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
+        final var bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
         bindingContext.setBindingUri(getBindingURI());
         bindingContext.setBindingDescriptor(bindingDescriptor);
         bindingContext.setHasBindingSignature(false);
@@ -794,14 +794,14 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      */
     protected void logDecodedMessage() {
         if (protocolMessageLog.isDebugEnabled()) {
-            final XMLObject message = getMessageToLog();
+            final var message = getMessageToLog();
             if (message == null) {
                 log.warn("Decoded message was null, nothing to log");
                 return;
             }
 
             try {
-                final Element dom = XMLObjectSupport.marshall(message);
+                final var dom = XMLObjectSupport.marshall(message);
                 protocolMessageLog.debug("\n" + SerializeSupport.prettyPrintXML(dom));
             } catch (final MarshallingException e) {
                 log.error("Unable to marshall message for logging purposes", e);

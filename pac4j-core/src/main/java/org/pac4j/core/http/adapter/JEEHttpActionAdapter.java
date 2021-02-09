@@ -24,8 +24,8 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
     @Override
     public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {
-            int code = action.getCode();
-            final HttpServletResponse response = ((JEEContext) context).getNativeResponse();
+            var code = action.getCode();
+            final var response = ((JEEContext) context).getNativeResponse();
 
             if (code < 400) {
                 response.setStatus(code);
@@ -38,12 +38,12 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
             }
 
             if (action instanceof WithLocationAction) {
-                final WithLocationAction withLocationAction = (WithLocationAction) action;
+                final var withLocationAction = (WithLocationAction) action;
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, withLocationAction.getLocation());
 
             } else if (action instanceof WithContentAction) {
-                final WithContentAction withContentAction = (WithContentAction) action;
-                final String content = withContentAction.getContent();
+                final var withContentAction = (WithContentAction) action;
+                final var content = withContentAction.getContent();
 
                 if (content != null) {
                     try {

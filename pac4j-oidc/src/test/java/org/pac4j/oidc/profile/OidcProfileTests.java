@@ -44,7 +44,7 @@ public final class OidcProfileTests implements TestsConstants {
 
     @Test
     public void testRemoveLoginData() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken());
         profile.setIdTokenString(ID);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
@@ -55,12 +55,12 @@ public final class OidcProfileTests implements TestsConstants {
 
     @Test
     public void testReadWriteObject() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setIdTokenString(ID_TOKEN);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
 
-        byte[] result = serializer.serializeToBytes(profile);
+        var result = serializer.serializeToBytes(profile);
         profile = (OidcProfile) serializer.deserializeFromBytes(result);
 
         assertNotNull("accessToken", profile.getAccessToken());
@@ -76,10 +76,10 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testReadWriteObjectNullAccessToken() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         profile.setIdTokenString(ID_TOKEN);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        byte[] result = serializer.serializeToBytes(profile);
+        var result = serializer.serializeToBytes(profile);
         profile = (OidcProfile) serializer.deserializeFromBytes(result);
         assertNull(profile.getAccessToken());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);
@@ -91,10 +91,10 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testReadWriteObjectNullIdToken() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        byte[] result = serializer.serializeToBytes(profile);
+        var result = serializer.serializeToBytes(profile);
         profile = (OidcProfile) serializer.deserializeFromBytes(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
@@ -109,10 +109,10 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testReadWriteObjectNullRefreshToken() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setIdTokenString(ID_TOKEN);
-        byte[] result = serializer.serializeToBytes(profile);
+        var result = serializer.serializeToBytes(profile);
         profile = (OidcProfile) serializer.deserializeFromBytes(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
@@ -128,11 +128,11 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testReadWriteObjectNullTokens() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.removeLoginData();
 
-        byte[] result = serializer.serializeToBytes(profile);
+        var result = serializer.serializeToBytes(profile);
         profile = (OidcProfile) serializer.deserializeFromBytes(result);
         assertNull(profile.getAccessToken());
         assertNull(profile.getIdTokenString());
@@ -144,7 +144,7 @@ public final class OidcProfileTests implements TestsConstants {
      */
     @Test
     public void testNullTokenExpiration() {
-        OidcProfile profile = new OidcProfile();
+        var profile = new OidcProfile();
         assertFalse(profile.isExpired());
     }
 
@@ -154,7 +154,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testNoExpirationWithNoExpiredToken() {
         final AccessToken token = new BearerAccessToken("token_value", 3600, new Scope("scope"));
-        final OidcProfile profile = new OidcProfile();
+        final var profile = new OidcProfile();
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(0);
         assertFalse(profile.isExpired());
@@ -166,7 +166,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testExpirationWithExpiredToken() {
         final AccessToken token = new BearerAccessToken("token_value", -1, new Scope("scope"));
-        final OidcProfile profile = new OidcProfile();
+        final var profile = new OidcProfile();
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(0);
         assertTrue(profile.isExpired());
@@ -179,7 +179,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testAdvancedExpirationWithNoExpiredToken() {
         final AccessToken token = new BearerAccessToken("token_value", 3600, new Scope("scope"));
-        final OidcProfile profile = new OidcProfile();
+        final var profile = new OidcProfile();
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(3600); // 1 hour
         assertTrue(profile.isExpired());
@@ -191,12 +191,12 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testAccessTokenExpiration(){
 
-        final OidcProfile profile = new OidcProfile();
+        final var profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken(ID_TOKEN));
 
         assertTrue(profile.isExpired());
 
-        JWTClaimsSet cs = new JWTClaimsSet.Builder().expirationTime(Date.from(Instant.now().plusSeconds(30))).build();
+        var cs = new JWTClaimsSet.Builder().expirationTime(Date.from(Instant.now().plusSeconds(30))).build();
 
         profile.setAccessToken(new BearerAccessToken(new PlainJWT(cs).serialize()));
 

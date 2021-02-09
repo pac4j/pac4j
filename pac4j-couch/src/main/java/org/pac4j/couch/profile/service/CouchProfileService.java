@@ -81,9 +81,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final String id = (String) attributes.get(COUCH_ID);
+        final var id = (String) attributes.get(COUCH_ID);
         try {
-            final InputStream oldDocStream = couchDbConnector.getAsStream(id);
+            final var oldDocStream = couchDbConnector.getAsStream(id);
             final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
             res.putAll(attributes);
             couchDbConnector.update(res);
@@ -100,9 +100,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     protected void deleteById(final String id) {
         logger.debug("Delete id: {}", id);
         try {
-            final InputStream oldDocStream = couchDbConnector.getAsStream(id);
-            final JsonNode oldDoc = objectMapper.readTree(oldDocStream);
-            final String rev = oldDoc.get("_rev").asText();
+            final var oldDocStream = couchDbConnector.getAsStream(id);
+            final var oldDoc = objectMapper.readTree(oldDocStream);
+            final var rev = oldDoc.get("_rev").asText();
             couchDbConnector.delete(id, rev);
         } catch (DocumentNotFoundException e) {
             logger.debug("id {} is not in the database", id);
@@ -113,8 +113,8 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final List<String> names) {
         final Map<String, Object> newAttributes = new HashMap<>();
-        for (final Map.Entry<String, Object> entry : rowAttributes.entrySet()) {
-            final String name = entry.getKey();
+        for (final var entry : rowAttributes.entrySet()) {
+            final var name = entry.getKey();
             if (names == null || names.contains(name)) {
                 newAttributes.put(name, entry.getValue());
             }
@@ -128,7 +128,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         final List<Map<String, Object>> listAttributes = new ArrayList<>();
         if (key.equals(COUCH_ID)) {
             try {
-                final InputStream oldDocStream = couchDbConnector.getAsStream(value);
+                final var oldDocStream = couchDbConnector.getAsStream(value);
                 final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
                 listAttributes.add(populateAttributes(res, names));
             } catch (DocumentNotFoundException e) {
@@ -139,13 +139,13 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         }
         else {
             // supposes a by_$key view in the design document, see documentation
-            final ViewQuery query = new ViewQuery()
+            final var query = new ViewQuery()
                     .designDocId("_design/pac4j")
                     .viewName("by_"+key)
                     .key(value);
-            final ViewResult result = couchDbConnector.queryView(query);
-            for (ViewResult.Row row : result.getRows()) {
-                final String stringValue = row.getValue();
+            final var result = couchDbConnector.queryView(query);
+            for (var row : result.getRows()) {
+                final var stringValue = row.getValue();
                 Map<String, Object> res = null;
                 try {
                     res = objectMapper.readValue(stringValue, typeRef);

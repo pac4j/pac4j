@@ -38,7 +38,7 @@ public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<
             return true;
         }
 
-        final Object attributeValues = profile.getAttribute(element);
+        final var attributeValues = profile.getAttribute(element);
         if (attributeValues instanceof Collection) {
             return Collection.class.cast(attributeValues)
                     .stream()

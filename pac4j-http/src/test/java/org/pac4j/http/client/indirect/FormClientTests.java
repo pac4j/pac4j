@@ -28,7 +28,7 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, null);
+        final var formClient = new FormClient(LOGIN_URL, null);
         formClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
@@ -36,7 +36,7 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testMissingProfileCreator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        final var formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         formClient.setCallbackUrl(CALLBACK_URL);
         formClient.setProfileCreator(null);
         TestsHelper.expectException(() -> formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
@@ -45,37 +45,37 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        final var formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         formClient.setCallbackUrl(CALLBACK_URL);
         formClient.init();
     }
 
     @Test
     public void testMissingLoginUrl() {
-        final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator());
+        final var formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator());
         formClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(formClient, "loginUrl cannot be blank");
     }
 
     private FormClient getFormClient() {
-        final FormClient client = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        final var client = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         client.setCallbackUrl(CALLBACK_URL);
         return client;
     }
 
     @Test
     public void testRedirectionUrl() {
-        final FormClient formClient = getFormClient();
-        MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) formClient.getRedirectionAction(context, new MockSessionStore()).get();
+        final var formClient = getFormClient();
+        var context = MockWebContext.create();
+        final var action = (FoundAction) formClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertEquals(LOGIN_URL, action.getLocation());
     }
 
     @Test
     public void testGetCredentialsMissingUsername() {
-        final FormClient formClient = getFormClient();
-        final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) TestsHelper.expectException(
+        final var formClient = getFormClient();
+        final var context = MockWebContext.create();
+        final var action = (FoundAction) TestsHelper.expectException(
             () -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME),
                 new MockSessionStore()));
         assertEquals(302, action.getCode());
@@ -85,9 +85,9 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsMissingPassword() {
-        final FormClient formClient = getFormClient();
-        final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) TestsHelper.expectException(
+        final var formClient = getFormClient();
+        final var context = MockWebContext.create();
+        final var action = (FoundAction) TestsHelper.expectException(
             () -> formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD),
                 new MockSessionStore()));
         assertEquals(302, action.getCode());
@@ -97,9 +97,9 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentials() {
-        final FormClient formClient = getFormClient();
-        final MockWebContext context = MockWebContext.create();
-        final FoundAction action = (FoundAction) TestsHelper.expectException(
+        final var formClient = getFormClient();
+        final var context = MockWebContext.create();
+        final var action = (FoundAction) TestsHelper.expectException(
             () -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
                 .addRequestParameter(formClient.getPasswordParameter(), PASSWORD), new MockSessionStore()));
         assertEquals(302, action.getCode());
@@ -109,8 +109,8 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testGetRightCredentials() {
-        final FormClient formClient = getFormClient();
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) formClient.getCredentials(MockWebContext.create()
+        final var formClient = getFormClient();
+        final var credentials = (UsernamePasswordCredentials) formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
                 .addRequestParameter(formClient.getPasswordParameter(), USERNAME), new MockSessionStore()).get();
         assertEquals(USERNAME, credentials.getUsername());
@@ -119,16 +119,16 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testGetUserProfile() {
-        final FormClient formClient = getFormClient();
+        final var formClient = getFormClient();
         formClient.setProfileCreator((credentials, context, session) -> {
-            String username = ((UsernamePasswordCredentials) credentials).getUsername();
-            final CommonProfile profile = new CommonProfile();
+            var username = ((UsernamePasswordCredentials) credentials).getUsername();
+            final var profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);
             return Optional.of(profile);
         });
-        final MockWebContext context = MockWebContext.create();
-        final CommonProfile profile = (CommonProfile) formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME),
+        final var context = MockWebContext.create();
+        final var profile = (CommonProfile) formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME),
             context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
         assertEquals(CommonProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + USERNAME, profile.getTypedId());

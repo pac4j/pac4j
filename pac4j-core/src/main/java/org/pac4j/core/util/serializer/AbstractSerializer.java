@@ -47,7 +47,7 @@ public abstract class AbstractSerializer implements Serializer {
     }
 
     protected Object internalDeserializeFromString(final String encoded) {
-        final byte[] enc = Base64.getDecoder().decode(encoded);
+        final var enc = Base64.getDecoder().decode(encoded);
         return internalDeserializeFromBytes(enc);
     }
 

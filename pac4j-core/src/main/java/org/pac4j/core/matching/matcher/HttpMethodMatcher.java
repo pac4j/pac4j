@@ -30,9 +30,9 @@ public class HttpMethodMatcher implements Matcher {
     @Override
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("methods", methods);
-        final String requestMethod = context.getRequestMethod();
+        final var requestMethod = context.getRequestMethod();
 
-        for (final HttpConstants.HTTP_METHOD method : methods) {
+        for (final var method : methods) {
             if (method.name().equalsIgnoreCase(requestMethod)) {
                 return true;
             }

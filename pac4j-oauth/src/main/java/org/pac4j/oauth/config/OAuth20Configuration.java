@@ -41,7 +41,7 @@ public class OAuth20Configuration extends OAuthConfiguration {
     public OAuthService buildService(final WebContext context, final IndirectClient client) {
         init();
 
-        final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
+        final var finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
         return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
             this.responseType, null, null, this.httpClientConfig, null);

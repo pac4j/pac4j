@@ -35,7 +35,7 @@ public class UsernamePasswordCredentials extends Credentials {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final UsernamePasswordCredentials that = (UsernamePasswordCredentials) o;
+        final var that = (UsernamePasswordCredentials) o;
 
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
         return !(password != null ? !password.equals(that.password) : that.password != null);
@@ -43,7 +43,7 @@ public class UsernamePasswordCredentials extends Credentials {
 
     @Override
     public int hashCode() {
-        int result = username != null ? username.hashCode() : 0;
+        var result = username != null ? username.hashCode() : 0;
         result = 31 * result + (password != null ? password.hashCode() : 0);
         return result;
     }

@@ -48,7 +48,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     public void setUp() {
         ldapServer = new LdapServer();
         ldapServer.start();
-        final LdapClient client = new LdapClient(ldapServer.getPort());
+        final var client = new LdapClient(ldapServer.getPort());
         authenticator = client.getAuthenticator();
         connectionFactory = client.getConnectionFactory();
     }
@@ -60,58 +60,58 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void testNullAuthenticator() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, null, LdapServer.BASE_PEOPLE_DN);
+        final var ldapProfileService = new LdapProfileService(connectionFactory, null, LdapServer.BASE_PEOPLE_DN);
         TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "ldapAuthenticator cannot be null");
     }
 
     @Test
     public void testNullConnectionFactory() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(null, authenticator, LdapServer.BASE_PEOPLE_DN);
+        final var ldapProfileService = new LdapProfileService(null, authenticator, LdapServer.BASE_PEOPLE_DN);
         TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "connectionFactory cannot be null");
     }
 
     @Test
     public void testBlankUsersDn() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "");
+        final var ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "");
         TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "usersDn cannot be blank");
     }
 
 
     @Test(expected = BadCredentialsException.class)
     public void authentFailed() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
+        final var ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
+        final var credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null, null);
     }
 
     @Test
     public void authentSuccessNoAttribute() {
-        final LdapProfileService ldapProfileService =
+        final var ldapProfileService =
             new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null, null);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
-        final LdapProfile ldapProfile = (LdapProfile) profile;
+        final var ldapProfile = (LdapProfile) profile;
         assertEquals(GOOD_USERNAME, ldapProfile.getId());
         assertEquals(0, ldapProfile.getAttributes().size());
     }
 
     @Test
     public void authentSuccessSingleAttribute() {
-        final LdapProfileService ldapProfileService =
+        final var ldapProfileService =
             new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null, null);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
-        final LdapProfile ldapProfile = (LdapProfile) profile;
+        final var ldapProfile = (LdapProfile) profile;
         assertEquals(GOOD_USERNAME, ldapProfile.getId());
         assertEquals(1, ldapProfile.getAttributes().size());
         assertEquals(FIRSTNAME_VALUE, ldapProfile.getAttribute(LdapServer.SN));
@@ -119,20 +119,20 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void authentSuccessMultiAttribute() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + ","
+        final var ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + ","
             + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD);
+        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD);
         ldapProfileService.validate(credentials, null, null);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
-        final LdapProfile ldapProfile = (LdapProfile) profile;
+        final var ldapProfile = (LdapProfile) profile;
         assertEquals(GOOD_USERNAME2, ldapProfile.getId());
         assertEquals(1, ldapProfile.getAttributes().size());
         assertNull(ldapProfile.getAttribute(LdapServer.SN));
-        final Collection<String> attributes = (Collection<String>) ldapProfile.getAttribute(LdapServer.ROLE);
+        final var attributes = (Collection<String>) ldapProfile.getAttribute(LdapServer.ROLE);
         assertEquals(2, attributes.size());
         assertTrue(attributes.contains(LdapServer.ROLE1));
         assertTrue(attributes.contains(LdapServer.ROLE2));
@@ -140,32 +140,32 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void testCreateUpdateFindDelete() {
-        final LdapProfile profile = new LdapProfile();
+        final var profile = new LdapProfile();
         profile.setId(LDAP_ID);
         profile.setLinkedId(LDAP_LINKED_ID);
         profile.addAttribute(USERNAME, LDAP_USER);
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
+        final var ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setIdAttribute(LdapServer.CN);
         ldapProfileService.setUsernameAttribute(LdapServer.SN);
         ldapProfileService.setPasswordAttribute("userPassword");
         // create
         ldapProfileService.create(profile, LDAP_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS);
+        final var credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS);
         ldapProfileService.validate(credentials, null, null);
-        final UserProfile profile1 = credentials.getUserProfile();
+        final var profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
-        final List<Map<String, Object>> results = getData(ldapProfileService, LDAP_ID);
+        final var results = getData(ldapProfileService, LDAP_ID);
         assertEquals(1, results.size());
-        final Map<String, Object> result = results.get(0);
+        final var result = results.get(0);
         assertEquals(4, result.size());
         assertEquals(LDAP_ID, result.get(LdapServer.CN));
         assertEquals(LDAP_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
         assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(LDAP_USER, result.get(LdapServer.SN));
         // findById
-        final LdapProfile profile2 = ldapProfileService.findById(LDAP_ID);
+        final var profile2 = ldapProfileService.findById(LDAP_ID);
         assertEquals(LDAP_ID, profile2.getId());
         assertEquals(LDAP_LINKED_ID, profile2.getLinkedId());
         assertEquals(LDAP_USER, profile2.getUsername());
@@ -173,22 +173,22 @@ public final class LdapProfileServiceTests implements TestsConstants {
         // update
         profile.addAttribute(USERNAME, LDAP_USER2);
         ldapProfileService.update(profile, LDAP_PASS2);
-        final List<Map<String, Object>> results2 = getData(ldapProfileService, LDAP_ID);
+        final var results2 = getData(ldapProfileService, LDAP_ID);
         assertEquals(1, results2.size());
-        final Map<String, Object> result2 = results2.get(0);
+        final var result2 = results2.get(0);
         assertEquals(4, result2.size());
         assertEquals(LDAP_ID, result2.get(LdapServer.CN));
         assertEquals(LDAP_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(LDAP_USER2, result2.get(LdapServer.SN));
         // check credentials
-        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2);
+        final var credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2);
         ldapProfileService.validate(credentials2, null, null);
-        final UserProfile profile3 = credentials.getUserProfile();
+        final var profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // remove
         ldapProfileService.remove(profile);
-        final List<Map<String, Object>> results3 = getData(ldapProfileService, LDAP_ID);
+        final var results3 = getData(ldapProfileService, LDAP_ID);
         assertEquals(0, results3.size());
     }
 

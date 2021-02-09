@@ -23,9 +23,9 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
         if (cred == null) {
             throw new CredentialsException("No credential");
         }
-        final UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) cred;
-        String username = credentials.getUsername();
-        String password = credentials.getPassword();
+        final var credentials = (UsernamePasswordCredentials) cred;
+        var username = credentials.getUsername();
+        var password = credentials.getPassword();
         if (CommonHelper.isBlank(username)) {
             throw new CredentialsException("Username cannot be blank");
         }
@@ -35,7 +35,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
         if (CommonHelper.areNotEquals(username, password)) {
             throw new CredentialsException("Username : '" + username + "' does not match password");
         }
-        final CommonProfile profile = new CommonProfile();
+        final var profile = new CommonProfile();
         profile.setId(username);
         profile.addAttribute(Pac4jConstants.USERNAME, username);
         credentials.setUserProfile(profile);

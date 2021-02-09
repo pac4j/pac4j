@@ -14,7 +14,7 @@ public final class InitializableObjectTests {
 
     @Test
     public void testInit() {
-        CounterInitializableObject counterInitializableObject = new CounterInitializableObject();
+        var counterInitializableObject = new CounterInitializableObject();
         assertEquals(0, counterInitializableObject.getCounter());
         counterInitializableObject.init();
         assertEquals(1, counterInitializableObject.getCounter());

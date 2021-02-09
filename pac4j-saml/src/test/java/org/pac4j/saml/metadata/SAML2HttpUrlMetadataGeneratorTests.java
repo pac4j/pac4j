@@ -32,7 +32,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final SAML2Configuration configuration = new SAML2Configuration();
+        final var configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -48,7 +48,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
     @Test
     public void verifyPost() throws Exception {
 
-        final WireMockServer wireMockServer = new WireMockServer(8088);
+        final var wireMockServer = new WireMockServer(8088);
         wireMockServer.stubFor(
             post(urlPathEqualTo("/saml"))
                 .withHeader("Accept", equalTo(ContentType.APPLICATION_XML.getMimeType()))
@@ -57,12 +57,12 @@ public class SAML2HttpUrlMetadataGeneratorTests {
                     .withHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType())));
         wireMockServer.start();
         try {
-            final SAML2Configuration configuration = initialConfiguration();
+            final var configuration = initialConfiguration();
             final SAML2MetadataGenerator metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8088/saml"), new SAML2HttpClientBuilder().build());
-            final EntityDescriptor entity = metadataGenerator.buildEntityDescriptor();
+            final var entity = metadataGenerator.buildEntityDescriptor();
             assertNotNull(entity);
-            final String metadata = metadataGenerator.getMetadata(entity);
+            final var metadata = metadataGenerator.getMetadata(entity);
             assertNotNull(metadata);
             assertTrue(metadataGenerator.storeMetadata(metadata, configuration.getServiceProviderMetadataResource(), true));
         } finally {
@@ -72,9 +72,9 @@ public class SAML2HttpUrlMetadataGeneratorTests {
 
     @Test
     public void verifyGet() throws Exception {
-        final String restBody = IOUtils.toString(
+        final var restBody = IOUtils.toString(
             new ClassPathResource("sample-sp-metadata.xml").getInputStream(), StandardCharsets.UTF_8);
-        final WireMockServer wireMockServer = new WireMockServer(8087);
+        final var wireMockServer = new WireMockServer(8087);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/saml"))
                 .willReturn(aResponse()
@@ -83,13 +83,13 @@ public class SAML2HttpUrlMetadataGeneratorTests {
                     .withBody(restBody)));
         wireMockServer.start();
         try {
-            final SAML2Configuration configuration = initialConfiguration();
+            final var configuration = initialConfiguration();
             final SAML2MetadataGenerator metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8087/saml"), new SAML2HttpClientBuilder().build());
-            final MetadataResolver resolver = metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
+            final var resolver = metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
             assertNotNull(resolver);
 
-            EntityDescriptor entity = resolver.resolveSingle(
+            var entity = resolver.resolveSingle(
                 new CriteriaSet(new EntityIdCriterion(configuration.getServiceProviderEntityId())));
             assertNotNull(entity);
         } finally {

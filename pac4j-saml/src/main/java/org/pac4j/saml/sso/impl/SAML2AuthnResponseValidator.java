@@ -92,14 +92,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     @Override
     public Credentials validate(final SAML2MessageContext context) {
 
-        final SAMLObject message = (SAMLObject) context.getMessageContext().getMessage();
+        final var message = (SAMLObject) context.getMessageContext().getMessage();
 
         if (!(message instanceof Response)) {
             throw new SAMLException("Must be a Response type");
         }
 
-        final Response response = (Response) message;
-        final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
+        final var response = (Response) message;
+        final var engine = this.signatureTrustEngineProvider.build();
         verifyMessageReplay(context);
         validateSamlProtocolResponse(response, context, engine);
 
@@ -112,20 +112,20 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     }
 
     protected SAML2Credentials buildSAML2Credentials(final SAML2MessageContext context) {
-        final Assertion subjectAssertion = context.getSubjectAssertion();
+        final var subjectAssertion = context.getSubjectAssertion();
 
-        final List<Attribute> attributes = collectAssertionAttributes(subjectAssertion);
-        final SAML2Credentials.SAMLNameID samlNameId = determineNameID(context, SAML2Credentials.SAMLAttribute.from(attributes));
-        final String sessionIndex = getSessionIndex(subjectAssertion);
-        final String sloKey = computeSloKey(sessionIndex, samlNameId);
+        final var attributes = collectAssertionAttributes(subjectAssertion);
+        final var samlNameId = determineNameID(context, SAML2Credentials.SAMLAttribute.from(attributes));
+        final var sessionIndex = getSessionIndex(subjectAssertion);
+        final var sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
             logoutHandler.recordSession(context.getWebContext(), context.getSessionStore(), sloKey);
         }
 
-        final String issuerEntityId = subjectAssertion.getIssuer().getValue();
-        final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
+        final var issuerEntityId = subjectAssertion.getIssuer().getValue();
+        final var authnStatements = subjectAssertion.getAuthnStatements();
         final List<String> authnContexts = new ArrayList<>();
-        for (final AuthnStatement authnStatement : authnStatements) {
+        for (final var authnStatement : authnStatements) {
             if (authnStatement.getAuthnContext().getAuthnContextClassRef() != null) {
                 authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getURI());
             }
@@ -136,15 +136,15 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     protected List<Attribute> collectAssertionAttributes(final Assertion subjectAssertion) {
         final List<Attribute> attributes = new ArrayList<>();
-        for (final AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
-            for (final Attribute attribute : attributeStatement.getAttributes()) {
+        for (final var attributeStatement : subjectAssertion.getAttributeStatements()) {
+            for (final var attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
             }
             if (!attributeStatement.getEncryptedAttributes().isEmpty()) {
                 if (decrypter == null) {
                     logger.warn("Encrypted attributes returned, but no keystore was provided.");
                 } else {
-                    for (final EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
+                    for (final var encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
                         try {
                             attributes.add(decrypter.decrypt(encryptedAttribute));
                         } catch (final DecryptionException e) {
@@ -160,7 +160,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     protected SAML2Credentials.SAMLNameID determineNameID(final SAML2MessageContext context,
                                                           final List<SAML2Credentials.SAMLAttribute> attributes) {
         if (saml2Configuration.getNameIdAttribute() != null) {
-            final Optional<SAML2Credentials.SAMLNameID> nameId = attributes
+            final var nameId = attributes
                 .stream()
                 .filter(attribute -> attribute.getName().equals(saml2Configuration.getNameIdAttribute()))
                 .findFirst()
@@ -169,7 +169,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 return nameId.get();
             }
         }
-        final NameID nameId = Objects.requireNonNull(context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID());
+        final var nameId = Objects.requireNonNull(context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID());
         return SAML2Credentials.SAMLNameID.from(nameId);
     }
 
@@ -180,9 +180,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @return the sessionIndex if found in the assertion
      */
     protected String getSessionIndex(final Assertion subjectAssertion) {
-        final List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
+        final var authnStatements = subjectAssertion.getAuthnStatements();
         if (authnStatements != null && !authnStatements.isEmpty()) {
-            final AuthnStatement statement = authnStatements.get(0);
+            final var statement = authnStatements.get(0);
             if (statement != null) {
                 return statement.getSessionIndex();
             }
@@ -229,9 +229,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         validateIssueInstant(response.getIssueInstant());
 
         AuthnRequest request = null;
-        final SAMLMessageStore messageStorage = context.getSAMLMessageStore();
+        final var messageStorage = context.getSAMLMessageStore();
         if (messageStorage != null && response.getInResponseTo() != null) {
-            final Optional<XMLObject> xmlObject = messageStorage.get(response.getInResponseTo());
+            final var xmlObject = messageStorage.get(response.getInResponseTo());
             if (xmlObject.isEmpty()) {
                 throw new SAMLInResponseToMismatchException(
                     "InResponseToField of the Response doesn't correspond to sent message "
@@ -245,7 +245,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             }
         }
 
-        final Endpoint endpoint = Objects.requireNonNull(context.getSAMLEndpointContext().getEndpoint());
+        final var endpoint = Objects.requireNonNull(context.getSAMLEndpointContext().getEndpoint());
 
         final List<String> expected = new ArrayList<>();
         if (endpoint.getLocation() != null) {
@@ -270,7 +270,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
         // Verify endpoint requested in the original request
-        final AssertionConsumerService assertionConsumerService = (AssertionConsumerService) context.
+        final var assertionConsumerService = (AssertionConsumerService) context.
             getSAMLEndpointContext()
             .getEndpoint();
         if (request.getAssertionConsumerServiceIndex() != null) {
@@ -278,8 +278,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 logger.warn("Response was received at a different endpoint index than was requested");
             }
         } else {
-            final String requestedResponseURL = request.getAssertionConsumerServiceURL();
-            final String requestedBinding = request.getProtocolBinding();
+            final var requestedResponseURL = request.getAssertionConsumerServiceURL();
+            final var requestedBinding = request.getProtocolBinding();
             if (requestedResponseURL != null) {
                 final String responseLocation;
                 if (assertionConsumerService.getResponseLocation() != null) {
@@ -312,7 +312,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                                            final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         final List<SAMLException> errors = new ArrayList<>();
-        for (final Assertion assertion : response.getAssertions()) {
+        for (final var assertion : response.getAssertions()) {
             if (!assertion.getAuthnStatements().isEmpty()) {
                 try {
                     validateAssertion(assertion, context, engine, decrypter);
@@ -334,13 +334,13 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
-        final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
+        final var subjectConfirmations = context.getSubjectConfirmations();
 
         if (subjectConfirmations == null || subjectConfirmations.isEmpty()) {
             if (saml2Configuration.getNameIdAttribute() != null) {
                 logger.debug("NameID will be determined from attribute {}", saml2Configuration.getNameIdAttribute());
             } else {
-                final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
+                final var nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
                 if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
                     && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
                     throw new SAMLException(
@@ -357,9 +357,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param decrypter the decrypter
      */
     protected void decryptEncryptedAssertions(final Response response, final Decrypter decrypter) {
-        for (final EncryptedAssertion encryptedAssertion : response.getEncryptedAssertions()) {
+        for (final var encryptedAssertion : response.getEncryptedAssertions()) {
             try {
-                final Assertion decryptedAssertion = decrypter.decrypt(encryptedAssertion);
+                final var decryptedAssertion = decrypter.decrypt(encryptedAssertion);
                 response.getAssertions().add(decryptedAssertion);
             } catch (final DecryptionException e) {
                 logger.error("Decryption of assertion failed, continue with the next one", e);
@@ -421,15 +421,15 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     @SuppressWarnings("unchecked")
     protected void validateSubject(final Subject subject, final SAML2MessageContext context,
                                    final Decrypter decrypter) {
-        boolean samlIDFound = false;
+        var samlIDFound = false;
 
         // Read NameID/BaseID/EncryptedID from the subject. If not present directly in the subject, try to find it in subject confirmations.
-        NameID nameIdFromSubject = subject.getNameID();
-        final BaseID baseIdFromSubject = subject.getBaseID();
-        final EncryptedID encryptedIdFromSubject = subject.getEncryptedID();
+        var nameIdFromSubject = subject.getNameID();
+        final var baseIdFromSubject = subject.getBaseID();
+        final var encryptedIdFromSubject = subject.getEncryptedID();
 
         // Encrypted ID can overwrite the non-encrypted one, if present
-        final NameID decryptedNameIdFromSubject = decryptEncryptedId(encryptedIdFromSubject, decrypter);
+        final var decryptedNameIdFromSubject = decryptEncryptedId(encryptedIdFromSubject, decrypter);
         if (decryptedNameIdFromSubject != null) {
             nameIdFromSubject = decryptedNameIdFromSubject;
         }
@@ -443,16 +443,16 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             samlIDFound = true;
         }
 
-        for (final SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
+        for (final var confirmation : subject.getSubjectConfirmations()) {
             if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())
                 && isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
                 validateAssertionReplay((Assertion) subject.getParent(), confirmation.getSubjectConfirmationData());
-                NameID nameIDFromConfirmation = confirmation.getNameID();
-                final BaseID baseIDFromConfirmation = confirmation.getBaseID();
-                final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
+                var nameIDFromConfirmation = confirmation.getNameID();
+                final var baseIDFromConfirmation = confirmation.getBaseID();
+                final var encryptedIDFromConfirmation = confirmation.getEncryptedID();
 
                 // Encrypted ID can overwrite the non-encrypted one, if present
-                final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation,
+                final var decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation,
                     decrypter);
                 if (decryptedNameIdFromConfirmation != null) {
                     nameIDFromConfirmation = decryptedNameIdFromConfirmation;
@@ -503,8 +503,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return false;
         }
 
-        final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
-        final boolean expired = data.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
+        final var now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        final var expired = data.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
 
         if (expired) {
             logger.debug("SubjectConfirmationData notOnOrAfter is too old");
@@ -516,14 +516,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
                 return false;
             } else {
-                final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
+                final var endpoint = context.getSAMLEndpointContext().getEndpoint();
                 if (endpoint == null) {
                     logger.warn("No endpoint was found in the SAML endpoint context");
                     return false;
                 }
 
-                final URI recipientUri = new URI(data.getRecipient());
-                final URI appEndpointUri = new URI(endpoint.getLocation());
+                final var recipientUri = new URI(data.getRecipient());
+                final var appEndpointUri = new URI(endpoint.getLocation());
                 if (!SAML2Utils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
                     logger.debug(
                         "SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. "
@@ -555,7 +555,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return;
         }
 
-        final Instant expires = Instant.ofEpochMilli(data.getNotOnOrAfter().toEpochMilli() + acceptedSkew * 1000);
+        final var expires = Instant.ofEpochMilli(data.getNotOnOrAfter().toEpochMilli() + acceptedSkew * 1000);
         if (!replayCache.get().check(getClass().getName(), assertion.getID(), expires)) {
             throw new SAMLReplayException("Rejecting replayed assertion ID '" + assertion.getID() + "'");
         }
@@ -575,22 +575,22 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return;
         }
 
-        final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        final var now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
         if (conditions.getNotBefore() != null) {
-            final boolean expired = conditions.getNotBefore().minusSeconds(acceptedSkew).isAfter(now);
+            final var expired = conditions.getNotBefore().minusSeconds(acceptedSkew).isAfter(now);
             if (expired) {
                 throw new SAMLAssertionConditionException("Assertion condition notBefore is not valid");
             }
         }
 
         if (conditions.getNotOnOrAfter() != null) {
-            final boolean expired = conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
+            final var expired = conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
             if (expired) {
                 throw new SAMLAssertionConditionException("Assertion condition notOnOrAfter is not valid");
             }
         }
 
-        final String entityId = context.getSAMLSelfEntityContext().getEntityId();
+        final var entityId = context.getSAMLSelfEntityContext().getEntityId();
         validateAudienceRestrictions(conditions.getAudienceRestrictions(), entityId);
     }
 
@@ -608,9 +608,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         final Set<String> audienceUris = new HashSet<>();
-        for (final AudienceRestriction audienceRestriction : audienceRestrictions) {
+        for (final var audienceRestriction : audienceRestrictions) {
             if (audienceRestriction.getAudiences() != null) {
-                for (final Audience audience : audienceRestriction.getAudiences()) {
+                for (final var audience : audienceRestriction.getAudiences()) {
                     audienceUris.add(audience.getURI());
                 }
             }
@@ -632,13 +632,13 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
                                                     final SAML2MessageContext context) {
         final List<String> authnClassRefs = new ArrayList<>();
-        final Instant now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
-        for (final AuthnStatement statement : authnStatements) {
+        final var now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        for (final var statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
                 throw new SAMLAuthnInstantException("Authentication issue instant is too old or in the future");
             }
             if (statement.getSessionNotOnOrAfter() != null) {
-                final boolean expired = statement.getSessionNotOnOrAfter().isBefore(now);
+                final var expired = statement.getSessionNotOnOrAfter().isBefore(now);
                 if (expired) {
                     throw new SAMLAuthnSessionCriteriaException("Authentication session between IDP and subject has ended");
                 }
@@ -674,10 +674,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     protected void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
                                               final SignatureTrustEngine engine) {
 
-        final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
+        final var peerContext = context.getSAMLPeerEntityContext();
 
         if (signature != null) {
-            final String entityId = peerContext.getEntityId();
+            final var entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
         } else {
             if (wantsAssertionsSigned(context)) {
@@ -694,7 +694,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         if (context == null) {
             return saml2Configuration.isWantsAssertionsSigned();
         }
-        final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
+        final var spDescriptor = context.getSPSSODescriptor();
         if (spDescriptor == null) {
             return saml2Configuration.isWantsAssertionsSigned();
         }

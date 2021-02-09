@@ -34,7 +34,7 @@ public final class CasRestClientIT implements TestsConstants {
     private final static String USER = "jleleu";
 
     private CasConfiguration getConfig() {
-        final CasConfiguration config = new CasConfiguration();
+        final var config = new CasConfiguration();
         config.setPrefixUrl(CAS_PREFIX_URL);
         return config;
     }
@@ -50,22 +50,22 @@ public final class CasRestClientIT implements TestsConstants {
     }
 
     private void internalTestRestForm(final Authenticator authenticator) {
-        final CasRestFormClient client = new CasRestFormClient();
+        final var client = new CasRestFormClient();
         client.setConfiguration(getConfig());
         client.setAuthenticator(authenticator);
 
-        final MockWebContext context = MockWebContext.create();
+        final var context = MockWebContext.create();
         context.addRequestParameter(client.getUsernameParameter(), USER);
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
-        final UsernamePasswordCredentials credentials =
+        final var credentials =
             (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
-        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
+        final var casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        final var casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
         assertNotNull(casProfile);
         assertEquals(USER, casProfile.getId());
         assertTrue(casProfile.getAttributes().size() > 0);
@@ -78,24 +78,24 @@ public final class CasRestClientIT implements TestsConstants {
 
     @Test
     public void testRestBasicWithCas20TicketValidator() {
-        final CasConfiguration config = getConfig();
+        final var config = getConfig();
         config.setDefaultTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
         internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 0);
     }
 
     private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) {
-        final MockWebContext context = MockWebContext.create();
-        final String token = USER + ":" + USER;
+        final var context = MockWebContext.create();
+        final var token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
-        final UsernamePasswordCredentials credentials =
+        final var credentials =
             (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CasRestProfile profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
-        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
+        final var casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        final var casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
         assertNotNull(casProfile);
         assertEquals(USER, casProfile.getId());
         assertEquals(nbAttributes, casProfile.getAttributes().size());

@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Provider returning well configured decrypter instances.
- * 
+ *
  * @author Michael Remond
  * @since 1.5.0
  */
@@ -38,9 +38,9 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
 
     @Override
     public final Decrypter build() {
-        final Credential encryptionCredential = this.credentialProvider.getCredential();
+        final var encryptionCredential = this.credentialProvider.getCredential();
         final KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
-        final Decrypter decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
+        final var decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
         decrypter.setRootInNewDocument(true);
 
         return decrypter;

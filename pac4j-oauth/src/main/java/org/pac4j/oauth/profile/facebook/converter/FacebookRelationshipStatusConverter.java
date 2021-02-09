@@ -15,7 +15,7 @@ public final class FacebookRelationshipStatusConverter implements AttributeConve
     public FacebookRelationshipStatus convert(final Object attribute) {
         if (attribute != null) {
             if (attribute instanceof String) {
-                String s = ((String) attribute).toLowerCase();
+                var s = ((String) attribute).toLowerCase();
                 s = s.replaceAll("_", " ");
                 s = s.replaceAll("'", "");
                 if ("single".equals(s)) {

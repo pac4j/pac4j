@@ -32,27 +32,27 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     public SAML2RedirectionActionBuilder(final SAML2Client client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
-        final SAML2Configuration cfg = client.getConfiguration();
+        final var cfg = client.getConfiguration();
         this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(cfg);
     }
 
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore) {
-        final SAML2MessageContext context = this.client.getContextProvider().buildContext(wc, sessionStore);
-        final String relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
+        final var context = this.client.getContextProvider().buildContext(wc, sessionStore);
+        final var relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
 
-        final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
+        final var authnRequest = this.saml2ObjectBuilder.build(context);
         this.client.getProfileHandler().send(context, authnRequest, relayState);
 
-        final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
+        final var adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
 
-        final String bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
+        final var bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
         if (SAMLConstants.SAML2_POST_BINDING_URI.equalsIgnoreCase(bindingType) ||
             SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equalsIgnoreCase(bindingType)) {
-            final String content = adapter.getOutgoingContent();
+            final var content = adapter.getOutgoingContent();
             return Optional.of(HttpActionHelper.buildFormPostContentAction(wc, content));
         }
-        final String location = adapter.getRedirectUrl();
+        final var location = adapter.getRedirectUrl();
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(wc, location));
     }
 }

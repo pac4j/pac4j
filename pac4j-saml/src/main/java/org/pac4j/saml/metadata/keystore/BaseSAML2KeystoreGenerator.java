@@ -71,21 +71,21 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
 
             validate();
 
-            final KeyStore ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
-            final char[] password = saml2Configuration.getKeystorePassword().toCharArray();
+            final var ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
+            final var password = saml2Configuration.getKeystorePassword().toCharArray();
             ks.load(null, password);
 
-            final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            final var kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(saml2Configuration.getPrivateKeySize());
-            final KeyPair kp = kpg.genKeyPair();
+            final var kp = kpg.genKeyPair();
 
-            final AlgorithmIdentifier sigAlgID = new AlgorithmIdentifier(PKCSObjectIdentifiers.sha1WithRSAEncryption, DERNull.INSTANCE);
-            final String dn = InetAddress.getLocalHost().getHostName();
-            final X509Certificate certificate = createSelfSignedCert(new X500Name("CN=" + dn),
+            final var sigAlgID = new AlgorithmIdentifier(PKCSObjectIdentifiers.sha1WithRSAEncryption, DERNull.INSTANCE);
+            final var dn = InetAddress.getLocalHost().getHostName();
+            final var certificate = createSelfSignedCert(new X500Name("CN=" + dn),
                 saml2Configuration.getCertificateSignatureAlg(), sigAlgID, kp);
 
-            final char[] keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
-            final PrivateKey signingKey = kp.getPrivate();
+            final var keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
+            final var signingKey = kp.getPrivate();
             ks.setKeyEntry(saml2Configuration.getKeyStoreAlias(), signingKey, keyPassword, new Certificate[]{certificate});
 
             store(ks, certificate, signingKey);
@@ -113,7 +113,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     private X509Certificate createSelfSignedCert(final X500Name dn, final String sigName,
                                                  final AlgorithmIdentifier sigAlgID,
                                                  final KeyPair keyPair) throws Exception {
-        final V3TBSCertificateGenerator certGen = new V3TBSCertificateGenerator();
+        final var certGen = new V3TBSCertificateGenerator();
 
         certGen.setSerialNumber(new ASN1Integer(BigInteger.valueOf(1)));
         certGen.setIssuer(dn);
@@ -121,8 +121,8 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
 
         certGen.setStartDate(new Time(new Date(System.currentTimeMillis() - 1000L)));
 
-        final Period period = saml2Configuration.getCertificateExpirationPeriod();
-        final Date expiration = DateTime.now().plusDays(
+        final var period = saml2Configuration.getCertificateExpirationPeriod();
+        final var expiration = DateTime.now().plusDays(
             365 * period.getYears()
             + 31 * period.getMonths()
             + period.getDays()
@@ -132,21 +132,21 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         certGen.setSignature(sigAlgID);
         certGen.setSubjectPublicKeyInfo(SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
 
-        final Signature sig = Signature.getInstance(sigName);
+        final var sig = Signature.getInstance(sigName);
 
         sig.initSign(keyPair.getPrivate());
 
         sig.update(certGen.generateTBSCertificate().getEncoded(ASN1Encoding.DER));
 
-        final TBSCertificate tbsCert = certGen.generateTBSCertificate();
+        final var tbsCert = certGen.generateTBSCertificate();
 
-        final ASN1EncodableVector v = new ASN1EncodableVector();
+        final var v = new ASN1EncodableVector();
 
         v.add(tbsCert);
         v.add(sigAlgID);
         v.add(new DERBitString(sig.sign()));
 
-        final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X.509")
+        final var cert = (X509Certificate) CertificateFactory.getInstance("X.509")
             .generateCertificate(new ByteArrayInputStream(new DERSequence(v).getEncoded(ASN1Encoding.DER)));
 
         // check the certificate - this will confirm the encoded sig algorithm ID is correct.

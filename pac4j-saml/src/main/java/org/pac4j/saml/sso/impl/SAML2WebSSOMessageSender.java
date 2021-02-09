@@ -22,7 +22,7 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
 
     @Override
     protected boolean mustSignRequest(final SPSSODescriptor spDescriptor, final IDPSSODescriptor idpssoDescriptor) {
-        boolean signOutboundContext = false;
+        var signOutboundContext = false;
         if (this.isRequestSigned) {
             logger.debug("Requests are expected to be always signed before submission");
             signOutboundContext = true;

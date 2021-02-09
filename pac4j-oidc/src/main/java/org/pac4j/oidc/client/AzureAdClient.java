@@ -70,7 +70,7 @@ public class AzureAdClient extends OidcClient {
     }
 
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
-        final AzureAdOidcConfiguration azureConfig = (AzureAdOidcConfiguration) getConfiguration();
+        final var azureConfig = (AzureAdOidcConfiguration) getConfiguration();
         CommonHelper.assertTrue(CommonHelper.isNotBlank(azureConfig.getTenant()),
             "Tenant must be defined. Update your config.");
         HttpURLConnection connection = null;
@@ -82,16 +82,16 @@ public class AzureAdClient extends OidcClient {
             connection = HttpUtils.openPostConnection(new URL("https://login.microsoftonline.com/" + azureConfig.getTenant()+
                 "/oauth2/token"), headers);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
+            final var out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
                 StandardCharsets.UTF_8));
             out.write(azureConfig.makeOauth2TokenRequest(azureAdProfile.getRefreshToken().getValue()));
             out.close();
 
-            final int responseCode = connection.getResponseCode();
+            final var responseCode = connection.getResponseCode();
             if (responseCode != 200) {
                 throw new TechnicalException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
             }
-            String body = HttpUtils.readBody(connection);
+            var body = HttpUtils.readBody(connection);
             final Map<String, Object> res = objectMapper.readValue(body, typeRef);
             return (String)res.get("access_token");
         } catch (final IOException e) {

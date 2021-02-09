@@ -48,13 +48,13 @@ public abstract class ProfileDefinition {
      */
     public UserProfile newProfile(final Object... parameters) {
         if (restoreProfileFromTypedId) {
-            final Object typedId = getParameter(parameters, 0);
+            final var typedId = getParameter(parameters, 0);
             if (typedId instanceof String) {
                 logger.debug("Building user profile based on typedId: {}", typedId);
-                final String sTypedId = (String) typedId;
+                final var sTypedId = (String) typedId;
                 if (sTypedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-                    final String profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
-                    for (final String profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
+                    final var profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                    for (final var profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
                         if (profileClass.startsWith(profileClassPrefix)) {
                             try {
                                 return ProfileHelper.buildUserProfileByClassCompleteName(profileClass);
@@ -89,7 +89,7 @@ public abstract class ProfileDefinition {
             final Object value) {
         if (value != null) {
             final Object convertedValue;
-            final AttributeConverter converter = this.converters.get(name);
+            final var converter = this.converters.get(name);
             if (converter != null) {
                 convertedValue = converter.convert(value);
                 if (convertedValue != null) {

@@ -57,12 +57,12 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final TokenCredentials credentials = (TokenCredentials) cred;
-        final OidcProfileDefinition profileDefinition = new OidcProfileDefinition();
-        final OidcProfile profile = (OidcProfile) profileDefinition.newProfile();
-        final BearerAccessToken accessToken = new BearerAccessToken(credentials.getToken());
+        final var credentials = (TokenCredentials) cred;
+        final var profileDefinition = new OidcProfileDefinition();
+        final var profile = (OidcProfile) profileDefinition.newProfile();
+        final var accessToken = new BearerAccessToken(credentials.getToken());
         profile.setAccessToken(accessToken);
-        final JWTClaimsSet userInfoClaimsSet = fetchOidcProfile(accessToken);
+        final var userInfoClaimsSet = fetchOidcProfile(accessToken);
         ofNullable(userInfoClaimsSet)
             .map(JWTClaimsSet::getClaims)
             .ifPresent(claims -> profileDefinition.convertAndAdd(profile, claims, null));
@@ -74,21 +74,21 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
     }
 
     private JWTClaimsSet fetchOidcProfile(BearerAccessToken accessToken) {
-        final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
+        final var userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
             accessToken);
-        final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+        final var userInfoHttpRequest = userInfoRequest.toHTTPRequest();
         configuration.configureHttpRequest(userInfoHttpRequest);
         try {
-            final HTTPResponse httpResponse = userInfoHttpRequest.send();
+            final var httpResponse = userInfoHttpRequest.send();
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                 httpResponse.getContent());
-            final UserInfoResponse userInfoResponse = UserInfoResponse.parse(httpResponse);
+            final var userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (userInfoResponse instanceof UserInfoErrorResponse) {
                 logger.error("Bad User Info response, error={}",
                     ((UserInfoErrorResponse) userInfoResponse).getErrorObject().toJSONObject());
                 throw new AuthenticationException();
             } else {
-                final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                 final JWTClaimsSet userInfoClaimsSet;
                 if (userInfoSuccessResponse.getUserInfo() != null) {
                     userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();

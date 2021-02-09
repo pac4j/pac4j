@@ -37,24 +37,24 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testNullPasswordEncoder() {
-        final DbProfileService dbProfileService = new DbProfileService(ds, FIRSTNAME);
+        final var dbProfileService = new DbProfileService(ds, FIRSTNAME);
         TestsHelper.expectException(() -> dbProfileService.validate(null, null, null), TechnicalException.class,
             "passwordEncoder cannot be null");
     }
 
     @Test
     public void testNullDataSource() {
-        final DbProfileService dbProfileService = new DbProfileService(null, FIRSTNAME);
+        final var dbProfileService = new DbProfileService(null, FIRSTNAME);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
         TestsHelper.expectException(() -> dbProfileService.validate(null, null, null),
             TechnicalException.class, "dataSource cannot be null");
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
-        final DbProfileService dbProfileService = new DbProfileService(ds, attribute);
+        final var dbProfileService = new DbProfileService(ds, attribute);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
+        final var credentials = new UsernamePasswordCredentials(username, password);
         dbProfileService.validate(credentials, null, null);
 
         return credentials;
@@ -62,24 +62,24 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testGoodUsernameAttribute() {
-        final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
+        final var credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
-        final DbProfile dbProfile = (DbProfile) profile;
+        final var dbProfile = (DbProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertEquals(FIRSTNAME_VALUE, dbProfile.getAttribute(FIRSTNAME));
     }
 
     @Test
     public void testGoodUsernameNoAttribute() {
-        final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, "");
+        final var credentials =  login(GOOD_USERNAME, PASSWORD, "");
 
-        final UserProfile profile = credentials.getUserProfile();
+        final var profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
-        final DbProfile dbProfile = (DbProfile) profile;
+        final var dbProfile = (DbProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }
@@ -104,23 +104,23 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testCreateUpdateFindDelete() {
-        final DbProfile profile = new DbProfile();
+        final var profile = new DbProfile();
         profile.setId("" + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
-        final DbProfileService dbProfileService = new DbProfileService(ds);
+        final var dbProfileService = new DbProfileService(ds);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
         // create
         dbProfileService.create(profile, DB_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
+        final var credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
         dbProfileService.validate(credentials, null, null);
-        final UserProfile profile1 = credentials.getUserProfile();
+        final var profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
-        final List<Map<String, Object>> results = getData(DB_ID);
+        final var results = getData(DB_ID);
         assertEquals(1, results.size());
-        final Map<String, Object> result = results.get(0);
+        final var result = results.get(0);
         assertEquals(5, result.size());
         assertEquals(DB_ID, result.get(ID));
         assertEquals(DB_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
@@ -128,7 +128,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         assertTrue(DbServer.PASSWORD_ENCODER.matches(DB_PASS, (String) result.get(PASSWORD)));
         assertEquals(DB_USER, result.get(USERNAME));
         // findById
-        final DbProfile profile2 = dbProfileService.findById("" + DB_ID);
+        final var profile2 = dbProfileService.findById("" + DB_ID);
         assertEquals("" + DB_ID, profile2.getId());
         assertEquals(DB_LINKED_ID, profile2.getLinkedId());
         assertEquals(DB_USER, profile2.getUsername());
@@ -136,9 +136,9 @@ public final class DbProfileServiceTests implements TestsConstants {
         // update
         profile.addAttribute(USERNAME, DB_USER2);
         dbProfileService.update(profile, null);
-        final List<Map<String, Object>> results2 = getData(DB_ID);
+        final var results2 = getData(DB_ID);
         assertEquals(1, results2.size());
-        final Map<String, Object> result2 = results2.get(0);
+        final var result2 = results2.get(0);
         assertEquals(5, result2.size());
         assertEquals(DB_ID, result2.get(ID));
         assertEquals(DB_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
@@ -147,7 +147,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         assertEquals(DB_USER2, result2.get(USERNAME));
         // remove
         dbProfileService.remove(profile);
-        final List<Map<String, Object>> results3 = getData(DB_ID);
+        final var results3 = getData(DB_ID);
         assertEquals(0, results3.size());
     }
 
@@ -155,17 +155,17 @@ public final class DbProfileServiceTests implements TestsConstants {
     public void testChangeUserAndPasswordAttributes() {
         alterTableChangeColumnName(USERNAME, ALT_USER_ATT);
         alterTableChangeColumnName(PASSWORD, ALT_PASS_ATT);
-        final DbProfileService dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
+        final var dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
         dbProfileService.setPasswordAttribute(ALT_PASS_ATT);
         dbProfileService.setUsernameAttribute(ALT_USER_ATT);
-        final DbProfile profile = new DbProfile();
+        final var profile = new DbProfile();
         profile.setId("" + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
         // create
         dbProfileService.create(profile, DB_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
+        final var credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
         dbProfileService.validate(credentials, null, null);
         assertNotNull(credentials.getUserProfile());
 
@@ -176,14 +176,14 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     private void alterTableChangeColumnName(String from, String to) {
-        final DBI dbi = new DBI(ds);
-        try (Handle h = dbi.open()) {
+        final var dbi = new DBI(ds);
+        try (var h = dbi.open()) {
             h.execute("alter table users rename column " + from + " to " + to);
         }
     }
 
     private List<Map<String, Object>> getData(final int id) {
-        final DBI dbi = new DBI(ds);
+        final var dbi = new DBI(ds);
         Handle h = null;
         try {
             h = dbi.open();

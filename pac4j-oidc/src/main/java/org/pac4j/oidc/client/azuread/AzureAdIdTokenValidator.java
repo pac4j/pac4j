@@ -13,7 +13,7 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 
 /**
  * Specialized ID token validator cabable of handling the {tenantid} placeholder.
- * 
+ *
  * @author Emond Papegaaij
  * @since 1.8.3
  */
@@ -31,7 +31,7 @@ public class AzureAdIdTokenValidator extends IDTokenValidator {
     public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce) throws BadJOSEException, JOSEException {
         try {
             if (originalIssuer.contains("%7Btenantid%7D")) {
-                Object tid = idToken.getJWTClaimsSet().getClaim("tid");
+                var tid = idToken.getJWTClaimsSet().getClaim("tid");
                 if (tid == null) {
                     throw new BadJWTException("ID token does not contain the 'tid' claim");
                 }

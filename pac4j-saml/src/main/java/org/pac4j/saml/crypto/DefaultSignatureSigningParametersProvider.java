@@ -35,14 +35,14 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
     @Override
     public SignatureSigningParameters build(final SSODescriptor descriptor) {
         try {
-            final CriteriaSet criteria = new CriteriaSet();
+            final var criteria = new CriteriaSet();
             criteria.add(new SignatureSigningConfigurationCriterion(
                     getSignatureSigningConfiguration()));
             criteria.add(new RoleDescriptorCriterion(descriptor));
-            final SAMLMetadataSignatureSigningParametersResolver resolver =
+            final var resolver =
                     new SAMLMetadataSignatureSigningParametersResolver();
 
-            final SignatureSigningParameters params = resolver.resolveSingle(criteria);
+            final var params = resolver.resolveSingle(criteria);
             augmentSignatureSigningParameters(params);
 
             if (params == null) {
@@ -63,7 +63,7 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
     }
 
     protected SignatureSigningConfiguration getSignatureSigningConfiguration() {
-        final BasicSignatureSigningConfiguration config =
+        final var config =
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 
         if (this.configuration.getBlackListedSignatureSigningAlgorithms() != null) {

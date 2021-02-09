@@ -23,32 +23,32 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokenAuthenticator() {
-        final DirectBearerAuthClient bearerAuthClient = new DirectBearerAuthClient(null);
+        final var bearerAuthClient = new DirectBearerAuthClient(null);
         TestsHelper.expectException(() -> bearerAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final DirectBearerAuthClient bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator(), null);
+        final var bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.expectException(() -> bearerAuthClient.getUserProfile(new TokenCredentials(TOKEN),
             MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final DirectBearerAuthClient bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
+        final var bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
         bearerAuthClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final DirectBearerAuthClient client = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
-        final MockWebContext context = MockWebContext.create();
+        final var client = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
+        final var context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
                 HttpConstants.BEARER_HEADER_PREFIX + TOKEN);
-        final TokenCredentials credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(TOKEN, profile.getId());
     }
 }

@@ -19,43 +19,43 @@ public final class HeaderMatcherTests implements TestsConstants {
 
     @Test
     public void testNullHeaderName() {
-        final HeaderMatcher matcher = new HeaderMatcher();
+        final var matcher = new HeaderMatcher();
         TestsHelper.expectException(() -> matcher.matches(MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "headerName cannot be blank");
     }
 
     @Test
     public void testNullExpectedValueHeader() {
-        final HeaderMatcher matcher = new HeaderMatcher(NAME, null);
-        final MockWebContext context = MockWebContext.create().addRequestHeader(NAME, VALUE);
+        final var matcher = new HeaderMatcher(NAME, null);
+        final var context = MockWebContext.create().addRequestHeader(NAME, VALUE);
         assertFalse(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testNullExpectedValueNull() {
-        final HeaderMatcher matcher = new HeaderMatcher(NAME, null);
-        final MockWebContext context = MockWebContext.create();
+        final var matcher = new HeaderMatcher(NAME, null);
+        final var context = MockWebContext.create();
         assertTrue(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testRegexExpectedRightValueHeader() {
-        final HeaderMatcher matcher = new HeaderMatcher(NAME, ".*A.*");
-        final MockWebContext context = MockWebContext.create().addRequestHeader(NAME, "BAC");
+        final var matcher = new HeaderMatcher(NAME, ".*A.*");
+        final var context = MockWebContext.create().addRequestHeader(NAME, "BAC");
         assertTrue(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testRegexExpectedBadValueHeader() {
-        final HeaderMatcher matcher = new HeaderMatcher(NAME, ".*A.*");
-        final MockWebContext context = MockWebContext.create().addRequestHeader(NAME, "BOC");
+        final var matcher = new HeaderMatcher(NAME, ".*A.*");
+        final var context = MockWebContext.create().addRequestHeader(NAME, "BOC");
         assertFalse(matcher.matches(context, new MockSessionStore()));
     }
 
     @Test
     public void testRegexExpectedNullHeader() {
-        final HeaderMatcher matcher = new HeaderMatcher(NAME, ".*A.*");
-        final MockWebContext context = MockWebContext.create();
+        final var matcher = new HeaderMatcher(NAME, ".*A.*");
+        final var context = MockWebContext.create();
         assertFalse(matcher.matches(context, new MockSessionStore()));
     }
 }

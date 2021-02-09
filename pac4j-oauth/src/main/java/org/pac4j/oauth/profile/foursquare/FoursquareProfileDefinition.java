@@ -47,20 +47,20 @@ public class FoursquareProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public FoursquareProfile extractUserProfile(String body) {
-        FoursquareProfile profile = (FoursquareProfile) newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        var profile = (FoursquareProfile) newProfile();
+        var json = JsonHelper.getFirstNode(body);
         if (json == null) {
             raiseProfileExtractionJsonError(body);
         }
-        JsonNode response = (JsonNode) JsonHelper.getElement(json, "response");
+        var response = (JsonNode) JsonHelper.getElement(json, "response");
         if (response == null) {
             raiseProfileExtractionJsonError(body, "response");
         }
-        JsonNode user = (JsonNode) JsonHelper.getElement(response, "user");
+        var user = (JsonNode) JsonHelper.getElement(response, "user");
         if (user != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(user, "id")));
 
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(user, attribute));
             }
         } else {

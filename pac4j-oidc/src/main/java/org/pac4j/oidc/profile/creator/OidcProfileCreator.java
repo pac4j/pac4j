@@ -69,16 +69,16 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     public Optional<UserProfile> create(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final OidcCredentials credentials = (OidcCredentials) cred;
-        final AccessToken accessToken = credentials.getAccessToken();
+        final var credentials = (OidcCredentials) cred;
+        final var accessToken = credentials.getAccessToken();
 
         // Create profile
-        final OidcProfile profile = (OidcProfile) getProfileDefinition().newProfile();
+        final var profile = (OidcProfile) getProfileDefinition().newProfile();
         profile.setAccessToken(accessToken);
-        final JWT idToken = credentials.getIdToken();
+        final var idToken = credentials.getIdToken();
         profile.setIdTokenString(idToken.getParsedString());
         // Check if there is a refresh token
-        final RefreshToken refreshToken = credentials.getRefreshToken();
+        final var refreshToken = credentials.getRefreshToken();
         if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
             profile.setRefreshToken(refreshToken);
             logger.debug("Refresh Token successful retrieved");
@@ -93,26 +93,26 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 nonce = null;
             }
             // Check ID Token
-            final IDTokenClaimsSet claimsSet = configuration.findTokenValidator().validate(idToken, nonce);
+            final var claimsSet = configuration.findTokenValidator().validate(idToken, nonce);
             assertNotNull("claimsSet", claimsSet);
             profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
             // User Info request
             if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
+                final var userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
                     (BearerAccessToken) accessToken);
-                final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+                final var userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
-                final HTTPResponse httpResponse = userInfoHttpRequest.send();
+                final var httpResponse = userInfoHttpRequest.send();
                 logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
 
-                final UserInfoResponse userInfoResponse = UserInfoResponse.parse(httpResponse);
+                final var userInfoResponse = UserInfoResponse.parse(httpResponse);
                 if (userInfoResponse instanceof UserInfoErrorResponse) {
                     logger.error("Bad User Info response, error={}",
                             ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
-                    final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                    final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     final JWTClaimsSet userInfoClaimsSet;
                     if (userInfoSuccessResponse.getUserInfo() != null) {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
@@ -124,9 +124,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             // add attributes of the ID token if they don't already exist
-            for (final Map.Entry<String, Object> entry : idToken.getJWTClaimsSet().getClaims().entrySet()) {
-                final String key = entry.getKey();
-                final Object value = entry.getValue();
+            for (final var entry : idToken.getJWTClaimsSet().getClaims().entrySet()) {
+                final var key = entry.getKey();
+                final var value = entry.getValue();
                 // it's not the subject and this attribute does not already exist, add it
                 if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
@@ -137,7 +137,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
 
             // keep the session ID if provided
-            final String sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+            final var sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
             if (isNotBlank(sid)) {
                 configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
             }

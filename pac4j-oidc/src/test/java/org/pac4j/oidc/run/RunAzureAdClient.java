@@ -37,11 +37,11 @@ public class RunAzureAdClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final AzureAdOidcConfiguration configuration = new AzureAdOidcConfiguration();
+        final var configuration = new AzureAdOidcConfiguration();
         configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
         configuration.setSecret("7~nTx-1_-zn~04jLMfY4J~af6vRY9wXrYW");
         configuration.setTenant("38c46e5a-21f0-46e5-940d-3ca06fd1a330");
-        final AzureAdClient client = new AzureAdClient(configuration);
+        final var client = new AzureAdClient(configuration);
         client.setCallbackUrl("https://www.pac4j.org/test.html");
         //client.setCallbackUrl(CommonHelper.addParameter(PAC4J_URL, Clients.DEFAULT_CLIENT_NAME_PARAMETER, client.getName()));
         return client;
@@ -49,7 +49,7 @@ public class RunAzureAdClient extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final AzureAdProfile profile = (AzureAdProfile) userProfile;
+        final var profile = (AzureAdProfile) userProfile;
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
         assertEquals(AzureAdProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
                 profile.getTypedId());

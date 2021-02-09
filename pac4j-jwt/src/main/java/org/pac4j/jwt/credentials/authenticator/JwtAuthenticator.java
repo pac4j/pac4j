@@ -108,7 +108,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
      * @return the corresponding user profile
      */
     public Map<String, Object> validateTokenAndGetClaims(final String token) {
-        final UserProfile profile = validateToken(token);
+        final var profile = validateToken(token);
 
         final Map<String, Object> claims = new HashMap<>(profile.getAttributes());
         claims.put(JwtClaims.SUBJECT, profile.getId());
@@ -123,7 +123,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
      * @return the corresponding user profile
      */
     public UserProfile validateToken(final String token) {
-        final TokenCredentials credentials = new TokenCredentials(token);
+        final var credentials = new TokenCredentials(token);
         try {
             validate(credentials, null, null);
         } catch (final HttpAction e) {
@@ -140,8 +140,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final TokenCredentials credentials = (TokenCredentials) cred;
-        final String token = credentials.getToken();
+        final var credentials = (TokenCredentials) cred;
+        final var token = credentials.getToken();
 
         if (context != null) {
             // set the www-authenticate in case of error
@@ -150,7 +150,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
         try {
             // Parse the token
-            JWT jwt = JWTParser.parse(token);
+            var jwt = JWTParser.parse(token);
 
             if (jwt instanceof PlainJWT) {
                 if (signatureConfigurations.isEmpty()) {
@@ -169,12 +169,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 if (jwt instanceof EncryptedJWT) {
                     logger.debug("JWT is encrypted");
 
-                    final EncryptedJWT encryptedJWT = (EncryptedJWT) jwt;
-                    boolean found = false;
-                    final JWEHeader header = encryptedJWT.getHeader();
-                    final JWEAlgorithm algorithm = header.getAlgorithm();
-                    final EncryptionMethod method = header.getEncryptionMethod();
-                    for (final EncryptionConfiguration config : encryptionConfigurations) {
+                    final var encryptedJWT = (EncryptedJWT) jwt;
+                    var found = false;
+                    final var header = encryptedJWT.getHeader();
+                    final var algorithm = header.getAlgorithm();
+                    final var method = header.getEncryptionMethod();
+                    for (final var config : encryptionConfigurations) {
                         if (config.supports(algorithm, method)) {
                             logger.debug("Using encryption configuration: {}", config);
                             try {
@@ -199,10 +199,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 if (signedJWT != null) {
                     logger.debug("JWT is signed");
 
-                    boolean verified = false;
-                    boolean found = false;
-                    final JWSAlgorithm algorithm = signedJWT.getHeader().getAlgorithm();
-                    for (final SignatureConfiguration config : signatureConfigurations) {
+                    var verified = false;
+                    var found = false;
+                    final var algorithm = signedJWT.getHeader().getAlgorithm();
+                    for (final var config : signatureConfigurations) {
                         if (config.supports(algorithm)) {
                             logger.debug("Using signature configuration: {}", config);
                             try {
@@ -235,8 +235,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     @SuppressWarnings("unchecked")
     protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt, final WebContext context,
                                     final SessionStore sessionStore) throws ParseException {
-        final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
-        String subject = claimSet.getSubject();
+        final var claimSet = jwt.getJWTClaimsSet();
+        var subject = claimSet.getSubject();
         if (subject == null) {
             if (identifierGenerator != null) {
                 subject = identifierGenerator.generateValue(context, sessionStore);
@@ -246,9 +246,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             }
         }
 
-        final Date expTime = claimSet.getExpirationTime();
+        final var expTime = claimSet.getExpirationTime();
         if (expTime != null) {
-            final Date now = new Date();
+            final var now = new Date();
             if (expTime.before(now)) {
                 logger.error("The JWT is expired: no profile is built");
                 return;
@@ -262,14 +262,14 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
         attributes.remove(JwtClaims.SUBJECT);
 
-        final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
+        final var roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
-        final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
+        final var permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
-        final String linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
+        final var linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
         attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
 
-        final UserProfile profile = getProfileDefinition().newProfile(subject);
+        final var profile = getProfileDefinition().newProfile(subject);
         profile.setId(ProfileHelper.sanitizeIdentifier(subject));
         getProfileDefinition().convertAndAdd(profile, attributes, null);
 

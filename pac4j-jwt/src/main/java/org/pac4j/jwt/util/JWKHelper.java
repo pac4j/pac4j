@@ -29,7 +29,7 @@ public final class JWKHelper {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final OctetSequenceKey octetSequenceKey = OctetSequenceKey.parse(json);
+            final var octetSequenceKey = OctetSequenceKey.parse(json);
             return new String(octetSequenceKey.toByteArray(), "UTF-8");
         } catch (final UnsupportedEncodingException | ParseException e) {
             throw new TechnicalException(e);
@@ -46,7 +46,7 @@ public final class JWKHelper {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final RSAKey rsaKey = RSAKey.parse(json);
+            final var rsaKey = RSAKey.parse(json);
             return rsaKey.toKeyPair();
         } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);
@@ -63,7 +63,7 @@ public final class JWKHelper {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final ECKey ecKey = ECKey.parse(json);
+            final var ecKey = ECKey.parse(json);
             return ecKey.toKeyPair();
         } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);

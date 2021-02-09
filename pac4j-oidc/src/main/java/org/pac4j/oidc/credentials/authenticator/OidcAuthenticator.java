@@ -58,15 +58,15 @@ public class OidcAuthenticator implements Authenticator {
         this.configuration = configuration;
         this.client = client;
 
-        final ClientID _clientID = new ClientID(configuration.getClientId());
+        final var _clientID = new ClientID(configuration.getClientId());
 
         if (configuration.getSecret() != null) {
 
             // check authentication methods
-            final List<ClientAuthenticationMethod> metadataMethods = configuration.findProviderMetadata()
+            final var metadataMethods = configuration.findProviderMetadata()
                     .getTokenEndpointAuthMethods();
 
-            final ClientAuthenticationMethod preferredMethod = getPreferredAuthenticationMethod(configuration);
+            final var preferredMethod = getPreferredAuthenticationMethod(configuration);
 
             final ClientAuthenticationMethod chosenMethod;
             if (CommonHelper.isNotEmpty(metadataMethods)) {
@@ -88,10 +88,10 @@ public class OidcAuthenticator implements Authenticator {
             }
 
             if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(chosenMethod)) {
-                final Secret _secret = new Secret(configuration.getSecret());
+                final var _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretPost(_clientID, _secret);
             } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
-                final Secret _secret = new Secret(configuration.getSecret());
+                final var _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretBasic(_clientID, _secret);
             } else if (ClientAuthenticationMethod.NONE.equals(chosenMethod)) {
                 clientAuthentication = new ClientNoSecret(_clientID);
@@ -112,7 +112,7 @@ public class OidcAuthenticator implements Authenticator {
      * provider-supported method should be chosen.
      */
     private static ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
-        final ClientAuthenticationMethod configurationMethod = config.getClientAuthenticationMethod();
+        final var configurationMethod = config.getClientAuthenticationMethod();
         if (configurationMethod == null) {
             return null;
         }
@@ -132,7 +132,7 @@ public class OidcAuthenticator implements Authenticator {
      *         if none of the provider-supported methods is supported.
      */
     private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
-        Optional<ClientAuthenticationMethod> firstSupported =
+        var firstSupported =
             metadataMethods.stream().filter(SUPPORTED_METHODS::contains).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
@@ -144,16 +144,16 @@ public class OidcAuthenticator implements Authenticator {
 
     @Override
     public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
-        final OidcCredentials credentials = (OidcCredentials) cred;
-        final AuthorizationCode code = credentials.getCode();
+        final var credentials = (OidcCredentials) cred;
+        final var code = credentials.getCode();
         // if we have a code
         if (code != null) {
             try {
-                final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
-                CodeVerifier verifier = (CodeVerifier) configuration.getValueRetriever()
+                final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
+                var verifier = (CodeVerifier) configuration.getValueRetriever()
                         .retrieve(client.getCodeVerifierSessionAttributeName(), client, context, sessionStore).orElse(null);
                 // Token request
-                final TokenRequest request = new TokenRequest(
+                final var request = new TokenRequest(
                         configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
                         new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
                 executeTokenRequest(request, credentials);
@@ -164,10 +164,10 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     public void refresh(final OidcCredentials credentials) {
-        final RefreshToken refreshToken = credentials.getRefreshToken();
+        final var refreshToken = credentials.getRefreshToken();
         if (refreshToken != null) {
             try {
-                final TokenRequest request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
+                final var request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
                     this.clientAuthentication, new RefreshTokenGrant(refreshToken));
                 executeTokenRequest(request, credentials);
             } catch (final IOException | ParseException e) {
@@ -177,21 +177,21 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     private void executeTokenRequest(TokenRequest request, OidcCredentials credentials) throws IOException, ParseException {
-        HTTPRequest tokenHttpRequest = request.toHTTPRequest();
+        var tokenHttpRequest = request.toHTTPRequest();
         configuration.configureHttpRequest(tokenHttpRequest);
 
-        final HTTPResponse httpResponse = tokenHttpRequest.send();
+        final var httpResponse = tokenHttpRequest.send();
         logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
             httpResponse.getContent());
 
-        final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
+        final var response = OIDCTokenResponseParser.parse(httpResponse);
         if (response instanceof TokenErrorResponse) {
             throw new TechnicalException("Bad token response, error=" + ((TokenErrorResponse) response).getErrorObject());
         }
         logger.debug("Token response successful");
-        final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
+        final var tokenSuccessResponse = (OIDCTokenResponse) response;
 
-        final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
+        final var oidcTokens = tokenSuccessResponse.getOIDCTokens();
         credentials.setAccessToken(oidcTokens.getAccessToken());
         credentials.setRefreshToken(oidcTokens.getRefreshToken());
         if (oidcTokens.getIDToken() != null) {

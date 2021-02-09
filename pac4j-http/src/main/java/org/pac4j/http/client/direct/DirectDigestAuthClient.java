@@ -52,7 +52,7 @@ public class DirectDigestAuthClient extends DirectClient {
     @Override
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         // set the www-authenticate in case of error
-        final String nonce = calculateNonce();
+        final var nonce = calculateNonce();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
             + nonce + "\"");
 
@@ -64,9 +64,9 @@ public class DirectDigestAuthClient extends DirectClient {
      * Based on current time including nanoseconds
      */
     private String calculateNonce() {
-        LocalDateTime time = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss.SSS");
-        String fmtTime = formatter.format(time);
+        var time = LocalDateTime.now();
+        var formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss.SSS");
+        var fmtTime = formatter.format(time);
         return CredentialUtil.encryptMD5(fmtTime + CommonHelper.randomString(10));
     }
 

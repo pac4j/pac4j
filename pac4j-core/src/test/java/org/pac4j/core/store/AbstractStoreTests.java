@@ -19,7 +19,7 @@ public abstract class AbstractStoreTests<S extends Store> implements TestsConsta
 
     @Test
     public void testSetRemoveGet() {
-        final S store = buildStore();
+        final var store = buildStore();
         store.set(KEY, VALUE);
         assertEquals(VALUE, store.get(KEY).get());
         store.remove(KEY);
@@ -28,7 +28,7 @@ public abstract class AbstractStoreTests<S extends Store> implements TestsConsta
 
     @Test
     public void testSetExpiredGet() {
-        final S store = buildStore();
+        final var store = buildStore();
         store.set(KEY, VALUE);
         assertEquals(VALUE, store.get(KEY).get());
         try {
@@ -41,7 +41,7 @@ public abstract class AbstractStoreTests<S extends Store> implements TestsConsta
 
     @Test
     public void testSetNullValue() {
-        final S store = buildStore();
+        final var store = buildStore();
         store.set(KEY, VALUE);
         assertEquals(VALUE, store.get(KEY).get());
         store.set(KEY, null);
@@ -50,25 +50,25 @@ public abstract class AbstractStoreTests<S extends Store> implements TestsConsta
 
     @Test
     public void testMissingObject() {
-        final S store = buildStore();
+        final var store = buildStore();
         assertFalse(store.get(KEY).isPresent());
     }
 
     @Test
     public void testNullKeyGet() {
-        final S store = buildStore();
+        final var store = buildStore();
         TestsHelper.expectException(() -> store.get(null), TechnicalException.class, "key cannot be null");
     }
 
     @Test
     public void testNullKeySet() {
-        final S store = buildStore();
+        final var store = buildStore();
         TestsHelper.expectException(() -> store.set(null, VALUE), TechnicalException.class, "key cannot be null");
     }
 
     @Test
     public void testNullKeyRemove() {
-        final S store = buildStore();
+        final var store = buildStore();
         TestsHelper.expectException(() -> store.remove(null), TechnicalException.class, "key cannot be null");
     }
 }

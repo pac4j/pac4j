@@ -44,14 +44,14 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     public void testHttpSessionStoreGetterAndSetter() {
         final WebContext webContext = MockWebContext.create();
 
-        final SAMLMessageStoreFactory messageStoreFactory = configuration.getSamlMessageStoreFactory();
-        final SAMLMessageStore store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
+        final var messageStoreFactory = configuration.getSamlMessageStoreFactory();
+        final var store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
 
-        final SAML2AuthnRequestBuilder builder = new SAML2AuthnRequestBuilder(configuration);
+        final var builder = new SAML2AuthnRequestBuilder(configuration);
 
-        final SAML2MessageContext context = buildContext();
+        final var context = buildContext();
 
-        final AuthnRequest authnRequest = builder.build(context);
+        final var authnRequest = builder.build(context);
         authnRequest.setAssertionConsumerServiceURL("https://pac4j.org");
 
         store.set(authnRequest.getID(), authnRequest);
@@ -61,20 +61,20 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     }
 
     private SAML2MessageContext buildContext() {
-        final AssertionConsumerService acs = mock(AssertionConsumerService.class);
+        final var acs = mock(AssertionConsumerService.class);
         when(acs.getLocation()).thenReturn("https://pac4j.org");
         when(acs.getIndex()).thenReturn(configuration.getAssertionConsumerServiceIndex());
 
-        final SingleSignOnService ssoService = mock(SingleSignOnService.class);
+        final var ssoService = mock(SingleSignOnService.class);
         when(ssoService.getBinding()).thenReturn(getSaml2Configuration().getAuthnRequestBindingType());
 
-        final IDPSSODescriptor idpDescriptor = mock(IDPSSODescriptor.class);
+        final var idpDescriptor = mock(IDPSSODescriptor.class);
         when(idpDescriptor.getSingleSignOnServices()).thenReturn(Collections.singletonList(ssoService));
 
-        final SPSSODescriptor spDescriptor = mock(SPSSODescriptor.class);
+        final var spDescriptor = mock(SPSSODescriptor.class);
         when(spDescriptor.getAssertionConsumerServices()).thenReturn(Collections.singletonList(acs));
 
-        final SAML2MessageContext context = new SAML2MessageContext();
+        final var context = new SAML2MessageContext();
         context.getSAMLPeerMetadataContext().setRoleDescriptor(idpDescriptor);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         context.getSAMLSelfEntityContext().setEntityId("entity-id");
@@ -87,8 +87,8 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         configuration.setUseNameQualifier(true);
         configuration.setNameIdPolicyFormat("sample-nameid-format");
         configuration.setNameIdPolicyAllowCreate(null);
-        final SAML2AuthnRequestBuilder builder = new SAML2AuthnRequestBuilder(configuration);
-        final SAML2MessageContext context = buildContext();
+        final var builder = new SAML2AuthnRequestBuilder(configuration);
+        final var context = buildContext();
         assertNotNull(builder.build(context));
     }
 

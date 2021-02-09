@@ -224,12 +224,12 @@ public class WeiboProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public WeiboProfile extractUserProfile(final String body) throws HttpAction {
-        final WeiboProfile profile = new WeiboProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = new WeiboProfile();
+        final var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(
                 ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }

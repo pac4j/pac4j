@@ -34,9 +34,9 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     @Override
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("csrfTokenGenerator", csrfTokenGenerator);
-        final String token = csrfTokenGenerator.get(context, sessionStore);
+        final var token = csrfTokenGenerator.get(context, sessionStore);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
-        final Cookie cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
+        final var cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
         if (domain != null) {
             cookie.setDomain(domain);
         } else {

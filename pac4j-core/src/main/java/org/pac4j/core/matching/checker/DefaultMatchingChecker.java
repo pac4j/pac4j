@@ -57,7 +57,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
     public boolean matches(final WebContext context, final SessionStore sessionStore, final String matchersValue,
                            final Map<String, Matcher> matchersMap, final List<Client> clients) {
 
-        final List<Matcher> matchers = computeMatchers(context, sessionStore, matchersValue, matchersMap, clients);
+        final var matchers = computeMatchers(context, sessionStore, matchersValue, matchersMap, clients);
         return matches(context, sessionStore, matchers);
     }
 
@@ -68,7 +68,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
             matchers = computeDefaultMatchers(context, sessionStore, clients);
         } else {
             if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
-                final String matcherNames = substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
+                final var matcherNames = substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
                 matchers = computeDefaultMatchers(context, sessionStore, clients);
                 matchers.addAll(computeMatchersFromNames(matcherNames, matchersMap));
             } else {
@@ -85,7 +85,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
             matchers.add(CSRF_TOKEN_MATCHER);
             return matchers;
         }
-        for (final Client client : clients) {
+        for (final var client : clients) {
             if (client instanceof IndirectClient) {
                 matchers.add(CSRF_TOKEN_MATCHER);
                 return matchers;
@@ -97,12 +97,12 @@ public class DefaultMatchingChecker implements MatchingChecker {
     protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
         assertNotNull("matchersMap", matchersMap);
         final List<Matcher> matchers = new ArrayList<>();
-        final String[] names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
-        final int nb = names.length;
-        for (int i = 0; i < nb; i++) {
-            final String name = names[i].trim();
+        final var names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
+        final var nb = names.length;
+        for (var i = 0; i < nb; i++) {
+            final var name = names[i].trim();
             if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
-                final List<Matcher> results = retrieveMatchers(name, matchersMap);
+                final var results = retrieveMatchers(name, matchersMap);
                 // we must have matchers defined for this name
                 assertTrue(results != null && results.size() > 0,
                     "The matcher '" + name + "' must be defined in the security configuration");
@@ -114,7 +114,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
 
     protected List<Matcher> retrieveMatchers(final String matcherName, final Map<String, Matcher> matchersMap) {
         final List<Matcher> results = new ArrayList<>();
-        for (final Map.Entry<String, Matcher> entry : matchersMap.entrySet()) {
+        for (final var entry : matchersMap.entrySet()) {
             if (areEqualsIgnoreCaseAndTrim(entry.getKey(), matcherName)) {
                 results.add(entry.getValue());
                 break;
@@ -154,8 +154,8 @@ public class DefaultMatchingChecker implements MatchingChecker {
     protected boolean matches(final WebContext context, final SessionStore sessionStore, final List<Matcher> matchers) {
         if (!matchers.isEmpty()) {
             // check matching using matchers: all must be satisfied
-            for (final Matcher matcher : matchers) {
-                final boolean matches = matcher.matches(context, sessionStore);
+            for (final var matcher : matchers) {
+                final var matches = matcher.matches(context, sessionStore);
                 LOGGER.debug("Checking matcher: {} -> {}", matcher, matches);
                 if (!matches) {
                     return false;

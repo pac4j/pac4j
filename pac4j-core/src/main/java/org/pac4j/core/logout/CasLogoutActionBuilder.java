@@ -42,7 +42,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
             return Optional.empty();
         }
 
-        String redirectUrl = serverLogoutUrl;
+        var redirectUrl = serverLogoutUrl;
         if (isNotBlank(targetUrl)) {
             redirectUrl = addParameter(redirectUrl, postLogoutUrlParameter, targetUrl);
         }

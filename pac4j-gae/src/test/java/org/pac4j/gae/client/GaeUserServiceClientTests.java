@@ -56,7 +56,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
-        final GaeUserServiceClient localClient = new GaeUserServiceClient();
+        final var localClient = new GaeUserServiceClient();
         localClient.getRedirectionAction(context, new MockSessionStore());
     }
 
@@ -70,11 +70,11 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final GaeUserCredentials credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final User user = credentials.getUser();
+        final var credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals("", user.getAuthDomain());
-        final GaeUserServiceProfile profile =
+        final var profile =
             (GaeUserServiceProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         logger.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());

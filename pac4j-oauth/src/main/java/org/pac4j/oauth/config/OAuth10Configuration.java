@@ -29,7 +29,7 @@ public class OAuth10Configuration extends OAuthConfiguration {
     public OAuthService buildService(final WebContext context, final IndirectClient client) {
         init();
 
-        final String finalCallbackUrl = client.computeFinalCallbackUrl(context);
+        final var finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
         return ((DefaultApi10a) api)
             .createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig, null);

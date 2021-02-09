@@ -57,19 +57,19 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public OAuth20Profile extractUserProfile(final String body) {
-        final OAuth20Profile profile = new OAuth20Profile();
-        final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
+        final var profile = new OAuth20Profile();
+        final var json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, getProfileId())));
-            for (final String attribute : getPrimaryAttributes()) {
+            for (final var attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
-            for (final String attribute : getSecondaryAttributes()) {
+            for (final var attribute : getSecondaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
-            for (final Map.Entry<String, String> entry : getProfileAttributes().entrySet()) {
-                final String key = entry.getKey();
-                final String value = entry.getValue();
+            for (final var entry : getProfileAttributes().entrySet()) {
+                final var key = entry.getKey();
+                final var value = entry.getValue();
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, value));
             }
 

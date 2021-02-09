@@ -73,13 +73,13 @@ public class YahooProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public YahooProfile extractUserProfile(final String body) {
-        final YahooProfile profile = (YahooProfile) newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final var profile = (YahooProfile) newProfile();
+        var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "guid")));
-                for (final String attribute : getPrimaryAttributes()) {
+                for (final var attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }
             } else {

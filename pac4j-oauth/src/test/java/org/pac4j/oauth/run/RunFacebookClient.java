@@ -43,7 +43,7 @@ public final class RunFacebookClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final FacebookClient facebookClient = new FacebookClient();
+        final var facebookClient = new FacebookClient();
         facebookClient.setKey("1002857006444390");
         facebookClient.setSecret("c352c9668493d3f9ac3f0fa71f04c187");
         facebookClient.setCallbackUrl(PAC4J_URL);
@@ -61,7 +61,7 @@ public final class RunFacebookClient extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final FacebookProfile profile = (FacebookProfile) userProfile;
+        final var profile = (FacebookProfile) userProfile;
         assertEquals("771361542992890", profile.getId());
         assertEquals(FacebookProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "771361542992890",
                 profile.getTypedId());
@@ -71,15 +71,15 @@ public final class RunFacebookClient extends RunClient {
                 Locale.FRANCE, "https://lookaside.facebook.com/platform/profilepic/?asid=771361542992890&height=50&width=50&ext=",
                 "https://www.facebook.com/app_scoped_user_id/771361542992890/", "New York, New York");
         assertNull(profile.getMiddleName());
-        final List<FacebookObject> languages = profile.getLanguages();
+        final var languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertTrue(CommonHelper.isNotBlank(profile.getThirdPartyId()));
         assertEquals(8, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getAbout());
         assertEquals("03/10/1979", new SimpleDateFormat("MM/dd/yyyy").format(profile.getBirthday()));
-        final List<FacebookEducation> educations = profile.getEducation();
-        FacebookEducation education = educations.get(0);
+        final var educations = profile.getEducation();
+        var education = educations.get(0);
         assertEquals("lycée mixte", education.getSchool().getName());
         assertEquals("High School", education.getType());
         education = educations.get(1);
@@ -89,74 +89,74 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("female", profile.getInterestedIn().get(0));
         assertEquals("New York, New York", profile.getLocationObject().getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
-        final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
+        final var favoriteAthletes = profile.getFavoriteAthletes();
         assertEquals("Surfeuse", favoriteAthletes.get(0).getName());
-        final List<FacebookObject> favoriteTeams = profile.getFavoriteTeams();
+        final var favoriteTeams = profile.getFavoriteTeams();
         assertEquals("Handball Féminin de France", favoriteTeams.get(0).getName());
         assertEquals("citation", profile.getQuotes());
         assertEquals(FacebookRelationshipStatus.MARRIED, profile.getRelationshipStatus());
         assertEquals("Athéisme (desc)", profile.getReligion());
         assertNull(profile.getSignificantOther());
         assertEquals("web site", profile.getWebsite());
-        final List<FacebookWork> works = profile.getWork();
-        final FacebookWork work = works.get(0);
+        final var works = profile.getWork();
+        final var work = works.get(0);
         assertEquals("Employeur", work.getEmployer().getName());
         assertEquals("Paris, France", work.getLocation().getName());
         assertEquals("Architecte Web", work.getPosition().getName());
         assertEquals("Description", work.getDescription());
         assertNull(work.getEndDate());
-        final List<FacebookObject> friends = profile.getFriends();
+        final var friends = profile.getFriends();
         assertEquals(1, friends.size());
-        final FacebookObject friend = friends.get(0);
+        final var friend = friends.get(0);
         assertEquals("Jérôme Leleu", friend.getName());
         assertEquals("874202936003234", friend.getId());
-        final List<FacebookInfo> movies = profile.getMovies();
+        final var movies = profile.getMovies();
         assertEquals(1, movies.size());
-        final FacebookInfo movie = movies.get(0);
+        final var movie = movies.get(0);
         assertEquals("Jean-Claude Van Damme", movie.getName());
         assertEquals("21497365045", movie.getId());
         assertEquals(1330030350000L, movie.getCreatedTime().getTime());
-        final List<FacebookInfo> musics = profile.getMusic();
+        final var musics = profile.getMusic();
         assertEquals(1, musics.size());
-        final FacebookInfo music = musics.get(0);
+        final var music = musics.get(0);
         assertEquals("Hard rock", music.getName());
         assertEquals("112175695466436", music.getId());
         assertEquals(1330030350000L, music.getCreatedTime().getTime());
-        final List<FacebookInfo> books = profile.getBooks();
+        final var books = profile.getBooks();
         assertEquals(1, books.size());
-        final FacebookInfo book = books.get(0);
+        final var book = books.get(0);
         assertEquals("Science fiction", book.getName());
         assertEquals("108157509212483", book.getId());
         assertEquals(null, book.getCategory());
         assertEquals(1330030350000L, book.getCreatedTime().getTime());
-        final List<FacebookInfo> likes = profile.getLikes();
+        final var likes = profile.getLikes();
         assertEquals(9, likes.size());
-        final FacebookInfo like = likes.get(0);
+        final var like = likes.get(0);
         assertEquals("Boxing", like.getName());
         assertEquals("105648929470083", like.getId());
         assertEquals(1360152791000L, like.getCreatedTime().getTime());
-        final List<FacebookPhoto> albums = profile.getAlbums();
+        final var albums = profile.getAlbums();
         assertEquals(3, albums.size());
-        final FacebookPhoto album = albums.get(1);
+        final var album = albums.get(1);
         assertEquals("168023009993416", album.getId());
-        final FacebookObject from = album.getFrom();
+        final var from = album.getFrom();
         assertNull(from);
         assertEquals("Profile Pictures", album.getName());
-        final List<FacebookEvent> events = profile.getEvents();
+        final var events = profile.getEvents();
         assertEquals(2, events.size());
-        final FacebookEvent event = events.get(0);
+        final var event = events.get(0);
         assertEquals("Couronnement", event.getName());
         assertEquals("301212149963131", event.getId());
         assertEquals("attending", event.getRsvpStatus());
         assertNotNull(event.getStartTime());
         assertNotNull(event.getEndTime());
-        final List<FacebookGroup> groups = profile.getGroups();
-        final FacebookGroup group = groups.get(0);
+        final var groups = profile.getGroups();
+        final var group = groups.get(0);
         assertEquals("Dev ScribeUP", group.getName());
         assertEquals("167694120024728", group.getId());
-        final List<FacebookMusicListen> musicListens = profile.getMusicListens();
+        final var musicListens = profile.getMusicListens();
         assertNull(musicListens);
-        final FacebookPicture picture = profile.getPicture();
+        final var picture = profile.getPicture();
         assertFalse(picture.getSilhouette());
         assertEquals(35, profile.getAttributes().size());
     }

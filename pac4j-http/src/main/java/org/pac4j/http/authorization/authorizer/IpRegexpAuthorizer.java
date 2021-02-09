@@ -35,7 +35,7 @@ public class IpRegexpAuthorizer implements Authorizer {
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profile) {
         CommonHelper.assertNotNull("pattern", pattern);
 
-        final String ip = context.getRemoteAddr();
+        final var ip = context.getRemoteAddr();
         return this.pattern.matcher(ip).matches();
     }
 

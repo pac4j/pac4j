@@ -38,11 +38,11 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
-            final String sessionId = sessionStore.getSessionId(context, true).get();
-            final Optional<Object> optTrackableSession = sessionStore.getTrackableSession(context);
+            final var sessionId = sessionStore.getSessionId(context, true).get();
+            final var optTrackableSession = sessionStore.getTrackableSession(context);
 
             if (optTrackableSession.isPresent()) {
-                final Object trackableSession = optTrackableSession.get();
+                final var trackableSession = optTrackableSession.get();
                 logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
                 logger.debug("sessionId: {}", sessionId);
                 store.set(key, trackableSession);
@@ -60,9 +60,9 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
-            final String currentSessionId = sessionStore.getSessionId(context, true).get();
+            final var currentSessionId = sessionStore.getSessionId(context, true).get();
             logger.debug("currentSessionId: {}", currentSessionId);
-            final String sessionToKey = (String) store.get(currentSessionId).orElse(null);
+            final var sessionToKey = (String) store.get(currentSessionId).orElse(null);
             logger.debug("-> key: {}", key);
             store.remove(currentSessionId);
 
@@ -77,13 +77,13 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     protected void destroy(final WebContext context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final ProfileManager manager = getProfileManager(context, sessionStore);
+        final var manager = getProfileManager(context, sessionStore);
         manager.removeProfiles();
         logger.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session
         if (destroySession) {
             logger.debug("destroy the whole session");
-            final boolean invalidated = sessionStore.destroySession(context);
+            final var invalidated = sessionStore.destroySession(context);
             if (!invalidated) {
                 logger.error("The session has not been invalidated");
             }
@@ -92,7 +92,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     @Override
     public void destroySessionBack(final WebContext context, final SessionStore sessionStore, final String key) {
-        final Optional<Object> optTrackableSession = store.get(key);
+        final var optTrackableSession = store.get(key);
         logger.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
         if (!optTrackableSession.isPresent()) {
             logger.error("No trackable session found for back channel logout. Either the session store does not support to track session "
@@ -104,12 +104,12 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
             if (sessionStore == null) {
                 logger.error("No session store available for this web context");
             } else {
-                final Optional<SessionStore> optNewSessionStore = sessionStore
+                final var optNewSessionStore = sessionStore
                     .buildFromTrackableSession(context, optTrackableSession.get());
                 if (optNewSessionStore.isPresent()) {
-                    final SessionStore newSessionStore = optNewSessionStore.get();
+                    final var newSessionStore = optNewSessionStore.get();
                     logger.debug("newSesionStore: {}", newSessionStore);
-                    final String sessionId = newSessionStore.getSessionId(context, true).get();
+                    final var sessionId = newSessionStore.getSessionId(context, true).get();
                     logger.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
@@ -126,7 +126,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         final Optional optKey = store.get(oldSessionId);
         logger.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
         if (optKey.isPresent()) {
-            final String key = (String) optKey.get();
+            final var key = (String) optKey.get();
             store.remove(key);
             store.remove(oldSessionId);
             recordSession(context, sessionStore, key);

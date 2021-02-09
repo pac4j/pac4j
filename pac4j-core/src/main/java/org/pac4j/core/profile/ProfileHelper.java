@@ -41,7 +41,7 @@ public final class ProfileHelper {
      */
     public static UserProfile buildUserProfileByClassCompleteName(final String completeName) {
         try {
-            final Constructor constructor = CommonHelper.getConstructor(completeName);
+            final var constructor = CommonHelper.getConstructor(completeName);
             return (UserProfile) constructor.newInstance();
         } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException
                  | InstantiationException e) {
@@ -57,7 +57,7 @@ public final class ProfileHelper {
      * @return the (optional) profile
      */
     public static <U extends UserProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
-        final Optional<U> profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
+        final var profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
         if (profile.isPresent()) {
             return profile;
         } else {
@@ -84,10 +84,10 @@ public final class ProfileHelper {
      */
     public static String sanitizeIdentifier(final Object id) {
         if (id != null) {
-            String sId = id.toString();
+            var sId = id.toString();
             if (sId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-                final String profileClass = substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
-                for (final String profileClassPrefix : getProfileClassPrefixes()) {
+                final var profileClass = substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                for (final var profileClassPrefix : getProfileClassPrefixes()) {
                     if (profileClass.startsWith(profileClassPrefix)) {
                         return sId.substring(profileClass.length() + 1);
                     }

@@ -39,11 +39,11 @@ public class WebServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         String r = null;
-        final List<String> parameterList = session.getParameters().get("r");
+        final var parameterList = session.getParameters().get("r");
         if (parameterList != null && parameterList.size() > 0) {
             r = parameterList.get(0);
         }
-        final ServerResponse response = responses.get(r);
+        final var response = responses.get(r);
         if (response != null) {
             return newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
         } else {

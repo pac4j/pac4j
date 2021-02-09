@@ -17,7 +17,7 @@ public final class ChainingConverterTests {
 
     @Test
     public void testChain() {
-        ChainingConverter chain = new ChainingConverter(List.of(Converters.STRING, Converters.LOCALE));
+        var chain = new ChainingConverter(List.of(Converters.STRING, Converters.LOCALE));
         assertNotNull(chain.convert("english"));
         assertNotNull(chain.convert(List.of("english")));
         assertNotNull(chain.convert(Locale.ENGLISH));

@@ -30,21 +30,21 @@ public final class HeaderExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveHeaderOk() {
-        final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
-        final TokenCredentials credentials = (TokenCredentials) extractor.extract(context, null).get();
+        final var context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
+        final var credentials = (TokenCredentials) extractor.extract(context, null).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testBadHeader() {
-        final MockWebContext context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
-        final Optional<Credentials> credentials = extractor.extract(context, null);
+        final var context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
+        final var credentials = extractor.extract(context, null);
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testBadPrefix() {
-        final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
+        final var context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
         TestsHelper.expectException(() -> extractor.extract(context, null), CredentialsException.class,
             "Wrong prefix for header: " + GOOD_HEADER);
     }

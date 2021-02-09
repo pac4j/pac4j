@@ -48,7 +48,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
         this.authParams = new HashMap<>();
         // add scope
-        final String scope = configuration.getScope();
+        final var scope = configuration.getScope();
         if (CommonHelper.isNotBlank(scope)) {
             this.authParams.put(OidcConfiguration.SCOPE, scope);
         } else {
@@ -58,7 +58,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         // add response type
         this.authParams.put(OidcConfiguration.RESPONSE_TYPE, configuration.getResponseType());
         // add response mode?
-        final String responseMode = configuration.getResponseMode();
+        final var responseMode = configuration.getResponseMode();
         if (CommonHelper.isNotBlank(responseMode)) {
             this.authParams.put(OidcConfiguration.RESPONSE_MODE, responseMode);
         }
@@ -71,8 +71,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
-        final Map<String, String> params = buildParams();
-        final String computedCallbackUrl = client.computeFinalCallbackUrl(context);
+        final var params = buildParams();
+        final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
         addStateAndNonceParameters(context, sessionStore, params);
@@ -81,7 +81,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
             params.put(OidcConfiguration.MAX_AGE, configuration.getMaxAge().toString());
         }
 
-        final String location = buildAuthenticationRequestUrl(params);
+        final var location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
@@ -94,21 +94,21 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     protected void addStateAndNonceParameters(final WebContext context, final SessionStore sessionStore, final Map<String, String> params) {
         // Init state for CSRF mitigation
         if (configuration.isWithState()) {
-            final State state = new State(configuration.getStateGenerator().generateValue(context, sessionStore));
+            final var state = new State(configuration.getStateGenerator().generateValue(context, sessionStore));
             params.put(OidcConfiguration.STATE, state.getValue());
             sessionStore.set(context, client.getStateSessionAttributeName(), state);
         }
 
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
-            final Nonce nonce = new Nonce();
+            final var nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
             sessionStore.set(context, client.getNonceSessionAttributeName(), nonce.getValue());
         }
 
-        CodeChallengeMethod pkceMethod = configuration.findPkceMethod();
+        var pkceMethod = configuration.findPkceMethod();
         if (pkceMethod != null) {
-            final CodeVerifier verfifier = new CodeVerifier(
+            final var verfifier = new CodeVerifier(
                     configuration.getCodeVerifierGenerator().generateValue(context, sessionStore));
             sessionStore.set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
             params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());

@@ -27,18 +27,18 @@ public class CasRestProfileJwtTest implements TestsConstants {
 
     @Test
     public void testGenerateAuthenticate() {
-        final String signingSecret = CommonHelper.randomString(32);
-        final String encryptionSecret = CommonHelper.randomString(32);
-        final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
+        final var signingSecret = CommonHelper.randomString(32);
+        final var encryptionSecret = CommonHelper.randomString(32);
+        final var generator = new JwtGenerator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
             new SecretEncryptionConfiguration(encryptionSecret, JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256));
-        final CasRestProfile casRestProfile = new CasRestProfile(TGT_ID, USERNAME);
+        final var casRestProfile = new CasRestProfile(TGT_ID, USERNAME);
         assertNotNull(casRestProfile.getTicketGrantingTicketId());
 
-        String token = generator.generate(casRestProfile);
-        final JwtAuthenticator jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
+        var token = generator.generate(casRestProfile);
+        final var jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
             new SecretEncryptionConfiguration(encryptionSecret, JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256));
         jwtAuthenticator.setExpirationTime(DateTime.now().plusMinutes(5).toDate());
-        final CasRestProfile newCasProfile = (CasRestProfile) jwtAuthenticator.validateToken(token);
+        final var newCasProfile = (CasRestProfile) jwtAuthenticator.validateToken(token);
         assertEquals(TGT_ID, newCasProfile.getTicketGrantingTicketId());
     }
 }

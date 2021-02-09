@@ -31,7 +31,7 @@ public final class RunWechatClient extends RunClient {
 //        System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\Administrator\\cacerts");
 //        System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 //        System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
-        final RunWechatClient runWechatClient = new RunWechatClient();
+        final var runWechatClient = new RunWechatClient();
         runWechatClient.run();
     }
 
@@ -47,7 +47,7 @@ public final class RunWechatClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final WechatClient wechatClient = new WechatClient();
+        final var wechatClient = new WechatClient();
         final String apiKey;
         final String apiSecret;
         final String callbackUrl;
@@ -80,7 +80,7 @@ public final class RunWechatClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final WechatProfile profile = (WechatProfile) userProfile;
+        final var profile = (WechatProfile) userProfile;
         String openid;
         // Note: different apiKey get the same user's uid differently, headimgurl may also be different.
         if (QRCODE) {

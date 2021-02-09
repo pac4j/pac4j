@@ -36,7 +36,7 @@ public class KeycloakRolesAuthorizationGeneratorTests {
 
     @Test
     public void test() {
-        final KeycloakOidcProfile profile = new KeycloakOidcProfile();
+        final var profile = new KeycloakOidcProfile();
         final AccessToken accessToken = new BearerAccessToken(ACCESS_TOKEN);
         profile.setAccessToken(accessToken);
         generator.generate(MockWebContext.create(), new MockSessionStore(), profile);
