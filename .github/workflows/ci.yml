@@ -24,6 +24,7 @@ jobs:
               run: mvn -B clean install
 
     deploy:
+        if: startsWith(github.ref, 'refs/heads/')
         runs-on: ubuntu-latest
         needs: [build]
         steps:
@@ -36,4 +37,4 @@ jobs:
                   server-username: ${{ secrets.SONATYPE_USER }}
                   server-password: ${{ secrets.SONATYPE_PWD }}
             - name: Deploy to Sonatype
-              run: chmod -R 777 ./ci/*.sh && ./ci/deploy-to-sonatype.sh
+              run: mvn -B -DskipTests deploy
