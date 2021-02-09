@@ -63,7 +63,12 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
             try (OutputStream spMetadataOutputStream = destination.getOutputStream()) {
                 spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
             }
-            return destination.exists();
+            if (destination.exists()) {
+                if (isSignMetadata()) {
+                    getMetadataSigner().sign(metadataResource.getFile());
+                }
+                return true;
+            }
         }
         return false;
     }

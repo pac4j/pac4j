@@ -53,32 +53,46 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final boolean logoutEndpoint = context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
-            .isPresent();
         final SAML2MessageContext samlContext = this.contextProvider.buildContext(context, sessionStore);
+        final boolean logoutEndpoint = isLogoutEndpointRequest(context, samlContext);
         if (logoutEndpoint) {
-            // SAML logout request/response
-            this.logoutProfileHandler.receive(samlContext);
-
-            // return a logout response if necessary
-            final LogoutResponse logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
-            this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
-                samlContext.getSAMLBindingContext().getRelayState());
-
-            final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
-            if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-                final String content = adapter.getOutgoingContent();
-                throw HttpActionHelper.buildFormPostContentAction(context, content);
-            } else {
-                final String location = adapter.getRedirectUrl();
-                throw HttpActionHelper.buildRedirectUrlAction(context, location);
-            }
-
-        } else {
-            // SAML authn response
-            final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-            return Optional.ofNullable(credentials);
+            receiveLogout(samlContext);
+            sendLogoutResponse(samlContext);
+            adaptLogoutResponseToBinding(context, samlContext);
+            return Optional.empty();
         }
+        return receiveLogin(samlContext, context);
+    }
+
+    protected Optional<Credentials> receiveLogin(final SAML2MessageContext samlContext, final WebContext context) {
+        final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
+        return Optional.ofNullable(credentials);
+    }
+
+    protected void adaptLogoutResponseToBinding(final WebContext context, final SAML2MessageContext samlContext) {
+        final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
+        if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+            final String content = adapter.getOutgoingContent();
+            throw HttpActionHelper.buildFormPostContentAction(context, content);
+        } else {
+            final String location = adapter.getRedirectUrl();
+            throw HttpActionHelper.buildRedirectUrlAction(context, location);
+        }
+    }
+
+    protected void sendLogoutResponse(final SAML2MessageContext samlContext) {
+        final LogoutResponse logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
+        this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
+            samlContext.getSAMLBindingContext().getRelayState());
+    }
+
+    protected void receiveLogout(final SAML2MessageContext samlContext) {
+        this.logoutProfileHandler.receive(samlContext);
+    }
+
+    protected boolean isLogoutEndpointRequest(final WebContext context,
+                                              final SAML2MessageContext samlContext) {
+        return context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER).isPresent();
     }
 
     public SAML2LogoutResponseBuilder getSaml2LogoutResponseBuilder() {

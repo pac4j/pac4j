@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
+import net.shibboleth.utilities.java.support.net.URIComparator;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -9,6 +10,7 @@ import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.SessionIndex;
 import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
@@ -16,13 +18,16 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Validator for SAML logout requests/responses from the IdP.
@@ -43,10 +48,16 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      */
     private boolean actionOnSuccess = true;
 
+    /**
+     * Expected destination endpoint when validating saml2 logout responses.
+     * If left blank, will use the SLO endpoint from metadata context.
+     */
+    private String expectedDestination;
+
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
                                 final LogoutHandler logoutHandler, final String postLogoutURL,
-                                final ReplayCacheProvider replayCache) {
-        super(engine, decrypter, logoutHandler, replayCache);
+                                final ReplayCacheProvider replayCache, final URIComparator uriComparator) {
+        super(engine, decrypter, logoutHandler, replayCache, uriComparator);
         this.postLogoutURL = postLogoutURL;
     }
 
@@ -92,8 +103,8 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      * Validates the SAML logout request.
      *
      * @param logoutRequest the logout request
-     * @param context the context
-     * @param engine the signature engine
+     * @param context       the context
+     * @param engine        the signature engine
      */
     protected void validateLogoutRequest(final LogoutRequest logoutRequest, final SAML2MessageContext context,
                                          final SignatureTrustEngine engine) {
@@ -114,6 +125,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             nameId = decryptEncryptedId(encryptedID, decrypter);
         }
 
+        final SAML2Credentials.SAMLNameID samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
         String sessionIndex = null;
         final List<SessionIndex> sessionIndexes = logoutRequest.getSessionIndexes();
         if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
@@ -123,7 +135,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             }
         }
 
-        final String sloKey = computeSloKey(sessionIndex, nameId);
+        final String sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
             final String bindingUri = context.getSAMLBindingContext().getBindingUri();
             logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
@@ -139,11 +151,11 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      * Validates the SAML logout response.
      *
      * @param logoutResponse the logout response
-     * @param context the context
-     * @param engine the signature engine
+     * @param context        the context
+     * @param engine         the signature engine
      */
     protected void validateLogoutResponse(final LogoutResponse logoutResponse, final SAML2MessageContext context,
-                                               final SignatureTrustEngine engine) {
+                                          final SignatureTrustEngine engine) {
 
         if (logger.isTraceEnabled()) {
             logger.trace("Validating logout response:\n{}", Configuration.serializeSamlObject(logoutResponse));
@@ -156,7 +168,23 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
         validateIssuerIfItExists(logoutResponse.getIssuer(), context);
 
-        verifyEndpoint(context.getSPSSODescriptor().getSingleLogoutServices().get(0), logoutResponse.getDestination());
+        validateDestinationEndpoint(logoutResponse, context);
+    }
+
+    protected void validateDestinationEndpoint(final LogoutResponse logoutResponse, final SAML2MessageContext context) {
+        final List<String> expected = new ArrayList<>();
+        if (StringUtils.isBlank(this.expectedDestination)) {
+            final Endpoint endpoint = Objects.requireNonNull(context.getSPSSODescriptor().getSingleLogoutServices().get(0));
+            if (endpoint.getLocation() != null) {
+                expected.add(endpoint.getLocation());
+            }
+            if (endpoint.getResponseLocation() != null) {
+                expected.add(endpoint.getResponseLocation());
+            }
+        } else {
+            expected.add(this.expectedDestination);
+        }
+        verifyEndpoint(expected, logoutResponse.getDestination());
     }
 
     public void setActionOnSuccess(final boolean actionOnSuccess) {
@@ -167,7 +195,19 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         this.postLogoutURL = postLogoutURL;
     }
 
-    @Override
-    public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
+    public void setExpectedDestination(final String expectedDestination) {
+        this.expectedDestination = expectedDestination;
+    }
+
+    public String getPostLogoutURL() {
+        return postLogoutURL;
+    }
+
+    public boolean isActionOnSuccess() {
+        return actionOnSuccess;
+    }
+
+    public String getExpectedDestination() {
+        return expectedDestination;
     }
 }

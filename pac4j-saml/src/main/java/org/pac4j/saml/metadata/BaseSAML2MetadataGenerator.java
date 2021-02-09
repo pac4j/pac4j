@@ -4,7 +4,6 @@ import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
-import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
@@ -38,19 +37,13 @@ import org.opensaml.saml.saml2.metadata.ServiceName;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.saml.saml2.metadata.SurName;
 import org.opensaml.saml.saml2.metadata.TelephoneNumber;
-import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
-import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
 import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.opensaml.xmlsec.signature.support.SignatureConstants;
-import org.opensaml.xmlsec.signature.support.SignatureException;
-import org.opensaml.xmlsec.signature.support.SignatureSupport;
 import org.pac4j.saml.crypto.CredentialProvider;
-import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
@@ -124,6 +117,8 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
         SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
 
+    private SAML2MetadataSigner metadataSigner;
+
     @Override
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
         final AbstractBatchMetadataResolver resolver;
@@ -168,19 +163,12 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     }
 
     protected void signMetadata(final EntityDescriptor descriptor) {
-        final SignatureSigningParameters signingParameters = new SignatureSigningParameters();
-        signingParameters.setKeyInfoGenerator(credentialProvider.getKeyInfoGenerator());
-        signingParameters.setSigningCredential(credentialProvider.getCredential());
-        signingParameters.setSignatureAlgorithm(getSignatureAlgorithms().get(0));
-        signingParameters.setSignatureReferenceDigestMethod(getSignatureReferenceDigestMethods().get(0));
-        signingParameters.setSignatureCanonicalizationAlgorithm(
-            SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-
-        try {
-            SignatureSupport.signObject(descriptor, signingParameters);
-        } catch (final SecurityException | MarshallingException | SignatureException e) {
-            throw new SAMLException(e.getMessage(), e);
+        if (this.metadataSigner == null) {
+            this.metadataSigner = new DefaultSAML2MetadataSigner(this.credentialProvider,
+                getSignatureAlgorithms().get(0),
+                getSignatureReferenceDigestMethods().get(0));
         }
+        this.metadataSigner.sign(descriptor);
     }
 
     protected Extensions generateMetadataExtensions() {
@@ -650,5 +638,13 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
             filteredAlgorithms.removeAll(this.blackListedSignatureSigningAlgorithms);
         }
         return filteredAlgorithms;
+    }
+
+    public SAML2MetadataSigner getMetadataSigner() {
+        return metadataSigner;
+    }
+
+    public void setMetadataSigner(final SAML2MetadataSigner metadataSigner) {
+        this.metadataSigner = metadataSigner;
     }
 }

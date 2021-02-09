@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
+import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.opensaml.saml.saml2.encryption.Decrypter;
@@ -111,7 +112,8 @@ public class SAML2LogoutMessageReceiverTest {
             mock(Decrypter.class),
             mock(LogoutHandler.class),
             postLogoutUrl,
-            mock(ReplayCacheProvider.class)
+            mock(ReplayCacheProvider.class),
+            new BasicURLComparator()
         );
         return validator;
     }

@@ -13,6 +13,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Credentials containing the nameId of the SAML subject and all of its attributes.
@@ -37,31 +38,13 @@ public class SAML2Credentials extends Credentials {
 
     private List<String> authnContexts;
 
-    public SAML2Credentials(final NameID nameId, final String issuerId, final List<Attribute> samlAttributes,
-                            final Conditions conditions,
+    public SAML2Credentials(final SAMLNameID nameId, final String issuerId,
+                            final List<SAMLAttribute> samlAttributes, final Conditions conditions,
                             final String sessionIndex, final List<String> authnContexts) {
-        this.nameId = new SAMLNameID();
-        this.nameId.setNameQualifier(nameId.getNameQualifier());
-        this.nameId.setFormat(nameId.getFormat());
-        this.nameId.setSpNameQualifier(nameId.getSPNameQualifier());
-        this.nameId.setSpProviderId(nameId.getSPProvidedID());
-        this.nameId.setValue(nameId.getValue());
-
+        this.nameId = nameId;
         this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;
-        this.attributes = new ArrayList<>();
-        samlAttributes.forEach(attribute -> {
-            final SAMLAttribute samlAttribute = new SAMLAttribute();
-            samlAttribute.setFriendlyName(attribute.getFriendlyName());
-            samlAttribute.setName(attribute.getName());
-            samlAttribute.setNameFormat(attribute.getNameFormat());
-            attribute.getAttributeValues()
-                .stream()
-                .map(XMLObject::getDOM)
-                .filter(dom -> dom != null && dom.getTextContent() != null)
-                .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
-            this.attributes.add(samlAttribute);
-        });
+        this.attributes = samlAttributes;
         this.conditions = new SAMLConditions();
         this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
         this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
@@ -147,6 +130,25 @@ public class SAML2Credentials extends Credentials {
         private String spProviderId;
         private String value;
 
+        public static SAMLNameID from(final NameID nameId) {
+            final SAMLNameID result = new SAMLNameID();
+            result.setNameQualifier(nameId.getNameQualifier());
+            result.setFormat(nameId.getFormat());
+            result.setSpNameQualifier(nameId.getSPNameQualifier());
+            result.setSpProviderId(nameId.getSPProvidedID());
+            result.setValue(nameId.getValue());
+            return result;
+        }
+
+        public static SAMLNameID from(final SAMLAttribute attribute) {
+            final SAMLNameID result = new SAMLNameID();
+            result.setValue(attribute.getAttributeValues().get(0));
+            result.setFormat(attribute.getNameFormat());
+            result.setNameQualifier(attribute.getName());
+            result.setSpNameQualifier(attribute.getFriendlyName());
+            return result;
+        }
+
         public String getValue() {
             return value;
         }
@@ -205,6 +207,21 @@ public class SAML2Credentials extends Credentials {
         private String name;
         private String nameFormat;
         private List<String> attributeValues = new ArrayList<>();
+
+        public static List<SAMLAttribute> from(final List<Attribute> samlAttributes) {
+            return samlAttributes.stream().map(attribute -> {
+                final SAMLAttribute samlAttribute = new SAMLAttribute();
+                samlAttribute.setFriendlyName(attribute.getFriendlyName());
+                samlAttribute.setName(attribute.getName());
+                samlAttribute.setNameFormat(attribute.getNameFormat());
+                attribute.getAttributeValues()
+                    .stream()
+                    .map(XMLObject::getDOM)
+                    .filter(dom -> dom != null && dom.getTextContent() != null)
+                    .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
+                return samlAttribute;
+            }).collect(Collectors.toList());
+        }
 
         public String getFriendlyName() {
             return friendlyName;

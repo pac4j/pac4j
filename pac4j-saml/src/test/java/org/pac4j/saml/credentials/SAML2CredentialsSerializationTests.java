@@ -57,8 +57,8 @@ public class SAML2CredentialsSerializationTests {
         attr.setName("pac4j");
         attr.setNameFormat("pac4j");
         attributes.add(attr);
-        final SAML2Credentials credentials = new SAML2Credentials(nameid, "example.issuer.com",
-            attributes, conditions, "session-index", contexts);
+        final SAML2Credentials credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid), "example.issuer.com",
+            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
         final byte[] data = SerializationUtils.serialize(credentials);
         final SAML2Credentials result = (SAML2Credentials) SerializationUtils.deserialize(data);
         assertNotNull(result);

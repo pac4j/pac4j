@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiver {
 
-    protected final SAML2ResponseValidator validator;
+    protected SAML2ResponseValidator validator;
 
     public AbstractSAML2MessageReceiver(final SAML2ResponseValidator validator) {
         this.validator = validator;
@@ -92,6 +92,10 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         decodedCtx.setSessionStore(context.getSessionStore());
 
         return this.validator.validate(decodedCtx);
+    }
+
+    public void setValidator(final SAML2ResponseValidator validator) {
+        this.validator = validator;
     }
 
     protected abstract Optional<Endpoint> getEndpoint(SAML2MessageContext context, StatusResponseType response);
