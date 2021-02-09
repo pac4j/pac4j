@@ -118,7 +118,7 @@ public final class Cookie {
     public void setSameSitePolicy(String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
 
     public static void addCookieHeaderToResponse(Cookie cookie, final HttpServletResponse response) {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(String.format("%s=%s;", cookie.getName(), cookie.getValue()));
 
         if (cookie.getMaxAge() > -1) {
@@ -129,7 +129,7 @@ public final class Cookie {
         }
         builder.append(String.format(" Path=%s;", CommonHelper.isNotBlank(cookie.getPath()) ? cookie.getPath() : "/"));
 
-        String sameSitePolicy = cookie.getSameSitePolicy() == null ? "none" : cookie.getSameSitePolicy().toLowerCase();
+        var sameSitePolicy = cookie.getSameSitePolicy() == null ? "none" : cookie.getSameSitePolicy().toLowerCase();
         switch (sameSitePolicy) {
             case "strict":
                 builder.append(" SameSite=Strict;");
@@ -148,7 +148,7 @@ public final class Cookie {
         if (cookie.isHttpOnly()) {
             builder.append(" HttpOnly;");
         }
-        String value = builder.toString();
+        var value = builder.toString();
         if (value.endsWith(";")) {
             value = value.substring(0, value.length() - 1);
         }
