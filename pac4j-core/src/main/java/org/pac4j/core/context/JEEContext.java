@@ -31,9 +31,8 @@ public class JEEContext implements WebContext {
     /**
      * Custom method for adding cookie because the servlet-api version doesn't support SameSite attributes.
      * @param cookie pac4j Cookie object
-     * @param response Http Response
      */
-    private static void addCookieHeaderToResponse(Cookie cookie, final HttpServletResponse response) {
+    private String createCookieHeader(Cookie cookie) {
         var builder = new StringBuilder();
         builder.append(String.format("%s=%s;", cookie.getName(), cookie.getValue()));
 
@@ -72,7 +71,7 @@ public class JEEContext implements WebContext {
         if (value.endsWith(";")) {
             value = value.substring(0, value.length() - 1);
         }
-        response.addHeader("Set-Cookie", value);
+        return value;
     }
 
     private final HttpServletRequest request;
@@ -222,7 +221,7 @@ public class JEEContext implements WebContext {
 
     @Override
     public void addResponseCookie(Cookie cookie) {
-        addCookieHeaderToResponse(cookie, this.response);
+        this.response.addHeader("Set-Cookie", createCookieHeader(cookie));
     }
 
     /**
