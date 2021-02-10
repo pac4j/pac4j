@@ -28,6 +28,7 @@ title: Release notes&#58;
 - SAML2 logout validation can be given an expected destination so as to not just rely on the SLO endpoint defined in the SAML2 metadata.
 - SAML2 requested authentication context class refs are now checked and enforced again in SAML responses.
 - The presence of `NameID` elements in SAML2 responses is now made optional, if the `SAML2Configuration` is configured to build the final credential using a SAML2 attribute found in the assertion. If the attribute is not found or is undefined, `NameID` is expected as the default.
+- Handle the "same site policy" in cookies. Renamed `ContextHelper` as `WebContextHelper`
 
 **v4.4.0**:
 - For SAML IdP metadata defined as files, the metadata are reloaded if the file is changed

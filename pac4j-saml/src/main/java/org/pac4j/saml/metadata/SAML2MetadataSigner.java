@@ -8,7 +8,7 @@ import java.io.File;
  * This is {@link SAML2MetadataSigner}.
  *
  * @author Misagh Moayyed
- * @since 6.4.0
+ * @since 5.0.0
  */
 public interface SAML2MetadataSigner {
     default void sign(final EntityDescriptor descriptor) {}

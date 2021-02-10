@@ -44,9 +44,9 @@ echo -e "Adding changes to the git index...\n"
 git add -f . > /dev/null
 
 echo -e "Committing changes...\n"
-#git commit -m "Published documentation from $GITHUB_REF to [gh-pages]. Build ${GITHUB_RUN_ID}/${GITHUB_RUN_NUMBER} " > /dev/null
+git commit -m "Published documentation from $GITHUB_REF to [gh-pages]. Build ${GITHUB_RUN_ID}/${GITHUB_RUN_NUMBER} " > /dev/null
 
 echo -e "Pushing upstream to origin...\n"
-#git push -fq origin gh-pages > /dev/null
+git push -fq origin gh-pages > /dev/null
 
 echo -e "Successfully published documentation to [gh-pages] branch.\n"

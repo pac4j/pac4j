@@ -11,7 +11,7 @@ import java.io.File;
  * This is {@link XMLSecSAML2MetadataSigner}.
  *
  * @author Misagh Moayyed
- * @since 6.4.0
+ * @since 5.0.0
  */
 public class XMLSecSAML2MetadataSigner implements SAML2MetadataSigner {
     private final SAML2Configuration configuration;

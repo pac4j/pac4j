@@ -52,5 +52,5 @@ jobs:
               uses: actions/setup-java@v1
               with:
                   java-version: ${{ env.JDK_CURRENT }}
-            - name: Generate doc
+            - name: Generate and push doc
               run: chmod -R 777 ./ci/*.sh && ./ci/push-doc-to-gh-pages.sh

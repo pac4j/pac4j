@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
  * This is {@link ExcludingParametersURIComparator}.
  *
  * @author Misagh Moayyed
- * @since 6.4.0
+ * @since 5.0.0
  */
 public class ExcludingParametersURIComparator implements URIComparator {
     @Override

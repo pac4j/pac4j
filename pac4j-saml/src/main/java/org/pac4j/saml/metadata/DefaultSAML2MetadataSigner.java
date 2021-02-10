@@ -14,7 +14,7 @@ import org.pac4j.saml.exceptions.SAMLException;
  * This is {@link DefaultSAML2MetadataSigner}.
  *
  * @author Misagh Moayyed
- * @since 6.4.0
+ * @since 5.0.0
  */
 public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner{
     protected final CredentialProvider credentialProvider;
