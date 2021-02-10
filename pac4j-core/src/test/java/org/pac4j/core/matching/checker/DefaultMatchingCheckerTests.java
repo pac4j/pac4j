@@ -226,7 +226,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final var context = MockWebContext.create();
         assertTrue(checker.matches(context, new MockSessionStore(), DefaultMatchers.CSRF_TOKEN, new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
-        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
 
     @Test
@@ -234,7 +234,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final var context = MockWebContext.create();
         assertTrue(checker.matches(context, new MockSessionStore(), "", new HashMap<>(), new ArrayList<>()));
         assertFalse(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
-        assertNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+        assertNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
 
     @Test
@@ -244,7 +244,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         sessionStore.getSessionId(context, true);
         assertTrue(checker.matches(context, sessionStore, "", new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
-        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
 
     @Test
@@ -254,7 +254,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         clients.add(new MockIndirectClient("test"));
         assertTrue(checker.matches(context, new MockSessionStore(), "", new HashMap<>(), clients));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
-        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
 
     @Test
@@ -262,7 +262,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final var context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         assertTrue(checker.matches(context, new MockSessionStore(), DefaultMatchers.CSRF_TOKEN, new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
-        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
 
     @Test

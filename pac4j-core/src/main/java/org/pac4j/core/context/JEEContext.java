@@ -150,8 +150,6 @@ public class JEEContext implements WebContext {
         if (cookies != null) {
             for (final var c : cookies) {
                 final var cookie = new Cookie(c.getName(), c.getValue());
-                cookie.setVersion(c.getVersion());
-                cookie.setComment(c.getComment());
                 cookie.setDomain(c.getDomain());
                 cookie.setHttpOnly(c.isHttpOnly());
                 cookie.setMaxAge(c.getMaxAge());
@@ -164,16 +162,8 @@ public class JEEContext implements WebContext {
     }
 
     @Override
-    public void addResponseCookie(final Cookie cookie) {
-        final var c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
-        c.setVersion(cookie.getVersion());
-        c.setSecure(cookie.isSecure());
-        c.setPath(cookie.getPath());
-        c.setMaxAge(cookie.getMaxAge());
-        c.setHttpOnly(cookie.isHttpOnly());
-        c.setComment(cookie.getComment());
-        c.setDomain(cookie.getDomain());
-        this.response.addCookie(c);
+    public void addResponseCookie(Cookie cookie) {
+        this.response.addHeader("Set-Cookie", WebContextHelper.createCookieHeader(cookie));
     }
 
     /**

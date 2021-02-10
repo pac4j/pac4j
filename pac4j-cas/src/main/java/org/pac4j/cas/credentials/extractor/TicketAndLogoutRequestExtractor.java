@@ -11,7 +11,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -97,7 +97,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     protected boolean isBackLogoutRequest(final WebContext context) {
-        return ContextHelper.isPost(context)
+        return WebContextHelper.isPost(context)
                 && !isMultipartRequest(context)
                 && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).isPresent();
     }
@@ -108,7 +108,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     protected boolean isFrontLogoutRequest(final WebContext context) {
-        return ContextHelper.isGet(context)
+        return WebContextHelper.isGet(context)
                 && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).isPresent();
     }
 

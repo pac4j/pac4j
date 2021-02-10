@@ -2,7 +2,7 @@ package org.pac4j.saml.logout.impl;
 
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -32,7 +32,7 @@ public class SAML2LogoutMessageReceiver extends AbstractSAML2MessageReceiver {
     @Override
     protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
         final AbstractPac4jDecoder decoder;
-        if (ContextHelper.isPost(webContext)) {
+        if (WebContextHelper.isPost(webContext)) {
             decoder = new Pac4jHTTPPostDecoder(webContext);
             try {
                 decoder.setParserPool(Configuration.getParserPool());
@@ -42,7 +42,7 @@ public class SAML2LogoutMessageReceiver extends AbstractSAML2MessageReceiver {
             } catch (final Exception e) {
                 throw new SAMLException("Error decoding POST SAML message", e);
             }
-        } else if (ContextHelper.isGet(webContext)) {
+        } else if (WebContextHelper.isGet(webContext)) {
             decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
 
             try {

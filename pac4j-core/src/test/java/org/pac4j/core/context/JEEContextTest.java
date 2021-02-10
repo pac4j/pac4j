@@ -3,6 +3,7 @@ package org.pac4j.core.context;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,4 +84,47 @@ public final class JEEContextTest implements TestsConstants {
         final var context = new JEEContext(request, response);
         assertEquals(PATH, context.getPath());
     }
+
+    @Test
+    public void testCookie() {
+        HttpServletResponse mockResponse = new MockHttpServletResponse();
+        final var context = new JEEContext(request, mockResponse);
+        Cookie c = new Cookie("thename","thevalue");
+        context.addResponseCookie(c);
+        assertEquals("thename=thevalue; Path=/; Secure; SameSite=None", mockResponse.getHeader("Set-Cookie"));
+    }
+
+    @Test
+    public void testCookieLax() {
+        HttpServletResponse mockResponse = new MockHttpServletResponse();
+        final var context = new JEEContext(request, mockResponse);
+        Cookie c = new Cookie("thename","thevalue");
+        c.setSameSitePolicy("LAX");
+        context.addResponseCookie(c);
+        assertEquals("thename=thevalue; Path=/; SameSite=Lax", mockResponse.getHeader("Set-Cookie"));
+    }
+
+    @Test
+    public void testCookieSecureStrict() {
+        HttpServletResponse mockResponse = new MockHttpServletResponse();
+        final var context = new JEEContext(request, mockResponse);
+        Cookie c = new Cookie("thename","thevalue");
+        c.setSameSitePolicy("strict");
+        c.setSecure(true);
+        context.addResponseCookie(c);
+        assertEquals("thename=thevalue; Path=/; Secure; SameSite=Strict", mockResponse.getHeader("Set-Cookie"));
+    }
+
+    @Test
+    public void testCookieExpires() {
+        HttpServletResponse mockResponse = new MockHttpServletResponse();
+        final var context = new JEEContext(request, mockResponse);
+        Cookie c = new Cookie("thename","thevalue");
+        c.setMaxAge(1000);
+        context.addResponseCookie(c);
+        assertTrue(mockResponse.getHeader("Set-Cookie").matches(
+            "thename=thevalue; Path=/; Max-Age=1000; Expires=.* GMT; Secure; SameSite=None"));
+    }
+
+
 }

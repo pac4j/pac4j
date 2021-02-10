@@ -1,6 +1,6 @@
 package org.pac4j.core.util;
 
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
@@ -48,7 +48,7 @@ public final class HttpActionHelper {
      * @return the appropriate redirection action
      */
     public static RedirectionAction buildRedirectUrlAction(final WebContext context, final String location) {
-        if (ContextHelper.isPost(context) && useModernHttpCodes) {
+        if (WebContextHelper.isPost(context) && useModernHttpCodes) {
             return new SeeOtherAction(location);
         } else {
             return new FoundAction(location);

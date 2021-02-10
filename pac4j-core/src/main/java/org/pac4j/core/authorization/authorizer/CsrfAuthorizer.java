@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.List;
 
-import static org.pac4j.core.context.ContextHelper.*;
+import static org.pac4j.core.context.WebContextHelper.*;
 
 /**
  * Authorizer that checks CSRF tokens.

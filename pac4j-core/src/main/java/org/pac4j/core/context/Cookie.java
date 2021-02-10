@@ -1,7 +1,5 @@
 package org.pac4j.core.context;
 
-import java.util.Date;
-
 import org.pac4j.core.exception.TechnicalException;
 
 /**
@@ -12,14 +10,12 @@ public final class Cookie {
 
     private String name;
     private String value;
-    private int version = 0;
-    private String comment;
     private String domain;
     private int maxAge = -1;
-    private Date expiry;
     private String path;
     private boolean secure;
     private boolean isHttpOnly = false;
+    private String sameSitePolicy;
 
     public Cookie(final String name, final String value) {
         if (name == null || name.length() == 0) {
@@ -45,22 +41,6 @@ public final class Cookie {
         this.value = value;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public String getDomain() {
         return domain;
     }
@@ -75,14 +55,6 @@ public final class Cookie {
 
     public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
-    }
-
-    public Date getExpiry() {
-        return expiry == null ? null : new Date(expiry.getTime());
-    }
-
-    public void setExpiry(Date expiry) {
-        this.expiry = expiry == null ? null : new Date(expiry.getTime());
     }
 
     public String getPath() {
@@ -101,7 +73,6 @@ public final class Cookie {
         this.secure = secure;
     }
 
-
     public boolean isHttpOnly() {
         return isHttpOnly;
     }
@@ -109,4 +80,9 @@ public final class Cookie {
     public void setHttpOnly(boolean httpOnly) {
         isHttpOnly = httpOnly;
     }
+
+    public String getSameSitePolicy() { return sameSitePolicy; }
+
+    public void setSameSitePolicy(String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
+
 }
