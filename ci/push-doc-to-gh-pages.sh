@@ -17,6 +17,9 @@ cd gh-pages
 
 echo -e "Starting to move project documentation over...\n"
 
+export BRANCH=${GITHUB_REF#"refs/heads/"}
+echo -e "BRANCH: $BRANCH"
+
 if [ "$GITHUB_REF" == "refs/heads/master" ]; then
 
     echo -e "Copying new docs from $HOME/docs-latest over to gh-pages...\n"
@@ -24,9 +27,6 @@ if [ "$GITHUB_REF" == "refs/heads/master" ]; then
     echo -e "Copied project documentation...\n"
 
 else
-
-    export BRANCH=${GITHUB_REF#"refs/heads/"}
-    echo -e "BRANCH: $BRANCH"
 
     echo -e "Removing previous documentation from $BRANCH...\n"
     git rm -rf ./"$BRANCH" > /dev/null
@@ -44,7 +44,7 @@ echo -e "Adding changes to the git index...\n"
 git add -f . > /dev/null
 
 echo -e "Committing changes...\n"
-git commit -m "Published documentation from $GITHUB_REF to [gh-pages]. Build ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER} " > /dev/null
+git commit -m "Published doc from $BRANCH to [gh-pages]. Build ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER} " > /dev/null
 
 echo -e "Pushing upstream to origin...\n"
 git push -fq origin gh-pages > /dev/null
