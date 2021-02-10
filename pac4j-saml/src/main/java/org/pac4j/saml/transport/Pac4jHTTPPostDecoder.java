@@ -7,7 +7,7 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.binding.impl.SAMLSOAPDecoderBodyHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.soap.soap11.Envelope;
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 
@@ -30,7 +30,7 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
     protected void doDecode() throws MessageDecodingException {
         final var messageContext = new SAML2MessageContext();
 
-        if (ContextHelper.isPost(context)) {
+        if (WebContextHelper.isPost(context)) {
             final var relayState = this.context.getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);

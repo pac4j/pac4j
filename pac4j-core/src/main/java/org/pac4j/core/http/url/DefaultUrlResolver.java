@@ -1,6 +1,6 @@
 package org.pac4j.core.http.url;
 
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 
@@ -32,9 +32,9 @@ public class DefaultUrlResolver implements UrlResolver {
 
                 sb.append(context.getScheme()).append("://").append(context.getServerName());
 
-                final var notDefaultHttpPort = ContextHelper.isHttp(context) &&
+                final var notDefaultHttpPort = WebContextHelper.isHttp(context) &&
                     context.getServerPort() != HttpConstants.DEFAULT_HTTP_PORT;
-                final var notDefaultHttpsPort = ContextHelper.isHttps(context) &&
+                final var notDefaultHttpsPort = WebContextHelper.isHttps(context) &&
                     context.getServerPort() != HttpConstants.DEFAULT_HTTPS_PORT;
                 if (notDefaultHttpPort || notDefaultHttpsPort) {
                     sb.append(":").append(context.getServerPort());

@@ -1,6 +1,6 @@
 package org.pac4j.core.engine.savedrequest;
 
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -22,7 +22,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
     @Override
     public void save(final WebContext context, final SessionStore sessionStore) {
         final var requestedUrl = getRequestedUrl(context, sessionStore);
-        if (ContextHelper.isPost(context)) {
+        if (WebContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
             final var formPost = HttpActionHelper.buildFormPostContent(context);
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));

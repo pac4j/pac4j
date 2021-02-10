@@ -3,7 +3,7 @@ package org.pac4j.saml.transport;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.pac4j.core.context.ContextHelper;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 
@@ -30,7 +30,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
     protected void doDecode() throws MessageDecodingException {
         final var messageContext = new SAML2MessageContext();
 
-        if (ContextHelper.isGet(context)) {
+        if (WebContextHelper.isGet(context)) {
             final var base64DecodedMessage = this.getBase64DecodedMessage();
             final var inflatedMessage = inflate(base64DecodedMessage);
             final var inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
