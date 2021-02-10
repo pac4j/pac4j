@@ -53,21 +53,21 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
@@ -83,9 +83,9 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
     </tr>
     <tr>
         <td>CAS</td>

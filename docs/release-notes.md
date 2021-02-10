@@ -22,6 +22,17 @@ title: Release notes&#58;
 - Improved responses for unauthenticated users: 401 with "WWW-Authenticate" header or 403 to be compliant with the HTTP spec
 - Default authorizers and matchers can be re-defined by users
 - Separate the `SessionStore` from the `WebContext`
+- Signing operations for SAML2 metadata can now be done using the existing default method or via XMLSec. The choice for the signer component can be decided via `SAML2Configuration`.
+- Ability to specify the SAML2 SLO url in the `SAML2Configuration` and metadata.
+- Options in `SAML2Configuration` to determine how to URLs should be compared when doing endpoint verifications with SAML2 responses.
+- SAML2 logout validation can be given an expected destination so as to not just rely on the SLO endpoint defined in the SAML2 metadata.
+- SAML2 requested authentication context class refs are now checked and enforced again in SAML responses.
+- The presence of `NameID` elements in SAML2 responses is now made optional, if the `SAML2Configuration` is configured to build the final credential using a SAML2 attribute found in the assertion. If the attribute is not found or is undefined, `NameID` is expected as the default.
+- Handle the "same site policy" in cookies. Renamed `ContextHelper` as `WebContextHelper`
+- Using Github Actions instead of Travis for CI
+
+**v4.4.0**:
+- For SAML IdP metadata defined as files, the metadata are reloaded if the file is changed
 
 **v4.3.0**:
 
