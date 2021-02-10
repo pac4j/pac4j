@@ -122,7 +122,8 @@ public final class JEEContextTest implements TestsConstants {
         Cookie c = new Cookie("thename","thevalue");
         c.setMaxAge(1000);
         context.addResponseCookie(c);
-        assertTrue(mockResponse.getHeader("Set-Cookie").matches("thename=thevalue; Path=/; Max-Age=1000; Expires=.* GMT; Secure; SameSite=None"));
+        assertTrue(mockResponse.getHeader("Set-Cookie").matches(
+            "thename=thevalue; Path=/; Max-Age=1000; Expires=.* GMT; Secure; SameSite=None"));
     }
 
 
