@@ -47,5 +47,10 @@ jobs:
         runs-on: ubuntu-latest
         needs: [deploy]
         steps:
+            - uses: actions/checkout@v2
+            - name: Set up JDK
+              uses: actions/setup-java@v1
+              with:
+                  java-version: ${{ env.JDK_CURRENT }}
             - name: Generate doc
               run: chmod -R 777 ./ci/*.sh && ./ci/push-doc-to-gh-pages.sh
