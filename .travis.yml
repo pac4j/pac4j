@@ -1,7 +1,0 @@
-language: java
-
-sudo: false
-
-install: echo "Travis CI is not used anymore"
-script: echo "Travis CI is not used anymore"
-

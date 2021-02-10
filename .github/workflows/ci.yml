@@ -41,3 +41,18 @@ jobs:
               env:
                   MAVEN_USERNAME: ${{ secrets.SONATYPE_USER }}
                   MAVEN_PASSWORD: ${{ secrets.SONATYPE_PWD }}
+
+    doc:
+        if: startsWith(github.ref, 'refs/heads/')
+        runs-on: ubuntu-latest
+        needs: [deploy]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up JDK
+              uses: actions/setup-java@v1
+              with:
+                  java-version: ${{ env.JDK_CURRENT }}
+            - name: Generate and push doc
+              run: chmod -R 777 ./ci/*.sh && ./ci/push-doc-to-gh-pages.sh
+              env:
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
