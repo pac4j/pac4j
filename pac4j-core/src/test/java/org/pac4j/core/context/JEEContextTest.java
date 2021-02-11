@@ -91,17 +91,17 @@ public final class JEEContextTest implements TestsConstants {
         final var context = new JEEContext(request, mockResponse);
         Cookie c = new Cookie("thename","thevalue");
         context.addResponseCookie(c);
-        assertEquals("thename=thevalue; Path=/; Secure; SameSite=None", mockResponse.getHeader("Set-Cookie"));
+        assertEquals("thename=thevalue; Path=/; SameSite=Lax", mockResponse.getHeader("Set-Cookie"));
     }
 
     @Test
-    public void testCookieLax() {
+    public void testCookieNone() {
         HttpServletResponse mockResponse = new MockHttpServletResponse();
         final var context = new JEEContext(request, mockResponse);
         Cookie c = new Cookie("thename","thevalue");
-        c.setSameSitePolicy("LAX");
+        c.setSameSitePolicy("NONE");
         context.addResponseCookie(c);
-        assertEquals("thename=thevalue; Path=/; SameSite=Lax", mockResponse.getHeader("Set-Cookie"));
+        assertEquals("thename=thevalue; Path=/; Secure; SameSite=None", mockResponse.getHeader("Set-Cookie"));
     }
 
     @Test
@@ -123,7 +123,7 @@ public final class JEEContextTest implements TestsConstants {
         c.setMaxAge(1000);
         context.addResponseCookie(c);
         assertTrue(mockResponse.getHeader("Set-Cookie").matches(
-            "thename=thevalue; Path=/; Max-Age=1000; Expires=.* GMT; Secure; SameSite=None"));
+            "thename=thevalue; Path=/; Max-Age=1000; Expires=.* GMT; SameSite=Lax"));
     }
 
 

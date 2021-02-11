@@ -135,6 +135,8 @@ public final class WebContextHelper implements HttpConstants {
 
     /**
      * Custom method for adding cookie because the servlet-api version doesn't support SameSite attributes.
+     * Sets the default SameSite policy to lax which is what most browsers do if the cookie doesn't specify
+     * a SameSite policy.
      * @param cookie pac4j Cookie object
      */
     public static String createCookieHeader(Cookie cookie) {
@@ -153,17 +155,17 @@ public final class WebContextHelper implements HttpConstants {
         }
         builder.append(String.format(" Path=%s;", CommonHelper.isNotBlank(cookie.getPath()) ? cookie.getPath() : "/"));
 
-        var sameSitePolicy = cookie.getSameSitePolicy() == null ? "none" : cookie.getSameSitePolicy().toLowerCase();
+        var sameSitePolicy = cookie.getSameSitePolicy() == null ? "lax" : cookie.getSameSitePolicy().toLowerCase();
         switch (sameSitePolicy) {
             case "strict":
                 builder.append(" SameSite=Strict;");
                 break;
-            case "lax":
-                builder.append(" SameSite=Lax;");
-                break;
             case "none":
-            default:
                 builder.append(" SameSite=None;");
+                break;
+            case "lax":
+            default:
+                builder.append(" SameSite=Lax;");
                 break;
         }
         if (cookie.isSecure() || "none".equals(sameSitePolicy)) {
