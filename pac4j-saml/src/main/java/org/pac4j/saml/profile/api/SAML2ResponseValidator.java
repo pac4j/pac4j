@@ -20,5 +20,5 @@ public interface SAML2ResponseValidator {
      */
     Credentials validate(SAML2MessageContext context);
 
-    void setAcceptedSkew(int acceptedSkew);
+    void setAcceptedSkew(long acceptedSkew);
 }

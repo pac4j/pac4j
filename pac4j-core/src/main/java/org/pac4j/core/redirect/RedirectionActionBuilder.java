@@ -15,6 +15,10 @@ import java.util.Optional;
 @FunctionalInterface
 public interface RedirectionActionBuilder {
 
+    String ATTRIBUTE_FORCE_AUTHN = "ForceAuthn";
+
+    String ATTRIBUTE_PASSIVE = "Passive";
+
     /**
      * Return the appropriate "redirection" action.
      *

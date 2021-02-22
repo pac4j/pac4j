@@ -68,7 +68,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected final ReplayCacheProvider replayCache;
 
     /* maximum skew in seconds between SP and IDP clocks */
-    protected int acceptedSkew = 120;
+    protected long acceptedSkew = 120;
 
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final LogoutHandler logoutHandler,
@@ -182,7 +182,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return isDateValid(issueInstant, 0);
     }
 
-    protected boolean isDateValid(final Instant issueInstant, final int interval) {
+    protected boolean isDateValid(final Instant issueInstant, final long interval) {
         final var now = ZonedDateTime.now(ZoneOffset.UTC);
         final var before = now.plusSeconds(acceptedSkew);
         final var after = now.minusSeconds(acceptedSkew + interval);
@@ -272,7 +272,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     }
 
     @Override
-    public final void setAcceptedSkew(final int acceptedSkew) {
+    public final void setAcceptedSkew(final long acceptedSkew) {
         this.acceptedSkew = acceptedSkew;
     }
 }
