@@ -4,14 +4,13 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
+import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.joda.time.DateTime;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -77,10 +76,10 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
             kpg.initialize(saml2Configuration.getPrivateKeySize());
             final var kp = kpg.genKeyPair();
 
-            final var sigAlgID = new AlgorithmIdentifier(PKCSObjectIdentifiers.sha1WithRSAEncryption, DERNull.INSTANCE);
+            final var sigAlg = saml2Configuration.getCertificateSignatureAlg();
+            final var sigAlgID = new DefaultSignatureAlgorithmIdentifierFinder().find(sigAlg);
             final var dn = InetAddress.getLocalHost().getHostName();
-            final var certificate = createSelfSignedCert(new X500Name("CN=" + dn),
-                saml2Configuration.getCertificateSignatureAlg(), sigAlgID, kp);
+            final var certificate = createSelfSignedCert(new X500Name("CN=" + dn), sigAlg, sigAlgID, kp);
 
             final var keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
             final var signingKey = kp.getPrivate();
