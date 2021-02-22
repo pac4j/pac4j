@@ -10,6 +10,7 @@ import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.saml.client.AbstractSAML2ClientTests;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -87,6 +88,22 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         configuration.setNameIdPolicyAllowCreate(null);
         final var builder = new SAML2AuthnRequestBuilder(configuration);
         final var context = buildContext();
+        assertNotNull(builder.build(context));
+    }
+
+    @Test
+    public void testForceAuthAsRequestAttribute() {
+        final var builder = new SAML2AuthnRequestBuilder(configuration);
+        final var context = buildContext();
+        context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
+        assertNotNull(builder.build(context));
+    }
+
+    @Test
+    public void testPassiveAuthAsRequestAttribute() {
+        final var builder = new SAML2AuthnRequestBuilder(configuration);
+        final var context = buildContext();
+        context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
         assertNotNull(builder.build(context));
     }
 
