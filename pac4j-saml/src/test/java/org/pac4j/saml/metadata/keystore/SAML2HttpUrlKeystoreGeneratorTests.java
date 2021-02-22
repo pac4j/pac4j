@@ -48,6 +48,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
             wireMockServer.start();
 
             final var configuration = new SAML2Configuration();
+            configuration.setCertificateSignatureAlg("SHA256withRSA");
             configuration.setForceKeystoreGeneration(true);
             configuration.setKeystoreResourceUrl("http://localhost:8085/keystore");
             configuration.setKeystorePassword("pac4j");
