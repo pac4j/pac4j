@@ -81,7 +81,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         }
         // pac4j-cas dependency required
         if (hasCasClients()) {
-            final var casClientBuilder = new CasClientBuilder(properties);
+            final var casClientBuilder = new CASClientBuilder(properties);
             casClientBuilder.tryCreateCasClient(clients);
         }
         // pac4j-oidc dependency required

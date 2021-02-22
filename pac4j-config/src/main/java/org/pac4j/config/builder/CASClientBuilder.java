@@ -16,9 +16,9 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CasClientBuilder extends AbstractBuilder {
+public class CASClientBuilder extends AbstractBuilder {
 
-    public CasClientBuilder(final Map<String, String> properties) {
+    public CASClientBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
