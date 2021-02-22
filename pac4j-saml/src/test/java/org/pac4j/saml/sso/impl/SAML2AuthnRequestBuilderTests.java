@@ -75,6 +75,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         context.getSAMLPeerMetadataContext().setRoleDescriptor(idpDescriptor);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         context.getSAMLSelfEntityContext().setEntityId("entity-id");
+        context.setWebContext(MockWebContext.create());
         return context;
     }
 
