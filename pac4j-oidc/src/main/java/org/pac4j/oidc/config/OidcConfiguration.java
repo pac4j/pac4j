@@ -47,6 +47,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public static final String CLIENT_ID = "client_id";
     public static final String STATE = "state";
     public static final String MAX_AGE = "max_age";
+    public static final String PROMPT = "prompt";
     public static final String NONCE = "nonce";
     public static final String CODE_CHALLENGE = "code_challenge";
     public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";

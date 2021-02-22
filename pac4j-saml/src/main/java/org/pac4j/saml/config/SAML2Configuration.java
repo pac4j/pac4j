@@ -97,9 +97,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String serviceProviderEntityId;
 
-    private int maximumAuthenticationLifetime = 3600;
+    private long maximumAuthenticationLifetime = 3600;
 
-    private int acceptedSkew = 300;
+    private long acceptedSkew = 300;
 
     private boolean forceAuth = false;
 
@@ -412,11 +412,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.forceKeystoreGeneration = forceKeystoreGeneration;
     }
 
-    public int getAcceptedSkew() {
+    public long getAcceptedSkew() {
         return acceptedSkew;
     }
 
-    public void setAcceptedSkew(final int acceptedSkew) {
+    public void setAcceptedSkew(final long acceptedSkew) {
         this.acceptedSkew = acceptedSkew;
     }
 
@@ -609,11 +609,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
-    public int getMaximumAuthenticationLifetime() {
+    public long getMaximumAuthenticationLifetime() {
         return maximumAuthenticationLifetime;
     }
 
-    public void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
+    public void setMaximumAuthenticationLifetime(final long maximumAuthenticationLifetime) {
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
 

@@ -23,6 +23,7 @@ import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
@@ -107,8 +108,11 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         request.setIssuer(getIssuer(selfContext.getEntityId()));
         request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(this.issueInstantSkewSeconds).toInstant());
         request.setVersion(SAMLVersion.VERSION_20);
-        request.setIsPassive(this.configuration.isPassive());
-        request.setForceAuthn(this.configuration.isForceAuth());
+
+        request.setIsPassive(this.configuration.isPassive()
+            || context.getWebContext().getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent());
+        request.setForceAuthn(this.configuration.isForceAuth()
+            || context.getWebContext().getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent());
 
         if (StringUtils.isNotBlank(this.configuration.getProviderName())) {
             request.setProviderName(this.configuration.getProviderName());

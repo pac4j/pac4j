@@ -16,6 +16,22 @@ import java.util.Optional;
 public interface RedirectionActionBuilder {
 
     /**
+     * Attribute name typically expected as an http request attribute
+     * that controls whether authentication should be forced.
+     * This will get translated to the appropriate protocol
+     * for each relevant builder.
+     */
+    String ATTRIBUTE_FORCE_AUTHN = "ForceAuthn";
+
+    /**
+     * Attribute name typically expected as an http request attribute
+     * that controls whether authentication should be passive.
+     * This will get translated to the appropriate protocol
+     * for each relevant builder.
+     */
+    String ATTRIBUTE_PASSIVE = "Passive";
+
+    /**
      * Return the appropriate "redirection" action.
      *
      * @param context the web context

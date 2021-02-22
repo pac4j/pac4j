@@ -5,13 +5,13 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.slf4j.Logger;
@@ -71,6 +71,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         final var params = buildParams();
+
+
         final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
@@ -79,6 +81,15 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         if (configuration.getMaxAge() != null) {
             params.put(OidcConfiguration.MAX_AGE, configuration.getMaxAge().toString());
         }
+        context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN)
+            .ifPresent(attr -> {
+                params.put(OidcConfiguration.PROMPT, "login");
+                params.put(OidcConfiguration.MAX_AGE, "0");
+            });
+        context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE)
+            .ifPresent(attr -> {
+                params.put(OidcConfiguration.PROMPT, "none");
+            });
 
         final var location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
@@ -108,7 +119,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         var pkceMethod = configuration.findPkceMethod();
         if (pkceMethod != null) {
             final var verfifier = new CodeVerifier(
-                    configuration.getCodeVerifierGenerator().generateValue(context, sessionStore));
+                configuration.getCodeVerifierGenerator().generateValue(context, sessionStore));
             sessionStore.set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
             params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());
             params.put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
