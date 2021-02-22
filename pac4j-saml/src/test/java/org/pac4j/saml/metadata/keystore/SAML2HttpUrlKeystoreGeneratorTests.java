@@ -27,7 +27,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
     public void verifyKeystoreGeneration() throws Exception {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
-        
+
         final WireMockServer wireMockServer = new WireMockServer(8085);
         try {
             wireMockServer.stubFor(
@@ -48,6 +48,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
             wireMockServer.start();
 
             final SAML2Configuration configuration = new SAML2Configuration();
+            configuration.setCertificateSignatureAlg("SHA256withRSA");
             configuration.setForceKeystoreGeneration(true);
             configuration.setKeystoreResourceUrl("http://localhost:8085/keystore");
             configuration.setKeystorePassword("pac4j");
@@ -55,7 +56,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
             configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
             configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
             configuration.init();
-           
+
             final CredentialProvider provider = new KeyStoreCredentialProvider(configuration);
             assertNotNull(provider.getCredentialResolver());
             assertNotNull(provider.getCredential());
