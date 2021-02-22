@@ -90,6 +90,8 @@ cfg.setForceAuth(true);
 cfg.setPassive(true);
 ```
 
+Furthermore, forced/passive authentication requests can also be controlled on a per-request basis based on the presence of HTTP attributes defined in `RedirectionActionBuilder#ATTRIBUTE_FORCE_AUTHN` and `RedirectionActionBuilder#ATTRIBUTE_PASSIVE`.
+
 You can define the binding type for the authentication request via the `setAuthnRequestBindingType` method and the binding type for the SP logout request via the `setSpLogoutRequestBindingType` method:
 
 ```java
