@@ -44,7 +44,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
 
         final var renew = configuration.isRenew()
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent();
-        final var gateway = configuration.isRenew()
+        final var gateway = configuration.isGateway()
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
         final var redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
