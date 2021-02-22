@@ -78,6 +78,8 @@ You can also set various parameters:
 {:.striped}
 
 
+Furthermore, `renew` or `gateway` authentication requests can also be controlled on a per-request basis based on the presence of HTTP attributes defined in `RedirectionActionBuilder#ATTRIBUTE_FORCE_AUTHN` and `RedirectionActionBuilder#ATTRIBUTE_PASSIVE`.
+
 ### b) CAS configuration
 
 Assuming your callback URL is `http://localhost:8080/callback`, the CAS server will be called by default via `https://mycasserver/login?service=http://localhost:8080/callback?client_name=CasClient`.
