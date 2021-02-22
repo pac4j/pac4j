@@ -7,6 +7,7 @@ import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
@@ -26,6 +27,26 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
             ((FoundAction) action).getLocation());
+    }
+
+    @Test
+    public void testRedirectGatewayAttribute() {
+        final var builder = newBuilder(new CasConfiguration());
+        final var context = MockWebContext.create();
+        context.setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
+        final var action = builder.getRedirectionAction(context, new MockSessionStore()).get();
+        assertTrue(action instanceof FoundAction);
+        assertTrue(((FoundAction) action).getLocation().contains("gateway=true"));
+    }
+
+    @Test
+    public void testRedirectRenewAttribute() {
+        final var builder = newBuilder(new CasConfiguration());
+        final var context = MockWebContext.create();
+        context.setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
+        final var action = builder.getRedirectionAction(context, new MockSessionStore()).get();
+        assertTrue(action instanceof FoundAction);
+        assertTrue(((FoundAction) action).getLocation().contains("renew=true"));
     }
 
     @Test
