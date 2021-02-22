@@ -24,6 +24,7 @@ public class SAML2FileSystemKeystoreGeneratorTests {
         mgr.configure();
 
         final SAML2Configuration configuration = new SAML2Configuration();
+        configuration.setCertificateSignatureAlg("SHA256withRSA");
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
