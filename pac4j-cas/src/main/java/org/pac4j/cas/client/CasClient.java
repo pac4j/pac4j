@@ -1,6 +1,6 @@
 package org.pac4j.cas.client;
 
-import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
+import org.pac4j.cas.authorization.DefaultCasAuthzGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
@@ -53,7 +53,7 @@ public class CasClient extends IndirectClient {
         defaultAuthenticator(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
         defaultLogoutActionBuilder(new CasLogoutActionBuilder(configuration.computeFinalPrefixUrl(null) + "logout",
             configuration.getPostLogoutUrlParameter()));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
+        addAuthorizationGenerator(new DefaultCasAuthzGenerator());
     }
 
     @Override

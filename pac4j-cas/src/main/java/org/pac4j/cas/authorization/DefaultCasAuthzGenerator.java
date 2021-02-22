@@ -15,17 +15,17 @@ import java.util.Optional;
  * @author Michael Remond
  * @since 1.5.1
  */
-public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator {
+public class DefaultCasAuthzGenerator implements AuthorizationGenerator {
 
     public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
 
     // default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
     protected String rememberMeAttributeName = DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME;
 
-    public DefaultCasAuthorizationGenerator() {
+    public DefaultCasAuthzGenerator() {
     }
 
-    public DefaultCasAuthorizationGenerator(final String rememberMeAttributeName) {
+    public DefaultCasAuthzGenerator(final String rememberMeAttributeName) {
         this.rememberMeAttributeName = rememberMeAttributeName;
     }
 

@@ -1,7 +1,7 @@
 package org.pac4j.cas.client.direct;
 
 import org.jasig.cas.client.util.CommonUtils;
-import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
+import org.pac4j.cas.authorization.DefaultCasAuthzGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
@@ -63,7 +63,7 @@ public class DirectCasClient extends DirectClient {
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
         super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
+        addAuthorizationGenerator(new DefaultCasAuthzGenerator());
     }
 
     @Override

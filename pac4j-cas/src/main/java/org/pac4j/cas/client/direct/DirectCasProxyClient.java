@@ -1,6 +1,6 @@
 package org.pac4j.cas.client.direct;
 
-import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
+import org.pac4j.cas.authorization.DefaultCasAuthzGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
@@ -56,7 +56,7 @@ public class DirectCasProxyClient extends DirectClient {
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, this.serviceUrl));
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
+        addAuthorizationGenerator(new DefaultCasAuthzGenerator());
     }
 
     public CasConfiguration getConfiguration() {
