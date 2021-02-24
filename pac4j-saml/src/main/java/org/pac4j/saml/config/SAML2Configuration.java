@@ -41,7 +41,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.core.io.WritableResource;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -505,12 +504,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     public void setServiceProviderMetadataPath(final String path) {
-        final var resource = mapPathToResource(path);
-        if (!(resource instanceof WritableResource)) {
-            throw new TechnicalException(path + " must be a writable resource");
-        } else {
-            this.serviceProviderMetadataResource = (WritableResource) resource;
-        }
+        this.serviceProviderMetadataResource = mapPathToResource(path);
     }
 
     public Resource getServiceProviderMetadataResource() {
