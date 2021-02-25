@@ -54,6 +54,14 @@ public class SAML2ServiceProviderMetadataResolverTest {
     }
 
     @Test
+    public void resolveServiceProviderMetadataViaExistingClasspath() {
+        final var configuration =
+            initializeConfiguration(new ClassPathResource("sample-sp-metadata.xml"), "target/keystore.jks");
+        final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
+        assertNotNull(metadataResolver.resolve());
+    }
+
+    @Test
     public void resolveServiceProviderMetadataViaUrl() throws Exception {
         final var restBody = IOUtils.toString(
             new ClassPathResource("sample-sp-metadata.xml").getInputStream(), StandardCharsets.UTF_8);

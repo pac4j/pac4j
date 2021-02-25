@@ -34,7 +34,7 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
             return false;
         }
         if (!(metadataResource instanceof WritableResource)) {
-            logger.error("Unable to store metadata, as resource is not writable");
+            logger.warn("Unable to store metadata, as resource is not writable");
             return false;
         }
 
