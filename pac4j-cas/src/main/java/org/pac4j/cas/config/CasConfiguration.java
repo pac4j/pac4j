@@ -15,7 +15,9 @@ import org.pac4j.core.util.CommonHelper;
 
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -279,7 +281,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     public void setCustomParams(final Map<String, String> customParams) {
         this.customParams = customParams;
     }
-    
+
     public long getTimeTolerance() {
         return timeTolerance;
     }
@@ -326,6 +328,16 @@ public class CasConfiguration extends BaseClientConfiguration {
 
     public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
         this.allowedProxyChains = allowedProxyChains;
+    }
+
+    public void setAllowedProxies(final List<String> allowedProxies) {
+        final List<String[]> proxyChains = new ArrayList<>();
+        for (final String allowedProxyChain : allowedProxies) {
+            final String[] proxyChain = new String[1];
+            proxyChain[0] = allowedProxyChain;
+            proxyChains.add(proxyChain);
+        }
+        this.allowedProxyChains = new ProxyList(proxyChains);
     }
 
     public LogoutHandler getLogoutHandler() {
