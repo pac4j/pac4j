@@ -328,6 +328,16 @@ public class CasConfiguration extends BaseClientConfiguration {
         this.allowedProxyChains = allowedProxyChains;
     }
 
+    public void setAllowedProxies(List<String> allowedProxies) {
+        List<String[]> proxyChains = new ArrayList<>();
+        for (String allowedProxyChain : allowedProxies) {
+            String[] proxyChain = new String[1];
+            proxyChain[0] = allowedProxyChain;
+            proxyChains.add(proxyChain);
+        }
+        this.allowedProxyChains = new ProxyList(proxyChains);
+    }
+
     public LogoutHandler getLogoutHandler() {
         return logoutHandler;
     }

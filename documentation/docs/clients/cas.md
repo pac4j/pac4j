@@ -144,6 +144,8 @@ DirectCasProxyClient directCasProxyClient = new DirectCasProxyClient(config, "ht
 
 After generating a proxy ticket (like `PT-1`), the web service will be called on a URL similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`.
 
+You can define a list of URL patterns using the `setAllowedProxies(List<String>)` method on the `CasConfiguration` object which applications are allowed to act as an proxy for this application.
+
 The `DirectCasProxyClient` will validate the proxy ticket and the service URL (defined in the constructor: `http://localhost:8080/webservices`) on the CAS server to get the identity of the user.
 
 This requires to define the appropriate CAS service (matching the `http://localhost:8080/webservices` URL) on the CAS server side.
