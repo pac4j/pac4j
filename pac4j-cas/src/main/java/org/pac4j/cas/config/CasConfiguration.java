@@ -15,7 +15,9 @@ import org.pac4j.core.util.CommonHelper;
 
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -328,10 +330,10 @@ public class CasConfiguration extends BaseClientConfiguration {
         this.allowedProxyChains = allowedProxyChains;
     }
 
-    public void setAllowedProxies(List<String> allowedProxies) {
-        List<String[]> proxyChains = new ArrayList<>();
-        for (String allowedProxyChain : allowedProxies) {
-            String[] proxyChain = new String[1];
+    public void setAllowedProxies(final List<String> allowedProxies) {
+        final List<String[]> proxyChains = new ArrayList<>();
+        for (final String allowedProxyChain : allowedProxies) {
+            final String[] proxyChain = new String[1];
             proxyChain[0] = allowedProxyChain;
             proxyChains.add(proxyChain);
         }
