@@ -133,10 +133,10 @@ public class SAML2Client extends IndirectClient {
     protected void initSAMLProfileHandler() {
         final SAML2MessageReceiver messageReceiver;
         if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator);
+            messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator, this.configuration);
         } else if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_ARTIFACT_BINDING_URI)) {
             messageReceiver = new SAML2ArtifactBindingMessageReceiver(this.authnResponseValidator,
-                    this.idpMetadataResolver, this.spMetadataResolver, this.soapPipelineProvider);
+                    this.idpMetadataResolver, this.spMetadataResolver, this.soapPipelineProvider, this.configuration);
         } else {
             throw new TechnicalException(
                     "Unsupported response binding type: " + configuration.getResponseBindingType());
@@ -155,7 +155,7 @@ public class SAML2Client extends IndirectClient {
     }
 
     protected SAML2LogoutMessageReceiver getLogoutMessageReceiver() {
-        return new SAML2LogoutMessageReceiver(this.logoutValidator);
+        return new SAML2LogoutMessageReceiver(this.logoutValidator, this.configuration);
     }
 
     protected SAML2LogoutRequestMessageSender getLogoutRequestMessageSender() {

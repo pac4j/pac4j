@@ -14,6 +14,7 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
@@ -38,7 +39,7 @@ import javax.xml.namespace.QName;
 public class SAML2ContextProvider implements SAMLContextProvider {
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
-    protected final static Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
     protected final SAML2MetadataResolver idpEntityId;
 
@@ -55,16 +56,19 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     }
 
     @Override
-    public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext, final SessionStore sessionStore) {
+    public final SAML2MessageContext buildServiceProviderContext(final SAML2Client client,
+                                                                 final WebContext webContext,
+                                                                 final SessionStore sessionStore) {
         final var context = new SAML2MessageContext();
+        context.setSaml2Configuration(client.getConfiguration());
         addTransportContext(webContext, sessionStore, context);
         addSPContext(context);
         return context;
     }
 
     @Override
-    public SAML2MessageContext buildContext(final WebContext webContext, final SessionStore sessionStore) {
-        final var context = buildServiceProviderContext(webContext, sessionStore);
+    public SAML2MessageContext buildContext(final SAML2Client client, final WebContext webContext, final SessionStore sessionStore) {
+        final var context = buildServiceProviderContext(client, webContext, sessionStore);
         addIDPContext(context);
         context.setWebContext(webContext);
         context.setSessionStore(sessionStore);

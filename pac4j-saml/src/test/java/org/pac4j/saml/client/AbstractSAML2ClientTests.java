@@ -10,7 +10,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Abstract class to test the {@link SAML2Client}.
@@ -32,11 +32,10 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
     }
 
     protected SAML2Configuration getSaml2Configuration() {
-        final var cfg =
-                new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
-                        "pac4j-demo-passwd",
-                        "pac4j-demo-passwd",
-                        new ClassPathResource("testshib-providers.xml"));
+        final var cfg = new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
+            "pac4j-demo-passwd",
+            "pac4j-demo-passwd",
+            new ClassPathResource("testshib-providers.xml"));
 
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setAuthnRequestBindingType(getAuthnRequestBindingType());

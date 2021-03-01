@@ -66,15 +66,12 @@ import java.util.Set;
  */
 public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator {
 
-    private final SAML2Configuration saml2Configuration;
-
     public SAML2AuthnResponseValidator(
         final SAML2SignatureTrustEngineProvider engine,
         final Decrypter decrypter,
         final ReplayCacheProvider replayCache,
         final SAML2Configuration saml2Configuration) {
         super(engine, decrypter, saml2Configuration.getLogoutHandler(), replayCache, saml2Configuration.getUriComparator());
-        this.saml2Configuration = saml2Configuration;
     }
 
     @Override
@@ -147,10 +144,11 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     protected SAML2Credentials.SAMLNameID determineNameID(final SAML2MessageContext context,
                                                           final List<SAML2Credentials.SAMLAttribute> attributes) {
-        if (saml2Configuration.getNameIdAttribute() != null) {
+        var configContext = context.getConfigurationContext();
+        if (configContext.getNameIdAttribute() != null) {
             final var nameId = attributes
                 .stream()
-                .filter(attribute -> attribute.getName().equals(saml2Configuration.getNameIdAttribute()))
+                .filter(attribute -> attribute.getName().equals(configContext.getNameIdAttribute()))
                 .findFirst()
                 .map(SAML2Credentials.SAMLNameID::from);
             if (nameId.isPresent()) {
@@ -191,6 +189,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      */
     protected void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
                                                 final SignatureTrustEngine engine) {
+        var configContext = context.getConfigurationContext();
 
         validateSuccess(response.getStatus());
 
@@ -200,7 +199,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             throw new SAMLException("Invalid SAML version assigned to the response " + response.getVersion());
         }
 
-        if (saml2Configuration.isWantsResponsesSigned() && response.getSignature() == null) {
+        if (configContext.isWantsResponsesSigned() && response.getSignature() == null) {
             logger.debug(
                 "Unable to find a signature on the SAML response returned. Pac4j is configured to enforce "
                     + "signatures on SAML2 responses from identity providers and the returned response\n{}\n"
@@ -210,7 +209,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             throw new SAMLSignatureValidationException("Unable to find a signature on the SAML response returned");
         }
 
-        if (saml2Configuration.isWantsResponsesSigned()) {
+        if (configContext.isWantsResponsesSigned()) {
             validateSignatureIfItExists(response.getSignature(), context, engine);
         }
 
@@ -323,10 +322,11 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         final var subjectConfirmations = context.getSubjectConfirmations();
+        var configContext = context.getConfigurationContext();
 
         if (subjectConfirmations == null || subjectConfirmations.isEmpty()) {
-            if (saml2Configuration.getNameIdAttribute() != null) {
-                logger.debug("NameID will be determined from attribute {}", saml2Configuration.getNameIdAttribute());
+            if (configContext.getNameIdAttribute() != null) {
+                logger.debug("NameID will be determined from attribute {}", configContext.getNameIdAttribute());
             } else {
                 final var nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
                 if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
@@ -406,7 +406,6 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param decrypter Decrypter used to decrypt some encrypted IDs, if they are present.
      *                  May be {@code null}, no decryption will be possible then.
      */
-    @SuppressWarnings("unchecked")
     protected void validateSubject(final Subject subject, final SAML2MessageContext context,
                                    final Decrypter decrypter) {
         var samlIDFound = false;
@@ -622,7 +621,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final List<String> authnClassRefs = new ArrayList<>();
         final var now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
         for (final var statement : authnStatements) {
-            if (!isAuthnInstantValid(statement.getAuthnInstant())) {
+            if (!isAuthnInstantValid(context, statement.getAuthnInstant())) {
                 throw new SAMLAuthnInstantException("Authentication issue instant is too old or in the future");
             }
             if (statement.getSessionNotOnOrAfter() != null) {
@@ -634,17 +633,18 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             authnClassRefs.add(statement.getAuthnContext().getAuthnContextClassRef().getURI());
         }
 
-        validateAuthnContextClassRefs(authnClassRefs);
+        validateAuthnContextClassRefs(context, authnClassRefs);
     }
 
-    protected void validateAuthnContextClassRefs(final List<String> providedAuthnContextClassRefs) {
-        if (!saml2Configuration.getAuthnContextClassRefs().isEmpty()) {
-            logger.debug("Required authentication context class refs are {}", saml2Configuration.getAuthnContextClassRefs());
+    protected void validateAuthnContextClassRefs(final SAML2MessageContext context, final List<String> providedAuthnContextClassRefs) {
+        var configContext = context.getConfigurationContext();
+        if (!configContext.getAuthnContextClassRefs().isEmpty()) {
+            logger.debug("Required authentication context class refs are {}", configContext.getAuthnContextClassRefs());
             logger.debug("Found authentication context class refs are {}", providedAuthnContextClassRefs);
 
             final Collection<String> results = CollectionUtils.intersection(
-                saml2Configuration.getAuthnContextClassRefs(), providedAuthnContextClassRefs);
-            if (results.size() != saml2Configuration.getAuthnContextClassRefs().size()) {
+                configContext.getAuthnContextClassRefs(), providedAuthnContextClassRefs);
+            if (results.size() != configContext.getAuthnContextClassRefs().size()) {
                 throw new SAMLAuthnContextClassRefException("Requested authentication context class refs do not match "
                     + " those in authentication statements from IDP.");
             }
@@ -661,7 +661,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      */
     protected void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
                                               final SignatureTrustEngine engine) {
-
+        var configContext = context.getConfigurationContext();
         final var peerContext = context.getSAMLPeerEntityContext();
 
         if (signature != null) {
@@ -671,7 +671,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             if (wantsAssertionsSigned(context)) {
                 throw new SAMLSignatureRequiredException("Assertion must be explicitly signed");
             }
-            if (!peerContext.isAuthenticated() && !saml2Configuration.isAllSignatureValidationDisabled()) {
+            if (!peerContext.isAuthenticated() && !configContext.getSAML2Configuration().isAllSignatureValidationDisabled()) {
                 throw new SAMLSignatureRequiredException("Unauthenticated response contains an unsigned assertion");
             }
         }
@@ -679,17 +679,16 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     @VisibleForTesting
     Boolean wantsAssertionsSigned(final SAML2MessageContext context) {
-        if (context == null) {
-            return saml2Configuration.isWantsAssertionsSigned();
-        }
+        var configContext = context.getConfigurationContext();
         final var spDescriptor = context.getSPSSODescriptor();
         if (spDescriptor == null) {
-            return saml2Configuration.isWantsAssertionsSigned();
+            return configContext.isWantsAssertionsSigned();
         }
         return spDescriptor.getWantAssertionsSigned();
     }
 
-    private boolean isAuthnInstantValid(final Instant authnInstant) {
-        return isDateValid(authnInstant, saml2Configuration.getMaximumAuthenticationLifetime());
+    private boolean isAuthnInstantValid(final SAML2MessageContext context, final Instant authnInstant) {
+        var configContext = context.getConfigurationContext();
+        return isDateValid(authnInstant, configContext.getMaximumAuthenticationLifetime());
     }
 }

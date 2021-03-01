@@ -23,6 +23,8 @@ import org.opensaml.soap.messaging.context.SOAP11Context;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
@@ -45,6 +47,8 @@ public class SAML2MessageContext {
 
     private MessageContext messageContext = new MessageContext();
 
+    private SAML2Configuration saml2Configuration;
+
     private WebContext webContext;
 
     private SessionStore sessionStore;
@@ -61,6 +65,16 @@ public class SAML2MessageContext {
 
     public SAML2MessageContext() {
         super();
+    }
+
+    public SAML2ConfigurationContext getConfigurationContext() {
+        CommonHelper.assertNotNull("webContext", this.webContext);
+        CommonHelper.assertNotNull("saml2Configuration", this.saml2Configuration);
+        return new SAML2ConfigurationContext(this.webContext, this.saml2Configuration);
+    }
+
+    public void setSaml2Configuration(final SAML2Configuration saml2Configuration) {
+        this.saml2Configuration = saml2Configuration;
     }
 
     public MessageContext getMessageContext() {
@@ -93,6 +107,10 @@ public class SAML2MessageContext {
 
     public final void setSubjectAssertion(final Assertion subjectAssertion) {
         this.subjectAssertion = subjectAssertion;
+    }
+
+    public SAML2Configuration getSAML2Configuration() {
+        return saml2Configuration;
     }
 
     public final SPSSODescriptor getSPSSODescriptor() {

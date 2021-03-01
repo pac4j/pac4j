@@ -3,6 +3,7 @@ package org.pac4j.saml.sso.artifact;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
@@ -29,8 +30,8 @@ public class SAML2ArtifactBindingMessageReceiver extends AbstractSAML2MessageRec
 
     public SAML2ArtifactBindingMessageReceiver(final SAML2ResponseValidator validator,
             final SAML2MetadataResolver idpMetadataResolver, final SAML2MetadataResolver spMetadataResolver,
-            final SOAPPipelineProvider soapPipelineProvider) {
-        super(validator);
+            final SOAPPipelineProvider soapPipelineProvider, final SAML2Configuration saml2Configuration) {
+        super(validator, saml2Configuration);
         this.idpMetadataResolver = idpMetadataResolver;
         this.spMetadataResolver = spMetadataResolver;
         this.soapPipelineProvider = soapPipelineProvider;

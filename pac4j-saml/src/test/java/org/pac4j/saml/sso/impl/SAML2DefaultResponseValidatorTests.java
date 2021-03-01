@@ -20,6 +20,7 @@ import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.core.logout.handler.LogoutHandler;
@@ -117,8 +118,10 @@ public class SAML2DefaultResponseValidatorTests {
     public void testAssertionConsumingServiceWithMultipleIDP() throws Exception {
         final var response = getResponse();
         // create response validator enforcing response signature
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, true));
+        var saml2Configuration = getSaml2Configuration(false, true);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setSaml2Configuration(saml2Configuration);
         context.getMessageContext().setMessage(response);
 
         final var os = new ByteArrayOutputStream();
@@ -154,42 +157,39 @@ public class SAML2DefaultResponseValidatorTests {
 
         samlSelfMetadataContext.setRoleDescriptor(roleDescriptor);
 
-        final var receiver = new SAML2WebSSOMessageReceiver(validator);
+        final var receiver = new SAML2WebSSOMessageReceiver(validator, context.getSAML2Configuration());
         receiver.receiveMessage(context);
     }
 
     @Test
-    public void testDoesNotWantAssertionsSignedWithNullContext() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, false));
-        assertFalse("Expected wantAssertionsSigned == false", validator.wantsAssertionsSigned(null));
-    }
-
-    @Test
-    public void testWantsAssertionsSignedWithNullContext() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(true, false));
-        assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(null));
-    }
-
-    @Test
     public void testDoesNotWantAssertionsSignedWithNullSPSSODescriptor() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, false));
+        var saml2Configuration = getSaml2Configuration(false, false);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
         assertFalse("Expected wantAssertionsSigned == false", validator.wantsAssertionsSigned(context));
     }
 
     @Test
     public void testWantsAssertionsSignedWithNullSPSSODescriptor() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(true, false));
+        var saml2Configuration = getSaml2Configuration(true, false);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
         assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(context));
     }
 
     @Test
     public void testDoesNotWantAssertionsSignedWithValidSPSSODescriptor() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, false));
+        var saml2Configuration = getSaml2Configuration(false, false);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
 
         final var samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
         final var roleDescriptor = mock(SPSSODescriptor.class);
@@ -202,8 +202,11 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test
     public void testWantsAssertionsSignedWithValidSPSSODescriptor() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(true, false));
+        var saml2Configuration = getSaml2Configuration(true, false);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
 
         final var samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
         final var roleDescriptor = mock(SPSSODescriptor.class);
@@ -226,6 +229,8 @@ public class SAML2DefaultResponseValidatorTests {
         response.getAssertions().get(0).setSignature(null);
         final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
         context.getMessageContext().setMessage(response);
 
         final var samlSelfEntityContext = context.getSAMLSelfEntityContext();
@@ -257,6 +262,8 @@ public class SAML2DefaultResponseValidatorTests {
         response.getAssertions().get(0).setSignature(null);
         final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setSaml2Configuration(saml2Configuration);
+        context.setWebContext(MockWebContext.create());
         context.getMessageContext().setMessage(response);
 
         final var samlSelfEntityContext = context.getSAMLSelfEntityContext();
@@ -276,8 +283,11 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test(expected = SAMLException.class)
     public void testAuthenticatedResponseAndAssertionWithoutSignatureThrowsException() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(true, false));
+        final var saml2Configuration = getSaml2Configuration(true, false);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setSaml2Configuration(saml2Configuration);
+        context.setWebContext(MockWebContext.create());
         final var peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(true);
         context.getMessageContext().addSubcontext(peerEntityContext);
@@ -286,8 +296,11 @@ public class SAML2DefaultResponseValidatorTests {
 
     @Test(expected = SAMLException.class)
     public void testResponseWithoutSignatureThrowsException() {
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, false));
+        final var saml2Configuration = getSaml2Configuration(false, false);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
         final var peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(false);
         context.getMessageContext().addSubcontext(peerEntityContext);
@@ -308,8 +321,11 @@ public class SAML2DefaultResponseValidatorTests {
         final var response = (Response) xmlObject;
         response.setSignature(null);
 
-        final var validator = createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, true));
+        var saml2Configuration = getSaml2Configuration(false, true);
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
         final var peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(true);
         context.getMessageContext().addSubcontext(peerEntityContext);

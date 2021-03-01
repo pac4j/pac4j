@@ -11,6 +11,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.api.SAML2MessageReceiver;
@@ -28,13 +29,17 @@ import java.util.Optional;
 public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiver {
 
     protected SAML2ResponseValidator validator;
+    protected final SAML2Configuration saml2Configuration;
 
-    public AbstractSAML2MessageReceiver(final SAML2ResponseValidator validator) {
+    public AbstractSAML2MessageReceiver(final SAML2ResponseValidator validator,
+                                        final SAML2Configuration saml2Configuration) {
         this.validator = validator;
+        this.saml2Configuration = saml2Configuration;
     }
 
     @Override
     public Credentials receiveMessage(final SAML2MessageContext context) {
+        context.setSaml2Configuration(saml2Configuration);
         final var peerContext = context.getSAMLPeerEntityContext();
         final var webContext = context.getWebContext();
 
@@ -50,6 +55,8 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
 
     protected SAML2MessageContext prepareDecodedContext(final SAML2MessageContext context, final AbstractPac4jDecoder decoder) {
         final var decodedCtx = new SAML2MessageContext();
+        decodedCtx.setSaml2Configuration(saml2Configuration);
+
         decodedCtx.setMessageContext(decoder.getMessageContext());
         final var message = (SAMLObject) decoder.getMessageContext().getMessage();
         if (message == null) {
