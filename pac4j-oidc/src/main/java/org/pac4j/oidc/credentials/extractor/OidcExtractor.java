@@ -3,7 +3,10 @@ package org.pac4j.oidc.credentials.extractor;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.id.State;
-import com.nimbusds.openid.connect.sdk.*;
+import com.nimbusds.openid.connect.sdk.AuthenticationErrorResponse;
+import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
+import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
+import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -21,7 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Extract the authorization code on the callback.

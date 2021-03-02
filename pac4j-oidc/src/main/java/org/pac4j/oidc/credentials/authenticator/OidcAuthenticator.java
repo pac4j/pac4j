@@ -57,7 +57,6 @@ public class OidcAuthenticator implements Authenticator {
         final var _clientID = new ClientID(configuration.getClientId());
 
         if (configuration.getSecret() != null) {
-
             // check authentication methods
             final var metadataMethods = configuration.findProviderMetadata()
                     .getTokenEndpointAuthMethods();
@@ -94,11 +93,8 @@ public class OidcAuthenticator implements Authenticator {
             } else {
                 throw new TechnicalException("Unsupported client authentication method: " + chosenMethod);
             }
-
         } else {
-
             clientAuthentication = new ClientNoSecret(_clientID);
-
         }
     }
 
