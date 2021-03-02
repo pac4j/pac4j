@@ -36,7 +36,10 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     protected final ValueGenerator stateGenerator;
 
+    protected final SAML2Client saml2Client;
+
     public SAML2LogoutActionBuilder(final SAML2Client client) {
+        this.saml2Client = client;
         this.logoutProfileHandler = client.getLogoutProfileHandler();
         this.contextProvider = client.getContextProvider();
         this.configuration = client.getConfiguration();
@@ -49,7 +52,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
                                                        final UserProfile currentProfile, final String targetUrl) {
         if (currentProfile instanceof SAML2Profile) {
             final var saml2Profile = (SAML2Profile) currentProfile;
-            final var samlContext = this.contextProvider.buildContext(context, sessionStore);
+            final var samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
             final var relayState = this.stateGenerator.generateValue(context, sessionStore);
 
             final var logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);

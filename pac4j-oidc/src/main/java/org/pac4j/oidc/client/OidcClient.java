@@ -47,7 +47,7 @@ public class OidcClient extends IndirectClient {
     protected void internalInit() {
         configuration.init();
 
-        defaultRedirectionActionBuilder(new OidcRedirectionActionBuilder(configuration, this));
+        defaultRedirectionActionBuilder(new OidcRedirectionActionBuilder(this));
         defaultCredentialsExtractor(new OidcExtractor(configuration, this));
         defaultAuthenticator(new OidcAuthenticator(configuration, this));
         defaultProfileCreator(new OidcProfileCreator(configuration, this));

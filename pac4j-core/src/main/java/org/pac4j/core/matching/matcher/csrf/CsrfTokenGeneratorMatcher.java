@@ -39,12 +39,12 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
         final var token = csrfTokenGenerator.get(context, sessionStore);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
         final var cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
-        if (domain != null) {
+        if (CommonHelper.isNotBlank(domain)) {
             cookie.setDomain(domain);
         } else {
             cookie.setDomain(context.getServerName());
         }
-        if (path != null) {
+        if (CommonHelper.isNotBlank(path)) {
             cookie.setPath(path);
         }
         if (httpOnly != null) {
@@ -56,7 +56,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
         if (maxAge != null) {
             cookie.setMaxAge(maxAge.intValue());
         }
-        if (sameSitePolicy != null) {
+        if (CommonHelper.isNotBlank(sameSitePolicy)) {
             cookie.setSameSitePolicy(sameSitePolicy);
         }
         context.addResponseCookie(cookie);

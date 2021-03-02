@@ -22,9 +22,11 @@ import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
+import org.pac4j.saml.store.HttpSessionStoreFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
+import java.io.File;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -41,7 +43,7 @@ public class SAML2LogoutMessageReceiverTest {
         var context = getSaml2MessageContext(webContext);
         SAML2ResponseValidator validator = getLogoutValidator("/logoutUrl");
 
-        var unit = new SAML2LogoutMessageReceiver(validator);
+        var unit = new SAML2LogoutMessageReceiver(validator, context.getSAML2Configuration());
         try {
             unit.receiveMessage(context);
             fail("Should have thrown a FoundAction");
@@ -59,7 +61,7 @@ public class SAML2LogoutMessageReceiverTest {
         var context = getSaml2MessageContext(webContext);
         SAML2ResponseValidator validator = getLogoutValidator("");
 
-        var unit = new SAML2LogoutMessageReceiver(validator);
+        var unit = new SAML2LogoutMessageReceiver(validator, context.getSAML2Configuration());
         try {
             unit.receiveMessage(context);
             fail("Should have thrown a FoundAction");
@@ -78,7 +80,7 @@ public class SAML2LogoutMessageReceiverTest {
         var validator = getLogoutValidator("");
         validator.setActionOnSuccess(false);
 
-        var unit = new SAML2LogoutMessageReceiver(validator);
+        var unit = new SAML2LogoutMessageReceiver(validator, getSaml2Configuration());
         try {
             unit.receiveMessage(context);
         } catch (Exception e) {
@@ -138,7 +140,7 @@ public class SAML2LogoutMessageReceiverTest {
 
     private SAML2MessageContext getSaml2MessageContext(MockWebContext webContext) {
         var context = new SAML2MessageContext();
-
+        context.setSaml2Configuration(getSaml2Configuration());
         var entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
         context.setWebContext(webContext);
@@ -152,4 +154,18 @@ public class SAML2LogoutMessageReceiverTest {
         return context;
     }
 
+    protected SAML2Configuration getSaml2Configuration() {
+        final var cfg = new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
+            "pac4j-demo-passwd",
+            "pac4j-demo-passwd",
+            new ClassPathResource("testshib-providers.xml"));
+
+        cfg.setMaximumAuthenticationLifetime(3600);
+        cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg.setForceServiceProviderMetadataGeneration(true);
+        cfg.setForceKeystoreGeneration(true);
+        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
+        cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
+        return cfg;
+    }
 }

@@ -35,6 +35,15 @@ import static org.mockito.Mockito.mock;
  */
 public class SAML2LogoutValidatorTests {
     private static ExplicitSignatureTrustEngineProvider getTrustEngine() {
+        var config = getSaml2Configuration();
+
+        var idp = new SAML2IdentityProviderMetadataResolver(config);
+        idp.init();
+        var sp = new SAML2ServiceProviderMetadataResolver(config);
+        return new ExplicitSignatureTrustEngineProvider(idp, sp);
+    }
+
+    private static SAML2Configuration getSaml2Configuration() {
         final var config = new SAML2Configuration();
         config.setForceKeystoreGeneration(true);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
@@ -44,11 +53,7 @@ public class SAML2LogoutValidatorTests {
         config.setKeystorePassword("pac4j");
         config.setPrivateKeyPassword("pac4j");
         config.init();
-
-        var idp = new SAML2IdentityProviderMetadataResolver(config);
-        idp.init();
-        var sp = new SAML2ServiceProviderMetadataResolver(config);
-        return new ExplicitSignatureTrustEngineProvider(idp, sp);
+        return config;
     }
 
     private static MockWebContext getMockWebContext() {
@@ -57,6 +62,7 @@ public class SAML2LogoutValidatorTests {
 
     private static SAML2MessageContext getSaml2MessageContext(final MockWebContext webContext) {
         final var context = new SAML2MessageContext();
+        context.setSaml2Configuration(getSaml2Configuration());
 
         final var samlMessage = new MessageContext();
         final var xml = "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +

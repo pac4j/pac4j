@@ -39,7 +39,11 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
     protected final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
 
+    protected final SAML2Client saml2Client;
+
     public SAML2CredentialsExtractor(final SAML2Client client) {
+        this.saml2Client = client;
+
         this.contextProvider = client.getContextProvider();
         this.profileHandler = client.getProfileHandler();
         this.logoutProfileHandler = client.getLogoutProfileHandler();
@@ -51,7 +55,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final var samlContext = this.contextProvider.buildContext(context, sessionStore);
+        final var samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
         final var logoutEndpoint = isLogoutEndpointRequest(context, samlContext);
         if (logoutEndpoint) {
             receiveLogout(samlContext);
@@ -63,6 +67,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     }
 
     protected Optional<Credentials> receiveLogin(final SAML2MessageContext samlContext, final WebContext context) {
+        samlContext.setSaml2Configuration(saml2Client.getConfiguration());
         final var credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
         return Optional.ofNullable(credentials);
     }
@@ -85,6 +90,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     }
 
     protected void receiveLogout(final SAML2MessageContext samlContext) {
+        samlContext.setSaml2Configuration(saml2Client.getConfiguration());
         this.logoutProfileHandler.receive(samlContext);
     }
 

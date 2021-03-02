@@ -41,6 +41,7 @@ import static org.pac4j.core.util.CommonHelper.*;
 public class OidcConfiguration extends BaseClientConfiguration {
 
     public static final String SCOPE = "scope";
+    public static final String CUSTOM_PARAMS = "custom_params";
     public static final String RESPONSE_TYPE = "response_type";
     public static final String RESPONSE_MODE = "response_mode";
     public static final String REDIRECT_URI = "redirect_uri";

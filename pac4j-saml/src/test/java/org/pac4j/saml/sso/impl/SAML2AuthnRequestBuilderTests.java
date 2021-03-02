@@ -45,8 +45,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         final var messageStoreFactory = configuration.getSamlMessageStoreFactory();
         final var store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
 
-        final var builder = new SAML2AuthnRequestBuilder(configuration);
-
+        final var builder = new SAML2AuthnRequestBuilder();
         final var context = buildContext();
 
         final var authnRequest = builder.build(context);
@@ -77,6 +76,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         context.getSAMLSelfEntityContext().setEntityId("entity-id");
         context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(configuration);
         return context;
     }
 
@@ -86,14 +86,14 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         configuration.setUseNameQualifier(true);
         configuration.setNameIdPolicyFormat("sample-nameid-format");
         configuration.setNameIdPolicyAllowCreate(null);
-        final var builder = new SAML2AuthnRequestBuilder(configuration);
+        final var builder = new SAML2AuthnRequestBuilder();
         final var context = buildContext();
         assertNotNull(builder.build(context));
     }
 
     @Test
     public void testForceAuthAsRequestAttribute() {
-        final var builder = new SAML2AuthnRequestBuilder(configuration);
+        final var builder = new SAML2AuthnRequestBuilder();
         final var context = buildContext();
         context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
         assertNotNull(builder.build(context));
@@ -101,7 +101,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testPassiveAuthAsRequestAttribute() {
-        final var builder = new SAML2AuthnRequestBuilder(configuration);
+        final var builder = new SAML2AuthnRequestBuilder();
         final var context = buildContext();
         context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
         assertNotNull(builder.build(context));
