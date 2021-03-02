@@ -1,5 +1,6 @@
 package org.pac4j.core.matching.matcher.csrf;
 
+import org.apache.shiro.util.StringUtils;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
@@ -39,12 +40,12 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
         final var token = csrfTokenGenerator.get(context, sessionStore);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
         final var cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
-        if (domain != null) {
+        if (StringUtils.hasText(domain)) {
             cookie.setDomain(domain);
         } else {
             cookie.setDomain(context.getServerName());
         }
-        if (path != null) {
+        if (StringUtils.hasText(path)) {
             cookie.setPath(path);
         }
         if (httpOnly != null) {
@@ -56,7 +57,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
         if (maxAge != null) {
             cookie.setMaxAge(maxAge.intValue());
         }
-        if (sameSitePolicy != null) {
+        if (StringUtils.hasText(sameSitePolicy)) {
             cookie.setSameSitePolicy(sameSitePolicy);
         }
         context.addResponseCookie(cookie);
