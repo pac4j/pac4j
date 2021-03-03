@@ -331,4 +331,37 @@ public class SAML2DefaultResponseValidatorTests {
         context.getMessageContext().addSubcontext(peerEntityContext);
         validator.validateSamlProtocolResponse(response, context, null);
     }
+
+    @Test
+    public void testThatInResponseToPropertyCanBeEmpty() throws Exception {
+        final var saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+
+        final var response = getResponse();
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+
+        // In case of an IdP initiated login flow, the `InResponseTo` property can be omitted.
+        // (See SAML protocol specification, paragraph 3.2.2, line 1542)
+        response.setInResponseTo(null);
+
+        final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+
+        final var samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+
+        final var endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+
+        final var samlEndpointContext = context.getSAMLEndpointContext();
+        samlEndpointContext.setEndpoint(endpoint);
+
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        var credentials = validator.validate(context);
+
+        assertNotNull(credentials);
+    }
 }

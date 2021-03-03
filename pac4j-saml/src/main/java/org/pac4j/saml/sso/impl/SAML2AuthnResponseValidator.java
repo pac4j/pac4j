@@ -2,7 +2,6 @@ package org.pac4j.saml.sso.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Assertion;
@@ -193,8 +192,6 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         validateSuccess(response.getStatus());
 
-        validateInResponseTo(response);
-
         if (!response.getVersion().equals(SAMLVersion.VERSION_20)) {
             throw new SAMLException("Invalid SAML version assigned to the response " + response.getVersion());
         }
@@ -247,12 +244,6 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         validateIssuerIfItExists(response.getIssuer(), context);
-    }
-
-    protected void validateInResponseTo(final Response response) {
-        if (StringUtils.isEmpty(response.getInResponseTo())) {
-            throw new SAMLInResponseToMismatchException("Missing InResponseTo field");
-        }
     }
 
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
