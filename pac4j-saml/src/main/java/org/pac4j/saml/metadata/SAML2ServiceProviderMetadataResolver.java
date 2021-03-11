@@ -37,15 +37,15 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
             final var metadataGenerator = configuration.toMetadataGenerator();
-            if (!configuration.getServiceProviderMetadataResource().exists()
-                || configuration.isForceServiceProviderMetadataGeneration()) {
+            final var resource = configuration.getServiceProviderMetadataResource();
+            if (resource == null || !resource.exists() || configuration.isForceServiceProviderMetadataGeneration()) {
                 final var entity = metadataGenerator.buildEntityDescriptor();
                 final var metadata = metadataGenerator.getMetadata(entity);
                 metadataGenerator.storeMetadata(metadata,
-                    configuration.getServiceProviderMetadataResource(),
+                    resource,
                     configuration.isForceServiceProviderMetadataGeneration());
             }
-            return metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
+            return metadataGenerator.buildMetadataResolver(resource);
         } catch (final Exception e) {
             throw new SAMLException("Unable to generate metadata for service provider", e);
         }
