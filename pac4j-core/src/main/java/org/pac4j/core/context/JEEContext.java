@@ -189,7 +189,10 @@ public class JEEContext implements WebContext {
         c.setMaxAge(cookie.getMaxAge());
         c.setHttpOnly(cookie.isHttpOnly());
         c.setComment(cookie.getComment());
-        c.setDomain(cookie.getDomain());
+        final String domain = cookie.getDomain();
+        if (domain != null) {
+            c.setDomain(domain);
+        }
         this.response.addCookie(c);
     }
 
