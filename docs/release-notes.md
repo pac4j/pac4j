@@ -31,6 +31,10 @@ title: Release notes&#58;
 - Handle the "same site policy" in cookies (default: `lax`). Renamed `ContextHelper` as `WebContextHelper`
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
+**v4.4.1**:
+
+- Avoid NPE with `null` domain for cookies on `JEEContext`
+
 **v4.4.0**:
 - For SAML IdP metadata defined as files, the metadata are reloaded if the file is changed
 
