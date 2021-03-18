@@ -11,7 +11,6 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
-import org.joda.time.DateTime;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -29,6 +28,9 @@ import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 /**
@@ -97,6 +99,10 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     protected abstract void store(KeyStore ks, X509Certificate certificate,
                                   PrivateKey privateKey) throws Exception;
 
+    private static Time time(final LocalDateTime localDateTime) {
+        return new Time(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
+    }
+
     /**
      * Generate a self-signed certificate for dn using the provided signature algorithm and key pair.
      *
@@ -116,15 +122,11 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         certGen.setIssuer(dn);
         certGen.setSubject(dn);
 
-        certGen.setStartDate(new Time(new Date(System.currentTimeMillis() - 1000L)));
+        final var startDate = LocalDateTime.now(Clock.systemUTC()).minusSeconds(1);
+        certGen.setStartDate(time(startDate));
 
-        final var period = saml2Configuration.getCertificateExpirationPeriod();
-        final var expiration = DateTime.now().plusDays(
-            365 * period.getYears()
-            + 31 * period.getMonths()
-            + period.getDays()
-        ).toDate();
-        certGen.setEndDate(new Time(expiration));
+        final var endDate = startDate.plus(saml2Configuration.getCertificateExpirationPeriod());
+        certGen.setEndDate(time(endDate));
 
         certGen.setSignature(sigAlgID);
         certGen.setSubjectPublicKeyInfo(SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
