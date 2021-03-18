@@ -206,9 +206,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             throw new SAMLSignatureValidationException("Unable to find a signature on the SAML response returned");
         }
 
-        if (configContext.isWantsResponsesSigned()) {
-            validateSignatureIfItExists(response.getSignature(), context, engine);
-        }
+        validateSignatureIfItExists(response.getSignature(), context, engine);
 
         validateIssueInstant(response.getIssueInstant());
 
