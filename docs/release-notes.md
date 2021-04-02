@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.0.1**:
+
+- Hazelcast-based implementation for SAMLMessageStore
+
 **v5.0.0** (see: [what's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)):
 
 - Upgraded to JDK 11
