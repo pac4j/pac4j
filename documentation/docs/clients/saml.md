@@ -430,3 +430,27 @@ of the `org.pac4j.saml.util.Configuration` implementation
 
 For more information, see [https://docs.oracle.com/javase/tutorial/ext/basics/spi.html]
 
+## 8) SAML message store
+
+A Message Store is an abstraction used by pac4j to track ongoing requests and incoming responses.
+
+### HttpSessionStore
+
+This implementation uses HttpSession as underlying dataStore.
+
+### HazelcastSAMLMessageStore
+
+This implementation uses Hazelcast as underlying dataStore.
+
+It requires:
+
+1. the additional dependency:
+```
+<dependency>
+    <groupId>com.hazelcast</groupId>
+    <artifactId>hazelcast</artifactId>
+    <version>${hazelcast.version}</version>
+    <optional>true</optional>
+</dependency>
+```
+2. to pass an `HazelcastInstance` object to constructor
