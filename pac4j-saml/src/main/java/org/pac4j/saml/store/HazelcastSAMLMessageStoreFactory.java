@@ -6,6 +6,9 @@ import org.pac4j.core.context.session.SessionStore;
 
 /**
  * Default store factory which provides HTTP Session store.
+ *
+ * @author Francesco Chicchiriccò
+ * @since 5.0.1
  */
 public class HazelcastSAMLMessageStoreFactory implements SAMLMessageStoreFactory {
 

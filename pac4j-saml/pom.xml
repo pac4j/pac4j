@@ -184,7 +184,7 @@
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
             <version>${hazelcast.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <!-- for testing -->
         <dependency>

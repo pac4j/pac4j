@@ -22,6 +22,12 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.util.Configuration;
 
+/**
+ * This is {@link HazelcastSAMLMessageStoreTests} for {@link HazelcastSAMLMessageStore}.
+ *
+ * @author Francesco Chicchiriccò
+ * @since 5.0.1
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class HazelcastSAMLMessageStoreTests implements TestsConstants {
 
