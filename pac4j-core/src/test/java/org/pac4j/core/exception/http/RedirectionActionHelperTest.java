@@ -53,8 +53,8 @@ public final class RedirectionActionHelperTest implements TestsConstants {
         RedirectionActionHelper.setUseModernHttpCodes(true);
         final RedirectionAction action = RedirectionActionHelper
             .buildFormPostContentAction(MockWebContext.create().setRequestMethod("POST"), VALUE);
-        assertTrue(action instanceof TemporaryRedirectAction);
-        assertEquals(VALUE, ((TemporaryRedirectAction) action).getContent());
+        assertTrue(action instanceof OkAction);
+        assertEquals(VALUE, ((OkAction) action).getContent());
     }
 
     @Test
