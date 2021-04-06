@@ -112,8 +112,8 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         context.setRequestMethod("POST");
         context.getSessionStore().set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         final HttpAction action = handler.restore(context, LOGIN_URL);
-        assertTrue(action instanceof TemporaryRedirectAction);
-        assertEquals(FORM_DATA, ((TemporaryRedirectAction) action).getContent());
+        assertTrue(action instanceof OkAction);
+        assertEquals(FORM_DATA, ((OkAction) action).getContent());
         assertEquals("", context.getSessionStore().get(context, Pac4jConstants.REQUESTED_URL).get());
     }
 }

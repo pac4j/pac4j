@@ -38,11 +38,7 @@ public final class RedirectionActionHelper {
      * @return the appropriate redirection action
      */
     public static RedirectionAction buildFormPostContentAction(final WebContext context, final String content) {
-        if (ContextHelper.isPost(context) && useModernHttpCodes) {
-            return new TemporaryRedirectAction(content);
-        } else {
-            return new OkAction(content);
-        }
+        return new OkAction(content);
     }
 
     /**
