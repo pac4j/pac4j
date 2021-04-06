@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.4.1**:
+
+- Avoid NPE with `null` domain for cookies on `JEEContext`
+
 **v4.4.0**:
 
 - For SAML IdP metadata defined as files, the metadata are reloaded if the file is changed
