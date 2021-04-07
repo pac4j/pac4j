@@ -152,6 +152,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private boolean allSignatureValidationDisabled = false;
 
+    private boolean responseDestinationAttributeMandatory = true;
+
     private String keyStoreAlias;
 
     private String keyStoreType;
@@ -703,6 +705,18 @@ public class SAML2Configuration extends BaseClientConfiguration {
      */
     public void setAllSignatureValidationDisabled(final boolean allSignatureValidationDisabled) {
         this.allSignatureValidationDisabled = allSignatureValidationDisabled;
+    }
+
+    /**
+     * SAML specification states the Response `Destination` attribute is optional.
+     * Providing a value is recommended to prevent malicious forwarding of responses to unintended recipients.
+     */
+    public void setResponseDestinationAttributeMandatory(final boolean mandatory) {
+        this.responseDestinationAttributeMandatory = mandatory;
+    }
+
+    public boolean isResponseDestinationAttributeMandatory() {
+        return responseDestinationAttributeMandatory;
     }
 
     public int getAttributeConsumingServiceIndex() {

@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.0.1**:
 
 - Hazelcast-based implementation for SAMLMessageStore
+- Added an option to tolerate missing SAML response `Destination` attribute.
 
 **v5.0.0** (see: [what's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)):
 

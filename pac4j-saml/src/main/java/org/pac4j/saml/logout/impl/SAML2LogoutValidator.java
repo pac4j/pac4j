@@ -181,7 +181,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         } else {
             expected.add(this.expectedDestination);
         }
-        verifyEndpoint(expected, logoutResponse.getDestination());
+
+        final boolean isDestinationMandatory = context.getSAML2Configuration().isResponseDestinationAttributeMandatory();
+        verifyEndpoint(expected, logoutResponse.getDestination(), isDestinationMandatory);
     }
 
     public void setActionOnSuccess(final boolean actionOnSuccess) {
