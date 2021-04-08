@@ -104,7 +104,10 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 resolver.setId(resolver.getClass().getCanonicalName());
                 resolver.initialize();
             } catch (final FileNotFoundException e) {
-                throw new TechnicalException("Error loading idp Metadata");
+                if (logger.isDebugEnabled()) {
+                    logger.error(e.getMessage(), e);
+                }
+                throw new TechnicalException("Error loading idp Metadata: " + e.getMessage());
             }
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
             if (this.idpEntityId == null) {
