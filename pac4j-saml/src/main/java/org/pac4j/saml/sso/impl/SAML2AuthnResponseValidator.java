@@ -236,7 +236,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         if (endpoint.getResponseLocation() != null) {
             expected.add(endpoint.getResponseLocation());
         }
-        verifyEndpoint(expected, response.getDestination());
+
+        final boolean isDestinationMandatory = context.getSAML2Configuration().isResponseDestinationAttributeMandatory();
+        verifyEndpoint(expected, response.getDestination(), isDestinationMandatory);
+
         if (request != null) {
             verifyRequest(request, context);
         }

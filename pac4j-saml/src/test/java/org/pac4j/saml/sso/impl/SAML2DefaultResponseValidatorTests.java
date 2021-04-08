@@ -29,6 +29,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
+import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
@@ -344,6 +345,75 @@ public class SAML2DefaultResponseValidatorTests {
         // In case of an IdP initiated login flow, the `InResponseTo` property can be omitted.
         // (See SAML protocol specification, paragraph 3.2.2, line 1542)
         response.setInResponseTo(null);
+
+        final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+
+        final var samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+
+        final var endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+
+        final var samlEndpointContext = context.getSAMLEndpointContext();
+        samlEndpointContext.setEndpoint(endpoint);
+
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        var credentials = validator.validate(context);
+
+        assertNotNull(credentials);
+    }
+
+    @Test(expected = SAMLEndpointMismatchException.class)
+    public void testThatResponseDestinationThrowsExceptionWhenNull() throws Exception {
+        final var saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+
+        final var response = getResponse();
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+
+        // The `Destination` attribute can be omitted.
+        // (See SAML protocol specification, paragraph 3.2.2, line 1554)
+        // But the default SAML configuration forbids this case.
+        response.setDestination(null);
+
+        final var context = new SAML2MessageContext();
+        context.setWebContext(MockWebContext.create());
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+
+        final var samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+
+        final var endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+
+        final var samlEndpointContext = context.getSAMLEndpointContext();
+        samlEndpointContext.setEndpoint(endpoint);
+
+        final var validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        var credentials = validator.validate(context);
+
+        assertNotNull(credentials);
+    }
+
+    @Test
+    public void testThatResponseDestinationCanBeNull() throws Exception {
+        final var saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+        saml2Configuration.setResponseDestinationAttributeMandatory(false);
+
+        final var response = getResponse();
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+
+        // The `Destination` attribute can be omitted.
+        // (See SAML protocol specification, paragraph 3.2.2, line 1554)
+        // But this SAML configuration tolerates it.
+        response.setDestination(null);
 
         final var context = new SAML2MessageContext();
         context.setWebContext(MockWebContext.create());

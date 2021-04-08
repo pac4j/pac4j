@@ -133,6 +133,13 @@ By SAML specification, the authentication request must not contain a NameQualifi
 cfg.setUseNameQualifier(true);
 ```
 
+The SAML specification suggests that responses should have a value set for the `Destination` attribute. For security reasons, *pac4j* will check for its presence. You can change this behavior if needed:
+
+```java
+// force support of missing `Destination` attribute
+cfg.setResponseDestinationAttributeMandatory(false);
+```
+
 To allow the authentication request sent to the identity provider to specify an attribute consuming index:
 
 ```java

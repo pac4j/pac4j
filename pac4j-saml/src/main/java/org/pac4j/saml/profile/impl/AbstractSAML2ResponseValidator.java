@@ -196,7 +196,14 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return isDateValid;
     }
 
-    protected void verifyEndpoint(final List<String> endpoints, final String destination) {
+    protected void verifyEndpoint(final List<String> endpoints, final String destination, final boolean isDestinationMandatory) {
+        if (destination == null && !isDestinationMandatory) {
+            return;
+        }
+        if (destination == null) {
+            throw new SAMLEndpointMismatchException("SAML configuration does not allow response Destination to be null");
+        }
+
         final var verified = endpoints.stream()
             .allMatch(endpoint -> compareEndpoints(destination, endpoint));
         if (!verified) {
