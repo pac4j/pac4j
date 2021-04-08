@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This is {@link OidcConfigurationContext}.
@@ -38,7 +39,9 @@ public class OidcConfigurationContext {
     }
 
     public String getScope() {
-        return (String) context.getRequestAttribute(OidcConfiguration.SCOPE).orElse("openid profile email");
+        return (String) context.getRequestAttribute(OidcConfiguration.SCOPE)
+            .or(() -> Optional.ofNullable(configuration.getScope()))
+            .orElse("openid profile email");
     }
 
     public String getResponseType() {
