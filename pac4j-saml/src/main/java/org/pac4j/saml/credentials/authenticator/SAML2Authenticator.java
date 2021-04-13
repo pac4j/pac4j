@@ -94,16 +94,18 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
                     }
                 }
 
+                final String actualName;
                 if (mappedAttributes != null && !mappedAttributes.isEmpty() && mappedAttributes.containsKey(name)) {
-                    final var newName = mappedAttributes.get(name);
-                    logger.debug("Mapping attribute {} as {} with values {} to profile", name, newName, values);
-                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, newName, values);
+                    actualName = mappedAttributes.get(name);
+                    logger.debug("Mapping attribute {} as {} with values {} to profile", name, actualName, values);
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, actualName, values);
                 } else {
+                    actualName = name;
                     logger.debug("Adding attribute {} to profile with values {}", name, values);
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
                 }
 
-                if (CommonHelper.isNotBlank(friendlyName)) {
+                if (CommonHelper.isNotBlank(friendlyName) && CommonHelper.areNotEquals(friendlyName, actualName)) {
                     logger.debug("Adding attribute {} to profile with values {}", friendlyName, values);
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, friendlyName, values);
                 }
