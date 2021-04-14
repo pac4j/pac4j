@@ -1,10 +1,6 @@
 package org.pac4j.saml.profile.impl;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.opensaml.core.xml.XMLObject;
-import org.opensaml.core.xml.io.MarshallingException;
-import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
@@ -25,6 +21,7 @@ import org.pac4j.saml.profile.api.SAML2MessageSender;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPPostSimpleSignEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
+import org.pac4j.saml.util.SAML2Utils;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * @since 3.4.0
  */
 public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implements SAML2MessageSender<T> {
-    protected final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final SignatureSigningParametersProvider signatureSigningParametersProvider;
@@ -99,9 +95,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             encoder.encode();
 
             storeMessage(context, request);
-            logProtocolMessage(request);
-        } catch (final MarshallingException e) {
-            throw new SAMLException("Error marshalling saml message", e);
+            SAML2Utils.logProtocolMessage(request);
         } catch (final MessageEncodingException e) {
             throw new SAMLException("Error encoding saml message", e);
         } catch (final ComponentInitializationException e) {
@@ -117,13 +111,6 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             } else if (request instanceof StatusResponseType) {
                 messageStorage.set(((StatusResponseType) request).getID(), request);
             }
-        }
-    }
-
-    protected void logProtocolMessage(final XMLObject object) throws MarshallingException {
-        if (protocolMessageLog.isDebugEnabled()) {
-            final var requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
-            protocolMessageLog.debug(requestXml);
         }
     }
 

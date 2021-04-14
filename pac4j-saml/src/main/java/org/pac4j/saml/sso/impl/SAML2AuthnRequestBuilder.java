@@ -1,11 +1,7 @@
 package org.pac4j.saml.sso.impl;
 
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang3.StringUtils;
-import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
-import org.opensaml.core.xml.io.MarshallingException;
-import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
@@ -38,7 +34,6 @@ import java.time.ZonedDateTime;
  * @since 1.5.0
  */
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
-    protected final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private int issueInstantSkewSeconds = 0;
@@ -55,19 +50,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             : null;
         final var assertionConsumerService = context.getSPAssertionConsumerService(idx);
         final var authnRequest = buildAuthnRequest(context, assertionConsumerService, ssoService);
-        logProtocolMessage(authnRequest);
+        SAML2Utils.logProtocolMessage(authnRequest);
         return authnRequest;
-    }
-
-    protected void logProtocolMessage(final XMLObject object) {
-        if (protocolMessageLog.isDebugEnabled()) {
-            try {
-                final var requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
-                protocolMessageLog.debug(requestXml);
-            } catch (final MarshallingException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")

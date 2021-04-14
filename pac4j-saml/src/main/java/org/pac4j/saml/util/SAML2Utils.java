@@ -7,6 +7,10 @@ import java.util.List;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.context.HttpConstants;
@@ -26,6 +30,7 @@ public final class SAML2Utils implements HttpConstants {
 
     /** SLF4J logger. */
     private static final Logger logger = LoggerFactory.getLogger(SAML2Utils.class);
+    private static final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
 
     /**
      * Private constructor, to prevent instantiation of this utility class.
@@ -115,5 +120,16 @@ public final class SAML2Utils implements HttpConstants {
             throw new TechnicalException("Error initializing manager", e);
         }
         return metadataManager;
+    }
+
+    public static void logProtocolMessage(final XMLObject object) {
+        if (protocolMessageLog.isDebugEnabled()) {
+            try {
+                final var requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
+                protocolMessageLog.debug(requestXml);
+            } catch (final MarshallingException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 }

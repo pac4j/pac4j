@@ -13,10 +13,8 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.security.IdentifierGenerationStrategy;
 import net.shibboleth.utilities.java.support.security.impl.SecureRandomIdentifierGenerationStrategy;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.MessageException;
 import org.opensaml.messaging.context.MessageContext;
@@ -53,6 +51,7 @@ import org.opensaml.soap.client.SOAPClient;
 import org.opensaml.soap.client.http.PipelineFactoryHttpSOAPClient;
 import org.opensaml.soap.common.SOAPException;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,11 +81,6 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      * The web context
      */
     private WebContext webContext;
-
-    /**
-     * Used to log protocol messages.
-     */
-    private Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
 
     /**
      * Parser pool used to deserialize the message.
@@ -167,7 +161,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         super.decode();
 
-        logDecodedMessage();
+        SAML2Utils.logProtocolMessage((XMLObject) getMessageContext().getMessage());
 
         log.debug("Successfully decoded message from WebContext.");
     }
@@ -785,35 +779,6 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         bindingContext.setBindingDescriptor(bindingDescriptor);
         bindingContext.setHasBindingSignature(false);
         bindingContext.setIntendedDestinationEndpointURIRequired(false);
-    }
-
-    /**
-     * Log the decoded message to the protocol message logger.
-     */
-    protected void logDecodedMessage() {
-        if (protocolMessageLog.isDebugEnabled()) {
-            final var message = getMessageToLog();
-            if (message == null) {
-                log.warn("Decoded message was null, nothing to log");
-                return;
-            }
-
-            try {
-                final var dom = XMLObjectSupport.marshall(message);
-                protocolMessageLog.debug("\n" + SerializeSupport.prettyPrintXML(dom));
-            } catch (final MarshallingException e) {
-                log.error("Unable to marshall message for logging purposes", e);
-            }
-        }
-    }
-
-    /**
-     * Get the XMLObject which will be logged as the protocol message.
-     *
-     * @return the XMLObject message considered to be the protocol message for logging purposes
-     */
-    protected XMLObject getMessageToLog() {
-        return (XMLObject) getMessageContext().getMessage();
     }
 
     public synchronized void setWebContext(@Nullable final WebContext webContext) {

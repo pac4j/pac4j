@@ -6,6 +6,7 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.util.SAML2Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +35,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
             final var base64DecodedMessage = this.getBase64DecodedMessage();
             final var inflatedMessage = inflate(base64DecodedMessage);
             final var inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
+            SAML2Utils.logProtocolMessage(inboundMessage);
             messageContext.getMessageContext().setMessage(inboundMessage);
             logger.debug("Decoded SAML message");
             this.populateBindingContext(messageContext);

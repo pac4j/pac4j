@@ -10,6 +10,7 @@ import org.opensaml.soap.soap11.Envelope;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.util.SAML2Utils;
 
 import java.io.ByteArrayInputStream;
 
@@ -36,6 +37,7 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
             final var base64DecodedMessage = this.getBase64DecodedMessage();
             final var xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
+            SAML2Utils.logProtocolMessage(xmlObject);
             final SAMLObject inboundMessage;
             if (xmlObject instanceof Envelope) {
                 final var soapMessage = (Envelope) xmlObject;
