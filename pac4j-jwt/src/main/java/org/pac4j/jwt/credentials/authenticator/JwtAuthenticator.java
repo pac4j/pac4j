@@ -1,5 +1,34 @@
 package org.pac4j.jwt.credentials.authenticator;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.SignedJWT;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
+import org.pac4j.core.profile.jwt.JwtClaims;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.signature.SignatureConfiguration;
+import org.pac4j.jwt.profile.JwtGenerator;
+import org.pac4j.jwt.profile.JwtProfileDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,40 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.definition.ProfileDefinition;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.profile.jwt.JwtClaims;
-import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
-import org.pac4j.jwt.config.signature.SignatureConfiguration;
-import org.pac4j.jwt.profile.JwtGenerator;
-import org.pac4j.jwt.profile.JwtProfile;
-import org.pac4j.jwt.profile.JwtProfileDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.SignedJWT;
-
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
