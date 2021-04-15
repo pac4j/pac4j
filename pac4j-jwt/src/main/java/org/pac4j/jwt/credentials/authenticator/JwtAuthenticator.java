@@ -29,6 +29,7 @@ import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
+import org.pac4j.jwt.profile.JwtProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,10 +87,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     @Override
     protected void internalInit() {
         assertNotBlank("realmName", this.realmName);
-
-        final ProfileDefinition definition = new CommonProfileDefinition(x -> new JwtProfile());
-        definition.setRestoreProfileFromTypedId(true);
-        defaultProfileDefinition(definition);
+        defaultProfileDefinition(new JwtProfileDefinition());
 
         if (signatureConfigurations.isEmpty()) {
             logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");
