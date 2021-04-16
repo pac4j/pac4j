@@ -9,7 +9,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
  * This is {@link JwtProfileDefinition}.
  *
  * @author Misagh Moayyed
- * @since 5.1.0
+ * @since 5.0.1
  */
 public class JwtProfileDefinition extends CommonProfileDefinition {
     private boolean keepNestedAttributes = true;

@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Hazelcast-based implementation for SAMLMessageStore
 - Added an option to tolerate missing SAML response `Destination` attribute
 - SAML support: don't add the friendly name if it is the same as the (mapped) name (avoid duplication of values)
+- Improve JWT parsing for nested attributes
 
 **v5.0.0** (see: [what's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)):
 
