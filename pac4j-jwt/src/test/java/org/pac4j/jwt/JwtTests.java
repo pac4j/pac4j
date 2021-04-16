@@ -1,7 +1,9 @@
 package org.pac4j.jwt;
 
 import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWSAlgorithm;
 import org.junit.Test;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.Color;
@@ -9,29 +11,34 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.util.generator.StaticValueGenerator;
-import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.ECSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
-import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
-
-import com.nimbusds.jose.JWSAlgorithm;
+import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the {@link JwtGenerator} and {@link org.pac4j.jwt.credentials.authenticator.JwtAuthenticator}.
@@ -43,8 +50,8 @@ public final class JwtTests implements TestsConstants {
 
     private static final String KEY2 = "02ez4f7dsq==drrdz54z---++-6ef78=";
 
-    private static final Set<String> ROLES = new HashSet<>(Arrays.asList(new String[] {"role1", "role2"}));
-    private static final Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[] {"perm1"}));
+    private static final Set<String> ROLES = new HashSet<>(Arrays.asList(new String[]{"role1", "role2"}));
+    private static final Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[]{"perm1"}));
 
     @Test
     public void testGenericJwt() {
@@ -57,6 +64,27 @@ public final class JwtTests implements TestsConstants {
             new SecretEncryptionConfiguration(MAC_SECRET));
         authenticator.validate(credentials, null, null);
         assertNotNull(credentials.getUserProfile());
+    }
+
+    @Test
+    public void testNestedClaimsJwt() {
+        final var generator = new JwtGenerator(new SecretSignatureConfiguration(MAC_SECRET));
+        var claimsMap = new HashMap<String, Object>();
+        claimsMap.put("userData", Map.of("id", "123345", "name", "pac4j"));
+        claimsMap.put("iss", "https://pac4j.org");
+        claimsMap.put("jti", "JTI");
+        claimsMap.put("iat", new Date().getTime());
+        claimsMap.put("exp", new Date().getTime() + 10_000);
+        claimsMap.put("sub", "pac4j");
+
+        var token = generator.generate(claimsMap);
+        final var credentials = new TokenCredentials(token);
+        final var authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET));
+        authenticator.validate(credentials, null, null);
+        assertNotNull(credentials.getUserProfile());
+        assertTrue(credentials.getUserProfile().containsAttribute("id"));
+        assertTrue(credentials.getUserProfile().containsAttribute("name"));
+        assertTrue(credentials.getUserProfile().containsAttribute("userData"));
     }
 
     @Test
@@ -362,7 +390,7 @@ public final class JwtTests implements TestsConstants {
     public void testJwtGenerationA256CBC() {
         final var g = new JwtGenerator(new SecretSignatureConfiguration(MAC_SECRET + MAC_SECRET + MAC_SECRET
             + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET),
-                new SecretEncryptionConfiguration(KEY2 + KEY2)
+            new SecretEncryptionConfiguration(KEY2 + KEY2)
         );
         ((SecretEncryptionConfiguration) g.getEncryptionConfiguration()).setMethod(EncryptionMethod.A256CBC_HS512);
         final var g1 = g.generate(new CommonProfile());
@@ -372,9 +400,9 @@ public final class JwtTests implements TestsConstants {
     @Test
     public void testJwtGenerationA256GCM() {
         final var g = new JwtGenerator(
-                new SecretSignatureConfiguration(MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET
-                    + MAC_SECRET + MAC_SECRET),
-                new SecretEncryptionConfiguration(MAC_SECRET)
+            new SecretSignatureConfiguration(MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET + MAC_SECRET
+                + MAC_SECRET + MAC_SECRET),
+            new SecretEncryptionConfiguration(MAC_SECRET)
         );
         ((SecretEncryptionConfiguration) g.getEncryptionConfiguration()).setMethod(EncryptionMethod.A256GCM);
         final var g1 = g.generate(new CommonProfile());
