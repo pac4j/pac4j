@@ -1,34 +1,5 @@
 package org.pac4j.jwt.credentials.authenticator;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.profile.jwt.JwtClaims;
-import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
-import org.pac4j.jwt.config.signature.SignatureConfiguration;
-import org.pac4j.jwt.profile.JwtGenerator;
-import org.pac4j.jwt.profile.JwtProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEAlgorithm;
@@ -41,7 +12,39 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
+import org.pac4j.core.profile.jwt.JwtClaims;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.signature.SignatureConfiguration;
+import org.pac4j.jwt.profile.JwtGenerator;
+import org.pac4j.jwt.profile.JwtProfile;
+import org.pac4j.jwt.profile.JwtProfileDefinition;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -64,14 +67,15 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     private ValueGenerator identifierGenerator;
 
-    public JwtAuthenticator() {}
+    public JwtAuthenticator() {
+    }
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
     }
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations,
-        final List<EncryptionConfiguration> encryptionConfigurations) {
+                            final List<EncryptionConfiguration> encryptionConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
         this.encryptionConfigurations = encryptionConfigurations;
     }
@@ -88,8 +92,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     @Override
     protected void internalInit() {
         assertNotBlank("realmName", this.realmName);
-
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
+        defaultProfileDefinition(new JwtProfileDefinition());
 
         if (signatureConfigurations.isEmpty()) {
             logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");
@@ -279,6 +282,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         return signatureConfigurations;
     }
 
+    public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
+        assertNotNull("signatureConfigurations", signatureConfigurations);
+        this.signatureConfigurations = signatureConfigurations;
+    }
+
     public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
         addSignatureConfiguration(signatureConfiguration);
     }
@@ -288,13 +296,13 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         signatureConfigurations.add(signatureConfiguration);
     }
 
-    public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
-        assertNotNull("signatureConfigurations", signatureConfigurations);
-        this.signatureConfigurations = signatureConfigurations;
-    }
-
     public List<EncryptionConfiguration> getEncryptionConfigurations() {
         return encryptionConfigurations;
+    }
+
+    public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
+        assertNotNull("encryptionConfigurations", encryptionConfigurations);
+        this.encryptionConfigurations = encryptionConfigurations;
     }
 
     public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
@@ -306,11 +314,6 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         encryptionConfigurations.add(encryptionConfiguration);
     }
 
-    public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
-        assertNotNull("encryptionConfigurations", encryptionConfigurations);
-        this.encryptionConfigurations = encryptionConfigurations;
-    }
-
     public String getRealmName() {
         return realmName;
     }
@@ -319,12 +322,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         this.realmName = realmName;
     }
 
-    public void setExpirationTime(final Date expirationTime) {
-        this.expirationTime = new Date(expirationTime.getTime());
-    }
-
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());
+    }
+
+    public void setExpirationTime(final Date expirationTime) {
+        this.expirationTime = new Date(expirationTime.getTime());
     }
 
     public ValueGenerator getIdentifierGenerator() {

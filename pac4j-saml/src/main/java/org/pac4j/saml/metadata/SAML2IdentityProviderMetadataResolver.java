@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.URLConnection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -49,7 +51,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     private final Resource idpMetadataResource;
     private final ReentrantLock lock = new ReentrantLock();
     private String idpEntityId;
-    private MetadataResolver metadataResolver;
+    private DOMMetadataResolver metadataResolver;
     private long lastModified = NO_LAST_MODIFIED;
     private Proxy proxy = Proxy.NO_PROXY;
 
@@ -96,8 +98,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         return hasChanged;
     }
 
-    protected MetadataResolver buildMetadataResolver() {
-        MetadataResolver resolver = initializeMetadataResolver();
+    protected DOMMetadataResolver buildMetadataResolver() {
+        DOMMetadataResolver resolver = initializeMetadataResolver();
         determineIdentityProviderEntityId(resolver);
         return resolver;
     }
@@ -111,11 +113,11 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
      *
      * @param resolver metadata resolver
      */
-    private void determineIdentityProviderEntityId(final IterableMetadataSource resolver) {
+    private void determineIdentityProviderEntityId(final DOMMetadataResolver resolver) {
         if (this.idpEntityId == null) {
-            var it = resolver.iterator();
+            Iterator<EntityDescriptor> it = resolver.iterator();
             if (it.hasNext()) {
-                var entityDescriptor = it.next();
+                EntityDescriptor entityDescriptor = it.next();
                 this.idpEntityId = entityDescriptor.getEntityID();
             }
         }
@@ -126,7 +128,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     private DOMMetadataResolver initializeMetadataResolver() {
-        try (var in = getMetadataResourceInputStream()) {
+        try (InputStream in = getMetadataResourceInputStream()) {
             Document parsedInput = Configuration.getParserPool().parse(in);
             Element metadataRoot = parsedInput.getDocumentElement();
             DOMMetadataResolver resolver = new DOMMetadataResolver(metadataRoot);
@@ -150,7 +152,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     protected InputStream getMetadataResourceInputStream() throws IOException {
         if (this.idpMetadataResource instanceof UrlResource) {
-            var con = idpMetadataResource.getURL().openConnection(proxy);
+            URLConnection con = idpMetadataResource.getURL().openConnection(proxy);
             try {
                 return con.getInputStream();
             } catch (final Exception e) {
