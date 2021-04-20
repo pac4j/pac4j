@@ -3,6 +3,8 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.1.0**:
+
 **v5.0.1**:
 
 - Hazelcast-based implementation for SAMLMessageStore
