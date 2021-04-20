@@ -38,7 +38,8 @@
                 {% elsif page.url contains '4.2.x' %}<a href="/4.2.x/docs/index.html">(v4.2)</a>
                 {% elsif page.url contains '4.3.x' %}<a href="/4.3.x/docs/index.html">(v4.3)</a>
                 {% elsif page.url contains '4.4.x' %}<a href="/4.4.x/docs/index.html">(v4.4)</a>
-                {% else %}<a href="/docs/index.html">(v5.0)</a>{% endif %}
+                {% elsif page.url contains '5.0.x' %}<a href="/5.0.x/docs/index.html">(v5.0)</a>
+                {% else %}<a href="/docs/index.html">(v5.1)</a>{% endif %}
             </strong></h1>
         </div>
 
