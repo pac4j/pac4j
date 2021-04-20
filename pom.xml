@@ -12,7 +12,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>5.0.2-SNAPSHOT</version>
+	<version>5.1.0-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -415,7 +415,7 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.2.2</version>
+				<version>4.2.3</version>
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->

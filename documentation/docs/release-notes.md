@@ -3,7 +3,7 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v5.0.2**:
+**v5.1.0**:
 
 - SAML2 identity provider metadata resolver can optionally be forced to download the metadata again.
 - SAML2 identity provider metadata resolver is given the ability to support `last-modified` attributes for URLs.
