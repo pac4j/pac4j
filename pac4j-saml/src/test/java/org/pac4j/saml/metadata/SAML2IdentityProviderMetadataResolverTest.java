@@ -4,6 +4,7 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.exception.TechnicalException;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -44,27 +45,27 @@ public class SAML2IdentityProviderMetadataResolverTest {
 
     @Test
     public void resolveMetadataOverUrl() throws Exception {
-        var configuration = new SAML2Configuration();
+        SAML2Configuration configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new UrlResource("https://sso.union.edu/idp/shibboleth"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         metadataResolver.init();
 
-        var resolver = metadataResolver.resolve();
+        MetadataResolver resolver = metadataResolver.resolve();
         assertNotNull(resolver);
 
         assertFalse(metadataResolver.hasChanged());
         assertEquals(0, metadataResolver.getLastModified());
         assertNotNull(metadataResolver.resolve(true));
 
-        var addr = new InetSocketAddress("unknown.example.com", 8080);
-        var proxy = new Proxy(Proxy.Type.HTTP, addr);
+        InetSocketAddress addr = new InetSocketAddress("unknown.example.com", 8080);
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
         metadataResolver.setProxy(proxy);
         assertThrows(TechnicalException.class, () -> metadataResolver.resolve(true));
     }
 
     @Test
     public void resolveExpiringMetadata() throws Exception {
-        var configuration = new SAML2Configuration();
+        SAML2Configuration configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("expired-idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         metadataResolver.init();
