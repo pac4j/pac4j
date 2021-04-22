@@ -45,6 +45,9 @@ title: Release notes&#58;
 
 **v4.4.1**:
 
+- SAML2 identity provider metadata resolver can optionally be forced to download the metadata again.
+- SAML2 identity provider metadata resolver is given the ability to support `last-modified` attributes for URLs.
+- Improve JWT parsing for nested attributes
 - Avoid NPE with `null` domain for cookies on `JEEContext`
 
 **v4.4.0**:
