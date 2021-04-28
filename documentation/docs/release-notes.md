@@ -43,7 +43,7 @@ title: Release notes&#58;
 - Handle the "same site policy" in cookies (default: `lax`). Renamed `ContextHelper` as `WebContextHelper`
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
-**v4.4.1**:
+**v4.5.0**:
 
 - SAML2 identity provider metadata resolver can optionally be forced to download the metadata again.
 - SAML2 identity provider metadata resolver is given the ability to support `last-modified` attributes for URLs.
