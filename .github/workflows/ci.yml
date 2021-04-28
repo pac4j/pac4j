@@ -6,10 +6,10 @@ env:
 on:
     push:
         branches:
-            - 4.4.x
+            - 4.5.x
     pull_request:
         branches:
-            - 4.4.x
+            - 4.5.x
 
 jobs:
     build:
