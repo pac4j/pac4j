@@ -9,7 +9,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <h1><a id="v5.0" href="http://www.pac4j.org/5.0.x/docs/index.html">v5.0</a> <small>(MAJOR)</small></h1>
 
-<h2><a id="v4.4" href="http://www.pac4j.org/4.4.x/docs/index.html">v4.4</a> <small>(MINOR)</small>
+<h2><a id="v4.5" href="http://www.pac4j.org/4.5.x/docs/index.html">v4.5</a> <small>(MINOR)</small>
+
+<a id="v4.4" href="http://www.pac4j.org/4.4.x/docs/index.html">v4.4</a> <small>(MINOR)</small>
 
 <a id="v4.3" href="http://www.pac4j.org/4.3.x/docs/index.html">v4.3</a> <small>(MINOR)</small>
 
