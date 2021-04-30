@@ -9,6 +9,8 @@ title: Release notes&#58;
 - Added an option to tolerate missing SAML response `Destination` attribute
 - SAML support: don't add the friendly name if it is the same as the (mapped) name (avoid duplication of values)
 - Improve JWT parsing for nested attributes
+- SAML2 response validation can now disable the validation of `authnInstant` by assigning a zero/negative value to
+  `SAML2Configuration#configuration.setMaximumAuthenticationLifetime()`. This setting should not be using sparingly.
 
 **v5.0.0** (see: [what's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)):
 
