@@ -681,6 +681,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     private boolean isAuthnInstantValid(final SAML2MessageContext context, final Instant authnInstant) {
         var configContext = context.getConfigurationContext();
-        return isDateValid(authnInstant, configContext.getMaximumAuthenticationLifetime());
+        return configContext.getMaximumAuthenticationLifetime() <= 0 ||
+            isDateValid(authnInstant, configContext.getMaximumAuthenticationLifetime());
     }
 }
