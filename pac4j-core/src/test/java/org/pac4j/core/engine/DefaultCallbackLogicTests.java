@@ -134,7 +134,6 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.getClients().init();
         call();
         final var session = request.getSession();
         final var newSessionId = session.getId();
@@ -166,7 +165,6 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.getClients().init();
         call();
         session = request.getSession();
         final var newSessionId = session.getId();
@@ -191,7 +189,6 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
-        config.getClients().init();
         call();
         final var session = request.getSession();
         final var newSessionId = session.getId();

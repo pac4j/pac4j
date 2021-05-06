@@ -8,27 +8,23 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is made to group multiple clients, generally on one callback url.</p>
  *
- * <p>The {@link #init()} method is used to initialize the clients with the general values: the callback URL, the AJAX resolver,
- * the URL resolver, the callback URL resolver and the authorization generators.</p>
+ * <p>Clients can be changed at any time.</p>
  *
  * @author Jerome Leleu
  * @since 1.3.0
  */
 @SuppressWarnings({ "unchecked" })
-public class Clients extends InitializableObject {
+public class Clients {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Clients.class);
 
     private List<Client> clients;
-
-    private Map<String, Client> _clients;
 
     private String callbackUrl;
 
@@ -55,11 +51,6 @@ public class Clients extends InitializableObject {
         setClients(clients);
     }
 
-    public Clients(final String callbackUrl, final Client client) {
-        setCallbackUrl(callbackUrl);
-        setClients(Collections.singletonList(client));
-    }
-
     public Clients(final List<Client> clients) {
         setClients(clients);
     }
@@ -68,49 +59,39 @@ public class Clients extends InitializableObject {
         setClients(clients);
     }
 
-    public Clients(final Client client) {
-        setClients(Collections.singletonList(client));
-    }
-
-    @Override
-    protected void internalInit() {
-        CommonHelper.assertNotNull("clients", getClients());
-        _clients = new HashMap<>();
-        for (final var client : getClients()) {
-            final var name = client.getName();
-            final var lowerTrimmedName = name.toLowerCase().trim();
-            if (_clients.containsKey(lowerTrimmedName)) {
-                throw new TechnicalException("Duplicate name in clients: " + name);
-            }
-            _clients.put(lowerTrimmedName, client);
-            if (client instanceof IndirectClient) {
-                updateIndirectClient((IndirectClient) client);
-            }
-            final var baseClient = (BaseClient) client;
-            if (!authorizationGenerators.isEmpty()) {
-                baseClient.addAuthorizationGenerators(this.authorizationGenerators);
-            }
-        }
-    }
-
-
     /**
-     * Setup the indirect client.
+     * Populate the resolvers, callback URL and authz generators in the Client
+     * if defined in Clients and not already in the Client itself. And check the client name.
      *
-     * @param client the indirect client
+     * @param client the client
+     * @param clientNames the client names
      */
-    protected void updateIndirectClient(final IndirectClient client) {
-        if (this.callbackUrl != null && client.getCallbackUrl() ==  null) {
-            client.setCallbackUrl(this.callbackUrl);
+    protected void populateClientAndCheckName(final Client client, final HashSet<String> clientNames) {
+        final var name = client.getName();
+        CommonHelper.assertNotBlank("name", name);
+        final var lowerTrimmedName = name.toLowerCase().trim();
+        if (clientNames.contains(lowerTrimmedName)) {
+            throw new TechnicalException("Duplicate name in clients: " + name);
         }
-        if (this.urlResolver != null && client.getUrlResolver() == null) {
-            client.setUrlResolver(this.urlResolver);
+        clientNames.add(lowerTrimmedName);
+        if (client instanceof IndirectClient) {
+            final var indirectClient = (IndirectClient) client;
+            if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
+                indirectClient.setCallbackUrl(this.callbackUrl);
+            }
+            if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
+                indirectClient.setUrlResolver(this.urlResolver);
+            }
+            if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
+                indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+            }
+            if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
+                indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
+            }
         }
-        if (this.callbackUrlResolver != null && client.getCallbackUrlResolver() == null) {
-            client.setCallbackUrlResolver(this.callbackUrlResolver);
-        }
-        if (this.ajaxRequestResolver != null && client.getAjaxRequestResolver() == null) {
-            client.setAjaxRequestResolver(this.ajaxRequestResolver);
+        final var baseClient = (BaseClient) client;
+        if (!authorizationGenerators.isEmpty()) {
+            baseClient.addAuthorizationGenerators(this.authorizationGenerators);
         }
     }
 
@@ -122,45 +103,46 @@ public class Clients extends InitializableObject {
      */
     public Optional<Client> findClient(final String name) {
         CommonHelper.assertNotBlank("name", name);
-        init();
-        final var lowerTrimmedName = name.toLowerCase().trim();
-        final var client = _clients.get(lowerTrimmedName);
-        if (client != null) {
-            return Optional.of(client);
-        }
-        LOGGER.debug("No client found for name: {}", name);
-        return Optional.empty();
-    }
-
-    /**
-     * Return the right client according to the specific class.
-     *
-     * @param clazz class of the client
-     * @param <C> the kind of client
-     * @return the right client
-     */
-    @SuppressWarnings("unchecked")
-    public <C extends Client> Optional<C> findClient(final Class<C> clazz) {
-        CommonHelper.assertNotNull("clazz", clazz);
-        init();
-        if (clazz != null) {
-            for (final var client : getClients()) {
-                if (clazz.isAssignableFrom(client.getClass())) {
-                    return Optional.of((C) client);
-                }
+        Client foundClient = null;
+        final var clientNames = new HashSet<String>();
+        for (final var client : getClients()) {
+            populateClientAndCheckName(client, clientNames);
+            if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
+                foundClient = client;
             }
         }
-        LOGGER.debug("No client found for class: {}", clazz);
-        return Optional.empty();
+        LOGGER.debug("Found client: {} for name: {}", foundClient, name);
+        return Optional.ofNullable(foundClient);
     }
 
     /**
-     * Find all the clients.
+     * Use {@link #findClient(String)} instead.
+     */
+    @Deprecated
+    public <C extends Client> Optional<C> findClient(final Class<C> clazz) {
+        CommonHelper.assertNotNull("clazz", clazz);
+        C foundClient = null;
+        final var clientNames = new HashSet<String>();
+        for (final var client : getClients()) {
+            populateClientAndCheckName(client, clientNames);
+            if (foundClient == null && clazz.isAssignableFrom(client.getClass())) {
+                foundClient = (C) client;
+            }
+        }
+        LOGGER.debug("Found client: {} for class: {}", foundClient, clazz);
+        return Optional.ofNullable(foundClient);
+    }
+
+    /**
+     * Find all the clients (initialized).
      *
-     * @return all the clients
+     * @return all the clients (initialized)
      */
     public List<Client> findAllClients() {
-        init();
+        final var clientNames = new HashSet<String>();
+        for (final var client : getClients()) {
+            populateClientAndCheckName(client, clientNames);
+        }
         return getClients();
     }
 
@@ -173,11 +155,13 @@ public class Clients extends InitializableObject {
     }
 
     public void setClients(final List<Client> clients) {
+        CommonHelper.assertNotNull("clients", clients);
         this.clients = clients;
     }
 
     public void setClients(final Client... clients) {
-        this.clients = Arrays.asList(clients);
+        CommonHelper.assertNotNull("clients", clients);
+        setClients(new ArrayList<>(Arrays.asList(clients)));
     }
 
     public List<Client> getClients() {

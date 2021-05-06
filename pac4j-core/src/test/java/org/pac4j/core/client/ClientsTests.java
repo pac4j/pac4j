@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
@@ -40,14 +42,14 @@ public final class ClientsTests implements TestsConstants {
     public void testMissingClient() {
         final var clients = new Clients();
         clients.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(clients, "clients cannot be null");
+        TestsHelper.expectException(() -> clients.setClients((List<Client>) null), TechnicalException.class, "clients cannot be null");
     }
 
     @Test
     public void testNoValuesSet() {
         var facebookClient = newFacebookClient();
         final var clients = new Clients(facebookClient);
-        clients.init();
+        clients.findAllClients();
         assertNull(facebookClient.getCallbackUrl());
         assertNull(facebookClient.getUrlResolver());
         assertNull(facebookClient.getCallbackUrlResolver());
@@ -68,7 +70,7 @@ public final class ClientsTests implements TestsConstants {
         clients.setUrlResolver(urlResolver);
         clients.setCallbackUrlResolver(callbackUrlResolver);
         clients.addAuthorizationGenerator(authorizationGenerator);
-        clients.init();
+        clients.findAllClients();
         assertEquals(CALLBACK_URL, facebookClient.getCallbackUrl());
         assertEquals(urlResolver, facebookClient.getUrlResolver());
         assertEquals(callbackUrlResolver, facebookClient.getCallbackUrlResolver());
@@ -121,7 +123,20 @@ public final class ClientsTests implements TestsConstants {
         final var client2 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final var clients = new Clients(CALLBACK_URL, client1, client2);
-        TestsHelper.initShouldFail(clients, "Duplicate name in clients: name");
+        TestsHelper.expectException(() -> clients.findAllClients(),
+            TechnicalException.class, "Duplicate name in clients: name");
+    }
+
+    @Test
+    public void rejectSameNameOnAddingNewClient() {
+        final var client1 =
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        final var clients = new Clients(CALLBACK_URL, client1);
+        final var client2 =
+            new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        clients.getClients().add(client2);
+        TestsHelper.expectException(() -> clients.findClient(NAME),
+            TechnicalException.class, "Duplicate name in clients: name");
     }
 
     @Test
@@ -131,7 +146,8 @@ public final class ClientsTests implements TestsConstants {
         final var client2 =
             new MockIndirectClient(NAME.toUpperCase(), new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final var clients = new Clients(CALLBACK_URL, client1, client2);
-        TestsHelper.initShouldFail(clients, "Duplicate name in clients: NAME");
+        TestsHelper.expectException(() -> clients.findAllClients(),
+            TechnicalException.class, "Duplicate name in clients: NAME");
     }
 
     @Test
@@ -156,5 +172,22 @@ public final class ClientsTests implements TestsConstants {
         final var yahooClient = newYahooClient();
         final var clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient(" FacebookClient          "));
+    }
+
+    @Test
+    public void testAddClient() {
+        final var facebookClient = newFacebookClient();
+        final var yahooClient = newYahooClient();
+        final var clients = new Clients(CALLBACK_URL, facebookClient);
+        clients.findAllClients();
+        final List<Client> list = new ArrayList<>();
+        list.add(facebookClient);
+        list.add(yahooClient);
+        clients.setClients(list);
+        clients.setCallbackUrlResolver(new NoParameterCallbackUrlResolver());
+        final var yclient = (IndirectClient) clients.findClient("YahooClient").get();
+        assertTrue(yclient.getCallbackUrlResolver() instanceof NoParameterCallbackUrlResolver);
+        final var fclient = (IndirectClient) clients.findClient("FacebookClient").get();
+        assertTrue(fclient.getCallbackUrlResolver() instanceof NoParameterCallbackUrlResolver);
     }
 }

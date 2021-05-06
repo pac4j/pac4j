@@ -9,6 +9,7 @@ title: Release notes&#58;
 - SAML2 identity provider metadata resolver is given the ability to support `last-modified` attributes for URLs.
 - SAML2 response validation can now disable the validation of `authnInstant` by assigning a zero/negative value to
   `SAML2Configuration#configuration.setMaximumAuthenticationLifetime()`. This setting should not be using sparingly.
+- Clients can be changed at any time in the `Clients` component
 
 **v5.0.1**:
 

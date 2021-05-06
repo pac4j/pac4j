@@ -23,7 +23,6 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final DirectClient basicAuth = new MockDirectClient("BasicAuth");
         final IndirectClient cas = new MockIndirectClient("cas");
         final var clients = new Clients(CALLBACK_URL, facebook, basicAuth, cas);
-        clients.init();
         final var context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "facebook   ");
         final ClientFinder finder = new DefaultCallbackClientFinder();
@@ -37,7 +36,6 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final IndirectClient azure = new MockIndirectClient("azure");
         azure.setCallbackUrlResolver(new PathParameterCallbackUrlResolver());
         final var clients = new Clients(CALLBACK_URL, azure);
-        clients.init();
         final var context = MockWebContext.create().setPath("/   AZURE   ");
         final ClientFinder finder = new DefaultCallbackClientFinder();
         final var result = finder.find(clients, context, null);
@@ -50,7 +48,6 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         final DirectClient basicAuth = new MockDirectClient("BasicAuth");
         final var clients = new Clients(CALLBACK_URL, basicAuth, facebook);
-        clients.init();
         final var context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "basicauth");
         final var finder = new DefaultCallbackClientFinder();
@@ -64,7 +61,6 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         final IndirectClient twitter = new MockIndirectClient("Twitter");
         final var clients = new Clients(CALLBACK_URL, twitter, facebook);
-        clients.init();
         final var context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "Twitter");
         final var finder = new DefaultCallbackClientFinder();
@@ -78,7 +74,6 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         final IndirectClient twitter = new MockIndirectClient("Twitter");
         final var clients = new Clients(CALLBACK_URL, twitter, facebook);
-        clients.init();
         final var finder = new DefaultCallbackClientFinder();
         final var result = finder.find(clients, MockWebContext.create(), "Facebook");
         assertEquals(1, result.size());
@@ -89,7 +84,6 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
     public void testOneIndirectClientNoIndirectClientInURL() {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         final var clients = new Clients(CALLBACK_URL, facebook);
-        clients.init();
         final var finder = new DefaultCallbackClientFinder();
         final var result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
