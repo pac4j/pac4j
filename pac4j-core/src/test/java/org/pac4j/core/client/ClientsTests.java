@@ -190,4 +190,22 @@ public final class ClientsTests implements TestsConstants {
         final var fclient = (IndirectClient) clients.findClient("FacebookClient").get();
         assertTrue(fclient.getCallbackUrlResolver() instanceof NoParameterCallbackUrlResolver);
     }
+
+    @Test
+    public void testPerfFind() {
+        final var list = new ArrayList<Client>();
+        final int max = 10000;
+        for (int i = 1; i < max; i++) {
+            list.add(new MockIndirectClient("Client" + i, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile()));
+        }
+        final var clients = new Clients(CALLBACK_URL, list);
+        Optional<Client> c = Optional.empty();
+        final var t0 = System.currentTimeMillis();
+        for (int j = 0; j < max; j++) {
+            c = clients.findClient("Client" + (max/2));
+        }
+        final var t1 = System.currentTimeMillis();
+        assertTrue(c.isPresent());
+        System.out.println("Time: " + (t1-t0) + " ms");
+    }
 }

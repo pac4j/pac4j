@@ -26,6 +26,10 @@ public class Clients {
 
     private List<Client> clients;
 
+    private Map<String, Client> clientsMap;
+
+    private Integer oldClientsHash;
+
     private String callbackUrl;
 
     private AjaxRequestResolver ajaxRequestResolver;
@@ -62,36 +66,42 @@ public class Clients {
     /**
      * Populate the resolvers, callback URL and authz generators in the Client
      * if defined in Clients and not already in the Client itself. And check the client name.
-     *
-     * @param client the client
-     * @param clientNames the client names
      */
-    protected void populateClientAndCheckName(final Client client, final HashSet<String> clientNames) {
-        final var name = client.getName();
-        CommonHelper.assertNotBlank("name", name);
-        final var lowerTrimmedName = name.toLowerCase().trim();
-        if (clientNames.contains(lowerTrimmedName)) {
-            throw new TechnicalException("Duplicate name in clients: " + name);
-        }
-        clientNames.add(lowerTrimmedName);
-        if (client instanceof IndirectClient) {
-            final var indirectClient = (IndirectClient) client;
-            if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
-                indirectClient.setCallbackUrl(this.callbackUrl);
+    protected void init() {
+        // the clients list has changed or has not been initialized yet
+        if (oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode()) {
+            synchronized (this) {
+                clientsMap = new HashMap<>();
+                for (final var client : this.clients) {
+                    final var name = client.getName();
+                    CommonHelper.assertNotBlank("name", name);
+                    final var lowerTrimmedName = name.toLowerCase().trim();
+                    if (clientsMap.containsKey(lowerTrimmedName)) {
+                        throw new TechnicalException("Duplicate name in clients: " + name);
+                    }
+                    clientsMap.put(lowerTrimmedName, client);
+                    if (client instanceof IndirectClient) {
+                        final var indirectClient = (IndirectClient) client;
+                        if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
+                            indirectClient.setCallbackUrl(this.callbackUrl);
+                        }
+                        if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
+                            indirectClient.setUrlResolver(this.urlResolver);
+                        }
+                        if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
+                            indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+                        }
+                        if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
+                            indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
+                        }
+                    }
+                    final var baseClient = (BaseClient) client;
+                    if (!authorizationGenerators.isEmpty()) {
+                        baseClient.addAuthorizationGenerators(this.authorizationGenerators);
+                    }
+                }
+                this.oldClientsHash = this.clients.hashCode();
             }
-            if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
-                indirectClient.setUrlResolver(this.urlResolver);
-            }
-            if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
-                indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
-            }
-            if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
-                indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
-            }
-        }
-        final var baseClient = (BaseClient) client;
-        if (!authorizationGenerators.isEmpty()) {
-            baseClient.addAuthorizationGenerators(this.authorizationGenerators);
         }
     }
 
@@ -103,14 +113,9 @@ public class Clients {
      */
     public Optional<Client> findClient(final String name) {
         CommonHelper.assertNotBlank("name", name);
-        Client foundClient = null;
-        final var clientNames = new HashSet<String>();
-        for (final var client : getClients()) {
-            populateClientAndCheckName(client, clientNames);
-            if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
-                foundClient = client;
-            }
-        }
+        init();
+
+        final var foundClient = clientsMap.get(name.toLowerCase().trim());
         LOGGER.debug("Found client: {} for name: {}", foundClient, name);
         return Optional.ofNullable(foundClient);
     }
@@ -121,12 +126,13 @@ public class Clients {
     @Deprecated
     public <C extends Client> Optional<C> findClient(final Class<C> clazz) {
         CommonHelper.assertNotNull("clazz", clazz);
+        init();
+
         C foundClient = null;
-        final var clientNames = new HashSet<String>();
         for (final var client : getClients()) {
-            populateClientAndCheckName(client, clientNames);
-            if (foundClient == null && clazz.isAssignableFrom(client.getClass())) {
+            if (clazz.isAssignableFrom(client.getClass())) {
                 foundClient = (C) client;
+                break;
             }
         }
         LOGGER.debug("Found client: {} for class: {}", foundClient, clazz);
@@ -139,10 +145,8 @@ public class Clients {
      * @return all the clients (initialized)
      */
     public List<Client> findAllClients() {
-        final var clientNames = new HashSet<String>();
-        for (final var client : getClients()) {
-            populateClientAndCheckName(client, clientNames);
-        }
+        init();
+
         return getClients();
     }
 
