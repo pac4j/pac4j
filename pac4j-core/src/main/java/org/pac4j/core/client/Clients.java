@@ -71,36 +71,38 @@ public class Clients {
         // the clients list has changed or has not been initialized yet
         if (oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode()) {
             synchronized (this) {
-                clientsMap = new HashMap<>();
-                for (final var client : this.clients) {
-                    final var name = client.getName();
-                    CommonHelper.assertNotBlank("name", name);
-                    final var lowerTrimmedName = name.toLowerCase().trim();
-                    if (clientsMap.containsKey(lowerTrimmedName)) {
-                        throw new TechnicalException("Duplicate name in clients: " + name);
+                if (oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode()) {
+                    clientsMap = new HashMap<>();
+                    for (final var client : this.clients) {
+                        final var name = client.getName();
+                        CommonHelper.assertNotBlank("name", name);
+                        final var lowerTrimmedName = name.toLowerCase().trim();
+                        if (clientsMap.containsKey(lowerTrimmedName)) {
+                            throw new TechnicalException("Duplicate name in clients: " + name);
+                        }
+                        clientsMap.put(lowerTrimmedName, client);
+                        if (client instanceof IndirectClient) {
+                            final var indirectClient = (IndirectClient) client;
+                            if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
+                                indirectClient.setCallbackUrl(this.callbackUrl);
+                            }
+                            if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
+                                indirectClient.setUrlResolver(this.urlResolver);
+                            }
+                            if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
+                                indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+                            }
+                            if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
+                                indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
+                            }
+                        }
+                        final var baseClient = (BaseClient) client;
+                        if (!authorizationGenerators.isEmpty()) {
+                            baseClient.addAuthorizationGenerators(this.authorizationGenerators);
+                        }
                     }
-                    clientsMap.put(lowerTrimmedName, client);
-                    if (client instanceof IndirectClient) {
-                        final var indirectClient = (IndirectClient) client;
-                        if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
-                            indirectClient.setCallbackUrl(this.callbackUrl);
-                        }
-                        if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
-                            indirectClient.setUrlResolver(this.urlResolver);
-                        }
-                        if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
-                            indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
-                        }
-                        if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
-                            indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
-                        }
-                    }
-                    final var baseClient = (BaseClient) client;
-                    if (!authorizationGenerators.isEmpty()) {
-                        baseClient.addAuthorizationGenerators(this.authorizationGenerators);
-                    }
+                    this.oldClientsHash = this.clients.hashCode();
                 }
-                this.oldClientsHash = this.clients.hashCode();
             }
         }
     }
