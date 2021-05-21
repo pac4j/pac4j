@@ -179,7 +179,8 @@ public class OidcAuthenticator implements Authenticator {
         final var response = OIDCTokenResponseParser.parse(httpResponse);
         if (response instanceof TokenErrorResponse) {
             final var errorObject = ((TokenErrorResponse) response).getErrorObject();
-            throw new TechnicalException("Bad token response, error=" + errorObject.getCode() +", description=" + errorObject.getDescription());
+            throw new TechnicalException("Bad token response, error=" + errorObject.getCode() +"," +
+                " description=" + errorObject.getDescription());
         }
         logger.debug("Token response successful");
         final var tokenSuccessResponse = (OIDCTokenResponse) response;
