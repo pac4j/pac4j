@@ -66,7 +66,7 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 
         if (this.configuration.getBlackListedSignatureSigningAlgorithms() != null) {
-            config.setBlacklistedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
+            config.setExcludedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
         }
         if (this.configuration.getSignatureAlgorithms() != null){
             config.setSignatureAlgorithms(this.configuration.getSignatureAlgorithms());
