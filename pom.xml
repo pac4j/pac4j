@@ -61,7 +61,7 @@
 		<servlet-api.version>4.0.1</servlet-api.version>
 		<logback.version>1.2.3</logback.version>
 		<commons-codec.version>1.15</commons-codec.version>
-		<commons-io.version>2.8.0</commons-io.version>
+		<commons-io.version>2.9.0</commons-io.version>
 		<guava.version>30.1.1-jre</guava.version>
 		<nimbus-jose-jwt.version>9.9.3</nimbus-jose-jwt.version>
 		<spring.version>5.3.7</spring.version>
