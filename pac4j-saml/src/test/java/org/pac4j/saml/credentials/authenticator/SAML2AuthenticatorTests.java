@@ -93,16 +93,16 @@ public class SAML2AuthenticatorTests {
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
     }
     
-	private Map<String, String> createMappedAttributesForTest() {
-		final Map<String, String> mappedAttributes = new LinkedHashMap<>();
+    private Map<String, String> createMappedAttributesForTest() {
+        final Map<String, String> mappedAttributes = new LinkedHashMap<>();
         mappedAttributes.put("urn:oid:2.16.840.1.113730.3.1.241", "mapped-display-name");
         mappedAttributes.put("urn:oid:2.5.4.42", "mapped-given-name");
         mappedAttributes.put("urn:oid:2.5.4.4", "mapped-surname");
-		return mappedAttributes;
-	}
+        return mappedAttributes;
+    }
     
-	private SAML2Credentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
-		final var nameid = nameIdBuilder.buildObject();
+    private SAML2Credentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
+        final var nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
         nameid.setSPNameQualifier("pac4j");
         nameid.setNameQualifier("pac4j");
@@ -111,11 +111,11 @@ public class SAML2AuthenticatorTests {
         final var conditions = conditionsBuilder.buildObject();
         
         if (includeNotBefore) {
-        	conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+            conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         }
         
         if (includeNotOnOrAfter) {
-        	conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+            conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         }
 
         final List<String> contexts = new ArrayList<>();
@@ -131,8 +131,8 @@ public class SAML2AuthenticatorTests {
         final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
             SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
-		return credentials;
-	}
+        return credentials;
+    }
 
     private Attribute createAttribute(final String friendlyName, final String name, final String value) {
         final var attributeBuilder = (SAMLObjectBuilder<Attribute>)

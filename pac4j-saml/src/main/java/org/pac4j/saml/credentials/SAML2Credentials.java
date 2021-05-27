@@ -46,17 +46,17 @@ public class SAML2Credentials extends Credentials {
         this.sessionIndex = sessionIndex;
         this.attributes = samlAttributes;
         
-		if (conditions != null) {
-			this.conditions = new SAMLConditions();
-			
-			if (conditions.getNotBefore() != null) {
-				this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
-			}
+        if (conditions != null) {
+            this.conditions = new SAMLConditions();
+            
+            if (conditions.getNotBefore() != null) {
+                this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
+            }
 
-			if (conditions.getNotOnOrAfter() != null) {
-				this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
-			}
-		}
+            if (conditions.getNotOnOrAfter() != null) {
+                this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
+            }
+        }
 
         this.authnContexts = authnContexts;
 
