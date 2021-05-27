@@ -46,9 +46,6 @@ public class SAML2Credentials extends Credentials {
         this.sessionIndex = sessionIndex;
         this.attributes = samlAttributes;
         
-		// <Conditions> are optional elements in SAML2 assertions, so if NotBefore or
-		// NotOnOrAfter are not included, they are null here and using them in
-		// ZonedDateTime.ofInstant() causes an NPE.
 		if (conditions != null) {
 			this.conditions = new SAMLConditions();
 			
