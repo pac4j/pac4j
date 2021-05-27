@@ -39,6 +39,69 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void verifyAttributeMapping() {
+        final var credentials = createCredentialsForTest(true, true);
+        final Map<String, String> mappedAttributes = createMappedAttributesForTest();
+
+        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+
+        final var finalProfile = credentials.getUserProfile();
+        assertTrue(finalProfile.containsAttribute("mapped-display-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-given-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-surname"));
+    }
+
+    @Test
+    public void validateWithMissingNotBeforeCondition() {
+        final var credentials = createCredentialsForTest(false, true);
+        final Map<String, String> mappedAttributes = createMappedAttributesForTest();
+
+        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+
+        final var finalProfile = credentials.getUserProfile();
+        assertTrue(finalProfile.containsAttribute("mapped-display-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-given-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-surname"));
+    }
+    
+    @Test
+    public void validateWithMissingNotOnOrAfterCondition() {
+        final var credentials = createCredentialsForTest(true, false);
+        final Map<String, String> mappedAttributes = createMappedAttributesForTest();
+
+        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+
+        final var finalProfile = credentials.getUserProfile();
+        assertTrue(finalProfile.containsAttribute("mapped-display-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-given-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-surname"));
+    }
+    
+    @Test
+    public void validateWithEmptyConditions() {
+        final var credentials = createCredentialsForTest(false, false);
+        final Map<String, String> mappedAttributes = createMappedAttributesForTest();
+
+        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+
+        final var finalProfile = credentials.getUserProfile();
+        assertTrue(finalProfile.containsAttribute("mapped-display-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-given-name"));
+        assertTrue(finalProfile.containsAttribute("mapped-surname"));
+    }
+    
+    private Map<String, String> createMappedAttributesForTest() {
+        final Map<String, String> mappedAttributes = new LinkedHashMap<>();
+        mappedAttributes.put("urn:oid:2.16.840.1.113730.3.1.241", "mapped-display-name");
+        mappedAttributes.put("urn:oid:2.5.4.42", "mapped-given-name");
+        mappedAttributes.put("urn:oid:2.5.4.4", "mapped-surname");
+        return mappedAttributes;
+    }
+    
+    private SAML2Credentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
         final var nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
         nameid.setSPNameQualifier("pac4j");
@@ -46,8 +109,14 @@ public class SAML2AuthenticatorTests {
         nameid.setSPProvidedID("pac4j");
 
         final var conditions = conditionsBuilder.buildObject();
-        conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
-        conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        
+        if (includeNotBefore) {
+            conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        }
+        
+        if (includeNotOnOrAfter) {
+            conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        }
 
         final List<String> contexts = new ArrayList<>();
         contexts.add("cas-context");
@@ -62,19 +131,7 @@ public class SAML2AuthenticatorTests {
         final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
             SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
-
-        final Map<String, String> mappedAttributes = new LinkedHashMap<>();
-        mappedAttributes.put("urn:oid:2.16.840.1.113730.3.1.241", "mapped-display-name");
-        mappedAttributes.put("urn:oid:2.5.4.42", "mapped-given-name");
-        mappedAttributes.put("urn:oid:2.5.4.4", "mapped-surname");
-
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
-
-        final var finalProfile = credentials.getUserProfile();
-        assertTrue(finalProfile.containsAttribute("mapped-display-name"));
-        assertTrue(finalProfile.containsAttribute("mapped-given-name"));
-        assertTrue(finalProfile.containsAttribute("mapped-surname"));
+        return credentials;
     }
 
     private Attribute createAttribute(final String friendlyName, final String name, final String value) {
