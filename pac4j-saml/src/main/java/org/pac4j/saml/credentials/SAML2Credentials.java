@@ -45,9 +45,22 @@ public class SAML2Credentials extends Credentials {
         this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;
         this.attributes = samlAttributes;
-        this.conditions = new SAMLConditions();
-        this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
-        this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
+        
+		// <Conditions> are optional elements in SAML2 assertions, so if NotBefore or
+		// NotOnOrAfter are not included, they are null here and using them in
+		// ZonedDateTime.ofInstant() causes an NPE.
+		if (conditions != null) {
+			this.conditions = new SAMLConditions();
+			
+			if (conditions.getNotBefore() != null) {
+				this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
+			}
+
+			if (conditions.getNotOnOrAfter() != null) {
+				this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
+			}
+		}
+
         this.authnContexts = authnContexts;
 
         logger.info("Constructed SAML2 credentials: {}", this);
