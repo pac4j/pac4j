@@ -38,6 +38,7 @@ You can use the following clients depending on what are the credentials and how 
 | value sent as a HTTP parameter | [`ParameterClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/ParameterClient.java) (direct client) |
 | IP address | [`IpClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/IpClient.java) (direct client) |
 | X509 certificate | [`X509Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/X509Client.java) (direct client) |
+| username/token sent via digest auth | [`DirectDigestAuthClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/DirectDigestAuthClient.java) (direct client) |
 {:.table-striped}
 
 **Examples:**
