@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.1.1**:
+
+- Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead.
+
 **v5.1.0**:
 
 - SAML2 identity provider metadata resolver can optionally be forced to download the metadata again.
@@ -45,6 +49,10 @@ title: Release notes&#58;
 - The presence of `NameID` elements in SAML2 responses is now made optional, if the `SAML2Configuration` is configured to build the final credential using a SAML2 attribute found in the assertion. If the attribute is not found or is undefined, `NameID` is expected as the default.
 - Handle the "same site policy" in cookies (default: `lax`). Renamed `ContextHelper` as `WebContextHelper`
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
+
+**v4.5.1**:
+
+- Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead.
 
 **v4.5.0**:
 
