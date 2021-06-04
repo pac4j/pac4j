@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.5.1**:
+
+- Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead.
+
 **v4.5.0**:
 
 - SAML2 identity provider metadata resolver can optionally be forced to download the metadata again.
