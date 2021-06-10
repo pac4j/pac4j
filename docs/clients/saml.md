@@ -452,7 +452,8 @@ This implementation uses Hazelcast as underlying dataStore.
 It requires:
 
 1. the additional dependency:
-```
+
+```xml
 <dependency>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast</artifactId>
@@ -460,4 +461,5 @@ It requires:
     <optional>true</optional>
 </dependency>
 ```
+
 2. to pass an `HazelcastInstance` object to constructor
