@@ -2,7 +2,6 @@ package org.pac4j.oidc.credentials.authenticator;
 
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.*;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
@@ -37,10 +36,10 @@ public class OidcAuthenticator implements Authenticator {
     private static final Logger logger = LoggerFactory.getLogger(OidcAuthenticator.class);
 
     private static final Collection<ClientAuthenticationMethod> SUPPORTED_METHODS =
-            Arrays.asList(
-                    ClientAuthenticationMethod.CLIENT_SECRET_POST,
-                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
-                    ClientAuthenticationMethod.NONE);
+        Arrays.asList(
+            ClientAuthenticationMethod.CLIENT_SECRET_POST,
+            ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
+            ClientAuthenticationMethod.NONE);
 
     protected OidcConfiguration configuration;
 
@@ -59,7 +58,7 @@ public class OidcAuthenticator implements Authenticator {
         if (configuration.getSecret() != null) {
             // check authentication methods
             final var metadataMethods = configuration.findProviderMetadata()
-                    .getTokenEndpointAuthMethods();
+                .getTokenEndpointAuthMethods();
 
             final var preferredMethod = getPreferredAuthenticationMethod(configuration);
 
@@ -70,8 +69,8 @@ public class OidcAuthenticator implements Authenticator {
                         chosenMethod = preferredMethod;
                     } else {
                         throw new TechnicalException(
-                                "Preferred authentication method (" + preferredMethod + ") not supported "
-                                        + "by provider according to provider metadata (" + metadataMethods + ").");
+                            "Preferred authentication method (" + preferredMethod + ") not supported "
+                                + "by provider according to provider metadata (" + metadataMethods + ").");
                     }
                 } else {
                     chosenMethod = firstSupportedMethod(metadataMethods);
@@ -79,7 +78,7 @@ public class OidcAuthenticator implements Authenticator {
             } else {
                 chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
                 logger.info("Provider metadata does not provide Token endpoint authentication methods. Using: {}",
-                        chosenMethod);
+                    chosenMethod);
             }
 
             if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(chosenMethod)) {
@@ -88,13 +87,9 @@ public class OidcAuthenticator implements Authenticator {
             } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
                 final var _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretBasic(_clientID, _secret);
-            } else if (ClientAuthenticationMethod.NONE.equals(chosenMethod)) {
-                clientAuthentication = new ClientNoSecret(_clientID);
             } else {
                 throw new TechnicalException("Unsupported client authentication method: " + chosenMethod);
             }
-        } else {
-            clientAuthentication = new ClientNoSecret(_clientID);
         }
     }
 
@@ -120,8 +115,7 @@ public class OidcAuthenticator implements Authenticator {
      * The first {@link ClientAuthenticationMethod} from the given list of
      * methods that is supported by this implementation.
      *
-     * @throws TechnicalException
-     *         if none of the provider-supported methods is supported.
+     * @throws TechnicalException if none of the provider-supported methods is supported.
      */
     private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
         var firstSupported =
@@ -143,11 +137,9 @@ public class OidcAuthenticator implements Authenticator {
             try {
                 final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
                 var verifier = (CodeVerifier) configuration.getValueRetriever()
-                        .retrieve(client.getCodeVerifierSessionAttributeName(), client, context, sessionStore).orElse(null);
+                    .retrieve(client.getCodeVerifierSessionAttributeName(), client, context, sessionStore).orElse(null);
                 // Token request
-                final var request = new TokenRequest(
-                        configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
-                        new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
+                final var request = createTokenRequest(new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
                 executeTokenRequest(request, credentials);
             } catch (final URISyntaxException | IOException | ParseException e) {
                 throw new TechnicalException(e);
@@ -159,12 +151,21 @@ public class OidcAuthenticator implements Authenticator {
         final var refreshToken = credentials.getRefreshToken();
         if (refreshToken != null) {
             try {
-                final var request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
-                    this.clientAuthentication, new RefreshTokenGrant(refreshToken));
+                final var request = createTokenRequest(new RefreshTokenGrant(refreshToken));
                 executeTokenRequest(request, credentials);
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
+        }
+    }
+
+    protected TokenRequest createTokenRequest(final AuthorizationGrant grant) {
+        if (clientAuthentication != null) {
+            return new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
+                this.clientAuthentication, grant);
+        } else {
+            return new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
+                new ClientID(configuration.getClientId()), grant);
         }
     }
 
@@ -179,7 +180,7 @@ public class OidcAuthenticator implements Authenticator {
         final var response = OIDCTokenResponseParser.parse(httpResponse);
         if (response instanceof TokenErrorResponse) {
             final var errorObject = ((TokenErrorResponse) response).getErrorObject();
-            throw new TechnicalException("Bad token response, error=" + errorObject.getCode() +"," +
+            throw new TechnicalException("Bad token response, error=" + errorObject.getCode() + "," +
                 " description=" + errorObject.getDescription());
         }
         logger.debug("Token response successful");
@@ -200,18 +201,4 @@ public class OidcAuthenticator implements Authenticator {
     public void setClientAuthentication(final ClientAuthentication clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
-
-    public static class ClientNoSecret extends ClientAuthentication {
-
-        protected ClientNoSecret(ClientID clientID) {
-            super(ClientAuthenticationMethod.NONE, clientID);
-        }
-
-        @Override
-        public void applyTo(HTTPRequest request) {
-            // do nothing
-        }
-
-    }
-
 }

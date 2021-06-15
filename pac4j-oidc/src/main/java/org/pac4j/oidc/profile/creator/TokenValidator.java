@@ -49,7 +49,6 @@ public class TokenValidator {
 
         idTokenValidators = new ArrayList<>();
         final var _clientID = new ClientID(configuration.getClientId());
-        final var _secret = new Secret(configuration.getSecret());
 
         for (var jwsAlgorithm : jwsAlgorithms) {
             if ("none".equals(jwsAlgorithm.getName())) {
@@ -62,6 +61,7 @@ public class TokenValidator {
                 idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
             } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
+                final var _secret = new Secret(configuration.getSecret());
                 idTokenValidator = createHMACTokenValidator(configuration, jwsAlgorithm, _clientID, _secret);
             } else {
                 idTokenValidator = createRSATokenValidator(configuration, jwsAlgorithm, _clientID);

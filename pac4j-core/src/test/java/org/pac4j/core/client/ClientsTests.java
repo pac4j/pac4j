@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.exception.TechnicalException;
@@ -192,6 +193,7 @@ public final class ClientsTests implements TestsConstants {
     }
 
     @Test
+    @Ignore
     public void testPerfFind() {
         final var list = new ArrayList<Client>();
         final int max = 10000;
