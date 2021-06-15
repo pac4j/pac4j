@@ -5,7 +5,8 @@ title: Release notes&#58;
 
 **v5.1.1**:
 
-- Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead.
+- Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead
+- Fixed PKCE OIDC flow support.
 
 **v5.1.0**:
 
