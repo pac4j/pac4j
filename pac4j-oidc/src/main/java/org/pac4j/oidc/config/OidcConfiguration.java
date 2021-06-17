@@ -142,8 +142,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new TechnicalException("Unsupported responseType: " + responseType);
         }
-        // except for the implicit flow, the secret is mandatory
-        if (!IMPLICIT_FLOWS.contains(responseType)) {
+        // except for the implicit flow and when PKCE is disabled, the secret is mandatory
+        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()) {
             CommonHelper.assertNotBlank("secret", getSecret());
         }
         if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {

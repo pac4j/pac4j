@@ -91,18 +91,10 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
             } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
                 final Secret _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretBasic(_clientID, _secret);
-            } else if (ClientAuthenticationMethod.NONE.equals(chosenMethod)) {
-                clientAuthentication = new ClientNoSecret(_clientID);
             } else {
                 throw new TechnicalException("Unsupported client authentication method: " + chosenMethod);
             }
-
-        } else {
-
-            clientAuthentication = new ClientNoSecret(_clientID);
-
         }
-
     }
 
     /**
@@ -151,9 +143,7 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
                 CodeVerifier verifier = (CodeVerifier) configuration.getValueRetriever()
                         .retrieve(client.getCodeVerifierSessionAttributeName(), client, context).orElse(null);
                 // Token request
-                final TokenRequest request = new TokenRequest(
-                        configuration.findProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
-                        new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
+                final TokenRequest request = createTokenRequest(new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
                 executeTokenRequest(request, credentials);
             } catch (final URISyntaxException | IOException | ParseException e) {
                 throw new TechnicalException(e);
@@ -165,12 +155,21 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
         final RefreshToken refreshToken = credentials.getRefreshToken();
         if (refreshToken != null) {
             try {
-                final TokenRequest request = new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
-                    this.clientAuthentication, new RefreshTokenGrant(refreshToken));
+                final TokenRequest request = createTokenRequest(new RefreshTokenGrant(refreshToken));
                 executeTokenRequest(request, credentials);
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
+        }
+    }
+
+    protected TokenRequest createTokenRequest(final AuthorizationGrant grant) {
+        if (clientAuthentication != null) {
+            return new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
+                this.clientAuthentication, grant);
+        } else {
+            return new TokenRequest(configuration.findProviderMetadata().getTokenEndpointURI(),
+                new ClientID(configuration.getClientId()), grant);
         }
     }
 
@@ -204,18 +203,4 @@ public class OidcAuthenticator implements Authenticator<OidcCredentials> {
     public void setClientAuthentication(final ClientAuthentication clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
-
-    public static class ClientNoSecret extends ClientAuthentication {
-
-        protected ClientNoSecret(ClientID clientID) {
-            super(ClientAuthenticationMethod.NONE, clientID);
-        }
-
-        @Override
-        public void applyTo(HTTPRequest request) {
-            // do nothing
-        }
-
-    }
-
 }
