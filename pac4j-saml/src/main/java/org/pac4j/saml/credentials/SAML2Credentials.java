@@ -46,10 +46,10 @@ public class SAML2Credentials extends Credentials {
         this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;
         this.attributes = samlAttributes;
-        
+
         if (conditions != null) {
             this.conditions = new SAMLConditions();
-            
+
             if (conditions.getNotBefore() != null) {
                 this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
             }
@@ -219,63 +219,63 @@ public class SAML2Credentials extends Credentials {
         private String nameFormat;
         private List<String> attributeValues = new ArrayList<>();
 
-		public static SAMLAttribute from(Attribute attribute) {
-			final var samlAttribute = new SAMLAttribute();
-			samlAttribute.setFriendlyName(attribute.getFriendlyName());
-			samlAttribute.setName(attribute.getName());
-			samlAttribute.setNameFormat(attribute.getNameFormat());
-			attribute.getAttributeValues()
-			    .stream()
-			    .map(XMLObject::getDOM)
-			    .filter(dom -> dom != null && dom.getTextContent() != null)
-			    .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
-			return samlAttribute;
-		}
-        
-        public static List<SAMLAttribute> from(final List<Attribute> samlAttributes) {
-        	
-    		List<SAMLAttribute> extractedAttributes = new ArrayList<>();
-    		
-    		samlAttributes.forEach(openSamlAttribute -> {
-    			openSamlAttribute.getAttributeValues().forEach(attributeValue -> {
-    				boolean isKnownType = attributeValue.getSchemaType() != null;
-    				
-    				if (isKnownType) {
-    					extractedAttributes.add(SAMLAttribute.from(openSamlAttribute));
-    				}
-    				else {
-    					List<SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
-    					extractedAttributes.addAll(attrs);
-    				}
-    			});
-    		});
-        	
-        	return extractedAttributes;
+        public static SAMLAttribute from(Attribute attribute) {
+            final var samlAttribute = new SAMLAttribute();
+            samlAttribute.setFriendlyName(attribute.getFriendlyName());
+            samlAttribute.setName(attribute.getName());
+            samlAttribute.setNameFormat(attribute.getNameFormat());
+            attribute.getAttributeValues()
+                .stream()
+                .map(XMLObject::getDOM)
+                .filter(dom -> dom != null && dom.getTextContent() != null)
+                .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
+            return samlAttribute;
         }
-        
-    	private static List<SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
 
-    		var results = new ArrayList<SAMLAttribute>();
+        public static List<SAMLAttribute> from(final List<Attribute> samlAttributes) {
 
-    		if (nodeList == null) {
-    			return results;
-    		}
-    		
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				Node node = nodeList.item(i);
+            List<SAMLAttribute> extractedAttributes = new ArrayList<>();
 
-				if (node.hasChildNodes()) {
-					results.addAll(collectAttributesFromNodeList(node.getChildNodes()));
-				} else if (!node.getTextContent().isBlank()) {
-					SAMLAttribute samlAttribute = new SAMLAttribute();
-					samlAttribute.setName(node.getParentNode().getLocalName());
-					samlAttribute.getAttributeValues().add(node.getTextContent());
-					results.add(samlAttribute);
-				}
-			}
+            samlAttributes.forEach(openSamlAttribute -> {
+                openSamlAttribute.getAttributeValues().forEach(attributeValue -> {
+                    boolean isKnownType = attributeValue.getSchemaType() != null;
 
-    		return results;
-    	}
+                    if (isKnownType) {
+                        extractedAttributes.add(SAMLAttribute.from(openSamlAttribute));
+                    }
+                    else {
+                        List<SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
+                        extractedAttributes.addAll(attrs);
+                    }
+                });
+            });
+
+            return extractedAttributes;
+        }
+
+        private static List<SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
+
+            var results = new ArrayList<SAMLAttribute>();
+
+            if (nodeList == null) {
+                return results;
+            }
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+
+                if (node.hasChildNodes()) {
+                    results.addAll(collectAttributesFromNodeList(node.getChildNodes()));
+                } else if (!node.getTextContent().isBlank()) {
+                    SAMLAttribute samlAttribute = new SAMLAttribute();
+                    samlAttribute.setName(node.getParentNode().getLocalName());
+                    samlAttribute.getAttributeValues().add(node.getTextContent());
+                    results.add(samlAttribute);
+                }
+            }
+
+            return results;
+        }
 
         public String getFriendlyName() {
             return friendlyName;
