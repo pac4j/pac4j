@@ -1,5 +1,11 @@
 package org.pac4j.saml.credentials;
 
+import java.io.Serializable;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
@@ -7,13 +13,8 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Credentials containing the nameId of the SAML subject and all of its attributes.
@@ -218,20 +219,63 @@ public class SAML2Credentials extends Credentials {
         private String nameFormat;
         private List<String> attributeValues = new ArrayList<>();
 
+		public static SAMLAttribute from(Attribute attribute) {
+			final var samlAttribute = new SAMLAttribute();
+			samlAttribute.setFriendlyName(attribute.getFriendlyName());
+			samlAttribute.setName(attribute.getName());
+			samlAttribute.setNameFormat(attribute.getNameFormat());
+			attribute.getAttributeValues()
+			    .stream()
+			    .map(XMLObject::getDOM)
+			    .filter(dom -> dom != null && dom.getTextContent() != null)
+			    .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
+			return samlAttribute;
+		}
+        
         public static List<SAMLAttribute> from(final List<Attribute> samlAttributes) {
-            return samlAttributes.stream().map(attribute -> {
-                final var samlAttribute = new SAMLAttribute();
-                samlAttribute.setFriendlyName(attribute.getFriendlyName());
-                samlAttribute.setName(attribute.getName());
-                samlAttribute.setNameFormat(attribute.getNameFormat());
-                attribute.getAttributeValues()
-                    .stream()
-                    .map(XMLObject::getDOM)
-                    .filter(dom -> dom != null && dom.getTextContent() != null)
-                    .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
-                return samlAttribute;
-            }).collect(Collectors.toList());
+        	
+    		List<SAMLAttribute> extractedAttributes = new ArrayList<>();
+    		
+    		samlAttributes.forEach(openSamlAttribute -> {
+    			openSamlAttribute.getAttributeValues().forEach(attributeValue -> {
+    				boolean isKnownType = attributeValue.getSchemaType() != null;
+    				
+    				if (isKnownType) {
+    					extractedAttributes.add(SAMLAttribute.from(openSamlAttribute));
+    				}
+    				else {
+    					List<SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
+    					extractedAttributes.addAll(attrs);
+    				}
+    			});
+    		});
+        	
+        	return extractedAttributes;
         }
+        
+    	private static List<SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
+
+    		var results = new ArrayList<SAMLAttribute>();
+
+    		if (nodeList == null) {
+    			return results;
+    		}
+    		
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node node = nodeList.item(i);
+
+				if (node.hasChildNodes()) {
+					results.addAll(collectAttributesFromNodeList(node.getChildNodes()));
+				} else if (!node.getTextContent().isBlank()) {
+					SAMLAttribute samlAttribute = new SAMLAttribute();
+					samlAttribute.setName(node.getParentNode().getLocalName());
+					samlAttribute.getAttributeValues().add(node.getTextContent());
+					results.add(samlAttribute);
+				}
+			}
+
+    		return results;
+    	}
 
         public String getFriendlyName() {
             return friendlyName;
