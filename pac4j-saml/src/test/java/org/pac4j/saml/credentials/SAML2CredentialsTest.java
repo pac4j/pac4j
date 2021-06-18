@@ -103,7 +103,8 @@ public class SAML2CredentialsTest {
         final List<SAMLAttribute> attributes = credentials.getAttributes();
         assertNotNull(attributes);
 
-        final Map<String, List<String>> resultAttributes = attributes.stream().collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
+        final Map<String, List<String>> resultAttributes = attributes.stream()
+            .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
         assertEquals("Bar", resultAttributes.get("Foo").get(0));
         assertEquals("Example Corp", resultAttributes.get("OrganizationName").get(0));
         assertEquals("employee@example.com", resultAttributes.get("EmailAddress").get(0));
