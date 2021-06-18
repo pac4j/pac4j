@@ -13,6 +13,7 @@ import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;
 
+import javax.xml.namespace.QName;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class SAML2AuthenticatorTests {
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
     }
-    
+
     @Test
     public void validateWithMissingNotOnOrAfterCondition() {
         final var credentials = createCredentialsForTest(true, false);
@@ -78,7 +79,7 @@ public class SAML2AuthenticatorTests {
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
     }
-    
+
     @Test
     public void validateWithEmptyConditions() {
         final var credentials = createCredentialsForTest(false, false);
@@ -92,7 +93,7 @@ public class SAML2AuthenticatorTests {
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
     }
-    
+
     private Map<String, String> createMappedAttributesForTest() {
         final Map<String, String> mappedAttributes = new LinkedHashMap<>();
         mappedAttributes.put("urn:oid:2.16.840.1.113730.3.1.241", "mapped-display-name");
@@ -100,7 +101,7 @@ public class SAML2AuthenticatorTests {
         mappedAttributes.put("urn:oid:2.5.4.4", "mapped-surname");
         return mappedAttributes;
     }
-    
+
     private SAML2Credentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
         final var nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
@@ -109,11 +110,11 @@ public class SAML2AuthenticatorTests {
         nameid.setSPProvidedID("pac4j");
 
         final var conditions = conditionsBuilder.buildObject();
-        
+
         if (includeNotBefore) {
             conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         }
-        
+
         if (includeNotOnOrAfter) {
             conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         }
@@ -146,6 +147,7 @@ public class SAML2AuthenticatorTests {
         final var dom = mock(Element.class);
         when(dom.getTextContent()).thenReturn(value);
         when(attrValue.getDOM()).thenReturn(dom);
+        when(attrValue.getSchemaType()).thenReturn(new QName(" http://www.w3.org/2001/XMLSchema", "string", "xs"));
 
         attr.getAttributeValues().add(attrValue);
         return attr;
