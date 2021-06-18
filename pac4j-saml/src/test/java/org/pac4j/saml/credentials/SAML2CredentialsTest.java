@@ -1,10 +1,23 @@
 package org.pac4j.saml.credentials;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+import org.opensaml.core.xml.util.XMLObjectSupport;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.SAMLVersion;
+import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
+import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
+import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.metadata.Endpoint;
+import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.context.SAML2ConfigurationContext;
+import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.credentials.SAML2Credentials.SAMLAttribute;
+import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
+import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
+import org.pac4j.saml.util.Configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,30 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import junit.framework.AssertionFailedError;
-import org.hibernate.criterion.Example;
-import org.junit.Before;
-import org.junit.Test;
-import org.opensaml.core.xml.util.XMLObjectSupport;
-import org.opensaml.messaging.context.MessageContext;
-import org.opensaml.saml.common.SAMLVersion;
-import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
-import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
-import org.opensaml.saml.saml2.core.*;
-import org.opensaml.saml.saml2.core.impl.StatusImpl;
-import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.opensaml.storage.ReplayCache;
-import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.logout.handler.LogoutHandler;
-import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.context.SAML2ConfigurationContext;
-import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.credentials.SAML2Credentials.SAMLAttribute;
-import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.replay.ReplayCacheProvider;
-import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
-import org.pac4j.saml.util.Configuration;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SAML2CredentialsTest {
 
