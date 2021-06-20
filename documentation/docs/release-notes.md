@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 - Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead
 - Fixed PKCE OIDC flow support
+- Properly parse SAML complex attributes
 
 **v5.1.0**:
 
