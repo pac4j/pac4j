@@ -12,7 +12,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>5.1.1-SNAPSHOT</version>
+	<version>5.1.1</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
