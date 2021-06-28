@@ -48,6 +48,8 @@ public abstract class IndirectClient extends BaseClient {
 
     private LogoutActionBuilder logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
+    private boolean checkAuthenticationAttempt = true;
+
     @Override
     protected void beforeInternalInit() {
         // check configuration
@@ -110,13 +112,20 @@ public abstract class IndirectClient extends BaseClient {
     }
 
     private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
-        logger.debug("clean requested URL");
+        logger.debug("clean requested URL from session");
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
     }
 
     private void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
-        logger.debug("clean authentication attempt");
+        logger.debug("clean authentication attempt from session");
         sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
+    }
+
+    private void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
+        if (checkAuthenticationAttempt) {
+            logger.debug("save authentication attempt in session");
+            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+        }
     }
 
     /**
@@ -137,7 +146,7 @@ public abstract class IndirectClient extends BaseClient {
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");
-            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+            saveAttemptedAuthentication(context, sessionStore);
         } else {
             cleanAttemptedAuthentication(context, sessionStore);
         }
@@ -225,12 +234,21 @@ public abstract class IndirectClient extends BaseClient {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
     }
 
+    public boolean isCheckAuthenticationAttempt() {
+        return checkAuthenticationAttempt;
+    }
+
+    public void setCheckAuthenticationAttempt(final boolean checkAuthenticationAttempt) {
+        this.checkAuthenticationAttempt = checkAuthenticationAttempt;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
                 "urlResolver", this.urlResolver, "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver",
                 this.ajaxRequestResolver, "redirectionActionBuilder", this.redirectionActionBuilder, "credentialsExtractor",
                 getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-                "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
+                "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators(),
+                "checkAuthenticationAttempt", checkAuthenticationAttempt);
     }
 }
