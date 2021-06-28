@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead
 - Fixed PKCE OIDC flow support
 - Properly parse SAML complex attributes
+- For the CAS server OIDC support: allow to disable the checking of authentication attempts
 
 **v5.1.0**:
 
