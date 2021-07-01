@@ -183,15 +183,6 @@ public final class MockWebContext implements WebContext {
     }
 
     @Override
-    public String getRequestURL() {
-        var idx = getFullRequestURL().indexOf('?');
-        if (idx != -1) {
-            return getFullRequestURL().substring(0, idx);
-        }
-        return getFullRequestURL();
-    }
-
-    @Override
     public String getFullRequestURL() {
         if (fullRequestURL != null) {
             return fullRequestURL;

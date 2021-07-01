@@ -132,7 +132,13 @@ public interface WebContext {
      * @return the URL
      * @since 5.1.2
      */
-    String getRequestURL();
+    default String getRequestURL() {
+        var idx = getFullRequestURL().indexOf('?');
+        if (idx != -1) {
+            return getFullRequestURL().substring(0, idx);
+        }
+        return getFullRequestURL();
+    }
 
     /**
      * Retrieves request cookies.
