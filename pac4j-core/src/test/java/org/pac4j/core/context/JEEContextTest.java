@@ -70,6 +70,13 @@ public final class JEEContextTest implements TestsConstants {
     }
 
     @Test
+    public void testGetRequestUrl() throws Exception {
+        when(request.getRequestURL()).thenReturn(new StringBuffer("https://pac4j.org?name=value&name2=value2"));
+        final var context = new JEEContext(request, response);
+        assertEquals("https://pac4j.org", context.getRequestURL());
+    }
+
+    @Test
     public void testGetPathFullpathContext() {
         when(request.getRequestURI()).thenReturn(CTX_PATH);
         when(request.getContextPath()).thenReturn(CTX);

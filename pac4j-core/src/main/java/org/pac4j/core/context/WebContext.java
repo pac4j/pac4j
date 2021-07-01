@@ -127,6 +127,14 @@ public interface WebContext {
     String getFullRequestURL();
 
     /**
+     * Return the full URL (without the query string) the client used to request the server.
+     *
+     * @return the URL
+     * @since 5.1.2
+     */
+    String getRequestURL();
+
+    /**
      * Retrieves request cookies.
      *
      * @return the request cookies
