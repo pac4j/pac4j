@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.1.2**:
+
+- Support SAML2 `Scoping` in authentication requests.
+
 **v5.1.1**:
 
 - Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead

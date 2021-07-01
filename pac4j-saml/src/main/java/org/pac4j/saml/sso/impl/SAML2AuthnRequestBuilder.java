@@ -9,7 +9,10 @@ import org.opensaml.saml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Extensions;
+import org.opensaml.saml.saml2.core.IDPEntry;
+import org.opensaml.saml.saml2.core.IDPList;
 import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.Scoping;
 import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
@@ -133,6 +136,30 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
         if (!extensions.getUnknownXMLObjects().isEmpty()) {
             request.setExtensions(extensions);
+        }
+
+        final var givenIdPs = configContext.getSAML2Configuration().getScopingIdentityProviders();
+        if (!givenIdPs.isEmpty()) {
+            final var scopingBuilder = (SAMLObjectBuilder<Scoping>) this.builderFactory
+                .getBuilder(Scoping.DEFAULT_ELEMENT_NAME);
+            final var scoping = scopingBuilder.buildObject();
+            final var idpEntryBuilder = (SAMLObjectBuilder<IDPEntry>) this.builderFactory
+                .getBuilder(IDPEntry.DEFAULT_ELEMENT_NAME);
+
+            final var idpListBuilder = (SAMLObjectBuilder<IDPList>) this.builderFactory
+                .getBuilder(IDPList.DEFAULT_ELEMENT_NAME);
+            scoping.setIDPList(idpListBuilder.buildObject());
+
+            givenIdPs.forEach(idp -> {
+                final var idpEntry = idpEntryBuilder.buildObject();
+                idpEntry.setProviderID(idp.getProviderId());
+                idpEntry.setName(idp.getName());
+                scoping.getIDPList().getIDPEntrys().add(idpEntry);
+            });
+
+            if (!scoping.getIDPList().getIDPEntrys().isEmpty()) {
+                request.setScoping(scoping);
+            }
         }
         return request;
     }
