@@ -127,6 +127,20 @@ public interface WebContext {
     String getFullRequestURL();
 
     /**
+     * Return the full URL (without the query string) the client used to request the server.
+     *
+     * @return the URL
+     * @since 5.1.2
+     */
+    default String getRequestURL() {
+        var idx = getFullRequestURL().indexOf('?');
+        if (idx != -1) {
+            return getFullRequestURL().substring(0, idx);
+        }
+        return getFullRequestURL();
+    }
+
+    /**
      * Retrieves request cookies.
      *
      * @return the request cookies

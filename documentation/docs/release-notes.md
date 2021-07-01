@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.1.2**:
 
 - Support SAML2 `Scoping` in authentication requests.
+- `WebContext` is now able to provide the request url directly.
 
 **v5.1.1**:
 

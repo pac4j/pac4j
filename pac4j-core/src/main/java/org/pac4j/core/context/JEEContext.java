@@ -133,6 +133,16 @@ public class JEEContext implements WebContext {
     }
 
     @Override
+    public String getRequestURL() {
+        final var url = request.getRequestURL().toString();
+        var idx = url.indexOf('?');
+        if (idx != -1) {
+            return url.substring(0, idx);
+        }
+        return url;
+    }
+
+    @Override
     public String getFullRequestURL() {
         final var requestURL = request.getRequestURL();
         final var queryString = request.getQueryString();
