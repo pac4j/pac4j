@@ -36,6 +36,9 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     public void setup() {
         configuration = getSaml2Configuration();
         configuration.setAssertionConsumerServiceIndex(1);
+
+        var scopedIdP = new SAML2ScopingIdentityProvider("idp-entity-id", "My Identity Provider");
+        configuration.getScopingIdentityProviders().add(scopedIdP);
     }
 
     @Test
@@ -105,6 +108,15 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         final var context = buildContext();
         context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
         assertNotNull(builder.build(context));
+    }
+
+    @Test
+    public void testScopingIdentityProviders() {
+        final var builder = new SAML2AuthnRequestBuilder();
+        final var context = buildContext();
+        var authnRequest = builder.build(context);
+        assertNotNull(authnRequest);
+        assertNotNull(authnRequest.getScoping());
     }
 
     @Override
