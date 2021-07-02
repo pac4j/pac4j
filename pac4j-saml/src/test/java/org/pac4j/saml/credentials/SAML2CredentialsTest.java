@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
 public class SAML2CredentialsTest {
 
     private static final String RESPONSE_FILE_NAME = "sample_authn_response.xml";
+    private static final String RESPONSE_FILE_NAME_FROM_ADFS = "sample_authn_response_from_adfs.xml";
     private static final String RESPONSE_FILE_NAME_WITH_COMPLEXTYPE = "sample_authn_response_with_complextype.xml";
 
     private SAML2AuthnResponseValidator validator;
@@ -104,6 +105,22 @@ public class SAML2CredentialsTest {
         assertEquals("", resultAttributes.get("digitalAddress").get(0));
         assertEquals("42", resultAttributes.get("anInteger").get(0));
         assertEquals("true", resultAttributes.get("aBoolean").get(0));
+    }
+
+    @Test
+    public void verifyStandardExtractionWorksForAdfs() throws Exception {
+        var credentials = extractCredentials(RESPONSE_FILE_NAME_FROM_ADFS);
+        assertNotNull(credentials);
+        var attributes = credentials.getAttributes();
+        assertNotNull(attributes);
+
+        var resultAttributes = attributes.stream()
+            .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
+        assertEquals(4, resultAttributes.size());
+        assertEquals("John", resultAttributes.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname").get(0));
+        assertEquals("DOE", resultAttributes.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname").get(0));
+        assertEquals("jdoe@company", resultAttributes.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").get(0));
+        assertEquals("...", resultAttributes.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").get(0));
     }
 
     @Test

@@ -238,14 +238,13 @@ public class SAML2Credentials extends Credentials {
 
             samlAttributes.forEach(openSamlAttribute -> {
                 openSamlAttribute.getAttributeValues().forEach(attributeValue -> {
-                    boolean isKnownType = attributeValue.getSchemaType() != null;
+                    boolean isComplexType = attributeValue.hasChildren();
 
-                    if (isKnownType) {
-                        extractedAttributes.add(SAMLAttribute.from(openSamlAttribute));
-                    }
-                    else {
+                    if (isComplexType) {
                         List<SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
                         extractedAttributes.addAll(attrs);
+                    } else {
+                        extractedAttributes.add(SAMLAttribute.from(openSamlAttribute));
                     }
                 });
             });
