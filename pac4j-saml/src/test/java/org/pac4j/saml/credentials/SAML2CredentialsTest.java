@@ -37,6 +37,7 @@ import static org.mockito.Mockito.when;
 
 public class SAML2CredentialsTest {
 
+    private static final String RESPONSE_FILE_NAME = "sample_authn_response.xml";
     private static final String RESPONSE_FILE_NAME_WITH_COMPLEXTYPE = "sample_authn_response_with_complextype.xml";
 
     private SAML2AuthnResponseValidator validator;
@@ -77,6 +78,32 @@ public class SAML2CredentialsTest {
 
         validator = new SAML2AuthnResponseValidator(mock(SAML2SignatureTrustEngineProvider.class),
             mock(Decrypter.class), null, mockSaml2Configuration);
+    }
+
+    @Test
+    public void verifyStandardExtractionWorks() throws Exception {
+        var credentials = extractCredentials(RESPONSE_FILE_NAME);
+        assertNotNull(credentials);
+        var attributes = credentials.getAttributes();
+        assertNotNull(attributes);
+
+        var resultAttributes = attributes.stream()
+            .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
+        assertEquals(14, resultAttributes.size());
+        assertEquals("F", resultAttributes.get("gender").get(0));
+        assertEquals("Ricci", resultAttributes.get("familyName").get(0));
+        assertEquals("Eustachio", resultAttributes.get("name").get(0));
+        assertEquals("", resultAttributes.get("mobilePhone").get(0));
+        assertEquals("TINIT-NNJEMM98O38H730Z", resultAttributes.get("fiscalNumber").get(0));
+        assertEquals("", resultAttributes.get("placeOfBirth").get(0));
+        assertEquals("longosibilla@libero.it", resultAttributes.get("email").get(0));
+        assertEquals("", resultAttributes.get("countyOfBirth").get(0));
+        assertEquals("", resultAttributes.get("address").get(0));
+        assertEquals("1990-01-31", resultAttributes.get("dateOfBirth").get(0));
+        assertEquals("779ec30a-36de-de1a-b783-0032689e74ba", resultAttributes.get("spidCode").get(0));
+        assertEquals("", resultAttributes.get("digitalAddress").get(0));
+        assertEquals("42", resultAttributes.get("anInteger").get(0));
+        assertEquals("true", resultAttributes.get("aBoolean").get(0));
     }
 
     @Test
