@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +121,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     private boolean withState = true;
+
+    private Map<String, String> mappedClaims = new LinkedHashMap<>();
 
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
@@ -475,6 +478,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return tokenValidator;
     }
 
+    public Map<String, String> getMappedClaims() {
+        return mappedClaims;
+    }
+
+    public void setMappedClaims(Map<String, String> mappedClaims) {
+        this.mappedClaims = mappedClaims;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -484,6 +495,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
             "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
-            "tokenValidator", tokenValidator);
+            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims);
     }
 }

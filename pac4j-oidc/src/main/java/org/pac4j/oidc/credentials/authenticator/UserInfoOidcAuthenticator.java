@@ -1,8 +1,10 @@
 package org.pac4j.oidc.credentials.authenticator;
 
 import static java.util.Optional.ofNullable;
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.naming.AuthenticationException;
 
@@ -63,12 +65,27 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
         final var userInfoClaimsSet = fetchOidcProfile(accessToken);
         ofNullable(userInfoClaimsSet)
             .map(JWTClaimsSet::getClaims)
-            .ifPresent(claims -> profileDefinition.convertAndAdd(profile, claims, null));
+            .ifPresent(claims -> collectProfileClaims(profileDefinition, profile, claims));
 
         // session expiration with token behavior
         profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
 
         credentials.setUserProfile(profile);
+    }
+
+    protected void collectProfileClaims(final OidcProfileDefinition profileDefinition,
+                                        final OidcProfile profile,
+                                        final Map<String, Object> claims) {
+        claims.forEach((name, value) -> {
+            if (configuration.getMappedClaims().containsKey(name)) {
+                var actualName = configuration.getMappedClaims().get(name);
+                logger.debug("Mapping claim {} as {} with values {} to profile", name, actualName, value);
+                profileDefinition.convertAndAdd(profile, PROFILE_ATTRIBUTE, actualName, value);
+            } else {
+                logger.debug("Adding claim {} to profile with values {}", name, value);
+                profileDefinition.convertAndAdd(profile, PROFILE_ATTRIBUTE, name, value);
+            }
+        });
     }
 
     private JWTClaimsSet fetchOidcProfile(BearerAccessToken accessToken) {

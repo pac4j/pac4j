@@ -107,11 +107,14 @@ public class OidcProfile extends AbstractJwtProfile {
                 addAttribute(OidcProfileDefinition.EXPIRATION,
                     Date.from(Instant.now().plusSeconds(accessToken.getLifetime())));
             } else {
-                Date exp;
+                Date exp = null;
                 try {
-                    exp = JWTParser.parse(accessToken.getValue()).getJWTClaimsSet().getExpirationTime();
+                    final var jwtClaimsSet = JWTParser.parse(accessToken.getValue()).getJWTClaimsSet();
+                    if (jwtClaimsSet != null) {
+                        exp = jwtClaimsSet.getExpirationTime();
+                    }
                 } catch (ParseException e) {
-                    exp = null;
+                    logger.trace(e.getMessage(), e);
                 }
                 if (exp != null) {
                     addAttribute(OidcProfileDefinition.EXPIRATION,
