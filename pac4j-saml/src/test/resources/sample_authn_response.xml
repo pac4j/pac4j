@@ -90,6 +90,12 @@ Aqton5KdRuilrZuyJTemkGOgqMHOTm7CMuWMe28dM1/hEMgK0QQgAKN9LgG3aB1V
       <saml:Attribute Name="digitalAddress">
         <saml:AttributeValue xsi:type="xs:string"/>
       </saml:Attribute>
+      <saml:Attribute Name="anInteger">
+        <saml:AttributeValue xsi:type="xs:integer">42</saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="aBoolean">
+        <saml:AttributeValue xsi:type="xs:boolean">true</saml:AttributeValue>
+      </saml:Attribute>
     </saml:AttributeStatement>
   </saml:Assertion>
 </samlp:Response>
