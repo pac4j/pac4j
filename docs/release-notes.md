@@ -5,10 +5,9 @@ title: Release notes&#58;
 
 **v5.1.2**:
 
-- Support SAML2 `Scoping` in authentication requests
-- `WebContext` is now able to provide the request url directly
-- Fix SAML2 response attributes resolution when using ADFS as IdP
-- Add claims mapping for the OIDC support.
+- Support SAML2 `Scoping` in authentication requests.
+- `WebContext` is now able to provide the request url directly.
+- Fix SAML2 response attributes resolution when using ADFS as IdP.
 
 **v5.1.1**:
 
