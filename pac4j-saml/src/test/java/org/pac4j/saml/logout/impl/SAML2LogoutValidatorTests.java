@@ -26,6 +26,7 @@ import org.springframework.core.io.FileSystemResource;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
@@ -146,10 +147,10 @@ public class SAML2LogoutValidatorTests {
 
         try {
             validator.validate(context);
-            Assert.fail("Validation should have failed, because response status PartialLogout is not accepted as success by default.");
+            fail("Validation should have failed, because response status PartialLogout is not accepted as success by default.");
         }
-        catch(SAMLException e) {
-            // expected
+        catch(SAMLException expectedException) {
+            assertNotNull(expectedException);
         }
 
         validator.setIsPartialLogoutTreatedAsSuccess(true);
