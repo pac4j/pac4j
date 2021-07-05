@@ -1,6 +1,5 @@
 package org.pac4j.saml.logout.impl;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.saml2.core.LogoutResponse;
