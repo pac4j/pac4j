@@ -170,6 +170,7 @@ public class SAML2Client extends IndirectClient {
             this.configuration.getPostLogoutURL(), this.replayCache,
             this.configuration.getUriComparator());
         this.logoutValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
+        this.logoutValidator.setIsPartialLogoutTreatedAsSuccess(this.configuration.isPartialLogoutTreatedAsSuccess());
     }
 
     protected void initSAMLResponseValidator() {
