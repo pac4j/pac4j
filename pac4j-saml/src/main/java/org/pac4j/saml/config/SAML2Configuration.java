@@ -109,6 +109,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String comparisonType = null;
 
+    private boolean isPartialLogoutTreatedAsSuccess = false;
+
     private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     private String responseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
@@ -946,5 +948,13 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public void setIdentityProviderMetadataResolver(final SAML2MetadataResolver identityProviderMetadataResolver) {
         this.identityProviderMetadataResolver = identityProviderMetadataResolver;
+    }
+
+    public boolean isPartialLogoutTreatedAsSuccess() {
+        return isPartialLogoutTreatedAsSuccess;
+    }
+
+    public void setPartialLogoutTreatedAsSuccess(boolean partialLogoutTreatedAsSuccess) {
+        isPartialLogoutTreatedAsSuccess = partialLogoutTreatedAsSuccess;
     }
 }

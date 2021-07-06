@@ -6,6 +6,8 @@ import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
+import org.opensaml.saml.saml2.core.Status;
+import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
@@ -44,6 +46,12 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      * move on without throwing {@link OkAction}.
      */
     private boolean actionOnSuccess = true;
+
+    /**
+     * Logouts are only successful if the IdP was able to inform all services, otherwise it will
+     * respond with PartialLogout. This setting allows clients to ignore such server-side problems.
+     */
+    private boolean isPartialLogoutTreatedAsSuccess = false;
 
     /**
      * Expected destination endpoint when validating saml2 logout responses.
@@ -186,6 +194,19 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         verifyEndpoint(expected, logoutResponse.getDestination(), isDestinationMandatory);
     }
 
+    @Override
+    protected void validateSuccess(Status status) {
+
+        if (StatusCode.PARTIAL_LOGOUT.equals(status.getStatusCode().getValue()) && isPartialLogoutTreatedAsSuccess) {
+            logger.debug(
+                "Response status code is {} and partial logouts are configured to be treated as success => validation successful!",
+                StatusCode.PARTIAL_LOGOUT);
+            return;
+        }
+
+        super.validateSuccess(status);
+    }
+
     public void setActionOnSuccess(final boolean actionOnSuccess) {
         this.actionOnSuccess = actionOnSuccess;
     }
@@ -196,6 +217,10 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
     public void setExpectedDestination(final String expectedDestination) {
         this.expectedDestination = expectedDestination;
+    }
+
+    public void setIsPartialLogoutTreatedAsSuccess(final boolean isPartialLogoutTreatedAsSuccess) {
+        this.isPartialLogoutTreatedAsSuccess = isPartialLogoutTreatedAsSuccess;
     }
 
     public String getPostLogoutURL() {
