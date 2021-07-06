@@ -109,7 +109,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String comparisonType = null;
 
-    private boolean isPartialLogoutTreatedAsSuccess = false;
+    private boolean isPartialLogoutTreatedAsSuccess = true;
 
     private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 

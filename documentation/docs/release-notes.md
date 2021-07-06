@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.1.3**:
+
+- Treat SAML partial logout responses as success
+
 **v5.1.2**:
 
 - Support SAML2 `Scoping` in authentication requests
