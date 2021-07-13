@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public abstract class AbstractBuilder implements PropertiesConstants {
 
-    protected static final int MAX_NUM_CLIENTS = 10;
+    protected static final int MAX_NUM_CLIENTS = 100;
     protected static final int MAX_NUM_AUTHENTICATORS = 10;
     protected static final int MAX_NUM_CUSTOM_PROPERTIES = 5;
     protected static final int MAX_NUM_ENCODERS = 10;

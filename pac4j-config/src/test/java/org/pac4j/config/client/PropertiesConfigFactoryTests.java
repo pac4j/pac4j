@@ -62,6 +62,19 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             properties.put(SAML_IDENTITY_PROVIDER_METADATA_PATH, PATH);
             properties.put(SAML_AUTHN_REQUEST_BINDING_TYPE, SAMLConstants.SAML2_REDIRECT_BINDING_URI);
             properties.put(SAML_KEYSTORE_ALIAS, VALUE);
+            properties.put(SAML_ACCEPTED_SKEW, "100");
+            properties.put(SAML_ASSERTION_CONSUMER_SERVICE_INDEX, "1");
+            properties.put(SAML_FORCE_AUTH, "true");
+            properties.put(SAML_ATTRIBUTE_AS_ID, "attribute");
+            properties.put(SAML_COMPARISON_TYPE, "exact");
+            properties.put(SAML_AUTHN_CONTEXT_CLASS_REFS, "test1,test2");
+            properties.put(SAML_AUTHN_REQUEST_SIGNED, "true");
+            properties.put(SAML_WANTS_RESPONSES_SIGNED, "true");
+            properties.put(SAML_WANTS_ASSERTIONS_SIGNED, "true");
+            properties.put(SAML_PASSIVE, "false");
+            properties.put(SAML_RESPONSE_BINDING_TYPE, "post");
+            properties.put(SAML_MAPPED_ATTRIBUTES, "attr1:new1,attr2:new2");
+
             properties.put(OIDC_ID, ID);
             properties.put(OIDC_SECRET, SECRET);
             properties.put(OIDC_DISCOVERY_URI, CALLBACK_URL);

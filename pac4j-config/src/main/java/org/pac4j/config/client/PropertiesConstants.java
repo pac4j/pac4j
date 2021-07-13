@@ -7,6 +7,7 @@ package org.pac4j.config.client;
  * @since 2.0.0
  */
 public interface PropertiesConstants {
+    String CLIENT_NAME = "client.name";
 
     String FACEBOOK_ID = "facebook.id";
     String FACEBOOK_SECRET = "facebook.secret";
@@ -63,6 +64,20 @@ public interface PropertiesConstants {
     String SAML_SERVICE_PROVIDER_METADATA_PATH = "saml.serviceProviderMetadataPath";
     String SAML_AUTHN_REQUEST_BINDING_TYPE = "saml.authnRequestBindingType";
     String SAML_KEYSTORE_ALIAS = "saml.keystoreAlias";
+    String SAML_ACCEPTED_SKEW = "saml.acceptedSkew";
+    String SAML_ASSERTION_CONSUMER_SERVICE_INDEX = "saml.assertionConsumerServiceIndex";
+    String SAML_FORCE_AUTH = "saml.forceAuth";
+    String SAML_ATTRIBUTE_AS_ID = "saml.attributeAsId";
+    String SAML_AUTHN_CONTEXT_CLASS_REFS = "saml.authnContextClassRefs";
+    String SAML_COMPARISON_TYPE = "saml.comparisonType";
+    String SAML_ISSUER_FORMAT = "saml.issuerFormat";
+    String SAML_AUTHN_REQUEST_SIGNED = "saml.authnRequestSigned";
+    String SAML_MAPPED_ATTRIBUTES = "saml.mappedAttributes";
+    String SAML_NAMEID_ATTRIBUTE = "saml.nameIdAttribute";
+    String SAML_PASSIVE = "saml.passive";
+    String SAML_RESPONSE_BINDING_TYPE = "saml.responseBindingType";
+    String SAML_WANTS_ASSERTIONS_SIGNED = "saml.wantsAssertionsSigned";
+    String SAML_WANTS_RESPONSES_SIGNED = "saml.wantsResponsesSigned";
 
     String CAS_LOGIN_URL = "cas.loginUrl";
     String CAS_PROTOCOL = "cas.protocol";
