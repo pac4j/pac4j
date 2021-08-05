@@ -1,7 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -97,7 +97,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected boolean authnRequestSigned = false;
 
     protected boolean wantAssertionSigned = true;
-    
+
     protected boolean signMetadata = false;
 
     protected int defaultACSIndex = 0;
@@ -141,7 +141,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         resolver.initialize();
         return resolver;
     }
-    
+
     protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
         return new FilesystemMetadataResolver(metadataResource.getFile());
     }
@@ -175,8 +175,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         signingParameters.setSigningCredential(credentialProvider.getCredential());
         signingParameters.setSignatureAlgorithm(getSignatureAlgorithms().get(0));
         signingParameters.setSignatureReferenceDigestMethod(getSignatureReferenceDigestMethods().get(0));
-        signingParameters.setSignatureCanonicalizationAlgorithm(        
-                SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);    
+        signingParameters.setSignatureCanonicalizationAlgorithm(
+                SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
         try {
             SignatureSupport.signObject(descriptor, signingParameters);
@@ -270,7 +270,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                 requestAttribute.setName(attr.getName());
                 requestAttribute.setFriendlyName(attr.getFriendlyName());
                 requestAttribute.setNameFormat(attr.getNameFormat());
-                
+
                 attributeService.getRequestAttributes().add(requestAttribute);
             }
             spDescriptor.getAttributeConsumingServices().add(attributeService);
@@ -347,7 +347,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
                     person.getTelephoneNumbers().add(phone);
                 });
             }
-            
+
             spDescriptor.getContactPersons().add(person);
         });
 

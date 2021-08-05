@@ -23,9 +23,6 @@ public class VelocityEngineFactoryTest {
             engine.getProperty("classpath.resource.loader.class"));
         assertEquals(vector("classpath"), engine.getProperty("resource.loader"));
         assertEquals("UTF-8", engine.getProperty(RuntimeConstants.INPUT_ENCODING));
-        assertEquals("UTF-8", engine.getProperty(RuntimeConstants.OUTPUT_ENCODING));
-        assertEquals("net.shibboleth.utilities.java.support.velocity.SLF4JLogChute",
-            engine.getProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS));
     }
 
     private static List<String> vector(final String... values) {

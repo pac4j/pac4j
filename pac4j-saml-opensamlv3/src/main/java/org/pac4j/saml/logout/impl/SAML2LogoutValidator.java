@@ -1,6 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.*;
@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * Validator for SAML logout requests/responses from the IdP.
- * 
+ *
  * @author Matthieu Taggiasco
  * @author Jerome Leleu
  * @since 2.0.0
