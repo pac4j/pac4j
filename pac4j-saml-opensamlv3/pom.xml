@@ -15,7 +15,7 @@
     <properties>
         <opensaml.version>3.4.5</opensaml.version>
         <joda-time.version>2.10.6</joda-time.version>
-        <velocity.version>1.7</velocity.version>
+        <velocity.version>2.3</velocity.version>
         <xmlsectool.version>2.0.0</xmlsectool.version>
         <xmlsec.version>2.2.0</xmlsec.version>
         <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
@@ -59,6 +59,12 @@
             <artifactId>opensaml-saml-impl</artifactId>
             <version>${opensaml.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.velocity</groupId>
+                    <artifactId>velocity</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.opensaml</groupId>
@@ -153,7 +159,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
+            <artifactId>velocity-engine-core</artifactId>
             <version>${velocity.version}</version>
         </dependency>
         <dependency>

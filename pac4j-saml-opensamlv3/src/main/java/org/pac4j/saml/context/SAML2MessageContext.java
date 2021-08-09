@@ -28,7 +28,7 @@ import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Allow to store additional information for SAML processing.
