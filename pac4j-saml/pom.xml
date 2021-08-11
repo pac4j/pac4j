@@ -24,7 +24,7 @@
         <cryptacular.version>1.2.4</cryptacular.version>
         <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
         <httpcore.version>4.4.14</httpcore.version>
-        <hazelcast.version>4.2.1</hazelcast.version>
+        <hazelcast.version>4.2.2</hazelcast.version>
     </properties>
 
     <dependencyManagement>
