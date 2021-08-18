@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
@@ -9,14 +10,46 @@ import org.pac4j.saml.config.SAML2Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 public class SAML2IdentityProviderMetadataResolverTest {
 
     private SAML2IdentityProviderMetadataResolver metadataResolver;
+
+    private static SSLContext disabledSslContext() throws Exception {
+        var trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }};
+
+        var sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        return sc;
+    }
 
     @Before
     public void setUp() {
@@ -39,6 +72,40 @@ public class SAML2IdentityProviderMetadataResolverTest {
     public void resolveMetadataDocumentAsString() {
         var metadata = metadataResolver.getMetadata();
         assertNotNull(metadata);
+    }
+
+    @Test
+    public void resolveMetadataOverUrlWithHostnameVerifierFromConfig() throws Exception {
+        var configuration = new SAML2Configuration();
+        configuration.setIdentityProviderMetadataResource(new UrlResource("https://self-signed.badssl.com"));
+        configuration.setHostnameVerifier((s, sslSession) -> true);
+        configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
+        metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
+        try {
+            metadataResolver.init();
+        } catch (final TechnicalException e) {
+            assertEquals(XMLParserException.class, e.getCause().getClass());
+        }
+    }
+
+    @Test
+    public void resolveMetadataOverUrlWithHostnameVerifier() throws Exception {
+        var configuration = new SAML2Configuration();
+        configuration.setIdentityProviderMetadataResource(new UrlResource("https://self-signed.badssl.com"));
+        metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
+        try {
+            metadataResolver.init();
+        } catch (final TechnicalException e) {
+            assertEquals(SSLHandshakeException.class, e.getCause().getClass());
+        }
+
+        metadataResolver.setHostnameVerifier((s, sslSession) -> true);
+        metadataResolver.setSslSocketFactory(disabledSslContext().getSocketFactory());
+        try {
+            metadataResolver.init();
+        } catch (final TechnicalException e) {
+            assertEquals(XMLParserException.class, e.getCause().getClass());
+        }
     }
 
     @Test
