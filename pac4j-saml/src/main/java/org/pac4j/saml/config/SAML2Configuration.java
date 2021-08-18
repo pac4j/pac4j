@@ -43,6 +43,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Period;
@@ -76,6 +78,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private final List<SAML2ScopingIdentityProvider> scopingIdentityProviders = new ArrayList<>();
 
     private final List<SAML2ServiceProviderRequestedAttribute> requestedServiceProviderAttributes = new ArrayList<>();
+
+    private HostnameVerifier hostnameVerifier;
+
+    private SSLSocketFactory sslSocketFactory;
 
     private SAML2MetadataSigner metadataSigner;
 
@@ -815,6 +821,22 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public void setNameIdAttribute(final String nameIdAttribute) {
         this.nameIdAttribute = nameIdAttribute;
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+    }
+
+    public SSLSocketFactory getSslSocketFactory() {
+        return sslSocketFactory;
+    }
+
+    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+        this.sslSocketFactory = sslSocketFactory;
     }
 
     public LogoutHandler findLogoutHandler() {

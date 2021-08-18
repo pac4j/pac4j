@@ -23,6 +23,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import javax.annotation.Nullable;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,8 +54,17 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     private long lastModified = NO_LAST_MODIFIED;
     private Proxy proxy = Proxy.NO_PROXY;
 
+    private HostnameVerifier hostnameVerifier;
+    private SSLSocketFactory sslSocketFactory;
+
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
         this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderEntityId());
+        if (configuration.getSslSocketFactory() != null) {
+            setSslSocketFactory(configuration.getSslSocketFactory());
+        }
+        if (configuration.getHostnameVerifier() != null) {
+            setHostnameVerifier(configuration.getHostnameVerifier());
+        }
     }
 
     public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, @Nullable final String idpEntityId) {
@@ -149,6 +161,17 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     protected InputStream getMetadataResourceInputStream() throws IOException {
         if (this.idpMetadataResource instanceof UrlResource) {
             var con = idpMetadataResource.getURL().openConnection(proxy);
+            if (con instanceof HttpsURLConnection) {
+                HttpsURLConnection connection = (HttpsURLConnection) con;
+
+                if (this.sslSocketFactory != null) {
+                    connection.setSSLSocketFactory(this.sslSocketFactory);
+                }
+                if (this.hostnameVerifier != null) {
+                    connection.setHostnameVerifier(this.hostnameVerifier);
+                }
+            }
+
             try {
                 return con.getInputStream();
             } catch (final Exception e) {
@@ -193,5 +216,13 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     public void setProxy(final Proxy proxy) {
         this.proxy = proxy;
+    }
+
+    public void setHostnameVerifier(final HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+    }
+
+    public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory) {
+        this.sslSocketFactory = sslSocketFactory;
     }
 }
