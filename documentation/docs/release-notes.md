@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.1.4**:
+
+- SAML2 configuration can now accept custom socket factories and hostname verification options. 
+
 **v5.1.3**:
 
 - Treat SAML partial logout responses as success
