@@ -4,7 +4,6 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -92,8 +91,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             // User Info request
             if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final var userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(),
-                    (BearerAccessToken) accessToken);
+                final var userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(), accessToken);
                 final var userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
                 final var httpResponse = userInfoHttpRequest.send();
