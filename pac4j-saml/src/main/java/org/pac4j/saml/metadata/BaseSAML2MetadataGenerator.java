@@ -566,7 +566,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     public List<String> getBlackListedSignatureSigningAlgorithms() {
         if (blackListedSignatureSigningAlgorithms == null) {
             this.blackListedSignatureSigningAlgorithms =
-                new ArrayList<>(defaultSignatureSigningConfiguration.getBlacklistedAlgorithms());
+                new ArrayList<>(defaultSignatureSigningConfiguration.getExcludedAlgorithms());
         }
 
         return blackListedSignatureSigningAlgorithms;

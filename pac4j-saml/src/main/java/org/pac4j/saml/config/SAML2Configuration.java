@@ -851,7 +851,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
             .buildDefaultSignatureSigningConfiguration();
         if (this.blackListedSignatureSigningAlgorithms == null) {
             this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
-                config.getBlacklistedAlgorithms());
+                config.getExcludedAlgorithms());
             LOGGER.info("Bootstrapped Blacklisted Algorithms");
         }
         if (this.signatureAlgorithms == null) {
