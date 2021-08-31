@@ -1,5 +1,6 @@
 package org.pac4j.cas.config;
 
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.PrivateKeyUtils;
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
@@ -13,12 +14,18 @@ import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * CAS configuration.
@@ -78,6 +85,10 @@ public class CasConfiguration extends BaseClientConfiguration {
     private String privateKeyAlgorithm;
 
     private PrivateKey privateKey;
+
+    private HostnameVerifier hostnameVerifier;
+
+    private SSLSocketFactory sslSocketFactory;
 
     public CasConfiguration() {}
 
@@ -170,6 +181,7 @@ public class CasConfiguration extends BaseClientConfiguration {
         saml11TicketValidator.setTolerance(getTimeTolerance());
         saml11TicketValidator.setEncoding(this.encoding);
         saml11TicketValidator.setRenew(this.renew);
+        getHttpURLConnectionFactory().ifPresent(saml11TicketValidator::setURLConnectionFactory);
         return saml11TicketValidator;
     }
 
@@ -190,6 +202,7 @@ public class CasConfiguration extends BaseClientConfiguration {
             cas30ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         addPrivateKey(cas30ProxyTicketValidator);
+        getHttpURLConnectionFactory().ifPresent(cas30ProxyTicketValidator::setURLConnectionFactory);
         return cas30ProxyTicketValidator;
     }
 
@@ -202,6 +215,7 @@ public class CasConfiguration extends BaseClientConfiguration {
             cas30ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         addPrivateKey(cas30ServiceTicketValidator);
+        getHttpURLConnectionFactory().ifPresent(cas30ServiceTicketValidator::setURLConnectionFactory);
         return cas30ServiceTicketValidator;
     }
 
@@ -216,6 +230,7 @@ public class CasConfiguration extends BaseClientConfiguration {
             cas20ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         addPrivateKey(cas20ProxyTicketValidator);
+        getHttpURLConnectionFactory().ifPresent(cas20ProxyTicketValidator::setURLConnectionFactory);
         return cas20ProxyTicketValidator;
     }
 
@@ -228,6 +243,7 @@ public class CasConfiguration extends BaseClientConfiguration {
             cas20ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         addPrivateKey(cas20ServiceTicketValidator);
+        getHttpURLConnectionFactory().ifPresent(cas20ServiceTicketValidator::setURLConnectionFactory);
         return cas20ServiceTicketValidator;
     }
 
@@ -235,6 +251,7 @@ public class CasConfiguration extends BaseClientConfiguration {
         final var cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
         cas10TicketValidator.setEncoding(this.encoding);
         cas10TicketValidator.setRenew(this.renew);
+        getHttpURLConnectionFactory().ifPresent(cas10TicketValidator::setURLConnectionFactory);
         return cas10TicketValidator;
     }
 
@@ -272,6 +289,22 @@ public class CasConfiguration extends BaseClientConfiguration {
 
     public void setPrefixUrl(final String prefixUrl) {
         this.prefixUrl = prefixUrl;
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    public void setHostnameVerifier(final HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+    }
+
+    public SSLSocketFactory getSslSocketFactory() {
+        return sslSocketFactory;
+    }
+
+    public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory) {
+        this.sslSocketFactory = sslSocketFactory;
     }
 
     public Map<String, String> getCustomParams() {
@@ -436,5 +469,29 @@ public class CasConfiguration extends BaseClientConfiguration {
                 "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
                 this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver,
                 "method", this.method, "privateKeyPath", this.privateKeyPath, "privateKeyAlgorithm", this.privateKeyAlgorithm);
+    }
+
+    private Optional<HttpURLConnectionFactory> getHttpURLConnectionFactory() {
+        if (this.sslSocketFactory == null && this.hostnameVerifier == null) {
+            return Optional.empty();
+        }
+        var factory = new HttpURLConnectionFactory() {
+            private static final long serialVersionUID = 7296708420276819683L;
+
+            @Override
+            public HttpURLConnection buildHttpURLConnection(URLConnection conn) {
+                if (conn instanceof HttpsURLConnection) {
+                    var httpsConnection = (HttpsURLConnection) conn;
+                    if (getSslSocketFactory() != null) {
+                        httpsConnection.setSSLSocketFactory(getSslSocketFactory());
+                    }
+                    if (getHostnameVerifier() != null) {
+                        httpsConnection.setHostnameVerifier(getHostnameVerifier());
+                    }
+                }
+                return (HttpURLConnection) conn;
+            }
+        };
+        return Optional.of(factory);
     }
 }
