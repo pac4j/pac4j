@@ -1,7 +1,6 @@
 package org.pac4j.cas.config;
 
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
-import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.PrivateKeyUtils;
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
@@ -296,7 +295,7 @@ public class CasConfiguration extends BaseClientConfiguration {
         return hostnameVerifier;
     }
 
-    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+    public void setHostnameVerifier(final HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
     }
 
@@ -304,7 +303,7 @@ public class CasConfiguration extends BaseClientConfiguration {
         return sslSocketFactory;
     }
 
-    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+    public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory) {
         this.sslSocketFactory = sslSocketFactory;
     }
 
