@@ -128,7 +128,7 @@ public class SAML2LogoutValidatorTests {
             "InResponseTo=\"ONELOGIN_21df91a89767879fc0f7df6a1490c6000c81644d\">%n" +
             "  <saml:Issuer>http://idp.example.com/metadata.php</saml:Issuer>%n" +
             "  <samlp:Status>%n" +
-            "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:PartialLogout\"/>%n" +
+            "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Responder / urn:oasis:names:tc:SAML:2.0:status:PartialLogout\"/>%n" +
             "  </samlp:Status>%n" +
             "</samlp:LogoutResponse>";
 
