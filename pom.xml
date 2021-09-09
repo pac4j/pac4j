@@ -59,7 +59,7 @@
 	<properties>
 		<junit.version>4.13.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
-		<logback.version>1.2.5</logback.version>
+		<logback.version>1.2.6</logback.version>
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<guava.version>30.1.1-jre</guava.version>
