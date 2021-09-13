@@ -36,8 +36,6 @@ The "major" implementations are:
 - *spring-webmvc-pac4j*
 - *spring-security-pac4j*
 - *play-pac4j*
-- *spark-pac4j*
-- *vertx-pac4j*
 - *CAS*
 
 They are always upgraded to the latest *pac4j* stream. Other implementations are considered "minor" and may not be upgraded.
