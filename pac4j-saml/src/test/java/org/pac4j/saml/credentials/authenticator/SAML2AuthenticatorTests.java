@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -131,7 +132,8 @@ public class SAML2AuthenticatorTests {
 
         final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
-            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
+            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts,
+            UUID.randomUUID().toString());
         return credentials;
     }
 

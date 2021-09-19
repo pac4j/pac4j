@@ -92,10 +92,11 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         validateSamlSSOResponse(response, context, engine, decrypter);
-        return buildSAML2Credentials(context);
+        return buildSAML2Credentials(context, response);
     }
 
-    protected SAML2Credentials buildSAML2Credentials(final SAML2MessageContext context) {
+    protected SAML2Credentials buildSAML2Credentials(final SAML2MessageContext context,
+                                                     final Response response) {
         final var subjectAssertion = context.getSubjectAssertion();
 
         final var attributes = collectAssertionAttributes(subjectAssertion);
@@ -115,7 +116,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             }
         }
         return new SAML2Credentials(samlNameId, issuerEntityId, SAML2Credentials.SAMLAttribute.from(attributes),
-            subjectAssertion.getConditions(), sessionIndex, authnContexts);
+            subjectAssertion.getConditions(), sessionIndex, authnContexts, response.getInResponseTo());
     }
 
     protected List<Attribute> collectAssertionAttributes(final Assertion subjectAssertion) {

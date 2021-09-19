@@ -27,25 +27,29 @@ public class SAML2Credentials extends Credentials {
 
     private static final long serialVersionUID = 5040516205957826527L;
 
-    private SAMLNameID nameId;
+    private final SAMLNameID nameId;
 
-    private String sessionIndex;
+    private final String sessionIndex;
 
-    private List<SAMLAttribute> attributes;
+    private final List<SAMLAttribute> attributes;
 
-    private SAMLConditions conditions;
+    private final SAMLConditions conditions;
 
-    private String issuerId;
+    private final String issuerId;
 
-    private List<String> authnContexts;
+    private final List<String> authnContexts;
+
+    private final String inResponseTo;
 
     public SAML2Credentials(final SAMLNameID nameId, final String issuerId,
                             final List<SAMLAttribute> samlAttributes, final Conditions conditions,
-                            final String sessionIndex, final List<String> authnContexts) {
+                            final String sessionIndex, final List<String> authnContexts,
+                            final String inResponseTo) {
         this.nameId = nameId;
         this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;
         this.attributes = samlAttributes;
+        this.inResponseTo = inResponseTo;
 
         if (conditions != null) {
             this.conditions = new SAMLConditions();
@@ -57,8 +61,9 @@ public class SAML2Credentials extends Credentials {
             if (conditions.getNotOnOrAfter() != null) {
                 this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
             }
+        } else {
+            this.conditions = null;
         }
-
         this.authnContexts = authnContexts;
 
         logger.info("Constructed SAML2 credentials: {}", this);
@@ -131,6 +136,10 @@ public class SAML2Credentials extends Credentials {
 
     public List<String> getAuthnContexts() {
         return authnContexts;
+    }
+
+    public String getInResponseTo() {
+        return inResponseTo;
     }
 
     public static class SAMLNameID implements Serializable {
