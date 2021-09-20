@@ -13,6 +13,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -58,9 +59,11 @@ public class SAML2CredentialsSerializationTests {
         attr.setNameFormat("pac4j");
         attributes.add(attr);
         final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid), "example.issuer.com",
-            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts);
+            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts,
+            UUID.randomUUID().toString());
         final var data = SerializationUtils.serialize(credentials);
         final var result = (SAML2Credentials) SerializationUtils.deserialize(data);
         assertNotNull(result);
+        assertNotNull(result.getInResponseTo());
     }
 }
