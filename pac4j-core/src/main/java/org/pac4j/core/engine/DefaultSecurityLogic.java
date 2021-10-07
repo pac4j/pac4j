@@ -91,7 +91,9 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
                 final var manager = getProfileManager(context, sessionStore);
                 manager.setConfig(config);
-                var profiles = this.forceAuthentication ? List.<UserProfile>of() : loadProfiles(manager, context, sessionStore, currentClients);
+                var profiles = this.forceAuthentication 
+                    ? List.<UserProfile>of() 
+                    : loadProfiles(manager, context, sessionStore, currentClients);
                 LOGGER.debug("Loaded profiles: {}", profiles);
 
                 // no profile and some current clients
