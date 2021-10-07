@@ -306,7 +306,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.preferredJwsAlgorithm = preferredJwsAlgorithm;
     }
 
-    public void setPreferredJwsAlgorithm(final String preferredJwsAlgorithm) {
+    public void setPreferredJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
         this.preferredJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
     }
 
