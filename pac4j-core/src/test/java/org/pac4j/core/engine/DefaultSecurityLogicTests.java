@@ -134,6 +134,24 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     @Test
+    public void testForceAuthentication() {
+        this.logic.setForceAuthentication(true);
+        var profile = new CommonProfile();
+        profile.setId(ID);
+        var profiles = new LinkedHashMap<String, CommonProfile>();
+        profiles.put(NAME, profile);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
+        var indirectClient = new MockIndirectClient(NAME,
+            new FoundAction(PAC4J_URL), Optional.of(new MockCredentials()), new CommonProfile());
+        authorizers = NAME;
+        config.setClients(new Clients(CALLBACK_URL, indirectClient));
+        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(prof.get(0).getId()));
+        call();
+        assertNotNull(action);
+        assertEquals(302, action.getCode());
+    }
+
+    @Test
     public void testAlreadyAuthenticatedAndAuthorized() {
         final var profile = new CommonProfile();
         profile.setId(ID);
