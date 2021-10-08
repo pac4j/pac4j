@@ -96,6 +96,8 @@ public interface PropertiesConstants {
     String OIDC_CLIENT_AUTHENTICATION_METHOD = "oidc.clientAuthenticationMethod";
     String OIDC_CUSTOM_PARAM_KEY = "oidc.customParamKey";
     String OIDC_CUSTOM_PARAM_VALUE = "oidc.customParamValue";
+    String OIDC_RESPONSE_TYPE = "oidc.responseType";
+    String OIDC_RESPONSE_MODE = "oidc.responseMode";
 
     String FORMCLIENT_AUTHENTICATOR = "formClient.authenticator";
     String FORMCLIENT_LOGIN_URL = "formClient.loginUrl";

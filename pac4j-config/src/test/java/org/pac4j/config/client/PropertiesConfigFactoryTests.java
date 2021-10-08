@@ -78,6 +78,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             properties.put(OIDC_ID, ID);
             properties.put(OIDC_SECRET, SECRET);
             properties.put(OIDC_DISCOVERY_URI, CALLBACK_URL);
+            properties.put(OIDC_RESPONSE_TYPE, "id_token");
+            properties.put(OIDC_RESPONSE_MODE, "form_post");
             properties.put(OIDC_USE_NONCE, "true");
             properties.put(OIDC_PREFERRED_JWS_ALGORITHM, "RS384");
             properties.put(OIDC_MAX_CLOCK_SKEW, "60");
@@ -153,6 +155,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
             final var oidcClient = (OidcClient) clients.findClient("OidcClient").get();
             assertNotNull(oidcClient);
+            assertEquals(oidcClient.getConfiguration().getResponseType(), "id_token");
+            assertEquals(oidcClient.getConfiguration().getResponseMode(), "form_post");
             assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(),
                 oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
 

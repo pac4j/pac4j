@@ -29,12 +29,14 @@ public class OidcClientBuilder extends AbstractBuilder {
     public void tryCreateOidcClient(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             final var id = getProperty(OIDC_ID, i);
-            final var secret = getProperty(OIDC_SECRET, i);
-            if (isNotBlank(id) && isNotBlank(secret)) {
+            if (isNotBlank(id)) {
                 final var configuration = new OidcConfiguration();
                 configuration.setClientId(id);
-                configuration.setSecret(secret);
 
+                final var secret = getProperty(OIDC_SECRET, i);
+                if (isNotBlank(secret)) {
+                    configuration.setSecret(secret);
+                }
                 final var scope = getProperty(OIDC_SCOPE, i);
                 if (isNotBlank(scope)) {
                     configuration.setScope(scope);
@@ -42,6 +44,14 @@ public class OidcClientBuilder extends AbstractBuilder {
                 final var discoveryUri = getProperty(OIDC_DISCOVERY_URI, i);
                 if (isNotBlank(discoveryUri)) {
                     configuration.setDiscoveryURI(discoveryUri);
+                }
+                final var responseType = getProperty(OIDC_RESPONSE_TYPE, i);
+                if (isNotBlank(responseType)) {
+                    configuration.setResponseType(responseType);
+                }
+                final var responseMode = getProperty(OIDC_RESPONSE_MODE, i);
+                if (isNotBlank(responseMode)) {
+                    configuration.setResponseMode(responseMode);
                 }
                 final var useNonce = getProperty(OIDC_USE_NONCE, i);
                 if (isNotBlank(useNonce)) {
