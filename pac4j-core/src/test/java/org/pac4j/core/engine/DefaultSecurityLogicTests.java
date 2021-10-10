@@ -135,7 +135,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testForceAuthentication() {
-        this.logic.setForceAuthentication(true);
+        this.logic.setLoadProfilesFromSession(true);
         var profile = new CommonProfile();
         profile.setId(ID);
         var profiles = new LinkedHashMap<String, CommonProfile>();
