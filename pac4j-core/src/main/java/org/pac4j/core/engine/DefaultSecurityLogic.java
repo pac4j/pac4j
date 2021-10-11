@@ -60,6 +60,8 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
+    private boolean loadProfilesFromSession;
+
     @Override
     public Object perform(final WebContext context, final SessionStore sessionStore, final Config config,
                           final SecurityGrantedAccessAdapter securityGrantedAccessAdapter, final HttpActionAdapter httpActionAdapter,
@@ -89,7 +91,9 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
                 final var manager = getProfileManager(context, sessionStore);
                 manager.setConfig(config);
-                var profiles = loadProfiles(manager, context, sessionStore, currentClients);
+                var profiles = this.loadProfilesFromSession
+                    ? List.<UserProfile>of()
+                    : loadProfiles(manager, context, sessionStore, currentClients);
                 LOGGER.debug("Loaded profiles: {}", profiles);
 
                 // no profile and some current clients
@@ -274,6 +278,10 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
     public void setSavedRequestHandler(final SavedRequestHandler savedRequestHandler) {
         this.savedRequestHandler = savedRequestHandler;
+    }
+
+    public void setLoadProfilesFromSession(boolean loadProfilesFromSession) {
+        this.loadProfilesFromSession = loadProfilesFromSession;
     }
 
     @Override
