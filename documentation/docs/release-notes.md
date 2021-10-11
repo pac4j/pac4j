@@ -5,7 +5,8 @@ title: Release notes&#58;
 
 **v5.1.4**:
 
-- SAML2 configuration can now accept custom socket factories and hostname verification options. 
+- SAML2 configuration can now accept custom socket factories and hostname verification options
+- Ability to ignore an existing authentication via the `loadProfilesFromSession` flag at the security filter level.
 
 **v5.1.3**:
 
