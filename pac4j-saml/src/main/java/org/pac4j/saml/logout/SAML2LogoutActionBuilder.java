@@ -15,6 +15,8 @@ import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestBuilder;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ import java.util.Optional;
  * @since 2.0.0
  */
 public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
+    protected final Logger logger = LoggerFactory.getLogger(SAML2LogoutActionBuilder.class);
 
     protected SAML2LogoutRequestBuilder saml2LogoutRequestBuilder;
 
@@ -50,23 +53,30 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     @Override
     public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
                                                        final UserProfile currentProfile, final String targetUrl) {
-        if (currentProfile instanceof SAML2Profile) {
-            final var saml2Profile = (SAML2Profile) currentProfile;
-            final var samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
-            final var relayState = this.stateGenerator.generateValue(context, sessionStore);
+        try {
+            if (currentProfile instanceof SAML2Profile) {
+                final var saml2Profile = (SAML2Profile) currentProfile;
+                final var samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
+                final var relayState = this.stateGenerator.generateValue(context, sessionStore);
 
-            final var logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
-            this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
+                final var logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
+                this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
-            final var adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
-            if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-                final var content = adapter.getOutgoingContent();
-                return Optional.of(HttpActionHelper.buildFormPostContentAction(context, content));
+                final var adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
+                if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+                    final var content = adapter.getOutgoingContent();
+                    return Optional.of(HttpActionHelper.buildFormPostContentAction(context, content));
+                }
+                final var location = adapter.getRedirectUrl();
+                return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
             }
-            final var location = adapter.getRedirectUrl();
-            return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
-        } else {
-            return Optional.empty();
+        } catch (final Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            } else {
+                logger.warn(e.getMessage());
+            }
         }
+        return Optional.empty();
     }
 }
