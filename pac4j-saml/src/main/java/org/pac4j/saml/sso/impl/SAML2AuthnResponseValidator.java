@@ -623,7 +623,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                     throw new SAMLAuthnSessionCriteriaException("Authentication session between IDP and subject has ended");
                 }
             }
-            authnClassRefs.add(statement.getAuthnContext().getAuthnContextClassRef().getURI());
+            if (statement.getAuthnContext().getAuthnContextClassRef() != null) {
+                authnClassRefs.add(statement.getAuthnContext().getAuthnContextClassRef().getURI());
+            }
         }
 
         validateAuthnContextClassRefs(context, authnClassRefs);
