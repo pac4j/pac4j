@@ -21,9 +21,9 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
 
     private String path = "/";
 
-    private Boolean httpOnly;
+    private Boolean httpOnly = true;
 
-    private Boolean secure;
+    private Boolean secure = true;
 
     private Integer maxAge;
 
