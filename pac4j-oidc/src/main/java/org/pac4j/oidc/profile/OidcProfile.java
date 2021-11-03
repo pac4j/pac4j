@@ -172,7 +172,7 @@ public class OidcProfile extends AbstractJwtProfile {
                 return (int) tokenExpirationAdvance;
             }
         }
-        return -1;
+        return 0;
     }
 
     public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
@@ -195,7 +195,7 @@ public class OidcProfile extends AbstractJwtProfile {
     public boolean isExpired() {
         var tokenExpirationAdvance = getTokenExpirationAdvance();
         if (tokenExpirationAdvance < 0) {
-            tokenExpirationAdvance = 0;
+            return false;
         }
         var expiration = getExpiration();
         return expiration != null

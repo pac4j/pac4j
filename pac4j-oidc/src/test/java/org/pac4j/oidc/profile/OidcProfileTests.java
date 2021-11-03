@@ -208,7 +208,6 @@ public final class OidcProfileTests implements TestsConstants {
         assertFalse(profile.isExpired());
     }
 
-
     @Test
     public void testGoogleProfile() {
         final GoogleOidcProfile googleOidcProfile = new GoogleOidcProfile();

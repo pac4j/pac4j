@@ -134,9 +134,14 @@ config.setWithState(true);
 config.setStateData("custom-state-value");
 ```
 
-Additionally, it is possible to establish a behavior according to which, the local session expires when the access token does. In order to do this, just enable `ExpireSessionWithToken` in configuration. This behavior is disabled by default. The additional param `TokenExpirationAdvance` allows to set the time in seconds, previous to the token expiration, in which the session expiration is advanced. By default it is `0` seconds.
+By default, the local session expires when the access token does, but this can be disabled using:
 
 ```java
-config.setExpireSessionWithToken(true);
+config.setExpireSessionWithToken(false);
+```
+
+The additional param `TokenExpirationAdvance` allows to set the time in seconds, previous to the token expiration, in which the expiration is advanced. By default it is `0` seconds.
+
+```java
 config.setTokenExpirationAdvance(10);
 ```

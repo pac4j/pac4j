@@ -131,7 +131,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private ValueRetriever valueRetriever = new SessionStoreValueRetriever();
 
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
-    private boolean expireSessionWithToken = false;
+    private boolean expireSessionWithToken = true;
 
     /** time period advance (in seconds) for considering an access token expired */
     private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
