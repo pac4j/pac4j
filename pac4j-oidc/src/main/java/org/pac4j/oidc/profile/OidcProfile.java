@@ -183,13 +183,22 @@ public class OidcProfile extends AbstractJwtProfile {
         return getAttributeAsDate(OidcProfileDefinition.EXPIRATION);
     }
 
+    public void setExpiration(final Date expiration) {
+        if (expiration != null) {
+            addAttribute(OidcProfileDefinition.EXPIRATION, expiration.getTime());
+        } else {
+            removeAttribute(OidcProfileDefinition.EXPIRATION);
+        }
+    }
+
     @Override
     public boolean isExpired() {
         var tokenExpirationAdvance = getTokenExpirationAdvance();
         if (tokenExpirationAdvance < 0) {
             tokenExpirationAdvance = 0;
         }
-        return getExpiration() != null
-                && getExpiration().toInstant().isBefore(Instant.now().plusSeconds(tokenExpirationAdvance));
+        var expiration = getExpiration();
+        return expiration != null
+                && expiration.toInstant().isBefore(Instant.now().plusSeconds(tokenExpirationAdvance));
     }
 }

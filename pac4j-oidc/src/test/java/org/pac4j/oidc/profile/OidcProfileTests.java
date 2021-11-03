@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
-import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
@@ -215,18 +214,18 @@ public final class OidcProfileTests implements TestsConstants {
         final GoogleOidcProfile googleOidcProfile = new GoogleOidcProfile();
         googleOidcProfile.setTokenExpirationAdvance(-1);
 
+        final Date expiration = Date.from(Instant.now().plusSeconds(3600));
+        //googleOidcProfile.addAttribute(OidcProfileDefinition.EXPIRATION, expiration.getTime());
+        googleOidcProfile.setExpiration(expiration);
+
         final String secret = "12345678901234567890123456789012";
         final SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration(secret);
-        final SecretEncryptionConfiguration secretEncryptionConfiguration = new SecretEncryptionConfiguration(secret);
         final JwtGenerator generator = new JwtGenerator();
         generator.setSignatureConfiguration(secretSignatureConfiguration);
-        generator.setEncryptionConfiguration(secretEncryptionConfiguration);
         String token = generator.generate(googleOidcProfile);
 
         JwtAuthenticator jwtAuthenticator = new JwtAuthenticator();
         jwtAuthenticator.setSignatureConfiguration(secretSignatureConfiguration);
-        jwtAuthenticator.setEncryptionConfiguration(secretEncryptionConfiguration);
-
 
         UserProfile userProfile =  jwtAuthenticator.validateToken(token);
         assertFalse(userProfile.isExpired());
