@@ -5,7 +5,10 @@ title: Release notes&#58;
 
 **v5.1.5**:
 
-- Fix NPE on `SAML2AuthnResponseValidator`
+- Fixed a NPE on the `SAML2AuthnResponseValidator`
+- Added the `setExpiration(Date)` method on the `OidcProfile`
+- Fixed the `expireSessionWithToken` behavior for the `OidcProfile`
+- Set the `secure` and `httpOnly` flag to `true` for the CSRF cookie
 
 **v5.1.4**:
 
