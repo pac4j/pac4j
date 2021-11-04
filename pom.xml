@@ -74,6 +74,7 @@
         <h2.version>1.4.200</h2.version>
 		<java.version>11</java.version>
         <jackson.version>2.13.0</jackson.version>
+        <reflections.version>0.10.2</reflections.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -181,6 +182,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
             </dependency>
             <!-- for testing -->
 			<dependency>

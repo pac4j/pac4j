@@ -1,15 +1,20 @@
 package org.pac4j.oauth.client;
 
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 import org.pac4j.scribe.builder.api.GenericApi20;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +40,16 @@ public class GenericOAuth20Client extends OAuth20Client {
     private Verb profileVerb;
     private Map<String, String> profileAttrs;
     private Map<String, String> customParams;
-    private Class[] converterClasses;
+
+    private List<Class<? extends AbstractAttributeConverter>> converterClasses;
 
     public GenericOAuth20Client() {
     }
 
     @Override
     protected void internalInit() {
+        this.converterClasses = findAttributeConverterClasses();
+
         final var genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
@@ -56,11 +64,7 @@ public class GenericOAuth20Client extends OAuth20Client {
         profileDefinition.setProfileVerb(profileVerb);
         profileDefinition.setProfileUrl(profileUrl);
 
-        if (profileId != null) {
-            profileDefinition.setProfileId(profileId);
-        } else {
-            profileDefinition.setProfileId("id");
-        }
+        profileDefinition.setProfileId(Objects.requireNonNullElse(profileId, "id"));
         if (profileAttrs != null) {
             for (var entry : profileAttrs.entrySet()) {
                 var key = entry.getKey();
@@ -83,31 +87,30 @@ public class GenericOAuth20Client extends OAuth20Client {
         super.internalInit();
     }
 
-    private Class[] getConverters() {
-        if (converterClasses == null) {
-            try {
-                var classLoader = Thread.currentThread().getContextClassLoader();
-                Class cla = classLoader.getClass();
-                while (cla != ClassLoader.class) {
-                    cla = cla.getSuperclass();
-                }
-                var field = cla.getDeclaredField("classes");
-                field.setAccessible(true);
-                var classes = (Vector<Class>) field.get(classLoader);
-                converterClasses = classes.stream()
-                    .filter(x -> AbstractAttributeConverter.class.isAssignableFrom(x) && !Modifier.isAbstract(x.getModifiers()))
-                    .toArray(Class[]::new);
-                return converterClasses;
-            } catch (Exception e) {
-                LOG.warn(e.toString());
+    private static List<Class<? extends AbstractAttributeConverter>> findAttributeConverterClasses() {
+        try {
+            var classLoader = Thread.currentThread().getContextClassLoader();
+            Class cla = classLoader.getClass();
+            while (cla != ClassLoader.class) {
+                cla = cla.getSuperclass();
             }
+
+            var reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forPackage(cla.getPackageName())));
+
+            var subTypes = reflections.getSubTypesOf(AbstractAttributeConverter.class);
+            return subTypes.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.warn(e.toString());
         }
-        return converterClasses;
+        return new ArrayList<>(0);
     }
 
     private AbstractAttributeConverter getConverter(final String typeName) {
         try {
-            var acceptableConverters = Arrays.stream(getConverters())
+            var acceptableConverters = this.converterClasses.stream()
                 .filter(x -> {
                     try {
                         var converter = (AbstractAttributeConverter) x.getDeclaredConstructor().newInstance();
@@ -118,8 +121,10 @@ public class GenericOAuth20Client extends OAuth20Client {
                     }
                     return false;
                 });
-            var converterClazz = acceptableConverters.findFirst().get();
-            return (AbstractAttributeConverter) converterClazz.getDeclaredConstructor().newInstance();
+            var converterClazz = acceptableConverters.findFirst().orElse(null);
+            if (converterClazz != null) {
+                return converterClazz.getDeclaredConstructor().newInstance();
+            }
         } catch (Exception e) {
             LOG.warn(e.toString());
         }
@@ -180,5 +185,14 @@ public class GenericOAuth20Client extends OAuth20Client {
 
     public void setClientAuthenticationMethod(final String clientAuthenticationMethod) {
         this.clientAuthenticationMethod = clientAuthenticationMethod;
+    }
+
+    /**
+     * Add attribute converter.
+     *
+     * @param converter the converter
+     */
+    public void addAttributeConverter(final Class<AbstractAttributeConverter> converter) {
+        this.converterClasses.add(converter);
     }
 }
