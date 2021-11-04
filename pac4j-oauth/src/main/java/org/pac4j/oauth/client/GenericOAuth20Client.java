@@ -1,14 +1,8 @@
 package org.pac4j.oauth.client;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 import org.pac4j.scribe.builder.api.GenericApi20;
@@ -17,6 +11,13 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>This class is a generic OAuth2 client to authenticate users in a standard OAuth2 server.</p>
@@ -44,6 +45,21 @@ public class GenericOAuth20Client extends OAuth20Client {
     private List<Class<? extends AbstractAttributeConverter>> converterClasses;
 
     public GenericOAuth20Client() {
+    }
+
+    private static List<Class<? extends AbstractAttributeConverter>> findAttributeConverterClasses() {
+        try {
+            var reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forPackage(AttributeConverter.class.getPackageName())));
+
+            var subTypes = reflections.getSubTypesOf(AbstractAttributeConverter.class);
+            return subTypes.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.warn(e.toString());
+        }
+        return new ArrayList<>(0);
     }
 
     @Override
@@ -87,28 +103,7 @@ public class GenericOAuth20Client extends OAuth20Client {
         super.internalInit();
     }
 
-    private static List<Class<? extends AbstractAttributeConverter>> findAttributeConverterClasses() {
-        try {
-            var classLoader = Thread.currentThread().getContextClassLoader();
-            Class cla = classLoader.getClass();
-            while (cla != ClassLoader.class) {
-                cla = cla.getSuperclass();
-            }
-
-            var reflections = new Reflections(new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forPackage(cla.getPackageName())));
-
-            var subTypes = reflections.getSubTypesOf(AbstractAttributeConverter.class);
-            return subTypes.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .collect(Collectors.toList());
-        } catch (Exception e) {
-            LOG.warn(e.toString());
-        }
-        return new ArrayList<>(0);
-    }
-
-    private AbstractAttributeConverter getConverter(final String typeName) {
+    AbstractAttributeConverter getConverter(final String typeName) {
         try {
             var acceptableConverters = this.converterClasses.stream()
                 .filter(x -> {
@@ -185,6 +180,10 @@ public class GenericOAuth20Client extends OAuth20Client {
 
     public void setClientAuthenticationMethod(final String clientAuthenticationMethod) {
         this.clientAuthenticationMethod = clientAuthenticationMethod;
+    }
+
+    public List<Class<? extends AbstractAttributeConverter>> getConverters() {
+        return List.copyOf(converterClasses);
     }
 
     /**
