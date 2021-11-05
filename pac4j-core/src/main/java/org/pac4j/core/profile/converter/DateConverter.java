@@ -2,6 +2,7 @@ package org.pac4j.core.profile.converter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,6 +22,10 @@ public class DateConverter extends AbstractAttributeConverter {
     protected String format;
 
     protected Locale locale;
+
+    public DateConverter() {
+        this(DateTimeFormatter.ISO_LOCAL_DATE_TIME.toString());
+    }
 
     public DateConverter(final String format) {
         super(Date.class);

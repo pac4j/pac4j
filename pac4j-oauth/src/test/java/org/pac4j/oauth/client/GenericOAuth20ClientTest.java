@@ -1,9 +1,13 @@
 package org.pac4j.oauth.client;
 
 import org.junit.Test;
-import org.pac4j.core.profile.converter.*;
-import org.pac4j.core.profile.definition.ProfileDefinition;
-import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.core.profile.converter.BooleanConverter;
+import org.pac4j.core.profile.converter.ColorConverter;
+import org.pac4j.core.profile.converter.GenderConverter;
+import org.pac4j.core.profile.converter.IntegerConverter;
+import org.pac4j.core.profile.converter.LocaleConverter;
+import org.pac4j.core.profile.converter.LongConverter;
+import org.pac4j.core.profile.converter.UrlConverter;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 
 import java.util.HashMap;
@@ -36,20 +40,15 @@ public class GenericOAuth20ClientTest {
         client.setProfileAttrs(map);
         client.setCallbackUrl(CALLBACK_URL);
         client.init();
-        var configurationField = OAuth20Client.class.getDeclaredField("configuration");
-        configurationField.setAccessible(true);
-        var configuration = (OAuth20Configuration) configurationField.get(client);
-        var profileDefinition = (GenericOAuth20ProfileDefinition) configuration.getProfileDefinition();
-        var getConverters = ProfileDefinition.class.getDeclaredMethod("getConverters");
-        getConverters.setAccessible(true);
-        var converters = (Map<String, AttributeConverter>) getConverters.invoke(profileDefinition);
-        assertTrue(converters.get(AGE) instanceof IntegerConverter);
-        assertTrue(converters.get(IS_ADMIN) instanceof BooleanConverter);
-        assertTrue(converters.get(BG_COLOR) instanceof ColorConverter);
-        assertTrue(converters.get(GENDER) instanceof GenderConverter);
-        assertTrue(converters.get(BIRTHDAY) instanceof LocaleConverter);
-        assertTrue(converters.get(ID) instanceof LongConverter);
-        assertTrue(converters.get(BLOG) instanceof UrlConverter);
+
+        var profileDefinition = (GenericOAuth20ProfileDefinition) client.getConfiguration().getProfileDefinition();
+        assertTrue(profileDefinition.getConverters().get(AGE) instanceof IntegerConverter);
+        assertTrue(profileDefinition.getConverters().get(IS_ADMIN) instanceof BooleanConverter);
+        assertTrue(profileDefinition.getConverters().get(BG_COLOR) instanceof ColorConverter);
+        assertTrue(profileDefinition.getConverters().get(GENDER) instanceof GenderConverter);
+        assertTrue(profileDefinition.getConverters().get(BIRTHDAY) instanceof LocaleConverter);
+        assertTrue(profileDefinition.getConverters().get(ID) instanceof LongConverter);
+        assertTrue(profileDefinition.getConverters().get(BLOG) instanceof UrlConverter);
     }
 
 }

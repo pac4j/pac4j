@@ -168,7 +168,7 @@ public abstract class ProfileDefinition {
         return this.secondaries;
     }
 
-    protected Map<String, AttributeConverter> getConverters() {
+    public Map<String, AttributeConverter> getConverters() {
         return converters;
     }
 
