@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertEquals;
@@ -40,6 +41,7 @@ public class SAML2CredentialsTest {
     private static final String RESPONSE_FILE_NAME = "sample_authn_response.xml";
     private static final String RESPONSE_FILE_NAME_FROM_ADFS = "sample_authn_response_from_adfs.xml";
     private static final String RESPONSE_FILE_NAME_WITH_COMPLEXTYPE = "sample_authn_response_with_complextype.xml";
+    private static final String RESPONSE_FILE_NAME_WITH_MULTIVALUEDATTR = "sample_authn_response_with_multivaluedattr.xml";
 
     private SAML2AuthnResponseValidator validator;
     private SAML2MessageContext mockSaml2MessageContext;
@@ -141,6 +143,20 @@ public class SAML2CredentialsTest {
         assertEquals("ExampleCity", resultAttributes.get("City").get(0));
         assertEquals("123456", resultAttributes.get("ZipCode").get(0));
         assertEquals("ExampleCountry", resultAttributes.get("Country").get(0));
+    }
+
+    @Test
+    public void verifyMultiValuedAttributeExtraction() throws Exception {
+        var credentials = extractCredentials(RESPONSE_FILE_NAME_WITH_MULTIVALUEDATTR);
+        assertNotNull(credentials);
+        var attributes = credentials.getAttributes();
+        assertNotNull(attributes);
+
+        assertEquals(1, attributes.size());
+        var resultAttributes = attributes.stream()
+            .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
+        assertEquals(1, resultAttributes.size());
+        assertEquals(List.of("Product-X Dev", "Product-X Test"), resultAttributes.get("groups"));
     }
 
     private SAML2Credentials extractCredentials(String filename) throws Exception {
