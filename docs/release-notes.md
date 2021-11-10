@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Added the `setExpiration(Date)` method on the `OidcProfile`
 - Fixed the `expireSessionWithToken` behavior for the `OidcProfile`
 - Set the `secure` and `httpOnly` flag to `true` for the CSRF cookie
+- Fix multi-values attribute duplication in `SAML2Profile`
 
 **v5.1.4**:
 
