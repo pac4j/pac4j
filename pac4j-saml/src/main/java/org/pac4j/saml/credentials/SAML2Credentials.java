@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
@@ -13,6 +14,7 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -233,11 +235,14 @@ public class SAML2Credentials extends Credentials {
             samlAttribute.setFriendlyName(attribute.getFriendlyName());
             samlAttribute.setName(attribute.getName());
             samlAttribute.setNameFormat(attribute.getNameFormat());
-            attribute.getAttributeValues()
+            List<String> values = attribute.getAttributeValues()
                 .stream()
+                .filter(val -> !val.hasChildren())
                 .map(XMLObject::getDOM)
                 .filter(dom -> dom != null && dom.getTextContent() != null)
-                .forEach(dom -> samlAttribute.getAttributeValues().add(dom.getTextContent()));
+                .map(Element::getTextContent)
+                .collect(Collectors.toList());
+            samlAttribute.setAttributeValues(values);
             return samlAttribute;
         }
 
@@ -246,21 +251,23 @@ public class SAML2Credentials extends Credentials {
             List<SAMLAttribute> extractedAttributes = new ArrayList<>();
 
             samlAttributes.forEach(openSamlAttribute -> {
-                openSamlAttribute.getAttributeValues().forEach(attributeValue -> {
-                    boolean isComplexType = attributeValue.hasChildren();
-
-                    if (isComplexType) {
+                // collect all complex values
+                openSamlAttribute.getAttributeValues().stream()
+                    .filter(XMLObject::hasChildren)
+                    .forEach(attributeValue -> {
                         List<SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
                         extractedAttributes.addAll(attrs);
-                    } else {
-                        extractedAttributes.add(SAMLAttribute.from(openSamlAttribute));
-                    }
-                });
+                    });
+                // collect all simple values
+                SAMLAttribute simpleValues = from(openSamlAttribute);
+                if (!simpleValues.getAttributeValues().isEmpty()) {
+                    extractedAttributes.add(simpleValues);
+                }
             });
 
             return extractedAttributes;
         }
-
+        
         private static List<SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
 
             var results = new ArrayList<SAMLAttribute>();
