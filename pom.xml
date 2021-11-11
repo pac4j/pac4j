@@ -64,7 +64,7 @@
 		<commons-io.version>2.11.0</commons-io.version>
 		<guava.version>31.0.1-jre</guava.version>
 		<nimbus-jose-jwt.version>9.16-preview.1</nimbus-jose-jwt.version>
-		<spring.version>5.3.12</spring.version>
+		<spring.version>5.3.13</spring.version>
 		<spring.security.version>5.5.3</spring.security.version>
 		<shiro.version>1.8.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
