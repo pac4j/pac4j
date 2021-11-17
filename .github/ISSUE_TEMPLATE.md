@@ -1,1 +1,0 @@
-Before reporting any issue, please use the mailing lists: http://www.pac4j.org/mailing-lists.html
