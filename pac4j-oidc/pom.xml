@@ -14,7 +14,7 @@
 
     <properties>
         <oauth-oidc-sdk.version>9.19</oauth-oidc-sdk.version>
-        <javax.mail.version>1.6.2</javax.mail.version>
+        <jakarta.mail.version>1.6.7</jakarta.mail.version>
     </properties>
 
     <dependencies>
@@ -43,8 +43,8 @@
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>${javax.mail.version}</version>
+            <artifactId>jakarta.mail</artifactId>
+            <version>${jakarta.mail.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
