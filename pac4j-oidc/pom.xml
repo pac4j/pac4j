@@ -14,7 +14,6 @@
 
     <properties>
         <oauth-oidc-sdk.version>9.19</oauth-oidc-sdk.version>
-        <javax.mail.version>1.6.2</javax.mail.version>
     </properties>
 
     <dependencies>
