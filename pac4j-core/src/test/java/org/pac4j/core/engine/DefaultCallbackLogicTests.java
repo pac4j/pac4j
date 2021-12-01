@@ -9,9 +9,8 @@ import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.JEEContext;
-import org.pac4j.core.context.session.JEESessionStore;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -23,8 +22,6 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -41,13 +38,9 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     private DefaultCallbackLogic logic;
 
-    protected MockHttpServletRequest request;
+    private MockWebContext context;
 
-    protected MockHttpServletResponse response;
-
-    private JEEContext context;
-
-    private SessionStore sessionStore;
+    private MockSessionStore sessionStore;
 
     private Config config;
 
@@ -64,10 +57,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Before
     public void setUp() {
         logic = new DefaultCallbackLogic();
-        request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
-        context = new JEEContext(request, response);
-        sessionStore = JEESessionStore.INSTANCE;
+        context = MockWebContext.create();
+        sessionStore = new MockSessionStore();
         config = new Config();
         httpActionAdapter = (act, ctx) -> { action = act; return null; };
         defaultUrl = null;
@@ -119,7 +110,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testDirectClient() {
-        request.addParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final var directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(directClient));
         TestsHelper.expectException(this::call, TechnicalException.class,
@@ -129,16 +120,15 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallback() {
-        final var originalSessionId = request.getSession().getId();
-        request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        final var originalSessionId = sessionStore.getSessionId(context, false);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
-        final var session = request.getSession();
-        final var newSessionId = session.getId();
+        final var newSessionId = sessionStore.getSessionId(context, false);
         final var profiles =
-            (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
+            (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
@@ -153,23 +143,21 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallbackWithOriginallyRequestedUrlAndPostRequest() {
-        request.setMethod("POST");
+        context.setRequestMethod("POST");
         internalTestCallbackWithOriginallyRequestedUrl(303);
     }
 
     private void internalTestCallbackWithOriginallyRequestedUrl(final int code) {
-        var session = request.getSession();
-        final var originalSessionId = session.getId();
-        session.setAttribute(Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
-        request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        final var originalSessionId = sessionStore.getSessionId(context, false);
+        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
-        session = request.getSession();
-        final var newSessionId = session.getId();
+        final var newSessionId = sessionStore.getSessionId(context, false);
         final var profiles =
-            (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
+            (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertNotEquals(newSessionId, originalSessionId);
@@ -183,17 +171,16 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallbackNoRenew() {
-        final var originalSessionId = request.getSession().getId();
-        request.setParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
+        final var originalSessionId = sessionStore.getSessionId(context, true);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final var profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
         call();
-        final var session = request.getSession();
-        final var newSessionId = session.getId();
+        final var newSessionId = sessionStore.getSessionId(context, false);
         final var profiles =
-            (LinkedHashMap<String, CommonProfile>) session.getAttribute(Pac4jConstants.USER_PROFILES);
+            (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
         assertEquals(newSessionId, originalSessionId);

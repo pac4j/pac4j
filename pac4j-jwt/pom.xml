@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>org.pac4j</groupId>
-        <artifactId>pac4j</artifactId>
+        <artifactId>pac4j-parent</artifactId>
         <version>5.2.0-SNAPSHOT</version>
     </parent>
 

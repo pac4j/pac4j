@@ -19,10 +19,7 @@ import org.opensaml.security.SecurityException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -37,8 +34,6 @@ import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.ExcludingParametersURIComparator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -128,13 +123,11 @@ public class SAML2DefaultResponseValidatorTests {
         final var os = new ByteArrayOutputStream();
         XMLObjectSupport.marshallToOutputStream(response, os);
 
-        final var request = new MockHttpServletRequest();
-        request.setMethod(HttpConstants.HTTP_METHOD.POST.name());
-        request.setParameter("SAMLResponse", Base64Support.encode(os.toByteArray(), Base64Support.UNCHUNKED));
-        request.setParameter("RelayState", "TST-2-FZOsWEfjC-IH-h6Xb333DRbu5UPMHqfL");
-        final WebContext webContext = new JEEContext(request, new MockHttpServletResponse());
+        final MockWebContext webContext = MockWebContext.create();
+        webContext.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        webContext.addRequestParameter("SAMLResponse", Base64Support.encode(os.toByteArray(), Base64Support.UNCHUNKED));
+        webContext.addRequestParameter("RelayState", "TST-2-FZOsWEfjC-IH-h6Xb333DRbu5UPMHqfL");
         context.setWebContext(webContext);
-        context.setSessionStore(JEESessionStore.INSTANCE);
 
         final var idpDescriptor = mock(EntityDescriptor.class);
         context.getSAMLPeerMetadataContext().setEntityDescriptor(idpDescriptor);

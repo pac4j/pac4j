@@ -2,20 +2,17 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link RequireAnyPermissionAuthorizer}.
@@ -29,7 +26,7 @@ public final class RequireAnyPermissionAuthorizerTests {
     private static final String PERMISSION2 = "permission2";
     private static final String PERMISSION3 = "permission3";
 
-    private final JEEContext context = new JEEContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
+    private final MockWebContext context = MockWebContext.create();
 
     private List<UserProfile> profiles;
 

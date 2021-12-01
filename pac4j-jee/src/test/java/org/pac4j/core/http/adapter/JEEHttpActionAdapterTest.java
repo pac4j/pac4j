@@ -47,9 +47,9 @@ public final class JEEHttpActionAdapterTest implements TestsConstants {
 
     @Test
     public void testActionWithLocation() {
-        JEEHttpActionAdapter.INSTANCE.adapt(new FoundAction(PAC4J_URL), context);
+        JEEHttpActionAdapter.INSTANCE.adapt(new FoundAction(TestsConstants.PAC4J_URL), context);
         verify(response).setStatus(302);
-        verify(context).setResponseHeader(HttpConstants.LOCATION_HEADER, PAC4J_URL);
+        verify(context).setResponseHeader(HttpConstants.LOCATION_HEADER, TestsConstants.PAC4J_URL);
     }
 
     @Test
@@ -60,8 +60,8 @@ public final class JEEHttpActionAdapterTest implements TestsConstants {
 
     @Test
     public void testActionWithContent() {
-        JEEHttpActionAdapter.INSTANCE.adapt(new OkAction(VALUE), context);
+        JEEHttpActionAdapter.INSTANCE.adapt(new OkAction(TestsConstants.VALUE), context);
         verify(response).setStatus(200);
-        verify(writer).write(VALUE);
+        verify(writer).write(TestsConstants.VALUE);
     }
 }

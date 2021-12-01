@@ -3,18 +3,15 @@ package org.pac4j.core.authorization.authorizer;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link RequireAnyAttributeAuthorizer}.
@@ -24,7 +21,7 @@ import static org.mockito.Mockito.mock;
  */
 public final class RequireAnyAttributeAuthorizerTests {
 
-    private final JEEContext context = new JEEContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
+    private final MockWebContext context = MockWebContext.create();
 
     private List<UserProfile> profiles;
 

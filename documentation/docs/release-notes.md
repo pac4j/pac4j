@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.2**:
+
+- The JEE core components are now in the `pac4j-jee` dependency (and no longer in the `pac4j-core` dependency)
+
 **v5.1.5**:
 
 - Fixed a NPE on the `SAML2AuthnResponseValidator`

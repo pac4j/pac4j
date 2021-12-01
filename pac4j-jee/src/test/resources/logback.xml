@@ -1,0 +1,13 @@
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>pac4j jee %d{HH:mm:ss} [%thread] %-5level %logger{10} - %msg%n%ex{full}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.pac4j" level="DEBUG" />
+
+	<root level="WARN">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

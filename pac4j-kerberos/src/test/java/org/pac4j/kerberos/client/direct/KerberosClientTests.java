@@ -3,9 +3,8 @@ package org.pac4j.kerberos.client.direct;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.JEESessionStore;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -15,8 +14,6 @@ import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
 import org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidation;
 import org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidator;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -66,21 +63,18 @@ public class KerberosClientTests implements TestsConstants {
 
     @Test
     public void testMissingKerberosHeader() {
-        var request = mock(HttpServletRequest.class);
-        var response = mock(HttpServletResponse.class);
         final var client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final var credentials = client.getCredentials(new JEEContext(request, response), JEESessionStore.INSTANCE);
+        final var credentials = client.getCredentials(MockWebContext.create(), new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
-        var request = mock(HttpServletRequest.class);
-        var response = mock(HttpServletResponse.class);
+        final WebContext context = MockWebContext.create();
         final var client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        final var credentials = client.getCredentials(new JEEContext(request, response), JEESessionStore.INSTANCE);
+        final var credentials = client.getCredentials(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
-        verify(response).setHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
+        assertEquals("Negotiate", context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
 
     @Test

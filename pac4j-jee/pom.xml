@@ -8,35 +8,23 @@
         <version>5.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>pac4j-oauth</artifactId>
+    <artifactId>pac4j-jee</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security for OAuth</name>
-
-    <properties>
-        <scribe.version>8.3.1</scribe.version>
-    </properties>
-
+    <name>pac4j JEE core components</name>
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-saml</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.scribejava</groupId>
-            <artifactId>scribejava-apis</artifactId>
-            <version>${scribe.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- for testing -->
         <dependency>
@@ -51,8 +39,23 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- for testing -->
@@ -65,9 +68,9 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>pac4j.oauth</Automatic-Module-Name>
-                        <Bundle-SymbolicName>org.pac4j.oauth</Bundle-SymbolicName>
-                        <Export-Package>org.pac4j.oauth.*;version=${project.version}</Export-Package>
+                        <Automatic-Module-Name>pac4j.jee</Automatic-Module-Name>
+                        <Bundle-SymbolicName>org.pac4j.jee</Bundle-SymbolicName>
+                        <Export-Package>org.pac4j.jee.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
                     </instructions>
                 </configuration>
