@@ -140,6 +140,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private TokenValidator tokenValidator;
 
+    private boolean allowUnsignedIdTokens;
+
     @Override
     protected void internalInit() {
         // checks
@@ -486,6 +488,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.mappedClaims = mappedClaims;
     }
 
+    public boolean isAllowUnsignedIdTokens() {
+        return allowUnsignedIdTokens;
+    }
+
+    public void setAllowUnsignedIdTokens(final boolean allowUnsignedIdTokens) {
+        this.allowUnsignedIdTokens = allowUnsignedIdTokens;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -495,6 +505,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
             "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
-            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims);
+            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens);
     }
 }

@@ -6,8 +6,6 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.naming.AuthenticationException;
-
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -99,9 +97,8 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
                 httpResponse.getContent());
             final var userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (userInfoResponse instanceof UserInfoErrorResponse) {
-                logger.error("Bad User Info response, error={}",
-                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject().toJSONObject());
-                throw new AuthenticationException();
+                throw new TechnicalException("Bad User Info response, error="
+                    + ((UserInfoErrorResponse) userInfoResponse).getErrorObject().toJSONObject());
             } else {
                 final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                 final JWTClaimsSet userInfoClaimsSet;
@@ -112,7 +109,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
                 }
                 return userInfoClaimsSet;
             }
-        } catch (IOException | ParseException | java.text.ParseException | AuthenticationException e) {
+        } catch (IOException | ParseException | java.text.ParseException e) {
             throw new TechnicalException(e);
         }
     }

@@ -51,13 +51,13 @@ public class TokenValidator {
         final var _clientID = new ClientID(configuration.getClientId());
 
         for (var jwsAlgorithm : jwsAlgorithms) {
-            if ("none".equals(jwsAlgorithm.getName())) {
-                jwsAlgorithm = null;
-            }
-
             // build validator
             final IDTokenValidator idTokenValidator;
-            if (jwsAlgorithm == null) {
+            if ("none".equals(jwsAlgorithm.getName())) {
+                if (!configuration.isAllowUnsignedIdTokens()) {
+                    throw new TechnicalException("Unsigned ID tokens are not allowed");
+                }
+                logger.warn("Allowing unsigned ID tokens");
                 idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
             } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
@@ -111,5 +111,10 @@ public class TokenValidator {
         } else {
             throw new TechnicalException("Unable to validate the ID token");
         }
+    }
+
+    // for tests
+    List<IDTokenValidator> getIdTokenValidators() {
+        return idTokenValidators;
     }
 }

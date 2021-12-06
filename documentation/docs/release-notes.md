@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.2**:
 
 - The JEE core components are now in the `pac4j-jee` dependency (and no longer in the `pac4j-core` dependency)
+- Reinforce security on the OIDC protocol support: the `none` algorithm must be explicitly accepted on client side (`allowUnsignedIdTokens`)
 
 **v5.1.5**:
 

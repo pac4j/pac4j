@@ -145,3 +145,9 @@ The additional param `TokenExpirationAdvance` allows to set the time in seconds,
 ```java
 config.setTokenExpirationAdvance(10);
 ```
+
+Since version 5.2 and to reinforce security, the `none` alogithm for ID tokens (meaning no signature validation) must be explictly accepted by using:
+
+```java
+config.setAllowUnsignedIdTokens(true);
+```
