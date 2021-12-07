@@ -23,7 +23,7 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.4</cryptacular.version>
         <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
-        <httpcore.version>4.4.14</httpcore.version>
+        <httpcore.version>4.4.15</httpcore.version>
         <hazelcast.version>5.0</hazelcast.version>
     </properties>
 
