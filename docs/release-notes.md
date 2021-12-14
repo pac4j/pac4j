@@ -3,7 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v5.2**:
+**v5.2.1**:
+
+- Patch log4j v2 (CVE-2021-44228)
+
+**v5.2.0**:
 
 - The JEE core components are now in the `pac4j-jee` dependency (and no longer in the `pac4j-core` dependency)
 - Reinforce security on the OIDC protocol support: the `none` algorithm must be explicitly accepted on client side (`allowUnsignedIdTokens`)
@@ -81,6 +85,10 @@ title: Release notes&#58;
 - The presence of `NameID` elements in SAML2 responses is now made optional, if the `SAML2Configuration` is configured to build the final credential using a SAML2 attribute found in the assertion. If the attribute is not found or is undefined, `NameID` is expected as the default.
 - Handle the "same site policy" in cookies (default: `lax`). Renamed `ContextHelper` as `WebContextHelper`
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
+
+**v4.5.4**:
+
+- Patch log4j v2 (CVE-2021-44228)
 
 **v4.5.1**:
 
