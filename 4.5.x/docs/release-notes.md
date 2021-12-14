@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.5.4**:
+
+- Patch log4j v2 (CVE-2021-44228)
+
 **v4.5.1**:
 
 - Removed the ORCID OAuth client which no longer works. Use the `OidcClient` instead
