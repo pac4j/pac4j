@@ -5,7 +5,7 @@ title: Release notes&#58;
 
 **v5.2.1**:
 
-- Patch log4j v2 (CVE-2021-44228)
+- Patch log4j v2 (CVE-2021-44228 and CVE-2021-45046)
 
 **v5.2.0**:
 
@@ -88,7 +88,7 @@ title: Release notes&#58;
 
 **v4.5.4**:
 
-- Patch log4j v2 (CVE-2021-44228)
+- Patch log4j v2 (CVE-2021-44228 and CVE-2021-45046)
 
 **v4.5.1**:
 
