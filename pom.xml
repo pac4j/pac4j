@@ -74,7 +74,7 @@
         <unboundid.version>6.0.3</unboundid.version>
         <h2.version>2.0.202</h2.version>
 		<java.version>11</java.version>
-        <jackson.version>2.13.0</jackson.version>
+        <jackson.version>2.13.1</jackson.version>
         <reflections.version>0.10.2</reflections.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
