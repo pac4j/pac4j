@@ -51,7 +51,7 @@ public abstract class IndirectClient extends BaseClient {
     private boolean checkAuthenticationAttempt = true;
 
     @Override
-    protected void beforeInternalInit() {
+    protected void beforeInternalInit(final boolean forceReinit) {
         // check configuration
         assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
         if (this.urlResolver == null) {
@@ -69,7 +69,7 @@ public abstract class IndirectClient extends BaseClient {
     }
 
     @Override
-    protected final void afterInternalInit() {
+    protected final void afterInternalInit(final boolean forceReinit) {
         // ensures components have been properly initialized
         assertNotNull("redirectionActionBuilder", this.redirectionActionBuilder);
         assertNotNull("credentialsExtractor", getCredentialsExtractor());

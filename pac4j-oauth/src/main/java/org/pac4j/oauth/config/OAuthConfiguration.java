@@ -39,7 +39,7 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
     protected Object api;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("api", api);
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);

@@ -39,7 +39,7 @@ public class CasOAuthWrapperClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
         configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant));
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
@@ -50,7 +50,7 @@ public class CasOAuthWrapperClient extends OAuth20Client {
         }
         defaultLogoutActionBuilder(new CasLogoutActionBuilder(casLogoutUrl, "service"));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     public String getCasOAuthUrl() {

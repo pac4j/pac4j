@@ -38,7 +38,7 @@ public final class MockIndirectClient extends IndirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         defaultRedirectionActionBuilder((ctx, store) -> Optional.of(redirectAction));
         defaultCredentialsExtractor((ctx, store) -> returnCredentials.get());
         defaultAuthenticator((cred, ctx, store) -> cred.setUserProfile(profile));

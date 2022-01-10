@@ -65,7 +65,11 @@ public class Clients extends InitializableObject {
     }
 
     @Override
-    protected boolean shouldInitialize() {
+    protected boolean shouldInitialize(final boolean forceReinit) {
+        if (forceReinit) {
+            return true;
+        }
+
         return oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode();
     }
 
@@ -74,7 +78,7 @@ public class Clients extends InitializableObject {
      * if defined in Clients and not already in the Client itself. And check the client name.
      */
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         clientsMap = new HashMap<>();
         for (final var client : this.clients) {
             final var name = client.getName();

@@ -56,7 +56,7 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinits) {
         assertNotNull("configuration", this.configuration);
         assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
 

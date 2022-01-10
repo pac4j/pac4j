@@ -60,14 +60,14 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("passwordEncoder", getPasswordEncoder());
         assertNotNull("couchDbConnector", this.couchDbConnector);
 
         defaultProfileDefinition(new CommonProfileDefinition(x -> new CouchProfile()));
         setSerializer(new JsonSerializer(CouchProfile.class));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

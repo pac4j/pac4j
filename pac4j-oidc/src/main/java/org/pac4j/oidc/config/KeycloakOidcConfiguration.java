@@ -16,12 +16,12 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
     private String baseUri;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         // checks
         assertNotBlank("realm", realm);
         assertNotBlank("baseUri", baseUri);
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

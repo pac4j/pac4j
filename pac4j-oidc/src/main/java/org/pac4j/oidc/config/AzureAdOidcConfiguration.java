@@ -44,10 +44,10 @@ public class AzureAdOidcConfiguration extends OidcConfiguration {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("tenant", tenant);
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

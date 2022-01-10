@@ -143,7 +143,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private boolean allowUnsignedIdTokens;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         // checks
         assertNotBlank("clientId", getClientId());
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)

@@ -83,7 +83,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
         defaultProfileDefinition(new JwtProfileDefinition());
 

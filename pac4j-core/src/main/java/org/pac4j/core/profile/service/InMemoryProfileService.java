@@ -35,13 +35,13 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("passwordEncoder", getPasswordEncoder());
 
         defaultProfileDefinition(new CommonProfileDefinition(profileFactory));
         setSerializer(new JsonSerializer(CommonProfile.class));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

@@ -25,7 +25,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("pattern", pattern);
         defaultProfileDefinition(new CommonProfileDefinition(x -> new IpProfile()));
     }

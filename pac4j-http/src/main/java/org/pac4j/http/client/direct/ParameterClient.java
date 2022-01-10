@@ -38,7 +38,7 @@ public class ParameterClient extends DirectClient {
 
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("parameterName", this.parameterName);
 
         defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest));

@@ -60,7 +60,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("secret", secret);
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotNull("method", method);

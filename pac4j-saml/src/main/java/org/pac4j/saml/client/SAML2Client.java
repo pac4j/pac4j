@@ -99,13 +99,13 @@ public class SAML2Client extends IndirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
         final var callbackUrl = computeFinalCallbackUrl(null);
         configuration.setCallbackUrl(callbackUrl);
-        configuration.init();
+        configuration.init(forceReinit);
 
         initDecrypter();
         initSignatureSigningParametersProvider();

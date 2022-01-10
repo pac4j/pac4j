@@ -27,7 +27,7 @@ public class DropBoxClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         configuration.setApi(DropboxApi20.INSTANCE);
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
 
@@ -35,6 +35,6 @@ public class DropBoxClient extends OAuth20Client {
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.dropbox.com/logout")));
         defaultProfileCreator(new DropBoxProfileCreator(configuration, this));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 }

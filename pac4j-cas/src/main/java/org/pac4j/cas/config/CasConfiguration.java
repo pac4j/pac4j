@@ -107,7 +107,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl) && CommonHelper.isBlank(this.restUrl)) {
             throw new TechnicalException("loginUrl, prefixUrl and restUrl cannot be all blank");
         }

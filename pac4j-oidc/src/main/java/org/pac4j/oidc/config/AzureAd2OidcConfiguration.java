@@ -21,12 +21,12 @@ public class AzureAd2OidcConfiguration extends AzureAdOidcConfiguration {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         if (isBlank(getTenant())){
             // default value
             setTenant("common");
         }
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

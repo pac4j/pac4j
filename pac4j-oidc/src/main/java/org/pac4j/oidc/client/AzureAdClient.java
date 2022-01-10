@@ -57,11 +57,11 @@ public class AzureAdClient extends OidcClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
         defaultProfileCreator(new AzureAdProfileCreator(getConfiguration(), this));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("usernameParameter", this.usernameParameter);
         assertNotBlank("passwordParameter", this.passwordParameter);
         assertNotNull("configuration", this.configuration);

@@ -40,7 +40,7 @@ public class DirectFormClient extends DirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("usernameParameter", usernameParameter);
         assertNotBlank("passwordParameter", passwordParameter);
 

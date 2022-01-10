@@ -106,7 +106,7 @@ public final class InitializableObjectTests {
         }
 
         @Override
-        protected void internalInit() {
+        protected void internalInit(final boolean forceReinit) {
             this.counter++;
             if (fails) {
                 throw new TechnicalException("Initialization fails");

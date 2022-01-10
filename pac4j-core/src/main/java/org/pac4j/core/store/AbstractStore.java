@@ -14,7 +14,7 @@ import java.util.Optional;
 public abstract class AbstractStore<K, O> extends InitializableObject implements Store<K, O> {
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
     }
 
     @Override

@@ -38,14 +38,14 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    protected void beforeInternalInit() {
-        super.beforeInternalInit();
+    protected void beforeInternalInit(final boolean forceReinit) {
+        super.beforeInternalInit(forceReinit);
         assertNotNull("configuration", configuration);
     }
 
     @Override
-    protected void internalInit() {
-        configuration.init();
+    protected void internalInit(final boolean forceReinit) {
+        configuration.init(forceReinit);
 
         defaultRedirectionActionBuilder(new OidcRedirectionActionBuilder(this));
         defaultCredentialsExtractor(new OidcExtractor(configuration, this));

@@ -304,7 +304,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         final var keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);

@@ -25,7 +25,7 @@ public class IpClient extends DirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         defaultCredentialsExtractor(new IpExtractor());
     }
 }

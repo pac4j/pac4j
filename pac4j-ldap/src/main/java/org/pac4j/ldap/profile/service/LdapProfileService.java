@@ -60,7 +60,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("ldapAuthenticator", ldapAuthenticator);
         assertNotNull("connectionFactory", connectionFactory);
         assertNull("passwordEncoder", getPasswordEncoder());
@@ -69,7 +69,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         defaultProfileDefinition(new CommonProfileDefinition(x -> new LdapProfile()));
         setSerializer(new JsonSerializer(LdapProfile.class));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

@@ -19,14 +19,14 @@ import static org.pac4j.core.util.CommonHelper.*;
 public abstract class DirectClient extends BaseClient {
 
     @Override
-    protected void beforeInternalInit() {
+    protected void beforeInternalInit(final boolean forceReinit) {
         if (saveProfileInSession == null) {
             saveProfileInSession = false;
         }
     }
 
     @Override
-    protected final void afterInternalInit() {
+    protected final void afterInternalInit(final boolean forceReinit) {
         // ensures components have been properly initialized
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());

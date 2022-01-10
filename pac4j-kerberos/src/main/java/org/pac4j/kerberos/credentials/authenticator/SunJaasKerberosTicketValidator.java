@@ -51,7 +51,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         // P.S. this fn is called from init(), so if init() is not called explicitly,
         // then internalInit() runs lazily during the first validateTicket() call
         try {

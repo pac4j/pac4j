@@ -46,7 +46,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotNull("secret", secret);
 

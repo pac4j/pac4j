@@ -47,7 +47,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
         defaultRedirectionActionBuilder((webContext, sessionStore) ->

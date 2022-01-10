@@ -63,7 +63,7 @@ public class GenericOAuth20Client extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         this.converterClasses = findAttributeConverterClasses();
 
         final var genApi = new GenericApi20(authUrl, tokenUrl);
@@ -100,7 +100,7 @@ public class GenericOAuth20Client extends OAuth20Client {
         configuration.setScope(scope);
         configuration.setWithState(withState);
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     AbstractAttributeConverter getConverter(final String typeName) {

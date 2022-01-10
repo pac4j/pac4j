@@ -50,7 +50,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("urlResolver", urlResolver);
         CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
         CommonHelper.assertNotBlank("clientName", clientName);

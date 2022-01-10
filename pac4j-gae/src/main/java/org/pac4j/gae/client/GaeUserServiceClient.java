@@ -30,7 +30,7 @@ public class GaeUserServiceClient extends IndirectClient {
     protected String authDomain = null;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         service = UserServiceFactory.getUserService();
         CommonHelper.assertNotNull("service", this.service);
         defaultRedirectionActionBuilder((ctx, session) -> {

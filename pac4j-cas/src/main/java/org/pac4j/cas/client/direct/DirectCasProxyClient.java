@@ -46,7 +46,7 @@ public class DirectCasProxyClient extends DirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("serviceUrl", this.serviceUrl);
         assertNotNull("configuration", this.configuration);
         // must be a CAS proxy protocol

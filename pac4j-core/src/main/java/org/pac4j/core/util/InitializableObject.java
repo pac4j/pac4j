@@ -27,15 +27,31 @@ public abstract class InitializableObject {
      * Initialize the object.
      */
     public void init() {
-        if (shouldInitialize()) {
+        init(false);
+    }
+
+    /**
+     * Re-initialize the object.
+     */
+    public void reinit() {
+        init(true);
+    }
+
+    /**
+     * (Re)-initialize the object.
+     *
+     * @param forceReinit whether the object should be re-initialized
+     */
+    public void init(final boolean forceReinit) {
+        if (shouldInitialize(forceReinit)) {
             synchronized (this) {
-                if (shouldInitialize()) {
+                if (shouldInitialize(forceReinit)) {
                     LOGGER.debug("Initializing: {} (nb: {}, last: {})", this.getClass().getSimpleName(), nbAttempts, lastAttempt);
                     nbAttempts++;
                     lastAttempt = System.currentTimeMillis();
-                    beforeInternalInit();
-                    internalInit();
-                    afterInternalInit();
+                    beforeInternalInit(forceReinit);
+                    internalInit(forceReinit);
+                    afterInternalInit(forceReinit);
                     this.initialized = true;
                 }
             }
@@ -46,7 +62,11 @@ public abstract class InitializableObject {
         return this.initialized;
     }
 
-    protected boolean shouldInitialize() {
+    protected boolean shouldInitialize(final boolean forceReinit) {
+        if (forceReinit) {
+            return true;
+        }
+
         final boolean notInitialized = !this.initialized;
         final boolean notTooManyAttempts = maxAttempts == -1 || nbAttempts < maxAttempts;
         final boolean enoughTimeSinceLastAttempt = lastAttempt == null
@@ -58,11 +78,11 @@ public abstract class InitializableObject {
     /**
      * Internal initialization of the object.
      */
-    protected abstract void internalInit();
+    protected abstract void internalInit(final boolean forceReinit);
 
-    protected void beforeInternalInit() {}
+    protected void beforeInternalInit(final boolean forceReinit) {}
 
-    protected void afterInternalInit() {}
+    protected void afterInternalInit(final boolean forceReinit) {}
 
     public final int getMaxAttempts() {
         return maxAttempts;

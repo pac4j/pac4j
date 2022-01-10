@@ -27,7 +27,7 @@ public class FoursquareClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setApi(Foursquare2Api.instance());
         configuration.setProfileDefinition(new FoursquareProfileDefinition());
@@ -36,6 +36,6 @@ public class FoursquareClient extends OAuth20Client {
         defaultLogoutActionBuilder((ctx, store, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.foursquare.com/logout")));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 }

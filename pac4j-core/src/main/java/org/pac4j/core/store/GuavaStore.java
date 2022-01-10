@@ -34,7 +34,7 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertTrue(this.size > 0, "size mut be greater than zero");
         CommonHelper.assertTrue(this.timeout >= 0, "timeout must be greater than zero");
         CommonHelper.assertNotNull("timeUnit", this.timeUnit);

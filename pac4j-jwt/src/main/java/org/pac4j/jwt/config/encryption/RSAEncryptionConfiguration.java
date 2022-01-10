@@ -47,7 +47,7 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotNull("method", method);
 

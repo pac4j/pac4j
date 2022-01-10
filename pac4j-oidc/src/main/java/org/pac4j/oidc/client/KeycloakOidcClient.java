@@ -28,13 +28,13 @@ public class KeycloakOidcClient extends OidcClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 
         addAuthorizationGenerator(new KeycloakRolesAuthorizationGenerator(getConfiguration().getClientId()));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 }

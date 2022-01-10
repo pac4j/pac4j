@@ -50,7 +50,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected String[] attributeNames;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("profileDefinition", getProfileDefinition());
         assertNotBlank("usernameAttribute", this.usernameAttribute);
         assertNotBlank("passwordAttribute", this.passwordAttribute);

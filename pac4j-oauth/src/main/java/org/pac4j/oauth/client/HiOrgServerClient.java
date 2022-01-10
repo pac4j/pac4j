@@ -29,7 +29,7 @@ public class HiOrgServerClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         configuration.setApi(HiOrgServerApi20.instance());
         configuration.setProfileDefinition(new HiOrgServerProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
@@ -47,7 +47,7 @@ public class HiOrgServerClient extends OAuth20Client {
         defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, LOGOUT_URL)));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
 }

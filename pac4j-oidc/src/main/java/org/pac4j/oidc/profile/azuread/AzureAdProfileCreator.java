@@ -19,7 +19,7 @@ public class AzureAdProfileCreator extends OidcProfileCreator {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", configuration);
 
         if (configuration.getTokenValidator() == null) {
@@ -27,6 +27,6 @@ public class AzureAdProfileCreator extends OidcProfileCreator {
         }
         defaultProfileDefinition(new AzureAdProfileDefinition());
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 }

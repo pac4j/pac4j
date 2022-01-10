@@ -47,7 +47,7 @@ public class UserInfoOidcAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("configuration", configuration);
     }
 

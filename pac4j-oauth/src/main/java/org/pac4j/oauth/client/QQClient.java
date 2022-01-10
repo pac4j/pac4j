@@ -66,14 +66,14 @@ public class QQClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         configuration.setApi(new QQApi20());
         configuration.setScope(getOAuthScope());
         configuration.setProfileDefinition(new QQProfileDefinition());
         configuration.setWithState(true);
         defaultProfileCreator(new QQProfileCreator(configuration, this));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     private String getOAuthScope() {

@@ -26,13 +26,13 @@ public class WindowsLiveClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         configuration.setApi(LiveApi.instance());
         configuration.setProfileDefinition(new WindowsLiveProfileDefinition());
         configuration.setScope("wl.basic");
         defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://account.microsoft.com/auth/complete-signout")));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 }

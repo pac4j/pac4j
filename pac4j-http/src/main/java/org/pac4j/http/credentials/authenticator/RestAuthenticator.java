@@ -48,7 +48,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("url", url);
         defaultProfileDefinition(new CommonProfileDefinition(x -> new RestProfile()));
         if (mapper == null) {

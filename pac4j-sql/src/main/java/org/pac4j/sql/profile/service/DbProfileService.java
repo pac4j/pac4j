@@ -52,7 +52,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("passwordEncoder", getPasswordEncoder());
         assertNotNull("dataSource", this.dataSource);
         this.dbi = new DBI(this.dataSource);
@@ -60,7 +60,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         defaultProfileDefinition(new CommonProfileDefinition(x -> new DbProfile()));
         setSerializer(new JsonSerializer(DbProfile.class));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         defaultProfileDefinition(new CommonProfileDefinition(x -> new X509Profile()));
     }
 

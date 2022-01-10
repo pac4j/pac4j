@@ -29,7 +29,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotBlank("headerName", this.headerName);
         assertNotNull("prefixHeader", this.prefixHeader);
         assertNotNull("configuration", this.configuration);

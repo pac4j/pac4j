@@ -40,7 +40,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("algorithm", algorithm);
 
         if (!supports(this.algorithm)) {

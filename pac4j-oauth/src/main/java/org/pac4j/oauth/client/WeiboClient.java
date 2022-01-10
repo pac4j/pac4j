@@ -48,7 +48,7 @@ public class WeiboClient extends OAuth20Client {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("scope", this.scope);
         if (this.scope == null)
             this.scope = WeiboScope.EMAIL;
@@ -65,7 +65,7 @@ public class WeiboClient extends OAuth20Client {
             return false;
         });
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     public WeiboScope getScope() {

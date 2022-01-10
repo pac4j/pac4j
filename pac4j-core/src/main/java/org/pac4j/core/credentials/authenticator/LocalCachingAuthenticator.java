@@ -66,13 +66,13 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         if (this.store == null) {
             this.store = new GuavaStore<>(cacheSize, timeout, timeUnit);
         }
 
         if (delegate instanceof InitializableObject) {
-            ((InitializableObject) delegate).init();
+            ((InitializableObject) delegate).init(forceReinit);
         }
     }
 

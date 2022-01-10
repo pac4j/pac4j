@@ -53,7 +53,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotBlank("usersDatabase", this.usersDatabase);
@@ -62,7 +62,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         defaultProfileDefinition(new CommonProfileDefinition(x -> new MongoProfile()));
         setSerializer(new JsonSerializer(MongoProfile.class));
 
-        super.internalInit();
+        super.internalInit(forceReinit);
     }
 
     @Override

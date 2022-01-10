@@ -50,7 +50,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", configuration);
 
         defaultProfileDefinition(new OidcProfileDefinition());

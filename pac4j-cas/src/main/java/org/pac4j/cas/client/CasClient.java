@@ -44,7 +44,7 @@ public class CasClient extends IndirectClient {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", configuration);
         configuration.setUrlResolver(this.getUrlResolver());
 
