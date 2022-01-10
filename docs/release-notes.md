@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.3.0**:
 
 - `InitializableObject`: the number of attempts and the last attempt time are tracked and checked with the max attempts and the min time interval between attempts (for the CAS implementation)
+- `InitializableObject`: allow re-initialization
 
 **v5.2.1**:
 
