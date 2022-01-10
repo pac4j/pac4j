@@ -14,7 +14,7 @@
 
     <properties>
         <mongo-driver.version>4.4.1</mongo-driver.version>
-        <flapdoodle.version>2.2.0</flapdoodle.version>
+        <flapdoodle.version>3.2.6</flapdoodle.version>
     </properties>
 
     <dependencies>
