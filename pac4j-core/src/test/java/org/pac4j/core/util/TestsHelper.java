@@ -44,4 +44,12 @@ public final class TestsHelper {
         }
         return query_pairs;
     }
+
+    public static void wait(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.3.0**:
+
+- `InitializableObject`: the number of attempts and the last attempt time are tracked and checked with the max attempts and the min time interval between attempts (for the CAS implementation)
+
 **v5.2.1**:
 
 - Update `log4j-to-slf4j` and `log4j-api` to v2.17.0 although only `log4j-core` has security vulnerabilities

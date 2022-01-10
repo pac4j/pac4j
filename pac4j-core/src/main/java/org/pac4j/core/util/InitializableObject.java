@@ -15,14 +15,24 @@ public abstract class InitializableObject {
 
     private volatile boolean initialized = false;
 
+    private int maxAttempts = 3;
+
+    private int nbAttempts = 0;
+
+    private Long lastAttempt;
+
+    private long minTimeIntervalBetweenAttemptsInMilliseconds = 5000;
+
     /**
      * Initialize the object.
      */
     public void init() {
-        if (!this.initialized) {
+        if (shouldInitialize()) {
             synchronized (this) {
-                if (!this.initialized) {
-                    LOGGER.debug("Initializing: {}", this.getClass().getSimpleName());
+                if (shouldInitialize()) {
+                    LOGGER.debug("Initializing: {} (nb: {}, last: {})", this.getClass().getSimpleName(), nbAttempts, lastAttempt);
+                    nbAttempts++;
+                    lastAttempt = System.currentTimeMillis();
                     beforeInternalInit();
                     internalInit();
                     afterInternalInit();
@@ -36,6 +46,15 @@ public abstract class InitializableObject {
         return this.initialized;
     }
 
+    protected boolean shouldInitialize() {
+        final boolean notInitialized = !this.initialized;
+        final boolean notTooManyAttempts = maxAttempts == -1 || nbAttempts < maxAttempts;
+        final boolean enoughTimeSinceLastAttempt = lastAttempt == null
+            || (System.currentTimeMillis() - lastAttempt) > minTimeIntervalBetweenAttemptsInMilliseconds;
+
+        return notInitialized && notTooManyAttempts && enoughTimeSinceLastAttempt;
+    }
+
     /**
      * Internal initialization of the object.
      */
@@ -44,4 +63,28 @@ public abstract class InitializableObject {
     protected void beforeInternalInit() {}
 
     protected void afterInternalInit() {}
+
+    public final int getMaxAttempts() {
+        return maxAttempts;
+    }
+
+    public final void setMaxAttempts(int maxAttempts) {
+        this.maxAttempts = maxAttempts;
+    }
+
+    public final int getNbAttempts() {
+        return nbAttempts;
+    }
+
+    public final Long getLastAttempt() {
+        return lastAttempt;
+    }
+
+    public final long getMinTimeIntervalBetweenAttemptsInMilliseconds() {
+        return minTimeIntervalBetweenAttemptsInMilliseconds;
+    }
+
+    public final void setMinTimeIntervalBetweenAttemptsInMilliseconds(long minTimeIntervalBetweenAttemptsInMilliseconds) {
+        this.minTimeIntervalBetweenAttemptsInMilliseconds = minTimeIntervalBetweenAttemptsInMilliseconds;
+    }
 }

@@ -8,6 +8,7 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 @SuppressWarnings({ "unchecked" })
-public class Clients {
+public class Clients extends InitializableObject {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Clients.class);
 
@@ -63,48 +64,47 @@ public class Clients {
         setClients(clients);
     }
 
+    @Override
+    protected boolean shouldInitialize() {
+        return oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode();
+    }
+
     /**
      * Populate the resolvers, callback URL and authz generators in the Client
      * if defined in Clients and not already in the Client itself. And check the client name.
      */
-    protected void init() {
-        // the clients list has changed or has not been initialized yet
-        if (oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode()) {
-            synchronized (this) {
-                if (oldClientsHash == null || oldClientsHash.intValue() != clients.hashCode()) {
-                    clientsMap = new HashMap<>();
-                    for (final var client : this.clients) {
-                        final var name = client.getName();
-                        CommonHelper.assertNotBlank("name", name);
-                        final var lowerTrimmedName = name.toLowerCase().trim();
-                        if (clientsMap.containsKey(lowerTrimmedName)) {
-                            throw new TechnicalException("Duplicate name in clients: " + name);
-                        }
-                        clientsMap.put(lowerTrimmedName, client);
-                        if (client instanceof IndirectClient) {
-                            final var indirectClient = (IndirectClient) client;
-                            if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
-                                indirectClient.setCallbackUrl(this.callbackUrl);
-                            }
-                            if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
-                                indirectClient.setUrlResolver(this.urlResolver);
-                            }
-                            if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
-                                indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
-                            }
-                            if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
-                                indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
-                            }
-                        }
-                        final var baseClient = (BaseClient) client;
-                        if (!authorizationGenerators.isEmpty()) {
-                            baseClient.addAuthorizationGenerators(this.authorizationGenerators);
-                        }
-                    }
-                    this.oldClientsHash = this.clients.hashCode();
+    @Override
+    protected void internalInit() {
+        clientsMap = new HashMap<>();
+        for (final var client : this.clients) {
+            final var name = client.getName();
+            CommonHelper.assertNotBlank("name", name);
+            final var lowerTrimmedName = name.toLowerCase().trim();
+            if (clientsMap.containsKey(lowerTrimmedName)) {
+                throw new TechnicalException("Duplicate name in clients: " + name);
+            }
+            clientsMap.put(lowerTrimmedName, client);
+            if (client instanceof IndirectClient) {
+                final var indirectClient = (IndirectClient) client;
+                if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
+                    indirectClient.setCallbackUrl(this.callbackUrl);
+                }
+                if (this.urlResolver != null && indirectClient.getUrlResolver() == null) {
+                    indirectClient.setUrlResolver(this.urlResolver);
+                }
+                if (this.callbackUrlResolver != null && indirectClient.getCallbackUrlResolver() == null) {
+                    indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+                }
+                if (this.ajaxRequestResolver != null && indirectClient.getAjaxRequestResolver() == null) {
+                    indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
                 }
             }
+            final var baseClient = (BaseClient) client;
+            if (!authorizationGenerators.isEmpty()) {
+                baseClient.addAuthorizationGenerators(this.authorizationGenerators);
+            }
         }
+        this.oldClientsHash = this.clients.hashCode();
     }
 
     /**
