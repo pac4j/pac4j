@@ -5,7 +5,7 @@ title: Release notes&#58;
 
 **v5.2.1**:
 
-- Patch log4j v2 (CVE-2021-44228 and CVE-2021-45046)
+- Update `log4j-to-slf4j` and `log4j-api` to v2.17.0 although only `log4j-core` has security vulnerabilities
 
 **v5.2.0**:
 
@@ -88,7 +88,7 @@ title: Release notes&#58;
 
 **v4.5.4**:
 
-- Patch log4j v2 (CVE-2021-44228 and CVE-2021-45046)
+- Update `log4j-to-slf4j` and `log4j-api` to v2.17.0 although only `log4j-core` has security vulnerabilities
 
 **v4.5.1**:
 
