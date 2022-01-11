@@ -3,6 +3,9 @@ package org.pac4j.core.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Object that can be (re-)initialized.
  *
@@ -13,13 +16,13 @@ public abstract class InitializableObject {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InitializableObject.class);
 
-    private volatile boolean initialized = false;
+    private AtomicBoolean initialized = new AtomicBoolean(false);
 
     private int maxAttempts = 3;
 
-    private int nbAttempts = 0;
+    private AtomicInteger nbAttempts = new AtomicInteger(0);
 
-    private Long lastAttempt;
+    private volatile Long lastAttempt;
 
     private long minTimeIntervalBetweenAttemptsInMilliseconds = 5000;
 
@@ -47,19 +50,19 @@ public abstract class InitializableObject {
             synchronized (this) {
                 if (shouldInitialize(forceReinit)) {
                     LOGGER.debug("Initializing: {} (nb: {}, last: {})", this.getClass().getSimpleName(), nbAttempts, lastAttempt);
-                    nbAttempts++;
+                    nbAttempts.incrementAndGet();
                     lastAttempt = System.currentTimeMillis();
                     beforeInternalInit(forceReinit);
                     internalInit(forceReinit);
                     afterInternalInit(forceReinit);
-                    this.initialized = true;
+                    initialized.set(true);
                 }
             }
         }
     }
 
     public final boolean isInitialized() {
-        return this.initialized;
+        return initialized.get();
     }
 
     protected boolean shouldInitialize(final boolean forceReinit) {
@@ -67,8 +70,8 @@ public abstract class InitializableObject {
             return true;
         }
 
-        final boolean notInitialized = !this.initialized;
-        final boolean notTooManyAttempts = maxAttempts == -1 || nbAttempts < maxAttempts;
+        final boolean notInitialized = !initialized.get();
+        final boolean notTooManyAttempts = maxAttempts == -1 || nbAttempts.get() < maxAttempts;
         final boolean enoughTimeSinceLastAttempt = lastAttempt == null
             || (System.currentTimeMillis() - lastAttempt) > minTimeIntervalBetweenAttemptsInMilliseconds;
 
@@ -93,7 +96,7 @@ public abstract class InitializableObject {
     }
 
     public final int getNbAttempts() {
-        return nbAttempts;
+        return nbAttempts.get();
     }
 
     public final Long getLastAttempt() {

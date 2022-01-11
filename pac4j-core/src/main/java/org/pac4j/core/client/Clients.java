@@ -25,11 +25,11 @@ public class Clients extends InitializableObject {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Clients.class);
 
-    private List<Client> clients;
+    private volatile List<Client> clients;
 
     private Map<String, Client> clientsMap;
 
-    private Integer oldClientsHash;
+    private volatile Integer oldClientsHash;
 
     private String callbackUrl;
 
