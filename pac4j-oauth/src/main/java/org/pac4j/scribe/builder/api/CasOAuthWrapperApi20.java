@@ -17,16 +17,19 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
 
     private final String casServerUrl;
 
-    private final boolean springSecurityCompliant;
+    private final boolean isJsonTokenExtractor;
 
-    public CasOAuthWrapperApi20(final String casServerUrl, final boolean springSecurityCompliant) {
+    private final Verb accessTokenVerb;
+
+    public CasOAuthWrapperApi20(final String casServerUrl, final boolean isJsonTokenExtractor, final Verb accessTokenVerb) {
         this.casServerUrl = casServerUrl;
-        this.springSecurityCompliant = springSecurityCompliant;
+        this.isJsonTokenExtractor = isJsonTokenExtractor;
+        this.accessTokenVerb = accessTokenVerb;
     }
 
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
-        if (this.springSecurityCompliant) {
+        if (this.isJsonTokenExtractor) {
             return OAuth2AccessTokenJsonExtractor.instance();
         } else {
             return OAuth2AccessTokenExtractor.instance();
@@ -45,11 +48,7 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
 
     @Override
     public Verb getAccessTokenVerb() {
-        if (this.springSecurityCompliant) {
-            return Verb.PUT;
-        } else {
-            return Verb.POST;
-        }
+        return this.accessTokenVerb;
     }
 
     public String getCasServerUrl() {

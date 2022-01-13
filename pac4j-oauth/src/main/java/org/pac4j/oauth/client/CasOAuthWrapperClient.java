@@ -1,5 +1,6 @@
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
@@ -25,7 +26,11 @@ public class CasOAuthWrapperClient extends OAuth20Client {
 
     private String casLogoutUrl;
 
-    private boolean springSecurityCompliant = false;
+    // can be false for older CAS server versions
+    private boolean isJsonTokenExtractor = true;
+
+    // can be Verb.PUT for older CAS server versions
+    private Verb accessTokenVerb = Verb.POST;
 
     private boolean implicitFlow = false;
 
@@ -41,7 +46,7 @@ public class CasOAuthWrapperClient extends OAuth20Client {
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant));
+        configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.isJsonTokenExtractor, this.accessTokenVerb));
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
         if (this.implicitFlow) {
             configuration.setResponseType("token");
@@ -66,14 +71,6 @@ public class CasOAuthWrapperClient extends OAuth20Client {
         }
     }
 
-    public boolean isSpringSecurityCompliant() {
-        return this.springSecurityCompliant;
-    }
-
-    public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
-        this.springSecurityCompliant = springSecurityCompliant;
-    }
-
     public boolean isImplicitFlow() {
         return implicitFlow;
     }
@@ -88,5 +85,21 @@ public class CasOAuthWrapperClient extends OAuth20Client {
 
     public void setCasLogoutUrl(final String casLogoutUrl) {
         this.casLogoutUrl = casLogoutUrl;
+    }
+
+    public boolean isJsonTokenExtractor() {
+        return isJsonTokenExtractor;
+    }
+
+    public void setJsonTokenExtractor(final boolean jsonTokenExtractor) {
+        isJsonTokenExtractor = jsonTokenExtractor;
+    }
+
+    public Verb getAccessTokenVerb() {
+        return accessTokenVerb;
+    }
+
+    public void setAccessTokenVerb(final Verb accessTokenVerb) {
+        this.accessTokenVerb = accessTokenVerb;
     }
 }
