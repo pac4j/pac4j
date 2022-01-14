@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
  * <ul>
- * <li>The initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()}
+ * <li>The initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit(boolean)}
  * must be implemented in sub-classes. The {@link #init()} method must be called implicitly by the main methods of
  * the {@link Client} interface, so that no explicit call is required to initialize the client</li>
  * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
