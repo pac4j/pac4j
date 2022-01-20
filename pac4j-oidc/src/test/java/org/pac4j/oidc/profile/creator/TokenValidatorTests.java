@@ -54,7 +54,8 @@ public final class TokenValidatorTests implements TestsConstants {
     public void testNoneAlgoNotAllowed() {
         algorithms.add(JWSAlgorithm.parse("none"));
         TestsHelper.expectException(() -> new TokenValidator(configuration), TechnicalException.class,
-            "Unsigned ID tokens are not allowed");
+            "Unsigned ID tokens are not allowed: they must be explicitly enabled on client side and " +
+                "the response_type used must return no ID Token from the authorization endpoint");
     }
 
     @Test

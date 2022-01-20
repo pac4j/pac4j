@@ -7,6 +7,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.Nonce;
+import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.exception.TechnicalException;
@@ -54,8 +55,13 @@ public class TokenValidator {
             // build validator
             final IDTokenValidator idTokenValidator;
             if ("none".equals(jwsAlgorithm.getName())) {
-                if (!configuration.isAllowUnsignedIdTokens()) {
-                    throw new TechnicalException("Unsigned ID tokens are not allowed");
+                final String responseType = configuration.getResponseType();
+                final boolean responseTypeContainsIdToken = responseType != null
+                    && responseType.contains(OIDCResponseTypeValue.ID_TOKEN.toString());
+                if (!configuration.isAllowUnsignedIdTokens() || responseTypeContainsIdToken) {
+                    throw new TechnicalException("Unsigned ID tokens are not allowed: " +
+                        "they must be explicitly enabled on client side and " +
+                        "the response_type used must return no ID Token from the authorization endpoint");
                 }
                 logger.warn("Allowing unsigned ID tokens");
                 idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
