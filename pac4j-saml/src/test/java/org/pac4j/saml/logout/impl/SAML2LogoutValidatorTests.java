@@ -121,7 +121,8 @@ public class SAML2LogoutValidatorTests {
     public void verifyThatPartialLogoutAsSecondLevelStatusCodeIsAcceptedAsSuccess() throws Exception {
 
         final var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" Destination=\"http://sp.example.com/demo1/logout\" " +
+            "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" "+
+            "Destination=\"http://sp.example.com/demo1/logout\" " +
             "ID=\"_0a59a9e8-1885-4127-84c8-515354c7e29d\" InResponseTo=\"_1981f72063034b65b659cf5dc484e2f01698e96\" " +
             "IssueInstant=\""+ZonedDateTime.now(ZoneOffset.UTC)+"\" Version=\"2.0\">\n" +
             "    <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:some:redacted:issuer</saml:Issuer>\n" +
@@ -139,7 +140,8 @@ public class SAML2LogoutValidatorTests {
     public void verifyThatPartialLogoutAsTopLevelStatusCodeIsAcceptedAsSuccess() throws Exception {
 
         final var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" Destination=\"http://sp.example.com/demo1/logout\" " +
+            "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" "+
+            "Destination=\"http://sp.example.com/demo1/logout\" " +
             "ID=\"_0a59a9e8-1885-4127-84c8-515354c7e29d\" InResponseTo=\"_1981f72063034b65b659cf5dc484e2f01698e96\" " +
             "IssueInstant=\""+ZonedDateTime.now(ZoneOffset.UTC)+"\" Version=\"2.0\">\n" +
             "    <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:some:redacted:issuer</saml:Issuer>\n" +
