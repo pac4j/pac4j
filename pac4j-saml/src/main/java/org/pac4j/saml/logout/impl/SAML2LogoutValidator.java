@@ -197,13 +197,25 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     @Override
     protected void validateSuccess(Status status) {
 
-        if (isPartialLogoutTreatedAsSuccess
-            && status != null && status.getStatusCode() != null && status.getStatusCode().getValue() != null
-            && status.getStatusCode().getValue().contains(StatusCode.PARTIAL_LOGOUT)) {
-            logger.debug(
-                "Response status code is {} and partial logouts are configured to be treated as success => validation successful!",
-                StatusCode.PARTIAL_LOGOUT);
-            return;
+        if (isPartialLogoutTreatedAsSuccess && status != null && status.getStatusCode() != null) {
+
+            if (StatusCode.PARTIAL_LOGOUT.equals(status.getStatusCode().getValue())) {
+                logger.debug(
+                    "Response status code is {} and partial logouts are configured to be treated as success => validation successful!",
+                    StatusCode.PARTIAL_LOGOUT);
+                return;
+            }
+
+            logger.debug("Response status code: {}", status.getStatusCode().getValue());
+
+            if (StatusCode.RESPONDER.equals(status.getStatusCode().getValue())
+                && status.getStatusCode().getOrderedChildren().stream().filter(StatusCode.class::isInstance).map(StatusCode.class::cast)
+                .anyMatch(code -> StatusCode.PARTIAL_LOGOUT.equals(code.getValue()))) {
+                logger.debug(
+                    "Response sub-status code is {} and partial logouts are configured to be treated as success => validation successful!",
+                    StatusCode.PARTIAL_LOGOUT);
+                return;
+            }
         }
 
         super.validateSuccess(status);
