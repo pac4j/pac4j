@@ -8,5 +8,5 @@ pull_request_rules:
   actions:
     merge:
       method: merge
-      strict: false
+    update:
     delete_head_branch:
