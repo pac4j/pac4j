@@ -43,7 +43,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
         final var profile = (FacebookProfile) profileDefinition.extractUserProfile(body);
-        addAccessTokenToProfile(profile, accessToken);
+        addTokenToProfile(profile, accessToken);
         if (profile != null && facebookConfiguration.isRequiresExtendedToken()) {
             var url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, configuration.getKey());
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, configuration.getSecret());
@@ -71,7 +71,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
                     throw new HttpCommunicationException("Error extracting token: " + ex.getMessage());
                 }
                 logger.debug("Extended token: {}", extendedAccessToken);
-                addAccessTokenToProfile(profile, extendedAccessToken);
+                addTokenToProfile(profile, extendedAccessToken);
             } else {
                 logger.error("Cannot get extended token: {} / {}", code, body);
             }

@@ -30,11 +30,13 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     }
 
     @Override
-    protected void addAccessTokenToProfile(final UserProfile profile, final Token tok) {
+    protected void addTokenToProfile(final UserProfile profile, final Token token) {
         if (profile != null) {
-            final var token = ((OAuth2AccessToken) tok).getAccessToken();
-            logger.debug("add access_token: {} to profile", token);
-            ((OAuth20Profile) profile).setAccessToken(token);
+            final var oauth2Token = (OAuth2AccessToken) token;
+            final var accessToken = oauth2Token.getAccessToken();
+            logger.debug("add access_token: {} to profile", accessToken);
+            ((OAuth20Profile) profile).setAccessToken(accessToken);
+            ((OAuth20Profile) profile).setRefreshToken(oauth2Token.getRefreshToken());
         }
     }
 

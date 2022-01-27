@@ -40,7 +40,7 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
         final var profile = profileDefinition.extractUserProfile(body);
-        addAccessTokenToProfile(profile, accessToken);
+        addTokenToProfile(profile, accessToken);
 
         if (profile == null || !linkedin2Configuration.getScope().contains("r_emailaddress")) {
             return Optional.ofNullable(profile);

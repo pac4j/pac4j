@@ -46,7 +46,7 @@ public class QQProfileCreator extends OAuth20ProfileCreator {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
         final var profile = profileDefinition.extractUserProfile(body);
-        addAccessTokenToProfile(profile, accessToken);
+        addTokenToProfile(profile, accessToken);
         profile.setId(openid);
         return Optional.of(profile);
     }

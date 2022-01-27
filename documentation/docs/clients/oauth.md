@@ -102,6 +102,7 @@ By default, many clients are available to login with many identity providers:
 | [Windows Live](https://login.live.com/) | [`WindowsLiveClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/WindowsLiveClient.java) | [`WindowsLiveProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/windowslive/WindowsLiveProfile.java) |
 | [Word Press](https://wordpress.com) | [`WordPressClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/WordPressClient.java) | [`WordPressProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/wordpress/WordPressProfile.java) |
 | [Yahoo](https://www.yahoo.com) | [`YahooClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/YahooClient.java) | [`YahooProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/yahoo/YahooProfile.java) |
+| [Cronofy](https://www.cronofy.com/) | [`CronofyClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/CronofyClient.java) | [`CronofyProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/cronofy/CronofyProfile.java) |
 {:.striped}
 
 **Example:**

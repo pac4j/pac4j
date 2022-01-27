@@ -39,7 +39,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator {
         }
         body = sendRequestForData(service, accessToken, "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json", Verb.GET);
         final var profile = (YahooProfile) configuration.getProfileDefinition().extractUserProfile(body);
-        addAccessTokenToProfile(profile, accessToken);
+        addTokenToProfile(profile, accessToken);
         return Optional.of(profile);
     }
 }

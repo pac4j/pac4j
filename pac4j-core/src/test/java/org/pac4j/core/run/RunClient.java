@@ -6,6 +6,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.*;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
 import org.slf4j.Logger;
@@ -34,7 +35,11 @@ public abstract class RunClient implements TestsConstants {
         final SessionStore sessionStore = new MockSessionStore();
         final var url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
-        logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
+        if (CommonHelper.isNotBlank(getLogin()) && CommonHelper.isNotBlank(getPassword())) {
+            logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
+        } else {
+            logger.warn("Use your own personal credentials");
+        }
         if (canCancel()) {
             logger.warn("You can CANCEL the authentication.");
         }

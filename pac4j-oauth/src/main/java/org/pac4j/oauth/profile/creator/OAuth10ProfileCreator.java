@@ -30,7 +30,7 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
     }
 
     @Override
-    protected void addAccessTokenToProfile(final UserProfile userProfile, final Token tok) {
+    protected void addTokenToProfile(final UserProfile userProfile, final Token tok) {
         final var profile = (OAuth10Profile) userProfile;
         final var accessToken = (OAuth1AccessToken) tok;
         if (profile != null) {
