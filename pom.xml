@@ -64,7 +64,7 @@
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<guava.version>31.0.1-jre</guava.version>
-		<nimbus-jose-jwt.version>9.16.1</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>9.17</nimbus-jose-jwt.version>
 		<spring.version>5.3.15</spring.version>
 		<spring.security.version>5.6.1</spring.security.version>
 		<shiro.version>1.8.0</shiro.version>
