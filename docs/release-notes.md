@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.3.1**:
 
 - Added Cronofy support (OAuth v2)
+- Fully fix CVE-2021-44878 by checking the OIDC response type when creating the token validator
 
 **v5.3.0**:
 
@@ -20,7 +21,7 @@ title: Release notes&#58;
 **v5.2.0**:
 
 - The JEE core components are now in the `pac4j-jee` dependency (and no longer in the `pac4j-core` dependency)
-- Reinforce security on the OIDC protocol support: the `none` algorithm must be explicitly accepted on client side (`allowUnsignedIdTokens`)
+- CVE-2021-44878: reinforce security on the OIDC protocol support: the `none` algorithm must be explicitly accepted on client side (`allowUnsignedIdTokens`)
 
 **v5.1.5**:
 
