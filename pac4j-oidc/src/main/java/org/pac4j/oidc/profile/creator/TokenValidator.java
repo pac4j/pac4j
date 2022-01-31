@@ -32,7 +32,10 @@ public class TokenValidator {
 
     private final List<IDTokenValidator> idTokenValidators;
 
+    protected final OidcConfiguration configuration;
+
     public TokenValidator(final OidcConfiguration configuration) {
+        CommonHelper.assertNotNull("configuration", configuration);
 
         // check algorithms
         final var metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
@@ -76,6 +79,8 @@ public class TokenValidator {
 
             idTokenValidators.add(idTokenValidator);
         }
+
+        this.configuration = configuration;
     }
 
     protected IDTokenValidator createRSATokenValidator(final OidcConfiguration configuration,
