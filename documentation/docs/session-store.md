@@ -17,4 +17,4 @@ It has the following methods:
 
 Its implementations are different depending on the *pac4*j implementations.
 
-For example, the `JEEContext` currently uses the [`JEESessionStore`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/session/JEESessionStore.java) which relies on the JEE session. In Play, we have a specific cache-based [`PlayCacheSessionStore`](https://github.com/pac4j/play-pac4j/blob/master/shared/src/main/java/org/pac4j/play/store/PlayCacheSessionStore.java) as well as in Knox, which has a cookie-based `KnoxSessionStore`.
+For example, the `JEEContext` currently uses the [`JEESessionStore`](https://github.com/pac4j/pac4j/blob/master/pac4j-jee/src/main/java/org/pac4j/core/context/session/JEESessionStore.java) which relies on the JEE session. In Play, we have a specific cache-based [`PlayCacheSessionStore`](https://github.com/pac4j/play-pac4j/blob/master/shared/src/main/java/org/pac4j/play/store/PlayCacheSessionStore.java) as well as in Knox, which has a cookie-based `KnoxSessionStore`.
