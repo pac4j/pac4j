@@ -97,6 +97,10 @@ title: Release notes&#58;
 - Handle the "same site policy" in cookies (default: `lax`). Renamed `ContextHelper` as `WebContextHelper`
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
+**v4.5.5**:
+
+- Fix CVE-2021-44878
+
 **v4.5.4**:
 
 - Update `log4j-to-slf4j` and `log4j-api` to v2.17.0 although only `log4j-core` has security vulnerabilities
