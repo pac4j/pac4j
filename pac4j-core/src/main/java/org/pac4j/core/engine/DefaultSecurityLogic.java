@@ -94,7 +94,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 var profiles = this.loadProfilesFromSession
                     ? loadProfiles(manager, context, sessionStore, currentClients)
                     : List.<UserProfile>of();
-                LOGGER.debug("Loaded profiles: {}", profiles);
+                LOGGER.debug("Loaded profiles (from session: {}): {} ", this.loadProfilesFromSession, profiles);
 
                 // no profile and some current clients
                 if (isEmpty(profiles) && isNotEmpty(currentClients)) {

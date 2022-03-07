@@ -22,6 +22,8 @@ import java.util.*;
  */
 public class ProfileManager {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileManager.class);
+
     private final Authorizer IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -72,10 +74,16 @@ public class ProfileManager {
     protected LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {
         final var profiles = new LinkedHashMap<String, UserProfile>();
         this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
-            .ifPresent(requestAttribute -> profiles.putAll((Map<String, UserProfile>) requestAttribute));
+            .ifPresent(requestAttribute -> {
+                LOGGER.debug("Retrieved profiles (request): {}", requestAttribute);
+                profiles.putAll((Map<String, UserProfile>) requestAttribute);
+            });
         if (readFromSession) {
             this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES)
-                .ifPresent(sessionAttribute -> profiles.putAll((Map<String, UserProfile>) sessionAttribute));
+                .ifPresent(sessionAttribute -> {
+                    LOGGER.debug("Retrieved profiles (session): {}", sessionAttribute);
+                    profiles.putAll((Map<String, UserProfile>) sessionAttribute);
+                });
         }
 
         removeOrRenewExpiredProfiles(profiles, readFromSession);
@@ -89,6 +97,7 @@ public class ProfileManager {
             final var key = entry.getKey();
             final var profile = entry.getValue();
             if (profile.isExpired()) {
+                LOGGER.debug("Expired profile: {}", profile);
                 profilesUpdated = true;
                 profiles.remove(key);
                 if (config != null && profile.getClientName() != null) {
@@ -97,6 +106,7 @@ public class ProfileManager {
                         try {
                             final var newProfile = client.get().renewUserProfile(profile, context, sessionStore);
                             if (newProfile.isPresent()) {
+                                LOGGER.debug("Renewed by profile: {}", newProfile);
                                 profiles.put(key, newProfile.get());
                             }
                         } catch (final RuntimeException e) {
@@ -117,8 +127,10 @@ public class ProfileManager {
     public void removeProfiles() {
         final var sessionExists = sessionStore.getSessionId(context, false).isPresent();
         if (sessionExists) {
+            LOGGER.debug("Removing profiles from session");
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
         }
+        LOGGER.debug("Removing profiles from request");
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
     }
 
@@ -154,8 +166,10 @@ public class ProfileManager {
 
     protected void saveAll(LinkedHashMap<String, UserProfile> profiles, final boolean saveInSession) {
         if (saveInSession) {
+            LOGGER.debug("Saving profiles (session): {}", profiles);
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, profiles);
         }
+        LOGGER.debug("Saving profiles (request): {}", profiles);
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
     }
 
