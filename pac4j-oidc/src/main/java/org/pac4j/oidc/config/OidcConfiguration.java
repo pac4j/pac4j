@@ -1,6 +1,7 @@
 package org.pac4j.oidc.config;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,8 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 import org.pac4j.oidc.profile.creator.TokenValidator;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -142,6 +145,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private boolean allowUnsignedIdTokens;
 
+    private String SSLFactory;
+
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -160,7 +165,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
         // default value
         if (getResourceRetriever() == null) {
-            setResourceRetriever(new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()));
+            try {
+                setResourceRetriever(SSLFactory == null ? new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) : new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(),0,false, (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance()));
+            } catch (ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+                throw new TechnicalException("SSLFactory loaded fail, please check your configuration");
+            }
         }
         if (this.getProviderMetadata() == null) {
             assertNotBlank("discoveryURI", getDiscoveryURI());
@@ -496,6 +505,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.allowUnsignedIdTokens = allowUnsignedIdTokens;
     }
 
+    public String getSSLFactory() {
+        return SSLFactory;
+    }
+
+    public void setSSLFactory(final String SSLFactory) {
+        this.SSLFactory = SSLFactory;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -505,6 +522,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
             "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
-            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens);
+            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens, "SSLFactory", SSLFactory);
     }
 }
