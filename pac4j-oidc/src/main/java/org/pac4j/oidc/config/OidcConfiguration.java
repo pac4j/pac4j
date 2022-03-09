@@ -168,8 +168,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             try {
                 setResourceRetriever(SSLFactory == null ?
                     new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) :
-                    new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(),
-                        0, false,
+                    new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false,
                         (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance()));
             } catch (ClassNotFoundException | InvocationTargetException | InstantiationException
                 | IllegalAccessException | NoSuchMethodException e) {
