@@ -166,8 +166,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
         // default value
         if (getResourceRetriever() == null) {
             try {
-                setResourceRetriever(SSLFactory == null ? new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) : new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(),0,false, (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance()));
-            } catch (ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+                setResourceRetriever(SSLFactory == null ?
+                    new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) :
+                    new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(),
+                        0, false,
+                        (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance()));
+            } catch (ClassNotFoundException | InvocationTargetException | InstantiationException
+                | IllegalAccessException | NoSuchMethodException e) {
                 throw new TechnicalException("SSLFactory loaded fail, please check your configuration");
             }
         }
@@ -522,6 +527,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
             "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
-            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens, "SSLFactory", SSLFactory);
+            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens,
+            "SSLFactory", SSLFactory);
     }
 }
