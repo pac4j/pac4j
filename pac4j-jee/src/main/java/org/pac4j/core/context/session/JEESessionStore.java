@@ -13,11 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Store data in the JEE web session.
- *
- * @author Jerome Leleu
- * @since 1.8.1
+ * Use the pac4j-javaee dependency instead.
  */
+@Deprecated
 public class JEESessionStore implements SessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();

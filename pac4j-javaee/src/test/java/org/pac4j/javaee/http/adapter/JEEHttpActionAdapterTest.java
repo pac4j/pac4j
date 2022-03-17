@@ -1,14 +1,14 @@
-package org.pac4j.core.http.adapter;
+package org.pac4j.javaee.http.adapter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.StatusAction;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.javaee.context.JEEContext;
 
 import javax.servlet.http.HttpServletResponse;
 

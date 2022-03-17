@@ -4,7 +4,7 @@
 
 ### `pac4j` is an easy and powerful security engine for Java to authenticate users, get their profiles and manage authorizations in order to secure web applications and web services.
 
-It provides a comprehensive set of [**concepts and components**](http://www.pac4j.org/docs/main-concepts-and-components.html). It is based on Java 8 and available under the Apache 2 license. It is **available for most frameworks/tools** and **supports most authentication/authorization mechanisms**.
+It provides a comprehensive set of [**concepts and components**](https://www.pac4j.org/docs/main-concepts-and-components.html). It is based on Java 8 and available under the Apache 2 license. It is **available for most frameworks/tools** and **supports most authentication/authorization mechanisms**.
 
 ## Available implementations (*Get started by clicking on your framework*):
 
@@ -31,15 +31,15 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Authentication mechanisms:
 
-[OAuth (Facebook, Twitter, Google...)](http://www.pac4j.org/docs/clients/oauth.html) - [SAML](http://www.pac4j.org/docs/clients/saml.html) - [CAS](http://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](http://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](http://www.pac4j.org/docs/clients/http.html) - [Google App Engine](http://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](http://www.pac4j.org/docs/clients/kerberos.html)
+[OAuth (Facebook, Twitter, Google...)](https://www.pac4j.org/docs/clients/oauth.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Google App Engine](https://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](https://www.pac4j.org/docs/clients/kerberos.html)
 
-[LDAP](http://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](http://www.pac4j.org/docs/authenticators/sql.html) - [JWT](http://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](http://www.pac4j.org/docs/authenticators/mongodb.html) - [CouchDB](http://www.pac4j.org/docs/authenticators/couchdb.html) - [IP address](http://www.pac4j.org/docs/authenticators/ip.html) - [REST API](http://www.pac4j.org/docs/authenticators/rest.html)
+[LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [CouchDB](https://www.pac4j.org/docs/authenticators/couchdb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
 
 ## Authorization mechanisms:
 
-[Roles/permissions](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
+[Roles/permissions](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
 
-[CORS](http://www.pac4j.org/docs/authorizers/web-authorizers.html#cors) - [CSRF](http://www.pac4j.org/docs/authorizers/web-authorizers.html#csrf) - [Security headers](http://www.pac4j.org/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](http://www.pac4j.org/docs/authorizers/web-authorizers.html#others)
+[CORS](https://www.pac4j.org/docs/authorizers/web-authorizers.html#cors) - [CSRF](https://www.pac4j.org/docs/authorizers/web-authorizers.html#csrf) - [Security headers](https://www.pac4j.org/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](https://www.pac4j.org/docs/authorizers/web-authorizers.html#others)
 
 ---
 
@@ -47,16 +47,16 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the Maven central repository.
-The [next version](http://www.pac4j.org/docs/next-version.html) is under development.
+The [next version](https://www.pac4j.org/docs/next-version.html) is under development.
 
-Read the [documentation](http://www.pac4j.org/docs/index.html) for more information.
+Read the [documentation](https://www.pac4j.org/docs/index.html) for more information.
 
 
 ## Need help?
 
-You can use the [mailing lists](http://www.pac4j.org/mailing-lists.html) or the [commercial support](http://www.pac4j.org/commercial-support.html).
+You can use the [mailing lists](https://www.pac4j.org/mailing-lists.html) or the [commercial support](https://www.pac4j.org/commercial-support.html).
 
 
 ## Supported by
 
-[![CAS in the cloud](http://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*
+[![CAS in the cloud](https://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*
