@@ -69,7 +69,7 @@
                 <configuration>
                     <instructions>
                         <Automatic-Module-Name>pac4j.javaee</Automatic-Module-Name>
-                        <Bundle-SymbolicName>org.pac4j.jee</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.pac4j.javaee</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.jee.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
                     </instructions>
