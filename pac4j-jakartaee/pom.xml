@@ -58,7 +58,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>pac4j.jee</Automatic-Module-Name>
+                        <Automatic-Module-Name>pac4j.jakartaee</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.jee</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.jee.*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
