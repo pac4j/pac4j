@@ -29,8 +29,12 @@ public interface UserProfile extends Serializable {
     boolean containsAttribute(String name);
 
     void addAttribute(String key, Object value);
-
+    
+    void removeAttribute(String key);
+    
     void addAuthenticationAttribute(String key, Object value);
+    
+    void removeAuthenticationAttribute(String key);
 
     void addRole(String role);
 
