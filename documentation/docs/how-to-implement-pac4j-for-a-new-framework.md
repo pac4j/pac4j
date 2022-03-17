@@ -8,7 +8,7 @@ title: How to implement <i>pac4j</i> for a new framework/tool&#58;
 
 ## 1) Dependency
 
-Add the `pac4j-core` dependency to benefit from the core API of `pac4j` or the `pac4j-jee` dependency in a JEE environment.
+Add the `pac4j-core` dependency to benefit from the core API of `pac4j` or the `pac4j-javaee` / `pac4j-jakartaee` dependency in a JEE environment.
 
 Other dependencies will be optionally added for specific support: `pac4j-oauth` for OAuth, `pac4j-cas` for CAS, `pac4j-saml` for SAML...
 
