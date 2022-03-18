@@ -103,6 +103,10 @@ title: Release notes&#58;
 - Handle the "same site policy" in cookies (default: `lax`). Renamed `ContextHelper` as `WebContextHelper`
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
+---
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The 4.x stream is no longer maintained except via the <a href="/commercial-support.html">LTS program</a>.</div>
+
 **v4.5.5**:
 
 - Fix CVE-2021-44878
@@ -194,10 +198,6 @@ title: Release notes&#58;
 - Load the profiles in the `ProfileManager` (from the session or not) like in the `DefaultSecurityLogic` via the `getLikeDefaultSecurityLogic` and `getAllLikeDefaultSecurityLogic` methods
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 - The `pac4j-saml` module is saved as the legacy `pac4j-saml-opensamlv3` module and upgraded to JDK 11 and OpenSAML v4
-
----
-
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The 3.x stream is no longer maintained except via the <a href="/commercial-support.html">LTS program</a>.</div>
 
 **v3.9.0**:
 
