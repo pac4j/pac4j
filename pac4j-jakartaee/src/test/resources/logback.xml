@@ -1,7 +1,7 @@
 <configuration>
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>pac4j jee %d{HH:mm:ss} [%thread] %-5level %logger{10} - %msg%n%ex{full}</pattern>
+			<pattern>pac4j JakartaEE %d{HH:mm:ss} [%thread] %-5level %logger{10} - %msg%n%ex{full}</pattern>
 		</encoder>
 	</appender>
 

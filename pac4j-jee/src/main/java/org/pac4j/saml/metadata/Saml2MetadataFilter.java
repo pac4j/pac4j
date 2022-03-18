@@ -15,20 +15,9 @@ import org.pac4j.core.config.AbstractConfigFilter;
 import org.pac4j.saml.client.SAML2Client;
 
 /**
- * This filter prints the SP metadata for SAML.
- *
- * Example shiro.ini configuration:
- *
- * saml2MetadataFilter = org.pac4j.saml.metadata.Saml2MetadataFilter
- * saml2MetadataFilter.config = $config
- * saml2MetadataFilter.clientName = SAML2Client
- *
- * [urls]
- * /API/SAML2/metadata = saml2MetadataFilter
- *
- * @author Graham Leggett
- * @since 3.8.0
+ * Use the pac4j-javaee dependency instead.
  */
+@Deprecated
 public class Saml2MetadataFilter extends AbstractConfigFilter {
 
     private String clientName;

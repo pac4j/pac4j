@@ -1,1 +1,1 @@
-Before submitting any pull request, please read the contribution guide: http://www.pac4j.org/docs/contribute.html
+Before submitting any pull request, please read the contribution guide: https://www.pac4j.org/docs/contribute.html

@@ -17,11 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An abstract JEE filter which handles configuration.
- *
- * @author Jerome Leleu
- * @since 5.0.0
+ * Use the pac4j-javaee dependency instead.
  */
+@Deprecated
 public abstract class AbstractConfigFilter implements Filter {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

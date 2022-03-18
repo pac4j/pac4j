@@ -4,11 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Build a JEE context from parameters.
- *
- * @author Jerome LELEU
- * @since 4.0.1
+ * Use the pac4j-javaee dependency instead.
  */
+@Deprecated
 public class JEEContextFactory implements WebContextFactory {
 
     public static final JEEContextFactory INSTANCE = new JEEContextFactory();

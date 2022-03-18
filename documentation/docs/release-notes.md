@@ -3,6 +3,12 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.4.0**:
+
+- Deprecated the `pac4j-jee` dependency (JEE components in the `org.pac4j.core` and `org.pac4j.saml` packages, based on the `javax.servlet-api` library v4) to be replaced by:
+  - the `pac4j-javaee` dependency (JEE components in the `org.pac4j.jee` package, based on the `javax.servlet-api` library v4) or
+  - the `pac4j-jakartaee` dependency (JEE components in the `org.pac4j.jee` package, based on the `jakarta.servlet-api` library v5)
+
 **v5.3.1**:
 
 - Added Cronofy support (OAuth v2)

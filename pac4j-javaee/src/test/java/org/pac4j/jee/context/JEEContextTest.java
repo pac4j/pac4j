@@ -1,7 +1,8 @@
-package org.pac4j.core.context;
+package org.pac4j.jee.context;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.context.Cookie;
 import org.pac4j.core.util.TestsConstants;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -134,6 +135,4 @@ public final class JEEContextTest implements TestsConstants {
         assertNotNull(header);
         assertTrue(header.matches("thename=thevalue; Path=/; Max-Age=1000; Expires=.* GMT; SameSite=Lax"));
     }
-
-
 }

@@ -9,11 +9,9 @@ import org.pac4j.core.exception.http.*;
 import java.io.IOException;
 
 /**
- * The HTTP action adapter for the {@link JEEContext}.
- *
- * @author Jerome Leleu
- * @since 1.9.0
+ * Use the pac4j-javaee dependency instead.
  */
+@Deprecated
 public class JEEHttpActionAdapter implements HttpActionAdapter {
 
     public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();

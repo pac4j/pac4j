@@ -9,11 +9,9 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
- *
- * @author Jerome Leleu
- * @since 1.4.0
+ * Use the pac4j-javaee dependency instead.
  */
+@Deprecated
 public class JEEContext implements WebContext {
 
     private final HttpServletRequest request;
