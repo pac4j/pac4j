@@ -89,6 +89,7 @@ public class SAML2CredentialsTest {
         assertNotNull(credentials);
         var attributes = credentials.getAttributes();
         assertNotNull(attributes);
+        assertEquals("friendlyGender", attributes.get(0).getFriendlyName());
 
         var resultAttributes = attributes.stream()
             .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));

@@ -54,7 +54,7 @@ Aqton5KdRuilrZuyJTemkGOgqMHOTm7CMuWMe28dM1/hEMgK0QQgAKN9LgG3aB1V
       </saml:AuthnContext>
     </saml:AuthnStatement>
     <saml:AttributeStatement>
-      <saml:Attribute Name="gender">
+      <saml:Attribute FriendlyName="friendlyGender" Name="gender">
         <saml:AttributeValue xsi:type="xs:string">F</saml:AttributeValue>
       </saml:Attribute>
       <saml:Attribute Name="familyName">
