@@ -7,6 +7,7 @@ import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
+import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
 
 import java.time.ZoneOffset;
@@ -59,7 +60,7 @@ public class SAML2CredentialsSerializationTests {
         attr.setNameFormat("pac4j");
         attributes.add(attr);
         final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid), "example.issuer.com",
-            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts,
+            SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index", contexts,
             UUID.randomUUID().toString());
         final var data = SerializationUtils.serialize(credentials);
         final var result = (SAML2Credentials) SerializationUtils.deserialize(data);

@@ -20,6 +20,8 @@ import org.pac4j.saml.context.SAML2ConfigurationContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials.SAMLAttribute;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
+import org.pac4j.saml.profile.converter.ComplexTypeSAML2AttributeConverter;
+import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
 import org.pac4j.saml.util.Configuration;
 
@@ -46,6 +48,7 @@ public class SAML2CredentialsTest {
 
     private SAML2AuthnResponseValidator validator;
     private SAML2MessageContext mockSaml2MessageContext;
+    private SAML2Configuration saml2Configuration;
 
     @Before
     public void setUp() {
@@ -69,8 +72,8 @@ public class SAML2CredentialsTest {
         var mockSAMLSubjectNameIdentifierContext = mock(SAMLSubjectNameIdentifierContext.class);
         when(mockSAMLSubjectNameIdentifierContext.getSAML2SubjectNameID()).thenReturn(mock(NameID.class));
 
-        var mockSaml2Configuration = mock(SAML2Configuration.class);
-        when(mockSaml2Configuration.getLogoutHandler()).thenReturn(mock(LogoutHandler.class));
+        saml2Configuration = new SAML2Configuration();
+        saml2Configuration.setLogoutHandler(mock(LogoutHandler.class));
 
         mockSaml2MessageContext = mock(SAML2MessageContext.class);
         when(mockSaml2MessageContext.getMessageContext()).thenReturn(mockMessageContext);
@@ -81,7 +84,7 @@ public class SAML2CredentialsTest {
         when(mockSaml2MessageContext.getBaseID()).thenReturn(mock(BaseID.class));
 
         validator = new SAML2AuthnResponseValidator(mock(SAML2SignatureTrustEngineProvider.class),
-            mock(Decrypter.class), null, mockSaml2Configuration);
+            mock(Decrypter.class), null, saml2Configuration);
     }
 
     @Test
@@ -126,7 +129,7 @@ public class SAML2CredentialsTest {
         assertEquals("jdoe@company", resultAttributes.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").get(0));
         assertEquals("...", resultAttributes.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").get(0));
     }
-    
+
     @Test
     public void verifyStandardExtractionWorksForUkamf() throws Exception {
         var credentials = extractCredentials(RESPONSE_FILE_NAME_FROM_UKAMF);
@@ -146,22 +149,28 @@ public class SAML2CredentialsTest {
 
     @Test
     public void verifyComplexTypeExtractionWorks() throws Exception {
-        var credentials = extractCredentials(RESPONSE_FILE_NAME_WITH_COMPLEXTYPE);
-        assertNotNull(credentials);
-        var attributes = credentials.getAttributes();
-        assertNotNull(attributes);
+        try {
+            saml2Configuration.setSamlAttributeConverter(new ComplexTypeSAML2AttributeConverter());
 
-        var resultAttributes = attributes.stream()
-            .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
-        assertEquals(8, resultAttributes.size());
-        assertEquals("Bar", resultAttributes.get("Foo").get(0));
-        assertEquals("Example Corp", resultAttributes.get("OrganizationName").get(0));
-        assertEquals("employee@example.com", resultAttributes.get("EmailAddress").get(0));
-        assertEquals("Example St", resultAttributes.get("Street").get(0));
-        assertEquals("123", resultAttributes.get("StreetNumber").get(0));
-        assertEquals("ExampleCity", resultAttributes.get("City").get(0));
-        assertEquals("123456", resultAttributes.get("ZipCode").get(0));
-        assertEquals("ExampleCountry", resultAttributes.get("Country").get(0));
+            var credentials = extractCredentials(RESPONSE_FILE_NAME_WITH_COMPLEXTYPE);
+            assertNotNull(credentials);
+            var attributes = credentials.getAttributes();
+            assertNotNull(attributes);
+
+            var resultAttributes = attributes.stream()
+                .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
+            assertEquals(8, resultAttributes.size());
+            assertEquals("Bar", resultAttributes.get("Foo").get(0));
+            assertEquals("Example Corp", resultAttributes.get("OrganizationName").get(0));
+            assertEquals("employee@example.com", resultAttributes.get("EmailAddress").get(0));
+            assertEquals("Example St", resultAttributes.get("Street").get(0));
+            assertEquals("123", resultAttributes.get("StreetNumber").get(0));
+            assertEquals("ExampleCity", resultAttributes.get("City").get(0));
+            assertEquals("123456", resultAttributes.get("ZipCode").get(0));
+            assertEquals("ExampleCountry", resultAttributes.get("Country").get(0));
+        } finally {
+            saml2Configuration.setSamlAttributeConverter(new SimpleSAML2AttributeConverter());
+        }
     }
 
     @Test

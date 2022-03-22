@@ -4,19 +4,16 @@ import java.io.Serializable;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Credentials containing the nameId of the SAML subject and all of its attributes.
@@ -230,66 +227,20 @@ public class SAML2Credentials extends Credentials {
         private String nameFormat;
         private List<String> attributeValues = new ArrayList<>();
 
-        public static SAMLAttribute from(Attribute attribute) {
-            final var samlAttribute = new SAMLAttribute();
-            samlAttribute.setFriendlyName(attribute.getFriendlyName());
-            samlAttribute.setName(attribute.getName());
-            samlAttribute.setNameFormat(attribute.getNameFormat());
-            List<String> values = attribute.getAttributeValues()
-                .stream()
-                .filter(val -> !val.hasChildren())
-                .map(XMLObject::getDOM)
-                .filter(dom -> dom != null && dom.getTextContent() != null)
-                .map(Element::getTextContent)
-                .collect(Collectors.toList());
-            samlAttribute.setAttributeValues(values);
-            return samlAttribute;
-        }
+        public static List<SAMLAttribute> from(final AttributeConverter samlAttributeConverter, final List<Attribute> samlAttributes) {
 
-        public static List<SAMLAttribute> from(final List<Attribute> samlAttributes) {
+            final var attributes = new ArrayList<SAMLAttribute>();
 
-            List<SAMLAttribute> extractedAttributes = new ArrayList<>();
-
-            samlAttributes.forEach(openSamlAttribute -> {
-                // collect all complex values
-                openSamlAttribute.getAttributeValues().stream()
-                    .filter(XMLObject::hasChildren)
-                    .forEach(attributeValue -> {
-                        List<SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
-                        extractedAttributes.addAll(attrs);
-                    });
-                // collect all simple values
-                SAMLAttribute simpleValues = from(openSamlAttribute);
-                if (!simpleValues.getAttributeValues().isEmpty()) {
-                    extractedAttributes.add(simpleValues);
+            samlAttributes.forEach(attribute -> {
+                final var result = samlAttributeConverter.convert(attribute);
+                if (result instanceof Collection) {
+                    attributes.addAll((Collection<? extends SAMLAttribute>) result);
+                } else {
+                    attributes.add((SAMLAttribute) result);
                 }
             });
 
-            return extractedAttributes;
-        }
-        
-        private static List<SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
-
-            var results = new ArrayList<SAMLAttribute>();
-
-            if (nodeList == null) {
-                return results;
-            }
-
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-
-                if (node.hasChildNodes()) {
-                    results.addAll(collectAttributesFromNodeList(node.getChildNodes()));
-                } else if (!node.getTextContent().isBlank()) {
-                    SAMLAttribute samlAttribute = new SAMLAttribute();
-                    samlAttribute.setName(node.getParentNode().getLocalName());
-                    samlAttribute.getAttributeValues().add(node.getTextContent());
-                    results.add(samlAttribute);
-                }
-            }
-
-            return results;
+            return attributes;
         }
 
         public String getFriendlyName() {

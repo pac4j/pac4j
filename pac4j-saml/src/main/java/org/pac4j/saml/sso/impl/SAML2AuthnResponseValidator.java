@@ -65,12 +65,15 @@ import java.util.Set;
  */
 public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator {
 
+    private SAML2Configuration configuration;
+
     public SAML2AuthnResponseValidator(
         final SAML2SignatureTrustEngineProvider engine,
         final Decrypter decrypter,
         final ReplayCacheProvider replayCache,
         final SAML2Configuration saml2Configuration) {
         super(engine, decrypter, saml2Configuration.getLogoutHandler(), replayCache, saml2Configuration.getUriComparator());
+        this.configuration = saml2Configuration;
     }
 
     @Override
@@ -99,8 +102,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                                                      final Response response) {
         final var subjectAssertion = context.getSubjectAssertion();
 
-        final var attributes = collectAssertionAttributes(subjectAssertion);
-        final var samlNameId = determineNameID(context, SAML2Credentials.SAMLAttribute.from(attributes));
+        final var samlAttributes = collectAssertionAttributes(subjectAssertion);
+        final var attributes = SAML2Credentials.SAMLAttribute.from(configuration.getSamlAttributeConverter(), samlAttributes);
+
+        final var samlNameId = determineNameID(context, attributes);
         final var sessionIndex = getSessionIndex(subjectAssertion);
         final var sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
@@ -115,7 +120,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getURI());
             }
         }
-        return new SAML2Credentials(samlNameId, issuerEntityId, SAML2Credentials.SAMLAttribute.from(attributes),
+        return new SAML2Credentials(samlNameId, issuerEntityId, attributes,
             subjectAssertion.getConditions(), sessionIndex, authnContexts, response.getInResponseTo());
     }
 

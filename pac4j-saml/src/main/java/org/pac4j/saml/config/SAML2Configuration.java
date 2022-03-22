@@ -14,6 +14,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
@@ -32,6 +33,7 @@ import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
+import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.sso.impl.SAML2ScopingIdentityProvider;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
@@ -200,6 +202,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private String issuerFormat = Issuer.ENTITY;
 
     private HttpClient httpClient;
+
+    private AttributeConverter samlAttributeConverter = new SimpleSAML2AttributeConverter();
 
     /**
      * If {@link #nameIdPolicyFormat} is defined, this setting
@@ -978,5 +982,13 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public void setPartialLogoutTreatedAsSuccess(boolean partialLogoutTreatedAsSuccess) {
         isPartialLogoutTreatedAsSuccess = partialLogoutTreatedAsSuccess;
+    }
+
+    public AttributeConverter getSamlAttributeConverter() {
+        return samlAttributeConverter;
+    }
+
+    public void setSamlAttributeConverter(final AttributeConverter samlAttributeConverter) {
+        this.samlAttributeConverter = samlAttributeConverter;
     }
 }

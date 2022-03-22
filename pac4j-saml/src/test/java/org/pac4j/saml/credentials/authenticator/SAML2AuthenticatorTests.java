@@ -10,6 +10,7 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.saml.credentials.SAML2Credentials;
+import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;
 
@@ -132,7 +133,7 @@ public class SAML2AuthenticatorTests {
 
         final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
-            SAML2Credentials.SAMLAttribute.from(attributes), conditions, "session-index", contexts,
+            SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index", contexts,
             UUID.randomUUID().toString());
         return credentials;
     }

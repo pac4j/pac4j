@@ -85,6 +85,12 @@ Note: after use `SAML2Client` must be explicitly destroyed with `destroy` method
 
 ## 3) Additional configuration:
 
+You can control the way SAML attributes are converted from the SAML authentication response into pac4j attributes by setting the appropriate `AttributeConverter` at the `SAML2Configuration` level (by default, it's `SimpleSAMLAttributeConverter`):
+
+```java
+cfg.setSamlAttributeConverter(new ComplexTypeSAML2AttributeConverter());
+```
+
 You can control aspects of the authentication request such as forced and/or passive authentication:
 
 ```java
