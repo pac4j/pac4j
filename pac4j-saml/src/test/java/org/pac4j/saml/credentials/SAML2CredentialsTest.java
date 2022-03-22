@@ -40,6 +40,7 @@ public class SAML2CredentialsTest {
 
     private static final String RESPONSE_FILE_NAME = "sample_authn_response.xml";
     private static final String RESPONSE_FILE_NAME_FROM_ADFS = "sample_authn_response_from_adfs.xml";
+    private static final String RESPONSE_FILE_NAME_FROM_UKAMF = "sample_authn_response_from_ukamf.xml";
     private static final String RESPONSE_FILE_NAME_WITH_COMPLEXTYPE = "sample_authn_response_with_complextype.xml";
     private static final String RESPONSE_FILE_NAME_WITH_MULTIVALUEDATTR = "sample_authn_response_with_multivaluedattr.xml";
 
@@ -124,6 +125,23 @@ public class SAML2CredentialsTest {
         assertEquals("DOE", resultAttributes.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname").get(0));
         assertEquals("jdoe@company", resultAttributes.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").get(0));
         assertEquals("...", resultAttributes.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").get(0));
+    }
+    
+    @Test
+    public void verifyStandardExtractionWorksForUkamf() throws Exception {
+        var credentials = extractCredentials(RESPONSE_FILE_NAME_FROM_UKAMF);
+        assertNotNull(credentials);
+        var attributes = credentials.getAttributes();
+        assertNotNull(attributes);
+
+        var resultAttributes = attributes.stream()
+            .collect(Collectors.toMap(SAMLAttribute::getName, SAMLAttribute::getAttributeValues));
+        assertEquals(5, resultAttributes.size());
+        assertEquals("http://ukfederation.org.uk/entitlements/example", resultAttributes.get("urn:oid:1.3.6.1.4.1.5923.1.1.1.7").get(0));
+        assertEquals("student@test.ukfederation.org.uk", resultAttributes.get("urn:oid:1.3.6.1.4.1.5923.1.1.1.9").get(0));
+        assertEquals("student", resultAttributes.get("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").get(0));
+        assertEquals("o8WNXY3pMlSjaLHi6nOMzB+6NNA=", resultAttributes.get("urn:oid:1.3.6.1.4.1.5923.1.1.1.10").get(0));
+        assertEquals("craig@test.ukfederation.org.uk", resultAttributes.get("urn:oid:1.3.6.1.4.1.5923.1.1.1.6").get(0));
     }
 
     @Test
