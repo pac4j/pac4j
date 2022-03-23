@@ -99,6 +99,12 @@ public class OidcExtractor implements CredentialsExtractor {
             logger.debug("Authentication response successful");
             var successResponse = (AuthenticationSuccessResponse) response;
 
+            var metadata = configuration.getProviderMetadata();
+            if (metadata.supportsAuthorizationResponseIssuerParam() &&
+                !metadata.getIssuer().equals(successResponse.getIssuer())) {
+                throw new TechnicalException("Issuer mismatch, possible mix-up attack.");
+            }
+
             if (configuration.isWithState()) {
                 // Validate state for CSRF mitigation
                 final var requestState = (State) configuration.getValueRetriever()

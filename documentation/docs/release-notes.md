@@ -9,6 +9,7 @@ title: Release notes&#58;
   - the `pac4j-javaee` dependency (JEE components in the `org.pac4j.jee` package, based on the `javax.servlet-api` library v4) or
   - the `pac4j-jakartaee` dependency (JEE components in the `org.pac4j.jee` package, based on the `jakarta.servlet-api` library v5)
 - Refactored the SAML2 attributes conversion (from the SAML2 authn response) to rely on a defined `AttributeConverter` at the `SAML2Configuration` level
+- Implemented RFC 9207 OAuth 2.0 Authorization Server Issuer Identification in `pac4j-oidc`
 
 **v5.3.1**:
 
