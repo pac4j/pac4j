@@ -16,6 +16,7 @@ public final class Cookie {
     private boolean secure;
     private boolean isHttpOnly = false;
     private String sameSitePolicy;
+    private String comment;
 
     public Cookie(final String name, final String value) {
         if (name == null || name.length() == 0) {
@@ -29,7 +30,7 @@ public final class Cookie {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -37,7 +38,7 @@ public final class Cookie {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
@@ -45,7 +46,7 @@ public final class Cookie {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(final String domain) {
         this.domain = domain;
     }
 
@@ -53,7 +54,7 @@ public final class Cookie {
         return maxAge;
     }
 
-    public void setMaxAge(int maxAge) {
+    public void setMaxAge(final int maxAge) {
         this.maxAge = maxAge;
     }
 
@@ -61,7 +62,7 @@ public final class Cookie {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 
@@ -69,7 +70,7 @@ public final class Cookie {
         return secure;
     }
 
-    public void setSecure(boolean secure) {
+    public void setSecure(final boolean secure) {
         this.secure = secure;
     }
 
@@ -77,12 +78,19 @@ public final class Cookie {
         return isHttpOnly;
     }
 
-    public void setHttpOnly(boolean httpOnly) {
+    public void setHttpOnly(final boolean httpOnly) {
         isHttpOnly = httpOnly;
     }
 
     public String getSameSitePolicy() { return sameSitePolicy; }
 
-    public void setSameSitePolicy(String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
+    public void setSameSitePolicy(final String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(final String comment) {
+        this.comment = comment;
+    }
 }
