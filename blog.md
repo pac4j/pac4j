@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; March 2022: [CVE-2021-44878: is this serious?](/blog/cve_2021_44878_is_this_serious.html)
+
 ## &bull; December 2021: [jee-pac4j versus pac4j-jee](/blog/jee_pac4j_vs_pac4j_jee.html)
 
 ## &bull; January 2021: [What's new in pac4j v5?](/blog/what_s_new_in_pac4j_v5.html)
