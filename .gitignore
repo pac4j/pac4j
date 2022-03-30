@@ -37,3 +37,4 @@ pac4j-saml/saml-signing-cert.*
 pac4j-saml-opensamlv3/saml-signing-cert.*
 krb5.conf
 documentation/.jekyll-cache/
+dependency-reduced-pom.xml
