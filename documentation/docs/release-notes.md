@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.4.1**:
+
+- Fix [CVE-2022-22965](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)
+
 **v5.4.0**:
 
 - Deprecated the `pac4j-jee` dependency (JEE components in the `org.pac4j.core` and `org.pac4j.saml` packages, based on the `javax.servlet-api` library v4) to be replaced by:
