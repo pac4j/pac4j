@@ -35,7 +35,7 @@ public final class SAML2ClientTests {
 
     @Test
     public void testIdpMetadataParsing_fromUrl() throws MalformedURLException {
-        internalTestIdpMetadataParsing(new UrlResource("http://www.pac4j.org/testshib-providers.xml"));
+        internalTestIdpMetadataParsing(new UrlResource("https://www.pac4j.org/testshib-providers.xml"));
     }
 
     @Test
