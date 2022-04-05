@@ -13,12 +13,19 @@
     <name>pac4j for Spring Boot</name>
 
     <properties>
-        <springboot.version>2.3.4.RELEASE</springboot.version>
+        <springboot.version>2.3.12.RELEASE</springboot.version>
         <log4j.version>2.16.0</log4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
