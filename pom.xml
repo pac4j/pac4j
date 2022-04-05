@@ -291,7 +291,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<!-- <createSourcesJar>true</createSourcesJar> -->
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
 							<finalName>${project.artifactId}-${project.version}-all.jar</finalName>
 						</configuration>
 					</execution>
