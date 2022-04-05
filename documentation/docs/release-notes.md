@@ -113,6 +113,10 @@ title: Release notes&#58;
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The 4.x stream is no longer maintained except via the <a href="/commercial-support.html">LTS program</a>.</div>
 
+**v4.5.6**:
+
+- Fix [CVE-2022-22965](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)
+-
 **v4.5.5**:
 
 - Fix CVE-2021-44878
