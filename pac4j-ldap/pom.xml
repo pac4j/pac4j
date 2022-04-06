@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>4.5.6-SNAPSHOT</version>
+        <version>4.5.6</version>
     </parent>
 
     <artifactId>pac4j-ldap</artifactId>
