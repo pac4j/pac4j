@@ -13,7 +13,7 @@
     <name>pac4j for GAE UserService mechanism</name>
 
     <properties>
-        <gae.version>1.9.88</gae.version>
+        <gae.version>1.9.96</gae.version>
         <jsr107cache.version>1.1</jsr107cache.version>
     </properties>
 
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-labs</artifactId>
-            <version>${gae.version}</version>
+            <version>1.9.88</version>
             <scope>test</scope>
         </dependency>
         <dependency>
