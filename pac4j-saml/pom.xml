@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for SAML</name>
 
     <properties>
-        <opensaml.version>4.1.1</opensaml.version>
+        <opensaml.version>4.2.0</opensaml.version>
         <joda-time.version>2.10.14</joda-time.version>
         <velocity.version>2.3</velocity.version>
         <xmlsectool.version>3.0.0</xmlsectool.version>
