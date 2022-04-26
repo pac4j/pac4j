@@ -11,6 +11,9 @@ on:
         branches:
             - 4.4.x
 
+permissions:
+  contents: read
+
 jobs:
     build:
         runs-on: ubuntu-latest
