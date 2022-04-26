@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; April 2022: [JakartaEE is coming](/blog/jakartaee_is_coming.html)
+
 ## &bull; March 2022: [CVE-2021-44878: is this serious?](/blog/cve_2021_44878_is_this_serious.html)
 
 ## &bull; December 2021: [jee-pac4j versus pac4j-jee](/blog/jee_pac4j_vs_pac4j_jee.html)
