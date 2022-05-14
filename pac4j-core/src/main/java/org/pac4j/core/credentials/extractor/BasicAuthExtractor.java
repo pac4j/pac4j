@@ -36,7 +36,12 @@ public class BasicAuthExtractor implements CredentialsExtractor {
         return optCredentials.map(cred -> {
 
             final var credentials = (TokenCredentials) cred;
-            final var decoded = Base64.getDecoder().decode(credentials.getToken());
+            final byte[] decoded;
+            try {
+                decoded = Base64.getDecoder().decode(credentials.getToken());
+            } catch (IllegalArgumentException e) {
+                throw new CredentialsException("Bad format of the basic auth header");
+            }
             final var token = new String(decoded, StandardCharsets.UTF_8);
 
             final var delim = token.indexOf(":");
