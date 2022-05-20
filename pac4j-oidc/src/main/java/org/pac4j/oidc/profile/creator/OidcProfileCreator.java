@@ -110,7 +110,11 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                     } else {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                     }
-                    getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
+                    if (userInfoClaimsSet != null) {
+                        getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
+                    } else {
+                        logger.warn("Cannot retrieve claims from user info");
+                    }
                 }
             }
 
