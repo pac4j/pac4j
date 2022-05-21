@@ -22,7 +22,7 @@ It provides a comprehensive set of [**concepts and components**](https://www.pac
 &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
 &bull; [Jooby](https://jooby.io/modules/pac4j)
 
-[CAS server](https://apereo.github.io/cas/6.2.x/integration/Delegate-Authentication.html)
+[CAS server](https://apereo.github.io/cas/6.5.x/integration/Delegate-Authentication.html)
 &bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j)
 &bull; [Dropwizard](https://github.com/pac4j/dropwizard-pac4j)
 &bull; [Lagom](https://github.com/pac4j/lagom-pac4j)
