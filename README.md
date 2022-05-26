@@ -46,7 +46,7 @@ It provides a comprehensive set of [**concepts and components**](https://www.pac
 ## Versions
 
 
-The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the Maven central repository.
+The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j-core), available in the Maven central repository.
 The [next version](https://www.pac4j.org/docs/next-version.html) is under development.
 
 Read the [documentation](https://www.pac4j.org/docs/index.html) for more information.
