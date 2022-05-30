@@ -3,6 +3,11 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.4.4**:
+
+- Fixes the behavior of the `RequireAnyRoleAuthorizer` and `RequireAnyPermissionAuthorizer` with no roles or permissions
+- Allows the `DefaultSAML2MetadataSigner` to accept a `SAML2Configuration`
+
 **v5.4.3**:
 
 - Fix [CVE-2022-22968](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)
