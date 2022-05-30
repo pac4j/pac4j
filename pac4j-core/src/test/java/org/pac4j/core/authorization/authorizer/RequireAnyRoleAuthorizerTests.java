@@ -114,4 +114,10 @@ public final class RequireAnyRoleAuthorizerTests {
         profile.addRole(ROLE3);
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
+
+    @Test
+    public void testHasAnyRoleAtLeastOne() {
+        final var authorizer = new RequireAnyRoleAuthorizer();
+        assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
+    }
 }

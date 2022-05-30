@@ -16,7 +16,7 @@ public abstract class AbstractRequireAnyAuthorizer<E extends Object> extends Abs
     @Override
     protected boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         if (elements == null || elements.isEmpty()) {
-            return true;
+            return check(context, sessionStore, profile, null);
         }
         for (final var element : elements) {
             if (check(context, sessionStore, profile, element)) {

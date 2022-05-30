@@ -30,6 +30,12 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final String element) {
         final var profileRoles = profile.getRoles();
+        if( profileRoles.isEmpty() ) {
+            return false;
+        }
+        if( element == null ) {
+            return true;
+        }
         return profileRoles.contains(element);
     }
 

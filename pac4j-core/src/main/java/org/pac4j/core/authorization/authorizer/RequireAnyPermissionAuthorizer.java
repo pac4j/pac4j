@@ -32,6 +32,12 @@ public class RequireAnyPermissionAuthorizer extends AbstractRequireAnyAuthorizer
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final String element) {
         final var profilePermissions = profile.getPermissions();
+        if( profilePermissions.isEmpty() ) {
+            return false;
+        }
+        if( element == null ) {
+            return true;
+        }
         return profilePermissions.contains(element);
     }
 
