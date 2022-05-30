@@ -117,8 +117,15 @@ public final class RequireAnyPermissionAuthorizerTests {
     }
 
     @Test
-    public void testHasAnyPermissionAtLeastOne() {
+    public void testHasAnyPermissionAtLeastOneFails() {
         final var authorizer = new RequireAnyPermissionAuthorizer();
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
+    }
+
+    @Test
+    public void testHasAnyPermissionAtLeastOneOk() {
+        final var authorizer = new RequireAnyPermissionAuthorizer();
+        profile.addPermission(PERMISSION1);
+        assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
     }
 }
