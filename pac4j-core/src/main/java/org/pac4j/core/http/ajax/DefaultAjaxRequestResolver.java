@@ -8,6 +8,8 @@ import org.pac4j.core.exception.http.*;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default way to compute if a HTTP request is an AJAX one.
@@ -16,6 +18,8 @@ import org.pac4j.core.util.HttpActionHelper;
  * @since 1.8.0
  */
 public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpConstants, Pac4jConstants {
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean addRedirectionUrlAsHeader = false;
 
@@ -45,6 +49,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
+            logger.debug("Faces is not used: returning unauthenticated error for url: {}", url);
             return HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
@@ -56,6 +61,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         }
         buffer.append("</partial-response>");
 
+        logger.debug("Faces is used: returning partial response content for url: {}", url);
         return HttpActionHelper.buildFormPostContentAction(context, buffer.toString());
     }
 
