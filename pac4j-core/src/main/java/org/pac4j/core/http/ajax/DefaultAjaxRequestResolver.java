@@ -45,7 +45,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
-            throw HttpActionHelper.buildUnauthenticatedAction(context);
+            return HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
         final var buffer = new StringBuilder();

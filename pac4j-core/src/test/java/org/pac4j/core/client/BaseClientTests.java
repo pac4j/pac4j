@@ -76,7 +76,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final var context = MockWebContext.create()
                                         .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
-        final var e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(context, null));
+        final var e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(context, new MockSessionStore()));
         assertEquals(401, e.getCode());
     }
 
