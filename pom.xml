@@ -70,7 +70,7 @@
 		<nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
 		<spring.version>5.3.21</spring.version>
 		<spring.security.version>5.7.2</spring.security.version>
-		<shiro.version>1.9.0</shiro.version>
+		<shiro.version>1.9.1</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>4.6.1</mockito.version>
 		<slf4j.version>1.7.36</slf4j.version>
