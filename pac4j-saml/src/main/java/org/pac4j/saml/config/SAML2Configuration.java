@@ -217,6 +217,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private SAML2MetadataResolver identityProviderMetadataResolver;
 
+    private int identityProviderMetadataConnectTimeout = 5000;
+
+    private int identityProviderMetadataReadTimeout = 5000;
+
     public SAML2Configuration() {
     }
 
@@ -990,5 +994,21 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public void setSamlAttributeConverter(final AttributeConverter samlAttributeConverter) {
         this.samlAttributeConverter = samlAttributeConverter;
+    }
+
+    public int getIdentityProviderMetadataConnectTimeout() {
+        return identityProviderMetadataConnectTimeout;
+    }
+
+    public void setIdentityProviderMetadataConnectTimeout(int identityProviderMetadataConnectTimeout) {
+        this.identityProviderMetadataConnectTimeout = identityProviderMetadataConnectTimeout;
+    }
+
+    public int getIdentityProviderMetadataReadTimeout() {
+        return identityProviderMetadataReadTimeout;
+    }
+
+    public void setIdentityProviderMetadataReadTimeout(int identityProviderMetadataReadTimeout) {
+        this.identityProviderMetadataReadTimeout = identityProviderMetadataReadTimeout;
     }
 }
