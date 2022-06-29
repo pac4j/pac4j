@@ -112,7 +112,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
      *
      * @return entity id of the idp
      */
-    private String determineIdentityProviderEntityId() {
+    protected String determineIdentityProviderEntityId() {
         var idpEntityId = configuration.getIdentityProviderEntityId();
         if (idpEntityId == null) {
             var it = ((IterableMetadataSource) metadataResolver).iterator();
@@ -128,7 +128,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         return idpEntityId;
     }
 
-    private DOMMetadataResolver initializeMetadataResolver() {
+    protected DOMMetadataResolver initializeMetadataResolver() {
         try (var in = getMetadataResourceInputStream()) {
             var parsedInput = Configuration.getParserPool().parse(in);
             var metadataRoot = parsedInput.getDocumentElement();

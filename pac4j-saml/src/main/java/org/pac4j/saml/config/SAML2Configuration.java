@@ -217,9 +217,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private SAML2MetadataResolver identityProviderMetadataResolver;
 
-    private int identityProviderMetadataConnectTimeout = 5000;
+    private int identityProviderMetadataConnectTimeout = 2500;
 
-    private int identityProviderMetadataReadTimeout = 5000;
+    private int identityProviderMetadataReadTimeout = 2500;
 
     public SAML2Configuration() {
     }
