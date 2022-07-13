@@ -145,7 +145,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             return Optional.of(profile);
-        } catch (final Exception e) {
+        } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new TechnicalException(e);
         }
     }
