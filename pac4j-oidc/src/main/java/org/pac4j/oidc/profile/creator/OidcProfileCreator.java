@@ -74,7 +74,6 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         profile.setAccessToken(accessToken);
         final var idToken = credentials.getIdToken();
         profile.setIdTokenString(idToken.getParsedString());
-        profile.setAccessToken(accessToken);
         // Check if there is a refresh token
         final var refreshToken = credentials.getRefreshToken();
         if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
@@ -146,8 +145,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             return Optional.of(profile);
-
-        } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
+        } catch (final Exception e) {
             throw new TechnicalException(e);
         }
     }
@@ -166,7 +164,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
                 }
             }
-        } catch (final ParseException | JOSEException | BadJOSEException e) {
+        } catch (final ParseException | java.text.ParseException | JOSEException | BadJOSEException e) {
             logger.debug(e.getMessage(), e);
         } catch (final Exception e) {
             throw new TechnicalException(e);
