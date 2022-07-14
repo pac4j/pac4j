@@ -3,8 +3,13 @@ package org.pac4j.oidc.profile.creator;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.openid.connect.sdk.*;
+import com.nimbusds.openid.connect.sdk.Nonce;
+import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoRequest;
+import com.nimbusds.openid.connect.sdk.UserInfoResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -96,12 +101,12 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 configuration.configureHttpRequest(userInfoHttpRequest);
                 final var httpResponse = userInfoHttpRequest.send();
                 logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
-                        httpResponse.getContent());
+                    httpResponse.getContent());
 
                 final var userInfoResponse = UserInfoResponse.parse(httpResponse);
                 if (userInfoResponse instanceof UserInfoErrorResponse) {
                     logger.error("Bad User Info response, error={}",
-                            ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+                        ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
                     final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     final JWTClaimsSet userInfoClaimsSet;
@@ -128,6 +133,8 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
             }
 
+            collectClaimsFromAccessTokenIfAny(credentials, nonce, profile);
+
             // session expiration with token behavior
             profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
 
@@ -138,8 +145,28 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             return Optional.of(profile);
-
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    private void collectClaimsFromAccessTokenIfAny(final OidcCredentials credentials,
+                                                   final Nonce nonce, OidcProfile profile) {
+        try {
+            var accessTokenJwt = JWTParser.parse(credentials.getAccessToken().getValue());
+            var accessTokenClaims = configuration.findTokenValidator().validate(accessTokenJwt, nonce);
+
+            // add attributes of the access token if they don't already exist
+            for (final var entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {
+                final var key = entry.getKey();
+                final var value = entry.getValue();
+                if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
+                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+                }
+            }
+        } catch (final ParseException | java.text.ParseException | JOSEException | BadJOSEException e) {
+            logger.debug(e.getMessage(), e);
+        } catch (final Exception e) {
             throw new TechnicalException(e);
         }
     }
