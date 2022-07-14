@@ -8,6 +8,7 @@ title: Release notes&#58;
 - Fixes the behavior of the `RequireAnyRoleAuthorizer` and `RequireAnyPermissionAuthorizer` with no roles or permissions
 - Allows the `DefaultSAML2MetadataSigner` to accept a `SAML2Configuration`
 - Fixes `pac4j-springboot` dependencies
+- OIDC support: collect claims from the access token if it is a valid JWT
 
 **v5.4.3**:
 

@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  * Tests {@link OidcProfileCreatorTests}.
  *
  * @author Misagh Moayyed
- * @since 5.3.0
+ * @since 5.4.4
  */
 public class OidcProfileCreatorTests implements TestsConstants {
     private OidcConfiguration configuration;
