@@ -27,7 +27,9 @@ public class PathMatcher implements Matcher {
 
     public PathMatcher() {}
 
+    @Deprecated
     public PathMatcher(final String regexpPath) {
+        logger.warn("Use `new PathMatcher().excludeRegex(regex)` for clarity instead of `new PathMatcher(regex)`");
         excludeRegex(regexpPath);
     }
 
