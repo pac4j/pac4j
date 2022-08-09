@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.4.5**:
+
+- Deprecated the `new PathMatcher(regex)` constructor
+
 **v5.4.4**:
 
 - Fixes the behavior of the `RequireAnyRoleAuthorizer` and `RequireAnyPermissionAuthorizer` with no roles or permissions
