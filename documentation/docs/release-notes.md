@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.4.5**:
 
 - Deprecated the `new PathMatcher(regex)` constructor
+- Fix NPE on JWT access token parsing
 
 **v5.4.4**:
 

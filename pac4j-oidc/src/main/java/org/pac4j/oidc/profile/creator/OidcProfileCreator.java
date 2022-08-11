@@ -5,6 +5,7 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
@@ -153,15 +154,18 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     private void collectClaimsFromAccessTokenIfAny(final OidcCredentials credentials,
                                                    final Nonce nonce, OidcProfile profile) {
         try {
-            var accessTokenJwt = JWTParser.parse(credentials.getAccessToken().getValue());
-            var accessTokenClaims = configuration.findTokenValidator().validate(accessTokenJwt, nonce);
+            final AccessToken accessToken = credentials.getAccessToken();
+            if (accessToken != null) {
+                var accessTokenJwt = JWTParser.parse(accessToken.getValue());
+                var accessTokenClaims = configuration.findTokenValidator().validate(accessTokenJwt, nonce);
 
-            // add attributes of the access token if they don't already exist
-            for (final var entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {
-                final var key = entry.getKey();
-                final var value = entry.getValue();
-                if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
-                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+                // add attributes of the access token if they don't already exist
+                for (final var entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {
+                    final var key = entry.getKey();
+                    final var value = entry.getValue();
+                    if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
+                        getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+                    }
                 }
             }
         } catch (final ParseException | java.text.ParseException | JOSEException | BadJOSEException e) {
