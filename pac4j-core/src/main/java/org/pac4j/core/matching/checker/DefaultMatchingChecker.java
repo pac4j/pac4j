@@ -1,20 +1,39 @@
 package org.pac4j.core.matching.checker;
 
+import static org.pac4j.core.util.CommonHelper.areEqualsIgnoreCaseAndTrim;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.assertTrue;
+import static org.pac4j.core.util.CommonHelper.isBlank;
+import static org.pac4j.core.util.CommonHelper.substringAfter;
+import static org.pac4j.core.util.CommonHelper.substringBetween;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.matching.matcher.*;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.matching.matcher.CacheControlMatcher;
+import org.pac4j.core.matching.matcher.CorsMatcher;
+import org.pac4j.core.matching.matcher.DefaultMatchers;
+import org.pac4j.core.matching.matcher.HttpMethodMatcher;
+import org.pac4j.core.matching.matcher.Matcher;
+import org.pac4j.core.matching.matcher.StrictTransportSecurityMatcher;
+import org.pac4j.core.matching.matcher.XContentTypeOptionsMatcher;
+import org.pac4j.core.matching.matcher.XFrameOptionsMatcher;
+import org.pac4j.core.matching.matcher.XSSProtectionMatcher;
 import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-
-import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Default way to check the matchers (with default matchers).
@@ -67,12 +86,18 @@ public class DefaultMatchingChecker implements MatchingChecker {
         if (isBlank(matchersValue)) {
             matchers = computeDefaultMatchers(context, sessionStore, clients);
         } else {
-            if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
-                final var matcherNames = substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
+            if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT) || matchersValue.trim().startsWith(Pac4jConstants.REMOVE_ELEMENT)) {
                 matchers = computeDefaultMatchers(context, sessionStore, clients);
-                matchers.addAll(computeMatchersFromNames(matcherNames, matchersMap));
+                
+                final var removedMatcherNames = substringAfter(matchersValue, Pac4jConstants.REMOVE_ELEMENT);
+				removeMatchersFromNames(removedMatcherNames, matchers);
+                
+                
+                final var addedMatcherNames = substringBetween(matchersValue, Pac4jConstants.ADD_ELEMENT, Pac4jConstants.REMOVE_ELEMENT);
+                matchers.addAll(addMatchersFromNames(addedMatcherNames, matchersMap));
+                
             } else {
-                matchers = computeMatchersFromNames(matchersValue, matchersMap);
+                matchers = addMatchersFromNames(matchersValue, matchersMap);
             }
         }
         return matchers;
@@ -94,7 +119,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return matchers;
     }
 
-    protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
+    protected List<Matcher> addMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
         assertNotNull("matchersMap", matchersMap);
         final List<Matcher> matchers = new ArrayList<>();
         final var names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
@@ -111,6 +136,22 @@ public class DefaultMatchingChecker implements MatchingChecker {
         }
         return matchers;
     }
+
+	protected List<Matcher> removeMatchersFromNames(final String matchersValue, final List<Matcher> matchers) {
+		final var names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
+		final var nb = names.length;
+		for (var i = 0; i < nb; i++) {
+			final var name = names[i].trim();
+			if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
+				final var results = retrieveMatchers(name, Collections.emptyMap());
+				// we must have matchers defined for this name
+				assertTrue(results != null && results.size() > 0,
+						"The matcher '" + name + "' must be defined in the security configuration");
+				matchers.removeAll(results);
+			}
+		}
+		return matchers;
+	}
 
     protected List<Matcher> retrieveMatchers(final String matcherName, final Map<String, Matcher> matchersMap) {
         final List<Matcher> results = new ArrayList<>();

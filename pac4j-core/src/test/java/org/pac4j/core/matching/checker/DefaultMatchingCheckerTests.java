@@ -1,9 +1,30 @@
 package org.pac4j.core.matching.checker;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.pac4j.core.context.HttpConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER;
+import static org.pac4j.core.context.HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER;
+import static org.pac4j.core.context.HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER;
+import static org.pac4j.core.context.HttpConstants.SCHEME_HTTPS;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.context.*;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.HttpConstants.HTTP_METHOD;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -13,12 +34,6 @@ import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.*;
-import static org.pac4j.core.context.HttpConstants.*;
 
 /**
  * Tests {@link DefaultMatchingChecker}.
@@ -283,6 +298,26 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         matchers.addAll(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS);
         matchers.add(DefaultMatchingChecker.POST_MATCHER);
         assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), new MockSessionStore(), "   +   post",
+            new HashMap<>(), new ArrayList<>()));
+    }
+    
+    @Test
+	public void testComputeMatchersMinusCacheControl() {
+		final List<Matcher> matchers = new ArrayList<>();
+		matchers.addAll(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS);
+		matchers.remove(DefaultMatchingChecker.CACHE_CONTROL_MATCHER);
+		assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), new MockSessionStore(),
+				"   -   " + DefaultMatchers.NOCACHE, new HashMap<>(), new ArrayList<>()));
+	}
+
+	@Test
+	public void testComputeMatchersPlusPostMinusCacheControl() {
+        final List<Matcher> matchers = new ArrayList<>();
+        matchers.addAll(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS);
+		matchers.add(DefaultMatchingChecker.POST_MATCHER);
+        matchers.remove(DefaultMatchingChecker.CACHE_CONTROL_MATCHER);
+		assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), new MockSessionStore(),
+				"   +   post" + "   -   " + DefaultMatchers.NOCACHE,
             new HashMap<>(), new ArrayList<>()));
     }
 

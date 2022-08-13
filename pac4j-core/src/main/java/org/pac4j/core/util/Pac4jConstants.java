@@ -50,6 +50,8 @@ public interface Pac4jConstants {
 
     String ADD_ELEMENT = "+";
 
+	String REMOVE_ELEMENT = "-";
+
     String TYPED_ID_SEPARATOR = "#";
 
     /* The logout pattern for url */

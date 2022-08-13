@@ -1,5 +1,16 @@
 package org.pac4j.core.authorization.checker;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
@@ -9,7 +20,9 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
-import org.pac4j.core.context.*;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -20,10 +33,6 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-
-import java.util.*;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the {@link DefaultAuthorizationChecker}.
@@ -308,6 +317,20 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
             DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
             checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(),
                 "+" + DefaultAuthorizers.IS_FULLY_AUTHENTICATED, new HashMap<>(), new ArrayList<>()));
+    }
+    
+    @Test
+    public void testComputeAuthorizerNoClientMinusIsAuthenticated() {
+		assertEquals(0, checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(),
+                "-" + DefaultAuthorizers.IS_FULLY_AUTHENTICATED, new HashMap<>(), new ArrayList<>()).size());
+    }
+    
+    @Test
+    public void testComputeAuthorizerNoClientPlusIsFullyAuthenticatedMinusIsAuthenticated() {
+        assertEquals(Arrays.asList(
+            DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
+            checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(),
+                "+" + DefaultAuthorizers.IS_FULLY_AUTHENTICATED + "-" + DefaultAuthorizationChecker.IS_AUTHENTICATED_AUTHORIZER, new HashMap<>(), new ArrayList<>()));
     }
 
     @Test
