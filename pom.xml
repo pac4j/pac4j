@@ -69,7 +69,7 @@
 		<guava.version>31.1-jre</guava.version>
 		<nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
 		<spring.version>5.3.22</spring.version>
-		<spring.security.version>5.7.2</spring.security.version>
+		<spring.security.version>5.7.3</spring.security.version>
 		<shiro.version>1.9.1</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>4.7.0</mockito.version>
