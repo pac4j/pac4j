@@ -134,7 +134,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
             }
 
-            collectClaimsFromAccessTokenIfAny(credentials, nonce, profile);
+            if (configuration.isIncludeAccessTokenClaimsInProfile()) {
+                collectClaimsFromAccessTokenIfAny(credentials, nonce, profile);
+            }
 
             // session expiration with token behavior
             profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
