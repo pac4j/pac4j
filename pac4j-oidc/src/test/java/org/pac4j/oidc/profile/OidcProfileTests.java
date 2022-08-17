@@ -226,7 +226,8 @@ public final class OidcProfileTests implements TestsConstants {
         JwtAuthenticator jwtAuthenticator = new JwtAuthenticator();
         jwtAuthenticator.setSignatureConfiguration(secretSignatureConfiguration);
 
-        UserProfile userProfile =  jwtAuthenticator.validateToken(token);
+        GoogleOidcProfile userProfile = (GoogleOidcProfile) jwtAuthenticator.validateToken(token);
         assertFalse(userProfile.isExpired());
+        assertEquals(userProfile.getExpiration(), expiration);
     }
 }
