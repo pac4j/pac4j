@@ -1,9 +1,10 @@
 package org.pac4j.jwt.profile;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
+
+import java.util.Map;
 
 /**
  * This is {@link JwtProfileDefinition}.
@@ -21,8 +22,8 @@ public class JwtProfileDefinition extends CommonProfileDefinition {
 
     @Override
     public void convertAndAdd(UserProfile profile, AttributeLocation attributeLocation, String name, Object value) {
-        if (value instanceof JSONObject) {
-            var jsonObject = (JSONObject) value;
+        if (value instanceof Map) {
+            var jsonObject = (Map<String, ?>) value;
             jsonObject.forEach((key, objectValue) -> super.convertAndAdd(profile, attributeLocation, key, objectValue));
             if (keepNestedAttributes) {
                 super.convertAndAdd(profile, attributeLocation, name, value);
