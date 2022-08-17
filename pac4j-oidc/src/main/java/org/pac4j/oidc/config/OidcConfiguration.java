@@ -144,6 +144,15 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private TokenValidator tokenValidator;
 
     private boolean allowUnsignedIdTokens;
+    
+    /** If enabled, try to process the access token as a JWT and include its claims in the profile.
+     * Only enable this if there is an agreement between the IdP and the client about the format of
+     * the access token. If not, the authorization server and the resource server might decide to 
+     * change the token format at any time (for example, by switching from this profile to opaque 
+     * tokens); hence, any logic in the client relying on the ability to read the access token 
+     * content would break without recourse.
+     */
+    private boolean includeAccessTokenClaimsInProfile = false;
 
     private String SSLFactory;
 
@@ -507,6 +516,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public void setAllowUnsignedIdTokens(final boolean allowUnsignedIdTokens) {
         this.allowUnsignedIdTokens = allowUnsignedIdTokens;
+    }
+    
+    public boolean isIncludeAccessTokenClaimsInProfile() {
+        return includeAccessTokenClaimsInProfile;
+    }
+    
+    public void setIncludeAccessTokenClaimsInProfile(boolean includeAccessTokenClaimsInProfile) {
+        this.includeAccessTokenClaimsInProfile = includeAccessTokenClaimsInProfile;
     }
 
     public String getSSLFactory() {

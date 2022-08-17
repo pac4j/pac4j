@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.4.6**:
+- Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
+
 **v5.4.5**:
 
 - Deprecated the `new PathMatcher(regex)` constructor
