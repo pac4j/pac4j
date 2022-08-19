@@ -1,7 +1,6 @@
 package org.pac4j.oidc.authorization.generator;
 
 import com.nimbusds.jwt.SignedJWT;
-import net.minidev.json.JSONArray;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -43,7 +42,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
                 final var realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
                 if (realmRolesJsonObject != null) {
-                    final var realmRolesJsonArray = (JSONArray) realmRolesJsonObject.get("roles");
+                    final var realmRolesJsonArray = (List<String>) realmRolesJsonObject.get("roles");
                     if (realmRolesJsonArray != null) {
                         realmRolesJsonArray.forEach(role -> profile.addRole((String) role));
                     }
