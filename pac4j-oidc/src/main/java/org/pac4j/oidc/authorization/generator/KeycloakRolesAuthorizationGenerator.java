@@ -1,8 +1,5 @@
 package org.pac4j.oidc.authorization.generator;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.JSONObject;
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -12,6 +9,8 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -26,7 +25,8 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
     private String clientId;
 
-    public KeycloakRolesAuthorizationGenerator() {}
+    public KeycloakRolesAuthorizationGenerator() {
+    }
 
     public KeycloakRolesAuthorizationGenerator(final String clientId) {
         this.clientId = clientId;
@@ -37,12 +37,12 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
         if (profile instanceof KeycloakOidcProfile) {
             try {
-                final JWT jwt = SignedJWT.parse(((KeycloakOidcProfile) profile).getAccessToken().getValue());
+                final var jwt = SignedJWT.parse(((KeycloakOidcProfile) profile).getAccessToken().getValue());
                 final var jwtClaimsSet = jwt.getJWTClaimsSet();
 
                 final var realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
                 if (realmRolesJsonObject != null) {
-                    final var realmRolesJsonArray = (JSONArray) realmRolesJsonObject.get("roles");
+                    final var realmRolesJsonArray = (List<String>) realmRolesJsonObject.get("roles");
                     if (realmRolesJsonArray != null) {
                         realmRolesJsonArray.forEach(role -> profile.addRole((String) role));
                     }
@@ -51,11 +51,11 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                 if (clientId != null) {
                     final var resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
                     if (resourceAccess != null) {
-                        final var clientRolesJsonObject = (JSONObject) resourceAccess.get(clientId);
+                        final var clientRolesJsonObject = (Map) resourceAccess.get(clientId);
                         if (clientRolesJsonObject != null) {
-                            final var clientRolesJsonArray = (JSONArray) clientRolesJsonObject.get("roles");
+                            final var clientRolesJsonArray = (List<String>) clientRolesJsonObject.get("roles");
                             if (clientRolesJsonArray != null) {
-                                clientRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                                clientRolesJsonArray.forEach(profile::addRole);
                             }
                         }
                     }

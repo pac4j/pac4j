@@ -8,7 +8,6 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
@@ -226,7 +225,8 @@ public final class OidcProfileTests implements TestsConstants {
         JwtAuthenticator jwtAuthenticator = new JwtAuthenticator();
         jwtAuthenticator.setSignatureConfiguration(secretSignatureConfiguration);
 
-        UserProfile userProfile =  jwtAuthenticator.validateToken(token);
+        GoogleOidcProfile userProfile = (GoogleOidcProfile) jwtAuthenticator.validateToken(token);
         assertFalse(userProfile.isExpired());
+        assertEquals(userProfile.getExpiration(), expiration);
     }
 }
