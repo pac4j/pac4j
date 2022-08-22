@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
+- Upgrade nimbus-jwt to v9.24.1
 
 **v5.4.5**:
 
