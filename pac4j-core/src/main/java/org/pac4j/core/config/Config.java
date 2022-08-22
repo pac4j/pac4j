@@ -218,11 +218,13 @@ public class Config {
 
     public void setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
         this.profileManagerFactory = profileManagerFactory;
+        // Deprecated
+        INSTANCE.profileManagerFactory = profileManagerFactory;
     }
 
     public void defaultProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
         if (this.profileManagerFactory == null) {
-            this.profileManagerFactory = profileManagerFactory;
+            setProfileManagerFactory(profileManagerFactory);
         }
     }
 
