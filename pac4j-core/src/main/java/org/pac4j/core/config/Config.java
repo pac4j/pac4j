@@ -162,6 +162,12 @@ public class Config {
         this.sessionStore = sessionStore;
     }
 
+    public void defaultSessionStore(final SessionStore sessionStore) {
+        if (this.sessionStore == null) {
+            this.sessionStore = sessionStore;
+        }
+    }
+
     public HttpActionAdapter getHttpActionAdapter() {
         return httpActionAdapter;
     }
@@ -202,16 +208,32 @@ public class Config {
         this.webContextFactory = webContextFactory;
     }
 
-    public static ProfileManagerFactory getProfileManagerFactory() {
+    public ProfileManagerFactory getProfileManagerFactory() {
+        if (this.profileManagerFactory != null) {
+            return this.profileManagerFactory;
+        }
+        // Deprecated:
         return INSTANCE.profileManagerFactory;
     }
 
+    public void setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
+        this.profileManagerFactory = profileManagerFactory;
+    }
+
+    public void defaultProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
+        if (this.profileManagerFactory == null) {
+            this.profileManagerFactory = profileManagerFactory;
+        }
+    }
+
+    @Deprecated
     public static void setProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
         CommonHelper.assertNotNull("profileManagerFactory", profileManagerFactory);
         LOGGER.info("Setting Config.profileManagerFactory: {}", name);
         INSTANCE.profileManagerFactory = profileManagerFactory;
     }
 
+    @Deprecated
     public static void defaultProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
         if (INSTANCE.profileManagerFactory == null) {
             synchronized (INSTANCE) {

@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
 - Upgrade nimbus-jwt to v9.24.2
+- Deprecate the static methods: `Config.set|defaultProfileManagerFactory(name,ProfileManagerFactory)` in favor of the class methods: `config.set|defaultProfileManagerFactory(ProfileManagerFactory)`. Add the `config.defaultSessionStore(SessionStore)` method
 
 **v5.4.5**:
 
