@@ -3,7 +3,10 @@ package org.pac4j.core.matching.checker;
 import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.context.*;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -29,6 +32,10 @@ import static org.pac4j.core.context.HttpConstants.*;
 public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     private final static DefaultMatchingChecker checker = new DefaultMatchingChecker();
+
+    private static final List<Matcher> SECURITY_HEADERS_MATCHERS = Arrays.asList(DefaultMatchingChecker.CACHE_CONTROL_MATCHER,
+        DefaultMatchingChecker.X_CONTENT_TYPE_OPTIONS_MATCHER, DefaultMatchingChecker.STRICT_TRANSPORT_MATCHER,
+        DefaultMatchingChecker.X_FRAME_OPTIONS_MATCHER, DefaultMatchingChecker.XSS_PROTECTION_MATCHER);
 
     private static class NullContextMatcher implements Matcher {
 
@@ -267,7 +274,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testComputeMatchers() {
-        assertEquals(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS,
+        assertEquals(SECURITY_HEADERS_MATCHERS,
             checker.computeMatchers(MockWebContext.create(), new MockSessionStore(), "" , new HashMap<>(), new ArrayList<>()));
     }
 
@@ -280,17 +287,75 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     @Test
     public void testComputeMatchersPlusPost() {
         final List<Matcher> matchers = new ArrayList<>();
-        matchers.addAll(DefaultMatchingChecker.SECURITY_HEADERS_MATCHERS);
+        matchers.addAll(SECURITY_HEADERS_MATCHERS);
         matchers.add(DefaultMatchingChecker.POST_MATCHER);
         assertEquals(matchers, checker.computeMatchers(MockWebContext.create(), new MockSessionStore(), "   +   post",
             new HashMap<>(), new ArrayList<>()));
     }
 
     @Test
-    public void testComputeMatchersOverrideDefault() {
+    public void testComputeMatchersOverrideOneMatcher() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(DefaultMatchers.GET, DefaultMatchingChecker.POST_MATCHER);
         assertEquals(Arrays.asList(DefaultMatchingChecker.POST_MATCHER), checker.computeMatchers(MockWebContext.create(),
             new MockSessionStore(), "get", matchers, new ArrayList<>()));
+    }
+
+    @Test
+    public void testComputeMatchersOverrideSecurityHeadersDefault() {
+        final Matcher overriden = new Matcher() {
+            @Override
+            public boolean matches(WebContext context, SessionStore sessionStore) {
+                return false;
+            }
+        };
+
+        final Map<String, Matcher> matchers = new HashMap<>();
+        matchers.put(DefaultMatchers.SECURITYHEADERS, overriden);
+
+        final List<Matcher> expectedMatchers = new ArrayList<>();
+        expectedMatchers.add(overriden);
+        assertEquals(expectedMatchers, checker.computeMatchers(MockWebContext.create(),
+            new MockSessionStore(), null, matchers, new ArrayList<>()));
+    }
+
+    @Test
+    public void testComputeMatchersOverrideSecurityHeaders() {
+        final Matcher overriden = new Matcher() {
+            @Override
+            public boolean matches(WebContext context, SessionStore sessionStore) {
+                return false;
+            }
+        };
+
+        final Map<String, Matcher> matchers = new HashMap<>();
+        matchers.put(DefaultMatchers.SECURITYHEADERS, overriden);
+
+        final List<Matcher> expectedMatchers = new ArrayList<>();
+        expectedMatchers.add(overriden);
+        assertEquals(expectedMatchers, checker.computeMatchers(MockWebContext.create(),
+            new MockSessionStore(), " securityHEADERS    ", matchers, new ArrayList<>()));
+    }
+
+    @Test
+    public void testComputeMatchersOverrideOneMatcherDefault() {
+        final Matcher overriden = new Matcher() {
+            @Override
+            public boolean matches(WebContext context, SessionStore sessionStore) {
+                return false;
+            }
+        };
+
+        final Map<String, Matcher> matchers = new HashMap<>();
+        matchers.put(DefaultMatchers.NOSNIFF, overriden);
+
+        final List<Matcher> expectedMatchers = new ArrayList<>();
+        expectedMatchers.add(DefaultMatchingChecker.CACHE_CONTROL_MATCHER);
+        expectedMatchers.add(overriden);
+        expectedMatchers.add(DefaultMatchingChecker.STRICT_TRANSPORT_MATCHER);
+        expectedMatchers.add(DefaultMatchingChecker.X_FRAME_OPTIONS_MATCHER);
+        expectedMatchers.add(DefaultMatchingChecker.XSS_PROTECTION_MATCHER);
+        assertEquals(expectedMatchers, checker.computeMatchers(MockWebContext.create(),
+            new MockSessionStore(), null, matchers, new ArrayList<>()));
     }
 }

@@ -3,12 +3,12 @@ package org.pac4j.core.matching.checker;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.matching.matcher.*;
 import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +37,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
     protected static final XSSProtectionMatcher XSS_PROTECTION_MATCHER = new XSSProtectionMatcher();
     protected static final CacheControlMatcher CACHE_CONTROL_MATCHER = new CacheControlMatcher();
     protected static final CsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
-    static final List<Matcher> SECURITY_HEADERS_MATCHERS = Arrays.asList(CACHE_CONTROL_MATCHER, X_CONTENT_TYPE_OPTIONS_MATCHER,
-        STRICT_TRANSPORT_MATCHER, X_FRAME_OPTIONS_MATCHER, XSS_PROTECTION_MATCHER);
+
     protected static final CorsMatcher CORS_MATCHER = new CorsMatcher();
 
     static {
@@ -63,48 +62,56 @@ public class DefaultMatchingChecker implements MatchingChecker {
 
     protected List<Matcher> computeMatchers(final WebContext context, final SessionStore sessionStore, final String matchersValue,
                                             final Map<String, Matcher> matchersMap, final List<Client> clients) {
-        final List<Matcher> matchers;
+        String matcherNames;
         if (isBlank(matchersValue)) {
-            matchers = computeDefaultMatchers(context, sessionStore, clients);
+            matcherNames = computeDefaultMatcherNames(context, sessionStore, clients, matchersMap);
+        } else if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
+            matcherNames = computeDefaultMatcherNames(context, sessionStore, clients, matchersMap) +
+                Pac4jConstants.ELEMENT_SEPARATOR + substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
         } else {
-            if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
-                final var matcherNames = substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
-                matchers = computeDefaultMatchers(context, sessionStore, clients);
-                matchers.addAll(computeMatchersFromNames(matcherNames, matchersMap));
-            } else {
-                matchers = computeMatchersFromNames(matchersValue, matchersMap);
-            }
+            matcherNames = matchersValue;
         }
-        return matchers;
+        return computeMatchersFromNames(matcherNames, matchersMap);
     }
 
-    protected List<Matcher> computeDefaultMatchers(final WebContext context, final SessionStore sessionStore, final List<Client> clients) {
-        final List<Matcher> matchers = new ArrayList<>();
-        matchers.addAll(SECURITY_HEADERS_MATCHERS);
+    protected String computeDefaultMatcherNames(final WebContext context, final SessionStore sessionStore, final List<Client> clients,
+                                                final Map<String, Matcher> matchersMap) {
+        String name = DefaultMatchers.SECURITYHEADERS;
         if (sessionStore.getSessionId(context, false).isPresent()) {
-            matchers.add(CSRF_TOKEN_MATCHER);
-            return matchers;
+            name += Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
+            return name;
         }
         for (final var client : clients) {
             if (client instanceof IndirectClient) {
-                matchers.add(CSRF_TOKEN_MATCHER);
-                return matchers;
+                name += Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
+                return name;
             }
         }
-        return matchers;
+        return name;
     }
 
     protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
         assertNotNull("matchersMap", matchersMap);
         final List<Matcher> matchers = new ArrayList<>();
-        final var names = matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR);
-        final var nb = names.length;
-        for (var i = 0; i < nb; i++) {
-            final var name = names[i].trim();
-            if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
+        final List<String> names = new ArrayList<>(Arrays.asList(matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR)));
+        for (var i = 0; i < names.size(); ) {
+            final var name = names.get(i++).trim();
+            if (DefaultMatchers.SECURITYHEADERS.equalsIgnoreCase(name)) {
+                final var results = retrieveMatchers(name, matchersMap);
+                // the securityheaders shortcut has not been overriden, replace it by its associated matchers
+                if (results.isEmpty()) {
+                    names.add(i, DefaultMatchers.XSSPROTECTION);
+                    names.add(i, DefaultMatchers.NOFRAME);
+                    names.add(i, DefaultMatchers.HSTS);
+                    names.add(i, DefaultMatchers.NOSNIFF);
+                    names.add(i, DefaultMatchers.NOCACHE);
+                } else {
+                    matchers.addAll(results);
+                }
+            } else if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
                 final var results = retrieveMatchers(name, matchersMap);
                 // we must have matchers defined for this name
-                assertTrue(results != null && results.size() > 0,
+                assertTrue(!results.isEmpty(),
                     "The matcher '" + name + "' must be defined in the security configuration");
                 matchers.addAll(results);
             }
@@ -131,8 +138,6 @@ public class DefaultMatchingChecker implements MatchingChecker {
                 return Arrays.asList(XSS_PROTECTION_MATCHER);
             } else if (DefaultMatchers.NOCACHE.equalsIgnoreCase(matcherName)) {
                 return Arrays.asList(CACHE_CONTROL_MATCHER);
-            } else if (DefaultMatchers.SECURITYHEADERS.equalsIgnoreCase(matcherName)) {
-                return SECURITY_HEADERS_MATCHERS;
             } else if (DefaultMatchers.CSRF_TOKEN.equalsIgnoreCase(matcherName)) {
                 return Arrays.asList(CSRF_TOKEN_MATCHER);
             } else if (DefaultMatchers.ALLOW_AJAX_REQUESTS.equalsIgnoreCase(matcherName)) {

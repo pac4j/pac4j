@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.4.7**:
+- Allow to override a default `Matcher` (even the `securityheaders` shortcut)
+
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
 - Upgrade nimbus-jwt to v9.24.2

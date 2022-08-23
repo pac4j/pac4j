@@ -318,4 +318,13 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
             checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(), DefaultAuthorizers.IS_AUTHENTICATED,
                 authorizers, new ArrayList<>()));
     }
+
+    @Test
+    public void testComputeAuthorizersOverrideEmptyDefault() {
+        final Map<String, Authorizer> authorizers = new HashMap<>();
+        authorizers.put(DefaultAuthorizers.IS_AUTHENTICATED, DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER);
+        assertEquals(Arrays.asList(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
+            checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(), null,
+                authorizers, new ArrayList<>()));
+    }
 }
