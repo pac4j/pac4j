@@ -3,7 +3,7 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**v5.4.7**:
+**v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
 
 **v5.4.6**:
