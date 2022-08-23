@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
+- Remove the deprecated `pac4j-jee` module
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
