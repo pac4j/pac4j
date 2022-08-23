@@ -41,7 +41,6 @@
 	<modules>
         <module>pac4j-javaee</module>
         <module>pac4j-jakartaee</module>
-        <module>pac4j-jee</module>
 		<module>pac4j-core</module>
 		<module>pac4j-config</module>
 		<module>pac4j-oauth</module>
