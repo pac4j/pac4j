@@ -22,7 +22,6 @@
         velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
         <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.4</cryptacular.version>
-        <xalan.version>2.7.2</xalan.version>
         <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
         <httpcore.version>4.4.8</httpcore.version>
     </properties>
@@ -145,11 +144,6 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>${xalan.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
