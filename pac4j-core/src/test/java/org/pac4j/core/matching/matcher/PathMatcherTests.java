@@ -98,6 +98,28 @@ public class PathMatcherTests {
 
         assertTrue(matcher.matches(MockWebContext.create().setPath("/error/500.html"), new MockSessionStore()));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/img/"), new MockSessionStore()));
+    }
 
+    @Test
+    public void testIncludePath() {
+        final var matcher = new PathMatcher().includePath("/protect");
+
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/protect"), new MockSessionStore()));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/protected"), new MockSessionStore()));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/protected/index.html"), new MockSessionStore()));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/img/logo.gif"), new MockSessionStore()));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/callback"), new MockSessionStore()));
+    }
+
+    @Test
+    public void testIncludePaths() {
+        final var matcher = new PathMatcher().includePaths("/protect", "/css");
+
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/protect"), new MockSessionStore()));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/protected"), new MockSessionStore()));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/protected/index.html"), new MockSessionStore()));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/css/css1.css"), new MockSessionStore()));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/img/logo.gif"), new MockSessionStore()));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/callback"), new MockSessionStore()));
     }
 }

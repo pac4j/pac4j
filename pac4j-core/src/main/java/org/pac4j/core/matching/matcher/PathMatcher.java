@@ -20,10 +20,12 @@ import java.util.regex.Pattern;
  */
 public class PathMatcher implements Matcher {
     private static final Logger logger = LoggerFactory.getLogger(PathMatcher.class);
+    private final Set<String> includedPaths = new HashSet<>();
     private final Set<String> excludedPaths = new HashSet<>();
     private final Set<Pattern> excludedPatterns = new HashSet<>();
 
-    private static boolean warned;
+    private static boolean warnedRegexp;
+    private static boolean warnedInclude;
 
     public PathMatcher() {}
 
@@ -54,6 +56,22 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
+    public PathMatcher includePath(final String path) {
+        warnInclude();
+        validatePath(path);
+        includedPaths.add(path);
+        return this;
+    }
+
+    public PathMatcher includePaths(final String... paths) {
+        if (paths != null && paths.length > 0) {
+            for (final var path : paths) {
+                includePath(path);
+            }
+        }
+        return this;
+    }
+
     /**
      * Convenience method for excluding all paths starting with a prefix e.g. "/foo" would exclude "/foo", "/foo/bar", etc.
      *
@@ -61,7 +79,7 @@ public class PathMatcher implements Matcher {
      * @return this path matcher
      */
     public PathMatcher excludeBranch(final String path) {
-        warn();
+        warnRegexp();
         validatePath(path);
         excludedPatterns.add(Pattern.compile("^" + path + "(/.*)?$"));
         return this;
@@ -74,7 +92,7 @@ public class PathMatcher implements Matcher {
      * @return this path matcher
      */
     public PathMatcher excludeRegex(final String regex) {
-        warn();
+        warnRegexp();
         CommonHelper.assertNotBlank("regex", regex);
 
         if (!regex.startsWith("^") || !regex.endsWith("$")) {
@@ -86,11 +104,19 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
-    protected void warn() {
-        if (!warned) {
+    protected void warnRegexp() {
+        if (!warnedRegexp) {
             logger.warn("Be careful when using the 'excludeBranch' or 'excludeRegex' methods. "
                 + "They use regular expressions and their definitions may be error prone. You could exclude more URLs than expected.");
-            warned = true;
+            warnedRegexp = true;
+        }
+    }
+
+    protected void warnInclude() {
+        if (!warnedInclude) {
+            logger.warn("Be careful when using the 'includePath' or 'includePaths' methods. "
+                + "The security will only apply on these paths. It could not be secure enough.");
+            warnedInclude = true;
         }
     }
 
@@ -100,16 +126,26 @@ public class PathMatcher implements Matcher {
     }
 
     // Returns true if a path should be authenticated, false to skip authentication.
-    boolean matches(final String path) {
+    boolean matches(final String requestPath) {
 
-        logger.debug("path to match: {}", path);
+        logger.debug("request path to match: {}", requestPath);
 
-        if (excludedPaths.contains(path)) {
+        if (!includedPaths.isEmpty()) {
+            for (var path : includedPaths) {
+                if (requestPath != null && requestPath.startsWith(path)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        if (excludedPaths.contains(requestPath)) {
             return false;
         }
 
         for (var pattern : excludedPatterns) {
-            if (pattern.matcher(path).matches()) {
+            if (pattern.matcher(requestPath).matches()) {
                 return false;
             }
         }
@@ -154,6 +190,7 @@ public class PathMatcher implements Matcher {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "excludedPaths", excludedPaths, "excludedPatterns", excludedPatterns);
+        return CommonHelper.toNiceString(this.getClass(), "includedPaths", includedPaths,
+            "excludedPaths", excludedPaths, "excludedPatterns", excludedPatterns);
     }
 }
