@@ -6,7 +6,8 @@ title: Release notes&#58;
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
 - Remove the deprecated `pac4j-jee` module
-- Add flag `checkSessionForFrontChannelLogout` (by default `true`) for `DefaultLogoutHandler`
+- Add the flag `checkSessionForFrontChannelLogout` (by default `true`) for the `DefaultLogoutHandler`
+- Allow to include paths for the `PathMatcher`
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
