@@ -132,6 +132,7 @@ public class PathMatcher implements Matcher {
 
         if (!includedPaths.isEmpty()) {
             for (var path : includedPaths) {
+                // accepts any request path starting with the included path
                 if (requestPath != null && requestPath.startsWith(path)) {
                     return true;
                 }
@@ -140,6 +141,7 @@ public class PathMatcher implements Matcher {
             return false;
         }
 
+        // just exclude the exact matching request path
         if (excludedPaths.contains(requestPath)) {
             return false;
         }

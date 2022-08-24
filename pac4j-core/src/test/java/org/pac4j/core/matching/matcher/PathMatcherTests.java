@@ -119,7 +119,9 @@ public class PathMatcherTests {
         assertTrue(matcher.matches(MockWebContext.create().setPath("/protected"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/protected/index.html"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/css/css1.css"), new MockSessionStore()));
+
         assertFalse(matcher.matches(MockWebContext.create().setPath("/img/logo.gif"), new MockSessionStore()));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/callback"), new MockSessionStore()));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/notprotected"), new MockSessionStore()));
     }
 }
