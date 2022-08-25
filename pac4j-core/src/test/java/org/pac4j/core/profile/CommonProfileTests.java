@@ -1,21 +1,18 @@
 package org.pac4j.core.profile;
 
+import static org.junit.Assert.*;
+
+import java.net.URISyntaxException;
+import java.util.*;
+
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.util.*;
 import org.pac4j.core.util.serializer.JavaSerializer;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link CommonProfile} class.
- *
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -41,6 +38,88 @@ public final class CommonProfileTests implements TestsConstants {
         userProfile.addAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
+    }
+
+    @Test
+    public void testGenderAttribute() {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(CommonProfileDefinition.GENDER, Gender.MALE);
+        assertEquals(Gender.MALE, userProfile.getGender());
+    }
+
+    @Test
+    public void testInvalidGenderAttribute() {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(CommonProfileDefinition.GENDER, "invalid");
+        assertEquals(Gender.UNSPECIFIED, userProfile.getGender());
+    }
+
+    @Test
+    public void testLocaleAttribute() {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(CommonProfileDefinition.LOCALE, Locale.US);
+        assertEquals(Locale.US, userProfile.getLocale());
+    }
+
+    @Test
+    public void testInvalidLocaleAttribute() {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(CommonProfileDefinition.LOCALE, "invalid");
+        assertNull(userProfile.getLocale());
+    }
+
+    @Test
+    public void testPictureURLAttribute() throws URISyntaxException {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        java.net.URI pictureUri = new java.net.URI("http://example.com/picture");
+        userProfile.addAttribute(CommonProfileDefinition.PICTURE_URL, pictureUri);
+        assertEquals(pictureUri, userProfile.getPictureUrl());
+    }
+
+    @Test
+    public void testInvalidPictureURLAttribute() throws URISyntaxException {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(CommonProfileDefinition.PICTURE_URL, "invalid");
+        assertNull(userProfile.getPictureUrl());
+    }
+
+    @Test
+    public void testProfileURLAttribute() throws URISyntaxException {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        java.net.URI profileUri = new java.net.URI("http://example.com/picture");
+        userProfile.addAttribute(CommonProfileDefinition.PROFILE_URL, profileUri);
+        assertEquals(profileUri, userProfile.getProfileUrl());
+    }
+
+    @Test
+    public void testInvalidProfileURLAttribute() {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(CommonProfileDefinition.PROFILE_URL, "invalid");
+        assertNull(userProfile.getProfileUrl());
+    }
+
+    @Test
+    public void testUsernameAttribute() throws URISyntaxException {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(Pac4jConstants.USERNAME, "username");
+        assertEquals("username", userProfile.getUsername());
+    }
+
+    @Test
+    public void testInvalidUsernameAttribute() {
+        final var userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttribute(Pac4jConstants.USERNAME, 1);
+        assertEquals("1", userProfile.getUsername());
     }
 
     @Test
@@ -172,7 +251,7 @@ public final class CommonProfileTests implements TestsConstants {
         final var helper = new JavaSerializer();
         final var profile = new CommonProfile();
         final var s = helper.serializeToString(profile);
-        final var profile2 = (CommonProfile) helper.deserializeFromString(s);
+        final var profile2 = (CommonProfile)helper.deserializeFromString(s);
         assertNotNull(profile2);
     }
 

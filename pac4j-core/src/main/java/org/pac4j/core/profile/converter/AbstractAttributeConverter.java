@@ -28,6 +28,8 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
                     final var element = l.get(0);
                     if (clazz.isAssignableFrom(element.getClass())) {
                         t = element;
+                    }else {
+                        t = internalConvert(element);
                     }
                 }
             } else {
