@@ -3,10 +3,16 @@ package org.pac4j.mongo.profile.service;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.bson.types.ObjectId;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.exception.*;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.MultipleAccountsFoundException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.mongo.profile.MongoProfile;
@@ -116,7 +122,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
 
     @Test
     public void testGoodUsernameNoAttribute() {
-        final var credentials = login(GOOD_USERNAME, PASSWORD, "");
+        final var credentials = login(GOOD_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING);
 
         final var profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -128,20 +134,20 @@ public final class MongoProfileServiceIT implements TestsConstants {
 
     @Test
     public void testMultipleUsername() {
-        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class,
-            "Too many accounts found for: misagh");
+        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING),
+            MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
     }
 
     @Test
     public void testBadUsername() {
-        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class,
+        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING), AccountNotFoundException.class,
             "No account found for: michael");
     }
 
     @Test
     public void testBadPassword() {
-        TestsHelper.expectException(() ->login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class,
-            "Bad credentials for: jle");
+        TestsHelper.expectException(() -> login(GOOD_USERNAME, PASSWORD + "bad",
+                Pac4jConstants.EMPTY_STRING), BadCredentialsException.class, "Bad credentials for: jle");
     }
 
     @Test

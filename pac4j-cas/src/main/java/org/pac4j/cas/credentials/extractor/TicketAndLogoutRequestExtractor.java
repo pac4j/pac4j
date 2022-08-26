@@ -1,26 +1,26 @@
 package org.pac4j.cas.credentials.extractor;
 
-import java.util.Base64;
-
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.http.NoContentAction;
-import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.NoContentAction;
+import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Base64;
 import java.util.Optional;
 import java.util.zip.Inflater;
 
@@ -153,7 +153,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
             throw HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
         } else {
-            throw new OkAction("");
+            throw new OkAction(Pac4jConstants.EMPTY_STRING);
         }
     }
 }

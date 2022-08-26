@@ -5,11 +5,15 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
@@ -189,7 +193,7 @@ public class JEEContext implements WebContext {
         var fullPath = request.getRequestURI();
         // it shouldn't be null, but in case it is, it's better to return empty string
         if (fullPath == null) {
-            return "";
+            return Pac4jConstants.EMPTY_STRING;
         }
         // very strange use case
         if (fullPath.startsWith("//")) {
@@ -209,7 +213,7 @@ public class JEEContext implements WebContext {
             try {
                 body = request.getReader()
                     .lines()
-                    .reduce("", String::concat);
+                    .reduce(Pac4jConstants.EMPTY_STRING, String::concat);
             } catch (final IOException e) {
                 throw new TechnicalException(e);
             }

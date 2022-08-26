@@ -9,6 +9,7 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.http.credentials.DigestCredentials;
 
 import java.util.HashMap;
@@ -86,7 +87,7 @@ public class DigestAuthExtractor implements CredentialsExtractor {
             if (keyval.contains("=")) {
                 var key = keyval.substring(0, keyval.indexOf("="));
                 var value = keyval.substring(keyval.indexOf("=") + 1);
-                map.put(key.trim(), value.replaceAll("\"", "").trim());
+                map.put(key.trim(), value.replaceAll("\"", Pac4jConstants.EMPTY_STRING).trim());
             }
         }
         return map;

@@ -1,16 +1,5 @@
 package org.pac4j.scribe.builder.api;
 
-import java.io.OutputStream;
-import java.util.Map;
-
-import com.github.scribejava.core.oauth2.bearersignature.BearerSignature;
-import com.github.scribejava.core.oauth2.bearersignature.BearerSignatureURIQueryParameter;
-import com.github.scribejava.core.oauth2.clientauthentication.ClientAuthentication;
-import com.github.scribejava.core.oauth2.clientauthentication.RequestBodyAuthenticationScheme;
-import org.pac4j.oauth.client.WechatClient;
-import org.pac4j.scribe.extractors.WechatJsonExtractor;
-import org.pac4j.scribe.service.WechatService;
-
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.extractors.TokenExtractor;
 import com.github.scribejava.core.httpclient.HttpClient;
@@ -19,6 +8,17 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import com.github.scribejava.core.oauth2.bearersignature.BearerSignature;
+import com.github.scribejava.core.oauth2.bearersignature.BearerSignatureURIQueryParameter;
+import com.github.scribejava.core.oauth2.clientauthentication.ClientAuthentication;
+import com.github.scribejava.core.oauth2.clientauthentication.RequestBodyAuthenticationScheme;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.oauth.client.WechatClient;
+import org.pac4j.scribe.extractors.WechatJsonExtractor;
+import org.pac4j.scribe.service.WechatService;
+
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * This class represents the OAuth API implementation for Tencent Wechat using OAuth protocol version 2.
@@ -71,7 +71,7 @@ public class WechatApi20 extends DefaultApi20 {
 
     @Override
     protected String getAuthorizationBaseUrl() {
-        return "";
+        return Pac4jConstants.EMPTY_STRING;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.pac4j.core.exception.http;
 
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.util.Pac4jConstants;
 
 /**
  * A no content HTTP action.
@@ -19,6 +20,6 @@ public class NoContentAction extends HttpAction implements WithContentAction {
 
     @Override
     public String getContent() {
-        return "";
+        return Pac4jConstants.EMPTY_STRING;
     }
 }

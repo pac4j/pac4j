@@ -1,8 +1,8 @@
 package org.pac4j.core.util;
 
-import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.exception.http.*;
 
 /**
@@ -30,12 +30,12 @@ public final class HttpActionHelper {
             if (!hasHeader) {
                 context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"pac4j\"");
             }
-            return UnauthorizedAction.INSTANCE;
+            return new UnauthorizedAction();
         } else {
             if (hasHeader) {
-                return UnauthorizedAction.INSTANCE;
+                return new UnauthorizedAction();
             } else {
-                return ForbiddenAction.INSTANCE;
+                return new ForbiddenAction();
             }
         }
     }

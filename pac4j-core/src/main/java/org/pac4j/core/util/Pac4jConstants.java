@@ -94,4 +94,6 @@ public interface Pac4jConstants {
 
     /** The default client name parameter used for security */
     String DEFAULT_FORCE_CLIENT_PARAMETER = "force_client";
+
+    String EMPTY_STRING = "";
 }

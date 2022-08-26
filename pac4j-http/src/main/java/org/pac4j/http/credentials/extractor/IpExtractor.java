@@ -6,6 +6,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +27,7 @@ public class IpExtractor implements CredentialsExtractor {
 
     private List<String> alternateIpHeaders = Collections.emptyList();
 
-    private String proxyIp = "";
+    private String proxyIp = Pac4jConstants.EMPTY_STRING;
 
     public IpExtractor() {}
 
@@ -84,7 +85,7 @@ public class IpExtractor implements CredentialsExtractor {
      * @since 2.1.0
      */
     public void setProxyIp(String proxyIp) {
-        this.proxyIp = proxyIp == null ? "" : proxyIp;
+        this.proxyIp = proxyIp == null ? Pac4jConstants.EMPTY_STRING : proxyIp;
     }
 
     /**

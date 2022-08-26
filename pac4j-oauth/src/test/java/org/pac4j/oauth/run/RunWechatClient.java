@@ -42,7 +42,7 @@ public final class RunWechatClient extends RunClient {
 
     @Override
     protected String getPassword() {
-        return "";
+        return Pac4jConstants.EMPTY_STRING;
     }
 
     @Override

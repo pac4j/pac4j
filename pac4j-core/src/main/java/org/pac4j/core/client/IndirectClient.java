@@ -1,9 +1,7 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -17,6 +15,8 @@ import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
+import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
 
@@ -101,7 +101,7 @@ public abstract class IndirectClient extends BaseClient {
         }
         // authentication has already been tried -> unauthorized
         final var attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
-        if (attemptedAuth.isPresent() && !"".equals(attemptedAuth.get())) {
+        if (attemptedAuth.isPresent() && !Pac4jConstants.EMPTY_STRING.equals(attemptedAuth.get())) {
             logger.debug("authentication already attempted -> 401");
             cleanAttemptedAuthentication(context, sessionStore);
             cleanRequestedUrl(context, sessionStore);

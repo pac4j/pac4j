@@ -6,16 +6,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link DefaultSecurityClientFinder}.
@@ -199,7 +200,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         final var client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         final var clients = new Clients(client1);
-        final var result = finder.find(clients, MockWebContext.create(), "");
+        final var result = finder.find(clients, MockWebContext.create(), Pac4jConstants.EMPTY_STRING);
         assertEquals(0, result.size());
     }
 }

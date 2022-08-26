@@ -26,6 +26,6 @@ public class OkAction extends RedirectionAction implements WithContentAction {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(FoundAction.class, "code", this.code, "content", content);
+        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "content", content);
     }
 }

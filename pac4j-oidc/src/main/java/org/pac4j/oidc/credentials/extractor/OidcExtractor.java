@@ -24,11 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Extract the authorization code on the callback.
@@ -69,7 +65,7 @@ public class OidcExtractor implements CredentialsExtractor {
                     configuration.findLogoutHandler().destroySessionBack(context, sessionStore, sid);
                 } catch (final java.text.ParseException e) {
                     logger.error("Cannot validate JWT logout token", e);
-                    throw BadRequestAction.INSTANCE;
+                    throw new BadRequestAction();
                 }
             } else {
                 final var sid = context.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
@@ -79,7 +75,7 @@ public class OidcExtractor implements CredentialsExtractor {
             }
             context.setResponseHeader("Cache-Control", "no-cache, no-store");
             context.setResponseHeader("Pragma", "no-cache");
-            throw new OkAction("");
+            throw new OkAction(Pac4jConstants.EMPTY_STRING);
         } else {
             final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
             final var parameters = retrieveParameters(context);

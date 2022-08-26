@@ -4,16 +4,17 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
-
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * Represents the profile definitions on Ok.ru (Odnoklassniki.ru)
@@ -61,7 +62,7 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
         final String finalSign;
         try {
             final var preSign = getMD5SignAsHexString(accessToken + configuration.getSecret());
-            finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
+            finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", Pac4jConstants.EMPTY_STRING) + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return null;

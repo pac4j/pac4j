@@ -1,10 +1,10 @@
 package org.pac4j.core.authorization.authorizer;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +59,9 @@ public class CsrfAuthorizer implements Authorizer {
             // all checks are always performed, conditional operations are turned into logical ones,
             // string comparisons are replaced by hash equalities to be protected against time-based attacks
             final var hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
-            final var previousToken = (String) sessionPreviousToken.orElse("");
+            final var previousToken = (String) sessionPreviousToken.orElse(Pac4jConstants.EMPTY_STRING);
             LOGGER.debug("previous token: {}", previousToken);
-            final var token = (String) sessionToken.orElse("");
+            final var token = (String) sessionToken.orElse(Pac4jConstants.EMPTY_STRING);
             LOGGER.debug("token: {}", token);
             final var isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
             final var isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);

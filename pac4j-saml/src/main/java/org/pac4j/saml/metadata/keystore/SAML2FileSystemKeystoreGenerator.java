@@ -3,14 +3,10 @@ package org.pac4j.saml.metadata.keystore;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -110,7 +106,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
         if (CommonHelper.isNotBlank(saml2Configuration.getCertificateNameToAppend())) {
             certName.append('-');
             certName.append(NORMALIZE_PATTERN.matcher(saml2Configuration.getCertificateNameToAppend())
-                .replaceAll(""));
+                .replaceAll(Pac4jConstants.EMPTY_STRING));
         }
         return certName.toString();
     }

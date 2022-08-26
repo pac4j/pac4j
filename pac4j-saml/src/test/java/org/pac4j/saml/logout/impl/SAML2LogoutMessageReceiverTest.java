@@ -13,6 +13,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
@@ -59,7 +60,7 @@ public class SAML2LogoutMessageReceiverTest {
     public void shouldAcceptLogoutResponseWithNoRedirect() {
         var webContext = getMockWebContext();
         var context = getSaml2MessageContext(webContext);
-        SAML2ResponseValidator validator = getLogoutValidator("");
+        SAML2ResponseValidator validator = getLogoutValidator(Pac4jConstants.EMPTY_STRING);
 
         var unit = new SAML2LogoutMessageReceiver(validator, context.getSAML2Configuration());
         try {
@@ -69,7 +70,7 @@ public class SAML2LogoutMessageReceiverTest {
             fail(e.getMessage());
         } catch (OkAction e) {
             assertTrue("SAML2LogoutMessageReceiver processed the logout message successfully", true);
-            MatcherAssert.assertThat(e.getContent(), is(""));
+            MatcherAssert.assertThat(e.getContent(), is(Pac4jConstants.EMPTY_STRING));
         }
     }
 
@@ -77,7 +78,7 @@ public class SAML2LogoutMessageReceiverTest {
     public void shouldAcceptLogoutResponseWithNoActionOnSuccess() {
         var webContext = getMockWebContext();
         var context = getSaml2MessageContext(webContext);
-        var validator = getLogoutValidator("");
+        var validator = getLogoutValidator(Pac4jConstants.EMPTY_STRING);
         validator.setActionOnSuccess(false);
 
         var unit = new SAML2LogoutMessageReceiver(validator, getSaml2Configuration());

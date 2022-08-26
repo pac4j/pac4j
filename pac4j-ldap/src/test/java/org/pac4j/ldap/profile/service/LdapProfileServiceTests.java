@@ -9,6 +9,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.ldap.profile.LdapProfile;
@@ -71,7 +72,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void testBlankUsersDn() {
-        final var ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "");
+        final var ldapProfileService = new LdapProfileService(connectionFactory, authenticator, Pac4jConstants.EMPTY_STRING);
         TestsHelper.expectException(ldapProfileService::init, TechnicalException.class, "usersDn cannot be blank");
     }
 
@@ -86,7 +87,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     @Test
     public void authentSuccessNoAttribute() {
         final var ldapProfileService =
-            new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
+            new LdapProfileService(connectionFactory, authenticator, Pac4jConstants.EMPTY_STRING, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         ldapProfileService.validate(credentials, null, null);

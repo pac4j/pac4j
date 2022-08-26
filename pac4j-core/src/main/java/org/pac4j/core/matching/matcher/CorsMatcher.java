@@ -4,6 +4,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class CorsMatcher implements Matcher {
         }
 
         if (maxAge != -1) {
-            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_MAX_AGE_HEADER, "" + maxAge);
+            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_MAX_AGE_HEADER, Pac4jConstants.EMPTY_STRING + maxAge);
         }
 
         if (allowCredentials != null && allowCredentials) {

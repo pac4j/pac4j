@@ -1,6 +1,7 @@
 package org.pac4j.oauth.profile.facebook.converter;
 
 import org.pac4j.core.profile.converter.AttributeConverter;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 
 /**
@@ -17,7 +18,7 @@ public final class FacebookRelationshipStatusConverter implements AttributeConve
             if (attribute instanceof String) {
                 var s = ((String) attribute).toLowerCase();
                 s = s.replaceAll("_", " ");
-                s = s.replaceAll("'", "");
+                s = s.replaceAll("'", Pac4jConstants.EMPTY_STRING);
                 if ("single".equals(s)) {
                     return FacebookRelationshipStatus.SINGLE;
                 } else if ("in a relationship".equals(s)) {

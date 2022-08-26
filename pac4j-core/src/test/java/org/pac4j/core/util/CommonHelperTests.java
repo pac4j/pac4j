@@ -38,7 +38,7 @@ public final class CommonHelperTests {
 
     @Test
     public void testIsNotBlankEmply() {
-        assertFalse(CommonHelper.isNotBlank(""));
+        assertFalse(CommonHelper.isNotBlank(Pac4jConstants.EMPTY_STRING));
     }
 
     @Test
@@ -54,7 +54,7 @@ public final class CommonHelperTests {
     @Test
     public void testAssertNotBlankBlank() {
         try {
-            CommonHelper.assertNotBlank(NAME, "");
+            CommonHelper.assertNotBlank(NAME, Pac4jConstants.EMPTY_STRING);
             fail("must throw an TechnicalException");
         } catch (final TechnicalException e) {
             assertEquals(NAME + " cannot be blank", e.getMessage());

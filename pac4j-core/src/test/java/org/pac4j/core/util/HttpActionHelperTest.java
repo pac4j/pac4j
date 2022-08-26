@@ -7,7 +7,8 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link HttpActionHelper}.
@@ -100,7 +101,7 @@ public final class HttpActionHelperTest implements TestsConstants {
         final WebContext context = MockWebContext.create();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, VALUE);
         final var action = HttpActionHelper.buildUnauthenticatedAction(context);
-        assertEquals(UnauthorizedAction.INSTANCE, action);
+        assertTrue(action instanceof UnauthorizedAction);
         assertEquals(VALUE, context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
 
@@ -108,7 +109,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     public void testBuildUnauthenticated401WithoutHeader() {
         final WebContext context = MockWebContext.create();
         final var action = HttpActionHelper.buildUnauthenticatedAction(context);
-        assertEquals(UnauthorizedAction.INSTANCE, action);
+        assertTrue(action instanceof UnauthorizedAction);
         assertEquals("Bearer realm=\"pac4j\"", context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
 
@@ -118,7 +119,7 @@ public final class HttpActionHelperTest implements TestsConstants {
         final WebContext context = MockWebContext.create();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, VALUE);
         final var action = HttpActionHelper.buildUnauthenticatedAction(context);
-        assertEquals(UnauthorizedAction.INSTANCE, action);
+        assertTrue(action instanceof UnauthorizedAction);
         assertEquals(VALUE, context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
 
@@ -127,7 +128,7 @@ public final class HttpActionHelperTest implements TestsConstants {
         HttpActionHelper.setAlwaysUse401ForUnauthenticated(false);
         final WebContext context = MockWebContext.create();
         final var action = HttpActionHelper.buildUnauthenticatedAction(context);
-        assertEquals(ForbiddenAction.INSTANCE, action);
+        assertTrue(action instanceof ForbiddenAction);
         assertTrue(context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isEmpty());
     }
 }

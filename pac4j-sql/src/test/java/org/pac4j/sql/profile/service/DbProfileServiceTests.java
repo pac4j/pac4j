@@ -1,10 +1,14 @@
 package org.pac4j.sql.profile.service;
 
-import org.junit.*;
-import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.service.AbstractProfileService;
-import org.pac4j.core.util.TestsConstants;
+import org.junit.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.MultipleAccountsFoundException;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.sql.profile.DbProfile;
 import org.pac4j.sql.test.tools.DbServer;
@@ -12,7 +16,6 @@ import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
 import javax.sql.DataSource;
-
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +76,7 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testGoodUsernameNoAttribute() {
-        final var credentials =  login(GOOD_USERNAME, PASSWORD, "");
+        final var credentials =  login(GOOD_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING);
 
         final var profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -85,26 +88,26 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testMultipleUsername() {
-        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class,
-            "Too many accounts found for: misagh");
+        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING),
+            MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
     }
 
     @Test
     public void testBadUsername() {
-        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class,
+        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING), AccountNotFoundException.class,
             "No account found for: michael");
     }
 
     @Test
     public void testBadPassword() {
-        TestsHelper.expectException(() -> login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class,
-            "Bad credentials for: jle");
+        TestsHelper.expectException(() -> login(GOOD_USERNAME, PASSWORD + "bad", Pac4jConstants.EMPTY_STRING),
+            BadCredentialsException.class, "Bad credentials for: jle");
     }
 
     @Test
     public void testCreateUpdateFindDelete() {
         final var profile = new DbProfile();
-        profile.setId("" + DB_ID);
+        profile.setId(Pac4jConstants.EMPTY_STRING + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
         final var dbProfileService = new DbProfileService(ds);
@@ -127,8 +130,8 @@ public final class DbProfileServiceTests implements TestsConstants {
         assertTrue(DbServer.PASSWORD_ENCODER.matches(DB_PASS, (String) result.get(PASSWORD)));
         assertEquals(DB_USER, result.get(USERNAME));
         // findById
-        final var profile2 = dbProfileService.findById("" + DB_ID);
-        assertEquals("" + DB_ID, profile2.getId());
+        final var profile2 = dbProfileService.findById(Pac4jConstants.EMPTY_STRING + DB_ID);
+        assertEquals(Pac4jConstants.EMPTY_STRING + DB_ID, profile2.getId());
         assertEquals(DB_LINKED_ID, profile2.getLinkedId());
         assertEquals(DB_USER, profile2.getUsername());
         assertEquals(1, profile2.getAttributes().size());
@@ -158,7 +161,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.setPasswordAttribute(ALT_PASS_ATT);
         dbProfileService.setUsernameAttribute(ALT_USER_ATT);
         final var profile = new DbProfile();
-        profile.setId("" + DB_ID);
+        profile.setId(Pac4jConstants.EMPTY_STRING + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
         // create

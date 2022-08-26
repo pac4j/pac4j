@@ -1,5 +1,7 @@
 package org.pac4j.core.context;
 
+import org.pac4j.core.util.Pac4jConstants;
+
 import java.util.*;
 
 import static org.pac4j.core.context.HttpConstants.*;
@@ -34,11 +36,11 @@ public final class MockWebContext implements WebContext {
 
     protected final Collection<Cookie> requestCookies = new LinkedHashSet<>();
 
-    protected String path = "";
+    protected String path = Pac4jConstants.EMPTY_STRING;
 
     protected String requestContent;
 
-    protected String responseContent = "";
+    protected String responseContent = Pac4jConstants.EMPTY_STRING;
 
     protected int responseStatus = -1;
 
