@@ -48,6 +48,17 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
     }
 
     @Test
+    public void buildNoParameters() {
+        SecurityEndpointBuilder.buildConfig(endpoint, config);
+
+        assertNull(endpoint.getClients());
+        assertNull(endpoint.getAuthorizers());
+        assertNull(endpoint.getMatchers());
+        assertNull(endpoint.getSecurityLogic());
+        assertNull(endpoint.getHttpActionAdapter());
+    }
+
+    @Test
     public void buildSimpleStringConfig() {
         SecurityEndpointBuilder.buildConfig(endpoint, config, CLIENT1, AUTHORIZER1, MATCHER1);
 
