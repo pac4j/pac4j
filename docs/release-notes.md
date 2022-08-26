@@ -10,6 +10,7 @@ title: Release notes&#58;
 - Allow to include paths for the `PathMatcher`
 - Add the `Pac4jConstants.EMPTY_STRING` constant
 - Can set the content on the `BadRequestAction`, `ForbiddenAction`, `StatusAction` and `UnauthorizedAction` actions
+- Add the new concept of `SessionStoreFactory` to replace any direct `SessionStore` instantation
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
