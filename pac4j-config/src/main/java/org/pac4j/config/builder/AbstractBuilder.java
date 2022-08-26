@@ -2,6 +2,7 @@ package org.pac4j.config.builder;
 
 import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
@@ -36,7 +37,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     }
 
     protected String concat(final String value, int num) {
-        return value.concat(num == 0 ? "" : "." + num);
+        return value.concat(num == 0 ? Pac4jConstants.EMPTY_STRING : "." + num);
     }
 
     protected String getProperty(final String name) {

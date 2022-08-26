@@ -2,14 +2,15 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.FoursquareClient;
-import org.pac4j.oauth.profile.foursquare.*;
+import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Run manually a test for the {@link FoursquareClient}.
@@ -57,6 +58,6 @@ public class RunFoursquareClient extends RunClient {
                 Gender.UNSPECIFIED,
                 null,
                 "https://igx.4sqi.net/img/user/original/blank_boy.png",
-                "https://foursquare.com/user/81827700", "");
+                "https://foursquare.com/user/81827700", Pac4jConstants.EMPTY_STRING);
     }
 }

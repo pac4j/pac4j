@@ -1,17 +1,18 @@
 package org.pac4j.cas.client;
 
-import java.util.concurrent.TimeUnit;
-
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
-
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import java.util.concurrent.TimeUnit;
+
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 /**
  * <p>This class is the CAS proxy receptor.</p>
@@ -49,7 +50,7 @@ public final class CasProxyReceptor extends IndirectClient {
 
             if (!proxyGrantingTicket.isPresent() || !proxyGrantingTicketIou.isPresent()) {
                 logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
-                throw new OkAction("");
+                throw new OkAction(Pac4jConstants.EMPTY_STRING);
             }
 
             this.store.set(proxyGrantingTicketIou.get(), proxyGrantingTicket.get());

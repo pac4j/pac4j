@@ -239,7 +239,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     @Test
     public void testCsrfTokenDefault() {
         final var context = MockWebContext.create();
-        assertTrue(checker.matches(context, new MockSessionStore(), "", new HashMap<>(), new ArrayList<>()));
+        assertTrue(checker.matches(context, new MockSessionStore(), Pac4jConstants.EMPTY_STRING, new HashMap<>(), new ArrayList<>()));
         assertFalse(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -249,7 +249,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.getSessionId(context, true);
-        assertTrue(checker.matches(context, sessionStore, "", new HashMap<>(), new ArrayList<>()));
+        assertTrue(checker.matches(context, sessionStore, Pac4jConstants.EMPTY_STRING, new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -259,7 +259,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final var context = MockWebContext.create();
         final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
-        assertTrue(checker.matches(context, new MockSessionStore(), "", new HashMap<>(), clients));
+        assertTrue(checker.matches(context, new MockSessionStore(), Pac4jConstants.EMPTY_STRING, new HashMap<>(), clients));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -274,8 +274,8 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testComputeMatchers() {
-        assertEquals(SECURITY_HEADERS_MATCHERS,
-            checker.computeMatchers(MockWebContext.create(), new MockSessionStore(), "" , new HashMap<>(), new ArrayList<>()));
+        assertEquals(SECURITY_HEADERS_MATCHERS, checker.computeMatchers(MockWebContext.create(), new MockSessionStore(),
+            Pac4jConstants.EMPTY_STRING , new HashMap<>(), new ArrayList<>()));
     }
 
     @Test

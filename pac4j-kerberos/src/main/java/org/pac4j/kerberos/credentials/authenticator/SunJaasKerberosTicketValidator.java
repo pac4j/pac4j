@@ -5,6 +5,7 @@ import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
+import org.pac4j.core.util.Pac4jConstants;
 import org.springframework.core.io.Resource;
 
 import javax.security.auth.Subject;
@@ -69,7 +70,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             Set<Principal> princ = new HashSet<>(1);
             princ.add(new KerberosPrincipal(this.servicePrincipal));
             var sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
-            var lc = new LoginContext("", sub, null, loginConfig);
+            var lc = new LoginContext(Pac4jConstants.EMPTY_STRING, sub, null, loginConfig);
             lc.login();
             this.serviceSubject = lc.getSubject();
         } catch (final LoginException | IOException e) {

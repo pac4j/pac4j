@@ -11,15 +11,15 @@ import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.exception.http.SeeOtherAction;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.SeeOtherAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -92,7 +92,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testBlankDefaultUrl() {
-        defaultUrl = "";
+        defaultUrl = Pac4jConstants.EMPTY_STRING;
         TestsHelper.expectException(this::call, TechnicalException.class, "defaultUrl cannot be blank");
     }
 

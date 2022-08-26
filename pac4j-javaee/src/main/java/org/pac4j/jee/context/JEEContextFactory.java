@@ -17,6 +17,8 @@ public class JEEContextFactory implements WebContextFactory {
 
     @Override
     public JEEContext newContext(final Object... parameters) {
-        return new JEEContext((HttpServletRequest) parameters[0], (HttpServletResponse) parameters[1]);
+        var request = (HttpServletRequest) parameters[0];
+        var response = (HttpServletResponse) parameters[1];
+        return new JEEContext(request, response);
     }
 }

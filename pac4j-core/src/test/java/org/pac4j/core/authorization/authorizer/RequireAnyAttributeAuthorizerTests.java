@@ -7,11 +7,13 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link RequireAnyAttributeAuthorizer}.
@@ -36,7 +38,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testAttributeNotFound() {
-        final var authorizer = new RequireAnyAttributeAuthorizer("");
+        final var authorizer = new RequireAnyAttributeAuthorizer(Pac4jConstants.EMPTY_STRING);
         authorizer.setElements("name1");
         profile.addAttribute("name2", "anything-goes-here");
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -44,7 +46,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testNoValueProvided() {
-        final var authorizer = new RequireAnyAttributeAuthorizer("");
+        final var authorizer = new RequireAnyAttributeAuthorizer(Pac4jConstants.EMPTY_STRING);
         authorizer.setElements("name1");
         profile.addAttribute("name1", "anything-goes-here");
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));

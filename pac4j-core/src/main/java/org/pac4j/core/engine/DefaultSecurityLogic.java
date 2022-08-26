@@ -15,8 +15,8 @@ import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
@@ -24,7 +24,8 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -192,7 +193,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      */
     protected HttpAction forbidden(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients,
                                    final List<UserProfile> profiles, final String authorizers) {
-        return ForbiddenAction.INSTANCE;
+        return new ForbiddenAction();
     }
 
     /**

@@ -9,7 +9,9 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
-import org.pac4j.core.context.*;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -55,7 +57,8 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testBlankAuthorizerNameAProfile() {
-        assertTrue(checker.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles, "", new HashMap<>(), new ArrayList<>()));
+        assertTrue(checker.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles,
+            Pac4jConstants.EMPTY_STRING, new HashMap<>(), new ArrayList<>()));
     }
 
     @Test
@@ -168,8 +171,8 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testZeroAuthorizers() {
         assertTrue(checker.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles, new ArrayList<>()));
-        assertTrue(checker.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles, "", new HashMap<>(),
-            new ArrayList<>()));
+        assertTrue(checker.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles,
+            Pac4jConstants.EMPTY_STRING, new HashMap<>(), new ArrayList<>()));
     }
 
     @Test

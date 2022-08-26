@@ -20,16 +20,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
-import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
-import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
-import org.pac4j.saml.metadata.SAML2MetadataGenerator;
-import org.pac4j.saml.metadata.SAML2MetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataSigner;
-import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
-import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
+import org.pac4j.saml.metadata.*;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
@@ -50,12 +41,7 @@ import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -300,7 +286,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
             if (CommonHelper.isBlank(getServiceProviderEntityId())) {
                 final var url = new URL(callbackUrl);
                 if (url.getQuery() != null) {
-                    setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), ""));
+                    setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), Pac4jConstants.EMPTY_STRING));
                 } else {
                     setServiceProviderEntityId(url.toString());
                 }

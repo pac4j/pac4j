@@ -1,12 +1,13 @@
 package org.pac4j.oauth.profile.vk;
 
+import org.pac4j.core.profile.Gender;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.oauth.profile.OAuth20Profile;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
-
-import org.pac4j.core.profile.Gender;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
  * <p>This class is the user profile for Vk with appropriate getters.</p>
@@ -44,7 +45,7 @@ public class VkProfile extends OAuth20Profile {
 
     @Override
     public String getEmail() {
-        return "";
+        return Pac4jConstants.EMPTY_STRING;
     }
 
     @Override

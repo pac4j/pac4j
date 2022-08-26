@@ -1,19 +1,19 @@
 package org.pac4j.oidc.logout;
 
 import com.nimbusds.openid.connect.sdk.LogoutRequest;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.logout.LogoutActionBuilder;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
+import org.pac4j.core.logout.LogoutActionBuilder;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
 
@@ -57,7 +57,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                 if (ajaxRequestResolver.isAjax(context, sessionStore)) {
                     sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
                     context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
-                    throw ForbiddenAction.INSTANCE;
+                    throw new ForbiddenAction();
                 }
 
                 return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, logoutRequest.toURI().toString()));

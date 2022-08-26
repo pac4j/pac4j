@@ -5,11 +5,12 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.WithContentAction;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -18,8 +19,8 @@ import java.util.Base64;
 import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
-
-import static org.pac4j.core.context.HttpConstants.*;
+import static org.pac4j.core.context.HttpConstants.FOUND;
+import static org.pac4j.core.context.HttpConstants.HTTP_METHOD;
 
 /**
  * This class tests the {@link CasClient} class.
@@ -189,7 +190,7 @@ public final class CasClientTests implements TestsConstants {
                 .setRequestMethod(HTTP_METHOD.GET.name());
         final var action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(200, action.getCode());
-        assertEquals("", ((WithContentAction) action).getContent());
+        assertEquals(Pac4jConstants.EMPTY_STRING, ((WithContentAction) action).getContent());
     }
 
     @Test

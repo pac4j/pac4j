@@ -225,7 +225,7 @@ public final class CommonProfileTests implements TestsConstants {
     @Test
     public void testBlankRole() {
         final var profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.addRole(""), TechnicalException.class, "role cannot be blank");
+        TestsHelper.expectException(() -> profile.addRole(Pac4jConstants.EMPTY_STRING), TechnicalException.class, "role cannot be blank");
     }
 
     @Test
@@ -237,7 +237,8 @@ public final class CommonProfileTests implements TestsConstants {
     @Test
     public void testBlankPermission() {
         final var profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.addPermission(""), TechnicalException.class, "permission cannot be blank");
+        TestsHelper.expectException(() -> profile.addPermission(Pac4jConstants.EMPTY_STRING),
+            TechnicalException.class, "permission cannot be blank");
     }
 
     @Test

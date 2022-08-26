@@ -2,9 +2,10 @@ package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.credentials.extractor.HeaderExtractor;
+import org.pac4j.core.util.Pac4jConstants;
 
 /**
  * <p>This class is the client to authenticate users directly based on a provided header.</p>
@@ -14,9 +15,9 @@ import org.pac4j.core.credentials.extractor.HeaderExtractor;
  */
 public class HeaderClient extends DirectClient {
 
-    private String headerName = "";
+    private String headerName = Pac4jConstants.EMPTY_STRING;
 
-    private String prefixHeader = "";
+    private String prefixHeader = Pac4jConstants.EMPTY_STRING;
 
     public HeaderClient() {}
 

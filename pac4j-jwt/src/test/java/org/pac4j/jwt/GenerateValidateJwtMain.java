@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.util.JWKHelper;
@@ -16,8 +17,8 @@ import java.security.interfaces.RSAPublicKey;
 
 public class GenerateValidateJwtMain {
 
-    private static final String JWT = "";
-    private static final String JWK = "";
+    private static final String JWT = Pac4jConstants.EMPTY_STRING;
+    private static final String JWK = Pac4jConstants.EMPTY_STRING;
 
     public static void main(String... args) throws Exception {
         generate();

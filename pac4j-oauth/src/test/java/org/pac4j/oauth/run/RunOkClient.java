@@ -2,9 +2,9 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.OkClient;
@@ -12,7 +12,8 @@ import org.pac4j.oauth.profile.ok.OkProfile;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Run manually a test for the {@link OkClient}.
@@ -38,15 +39,15 @@ public final class RunOkClient extends RunClient {
     /**
      * Real profile first name.
      */
-    private static final String TEST_FIRST_NAME = "";
+    private static final String TEST_FIRST_NAME = Pac4jConstants.EMPTY_STRING;
     /**
      * Real profile last name.
      */
-    private static final String TEST_LAST_NAME = "";
+    private static final String TEST_LAST_NAME = Pac4jConstants.EMPTY_STRING;
     /**
      * Real profile picture url.
      */
-    private static final String TEST_PROFILE_PICTURE_URL = "";
+    private static final String TEST_PROFILE_PICTURE_URL = Pac4jConstants.EMPTY_STRING;
 
     public static void main(String[] args) {
         new RunOkClient().run();

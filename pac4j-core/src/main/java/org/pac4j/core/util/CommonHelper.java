@@ -4,7 +4,9 @@ import org.pac4j.core.exception.TechnicalException;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
-import java.net.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
@@ -116,7 +118,7 @@ public final class CommonHelper {
      * @param msg   an expanatory message
      */
     public static void assertNotBlank(final String name, final String value, final String msg) {
-        assertTrue(!isBlank(value), name + " cannot be blank" + (msg != null ? ": " + msg : ""));
+        assertTrue(!isBlank(value), name + " cannot be blank" + (msg != null ? ": " + msg : Pac4jConstants.EMPTY_STRING));
     }
 
     /**
@@ -230,7 +232,7 @@ public final class CommonHelper {
     public static String randomString(final int size) {
         final var builder = new StringBuilder();
         while (builder.length() < size) {
-            final var suffix = java.util.UUID.randomUUID().toString().replace("-", "");
+            final var suffix = java.util.UUID.randomUUID().toString().replace("-", Pac4jConstants.EMPTY_STRING);
             builder.append(suffix);
         }
         return builder.substring(0, size);
@@ -264,7 +266,6 @@ public final class CommonHelper {
      * Taken from commons-lang3
      */
 
-    private static final String EMPTY = "";
     private static final int INDEX_NOT_FOUND = -1;
 
     public static String substringBetween(final String str, final String open, final String close) {
@@ -286,11 +287,11 @@ public final class CommonHelper {
             return str;
         }
         if (separator == null) {
-            return EMPTY;
+            return Pac4jConstants.EMPTY_STRING;
         }
         var pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
-            return EMPTY;
+            return Pac4jConstants.EMPTY_STRING;
         }
         return str.substring(pos + separator.length());
     }
@@ -300,7 +301,7 @@ public final class CommonHelper {
             return str;
         }
         if (separator.length() == 0) {
-            return EMPTY;
+            return Pac4jConstants.EMPTY_STRING;
         }
         var pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {

@@ -6,8 +6,11 @@ title: Release notes&#58;
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
 - Remove the deprecated `pac4j-jee` module
-- Add the flag `checkSessionForFrontChannelLogout` (by default `true`) for the `DefaultLogoutHandler`
 - Allow to include paths for the `PathMatcher`
+- Add the `Pac4jConstants.EMPTY_STRING` constant
+- Can set the content on the `BadRequestAction`, `ForbiddenAction`, `StatusAction` and `UnauthorizedAction` actions
+- Add the new concept of `SessionStoreFactory` to replace any direct `SessionStore` instantation
+- Add a `SecurityEndpointBuilder` to help build configuration for security endpoints from multiple parameters
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.

@@ -2,12 +2,14 @@ package org.pac4j.core.authorization.generator;
 
 import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.Properties;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests {@link SpringSecurityPropertiesAuthorizationGenerator}.
@@ -32,7 +34,7 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
 
     @Test
     public void testOnlyPassword() {
-        final var roles = test("");
+        final var roles = test(Pac4jConstants.EMPTY_STRING);
         assertEquals(0, roles.size());
     }
 

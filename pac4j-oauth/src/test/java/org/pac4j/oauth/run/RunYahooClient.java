@@ -2,14 +2,14 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.YahooClient;
-import org.pac4j.oauth.profile.yahoo.*;
+import org.pac4j.oauth.profile.yahoo.YahooProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -67,10 +67,10 @@ public final class RunYahooClient extends RunClient {
         assertEquals(3, address.getId().intValue());
         assertTrue(address.getCurrent());
         assertEquals(Locale.FRENCH, address.getCountry());
-        assertEquals("", address.getState());
-        assertEquals("", address.getCity());
+        assertEquals(Pac4jConstants.EMPTY_STRING, address.getState());
+        assertEquals(Pac4jConstants.EMPTY_STRING, address.getCity());
         assertEquals("78400", address.getPostalCode());
-        assertEquals("", address.getStreet());
+        assertEquals(Pac4jConstants.EMPTY_STRING, address.getStreet());
         assertEquals("HOME", address.getType());
         assertEquals(1976, profile.getBirthYear().intValue());
         assertEquals("03/10", new SimpleDateFormat("MM/dd").format(profile.getBirthdate()));

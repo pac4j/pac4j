@@ -7,14 +7,14 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -117,7 +117,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testNotAuthenticated() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        clients = "";
+        clients = Pac4jConstants.EMPTY_STRING;
         call();
         assertEquals(401, action.getCode());
     }

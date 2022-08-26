@@ -6,21 +6,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the {@link GaeUserServiceClient}.
@@ -34,7 +35,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-                    .setEnvIsAdmin(true).setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("");
+                    .setEnvIsAdmin(true).setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain(Pac4jConstants.EMPTY_STRING);
 
     private GaeUserServiceClient client;
 
@@ -72,7 +73,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
         final var credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore()).get();
         final var user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
-        assertEquals("", user.getAuthDomain());
+        assertEquals(Pac4jConstants.EMPTY_STRING, user.getAuthDomain());
         final var profile =
             (GaeUserServiceProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         logger.debug("userProfile: {}", profile);

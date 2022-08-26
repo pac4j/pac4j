@@ -31,6 +31,6 @@ public abstract class HttpAction extends TechnicalException {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(HttpAction.class, "code", this.code);
+        return CommonHelper.toNiceString(this.getClass(), "code", this.code);
     }
 }

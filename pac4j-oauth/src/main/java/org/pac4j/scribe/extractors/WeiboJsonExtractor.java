@@ -1,11 +1,11 @@
 package org.pac4j.scribe.extractors;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.pac4j.scribe.model.WeiboToken;
-
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.extractors.OAuth2AccessTokenJsonExtractor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.scribe.model.WeiboToken;
 
 /**
  * This class represents a specific JSON extractor for Weibo using OAuth protocol version 2. It
@@ -30,7 +30,7 @@ public class WeiboJsonExtractor extends OAuth2AccessTokenJsonExtractor {
         var token = super.createToken(accessToken, tokenType, expiresIn, refreshToken,
             scope, response, rawResponse);
         var uid = extractRequiredParameter(response, "uid", rawResponse).asText();
-        if (uid == null || "".equals(uid)) {
+        if (uid == null || Pac4jConstants.EMPTY_STRING.equals(uid)) {
             throw new OAuthException(
                 "There is no required UID in the response of the AssessToken endpoint.");
         }

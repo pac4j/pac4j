@@ -1,17 +1,19 @@
 package org.pac4j.core.profile.converter;
 
 import org.junit.Test;
+import org.pac4j.core.util.Pac4jConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * This class tests the {@link org.pac4j.core.profile.converter.LongConverter} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
 public final class LongConverterTests {
-    
+
     private final LongConverter converter = new LongConverter();
 
     private static final int INT_VALUE = 5;
@@ -34,7 +36,7 @@ public final class LongConverterTests {
 
     @Test
     public void testLongString() {
-        assertEquals(LONG_VALUE, (long) this.converter.convert("" + LONG_VALUE));
+        assertEquals(LONG_VALUE, (long) this.converter.convert(Pac4jConstants.EMPTY_STRING + LONG_VALUE));
     }
 
     @Test

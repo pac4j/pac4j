@@ -26,8 +26,6 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     private boolean destroySession;
 
-    private boolean checkSessionForFrontChannelLogout = true;
-
     public DefaultLogoutHandler() {}
 
     public DefaultLogoutHandler(final Store<String, Object> store) {
@@ -67,7 +65,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
             logger.debug("-> key: {}", key);
             store.remove(currentSessionId);
 
-            if (!checkSessionForFrontChannelLogout || CommonHelper.areEquals(key, sessionToKey)) {
+            if (CommonHelper.areEquals(key, sessionToKey)) {
                 destroy(context, sessionStore, "front");
             } else {
                 logger.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
@@ -150,17 +148,8 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         this.destroySession = destroySession;
     }
 
-    public boolean isCheckSessionForFrontChannelLogout() {
-        return checkSessionForFrontChannelLogout;
-    }
-
-    public void setCheckSessionForFrontChannelLogout(final boolean checkSessionForFrontChannelLogout) {
-        this.checkSessionForFrontChannelLogout = checkSessionForFrontChannelLogout;
-    }
-
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "store", store, "destroySession", destroySession,
-            "checkSessionForFrontChannelLogout", checkSessionForFrontChannelLogout);
+        return CommonHelper.toNiceString(this.getClass(), "store", store, "destroySession", destroySession);
     }
 }

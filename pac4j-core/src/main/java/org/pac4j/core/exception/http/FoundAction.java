@@ -26,6 +26,6 @@ public class FoundAction extends RedirectionAction implements WithLocationAction
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(FoundAction.class, "code", this.code, "location", location);
+        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "location", location);
     }
 }

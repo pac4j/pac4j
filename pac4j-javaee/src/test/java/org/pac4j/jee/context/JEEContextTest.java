@@ -3,17 +3,18 @@ package org.pac4j.jee.context;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.Cookie;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.Collections;
 import java.util.HashSet;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests {@link JEEContext}.
@@ -60,7 +61,7 @@ public final class JEEContextTest implements TestsConstants {
     public void testGetPathNullFullPath() {
         when(request.getRequestURI()).thenReturn(null);
         final var context = new JEEContext(request, response);
-        assertEquals("", context.getPath());
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getPath());
     }
 
     @Test

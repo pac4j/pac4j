@@ -1,5 +1,6 @@
 package org.pac4j.oauth.client;
 
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.profile.cronofy.CronofyProfileCreator;
 import org.pac4j.oauth.profile.cronofy.CronofyProfileDefinition;
 import org.pac4j.scribe.builder.api.CronofyApi20;
@@ -12,7 +13,7 @@ import org.pac4j.scribe.builder.api.CronofyApi20;
  */
 public class CronofyClient extends OAuth20Client {
 
-    private String sdkIdentifier = "";
+    private String sdkIdentifier = Pac4jConstants.EMPTY_STRING;
 
     private String scope = "read_free_busy";
 

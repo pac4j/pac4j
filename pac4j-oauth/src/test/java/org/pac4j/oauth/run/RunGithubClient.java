@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.GitHubClient;
@@ -64,7 +64,7 @@ public class RunGithubClient extends RunClient {
         assertEquals(0, profile.getFollowing().intValue());
         assertEquals(0, profile.getPrivateGists().intValue());
         assertEquals(0, profile.getPublicRepos().intValue());
-        assertEquals("", profile.getGravatarId());
+        assertEquals(Pac4jConstants.EMPTY_STRING, profile.getGravatarId());
         assertEquals(0, profile.getFollowers().intValue());
         assertEquals("Company", profile.getCompany());
         assertNull(profile.getHireable());
