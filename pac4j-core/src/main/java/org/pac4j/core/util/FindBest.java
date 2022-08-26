@@ -3,6 +3,7 @@ package org.pac4j.core.util;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.session.SessionStoreFactory;
 import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
 import org.pac4j.core.engine.SecurityLogic;
@@ -32,6 +33,7 @@ public class FindBest {
         }
     }
 
+    @Deprecated
     public static SessionStore sessionStore(final SessionStore localSessionStore, final Config config,
                                             final SessionStore defaultSessionStore) {
         if (localSessionStore != null) {
@@ -96,7 +98,19 @@ public class FindBest {
         } else if (config != null && config.getWebContextFactory() != null) {
             return config.getWebContextFactory();
         } else {
-            CommonHelper.assertNotNull("defaultFactory", defaultFactory);
+            CommonHelper.assertNotNull("defaultWebContextFactory", defaultFactory);
+            return defaultFactory;
+        }
+    }
+
+    public static SessionStoreFactory sessionStoreFactory(final SessionStoreFactory localFactory, final Config config,
+                                                          final SessionStoreFactory defaultFactory) {
+        if (localFactory != null) {
+            return localFactory;
+        } else if (config != null && config.getSessionStoreFactory() != null) {
+            return config.getSessionStoreFactory();
+        } else {
+            CommonHelper.assertNotNull("defaultSessionStoreFactory", defaultFactory);
             return defaultFactory;
         }
     }

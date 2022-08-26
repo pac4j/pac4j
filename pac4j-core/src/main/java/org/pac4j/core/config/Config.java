@@ -5,6 +5,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.session.SessionStoreFactory;
 import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
 import org.pac4j.core.engine.SecurityLogic;
@@ -50,6 +51,8 @@ public class Config {
     protected LogoutLogic logoutLogic;
 
     protected WebContextFactory webContextFactory;
+
+    protected SessionStoreFactory sessionStoreFactory;
 
     public Config() {}
 
@@ -154,14 +157,17 @@ public class Config {
         matchers.put(name, matcher);
     }
 
+    @Deprecated
     public SessionStore getSessionStore() {
         return sessionStore;
     }
 
+    @Deprecated
     public void setSessionStore(final SessionStore sessionStore) {
         this.sessionStore = sessionStore;
     }
 
+    @Deprecated
     public void defaultSessionStore(final SessionStore sessionStore) {
         if (this.sessionStore == null) {
             this.sessionStore = sessionStore;
@@ -206,6 +212,20 @@ public class Config {
 
     public void setWebContextFactory(final WebContextFactory webContextFactory) {
         this.webContextFactory = webContextFactory;
+    }
+
+    public SessionStoreFactory getSessionStoreFactory() {
+        return sessionStoreFactory;
+    }
+
+    public void setSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
+        this.sessionStoreFactory = sessionStoreFactory;
+    }
+
+    public void defaultSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
+        if (this.sessionStoreFactory == null) {
+            this.sessionStoreFactory = sessionStoreFactory;
+        }
     }
 
     public ProfileManagerFactory getProfileManagerFactory() {
@@ -256,5 +276,6 @@ public class Config {
         INSTANCE.setCallbackLogic(config.getCallbackLogic());
         INSTANCE.setLogoutLogic(config.getLogoutLogic());
         INSTANCE.setWebContextFactory(config.getWebContextFactory());
+        INSTANCE.setSessionStoreFactory(config.getSessionStoreFactory());
     }
 }
