@@ -62,7 +62,7 @@
 		<junit.version>4.13.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
-		<logback.version>1.2.11</logback.version>
+		<logback.version>1.4.0</logback.version>
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<guava.version>31.1-jre</guava.version>
