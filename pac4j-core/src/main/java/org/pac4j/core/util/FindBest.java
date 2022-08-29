@@ -109,6 +109,14 @@ public class FindBest {
             return localFactory;
         } else if (config != null && config.getSessionStoreFactory() != null) {
             return config.getSessionStoreFactory();
+            // deprecated
+        } else if (config != null && config.getSessionStore() != null) {
+            return new SessionStoreFactory() {
+                @Override
+                public SessionStore newSessionStore(Object... parameters) {
+                    return config.getSessionStore();
+                }
+            };
         } else {
             CommonHelper.assertNotNull("defaultSessionStoreFactory", defaultFactory);
             return defaultFactory;

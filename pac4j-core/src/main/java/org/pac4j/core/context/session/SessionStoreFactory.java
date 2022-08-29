@@ -9,5 +9,5 @@ package org.pac4j.core.context.session;
 @FunctionalInterface
 public interface SessionStoreFactory {
 
-    SessionStore newContext(Object... parameters);
+    SessionStore newSessionStore(Object... parameters);
 }
