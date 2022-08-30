@@ -12,6 +12,7 @@ title: Release notes&#58;
 - Add the new concept of `SessionStoreFactory` to replace any direct `SessionStore` instantation
 - Add a `SecurityEndpointBuilder` to help build configuration for security endpoints from multiple parameters
 - Improve (SAML) user attribute types handling
+- Use `destroySessionBack` on `DefaultLogoutHandler` when session can't be inferred from the Logout Request's context
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
