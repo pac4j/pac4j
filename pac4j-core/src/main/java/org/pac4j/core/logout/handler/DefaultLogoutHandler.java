@@ -74,6 +74,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
                         + "key is not the same as the one linked to the current session");
                 }
             } else {
+                logger.warn("no session for front channel logout => trying back channel logout");
                 destroySessionBack(context, sessionStore, key);
             }
         }
