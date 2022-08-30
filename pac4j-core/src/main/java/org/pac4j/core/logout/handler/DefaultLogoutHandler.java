@@ -54,22 +54,27 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     @Override
     public void destroySessionFront(final WebContext context, final SessionStore sessionStore, final String key) {
-        store.remove(key);
-
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
-            final var currentSessionId = sessionStore.getSessionId(context, true).get();
-            logger.debug("currentSessionId: {}", currentSessionId);
-            final var sessionToKey = (String) store.get(currentSessionId).orElse(null);
-            logger.debug("-> key: {}", key);
-            store.remove(currentSessionId);
+            final Optional<String> optCurrentSessionId = sessionStore.getSessionId(context, false);
 
-            if (CommonHelper.areEquals(key, sessionToKey)) {
-                destroy(context, sessionStore, "front");
+            if (optCurrentSessionId.isPresent()) {
+                store.remove(key);
+                final String currentSessionId = optCurrentSessionId.get();
+                logger.debug("currentSessionId: {}", currentSessionId);
+                final var sessionToKey = (String) store.get(currentSessionId).orElse(null);
+                logger.debug("-> key: {}", key);
+                store.remove(currentSessionId);
+
+                if (CommonHelper.areEquals(key, sessionToKey)) {
+                    destroy(context, sessionStore, "front");
+                } else {
+                    logger.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
+                        + "key is not the same as the one linked to the current session");
+                }
             } else {
-                logger.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
-                    + "key is not the same as the one linked to the current session");
+                destroySessionBack(context, sessionStore, key);
             }
         }
     }
