@@ -73,7 +73,7 @@
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>4.7.0</mockito.version>
 		<slf4j.version>2.0.0</slf4j.version>
-        <unboundid.version>6.0.5</unboundid.version>
+        <unboundid.version>6.0.6</unboundid.version>
         <h2.version>2.1.214</h2.version>
 		<java.version>11</java.version>
         <jackson.version>2.13.3</jackson.version>
