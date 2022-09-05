@@ -13,6 +13,7 @@ title: Release notes&#58;
 - Add a `SecurityEndpointBuilder` to help build configuration for security endpoints from multiple parameters
 - Improve (SAML) user attribute types handling
 - Use `destroySessionBack` on `DefaultLogoutHandler` when session can't be inferred from the Logout Request's context
+- Fix "nosuchelement error" on `SessionStore.getSessionId(context, true)`
 
 **v5.4.6**:
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
