@@ -1,11 +1,9 @@
 package org.pac4j.core.engine;
 
 import org.pac4j.core.client.BaseClient;
-
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
@@ -13,6 +11,7 @@ import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,21 +107,31 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     }
 
     protected void renewSession(final WebContext context, final SessionStore sessionStore, final Config config) {
-        final var oldSessionId = sessionStore.getSessionId(context, true).get();
-        final var renewed = sessionStore.renewSession(context);
-        if (renewed) {
-            final var newSessionId = sessionStore.getSessionId(context, true).get();
-            LOGGER.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
-            final var clients = config.getClients();
-            if (clients != null) {
-                final var clientList = clients.getClients();
-                for (final var client : clientList) {
-                    final var baseClient = (BaseClient) client;
-                    baseClient.notifySessionRenewal(oldSessionId, context, sessionStore);
-                }
-            }
+        final var optOldSessionId = sessionStore.getSessionId(context, true);
+        if (optOldSessionId.isEmpty()) {
+            LOGGER.error("No old session identifier retrieved although the session creation has been requested");
         } else {
-            LOGGER.error("Unable to renew the session. The session store may not support this feature");
+            final var oldSessionId = optOldSessionId.get();
+            final var renewed = sessionStore.renewSession(context);
+            if (renewed) {
+                final var optNewSessionId = sessionStore.getSessionId(context, true);
+                if (optNewSessionId.isEmpty()) {
+                    LOGGER.error("No new session identifier retrieved although the session creation has been requested");
+                } else {
+                    final var newSessionId = optNewSessionId.get();
+                    LOGGER.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
+                    final var clients = config.getClients();
+                    if (clients != null) {
+                        final var clientList = clients.getClients();
+                        for (final var client : clientList) {
+                            final var baseClient = (BaseClient) client;
+                            baseClient.notifySessionRenewal(oldSessionId, context, sessionStore);
+                        }
+                    }
+                }
+            } else {
+                LOGGER.error("Unable to renew the session. The session store may not support this feature");
+            }
         }
     }
 

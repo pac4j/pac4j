@@ -39,7 +39,7 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         } else {
             final var optSessionId = sessionStore.getSessionId(context, true);
             if (optSessionId.isEmpty()) {
-                logger.warn("No session identifier retrieved although the session creation has been requested");
+                logger.error("No session identifier retrieved although the session creation has been requested");
             } else {
                 final var sessionId = optSessionId.get();
                 final var optTrackableSession = sessionStore.getTrackableSession(context);
