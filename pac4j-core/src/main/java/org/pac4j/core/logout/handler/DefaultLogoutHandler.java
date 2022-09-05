@@ -37,17 +37,22 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
         if (sessionStore == null) {
             logger.error("No session store available for this web context");
         } else {
-            final var sessionId = sessionStore.getSessionId(context, true).get();
-            final var optTrackableSession = sessionStore.getTrackableSession(context);
-
-            if (optTrackableSession.isPresent()) {
-                final var trackableSession = optTrackableSession.get();
-                logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
-                logger.debug("sessionId: {}", sessionId);
-                store.set(key, trackableSession);
-                store.set(sessionId, key);
+            final var optSessionId = sessionStore.getSessionId(context, true);
+            if (optSessionId.isEmpty()) {
+                logger.warn("No session identifier retrieved although the session creation has been requested");
             } else {
-                logger.debug("No trackable session for the current session store: {}", sessionStore);
+                final var sessionId = optSessionId.get();
+                final var optTrackableSession = sessionStore.getTrackableSession(context);
+
+                if (optTrackableSession.isPresent()) {
+                    final var trackableSession = optTrackableSession.get();
+                    logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
+                    logger.debug("sessionId: {}", sessionId);
+                    store.set(key, trackableSession);
+                    store.set(sessionId, key);
+                } else {
+                    logger.debug("No trackable session for the current session store: {}", sessionStore);
+                }
             }
         }
     }
