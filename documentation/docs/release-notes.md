@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.6.0**:
+- Added a new `pac4j-springbootv3` module for Spring Boot v3 (JDK 17)
+
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
 - Remove the deprecated `pac4j-jee` module
