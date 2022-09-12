@@ -5,7 +5,7 @@ title: Spring Boot Integration
 
 ## 0) Dependency
 
-You need to use the following module: `pac4j-springboot`.
+You need to use the following module: `pac4j-springboot` (Spring 5, Boot v2, JDK 11) or `pac4j-springbootv3` (Spring 6, Boot v3, JDK 17).
 
 **Example (Maven dependency):**
 
@@ -26,10 +26,10 @@ The following auto-configuration classes are provided:
 This auto-configuration will inject a Spring Bean of type `Config` into the application runtime
 that can be used as such:
 
-```java 
+```java
 @Autowired
 private Config config;
-```     
+```
 
 The `Config` object may carry built instances of pac4j clients, etc using
 the strategy and properties defined by the `PropertiesConfigFactory`, bootstrapped from the following settings:
