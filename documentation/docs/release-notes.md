@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.6.0**:
 - Added a new `pac4j-springbootv3` module for Spring Boot v3 (JDK 17)
+- Can control if the CSRF token is added as an attribute (`true` by default), as a header (`false` by default) or as a cookie (`true` by default) for the `CsrfTokenGeneratorMatcher`
 
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
