@@ -3,7 +3,7 @@ layout: ddoc
 title: Next version
 ---
 
-The next version **5.5.1-SNAPSHOT** is under development.
+The next version **5.6.0-SNAPSHOT** is under development.
 Maven artifacts are built via Github Actions and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
 The source code can be cloned and locally built via Maven:
