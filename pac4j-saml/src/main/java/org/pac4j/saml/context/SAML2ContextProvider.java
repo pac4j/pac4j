@@ -24,7 +24,6 @@ import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 /**
@@ -49,7 +48,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     public SAML2ContextProvider(final SAML2MetadataResolver idpEntityId,
                                 final SAML2MetadataResolver spEntityId,
-                                @Nullable final SAMLMessageStoreFactory samlMessageStoreFactory) {
+                                final SAMLMessageStoreFactory samlMessageStoreFactory) {
         this.idpEntityId = idpEntityId;
         this.spEntityId = spEntityId;
         this.samlMessageStoreFactory = samlMessageStoreFactory;

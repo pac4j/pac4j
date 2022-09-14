@@ -191,11 +191,6 @@
             <version>${hazelcast.version}</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
-        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>

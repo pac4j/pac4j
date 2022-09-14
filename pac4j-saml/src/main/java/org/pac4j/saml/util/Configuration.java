@@ -1,12 +1,13 @@
 package org.pac4j.saml.util;
 
-import java.io.StringReader;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
+import org.opensaml.core.xml.util.XMLObjectSupport;
+import org.pac4j.core.adapter.JEEAdapter;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,20 +16,18 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
-import javax.annotation.Priority;
-import org.opensaml.core.xml.util.XMLObjectSupport;
-
 /**
  * OpenSAML configuration bean to bootstrap the parser pool.
  *
  * Uses the Java service API to find an instance of {@link ConfigurationManager} to do the actual configuration. Will
- * use the implementation with the lowest {@link Priority} annotation. If none are found, a relatively sane
+ * use the implementation with the lowest javax|jakarta.annotation.Priority annotation. If none are found, a relatively sane
  * implementation, {@link DefaultConfigurationManager}, will be used. The default priority is 100.
  *
  * @see ServiceLoader
@@ -47,32 +46,12 @@ public final class Configuration {
         bootstrap();
     }
 
-    private static int compareManagers(final Object obj1, final Object obj2) {
-        var p1 = 100;
-        var p2 = 100;
-        final var p1a = obj1.getClass().getAnnotation(Priority.class);
-        if (p1a != null) {
-            p1 = p1a.value();
-        }
-        final var p2a = obj2.getClass().getAnnotation(Priority.class);
-        if (p2a != null) {
-            p2 = p2a.value();
-        }
-        if (p1 < p2) {
-            return -1;
-        } else if (p1 > p2) {
-            return 1;
-        } else {
-            return obj2.getClass().getSimpleName().compareTo(obj1.getClass().getSimpleName());
-        }
-    }
-
     private static void bootstrap() {
         final var configurationManagers = ServiceLoader.load(ConfigurationManager.class);
         final List<ConfigurationManager> configurationManagerList = new ArrayList<>();
         configurationManagers.forEach(configurationManagerList::add);
         if (!configurationManagerList.isEmpty()) {
-            configurationManagerList.sort(Configuration::compareManagers);
+            configurationManagerList.sort(JEEAdapter.INSTANCE::compareManagers);
             configurationManagerList.get(0).configure();
         }
     }

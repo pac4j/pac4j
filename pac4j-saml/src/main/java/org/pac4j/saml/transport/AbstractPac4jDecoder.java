@@ -1,11 +1,12 @@
 package org.pac4j.saml.transport;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.logic.Constraint;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
-
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.UnmarshallingException;
@@ -20,10 +21,6 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -160,7 +157,6 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
      *
      * @return parser pool used to deserialize incoming messages
      */
-    @Nonnull
     public ParserPool getParserPool() {
         return parserPool;
     }
@@ -170,7 +166,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
      *
      * @param pool parser pool used to deserialize incoming messages
      */
-    public void setParserPool(@Nonnull final ParserPool pool) {
+    public void setParserPool(final ParserPool pool) {
         Constraint.isNotNull(pool, "ParserPool cannot be null");
         parserPool = pool;
     }
