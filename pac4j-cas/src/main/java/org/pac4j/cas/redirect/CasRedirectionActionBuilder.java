@@ -1,16 +1,15 @@
 package org.pac4j.cas.redirect;
 
 import org.jasig.cas.client.Protocol;
-import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent();
         final var gateway = configuration.isGateway()
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
-        final var redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, getServiceParameter(),
+        final var redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
         logger.debug("redirectionUrl: {}", redirectionUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl));
@@ -58,5 +57,13 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
         } else {
             return CasConfiguration.SERVICE_PARAMETER;
         }
+    }
+
+    // like CommonUtils.constructRedirectUrl in CAS client
+    public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
+                                              final String serviceUrl, final boolean renew, final boolean gateway, final String method) {
+        return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
+            + CommonHelper.urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "")
+            + (method != null ? "&method=" + method : "");
     }
 }

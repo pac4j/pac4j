@@ -1,7 +1,6 @@
 package org.pac4j.cas.credentials.extractor;
 
 import org.jasig.cas.client.Protocol;
-import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.context.HttpConstants;
@@ -60,7 +59,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final var ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonUtils.isNotBlank(ticket)) {
+            if (CommonHelper.isNotBlank(ticket)) {
                 logoutHandler.destroySessionBack(context, sessionStore, ticket);
             }
             logger.debug("back logout request: no credential returned");
@@ -72,7 +71,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final var ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonUtils.isNotBlank(ticket)) {
+            if (CommonHelper.isNotBlank(ticket)) {
                 logoutHandler.destroySessionFront(context, sessionStore, ticket);
             }
             logger.debug("front logout request: no credential returned");
@@ -148,7 +147,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             buffer.append("logout?_eventId=next&");
             buffer.append(CasConfiguration.RELAY_STATE_PARAMETER);
             buffer.append("=");
-            buffer.append(CommonUtils.urlEncode(relayStateValue.get()));
+            buffer.append(CommonHelper.urlEncode(relayStateValue.get()));
             final var redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
             throw HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);

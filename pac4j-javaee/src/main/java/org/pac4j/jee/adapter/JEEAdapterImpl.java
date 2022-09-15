@@ -32,4 +32,9 @@ public class JEEAdapterImpl extends JEEAdapter {
             return obj2.getClass().getSimpleName().compareTo(obj1.getClass().getSimpleName());
         }
     }
+
+    @Override
+    public String toString() {
+        return "JavaEE implementation";
+    }
 }

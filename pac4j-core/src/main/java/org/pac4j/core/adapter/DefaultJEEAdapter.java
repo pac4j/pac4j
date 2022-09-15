@@ -16,4 +16,9 @@ public class DefaultJEEAdapter extends JEEAdapter {
             return 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return "default";
+    }
 }
