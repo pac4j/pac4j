@@ -63,3 +63,8 @@ You can use the [mailing lists](https://www.pac4j.org/mailing-lists.html) or the
 
 ## License
 `pac4j` is licensed under [Apache License 2.0](LICENSE)
+
+## Thanks to all the contributors ❤
+ <a href = "https://github.com/pac4j/pac4j/graphs/contributors">
+   <img src = "https://contrib.rocks/image?repo=pac4j/pac4j"/>
+ </a>
