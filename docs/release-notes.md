@@ -8,6 +8,8 @@ title: Release notes&#58;
 - Can control if the CSRF token is added as an attribute (`true` by default), as a header (`false` by default) or as a cookie (`true` by default) for the `CsrfTokenGeneratorMatcher`
 - Removed all `javax.annotation.Nullable` and `javax.annotation.Nonnull` references from the `pac4j-saml` module
 - Added the `JEEAdapter` class in the `pac4j-core` module based on the `JEEAdapterImpl` class in the `pac4j-javaee` or `pac4j-jakartaee` module
+- Removed unwanted "javax" dependencies
+- Removed any `org.jasig.cas.client.util.CommonUtils` usage from the `pac4j-cas` module
 
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
