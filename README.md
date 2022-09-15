@@ -60,3 +60,6 @@ You can use the [mailing lists](https://www.pac4j.org/mailing-lists.html) or the
 ## Supported by
 
 [![CAS in the cloud](https://www.pac4j.org/img/logo-casinthecloud.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*
+
+## License
+`pac4j` is licensed under [Apache License 2.0](LICENSE)
