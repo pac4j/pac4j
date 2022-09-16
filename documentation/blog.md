@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; September 2022: [What's new with Spring and pac4j?](/blog/what_s_new_with_spring_and_pac4j.html)
+
 ## &bull; April 2022: [JakartaEE is coming](/blog/jakartaee_is_coming.html)
 
 ## &bull; March 2022: [CVE-2021-44878: is this serious?](/blog/cve_2021_44878_is_this_serious.html)
