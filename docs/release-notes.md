@@ -11,6 +11,7 @@ title: Release notes&#58;
 - Removed unwanted "javax" dependencies
 - Removed any `org.jasig.cas.client.util.CommonUtils` usage from the `pac4j-cas` module
 - Added a `addClient` method to the `Clients` component
+- Made the `Config` parameter optional for the `SecurityEndpointBuilder`
 
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
