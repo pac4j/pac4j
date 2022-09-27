@@ -1,7 +1,5 @@
 package org.pac4j.core.client;
 
-import java.util.*;
-
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -11,6 +9,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * <p>This class is made to group multiple clients, generally on one callback url.</p>
@@ -25,7 +25,7 @@ public class Clients extends InitializableObject {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Clients.class);
 
-    private volatile List<Client> clients;
+    private volatile List<Client> clients = new ArrayList<>();
 
     private Map<String, Client> clientsMap;
 
@@ -162,6 +162,10 @@ public class Clients extends InitializableObject {
 
     public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
+    }
+
+    public void addClient(final Client client) {
+        this.clients.add(client);
     }
 
     public void setClients(final List<Client> clients) {
