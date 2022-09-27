@@ -10,6 +10,7 @@ title: Release notes&#58;
 - Added the `JEEAdapter` class in the `pac4j-core` module based on the `JEEAdapterImpl` class in the `pac4j-javaee` or `pac4j-jakartaee` module
 - Removed unwanted "javax" dependencies
 - Removed any `org.jasig.cas.client.util.CommonUtils` usage from the `pac4j-cas` module
+- Added a `addClient` method to the `Clients` component
 
 **v5.5.0**:
 - Allow to override a default `Matcher` (even the `securityheaders` shortcut)
