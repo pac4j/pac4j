@@ -34,7 +34,7 @@ public class Config {
 
     private ProfileManagerFactory profileManagerFactory;
 
-    protected Clients clients;
+    protected Clients clients = new Clients();
 
     protected Map<String, Authorizer> authorizers = new HashMap<>();
 

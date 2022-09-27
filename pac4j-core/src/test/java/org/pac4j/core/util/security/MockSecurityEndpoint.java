@@ -1,5 +1,6 @@
 package org.pac4j.core.util.security;
 
+import org.pac4j.core.config.Config;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 
@@ -20,6 +21,8 @@ public class MockSecurityEndpoint implements SecurityEndpoint{
     private HttpActionAdapter httpActionAdapter;
 
     private SecurityLogic securityLogic;
+
+    private Config config;
 
     public String getClients() {
         return clients;
@@ -64,5 +67,14 @@ public class MockSecurityEndpoint implements SecurityEndpoint{
     @Override
     public void setSecurityLogic(final SecurityLogic securityLogic) {
         this.securityLogic = securityLogic;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    @Override
+    public void setConfig(final Config config) {
+        this.config = config;
     }
 }

@@ -103,12 +103,6 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     @Test
-    public void testNullClientFinder() {
-        clientFinder = null;
-        TestsHelper.expectException(this::call, TechnicalException.class, "clients cannot be null");
-    }
-
-    @Test
     public void testDirectClient() {
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final var directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
