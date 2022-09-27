@@ -49,35 +49,71 @@ public class SAML2Profile extends CommonProfile {
         return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
     }
 
+    public void setNotBefore(ZonedDateTime notBefore) {
+        addAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, notBefore);
+    }
+
     public ZonedDateTime getNotOnOrAfter() {
         return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
+    }
+
+    public void setNotOnOrAfter(ZonedDateTime notOnOrAfter) {
+        addAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE, notOnOrAfter);
     }
 
     public String getSessionIndex() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SESSION_INDEX);
     }
 
+    public void setSessionIndex(String sessionIndex) {
+        addAuthenticationAttribute(SAML2Authenticator.SESSION_INDEX, sessionIndex);
+    }
+
     public String getIssuerEntityID() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.ISSUER_ID);
+    }
+
+    public void setIssuerEntityID(String issuerEntityID) {
+        addAuthenticationAttribute(SAML2Authenticator.ISSUER_ID, issuerEntityID);
     }
 
     public List<String> getAuthnContexts() {
         return (List<String>) getAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT);
     }
 
+    public void setAuthnContexts(List<String> authnContexts) {
+        addAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT, authnContexts);
+    }
+
     public String getSamlNameIdFormat() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_FORMAT);
+    }
+
+    public void setSamlNameIdFormat(String samlNameIdFormat) {
+        addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_FORMAT, samlNameIdFormat);
     }
 
     public String getSamlNameIdNameQualifier() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_NAME_QUALIFIER);
     }
 
+    public void setSamlNameIdNameQualifier(String samlNameIdNameQualifier) {
+        addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_NAME_QUALIFIER, samlNameIdNameQualifier);
+    }
+
     public String getSamlNameIdSpNameQualifier() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_NAME_QUALIFIER);
     }
 
+    public void setSamlNameIdSpNameQualifier(String samlNameIdSpNameQualifier) {
+        addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_NAME_QUALIFIER, samlNameIdSpNameQualifier);
+    }
+
     public String getSamlNameIdSpProviderId() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_PROVIDED_ID);
+    }
+
+    public void setSamlNameIdSpProviderId(String samlNameIdSpProviderId) {
+        addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_PROVIDED_ID, samlNameIdSpProviderId);
     }
 }
