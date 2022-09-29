@@ -2,12 +2,13 @@ package org.pac4j.core.engine;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.*;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
 
             // compute redirection URL
             final var url = context.getRequestParameter(Pac4jConstants.URL);
-            var redirectUrl = defaultUrl;
+            var redirectUrl = computeDefaultUrl(defaultUrl);
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
             }
@@ -133,6 +134,10 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         }
 
         return httpActionAdapter.adapt(action, context);
+    }
+
+    protected String computeDefaultUrl(final String defaultUrl) {
+        return defaultUrl;
     }
 
     @Override
