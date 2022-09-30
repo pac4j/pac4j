@@ -1,5 +1,6 @@
 package org.pac4j.core.engine;
 
+import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -112,7 +113,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                         if (client.isPresent()) {
                             String targetUrl = null;
                             if (redirectUrl != null) {
-                                redirectUrl = enhanceRedirectUrl(config, context, sessionStore, redirectUrl);
+                                redirectUrl = enhanceRedirectUrl(config, client.get(), context, sessionStore, redirectUrl);
                                 if (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
                                     redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS)) {
                                     targetUrl = redirectUrl;
@@ -137,8 +138,8 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         return httpActionAdapter.adapt(action, context);
     }
 
-    protected String enhanceRedirectUrl(final Config config, final WebContext context,
-                                       final SessionStore sessionStore, final String redirectUrl) {
+    protected String enhanceRedirectUrl(final Config config, final Client client, final WebContext context,
+                                        final SessionStore sessionStore, final String redirectUrl) {
         return redirectUrl;
     }
 
