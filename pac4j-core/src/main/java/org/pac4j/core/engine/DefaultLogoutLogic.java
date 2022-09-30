@@ -74,7 +74,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
 
             // compute redirection URL
             final var url = context.getRequestParameter(Pac4jConstants.URL);
-            var redirectUrl = computeDefaultUrl(defaultUrl);
+            var redirectUrl = computeDefaultUrl(config, context, sessionStore, defaultUrl);
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
             }
@@ -136,7 +136,8 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         return httpActionAdapter.adapt(action, context);
     }
 
-    protected String computeDefaultUrl(final String defaultUrl) {
+    protected String computeDefaultUrl(final Config config, final WebContext context,
+                                       final SessionStore sessionStore, final String defaultUrl) {
         return defaultUrl;
     }
 
