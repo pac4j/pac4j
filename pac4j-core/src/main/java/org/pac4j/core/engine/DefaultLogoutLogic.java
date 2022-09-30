@@ -74,7 +74,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
 
             // compute redirection URL
             final var url = context.getRequestParameter(Pac4jConstants.URL);
-            var redirectUrl = computeDefaultUrl(config, context, sessionStore, defaultUrl);
+            var redirectUrl = defaultUrl;
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
             }
@@ -110,12 +110,13 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                     if (clientName != null) {
                         final var client = configClients.findClient(clientName);
                         if (client.isPresent()) {
-                            final String targetUrl;
-                            if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
-                                redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS))) {
-                                targetUrl = redirectUrl;
-                            } else {
-                                targetUrl = null;
+                            String targetUrl = null;
+                            if (redirectUrl != null) {
+                                redirectUrl = enhanceRedirectUrl(config, context, sessionStore, redirectUrl);
+                                if (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
+                                    redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS)) {
+                                    targetUrl = redirectUrl;
+                                }
                             }
                             final var logoutAction =
                                 client.get().getLogoutAction(context, sessionStore, profile, targetUrl);
@@ -136,9 +137,9 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         return httpActionAdapter.adapt(action, context);
     }
 
-    protected String computeDefaultUrl(final Config config, final WebContext context,
-                                       final SessionStore sessionStore, final String defaultUrl) {
-        return defaultUrl;
+    protected String enhanceRedirectUrl(final Config config, final WebContext context,
+                                       final SessionStore sessionStore, final String redirectUrl) {
+        return redirectUrl;
     }
 
     @Override
