@@ -161,6 +161,7 @@ public abstract class IndirectClient extends BaseClient {
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {
+        init();
         return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
     }
 
