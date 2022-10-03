@@ -56,7 +56,7 @@ public interface Pac4jConstants {
     String LOGOUT_URL_PATTERN = "logoutUrlPattern";
 
     /* The default value for the logout url pattern, meaning only relative urls are allowed */
-    String DEFAULT_LOGOUT_URL_PATTERN_VALUE = "/.*";
+    String DEFAULT_LOGOUT_URL_PATTERN_VALUE = "^(\\/|\\/[^\\/].*)$";
 
     /* The config factory parameter */
     String CONFIG_FACTORY = "configFactory";

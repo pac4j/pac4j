@@ -197,6 +197,31 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     @Test
+    public void testLogoutWithSlashUrl() {
+        context.addRequestParameter(Pac4jConstants.URL, "/");
+        call();
+        assertEquals(302, action.getCode());
+        assertEquals("/", ((FoundAction) action).getLocation());
+    }
+
+    @Test
+    public void testLogoutWithDoubleSlashUrlNoDefaultUrl() {
+        context.addRequestParameter(Pac4jConstants.URL, "//evil.example.org/download.exe");
+        call();
+        assertEquals(204, action.getCode());
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getResponseContent());
+    }
+
+    @Test
+    public void testLogoutWithDoubleSlashUrlDefaultUrl() {
+        context.addRequestParameter(Pac4jConstants.URL, "//evil.example.org/download.exe");
+        defaultUrl = CALLBACK_URL;
+        call();
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL, ((FoundAction) action).getLocation());
+    }
+
+    @Test
     public void testLogoutWithBadUrlNoDefaultUrl() {
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         logoutUrlPattern = VALUE;
