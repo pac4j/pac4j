@@ -79,6 +79,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String callbackUrl;
 
+    private String requestInitiatorUrl;
+
+    private String assertionConsumerServiceUrl;
+
     private Resource keystoreResource;
 
     private String keystorePassword;
@@ -295,6 +299,22 @@ public class SAML2Configuration extends BaseClientConfiguration {
         } catch (final Exception e) {
             throw new SAMLException(e);
         }
+    }
+
+    public String getRequestInitiatorUrl() {
+        return requestInitiatorUrl;
+    }
+
+    public void setRequestInitiatorUrl(String requestInitiatorUrl) {
+        this.requestInitiatorUrl = requestInitiatorUrl;
+    }
+
+    public String getAssertionConsumerServiceUrl() {
+        return assertionConsumerServiceUrl;
+    }
+
+    public void setAssertionConsumerServiceUrl(String assertionConsumerServiceUrl) {
+        this.assertionConsumerServiceUrl = assertionConsumerServiceUrl;
     }
 
     @Override
@@ -911,9 +931,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 generator.setCredentialProvider(getCredentialProvider());
                 generator.setMetadataSigner(getMetadataSigner());
                 generator.setEntityId(getServiceProviderEntityId());
-                generator.setRequestInitiatorLocation(callbackUrl);
+
                 // Assertion consumer service url is the callback URL
-                generator.setAssertionConsumerServiceUrl(callbackUrl);
+                generator.setRequestInitiatorLocation(StringUtils.defaultString(this.requestInitiatorUrl, this.callbackUrl));
+                generator.setAssertionConsumerServiceUrl(StringUtils.defaultString(this.assertionConsumerServiceUrl, this.callbackUrl));
+
                 generator.setResponseBindingType(getResponseBindingType());
 
                 determineSingleSignOutServiceUrl(generator);
