@@ -932,7 +932,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 generator.setMetadataSigner(getMetadataSigner());
                 generator.setEntityId(getServiceProviderEntityId());
 
-                // Assertion consumer service url is the callback URL
                 generator.setRequestInitiatorLocation(StringUtils.defaultString(this.requestInitiatorUrl, this.callbackUrl));
                 generator.setAssertionConsumerServiceUrl(StringUtils.defaultString(this.assertionConsumerServiceUrl, this.callbackUrl));
 
