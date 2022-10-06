@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
  */
 public class RunIdentityServer4 extends RunClient {
 
-    private enum Flow { IMPLICIT_FLOW, IMPLICIT_FLOW_CLIENT_SIDE, AUTHORIZATION_CODE, HYBRID_FLOW };
+    private enum Flow { IMPLICIT_FLOW, IMPLICIT_FLOW_CLIENT_SIDE, AUTHORIZATION_CODE, HYBRID_FLOW }
 
     private final static Flow flow = Flow.HYBRID_FLOW;
 

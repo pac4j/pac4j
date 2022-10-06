@@ -7,8 +7,8 @@ import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
 import org.pac4j.http.client.indirect.FormClient;
@@ -28,7 +28,6 @@ import org.pac4j.sql.test.tools.DbServer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.pac4j.config.builder.OAuthBuilder.*;
 import static org.junit.Assert.*;
 import static org.pac4j.ldap.test.tools.LdapServer.*;
 
@@ -38,7 +37,7 @@ import static org.pac4j.ldap.test.tools.LdapServer.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class PropertiesConfigFactoryTests implements TestsConstants {
+public final class PropertiesConfigFactoryTests implements PropertiesConstants, TestsConstants {
 
     @Test
     public void test() {
