@@ -84,15 +84,17 @@ config.setUseNonce(true);
 
 For direct clients (web services), you can get the `access token` from any OpenID Connect identity provider and use that in your request to get the user profile.
 
-For that, the [HeaderClient](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/HeaderClient.java) would be appropriate, along with the [UserInfoOidcAuthenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/credentials/authenticator/UserInfoOidcAuthenticator.java).
+For that, the [HeaderClient](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/HeaderClient.java) would be appropriate, along with the `oidcClient.getProfileCreator()`.
 
 ```java
 OidcConfiguration config = new OidcConfiguration();
 config.setClientId(clientId);
 config.setSecret(secret);
 config.setDiscoveryURI(discoveryUri);
-UserInfoOidcAuthenticator authenticator = new UserInfoOidcAuthenticator(config);
-HeaderClient client = new HeaderClient("Authorization", "Bearer ", authenticator);
+OidcClient oidcClient = new OidcClient(config);
+oidcClient.setCallbackUrl("notused");
+oidcClient.init();
+HeaderClient client = new HeaderClient("Authorization", "Bearer ", oidcClient.getProfileCreator());
 ```
 
 The request to the server should have an `Authorization` header with the value as `Bearer {access token}`.

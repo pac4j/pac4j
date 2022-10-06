@@ -17,7 +17,7 @@ It supports all CAS protocol versions (v1.0, v2.0 and v3.0).
 
 ## 0) Dependency
 
-You need to use the following module: `pac4j-cas`.
+You need to use the following module: `pac4j-cas` (deprecated, CAS client v3.x, JDK 11) or `pac4j-cas-clientv4` (CAS client v4.x, JDK 17).
 
 **Example (Maven dependency):**
 
