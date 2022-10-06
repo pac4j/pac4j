@@ -236,4 +236,4 @@ title: Release notes&#58;
 - REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
 - The `pac4j-saml` module is saved as the legacy `pac4j-saml-opensamlv3` module and upgraded to JDK 11 and OpenSAML v4
 
-[&#9656; Older versions...](release-notes-older.html)
+[&#9656; Previous versions...](release-notes-previous.html)

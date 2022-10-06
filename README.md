@@ -2,32 +2,37 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
-### `pac4j` is an easy and powerful security engine for Java to authenticate users, get their profiles and manage authorizations in order to secure web applications and web services.
+### `pac4j` is an easy and powerful security framework for Java to authenticate users, get their profiles and manage authorizations in order to secure web applications and web services.
 
-It provides a comprehensive set of [**concepts and components**](https://www.pac4j.org/docs/main-concepts-and-components.html). It is based on Java 8 and available under the Apache 2 license. It is **available for most frameworks/tools** and **supports most authentication/authorization mechanisms**.
+It provides a comprehensive set of [**concepts and components**](https://www.pac4j.org/docs/main-concepts-and-components.html).
+It is based on JDK 11 (v5.x) or JDK 8 (v4.x) and licensed under the Apache 2 license.
+It is **available for most frameworks/tools** and **supports most authentication/authorization mechanisms**.
 
 ## Available implementations (*Get started by clicking on your framework*):
 
-[Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j)
-&bull; [JEE](https://github.com/pac4j/j2e-pac4j)
+[JEE](https://github.com/pac4j/j2e-pac4j)
+&bull; [Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j)
+&bull; [Spring Webflux (Spring Boot)](https://github.com/pac4j/spring-webflux-pac4j)
 &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 &bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j)
-&bull; [Play 2.x](https://github.com/pac4j/play-pac4j)
+
+[CAS server](https://apereo.github.io/cas/6.6.x/integration/Delegate-Authentication.html)
+&bull; [Syncope](https://syncope.apache.org)
+&bull; [Apache Knox](http://knox.apache.org/books/knox-1-6-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect)
+
+[Play 2.x](https://github.com/pac4j/play-pac4j)
 &bull; [Vertx](https://github.com/pac4j/vertx-pac4j)
-
-[Spark Java](https://github.com/pac4j/spark-pac4j)
-&bull; [Javalin](https://github.com/pac4j/javalin-pac4j)
+&bull; [Spark Java](https://github.com/pac4j/spark-pac4j)
 &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j)
-&bull; [Pippo](http://www.pippo.ro/doc/security.html#pac4j-integration)
-&bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
-&bull; [Jooby](https://jooby.io/modules/pac4j)
-
-[CAS server](https://apereo.github.io/cas/6.5.x/integration/Delegate-Authentication.html)
 &bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j)
 &bull; [Dropwizard](https://github.com/pac4j/dropwizard-pac4j)
+
+[Javalin](https://github.com/pac4j/javalin-pac4j)
+&bull; [Pippo](http://www.pippo.ro/doc/security.html#pac4j-integration)
+&bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
 &bull; [Lagom](https://github.com/pac4j/lagom-pac4j)
 &bull; [Akka HTTP](https://github.com/StackVista/akka-http-pac4j)
-&bull; [Apache Knox](http://knox.apache.org/books/knox-1-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect)
+&bull; [Jooby](http://jooby.org)
 
 ## Authentication mechanisms:
 
