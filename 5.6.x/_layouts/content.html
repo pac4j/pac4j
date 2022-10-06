@@ -1,0 +1,21 @@
+{% include header.html %}
+
+<li class="{% if page.url == '/' or page.url == '/index.html' %}active{% endif %}"><a href="/index.html">HOME</a></li>
+<li class="{% if page.url == '/gettingstarted.html' %}active{% endif %}"><a href="/gettingstarted.html">GETTING STARTED</a></li>
+<li><a href="/implementations.html">IMPLEMENTATIONS</a></li>
+<li><a href="/docs/alldocs.html">DOCUMENTATION</a></li>
+<li><a href="/contributors.html">CONTRIBUTE</a></li>
+<li><a href="/blog.html">BLOG</a></li>
+<li><a href="/commercial-support.html">COMMERCIAL SUPPORT</a></li>
+<li><a href="/mailing-lists.html">MAILING LISTS</a></li>
+</ul>
+</div>
+</div>
+</nav>
+
+<main>
+    <div class="container">
+
+		{{ content }}
+
+{% include footer.html %}
