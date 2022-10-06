@@ -3,6 +3,8 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.0**:
+
 **v5.6.1**:
 - Allow to override the "computation" of the `defaultUrl` in the `DefaultLogoutLogic`
 - Security fix on the `logoutUrlPattern`
