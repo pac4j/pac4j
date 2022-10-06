@@ -22,6 +22,7 @@ import java.security.cert.X509Certificate;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("PMD.TooManyStaticImports")
 public class SAML2IdentityProviderMetadataResolverTest {
 
     private SAML2IdentityProviderMetadataResolver metadataResolver;

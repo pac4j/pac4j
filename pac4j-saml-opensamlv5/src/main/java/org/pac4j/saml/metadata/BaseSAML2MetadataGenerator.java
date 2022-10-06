@@ -1,6 +1,6 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import net.shibboleth.shared.xml.SerializeSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;

@@ -1,7 +1,8 @@
 package org.pac4j.saml.crypto;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
+
+import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;

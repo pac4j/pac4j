@@ -1,13 +1,13 @@
 package org.pac4j.saml.sso.artifact;
 
-import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
+import net.shibboleth.shared.httpclient.HttpClientBuilder;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
 import org.pac4j.saml.client.SAML2Client;
 
 /**
  * A default implementation of {@link SOAPPipelineProvider}, which enforces the
  * default rules set by the SAML SSO Profile.
- * 
+ *
  * @since 3.8.0
  */
 public class DefaultSOAPPipelineProvider implements SOAPPipelineProvider {

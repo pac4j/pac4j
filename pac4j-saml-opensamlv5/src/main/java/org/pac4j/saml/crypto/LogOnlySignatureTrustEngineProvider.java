@@ -1,7 +1,6 @@
 package org.pac4j.saml.crypto;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
@@ -31,25 +30,25 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
     public SignatureTrustEngine build() {
         return new LogOnlySignatureTrustEngine(wrapped.build());
     }
-    
+
     private static class LogOnlySignatureTrustEngine implements TrustedCredentialTrustEngine<Signature>, SignatureTrustEngine {
-        private SignatureTrustEngine wrapped;
-        
+        private final SignatureTrustEngine wrapped;
+
         public LogOnlySignatureTrustEngine(final SignatureTrustEngine wrapped) {
             log.error("SIGNATURE VALIDATION DISABLED, DO NOT USE THIS ON PRODUCTION");
             this.wrapped = wrapped;
         }
-        
+
         @Override
         public CredentialResolver getCredentialResolver() {
             return ((TrustedCredentialTrustEngine<?>) wrapped).getCredentialResolver();
         }
-        
+
         @Override
         public KeyInfoCredentialResolver getKeyInfoResolver() {
             return wrapped.getKeyInfoResolver();
         }
-        
+
         @Override
         public boolean validate(final Signature token, final CriteriaSet trustBasisCriteria) throws SecurityException {
             try {

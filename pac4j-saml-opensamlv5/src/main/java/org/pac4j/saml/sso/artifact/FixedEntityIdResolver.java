@@ -1,7 +1,7 @@
 package org.pac4j.saml.sso.artifact;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.Resolver;
+import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.Resolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 
 import java.util.Collections;

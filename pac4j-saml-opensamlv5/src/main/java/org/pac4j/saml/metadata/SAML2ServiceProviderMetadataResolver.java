@@ -1,7 +1,8 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
+
+import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;

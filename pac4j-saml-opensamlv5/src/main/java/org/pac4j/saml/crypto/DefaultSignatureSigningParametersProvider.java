@@ -1,6 +1,6 @@
 package org.pac4j.saml.crypto;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.saml.criterion.RoleDescriptorCriterion;
 import org.opensaml.saml.saml2.metadata.SSODescriptor;
 import org.opensaml.saml.security.impl.SAMLMetadataSignatureSigningParametersResolver;

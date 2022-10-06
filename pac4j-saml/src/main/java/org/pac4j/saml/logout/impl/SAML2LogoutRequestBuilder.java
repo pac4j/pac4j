@@ -77,12 +77,13 @@ public class SAML2LogoutRequestBuilder {
         request.setNameID(nameId);
         // session index added
         final var sessIdx = profile.getSessionIndex();
-        final var sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
-            .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
-        final var sessionIdx = sessionIndexBuilder.buildObject();
-        sessionIdx.setValue(sessIdx);
-        request.getSessionIndexes().add(sessionIdx);
-
+        if (sessIdx != null) {
+            final var sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
+                .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
+            final var sessionIdx = sessionIndexBuilder.buildObject();
+            sessionIdx.setValue(sessIdx);
+            request.getSessionIndexes().add(sessionIdx);
+        }
         return request;
     }
 

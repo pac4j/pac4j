@@ -1,6 +1,6 @@
 package org.pac4j.saml.transport;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.shared.component.ComponentInitializationException;
 import org.apache.velocity.VelocityContext;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncodingException;

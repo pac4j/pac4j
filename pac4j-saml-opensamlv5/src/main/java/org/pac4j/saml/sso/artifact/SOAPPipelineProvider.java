@@ -1,12 +1,12 @@
 package org.pac4j.saml.sso.artifact;
 
-import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
+import net.shibboleth.shared.httpclient.HttpClientBuilder;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
 
 /**
  * Provider for the components required to perform SOAP calls for
  * ArtifactResolve.
- * 
+ *
  * @since 3.8.0
  */
 public interface SOAPPipelineProvider {

@@ -1,7 +1,8 @@
 package org.pac4j.saml.config;
 
-import net.shibboleth.utilities.java.support.net.URIComparator;
-import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
+
+import net.shibboleth.shared.net.URIComparator;
+import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.HttpClient;
 import org.opensaml.core.xml.schema.XSAny;
@@ -20,7 +21,16 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.*;
+import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
+import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
+import org.pac4j.saml.metadata.SAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
+import org.pac4j.saml.metadata.SAML2MetadataSigner;
+import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
+import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
@@ -41,7 +51,12 @@ import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Period;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**

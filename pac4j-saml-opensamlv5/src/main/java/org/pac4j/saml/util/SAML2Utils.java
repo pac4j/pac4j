@@ -5,9 +5,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import net.shibboleth.shared.component.ComponentInitializationException;
+import net.shibboleth.shared.resolver.ResolverException;
+import net.shibboleth.shared.xml.SerializeSupport;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;

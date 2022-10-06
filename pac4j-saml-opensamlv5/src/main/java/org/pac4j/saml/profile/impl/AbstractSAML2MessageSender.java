@@ -1,6 +1,6 @@
 package org.pac4j.saml.profile.impl;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;

@@ -12,24 +12,19 @@ import java.util.Properties;
  * generating an HTML form used to POST SAML messages.
  *
  * @author Michael Remond
- *
  */
 public class VelocityEngineFactory {
 
     public static VelocityEngine getEngine() {
 
         try {
-
-            final var props =
-                    new Properties();
-            props.putAll(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
+            final var props = new Properties();
             props.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 
-            final var velocityEngine =
-                    net.shibboleth.utilities.java.support.velocity.VelocityEngine
-                    .newVelocityEngine(props);
-            return velocityEngine;
+            final var engine = new VelocityEngine();
+            engine.init(props);
+            return engine;
         } catch (final Exception e) {
             throw new TechnicalException("Error configuring velocity", e);
         }

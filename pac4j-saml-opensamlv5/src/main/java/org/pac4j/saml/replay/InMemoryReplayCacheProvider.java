@@ -1,10 +1,11 @@
 package org.pac4j.saml.replay;
 
+import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.storage.ReplayCache;
 import org.opensaml.storage.impl.MemoryStorageService;
+import org.opensaml.storage.impl.StorageServiceReplayCache;
 import org.pac4j.saml.exceptions.SAMLException;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
 /**
  * Default replay cache provider which stores the identifiers in memory. This
@@ -12,7 +13,7 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
  * instance is used for all SAML authentications.
  */
 public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
-    private ReplayCache cache;
+    private StorageServiceReplayCache cache;
 
     public InMemoryReplayCacheProvider() {
         try {
@@ -20,7 +21,7 @@ public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
             storageService.setId("pac4j-replay-storage");
             storageService.initialize();
 
-            cache = new ReplayCache();
+            cache = new StorageServiceReplayCache();
             cache.setStorage(storageService);
             cache.initialize();
         } catch (final ComponentInitializationException e) {

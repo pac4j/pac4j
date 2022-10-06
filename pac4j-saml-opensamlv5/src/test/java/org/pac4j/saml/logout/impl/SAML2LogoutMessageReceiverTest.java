@@ -1,6 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
-import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
+import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.opensaml.saml.saml2.encryption.Decrypter;

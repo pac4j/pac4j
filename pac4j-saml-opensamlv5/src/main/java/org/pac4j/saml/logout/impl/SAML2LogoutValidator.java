@@ -1,6 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
-import net.shibboleth.utilities.java.support.net.URIComparator;
+import net.shibboleth.shared.net.URIComparator;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;

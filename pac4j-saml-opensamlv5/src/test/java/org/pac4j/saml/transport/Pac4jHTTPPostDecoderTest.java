@@ -5,13 +5,12 @@ import static org.junit.Assert.assertTrue;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import net.shibboleth.shared.component.ComponentInitializationException;
 import org.junit.Test;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.saml2.core.impl.ResponseImpl;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.saml.util.Configuration;
-
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
 /**
  * Tests {@link Pac4jHTTPPostDecoder}.
