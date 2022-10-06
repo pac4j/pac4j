@@ -5,7 +5,8 @@ title: Release notes&#58;
 
 **v5.7.0**:
 - Deprecated the `UserInfoOidcAuthenticator`: the `oauth.getProfileCreator()` and the `oidc.getProfileCrator()` can be used in the `ParameterClient` and `HeaderClient` for bearer calls
-- Created a `pac4j-saml-opensamlv5` module based on OpenSAML v5 (JDK 17)
+- Created a new `pac4j-saml-opensamlv5` module based on OpenSAML v5 (JDK 17)
+- Created a new `pac4j-cas-clientv4` module based on the Apereo CAS client v4 (JDK 17)
 
 **v5.6.1**:
 - Allow to override the "computation" of the `defaultUrl` in the `DefaultLogoutLogic`

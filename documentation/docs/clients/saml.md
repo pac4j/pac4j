@@ -9,7 +9,7 @@ It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 
 
 ## 1) Dependency
 
-You need to use the following module:
+You need to use the following module: `pac4j-saml` (OpenSAML v4, JDK 11) or `pac4j-saml-opensamlv5` (OpenSAML v5, JDK 17).
 
 ```xml
 <dependency>

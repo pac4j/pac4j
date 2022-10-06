@@ -45,6 +45,7 @@
 		<module>pac4j-config</module>
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
+        <module>pac4j-cas-clientv4</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
         <module>pac4j-saml-opensamlv5</module>
