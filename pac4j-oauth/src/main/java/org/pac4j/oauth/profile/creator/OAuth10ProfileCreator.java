@@ -7,6 +7,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
@@ -26,6 +27,12 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
 
     @Override
     protected OAuth1AccessToken getAccessToken(final Credentials credentials) {
+        // we assume the access token only has been passed: it can be a bearer call (HTTP client)
+        if (credentials instanceof TokenCredentials) {
+            final var accessToken = ((TokenCredentials) credentials).getToken();
+            return new OAuth1AccessToken(accessToken, null);
+        }
+        // regular OAuth flow
         return ((OAuth10Credentials) credentials).getAccessToken();
     }
 

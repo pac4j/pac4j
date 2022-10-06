@@ -1,11 +1,12 @@
 package org.pac4j.oidc.credentials.authenticator;
 
-import static java.util.Optional.ofNullable;
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
-import java.io.IOException;
-import java.util.Map;
-
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoRequest;
+import com.nimbusds.openid.connect.sdk.UserInfoResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -20,20 +21,16 @@ import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
-import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoRequest;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
+import java.io.IOException;
+import java.util.Map;
+
+import static java.util.Optional.ofNullable;
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
- * The OpenId Connect authenticator by user info.
- *
- * @author Rakesh Sarangi
- * @since 3.5.0
+ * Use the appropriate HTTP client and the <code>oidcClient.getProfileCreator();</code>
  */
+@Deprecated
 public class UserInfoOidcAuthenticator extends InitializableObject implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(UserInfoOidcAuthenticator.class);

@@ -6,14 +6,12 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.openid.connect.sdk.Nonce;
-import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoRequest;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -64,22 +62,34 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<UserProfile> create(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var credentials = (OidcCredentials) cred;
-        final var accessToken = credentials.getAccessToken();
+        OidcCredentials oidcCredentials = null;
+        AccessToken accessToken = null;
+
+        // regular OIDC flow
+        if (credentials instanceof OidcCredentials) {
+            oidcCredentials = (OidcCredentials) credentials;
+            accessToken = oidcCredentials.getAccessToken();
+        } else {
+            // we assume the access token only has been passed: it can be a bearer call (HTTP client)
+            final var token = ((TokenCredentials) credentials).getToken();
+            accessToken = new BearerAccessToken(token);
+        }
 
         // Create profile
         final var profile = (OidcProfile) getProfileDefinition().newProfile();
         profile.setAccessToken(accessToken);
-        final var idToken = credentials.getIdToken();
-        profile.setIdTokenString(idToken.getParsedString());
-        // Check if there is a refresh token
-        final var refreshToken = credentials.getRefreshToken();
-        if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
-            profile.setRefreshToken(refreshToken);
-            logger.debug("Refresh Token successful retrieved");
+
+        if (oidcCredentials != null) {
+            profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
+            // Check if there is a refresh token
+            final var refreshToken = oidcCredentials.getRefreshToken();
+            if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
+                profile.setRefreshToken(refreshToken);
+                logger.debug("Refresh Token successful retrieved");
+            }
         }
 
         try {
@@ -91,9 +101,17 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 nonce = null;
             }
             // Check ID Token
-            final var claimsSet = configuration.findTokenValidator().validate(idToken, nonce);
-            assertNotNull("claimsSet", claimsSet);
-            profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
+            if (oidcCredentials != null) {
+                final var claimsSet = configuration.findTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
+                assertNotNull("claimsSet", claimsSet);
+                profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
+
+                // keep the session ID if provided
+                final var sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                if (isNotBlank(sid)) {
+                    configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
+                }
+            }
 
             // User Info request
             if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
@@ -125,27 +143,23 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             // add attributes of the ID token if they don't already exist
-            for (final var entry : idToken.getJWTClaimsSet().getClaims().entrySet()) {
-                final var key = entry.getKey();
-                final var value = entry.getValue();
-                // it's not the subject and this attribute does not already exist, add it
-                if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
-                    getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+            if (oidcCredentials != null) {
+                for (final var entry : oidcCredentials.getIdToken().getJWTClaimsSet().getClaims().entrySet()) {
+                    final var key = entry.getKey();
+                    final var value = entry.getValue();
+                    // it's not the subject and this attribute does not already exist, add it
+                    if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
+                        getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+                    }
                 }
             }
 
             if (configuration.isIncludeAccessTokenClaimsInProfile()) {
-                collectClaimsFromAccessTokenIfAny(credentials, nonce, profile);
+                collectClaimsFromAccessTokenIfAny(oidcCredentials, nonce, profile);
             }
 
             // session expiration with token behavior
             profile.setTokenExpirationAdvance(configuration.getTokenExpirationAdvance());
-
-            // keep the session ID if provided
-            final var sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-            if (isNotBlank(sid)) {
-                configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
-            }
 
             return Optional.of(profile);
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {

@@ -1,11 +1,15 @@
 package org.pac4j.oauth.profile.creator;
 
-import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -26,6 +30,12 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
 
     @Override
     protected OAuth2AccessToken getAccessToken(final Credentials credentials) {
+        // we assume the access token only has been passed: it can be a bearer call (HTTP client)
+        if (credentials instanceof TokenCredentials) {
+            final var accessToken = ((TokenCredentials) credentials).getToken();
+            return new OAuth2AccessToken(accessToken);
+        }
+        // regular OAuth flow
         return ((OAuth20Credentials) credentials).getAccessToken();
     }
 

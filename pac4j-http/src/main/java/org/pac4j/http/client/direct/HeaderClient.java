@@ -40,11 +40,24 @@ public class HeaderClient extends DirectClient {
         defaultProfileCreator(profileCreator);
     }
 
+    public HeaderClient(final String headerName, final ProfileCreator profileCreator) {
+        this.headerName = headerName;
+        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
+        defaultProfileCreator(profileCreator);
+    }
+
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
         defaultAuthenticator(tokenAuthenticator);
+        defaultProfileCreator(profileCreator);
+    }
+
+    public HeaderClient(final String headerName, final String prefixHeader, final ProfileCreator profileCreator) {
+        this.headerName = headerName;
+        this.prefixHeader = prefixHeader;
+        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
         defaultProfileCreator(profileCreator);
     }
 

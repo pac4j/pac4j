@@ -31,6 +31,13 @@ public class ParameterClient extends DirectClient {
     }
 
     public ParameterClient(final String parameterName,
+                           final ProfileCreator profileCreator) {
+        this.parameterName = parameterName;
+        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
+        defaultProfileCreator(profileCreator);
+    }
+
+    public ParameterClient(final String parameterName,
                            final Authenticator tokenAuthenticator,
                            final ProfileCreator profileCreator) {
         this.parameterName = parameterName;

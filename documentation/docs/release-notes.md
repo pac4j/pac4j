@@ -4,6 +4,7 @@ title: Release notes&#58;
 ---
 
 **v5.7.0**:
+- Deprecated the `UserInfoOidcAuthenticator`: the `oauth.getProfileCreator()` and the `oidc.getProfileCrator()` can be used in the `ParameterClient` and `HeaderClient` for bearer calls
 
 **v5.6.1**:
 - Allow to override the "computation" of the `defaultUrl` in the `DefaultLogoutLogic`

@@ -15,6 +15,12 @@ import org.pac4j.core.exception.CredentialsException;
 @FunctionalInterface
 public interface Authenticator {
 
+    Authenticator ALWAYS_VALIDATE = new Authenticator() {
+        @Override
+        public void validate(Credentials credentials, WebContext context, SessionStore sessionStore) {
+        }
+    };
+
     /**
      * Validate the credentials. It should throw a {@link CredentialsException} in case of failure.
      *
