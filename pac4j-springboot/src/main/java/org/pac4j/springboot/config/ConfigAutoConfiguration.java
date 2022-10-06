@@ -11,11 +11,14 @@ import org.springframework.context.annotation.Configuration;
 /**
  * The configuration class for Spring.
  *
+ * You should upgrade to the new <code>pac4j-springbootv3</code> module.
+ *
  * @author Misagh Moayyed
  * @since 4.0.0
  */
 @Configuration(value = "ConfigAutoConfiguration", proxyBeanMethods = false)
 @EnableConfigurationProperties(Pac4jConfigurationProperties.class)
+@Deprecated
 public class ConfigAutoConfiguration {
 
     @Autowired

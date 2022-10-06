@@ -16,9 +16,12 @@ import java.util.stream.Collectors;
 /**
  * Store data in the JEE web session.
  *
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@Deprecated
 public class JEESessionStore implements SessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();

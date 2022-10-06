@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-cas-clientv4</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security for CAS client v4</name>
+    <name>pac4j: Java web security for CAS (Apereo client v4)</name>
 
     <properties>
         <cas.version>4.0.0-SNAPSHOT</cas.version>

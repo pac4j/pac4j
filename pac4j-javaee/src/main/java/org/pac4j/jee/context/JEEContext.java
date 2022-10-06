@@ -18,9 +18,12 @@ import java.util.Optional;
 /**
  * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
  *
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Deprecated
 public class JEEContext implements WebContext {
 
     private final HttpServletRequest request;

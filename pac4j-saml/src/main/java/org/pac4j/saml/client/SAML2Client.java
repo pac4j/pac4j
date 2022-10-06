@@ -49,12 +49,15 @@ import static org.pac4j.core.util.CommonHelper.*;
 /**
  * This class is the client to authenticate and logout users with a SAML2 Identity Provider.
  *
+ * You should upgrade to the new <code>pac4j-saml-opensamlv5</code> module.
+ *
  * @author Michael Remond
  * @author Misagh Moayyed
  * @author Ruochao Zheng
  * @author Jerome Leleu
  * @since 1.5.0
  */
+@Deprecated
 public class SAML2Client extends IndirectClient {
 
     protected SAMLContextProvider contextProvider;

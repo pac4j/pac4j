@@ -12,9 +12,12 @@ import java.io.IOException;
 /**
  * The HTTP action adapter for the {@link JEEContext}.
  *
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Deprecated
 public class JEEHttpActionAdapter implements HttpActionAdapter {
 
     public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
