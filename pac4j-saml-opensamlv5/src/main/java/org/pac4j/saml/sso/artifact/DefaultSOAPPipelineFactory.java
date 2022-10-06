@@ -1,14 +1,28 @@
 package org.pac4j.saml.sso.artifact;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+
+import net.shibboleth.shared.component.ComponentInitializationException;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.messaging.handler.MessageHandler;
-import org.opensaml.messaging.handler.impl.*;
+import org.opensaml.messaging.handler.impl.BasicMessageHandlerChain;
+import org.opensaml.messaging.handler.impl.CheckExpectedIssuer;
+import org.opensaml.messaging.handler.impl.CheckMandatoryAuthentication;
+import org.opensaml.messaging.handler.impl.CheckMandatoryIssuer;
+import org.opensaml.messaging.handler.impl.SchemaValidateXMLMessage;
 import org.opensaml.messaging.pipeline.httpclient.BasicHttpClientMessagePipeline;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipeline;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
-import org.opensaml.saml.common.binding.impl.*;
-import org.opensaml.saml.common.binding.security.impl.*;
+import org.opensaml.saml.common.binding.impl.CheckMessageVersionHandler;
+import org.opensaml.saml.common.binding.impl.PopulateSignatureSigningParametersHandler;
+import org.opensaml.saml.common.binding.impl.SAMLMetadataLookupHandler;
+import org.opensaml.saml.common.binding.impl.SAMLProtocolAndRoleHandler;
+import org.opensaml.saml.common.binding.impl.SAMLSOAPDecoderBodyHandler;
+import org.opensaml.saml.common.binding.security.impl.CheckAndRecordServerTLSEntityAuthenticationtHandler;
+import org.opensaml.saml.common.binding.security.impl.InResponseToSecurityHandler;
+import org.opensaml.saml.common.binding.security.impl.MessageLifetimeSecurityHandler;
+import org.opensaml.saml.common.binding.security.impl.MessageReplaySecurityHandler;
+import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
+import org.opensaml.saml.common.binding.security.impl.SAMLProtocolMessageXMLSignatureSecurityHandler;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.common.xml.SAMLSchemaBuilder;

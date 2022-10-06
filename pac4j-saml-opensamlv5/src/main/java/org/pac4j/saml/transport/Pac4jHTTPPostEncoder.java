@@ -1,10 +1,11 @@
 package org.pac4j.saml.transport;
 
-import net.shibboleth.utilities.java.support.codec.Base64Support;
-import net.shibboleth.utilities.java.support.codec.HTMLEncoder;
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.component.ComponentSupport;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+
+import net.shibboleth.shared.codec.Base64Support;
+import net.shibboleth.shared.codec.HTMLEncoder;
+import net.shibboleth.shared.component.ComponentInitializationException;
+import net.shibboleth.shared.component.ComponentSupport;
+import net.shibboleth.shared.xml.SerializeSupport;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.core.xml.XMLObject;

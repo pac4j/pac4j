@@ -1,10 +1,9 @@
 package org.pac4j.saml.sso.impl;
 
-import net.shibboleth.utilities.java.support.codec.Base64Support;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.xml.XMLParserException;
+
+import net.shibboleth.shared.codec.Base64Support;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.Test;
-import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.saml2.core.AuthnContext;
@@ -38,7 +37,6 @@ import org.springframework.core.io.FileSystemResource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.ZoneOffset;
@@ -303,8 +301,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test(expected = SAMLSignatureValidationException.class)
-    public void testNotSignedAuthenticatedResponseThrowsException()
-        throws FileNotFoundException, XMLParserException, UnmarshallingException {
+    public void testNotSignedAuthenticatedResponseThrowsException() throws Exception {
         final var file = new File(SAML2DefaultResponseValidatorTests.class.getClassLoader().
             getResource(SAMPLE_RESPONSE_FILE_NAME).getFile());
 

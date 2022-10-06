@@ -13,17 +13,14 @@
     <name>pac4j: Java web security for SAML (OpenSAML v5)</name>
 
     <properties>
-        <opensaml.version>4.2.0</opensaml.version>
+        <opensaml.version>5.0.0-SNAPSHOT</opensaml.version>
         <joda-time.version>2.11.2</joda-time.version>
         <velocity.version>2.3</velocity.version>
-        <xmlsectool.version>3.0.0</xmlsectool.version>
         <xmlsec.version>3.0.1</xmlsec.version>
         <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
         velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
         <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.5</cryptacular.version>
-        <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
-        <httpcore.version>4.4.15</httpcore.version>
         <hazelcast.version>5.1.3</hazelcast.version>
         <java.version>17</java.version>
     </properties>
@@ -45,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.opensaml</groupId>
-            <artifactId>opensaml-core</artifactId>
+            <artifactId>opensaml-core-api</artifactId>
             <version>${opensaml.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -142,17 +139,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.shibboleth.tool</groupId>
-            <artifactId>xmlsectool</artifactId>
-            <version>${xmlsectool.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -180,11 +166,6 @@
             <artifactId>spring-core</artifactId>
             <scope>compile</scope>
             <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>${httpcore.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
@@ -240,6 +221,16 @@
     </build>
 
     <repositories>
+        <repository>
+            <id>shib-snapshots</id>
+            <url>https://build.shibboleth.net/nexus/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
         <repository>
             <id>shib-release</id>
             <url>https://build.shibboleth.net/nexus/content/groups/public</url>

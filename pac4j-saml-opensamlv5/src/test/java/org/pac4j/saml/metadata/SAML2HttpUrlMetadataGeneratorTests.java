@@ -1,7 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;

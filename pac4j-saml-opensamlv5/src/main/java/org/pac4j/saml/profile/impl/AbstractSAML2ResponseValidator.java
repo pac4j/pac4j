@@ -1,8 +1,9 @@
 package org.pac4j.saml.profile.impl;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.net.URIComparator;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+
+import net.shibboleth.shared.component.ComponentInitializationException;
+import net.shibboleth.shared.net.URIComparator;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.binding.security.impl.MessageReplaySecurityHandler;
