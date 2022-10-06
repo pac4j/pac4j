@@ -5,7 +5,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <div class="text-center">
 
-<h2><a id="v5.6" href="/docs/index.html">v5.6</a> <small>(MINOR)</small>
+<h2><a id="v5.7" href="/docs/index.html">v5.7</a> <small>(MINOR)</small>
+
+<a id="v5.6" href="https://www.pac4j.org/5.6.x/docs/index.html">v5.6</a> <small>(MINOR)</small>
 
 <a id="v5.5" href="https://www.pac4j.org/5.5.x/docs/index.html">v5.5</a> <small>(MINOR)</small>
 
