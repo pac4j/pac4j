@@ -12,11 +12,6 @@
     <packaging>jar</packaging>
     <name>pac4j for MongoDB</name>
 
-    <properties>
-        <mongo-driver.version>4.7.2</mongo-driver.version>
-        <flapdoodle.version>2.2.0</flapdoodle.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -25,17 +20,14 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>${mongo-driver.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
-            <version>${mongo-driver.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-core</artifactId>
-            <version>${mongo-driver.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -66,8 +58,6 @@
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <version>${flapdoodle.version}</version>
-            <scope>test</scope>
         </dependency>
         <!-- for testing -->
     </dependencies>

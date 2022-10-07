@@ -1,6 +1,5 @@
 package org.pac4j.saml.sso.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -19,6 +18,7 @@ import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.RequestedAttribute;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
@@ -88,7 +88,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         request.setIsPassive(configContext.isPassive());
         request.setForceAuthn(configContext.isForceAuth());
 
-        if (StringUtils.isNotBlank(configContext.getProviderName())) {
+        if (CommonHelper.isNotBlank(configContext.getProviderName())) {
             request.setProviderName(configContext.getProviderName());
         }
 

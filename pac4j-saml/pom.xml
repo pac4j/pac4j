@@ -179,6 +179,12 @@
             <artifactId>spring-core</artifactId>
             <scope>compile</scope>
             <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-jcl</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

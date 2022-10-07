@@ -343,4 +343,8 @@ public final class CommonHelper {
         }
         return constructor;
     }
+
+    public static String ifBlank(final String value, final String defaultValue) {
+        return isBlank(value) ? defaultValue : value;
+    }
 }

@@ -1,6 +1,6 @@
 package org.pac4j.saml.metadata;
 
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.xmlsec.signature.SignableXMLObject;
 
 import java.io.File;
 
@@ -11,7 +11,9 @@ import java.io.File;
  * @since 5.0.0
  */
 public interface SAML2MetadataSigner {
-    default void sign(final EntityDescriptor descriptor) {}
+    void sign(SignableXMLObject descriptor);
 
-    default void sign(final File metadataFile) {}
+    void sign(File metadataFile);
+
+    String sign(String metadata);
 }

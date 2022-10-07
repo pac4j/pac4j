@@ -1,13 +1,18 @@
 package org.pac4j.saml.metadata;
 
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.xmlsec.SignatureSigningParameters;
+import org.opensaml.xmlsec.signature.SignableXMLObject;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.SignatureSupport;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.util.Configuration;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,15 +46,52 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
         this.signatureAlgorithm = signatureAlgorithm;
         this.signatureReferenceDigestMethod = signatureReferenceDigestMethod;
     }
+    private byte[] sign(final byte[] metadata) throws Exception {
+        try (var is = new ByteArrayInputStream(metadata)) {
+            final var document = Configuration.getParserPool().parse(is);
+            final var documentElement = document.getDocumentElement();
+            final var unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller(documentElement);
+            final var xmlObject = Objects.requireNonNull(unmarshaller).unmarshall(documentElement);
+            if (xmlObject instanceof SignableXMLObject root && !root.isSigned()) {
+                sign(root);
+                try (var writer = Configuration.serializeSamlObject(root)) {
+                    return writer.toString().getBytes(StandardCharsets.UTF_8);
+                }
+            }
+            return metadata;
+        }
+    }
 
     @Override
-    public void sign(final EntityDescriptor descriptor) {
+    public String sign(final String metadata) {
+        try {
+            var input = metadata.getBytes(StandardCharsets.UTF_8);
+            var result = sign(input);
+            return new String(result, StandardCharsets.UTF_8);
+        } catch (final Exception e) {
+            throw new SAMLException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void sign(final File metadataFile) {
+        try {
+            var input = Files.readAllBytes(metadataFile.toPath());
+            var result = sign(input);
+            Files.writeString(metadataFile.toPath(), new String(result, StandardCharsets.UTF_8));
+        } catch (final Exception e) {
+            throw new SAMLException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void sign(final SignableXMLObject descriptor) {
         try {
             final var signingParameters = new SignatureSigningParameters();
 
             final var activeProvider = Objects.requireNonNull(Optional.ofNullable(configuration)
                 .map(SAML2Configuration::getCredentialProvider)
-                .orElseGet(() -> this.credentialProvider));
+                .orElse(this.credentialProvider));
             signingParameters.setKeyInfoGenerator(activeProvider.getKeyInfoGenerator());
             signingParameters.setSigningCredential(activeProvider.getCredential());
 
