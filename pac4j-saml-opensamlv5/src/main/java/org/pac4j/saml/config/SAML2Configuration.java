@@ -57,6 +57,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.function.Supplier;
 
 /**
@@ -978,13 +980,19 @@ public class SAML2Configuration extends BaseClientConfiguration {
         generator.setSingleLogoutServiceUrl(logoutUrl);
     }
 
-    public SAML2MetadataGenerator getMetadataGenerator() throws Exception {
-        if (this.metadataGenerator == null) {
-            return serviceProviderMetadataResource instanceof UrlResource
-                ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
-                : new SAML2FileSystemMetadataGenerator();
-        }
-        return this.metadataGenerator;
+    public SAML2MetadataGenerator getMetadataGenerator() {
+        return Objects.requireNonNullElseGet(this.metadataGenerator,
+            () -> ServiceLoader.load(SAML2MetadataGenerator.class).stream().findFirst()
+                .map(ServiceLoader.Provider::get)
+                .orElseGet(() -> {
+                    try {
+                        return serviceProviderMetadataResource instanceof UrlResource
+                            ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
+                            : new SAML2FileSystemMetadataGenerator();
+                    } catch (final Exception e) {
+                        throw new TechnicalException(e);
+                    }
+                }));
     }
 
     public void setMetadataGenerator(final SAML2MetadataGenerator metadataGenerator) {
