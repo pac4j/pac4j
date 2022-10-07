@@ -189,6 +189,10 @@ You can generate the SP metadata in two ways:
 - either programmatically using the `SAML2Client`: `String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();`
 - or by defining the appropriate configuration: `cfg.setServiceProviderMetadata(new FileSystemResource("/tmp/sp-metadata.xml"));`
 
+Furthermore, bootstrapping the SAML configuration harness can be done using Java's `ServiceLoader` API. In order to be discovered,
+you must create a provider configuration file: `META-INF/services/org.pac4j.saml.util.ConfigurationManager`. The content of the file is the
+fully qualified class name of the SPI implementation: `com.example.impl.MyConfigurationManager`.
+
 ## 3.1) Metadata and Keystore configuration:
 
 - For service provider metadata generation, *pac4j* offers the following components:
@@ -225,6 +229,13 @@ config.setServiceProviderMetadataResource(
 config.init();
 return config;
 ```
+
+
+Furthermore, service provider metadata generators can be discovered using Java's `ServiceLoader` API. In order to be discovered,
+you must create a provider configuration file: `META-INF/services/org.pac4j.saml.metadata.SAML2MetadataGenerator`. The content
+of the file is the fully qualified class name of the SPI implementation: `com.example.impl.MySAML2MetadataGenerator`. This method
+will only activate if the metadata generator is not explicitly configured. It will also override the default logic for configuring
+service provider metadata generators if an implementation is discovered.
 
 ## 3.2) Identity provider metadata resolution:
 
