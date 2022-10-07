@@ -237,6 +237,35 @@ of the file is the fully qualified class name of the SPI implementation: `com.ex
 will only activate if the metadata generator is not explicitly configured. It will also override the default logic for configuring
 service provider metadata generators if an implementation is discovered.
 
+### Managing metadata via MongoDb
+
+Service provider metadata can alternatively be stored and managed via MongoDb.
+
+```java
+var configuration = new SAML2Configuration();
+...
+var generator = new SAML2MongoMetadataGenerator(this.mongoClient);
+generator.setMetadataDatabase(...);
+generator.setMetadataCollection(...);
+configuration.setMetadataGenerator(generator);
+...
+configuration.init();
+```
+
+The `SAML2MongoMetadataGenerator` has the ability to either insert or update metadata in the underlying database collection.
+By default, the database name is expected to be `saml2` and the collection is expected to be `metadata`.
+
+This functionality expects mongo dependencies to already be available and does not explicitly declare or export those.
+You will need to include the following module, at a minimum, in your build:
+
+```xml
+<dependency>
+    <groupId>org.mongodb</groupId>
+    <artifactId>mongodb-driver-core</artifactId>
+    <version>...</version>
+</dependency>
+```
+
 ## 3.2) Identity provider metadata resolution:
 
 Resolution of identity provider metadata can also be controlled and overridden as shown below:
