@@ -6,6 +6,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
@@ -25,21 +26,22 @@ import static com.mongodb.client.model.Filters.eq;
  * @since 5.7.0
  */
 public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
-    private static final String ID = "saml2-metadata";
-
     private final MongoClient mongoClient;
+    private final String entityId;
 
     private String metadataDatabase = "saml2";
 
     private String metadataCollection = "metadata";
 
-    public SAML2MongoMetadataGenerator(final MongoClient mongoClient) {
+
+    public SAML2MongoMetadataGenerator(final MongoClient mongoClient, final String entityId) {
         this.mongoClient = mongoClient;
+        this.entityId = entityId;
     }
 
     @Override
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
-        var documents = Objects.requireNonNull(getCollection().find(buildMetadataDocumentFilter()));
+        var documents = Objects.requireNonNull(getCollection().find(buildMetadataDocumentFilter(this.entityId)));
         var foundDoc = documents.first();
         if (foundDoc != null) {
             var metadata = foundDoc.getString("metadata");
@@ -49,11 +51,11 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
                 return new DOMMetadataResolver(root);
             }
         }
-        throw new SAMLException("Unable to locate metadata document " + ID);
+        throw new SAMLException("Unable to locate metadata document ");
     }
 
-    protected Bson buildMetadataDocumentFilter() {
-        return eq("id", ID);
+    protected Bson buildMetadataDocumentFilter(final String entityId) {
+        return eq("entityId", entityId);
     }
 
     @Override
@@ -66,12 +68,21 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
         var metadataToUse = isSignMetadata() ? getMetadataSigner().sign(metadata) : metadata;
         CommonHelper.assertNotBlank("metadata", metadataToUse);
 
-        var filter = buildMetadataDocumentFilter();
+        var metadataEntityId = Configuration.deserializeSamlObject(metadataToUse)
+            .map(EntityDescriptor.class::cast)
+            .map(EntityDescriptor::getEntityID)
+            .orElseThrow();
+        if (!metadataEntityId.equals(this.entityId)) {
+            throw new SAMLException("Entity id from metadata " + metadataEntityId
+                + " does not match supplied entity id " + this.entityId);
+        }
+
+        var filter = buildMetadataDocumentFilter(metadataEntityId);
         var foundDoc = getCollection().find(filter).first();
         if (foundDoc == null) {
             final var doc = new Document();
             doc.put("metadata", metadataToUse);
-            doc.put("id", ID);
+            doc.put("entityId", metadataEntityId);
             return getCollection().insertOne(doc).getInsertedId() != null;
         }
         foundDoc.put("metadata", metadataToUse);

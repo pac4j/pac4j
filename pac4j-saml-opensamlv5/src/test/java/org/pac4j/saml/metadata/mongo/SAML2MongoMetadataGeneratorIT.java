@@ -41,7 +41,7 @@ public class SAML2MongoMetadataGeneratorIT implements TestsConstants {
     @Before
     public void setUp() {
         mongoServer.start(PORT);
-        mongoMetadataGenerator = new SAML2MongoMetadataGenerator(getClient());
+        mongoMetadataGenerator = new SAML2MongoMetadataGenerator(getClient(), ENTITY_ID);
     }
 
     @After

@@ -173,7 +173,7 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
     public void buildMultipleDifferentOrder() {
         final Authorizer authorizer1 = new IsAnonymousAuthorizer();
         final Authorizer authorizer2 = new CheckHttpMethodAuthorizer();
-        final Authorizer[] authorizers = new Authorizer[] {authorizer1, authorizer2};
+
         final Matcher matcher1 = new PathMatcher();
         final Matcher matcher2 = new HttpMethodMatcher();
 

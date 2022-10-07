@@ -237,6 +237,24 @@ of the file is the fully qualified class name of the SPI implementation: `com.ex
 will only activate if the metadata generator is not explicitly configured. It will also override the default logic for configuring
 service provider metadata generators if an implementation is discovered.
 
+### Managing metadata via JDBC
+
+Service provider metadata can alternatively be stored and managed via relational databases.
+The generator expects an instance of `JdbcTemplate` to work with your relational database. By default, the expected
+database table is named `sp-metadata` with two columns, `entityId` and `metadata` (which should allow for large text values).
+Metadata is base-64 encoded/decoded by this generator on save and/or fetch operations.
+
+```java
+var configuration = new SAML2Configuration();
+...
+var generator = new SAML2JdbcMetadataGenerator(jdbcTemplate, entityId);
+generator.setTableName(...);
+...
+configuration.setMetadataGenerator(generator);
+...
+configuration.init();
+```
+
 ### Managing metadata via MongoDb
 
 Service provider metadata can alternatively be stored and managed via MongoDb.
@@ -244,7 +262,7 @@ Service provider metadata can alternatively be stored and managed via MongoDb.
 ```java
 var configuration = new SAML2Configuration();
 ...
-var generator = new SAML2MongoMetadataGenerator(this.mongoClient);
+var generator = new SAML2MongoMetadataGenerator(this.mongoClient, entityId);
 generator.setMetadataDatabase(...);
 generator.setMetadataCollection(...);
 configuration.setMetadataGenerator(generator);
