@@ -43,6 +43,7 @@ import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
 import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
@@ -295,7 +296,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     break;
             }
 
-            if (StringUtils.isNotBlank(p.getSurname())) {
+            if (CommonHelper.isNotBlank(p.getSurname())) {
                 final var surnameBuilder =
                     (SAMLObjectBuilder<SurName>) this.builderFactory
                         .getBuilder(SurName.DEFAULT_ELEMENT_NAME);
@@ -304,7 +305,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 person.setSurName(surName);
             }
 
-            if (StringUtils.isNotBlank(p.getGivenName())) {
+            if (CommonHelper.isNotBlank(p.getGivenName())) {
                 final var givenNameBuilder =
                     (SAMLObjectBuilder<GivenName>) this.builderFactory
                         .getBuilder(GivenName.DEFAULT_ELEMENT_NAME);

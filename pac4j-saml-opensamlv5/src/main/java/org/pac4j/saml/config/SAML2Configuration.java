@@ -974,7 +974,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
-        final var url = StringUtils.defaultIfBlank(this.singleSignOutServiceUrl, callbackUrl);
+        final var url = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
         final var logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
         // the logout URL is callback URL with an extra parameter
         generator.setSingleLogoutServiceUrl(logoutUrl);
