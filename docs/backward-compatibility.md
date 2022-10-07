@@ -15,7 +15,7 @@ Given a version X.Y.Z:
 
 Generally, *pac4j* implementations follow the semver versioning as well.
 
-Notice that, while `pac4j-*` modules are backward compatible, you should always add the `pac4j-core` dependency in the same version as the upgraded `pac4j-*` dependency.
+Notice that, while `pac4j-*` modules are backward compatible, you should always add the `pac4j-javaee` or `pac4j-jakartaee` or `pac4j-core` dependency in the same version as the upgraded `pac4j-*` dependency.
 
 
 ## 2) Maintenance
@@ -23,9 +23,9 @@ Notice that, while `pac4j-*` modules are backward compatible, you should always 
 
 ### a) Core project
 
-Only one stable and released stream of *pac4j* is maintained at the same time, currently, it's **version 4.x**.
+Only one stable and released stream of *pac4j* is maintained at the same time, currently, it's **version 5.x**.
 
-Older streams of *pac4j* are not maintained. Security fixes are backported on the previous stream for 6 months.
+Older streams of *pac4j* are not maintained by default and security fixes are backported on a best efforts basis.
 
 ### b) Implementations
 
@@ -40,4 +40,4 @@ The "major" implementations are:
 
 They are always upgraded to the latest *pac4j* stream. Other implementations are considered "minor" and may not be upgraded.
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> If this free Open Source maintenance policy is not sufficient, the paid <a href="/commercial-support.html">LTS / Upgrade program</a> may be subscribed.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> If this free Open Source maintenance policy is not sufficient, contact the <a href="/commercial-support.html">commercial support</a>.</div>
