@@ -17,7 +17,7 @@ import org.opensaml.saml.ext.saml2mdui.Logo;
 import org.opensaml.saml.ext.saml2mdui.PrivacyStatementURL;
 import org.opensaml.saml.ext.saml2mdui.UIInfo;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
@@ -48,7 +48,6 @@ import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -119,15 +118,14 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     private SAML2MetadataSigner metadataSigner;
 
     @Override
-    public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {
-        final AbstractBatchMetadataResolver resolver;
-        if (metadataResource != null) {
-            resolver = createMetadataResolver(metadataResource);
-        } else {
+    public MetadataResolver buildMetadataResolver() throws Exception {
+        var resolver = createMetadataResolver();
+        if (resolver == null) {
             final var md = buildEntityDescriptor();
             final var entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
             resolver = new DOMMetadataResolver(entityDescriptorElement);
         }
+
         resolver.setRequireValidMetadata(true);
         resolver.setFailFastInitialization(true);
         resolver.setId(resolver.getClass().getCanonicalName());
@@ -136,7 +134,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return resolver;
     }
 
-    protected abstract AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception;
+    protected abstract AbstractMetadataResolver createMetadataResolver() throws Exception;
 
     @Override
     public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {

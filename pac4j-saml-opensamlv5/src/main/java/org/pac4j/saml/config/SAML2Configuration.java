@@ -988,7 +988,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
                     try {
                         return serviceProviderMetadataResource instanceof UrlResource
                             ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
-                            : new SAML2FileSystemMetadataGenerator();
+                            : new SAML2FileSystemMetadataGenerator(serviceProviderMetadataResource);
                     } catch (final Exception e) {
                         throw new TechnicalException(e);
                     }

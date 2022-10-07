@@ -1,7 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.collections.CollectionUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Assertion;
@@ -48,11 +47,11 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
@@ -642,8 +641,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             logger.debug("Required authentication context class refs are {}", configContext.getAuthnContextClassRefs());
             logger.debug("Found authentication context class refs are {}", providedAuthnContextClassRefs);
 
-            final Collection<String> results = CollectionUtils.intersection(
-                configContext.getAuthnContextClassRefs(), providedAuthnContextClassRefs);
+            var results = configContext.getAuthnContextClassRefs().stream()
+                .distinct()
+                .filter(providedAuthnContextClassRefs::contains)
+                .collect(Collectors.toSet());
             if (results.size() != configContext.getAuthnContextClassRefs().size()) {
                 throw new SAMLAuthnContextClassRefException("Requested authentication context class refs do not match "
                     + " those in authentication statements from IDP.");

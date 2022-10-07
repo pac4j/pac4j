@@ -17,9 +17,6 @@
         <joda-time.version>2.11.2</joda-time.version>
         <velocity.version>2.3</velocity.version>
         <xmlsec.version>3.0.1</xmlsec.version>
-        <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
-        velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
-        <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.5</cryptacular.version>
         <hazelcast.version>5.1.3</hazelcast.version>
         <java.version>17</java.version>
@@ -153,11 +150,6 @@
             <version>${velocity.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>${commons-collections.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
@@ -172,6 +164,25 @@
             <artifactId>hazelcast</artifactId>
             <version>${hazelcast.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-core</artifactId>
         </dependency>
         <!-- for testing -->
         <dependency>
@@ -198,6 +209,11 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- for testing -->

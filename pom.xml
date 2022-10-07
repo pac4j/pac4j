@@ -62,6 +62,8 @@
 	</modules>
 
 	<properties>
+        <mongo-driver.version>4.7.2</mongo-driver.version>
+        <flapdoodle.version>3.4.11</flapdoodle.version>
 		<junit.version>4.13.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
@@ -139,6 +141,21 @@
                 <groupId>org.pac4j</groupId>
                 <artifactId>pac4j-jwt</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongo-driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>bson</artifactId>
+                <version>${mongo-driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-core</artifactId>
+                <version>${mongo-driver.version}</version>
             </dependency>
             <dependency>
 				<groupId>org.slf4j</groupId>
@@ -229,6 +246,12 @@
                 <artifactId>pac4j-http</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>de.flapdoodle.embed</groupId>
+                <artifactId>de.flapdoodle.embed.mongo</artifactId>
+                <version>${flapdoodle.version}</version>
+                <scope>test</scope>
             </dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -367,6 +390,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.10.1</version>
 				<configuration>
+                    <source>${java.version}</source>
                     <release>${java.version}</release>
 					<encoding>UTF-8</encoding>
 				</configuration>
@@ -426,6 +450,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <release>${java.version}</release>
+                </configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
