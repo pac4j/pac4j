@@ -194,6 +194,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-core</artifactId>
+            <optional>true</optional>
         </dependency>
         <!-- for testing -->
         <dependency>
