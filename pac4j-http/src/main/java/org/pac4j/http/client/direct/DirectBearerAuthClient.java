@@ -32,6 +32,11 @@ public class DirectBearerAuthClient extends DirectClient {
         defaultAuthenticator(tokenAuthenticator);
     }
 
+    public DirectBearerAuthClient(final ProfileCreator profileCreator) {
+        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
+        defaultProfileCreator(profileCreator);
+    }
+
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator,
                                  final ProfileCreator profileCreator) {
         defaultAuthenticator(tokenAuthenticator);
