@@ -43,6 +43,7 @@ By default, the `LocalCachingAuthenticator` uses Guava as its internal [`Store`]
 
 In some cases, you may also rely on the session by using: `client.setSaveProfileInSession(true);`.
 
+In case of a "noop" authenticator (`Authenticator.ALWAYS_VALIDATE`) where only the profile creation matters, you should use the [`LocalCachingProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/LocalCachingProfileCreator) instead.
 
 ## 2) `PasswordEncoder`
 

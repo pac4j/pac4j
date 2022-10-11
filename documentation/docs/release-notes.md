@@ -11,6 +11,7 @@ title: Release notes&#58;
 - SAML2 service provider metadata generators can be discovered using [Java's `ServiceLoader` API](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ServiceLoader.html).
 - Added support for `SAML2MongoMetadataGenerator` to manage SAML2 metadata via `pac4j-saml-opensamlv5`.
 - Added support for `SAML2JdbcMetadataGenerator` to manage SAML2 metadata via `pac4j-saml-opensamlv5`.
+- Added a `LocalCachingProfileCreator`
 
 **v5.6.1**:
 - Allow to override the "computation" of the `defaultUrl` in the `DefaultLogoutLogic`

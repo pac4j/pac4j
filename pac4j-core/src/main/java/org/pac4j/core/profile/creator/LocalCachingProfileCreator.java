@@ -1,4 +1,4 @@
-package org.pac4j.core.credentials.authenticator;
+package org.pac4j.core.profile.creator;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -11,36 +11,37 @@ import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An authenticator that caches the result of an authentication based on the credentials.
+ * A profile creator that caches the result of a profile creation based on the credentials.
  *
  * Add the <code>guava</code> dependency to use this class.
  *
- * @author Misagh Moayyed
- * @since 1.8
+ * @author Jerome LELEU
+ * @since 5.7.0
  */
-public class LocalCachingAuthenticator extends InitializableObject implements Authenticator {
+public class LocalCachingProfileCreator extends InitializableObject implements ProfileCreator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Authenticator delegate;
+    private ProfileCreator delegate;
     private int cacheSize;
     private int timeout;
     private TimeUnit timeUnit;
 
     private Store<Credentials, UserProfile> store;
 
-    public LocalCachingAuthenticator() {}
+    public LocalCachingProfileCreator() {}
 
-    public LocalCachingAuthenticator(final Authenticator delegate, final Store<Credentials, UserProfile> store) {
+    public LocalCachingProfileCreator(final ProfileCreator delegate, final Store<Credentials, UserProfile> store) {
         this.delegate = delegate;
         this.store = store;
     }
 
-    public LocalCachingAuthenticator(final Authenticator delegate, final int cacheSize,
-                                     final int timeout, final TimeUnit timeUnit) {
+    public LocalCachingProfileCreator(final ProfileCreator delegate, final int cacheSize,
+                                      final int timeout, final TimeUnit timeUnit) {
         this.delegate = delegate;
         this.cacheSize = cacheSize;
         this.timeout = timeout;
@@ -48,19 +49,21 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
         var optProfile = this.store.get(credentials);
         if (optProfile.isEmpty()) {
-            logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
-            delegate.validate(credentials, context, sessionStore);
-            final var profile = credentials.getUserProfile();
-            logger.debug("Caching credential. Using profile {}...", profile);
-            store.set(credentials, profile);
+            logger.debug("No cached credentials found. Delegating profile creation to {}...", delegate);
+            final Optional<UserProfile> profile = delegate.create(credentials, context, sessionStore);
+            if (profile.isPresent()) {
+                logger.debug("Caching credential. Using profile {}...", profile.get());
+                store.set(credentials, profile.get());
+            }
+            return profile;
         } else {
-            credentials.setUserProfile(optProfile.get());
             logger.debug("Found cached credential. Using cached profile {}...", optProfile.get());
+            return optProfile;
         }
     }
 
@@ -83,11 +86,11 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         return this.store.get(credentials).isPresent();
     }
 
-    public Authenticator getDelegate() {
+    public ProfileCreator getDelegate() {
         return delegate;
     }
 
-    public void setDelegate(final Authenticator delegate) {
+    public void setDelegate(final ProfileCreator delegate) {
         this.delegate = delegate;
     }
 
