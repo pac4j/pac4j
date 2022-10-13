@@ -28,7 +28,7 @@ public final class CommonHelper {
      * @return if the String is not blank
      */
     public static boolean isNotBlank(final String s) {
-        return s != null && !s.trim().isEmpty();
+        return s != null && !s.isBlank();
     }
 
     /**
@@ -325,23 +325,30 @@ public final class CommonHelper {
      * @throws NoSuchMethodException  method not found
      */
     public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
-        var constructor = constructorsCache.get(name);
-        if (constructor == null) {
-            synchronized (constructorsCache) {
+        synchronized (constructorsCache) {
+            var constructor = constructorsCache.get(name);
+            if (constructor == null) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
-                    var tccl = Thread.currentThread().getContextClassLoader();
-
-                    if (tccl == null) {
-                        constructor = Class.forName(name).getDeclaredConstructor();
-                    } else {
-                        constructor = Class.forName(name, true, tccl).getDeclaredConstructor();
+                    Class<?> clazz;
+                    try {
+                        clazz = Class.forName(name, true, CommonHelper.class.getClassLoader());
+                    } catch (final ClassNotFoundException e) {
+                        var tccl = Thread.currentThread().getContextClassLoader();
+                        if (tccl == null) {
+                            clazz = Class.forName(name);
+                        } else {
+                            clazz = Class.forName(name, true, tccl);
+                        }
                     }
+
+                    constructor = clazz.getDeclaredConstructor();
                     constructorsCache.put(name, constructor);
                 }
             }
+
+            return constructor;
         }
-        return constructor;
     }
 
     public static String ifBlank(final String value, final String defaultValue) {
