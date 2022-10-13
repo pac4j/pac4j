@@ -19,14 +19,7 @@ public final class ConfigBuilder {
         try {
             logger.info("Build the configuration from factory: {}", factoryName);
 
-            var tccl = Thread.currentThread().getContextClassLoader();
-            final Class<ConfigFactory> clazz;
-            if (tccl == null) {
-                clazz = (Class<ConfigFactory>) Class.forName(factoryName);
-            } else {
-                clazz = (Class<ConfigFactory>) Class.forName(factoryName, true, tccl);
-            }
-            final var factory = clazz.getDeclaredConstructor().newInstance();
+            final var factory = (ConfigFactory) org.pac4j.core.util.CommonHelper.getConstructor( factoryName ).newInstance();
             return factory.build(parameters);
         } catch (final Exception e) {
             throw new TechnicalException("Cannot build configuration", e);
