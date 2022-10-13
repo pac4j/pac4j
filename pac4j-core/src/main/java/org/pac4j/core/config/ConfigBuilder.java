@@ -1,6 +1,7 @@
 package org.pac4j.core.config;
 
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ public final class ConfigBuilder {
         try {
             logger.info("Build the configuration from factory: {}", factoryName);
 
-            final var factory = (ConfigFactory) org.pac4j.core.util.CommonHelper.getConstructor( factoryName ).newInstance();
+            final var factory = (ConfigFactory) CommonHelper.getConstructor(factoryName).newInstance();
             return factory.build(parameters);
         } catch (final Exception e) {
             throw new TechnicalException("Cannot build configuration", e);
