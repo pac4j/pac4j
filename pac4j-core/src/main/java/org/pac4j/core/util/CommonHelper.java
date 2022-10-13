@@ -325,9 +325,9 @@ public final class CommonHelper {
      * @throws NoSuchMethodException  method not found
      */
     public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
-        synchronized (constructorsCache) {
-            var constructor = constructorsCache.get(name);
-            if (constructor == null) {
+        var constructor = constructorsCache.get(name);
+        if (constructor == null) {
+            synchronized (constructorsCache) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
                     Class<?> clazz;
@@ -346,9 +346,9 @@ public final class CommonHelper {
                     constructorsCache.put(name, constructor);
                 }
             }
-
-            return constructor;
         }
+
+        return constructor;
     }
 
     public static String ifBlank(final String value, final String defaultValue) {
