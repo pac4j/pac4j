@@ -12,6 +12,7 @@ title: Release notes&#58;
 - Added support for `SAML2MongoMetadataGenerator` to manage SAML2 metadata via `pac4j-saml-opensamlv5`.
 - Added support for `SAML2JdbcMetadataGenerator` to manage SAML2 metadata via `pac4j-saml-opensamlv5`.
 - Added a `LocalCachingProfileCreator`
+- Added the `PRIVATE_KEY_JWT` client authentication method support for the OIDC protocol
 
 **v5.6.1**:
 - Allow to override the "computation" of the `defaultUrl` in the `DefaultLogoutLogic`

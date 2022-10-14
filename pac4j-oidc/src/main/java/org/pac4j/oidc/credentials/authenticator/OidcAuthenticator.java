@@ -1,5 +1,6 @@
 package org.pac4j.oidc.credentials.authenticator;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.id.ClientID;
@@ -11,7 +12,6 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -24,6 +24,9 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.isNotEmpty;
 
 /**
  * The OpenID Connect authenticator.
@@ -39,6 +42,7 @@ public class OidcAuthenticator implements Authenticator {
         Arrays.asList(
             ClientAuthenticationMethod.CLIENT_SECRET_POST,
             ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
+            ClientAuthenticationMethod.PRIVATE_KEY_JWT,
             ClientAuthenticationMethod.NONE);
 
     protected OidcConfiguration configuration;
@@ -48,8 +52,8 @@ public class OidcAuthenticator implements Authenticator {
     private ClientAuthentication clientAuthentication;
 
     public OidcAuthenticator(final OidcConfiguration configuration, final OidcClient client) {
-        CommonHelper.assertNotNull("configuration", configuration);
-        CommonHelper.assertNotNull("client", client);
+        assertNotNull("configuration", configuration);
+        assertNotNull("client", client);
         this.configuration = configuration;
         this.client = client;
 
@@ -63,7 +67,7 @@ public class OidcAuthenticator implements Authenticator {
             final var preferredMethod = getPreferredAuthenticationMethod(configuration);
 
             final ClientAuthenticationMethod chosenMethod;
-            if (CommonHelper.isNotEmpty(metadataMethods)) {
+            if (isNotEmpty(metadataMethods)) {
                 if (preferredMethod != null) {
                     if (metadataMethods.contains(preferredMethod)) {
                         chosenMethod = preferredMethod;
@@ -87,6 +91,20 @@ public class OidcAuthenticator implements Authenticator {
             } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
                 final var _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretBasic(_clientID, _secret);
+            } else if (ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(chosenMethod)) {
+                final var privateKetJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
+                assertNotNull("privateKetJwtConfig", privateKetJwtConfig);
+                final var jwsAlgo = privateKetJwtConfig.getJwsAlgorithm();
+                assertNotNull("privateKetJwtConfig.getJwsAlgorithm()", jwsAlgo);
+                final var privateKey = privateKetJwtConfig.getPrivateKey();
+                assertNotNull("privateKetJwtConfig.getPrivateKey()", privateKey);
+                final var keyID = privateKetJwtConfig.getKeyID();
+                try {
+                    clientAuthentication = new PrivateKeyJWT(_clientID, configuration.findProviderMetadata().getTokenEndpointURI(),
+                        jwsAlgo, privateKey, keyID, null);
+                } catch (final JOSEException e) {
+                    throw new TechnicalException("Cannot instantiate private key JWT client authentication method", e);
+                }
             } else {
                 throw new TechnicalException("Unsupported client authentication method: " + chosenMethod);
             }

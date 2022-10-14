@@ -1,23 +1,5 @@
 package org.pac4j.oidc.config;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.logout.handler.LogoutHandler;
-import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.core.util.generator.RandomValueGenerator;
-
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
@@ -28,11 +10,22 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import org.pac4j.core.client.config.BaseClientConfiguration;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.util.generator.RandomValueGenerator;
+import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.oidc.profile.creator.TokenValidator;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
-import org.pac4j.oidc.profile.creator.TokenValidator;
 
 import javax.net.ssl.SSLSocketFactory;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -91,6 +84,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* client authentication method used at token End Point */
     private ClientAuthenticationMethod clientAuthenticationMethod;
 
+    /* The private key JWT client authentication method configuration */
+    private PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig;
+
     /* use nonce? */
     private boolean useNonce;
 
@@ -144,12 +140,12 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private TokenValidator tokenValidator;
 
     private boolean allowUnsignedIdTokens;
-    
+
     /** If enabled, try to process the access token as a JWT and include its claims in the profile.
      * Only enable this if there is an agreement between the IdP and the client about the format of
-     * the access token. If not, the authorization server and the resource server might decide to 
-     * change the token format at any time (for example, by switching from this profile to opaque 
-     * tokens); hence, any logic in the client relying on the ability to read the access token 
+     * the access token. If not, the authorization server and the resource server might decide to
+     * change the token format at any time (for example, by switching from this profile to opaque
+     * tokens); hence, any logic in the client relying on the ability to read the access token
      * content would break without recourse.
      */
     private boolean includeAccessTokenClaimsInProfile = false;
@@ -517,11 +513,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setAllowUnsignedIdTokens(final boolean allowUnsignedIdTokens) {
         this.allowUnsignedIdTokens = allowUnsignedIdTokens;
     }
-    
+
     public boolean isIncludeAccessTokenClaimsInProfile() {
         return includeAccessTokenClaimsInProfile;
     }
-    
+
     public void setIncludeAccessTokenClaimsInProfile(boolean includeAccessTokenClaimsInProfile) {
         this.includeAccessTokenClaimsInProfile = includeAccessTokenClaimsInProfile;
     }
@@ -534,6 +530,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.SSLFactory = SSLFactory;
     }
 
+    public PrivateKeyJWTClientAuthnMethodConfig getPrivateKeyJWTClientAuthnMethodConfig() {
+        return privateKeyJWTClientAuthnMethodConfig;
+    }
+
+    public void setPrivateKeyJWTClientAuthnMethodConfig(final PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig) {
+        this.privateKeyJWTClientAuthnMethodConfig = privateKeyJWTClientAuthnMethodConfig;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -544,6 +548,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
             "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
             "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens,
-            "SSLFactory", SSLFactory);
+            "SSLFactory", SSLFactory, "privateKeyJWTClientAuthnMethodConfig", privateKeyJWTClientAuthnMethodConfig);
     }
 }
