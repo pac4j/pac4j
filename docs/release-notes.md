@@ -13,7 +13,6 @@ title: Release notes&#58;
 - Added support for `SAML2JdbcMetadataGenerator` to manage SAML2 metadata via `pac4j-saml-opensamlv5`.
 - Added a `LocalCachingProfileCreator`
 - Added the `PRIVATE_KEY_JWT` client authentication method support for the OIDC protocol
-- Deprecated the `permission` concept in the user profile
 
 **v5.6.1**:
 - Allow to override the "computation" of the `defaultUrl` in the `DefaultLogoutLogic`
