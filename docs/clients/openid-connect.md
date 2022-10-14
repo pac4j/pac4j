@@ -107,6 +107,16 @@ You can define how the client credentials (`clientId` and `secret`)  are passed 
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
 ```
 
+You can also use the `PRIVATE_KEY_JWT` authentication method by providing the `PrivateKeyJWTClientAuthnMethodConfig` component:
+
+```java
+oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+
+var privateKey = org.jasig.cas.client.util.PrivateKeyUtils.createKey("private-key.pem", "RSA");
+var privateKeyJwtConfig = new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.RS256, privateKey, "12345");
+oidcConfiguration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
+```
+
 When validating the IDToken in the login process, you can set a clock skew:
 
 ```java
