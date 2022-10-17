@@ -22,7 +22,7 @@ Notice that, while `pac4j-*` modules are backward compatible, you should always 
 
 ### a) Core project
 
-Community efforts are focused on the latest stream (the **master** branch**).
+Community efforts are focused on the latest stream (the **master** branch).
 
 For older streams, contributions may be accepted and bug/security fixes may be backported.
 
