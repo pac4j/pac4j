@@ -20,12 +20,11 @@ Notice that, while `pac4j-*` modules are backward compatible, you should always 
 
 ## 2) Maintenance
 
-
 ### a) Core project
 
-Only one stable and released stream of *pac4j* is maintained at the same time, currently, it's **version 5.x**.
+Community efforts are focused on the latest stream (the **master** branch**).
 
-Older streams of *pac4j* are not maintained by default and security fixes are backported on a best efforts basis.
+For older streams, contributions may be accepted and bug/security fixes may be backported.
 
 ### b) Implementations
 
@@ -38,6 +37,6 @@ The "major" implementations are:
 - *play-pac4j*
 - *CAS*
 
-They are always upgraded to the latest *pac4j* stream. Other implementations are considered "minor" and may not be upgraded.
+They should be upgraded to the latest *pac4j* stream.
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> If this free Open Source maintenance policy is not sufficient, contact the <a href="/commercial-support.html">commercial support</a>.</div>
