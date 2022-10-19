@@ -1,13 +1,15 @@
 package org.pac4j.core.profile;
 
+import com.google.common.collect.Streams;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Streams;
-
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -451,9 +453,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
 
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
-                this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered,
-                "clientName", this.clientName, "linkedId", this.linkedId);
+        return CommonHelper.toNiceString(this.getClass(), "id", this.id, "attributes", this.attributes,
+                "authenticationAttributes", this.authenticationAttributes, "roles", this.roles, "permissions", this.permissions,
+                "isRemembered", this.isRemembered, "clientName", this.clientName, "linkedId", this.linkedId);
     }
 
     @Override
