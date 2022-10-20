@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for CAS (Apereo client v4)</name>
 
     <properties>
-        <cas.version>4.0.0-SNAPSHOT</cas.version>
+        <cas.version>4.0.0-RC1</cas.version>
         <java.properties>17</java.properties>
     </properties>
 
