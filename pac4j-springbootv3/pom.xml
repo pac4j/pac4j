@@ -21,7 +21,7 @@
     </repositories>
 
     <properties>
-        <springboot.version>3.0.0-M5</springboot.version>
+        <springboot.version>3.0.0-RC1</springboot.version>
         <java.version>17</java.version>
     </properties>
 
