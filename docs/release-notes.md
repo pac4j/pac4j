@@ -45,6 +45,7 @@ title: Release notes&#58;
 - Disable JWT access token parsing by default, use `OidcConfiguration.setIncludeAccessTokenClaimsInProfile` to re-enable.
 - Upgrade nimbus-jwt to v9.24.2
 - Deprecate the static methods: `Config.set|defaultProfileManagerFactory(name,ProfileManagerFactory)` in favor of the class methods: `config.set|defaultProfileManagerFactory(ProfileManagerFactory)`. Add the `config.defaultSessionStore(SessionStore)` method
+- <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Upgrade to slf4j v2.0.0: be careful as it may break logging!</div>
 
 **v5.4.5**:
 - Deprecated the `new PathMatcher(regex)` constructor
@@ -152,8 +153,6 @@ title: Release notes&#58;
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
 ---
-
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The 4.x stream is no longer maintained except via the <a href="/commercial-support.html">LTS program</a>.</div>
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
