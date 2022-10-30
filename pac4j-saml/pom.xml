@@ -14,7 +14,7 @@
 
     <properties>
         <opensaml.version>4.2.0</opensaml.version>
-        <joda-time.version>2.12.0</joda-time.version>
+        <joda-time.version>2.12.1</joda-time.version>
         <velocity.version>2.3</velocity.version>
         <xmlsectool.version>3.0.0</xmlsectool.version>
         <xmlsec.version>3.0.1</xmlsec.version>
