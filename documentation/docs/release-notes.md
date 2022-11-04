@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.1**:
+- Allow to disable tokens rotation on the `DefaultCsrfTokenGenerator`
+
 **v5.7.0**:
 - The `oauth.getProfileCreator()` and the `oidc.getProfileCreator()` can directly be used in the `ParameterClient`, `HeaderClient` and `DirectBearerAuthClient` for bearer calls; Deprecated the `UserInfoOidcAuthenticator`
 - Created a new `pac4j-saml-opensamlv5` module based on OpenSAML v5 (JDK 17)

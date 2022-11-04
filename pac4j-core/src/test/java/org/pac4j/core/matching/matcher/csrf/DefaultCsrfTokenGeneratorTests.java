@@ -19,10 +19,27 @@ import static org.junit.Assert.*;
  */
 public final class DefaultCsrfTokenGeneratorTests {
 
-    private final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
+    @Test
+    public void testDefault() {
+        final var generator = new DefaultCsrfTokenGenerator();
+        internalTest(generator, true);
+    }
 
     @Test
-    public void test() {
+    public void testNoRotate() {
+        final var generator = new DefaultCsrfTokenGenerator();
+        generator.setRotateTokens(false);
+        internalTest(generator, false);
+    }
+
+    @Test
+    public void testRotate() {
+        final var generator = new DefaultCsrfTokenGenerator();
+        generator.setRotateTokens(true);
+        internalTest(generator, true);
+    }
+
+    private void internalTest(final DefaultCsrfTokenGenerator generator, final boolean rotate) {
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         final var token = generator.get(context, sessionStore);
@@ -33,8 +50,15 @@ public final class DefaultCsrfTokenGeneratorTests {
         final var nowPlusTtl = new Date().getTime() + 1000 * generator.getTtlInSeconds();
         assertTrue(expirationDate > nowPlusTtl - 1000);
         assertTrue(expirationDate < nowPlusTtl + 1000);
-        generator.get(context, sessionStore);
+        var newToken = generator.get(context, sessionStore);
         final var token3 = (String) sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).orElse(null);
+        final var token4 = (String) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN).orElse(null);
         assertEquals(token, token3);
+        assertEquals(token4, newToken);
+        if (rotate) {
+            assertNotEquals(token, token4);
+        } else {
+            assertEquals(token, token4);
+        }
     }
 }
