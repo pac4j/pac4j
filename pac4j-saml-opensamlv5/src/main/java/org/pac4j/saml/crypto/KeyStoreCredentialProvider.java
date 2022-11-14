@@ -41,7 +41,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     private final String privateKeyAlias;
 
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
-        CommonHelper.assertNotBlank("keystorePassword", configuration.getPrivateKeyPassword());
+        CommonHelper.assertNotBlank("keystorePassword", configuration.getKeystorePassword());
         CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
 
         try (var inputStream = configuration.getKeystoreGenerator().retrieve()) {
