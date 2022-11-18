@@ -10,7 +10,7 @@
 
     <artifactId>pac4j-springboot</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j for Spring Boot v3</name>
+    <name>pac4j for Spring Boot</name>
 
     <repositories>
         <repository>

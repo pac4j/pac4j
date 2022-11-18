@@ -3,7 +3,6 @@ package org.pac4j.jwt;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.JWSAlgorithm;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -12,6 +11,9 @@ import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
+
+import java.time.Instant;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -37,7 +39,7 @@ public class CasRestProfileJwtTest implements TestsConstants {
         var token = generator.generate(casRestProfile);
         final var jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
             new SecretEncryptionConfiguration(encryptionSecret, JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256));
-        jwtAuthenticator.setExpirationTime(DateTime.now().plusMinutes(5).toDate());
+        jwtAuthenticator.setExpirationTime(Date.from(Instant.now().plusSeconds(5 * 60)));
         final var newCasProfile = (CasRestProfile) jwtAuthenticator.validateToken(token);
         assertEquals(TGT_ID, newCasProfile.getTicketGrantingTicketId());
     }
