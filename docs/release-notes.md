@@ -3,6 +3,19 @@ layout: doc
 title: Release notes&#58;
 ---
 
+### JDK17:
+
+**v6.0.0**:
+- Based on JDK17
+- Removed the deprecated `pac4j-saml`, `pac4j-cas` and `pac4j-springboot` modules
+- Renamed the `pac4j-cas-clientv4` module as `pac4j-cas`
+- Renamed the `pac4j-saml-opensamlv5` module as `pac4j-saml`
+- Renamed the `pac4j-springbootv3` module as `pac4j-springboot`
+
+---
+
+### JDK11:
+
 **v5.7.1**:
 - Allow to disable tokens rotation on the `DefaultCsrfTokenGenerator`
 
@@ -156,6 +169,8 @@ title: Release notes&#58;
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
 ---
+
+### JDK8:
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
