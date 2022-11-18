@@ -1,6 +1,6 @@
 package org.pac4j.cas.redirect;
 
-import org.jasig.cas.client.Protocol;
+import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;

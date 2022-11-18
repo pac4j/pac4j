@@ -1,7 +1,7 @@
 package org.pac4j.saml.util;
 
-import net.shibboleth.utilities.java.support.net.URIComparator;
-import net.shibboleth.utilities.java.support.net.URIException;
+import net.shibboleth.shared.net.URIComparator;
+import net.shibboleth.shared.net.URIException;
 import org.apache.http.client.utils.URIBuilder;
 
 /**

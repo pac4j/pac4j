@@ -1,6 +1,6 @@
 package org.pac4j.cas.store;
 
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.apereo.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
 

@@ -5,7 +5,7 @@ title: Spring Boot Integration
 
 ## 0) Dependency
 
-You need to use the following module: `pac4j-springboot` (deprecated, Spring 5, Boot v2, JDK 11) or `pac4j-springbootv3` (Spring 6, Boot v3, JDK 17).
+You need to use the following module: `pac4j-springboot`.
 
 **Example (Maven dependency):**
 

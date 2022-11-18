@@ -1,6 +1,6 @@
 package org.pac4j.saml.util;
 
-import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
+import net.shibboleth.shared.httpclient.HttpClientBuilder;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.pac4j.core.exception.TechnicalException;

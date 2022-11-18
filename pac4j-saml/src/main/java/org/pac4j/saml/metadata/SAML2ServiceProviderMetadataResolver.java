@@ -1,7 +1,8 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
+
+import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
@@ -42,10 +43,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 final var entity = metadataGenerator.buildEntityDescriptor();
                 final var metadata = metadataGenerator.getMetadata(entity);
                 metadataGenerator.storeMetadata(metadata,
-                    resource,
                     configuration.isForceServiceProviderMetadataGeneration());
             }
-            return metadataGenerator.buildMetadataResolver(resource);
+            return metadataGenerator.buildMetadataResolver();
         } catch (final Exception e) {
             throw new SAMLException("Unable to generate metadata for service provider", e);
         }

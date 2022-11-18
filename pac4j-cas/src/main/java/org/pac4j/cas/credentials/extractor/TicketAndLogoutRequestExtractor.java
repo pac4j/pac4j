@@ -1,6 +1,6 @@
 package org.pac4j.cas.credentials.extractor;
 
-import org.jasig.cas.client.Protocol;
+import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.context.HttpConstants;

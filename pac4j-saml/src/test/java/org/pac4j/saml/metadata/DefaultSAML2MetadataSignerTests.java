@@ -50,7 +50,7 @@ public class DefaultSAML2MetadataSignerTests {
         final var metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
-        metadataGenerator.storeMetadata(metadata, configuration.getServiceProviderMetadataResource(), true);
-        assertNotNull(metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource()));
+        metadataGenerator.storeMetadata(metadata, true);
+        assertNotNull(metadataGenerator.buildMetadataResolver());
     }
 }

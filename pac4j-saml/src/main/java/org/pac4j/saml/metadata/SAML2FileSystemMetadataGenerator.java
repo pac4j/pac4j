@@ -1,6 +1,6 @@
 package org.pac4j.saml.metadata;
 
-import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.springframework.core.io.Resource;
@@ -22,13 +22,19 @@ import java.nio.charset.StandardCharsets;
  */
 public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator {
 
+    private final Resource metadataResource;
+
+    public SAML2FileSystemMetadataGenerator(Resource metadataResource) {
+        this.metadataResource = metadataResource;
+    }
+
     @Override
-    protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
+    protected AbstractMetadataResolver createMetadataResolver() throws Exception {
         return new FilesystemMetadataResolver(metadataResource.getFile());
     }
 
     @Override
-    public boolean storeMetadata(final String metadata, final Resource metadataResource, final boolean force) throws Exception {
+    public boolean storeMetadata(final String metadata, final boolean force) throws Exception {
         if (metadataResource == null || CommonHelper.isBlank(metadata)) {
             logger.info("No metadata or resource is provided");
             return false;

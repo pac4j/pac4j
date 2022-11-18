@@ -5,15 +5,15 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-parent</artifactId>
-        <version>5.7.1-SNAPSHOT</version>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-cas</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security for CAS (Apereo client v3)</name>
+    <name>pac4j: Java web security for CAS</name>
 
     <properties>
-        <cas.version>3.6.4</cas.version>
+        <cas.version>4.0.0-RC1</cas.version>
     </properties>
 
     <dependencies>
@@ -22,26 +22,14 @@
             <artifactId>pac4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${cas.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-support-saml</artifactId>
             <version>${cas.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

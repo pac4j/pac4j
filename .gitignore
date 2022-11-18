@@ -31,10 +31,8 @@ documentation/_site/
 .pmd
 .pmdruleset.xml
 pac4j-saml/testKeystore.jks
-pac4j-saml-opensamlv5/testKeystore.jks
 .factorypath
 pac4j-saml/saml-signing-cert.*
-pac4j-saml-opensamlv5/saml-signing-cert.*
 krb5.conf
 documentation/.jekyll-cache/
 dependency-reduced-pom.xml

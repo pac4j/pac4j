@@ -23,12 +23,9 @@ import static org.pac4j.core.util.CommonHelper.toNiceString;
  * <p>The proxy granting tickets and associations are stored by default in a {@link Store} class, which can be overridden by using the
  * {@link #setStore(Store)} method.</p>
  *
- * You should upgrade to the new <code>pac4j-cas-clientv4</code> module.
- *
  * @author Jerome Leleu
  * @since 1.4.0
  */
-@Deprecated
 public final class CasProxyReceptor extends IndirectClient {
 
     public static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";

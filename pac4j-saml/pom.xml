@@ -5,25 +5,19 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-parent</artifactId>
-        <version>5.7.1-SNAPSHOT</version>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
     <packaging>jar</packaging>
-    <name>pac4j: Java web security for SAML (OpenSAML v4)</name>
+    <name>pac4j: Java web security for SAML</name>
 
     <properties>
-        <opensaml.version>4.2.0</opensaml.version>
+        <opensaml.version>5.0.0-SNAPSHOT</opensaml.version>
         <joda-time.version>2.12.1</joda-time.version>
         <velocity.version>2.3</velocity.version>
-        <xmlsectool.version>3.0.0</xmlsectool.version>
         <xmlsec.version>3.0.1</xmlsec.version>
-        <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
-        velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
-        <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.2.5</cryptacular.version>
-        <!-- This version is used to override the version xmlsectool depends on. it should be compatible -->
-        <httpcore.version>4.4.15</httpcore.version>
         <hazelcast.version>5.2.1</hazelcast.version>
     </properties>
 
@@ -44,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>org.opensaml</groupId>
-            <artifactId>opensaml-core</artifactId>
+            <artifactId>opensaml-core-api</artifactId>
             <version>${opensaml.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -141,15 +135,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.shibboleth.tool</groupId>
-            <artifactId>xmlsectool</artifactId>
-            <version>${xmlsectool.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -164,11 +151,12 @@
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
             <version>${velocity.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>${commons-collections.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -178,18 +166,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <scope>compile</scope>
-            <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>spring-jcl</artifactId>
                     <groupId>org.springframework</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>${httpcore.version}</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
@@ -197,11 +180,32 @@
             <version>${hazelcast.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-core</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -222,6 +226,11 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- for testing -->
@@ -245,6 +254,16 @@
     </build>
 
     <repositories>
+        <repository>
+            <id>shib-snapshots</id>
+            <url>https://build.shibboleth.net/nexus/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
         <repository>
             <id>shib-release</id>
             <url>https://build.shibboleth.net/nexus/content/groups/public</url>

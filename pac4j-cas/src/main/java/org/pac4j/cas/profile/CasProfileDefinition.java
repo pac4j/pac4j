@@ -1,6 +1,6 @@
 package org.pac4j.cas.profile;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.apereo.cas.client.authentication.AttributePrincipal;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;

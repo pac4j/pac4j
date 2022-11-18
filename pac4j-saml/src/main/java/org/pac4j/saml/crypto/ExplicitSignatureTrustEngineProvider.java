@@ -1,6 +1,6 @@
 package org.pac4j.saml.crypto;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver;
 import org.opensaml.saml.security.impl.MetadataCredentialResolver;

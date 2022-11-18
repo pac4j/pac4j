@@ -1,7 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;
@@ -55,14 +55,13 @@ public class SAML2HttpUrlMetadataGeneratorTests {
                     .withHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType())));
         wireMockServer.start();
         try {
-            final var configuration = initialConfiguration();
-            final SAML2MetadataGenerator metadataGenerator =
+            var metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8088/saml"), new SAML2HttpClientBuilder().build());
             final var entity = metadataGenerator.buildEntityDescriptor();
             assertNotNull(entity);
             final var metadata = metadataGenerator.getMetadata(entity);
             assertNotNull(metadata);
-            assertTrue(metadataGenerator.storeMetadata(metadata, configuration.getServiceProviderMetadataResource(), true));
+            assertTrue(metadataGenerator.storeMetadata(metadata, true));
         } finally {
             wireMockServer.stop();
         }
@@ -84,7 +83,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
             final var configuration = initialConfiguration();
             final SAML2MetadataGenerator metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8087/saml"), new SAML2HttpClientBuilder().build());
-            final var resolver = metadataGenerator.buildMetadataResolver(configuration.getServiceProviderMetadataResource());
+            final var resolver = metadataGenerator.buildMetadataResolver();
             assertNotNull(resolver);
 
             var entity = resolver.resolveSingle(

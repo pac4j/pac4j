@@ -7,6 +7,7 @@
 
 <!--	<logger name="org.pac4j" level="INFO" />-->
 
+    <logger name="de.flapdoodle.embed.mongo" level="WARN" />
 	<logger name="PROTOCOL_MESSAGE" level="DEBUG" />
 
 	<root level="WARN">

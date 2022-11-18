@@ -1,6 +1,6 @@
 package org.pac4j.cas.client.direct;
 
-import org.jasig.cas.client.validation.AssertionImpl;
+import org.apereo.cas.client.validation.AssertionImpl;
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;

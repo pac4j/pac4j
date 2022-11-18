@@ -7,9 +7,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.opensaml.saml.metadata.resolver.impl.AbstractBatchMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.HTTPMetadataResolver;
-import org.springframework.core.io.Resource;
 
 import java.net.URL;
 import java.time.Duration;
@@ -34,7 +33,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
     }
 
     @Override
-    protected AbstractBatchMetadataResolver createMetadataResolver(final Resource metadataResource) throws Exception {
+    protected AbstractMetadataResolver createMetadataResolver() throws Exception {
         final var resolver = new HTTPMetadataResolver(httpClient, this.metadataUrl.toExternalForm());
         if (minRefreshDelay != null) {
             resolver.setMinRefreshDelay(minRefreshDelay);
@@ -49,7 +48,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
     }
 
     @Override
-    public boolean storeMetadata(final String metadata, final Resource resource, final boolean force) throws Exception {
+    public boolean storeMetadata(final String metadata, final boolean force) throws Exception {
         HttpResponse response = null;
 
         try {
@@ -72,7 +71,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
                     return true;
                 }
             }
-            logger.error("Unable to store metadata successfully via {}", resource);
+            logger.error("Unable to store metadata successfully via {}", metadataUrl.toExternalForm());
             return false;
         } finally {
             if (response != null && response instanceof CloseableHttpResponse) {

@@ -1,6 +1,6 @@
 package org.pac4j.cas.client.rest;
 
-import org.jasig.cas.client.validation.TicketValidationException;
+import org.apereo.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;

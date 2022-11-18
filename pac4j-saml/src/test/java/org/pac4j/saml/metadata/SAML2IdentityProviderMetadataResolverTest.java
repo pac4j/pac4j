@@ -1,7 +1,7 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.xml.XMLParserException;
+import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.xml.XMLParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
@@ -17,10 +17,13 @@ import javax.net.ssl.X509TrustManager;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class SAML2IdentityProviderMetadataResolverTest {
@@ -30,11 +33,11 @@ public class SAML2IdentityProviderMetadataResolverTest {
     private static SSLContext disabledSslContext() throws Exception {
         var trustAllCerts = new TrustManager[]{new X509TrustManager() {
             @Override
-            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
             }
 
             @Override
@@ -126,7 +129,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     }
 
     @Test
-    public void resolveExpiringMetadata() throws Exception {
+    public void resolveExpiringMetadata() {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("expired-idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);

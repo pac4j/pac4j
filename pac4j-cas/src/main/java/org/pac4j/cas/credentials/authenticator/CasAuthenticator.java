@@ -1,6 +1,6 @@
 package org.pac4j.cas.credentials.authenticator;
 
-import org.jasig.cas.client.validation.TicketValidationException;
+import org.apereo.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.WebContext;

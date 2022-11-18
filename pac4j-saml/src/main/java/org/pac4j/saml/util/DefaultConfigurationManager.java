@@ -1,8 +1,9 @@
 package org.pac4j.saml.util;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.xml.BasicParserPool;
-import net.shibboleth.utilities.java.support.xml.ParserPool;
+
+import net.shibboleth.shared.component.ComponentInitializationException;
+import net.shibboleth.shared.xml.ParserPool;
+import net.shibboleth.shared.xml.impl.BasicParserPool;
 import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.config.InitializationException;
 import org.opensaml.core.config.InitializationService;

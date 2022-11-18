@@ -1,1 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.pac4j.springboot.config.ConfigAutoConfiguration

@@ -1,6 +1,6 @@
 package org.pac4j.cas.client.rest;
 
-import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
+import org.apereo.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;

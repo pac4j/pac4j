@@ -1,6 +1,6 @@
 package org.pac4j.cas.profile;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.apereo.cas.client.authentication.AttributePrincipal;
 
 /**
  * <p>This class is the user profile for sites using CAS protocol with proxy capabilities.</p>

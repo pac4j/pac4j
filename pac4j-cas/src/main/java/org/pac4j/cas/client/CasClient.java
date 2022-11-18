@@ -30,11 +30,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
  *
- * You should upgrade to the new <code>pac4j-cas-clientv4</code> module.
  * @author Jerome Leleu
  * @since 1.4.0
  */
-@Deprecated
 public class CasClient extends IndirectClient {
 
     private CasConfiguration configuration = new CasConfiguration();

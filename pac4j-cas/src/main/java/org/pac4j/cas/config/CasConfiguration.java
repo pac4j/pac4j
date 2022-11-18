@@ -1,8 +1,8 @@
 package org.pac4j.cas.config;
 
-import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
-import org.jasig.cas.client.util.PrivateKeyUtils;
-import org.jasig.cas.client.validation.*;
+import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
+import org.apereo.cas.client.util.PrivateKeyUtils;
+import org.apereo.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.logout.handler.LogoutHandler;

@@ -1,7 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
-import net.shibboleth.utilities.java.support.net.URIComparator;
-import org.apache.commons.lang3.StringUtils;
+import net.shibboleth.shared.net.URIComparator;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -16,6 +15,7 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
@@ -97,7 +97,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     }
 
     protected HttpAction handlePostLogoutResponse(final SAML2MessageContext context) {
-        if (StringUtils.isNotBlank(postLogoutURL)) {
+        if (CommonHelper.isNotBlank(postLogoutURL)) {
             // if custom post logout URL is present then redirect to it
             return new FoundAction(postLogoutURL);
         }
@@ -179,7 +179,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
     protected void validateDestinationEndpoint(final LogoutResponse logoutResponse, final SAML2MessageContext context) {
         final List<String> expected = new ArrayList<>();
-        if (StringUtils.isBlank(this.expectedDestination)) {
+        if (CommonHelper.isBlank(this.expectedDestination)) {
             final Endpoint endpoint = Objects.requireNonNull(context.getSPSSODescriptor().getSingleLogoutServices().get(0));
             if (endpoint.getLocation() != null) {
                 expected.add(endpoint.getLocation());
