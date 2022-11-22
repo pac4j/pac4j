@@ -48,13 +48,14 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                         final var secret = getProperty(SPRING_ENCODER_PBKDF2_SECRET, i);
                         if (containsProperty(SPRING_ENCODER_PBKDF2_ITERATIONS, i)
                             && containsProperty(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i)) {
-                            encoder = new Pbkdf2PasswordEncoder(secret, getPropertyAsInteger(SPRING_ENCODER_PBKDF2_ITERATIONS, i),
+                            encoder = new Pbkdf2PasswordEncoder(secret, 16, getPropertyAsInteger(SPRING_ENCODER_PBKDF2_ITERATIONS, i),
                                 getPropertyAsInteger(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i));
                         } else {
-                            encoder = new Pbkdf2PasswordEncoder(secret);
+                            encoder = new Pbkdf2PasswordEncoder(secret, 16, 310000,
+                                Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
                         }
                     } else {
-                        encoder = new Pbkdf2PasswordEncoder();
+                        encoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
                     }
                 } else if (SpringEncoderType.SCRYPT.toString().equalsIgnoreCase(type)) {
                     if (containsProperty(SPRING_ENCODER_SCRYPT_CPU_COST, i) && containsProperty(SPRING_ENCODER_SCRYPT_MEMORY_COST, i)
@@ -67,7 +68,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                             getPropertyAsInteger(SPRING_ENCODER_SCRYPT_KEY_LENGTH, i),
                                 getPropertyAsInteger(SPRING_ENCODER_SCRYPT_SALT_LENGTH, i));
                     } else {
-                        encoder = new SCryptPasswordEncoder();
+                        encoder = SCryptPasswordEncoder.defaultsForSpringSecurity_v5_8();
                     }
                 } else if (SpringEncoderType.STANDARD.toString().equalsIgnoreCase(type)) {
                     LOGGER.debug("Please notice that the STANDARD Spring encoder type is insecure and for tests only");
