@@ -1,10 +1,16 @@
 package org.pac4j.oidc.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
+import org.pac4j.core.http.callback.PathParameterCallbackUrlResolver;
 import org.pac4j.core.util.HttpUtils;
+import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
 import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
+import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,21 +27,37 @@ import java.util.Map;
  *  @author Charley Wu
  *  @since 5.0.0
  */
-@SuppressWarnings("deprecation")
-public class AzureAd2Client extends AzureAdClient {
+public class AzureAd2Client extends OidcClient {
+
+    protected ObjectMapper objectMapper;
+    protected static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<>() {};
 
     public AzureAd2Client() {
+        objectMapper = new ObjectMapper();
     }
 
     public AzureAd2Client(AzureAd2OidcConfiguration configuration) {
         super(configuration);
+        objectMapper = new ObjectMapper();
+    }
+
+    @Override
+    protected void internalInit(final boolean forceReinit) {
+        getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
+        defaultProfileCreator(new AzureAdProfileCreator(getConfiguration(), this));
+
+        super.internalInit(forceReinit);
+    }
+
+    @Override
+    protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
+        return new PathParameterCallbackUrlResolver();
     }
 
     /**
      * <p>Refresh the access token</p>
      * <p>https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token</p>
      */
-    @Override
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
         final var azureConfig = (AzureAd2OidcConfiguration) getConfiguration();
         HttpURLConnection connection = null;

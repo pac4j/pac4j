@@ -28,17 +28,9 @@ import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link JwtGenerator} and {@link org.pac4j.jwt.credentials.authenticator.JwtAuthenticator}.
@@ -51,7 +43,6 @@ public final class JwtTests implements TestsConstants {
     private static final String KEY2 = "02ez4f7dsq==drrdz54z---++-6ef78=";
 
     private static final Set<String> ROLES = new HashSet<>(Arrays.asList(new String[]{"role1", "role2"}));
-    private static final Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[]{"perm1"}));
 
     @Test
     public void testGenericJwt() {
@@ -340,15 +331,13 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateAndEncryptedWithRolesPermissions() {
+    public void testGenerateAuthenticateAndEncryptedWithRoles() {
         final var generator = new JwtGenerator(new SecretSignatureConfiguration(MAC_SECRET));
         final var profile = createProfile();
         profile.addRoles(ROLES);
-        profile.addPermissions(PERMISSIONS);
         final var token = generator.generate(profile);
         final var profile2 = assertToken(profile, token);
         assertEquals(ROLES, profile2.getRoles());
-        assertEquals(PERMISSIONS, profile2.getPermissions());
     }
 
     private UserProfile assertToken(FacebookProfile profile, String token) {

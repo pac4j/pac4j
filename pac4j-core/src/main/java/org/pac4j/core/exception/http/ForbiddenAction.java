@@ -12,8 +12,6 @@ import org.pac4j.core.util.Pac4jConstants;
  */
 public class ForbiddenAction extends HttpAction implements WithContentAction {
 
-    @Deprecated
-    public static final ForbiddenAction INSTANCE = new ForbiddenAction();
     private static final long serialVersionUID = 6661068865264199225L;
 
     private String content = Pac4jConstants.EMPTY_STRING;

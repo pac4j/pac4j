@@ -13,7 +13,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 3) Authorization mechanisms: [Authorizers](authorizers.html)
 
-### &#9656; [On the user profile](authorizers/profile-authorizers.html): roles/permissions, anonymous/remember-me/(fully) authenticated, etc.
+### &#9656; [On the user profile](authorizers/profile-authorizers.html): roles, anonymous/remember-me/(fully) authenticated, etc.
 
 ### &#9656; [On the web context](authorizers/web-authorizers.html): CSRF, IP address, HTTP method, etc.
 

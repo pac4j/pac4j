@@ -7,7 +7,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.Optional;
 
 /**
- * Generate the authorization roles and permissions for this user profile.
+ * Generate the authorization roles for this user profile.
  *
  * @author Jerome Leleu
  * @since 1.5.0

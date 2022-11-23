@@ -9,33 +9,24 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Grant default roles and/or permissions to a user profile.
+ * Grant default roles to a user profile.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultRolesPermissionsAuthorizationGenerator implements AuthorizationGenerator {
+public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerator {
 
     private final Collection<String> defaultRoles;
 
-    private final Collection<String> defaultPermissions;
-
-    public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles,
-        final Collection<String> defaultPermissions) {
+    public DefaultRolesAuthorizationGenerator(final Collection<String> defaultRoles) {
         this.defaultRoles = defaultRoles;
-        this.defaultPermissions = defaultPermissions;
     }
 
-    public DefaultRolesPermissionsAuthorizationGenerator(final String[] defaultRoles, final String[] defaultPermissions) {
+    public DefaultRolesAuthorizationGenerator(final String[] defaultRoles) {
         if (defaultRoles != null) {
             this.defaultRoles = Arrays.asList(defaultRoles);
         } else {
             this.defaultRoles = null;
-        }
-        if (defaultPermissions != null) {
-            this.defaultPermissions = Arrays.asList(defaultPermissions);
-        } else {
-            this.defaultPermissions = null;
         }
     }
 
@@ -43,9 +34,6 @@ public class DefaultRolesPermissionsAuthorizationGenerator implements Authorizat
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         if (defaultRoles != null) {
             profile.addRoles(defaultRoles);
-        }
-        if (defaultPermissions != null) {
-            profile.addPermissions(defaultPermissions);
         }
         return Optional.of(profile);
     }

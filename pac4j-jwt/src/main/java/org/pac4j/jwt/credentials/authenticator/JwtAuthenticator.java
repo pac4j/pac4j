@@ -1,11 +1,7 @@
 package org.pac4j.jwt.credentials.authenticator;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.jwt.*;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -30,15 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.pac4j.core.util.CommonHelper.assertNotBlank;
-import static org.pac4j.core.util.CommonHelper.assertNotNull;
-import static org.pac4j.core.util.CommonHelper.toNiceString;
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -255,8 +245,6 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
         final var roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
-        final var permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
-        attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
         final var linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
         attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
 
@@ -266,9 +254,6 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
         if (roles != null) {
             profile.addRoles(roles);
-        }
-        if (permissions != null) {
-            profile.addPermissions(permissions);
         }
         if (linkedId != null) {
             profile.setLinkedId(linkedId);

@@ -56,7 +56,7 @@ public class Google2Client extends OAuth20Client {
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
             final var error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
-            // user has denied permissions
+            // user has denied autorization
             if ("access_denied".equals(error)) {
                 return true;
             }

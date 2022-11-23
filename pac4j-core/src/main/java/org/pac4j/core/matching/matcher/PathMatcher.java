@@ -29,12 +29,6 @@ public class PathMatcher implements Matcher {
 
     public PathMatcher() {}
 
-    @Deprecated
-    public PathMatcher(final String regexpPath) {
-        logger.warn("Use `new PathMatcher().excludeRegex(regex)` for clarity instead of `new PathMatcher(regex)`");
-        excludeRegex(regexpPath);
-    }
-
     /**
      * Any path exactly matching this string will be excluded. Use this method if you are excluding a specific path.
      *

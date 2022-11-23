@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * <p>Generate the authorization information by inspecting attributes.</p>
  * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)})
- * are defined in the constructor. It's the same for the attributes containing the permissions.</p>
+ * are defined in the constructor.</p>
  *
  * @author Jerome Leleu
  * @since 1.5.0
@@ -18,41 +18,31 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
 
     private Collection<String> roleAttributes;
 
-    private Collection<String> permissionAttributes;
-
     private String splitChar = ",";
 
     public FromAttributesAuthorizationGenerator() {
         this.roleAttributes = new ArrayList<>();
-        this.permissionAttributes = new ArrayList<>();
     }
 
-    public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes, final Collection<String> permissionAttributes) {
+    public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes) {
         this.roleAttributes = roleAttributes;
-        this.permissionAttributes = permissionAttributes;
     }
 
-    public FromAttributesAuthorizationGenerator(final String[] roleAttributes, final String[] permissionAttributes) {
+    public FromAttributesAuthorizationGenerator(final String[] roleAttributes) {
         if (roleAttributes != null) {
             this.roleAttributes = Arrays.asList(roleAttributes);
         } else {
             this.roleAttributes = null;
         }
-        if (permissionAttributes != null) {
-            this.permissionAttributes = Arrays.asList(permissionAttributes);
-        } else {
-            this.permissionAttributes = null;
-        }
     }
 
     @Override
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
-        generateAuth(profile, this.roleAttributes, true);
-        generateAuth(profile, this.permissionAttributes, false);
+        generateAuth(profile, this.roleAttributes);
         return Optional.of(profile);
     }
 
-    private void generateAuth(final UserProfile profile, final Iterable<String> attributes, final boolean isRole) {
+    private void generateAuth(final UserProfile profile, final Iterable<String> attributes) {
         if (attributes == null) {
             return;
         }
@@ -63,16 +53,16 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
                 if (value instanceof String) {
                     final var st = new StringTokenizer((String) value, this.splitChar);
                     while (st.hasMoreTokens()) {
-                        addRoleOrPermissionToProfile(profile, st.nextToken(), isRole);
+                        addRoleToProfile(profile, st.nextToken());
                     }
                 } else if (value.getClass().isArray() && value.getClass().getComponentType().isAssignableFrom(String.class)) {
                     for (var item : (Object[]) value) {
-                        addRoleOrPermissionToProfile(profile, item.toString(), isRole);
+                        addRoleToProfile(profile, item.toString());
                     }
                 } else if (Collection.class.isAssignableFrom(value.getClass())) {
                     for (Object item : (Collection<?>) value) {
                         if (item.getClass().isAssignableFrom(String.class)) {
-                            addRoleOrPermissionToProfile(profile, item.toString(), isRole);
+                            addRoleToProfile(profile, item.toString());
                         }
                     }
                 }
@@ -81,12 +71,8 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
 
     }
 
-    private void addRoleOrPermissionToProfile(final UserProfile profile, final String value, final boolean isRole) {
-        if (isRole) {
-            profile.addRole(value);
-        } else {
-            profile.addPermission(value);
-        }
+    private void addRoleToProfile(final UserProfile profile, final String value) {
+        profile.addRole(value);
     }
 
     public String getSplitChar() {
@@ -99,9 +85,5 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
 
     public void setRoleAttributes(final String roleAttributesStr) {
         this.roleAttributes = Arrays.asList(roleAttributesStr.split(splitChar));
-    }
-
-    public void setPermissionAttributes(final String permissionAttributesStr) {
-        this.permissionAttributes = Arrays.asList(permissionAttributesStr.split(splitChar));
     }
 }

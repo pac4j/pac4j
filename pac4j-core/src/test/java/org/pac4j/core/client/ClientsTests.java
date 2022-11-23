@@ -1,9 +1,5 @@
 package org.pac4j.core.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
@@ -19,6 +15,10 @@ import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -95,16 +95,16 @@ public final class ClientsTests implements TestsConstants {
     }
 
     @Test
-    public void testByClass1() {
-        internalTestByClass(false);
+    public void testByName1() {
+        internalTestByName(false);
     }
 
     @Test
-    public void testByClass2() {
-        internalTestByClass(true);
+    public void testByName2() {
+        internalTestByName(true);
     }
 
-    private void internalTestByClass(final boolean fakeFirst) {
+    private void internalTestByName(final boolean fakeFirst) {
         final var facebookClient = newFacebookClient();
         final var fakeClient = new MockDirectClient(NAME, Optional.empty(), null);
         final Clients clients;
@@ -113,8 +113,8 @@ public final class ClientsTests implements TestsConstants {
         } else {
             clients = new Clients(CALLBACK_URL, facebookClient, fakeClient);
         }
-        assertEquals(facebookClient, clients.findClient(MockIndirectClient.class).get());
-        assertEquals(fakeClient, clients.findClient(MockDirectClient.class).get());
+        assertEquals(facebookClient, clients.findClient("FacebookClient").get());
+        assertEquals(fakeClient, clients.findClient(NAME).get());
     }
 
     @Test

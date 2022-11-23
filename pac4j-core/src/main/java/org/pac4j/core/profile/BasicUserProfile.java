@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
- * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, permissions, client name and
- * linked identifier.
+ * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, client name and linked identifier.
  *
  * @author Jerome Leleu
  * @since 1.0.0
@@ -37,8 +36,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     private boolean isRemembered = false;
 
     private Set<String> roles = new HashSet<>();
-
-    private Set<String> permissions = new HashSet<>();
 
     private String clientName;
 
@@ -396,42 +393,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Add a permission.
-     *
-     * @param permission the permission to add.
-     */
-    @Override
-    public void addPermission(final String permission) {
-        CommonHelper.assertNotBlank("permission", permission);
-        this.permissions.add(permission);
-    }
-
-    /** Add permissions.
-     *
-     * @param permissions the permissions to add.
-     */
-    @Override
-    public void addPermissions(final Collection<String> permissions) {
-        CommonHelper.assertNotNull("permissions", permissions);
-        this.permissions.addAll(permissions);
-    }
-
-    /**
-     * Get the permissions of the user.
-     *
-     * @return the user permissions.
-     */
-    @Override
-    public Set<String> getPermissions() {
-        return new LinkedHashSet<>(this.permissions);
-    }
-
-    public void setPermissions(final Set<String> permissions) {
-        CommonHelper.assertNotNull("permissions", permissions);
-        this.permissions = permissions;
-    }
-
-    /**
      * Define if this profile is remembered.
      *
      * @param rme whether the user is remembered.
@@ -454,7 +415,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     @Override
     public String toString() {
         return CommonHelper.toNiceString(this.getClass(), "id", this.id, "attributes", this.attributes,
-                "authenticationAttributes", this.authenticationAttributes, "roles", this.roles, "permissions", this.permissions,
+                "authenticationAttributes", this.authenticationAttributes, "roles", this.roles,
                 "isRemembered", this.isRemembered, "clientName", this.clientName, "linkedId", this.linkedId);
     }
 
@@ -465,7 +426,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         out.writeObject(this.authenticationAttributes);
         out.writeBoolean(this.isRemembered);
         out.writeObject(this.roles);
-        out.writeObject(this.permissions);
         out.writeObject(this.clientName);
         out.writeObject(this.linkedId);
     }
@@ -477,14 +437,13 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         this.authenticationAttributes = (Map<String, Object>) in.readObject();
         this.isRemembered = in.readBoolean();
         this.roles = (Set<String>) in.readObject();
-        this.permissions = (Set<String>) in.readObject();
         this.clientName = (String) in.readObject();
         this.linkedId = (String) in.readObject();
     }
 
     /**
      * Remove the specific data retrieved during the login process
-     * to only keep the user attributes, roles and permissions.
+     * to only keep the user attributes and roles.
      */
     public void removeLoginData() {
         // No-op. Allow subtypes to specify which state should be cleared out.

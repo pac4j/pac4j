@@ -1,15 +1,20 @@
 package org.pac4j.core.profile;
 
-import static org.junit.Assert.*;
-
-import java.net.URISyntaxException;
-import java.util.*;
-
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.util.*;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.util.serializer.JavaSerializer;
+
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link CommonProfile} class.
@@ -21,7 +26,6 @@ public final class CommonProfileTests implements TestsConstants {
     private static final String ID = "id";
 
     private static final String ROLE1 = "role1";
-    private static final String PERMISSION = "onePermission";
 
     @Test
     public void testSetId() {
@@ -193,15 +197,6 @@ public final class CommonProfileTests implements TestsConstants {
     }
 
     @Test
-    public void testPermissions() {
-        final var profile = new CommonProfile();
-        assertEquals(0, profile.getPermissions().size());
-        profile.addPermission(PERMISSION);
-        assertEquals(1, profile.getPermissions().size());
-        assertTrue(profile.getPermissions().contains(PERMISSION));
-    }
-
-    @Test
     public void testRme() {
         final var profile = new CommonProfile();
         assertFalse(profile.isRemembered());
@@ -232,19 +227,6 @@ public final class CommonProfileTests implements TestsConstants {
     public void testNullRoles() {
         final var profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRoles(null), TechnicalException.class, "roles cannot be null");
-    }
-
-    @Test
-    public void testBlankPermission() {
-        final var profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.addPermission(Pac4jConstants.EMPTY_STRING),
-            TechnicalException.class, "permission cannot be blank");
-    }
-
-    @Test
-    public void testNullPermissions() {
-        final var profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.addPermissions(null), TechnicalException.class, "permissions cannot be null");
     }
 
     @Test

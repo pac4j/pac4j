@@ -52,7 +52,7 @@ In that case, you can define for **all** the clients:
 
 - the same callback URL, `UrlResolver` and [`CallbackUrlResolver`](clients.html#3-the-callback-url): `clients.setCallbackUrl(callbackUrl)`, `clients.setUrlResolver(urlResolver)` and `clients.setCallbackUrlResolver(callbackUrlResolver)`
 - the same [`AjaxRequestResolver`](clients.html#5-ajax-requests): `clients.setAjaxRequestResolver(ajaxRequestResolver)`
-- the same [`AuthorizationGenerator`](clients.html#2-compute-roles-and-permissions): `clients.addAuthorizationGenerator(authorizationGenerator)`
+- the same [`AuthorizationGenerator`](clients.html#2-compute-roles): `clients.addAuthorizationGenerator(authorizationGenerator)`
 
 ### 3) Advanced
 

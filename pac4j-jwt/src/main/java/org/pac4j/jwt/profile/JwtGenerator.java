@@ -20,7 +20,6 @@ import java.util.Map;
 public class JwtGenerator {
 
     public static final String INTERNAL_ROLES = "$int_roles";
-    public static final String INTERNAL_PERMISSIONS = "$int_perms";
     public static final String INTERNAL_LINKEDID = "$int_linkid";
 
     private SignatureConfiguration signatureConfiguration;
@@ -98,7 +97,6 @@ public class JwtGenerator {
     protected void verifyProfile(final UserProfile profile) {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
-        CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
         CommonHelper.assertNull(INTERNAL_LINKEDID, profile.getAttribute(INTERNAL_LINKEDID));
     }
 
@@ -117,7 +115,6 @@ public class JwtGenerator {
             builder.claim(entry.getKey(), entry.getValue());
         }
         builder.claim(INTERNAL_ROLES, profile.getRoles());
-        builder.claim(INTERNAL_PERMISSIONS, profile.getPermissions());
         builder.claim(INTERNAL_LINKEDID, profile.getLinkedId());
 
         builder.subject(profile.getTypedId());

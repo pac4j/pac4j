@@ -127,25 +127,6 @@ public class Clients extends InitializableObject {
     }
 
     /**
-     * Use {@link #findClient(String)} instead.
-     */
-    @Deprecated
-    public <C extends Client> Optional<C> findClient(final Class<C> clazz) {
-        CommonHelper.assertNotNull("clazz", clazz);
-        init();
-
-        C foundClient = null;
-        for (final var client : getClients()) {
-            if (clazz.isAssignableFrom(client.getClass())) {
-                foundClient = (C) client;
-                break;
-            }
-        }
-        LOGGER.debug("Found client: {} for class: {}", foundClient, clazz);
-        return Optional.ofNullable(foundClient);
-    }
-
-    /**
      * Find all the clients (initialized).
      *
      * @return all the clients (initialized)

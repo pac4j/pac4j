@@ -1,7 +1,5 @@
 package org.pac4j.core.client;
 
-import java.util.*;
-
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -18,6 +16,8 @@ import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
  * <ul>
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * must be implemented in sub-classes. The {@link #init()} method must be called implicitly by the main methods of
  * the {@link Client} interface, so that no explicit call is required to initialize the client</li>
  * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
- * <li>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by
+ * <li>After retrieving the user profile, the client can generate the authorization information (roles and remember-me) by
  * using the appropriate {@link AuthorizationGenerator}</li>
  * <li>The credentials extraction and validation in the {@link #getCredentials(WebContext, SessionStore)} method are handled by the
  * {@link #credentialsExtractor} and {@link #authenticator} components</li>

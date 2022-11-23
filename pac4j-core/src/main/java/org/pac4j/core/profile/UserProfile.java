@@ -42,15 +42,6 @@ public interface UserProfile extends Serializable {
 
     Set<String> getRoles();
 
-    @Deprecated
-    void addPermission(String permission);
-
-    @Deprecated
-    void addPermissions(Collection<String> permissions);
-
-    @Deprecated
-    Set<String> getPermissions();
-
     boolean isRemembered();
 
     void setRemembered(boolean rme);

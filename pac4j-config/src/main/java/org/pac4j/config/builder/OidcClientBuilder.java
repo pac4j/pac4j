@@ -3,10 +3,10 @@ package org.pac4j.config.builder;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.pac4j.core.client.Client;
-import org.pac4j.oidc.client.AzureAdClient;
+import org.pac4j.oidc.client.AzureAd2Client;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
-import org.pac4j.oidc.config.AzureAdOidcConfiguration;
+import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfiguration;
 
 import java.util.List;
@@ -79,12 +79,12 @@ public class OidcClientBuilder extends AbstractBuilder {
                 final var type = getProperty(OIDC_TYPE, i);
                 final OidcClient oidcClient;
                 if (OIDC_AZURE_TYPE.equalsIgnoreCase(type)) {
-                    final var azureAdConfiguration = new AzureAdOidcConfiguration(configuration);
+                    final var azureAdConfiguration = new AzureAd2OidcConfiguration(configuration);
                     final var tenant = getProperty(OIDC_AZURE_TENANT, i);
                     if (isNotBlank(tenant)) {
                         azureAdConfiguration.setTenant(tenant);
                     }
-                    oidcClient = new AzureAdClient(azureAdConfiguration);
+                    oidcClient = new AzureAd2Client(azureAdConfiguration);
                 } else if (OIDC_GOOGLE_TYPE.equalsIgnoreCase(type)) {
                     oidcClient = new GoogleOidcClient(configuration);
                 } else {

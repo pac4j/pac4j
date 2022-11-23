@@ -93,7 +93,7 @@ assertEquals("https://c2id.com", signedJWT.getJWTClaimsSet().getIssuer());
 It's really not too complicated and all your use cases can be handled with a similar logic.
 Even if it provides low-level abstractions, it should be more than sufficient in most situations.
 
-In *pac4j* security libraries, things are slightly different and authenticated users have profiles (with identifiers, attributes, roles and permissions).
+In *pac4j* security libraries, things are slightly different and authenticated users have profiles (with identifiers, attributes and roles).
 So we must generate JWTs from these profiles (it's done via the `JwtGenerator`) and verify them during the authentication process (thanks to the `JwtAuthenticator`).
 We can also verify JWT created in other applications without using the `JwtGenerator` to address other use cases.
 

@@ -12,8 +12,6 @@ import org.pac4j.core.util.Pac4jConstants;
  */
 public class BadRequestAction extends HttpAction implements WithContentAction {
 
-    @Deprecated
-    public static final BadRequestAction INSTANCE = new BadRequestAction();
     private static final long serialVersionUID = 9190468211708168035L;
 
     private String content = Pac4jConstants.EMPTY_STRING;

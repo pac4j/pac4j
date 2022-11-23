@@ -4,7 +4,6 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.WebContextFactory;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.context.session.SessionStoreFactory;
 import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.LogoutLogic;
@@ -13,8 +12,6 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +27,6 @@ public class Config {
 
     public static final Config INSTANCE = new Config();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
-
     private ProfileManagerFactory profileManagerFactory;
 
     protected Clients clients = new Clients();
@@ -39,8 +34,6 @@ public class Config {
     protected Map<String, Authorizer> authorizers = new HashMap<>();
 
     protected Map<String, Matcher> matchers = new HashMap<>();
-
-    protected SessionStore sessionStore;
 
     protected HttpActionAdapter httpActionAdapter;
 
@@ -157,23 +150,6 @@ public class Config {
         matchers.put(name, matcher);
     }
 
-    @Deprecated
-    public SessionStore getSessionStore() {
-        return sessionStore;
-    }
-
-    @Deprecated
-    public void setSessionStore(final SessionStore sessionStore) {
-        this.sessionStore = sessionStore;
-    }
-
-    @Deprecated
-    public void defaultSessionStore(final SessionStore sessionStore) {
-        if (this.sessionStore == null) {
-            this.sessionStore = sessionStore;
-        }
-    }
-
     public HttpActionAdapter getHttpActionAdapter() {
         return httpActionAdapter;
     }
@@ -248,29 +224,10 @@ public class Config {
         }
     }
 
-    @Deprecated
-    public static void setProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
-        CommonHelper.assertNotNull("profileManagerFactory", profileManagerFactory);
-        LOGGER.info("Setting Config.profileManagerFactory: {}", name);
-        INSTANCE.profileManagerFactory = profileManagerFactory;
-    }
-
-    @Deprecated
-    public static void defaultProfileManagerFactory(final String name, final ProfileManagerFactory profileManagerFactory) {
-        if (INSTANCE.profileManagerFactory == null) {
-            synchronized (INSTANCE) {
-                if (INSTANCE.profileManagerFactory == null) {
-                    setProfileManagerFactory(name, profileManagerFactory);
-                }
-            }
-        }
-    }
-
     public static void setConfig(final Config config) {
         INSTANCE.setClients(config.getClients());
         INSTANCE.setAuthorizers(config.getAuthorizers());
         INSTANCE.setMatchers(config.getMatchers());
-        INSTANCE.setSessionStore(config.getSessionStore());
         INSTANCE.setHttpActionAdapter(config.getHttpActionAdapter());
         INSTANCE.setSecurityLogic(config.getSecurityLogic());
         INSTANCE.setCallbackLogic(config.getCallbackLogic());

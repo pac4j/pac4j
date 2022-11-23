@@ -1,13 +1,14 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.LinkedInApi20;
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileCreator;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
+
 import java.util.Optional;
 
 /**
@@ -41,7 +42,7 @@ public class LinkedIn2Client extends OAuth20Client {
         configuration.setHasBeenCancelledFactory(ctx -> {
             final var error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
             final var errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION).orElse(null);
-            // user has denied permissions
+            // user has denied authorizations
             if ("access_denied".equals(error)
                     && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
                     .equals(errorDescription))) {

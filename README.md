@@ -42,7 +42,7 @@ It is **available for most frameworks/tools** and **supports most authentication
 
 ## Authorization mechanisms:
 
-[Roles/permissions](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
+[Roles](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles) - [Anonymous/remember-me/(fully) authenticated](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
 
 [CORS](https://www.pac4j.org/docs/authorizers/web-authorizers.html#cors) - [CSRF](https://www.pac4j.org/docs/authorizers/web-authorizers.html#csrf) - [Security headers](https://www.pac4j.org/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](https://www.pac4j.org/docs/authorizers/web-authorizers.html#others)
 

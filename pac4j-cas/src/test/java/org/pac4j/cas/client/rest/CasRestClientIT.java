@@ -7,11 +7,11 @@ import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.nio.charset.StandardCharsets;
@@ -100,7 +100,7 @@ public final class CasRestClientIT implements TestsConstants {
         client.destroyTicketGrantingTicket(profile, context);
 
         TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile, context), TechnicalException.class,
-                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | "
+                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | "
                     + "isRemembered: false | clientName: CasRestBasicAuthClient | linkedId: null |` failed: (404) Not Found");
     }
 }

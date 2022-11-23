@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.pac4j.core.authorization.authorizer.AndAuthorizer.and;
 import static org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer.isAuthenticated;
-import static org.pac4j.core.authorization.authorizer.RequireAnyPermissionAuthorizer.requireAnyPermission;
 import static org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer.requireAnyRole;
 
 /**
@@ -33,7 +32,6 @@ public class AndAuthorizerTests {
         var profile = new CommonProfile();
         profile.setId("profile_id");
         profile.addRole("profile_role");
-        profile.addPermission("profile_permission");
         profiles.add(profile);
     }
 
@@ -41,8 +39,7 @@ public class AndAuthorizerTests {
     public void testAuthorizerConstraint1() {
         final var authorizer = and(
             isAuthenticated(),
-            requireAnyRole("profile_role"),
-            requireAnyPermission("profile_permission")
+            requireAnyRole("profile_role")
         );
         assertTrue(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));
     }
@@ -50,19 +47,8 @@ public class AndAuthorizerTests {
     @Test
     public void testAuthorizerConstraint2() {
         final var authorizer = and(
-            requireAnyRole("profile_role2"),
-            requireAnyPermission("profile_permission")
+            requireAnyRole("profile_role2")
         );
         assertFalse(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));
     }
-
-    @Test
-    public void testAuthorizerConstraint3() {
-        final var authorizer = and(
-            requireAnyRole("profile_role"),
-            requireAnyPermission("profile_permission2")
-        );
-        assertFalse(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));
-    }
-
 }

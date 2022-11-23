@@ -17,7 +17,7 @@ title: Main concepts and components&#58;
 
 ---
 
-6) A [**user profile**](user-profile.html) is the profile of the authenticated user. It has an identifier, attributes, roles, permissions, a "remember-me" nature and a linked identifier (to another account)
+6) A [**user profile**](user-profile.html) is the profile of the authenticated user. It has an identifier, attributes, roles, a "remember-me" nature and a linked identifier (to another account)
 
 ---
 
