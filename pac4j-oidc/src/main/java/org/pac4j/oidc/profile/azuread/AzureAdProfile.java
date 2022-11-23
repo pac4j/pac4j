@@ -4,7 +4,7 @@ import org.pac4j.oidc.profile.OidcProfile;
 
 /**
  * <p>This class is the user profile for Azure AD (using OpenID Connect protocol) with appropriate getters.</p>
- * <p>It is returned by the {@link org.pac4j.oidc.client.AzureAdClient}.</p>
+ * <p>It is returned by the {@link org.pac4j.oidc.client.AzureAd2Client}.</p>
  *
  * @author Jerome Leleu
  * @version 1.9.0

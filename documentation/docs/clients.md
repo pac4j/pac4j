@@ -106,13 +106,12 @@ OidcConfiguration configuration = new OidcConfiguration();
 configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
 configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
 configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration");
-AzureAdClient azureAdClient = new AzureAdClient(configuration);
-client.setCallbackUrlResolver(new PathParameterCallbackUrlResolver());
-Clients clients = new Clients("http://localhost:8080/callback", azureAdClient);
+AzureAd2Client client = new AzureAd2Client(configuration);
+Clients clients = new Clients("http://localhost:8080/callback", client);
 Config config = new Config(clients);
 ```
 
-In that case, the callback URL will be `http://localhost:8080/callback/AzureAdClient` for the `AzureAdClient`.
+In that case, the callback URL will be `http://localhost:8080/callback/AzureAd2Client` for the `AzureAd2Client`.
 
 You may even use the [`NoParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/NoParameterCallbackUrlResolver.java) which left the callback URL untouched.
 In that case, no parameter will be added to the callback URL and no client will be retrieved on the callback endpoint. You will be forced to define a "default client" at the `CallbackLogic` level.
