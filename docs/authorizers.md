@@ -14,7 +14,7 @@ Generally, authorizers are defined in the [security configuration](config.html) 
 
 Various authorizers are available:
 
-- [Roles/permissions](authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
+- [Roles](authorizers/profile-authorizers.html#roles) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
 - [CSRF](authorizers/web-authorizers.html#csrf) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
 
 
@@ -40,11 +40,11 @@ For example:
 final Authorizer authorizer = or(
     and(
         requireAnyRole("profile_role1"),
-        requireAnyPermission("profile_permission1")
+        requireAnyRole("profile_role2")
     ),
     and(
-        requireAnyRole("profile_role2"),
-        requireAnyPermission("profile_permission2")
+        requireAnyRole("profile_role3"),
+        requireAnyRole("profile_role4"),
     )
 );
 ```

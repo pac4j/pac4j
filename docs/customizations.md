@@ -17,7 +17,7 @@ Be sure to clearly understand what the roles of the different components are:
 - a [`ProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java) creates a user profile for the authenticated user (indirect and direct clients)
 - an [`Authorizer`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/Authorizer.java) allows access based on the user profiles or on the web context
 - a [`Matcher`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/Matcher.java) defines if the security must apply on the web context
-- an [`AuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java) generates the appropriate roles and permissions for a given user profile.
+- an [`AuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java) generates the appropriate roles for a given user profile.
 
 Overriding or creating new components should be straightforward.
 

@@ -9,7 +9,6 @@ When the user is successfully authenticated by *pac4j*, his data are retrieved f
 - attributes (`getAttributes()`, `getAttribute(name)`)
 - authentication-related attributes (`getAuthenticationAttributes()`, `getAuthenticationAttribute(name)`)
 - roles (`getRoles()`)
-- permissions (`getPermissions()`)
 - a client name (`getClientName()`)
 - a remember-me nature (`isRemembered()`)
 - a linked identifier (`getLinkedId()`)
@@ -53,11 +52,11 @@ time period for which the authentication is valid, or metadata about the identit
 seperately from the user's attributes.
 
 
-## 4) Roles and permissions
+## 4) Roles
 
-Roles and permissions can be added to the user profile via the `addRole(role)`, `addRoles(roles)`, `addPermission(permission)` and `addPermissions(permissions)` methods.
+Roles can be added to the user profile via the `addRole(role)` and `addRoles(roles)` methods.
 
-They are generally computed in an [`AuthorizationGenerator`](clients.html#2-compute-roles-and-permissions).
+They are generally computed in an [`AuthorizationGenerator`](clients.html#2-compute-roles).
 
 
 ## 5) Client name

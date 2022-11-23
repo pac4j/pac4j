@@ -22,7 +22,7 @@ Each client has a name which is by default the class name (like `FacebookClient`
 Understanding the main features:
 
 - [Direct vs indirect clients](#1-direct-vs-indirect-clients)
-- [Compute roles and permissions](#2-compute-roles-and-permissions)
+- [Compute roles](#2-compute-roles)
 - [The callback URL](#3-the-callback-url)
 - [Profile options](#4-profile-options)
 - [AJAX requests](#5-ajax-requests)
@@ -51,9 +51,9 @@ Here are their behaviors and differences:
 ---
 
 
-## 2) Compute roles and permissions
+## 2) Compute roles
 
-To compute the appropriate roles and permissions of the authenticated user profile, you need to define an [`AuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java) and attach it to the client.
+To compute the appropriate roles of the authenticated user profile, you need to define an [`AuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java) and attach it to the client.
 
 **Example:**
 
