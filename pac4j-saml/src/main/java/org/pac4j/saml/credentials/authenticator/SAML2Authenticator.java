@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -62,7 +63,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var credentials = (SAML2Credentials) cred;
@@ -132,5 +133,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         }
 
         credentials.setUserProfile(profile);
+
+        return Optional.of(credentials);
     }
 }

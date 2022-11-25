@@ -11,6 +11,7 @@ import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,7 +49,7 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
         var optProfile = this.store.get(credentials);
@@ -62,6 +63,8 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
             credentials.setUserProfile(optProfile.get());
             logger.debug("Found cached credential. Using cached profile {}...", optProfile.get());
         }
+
+        return Optional.of(credentials);
     }
 
     @Override

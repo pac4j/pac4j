@@ -1,14 +1,16 @@
 package org.pac4j.http.credentials.authenticator.test;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.util.Pac4jConstants;
+
+import java.util.Optional;
 
 /**
  * This class is a simple test authenticator: password must match username.
@@ -19,7 +21,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         if (cred == null) {
             throw new CredentialsException("No credential");
         }
@@ -39,5 +41,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
         profile.setId(username);
         profile.addAttribute(Pac4jConstants.USERNAME, username);
         credentials.setUserProfile(profile);
+
+        return Optional.of(credentials);
     }
 }

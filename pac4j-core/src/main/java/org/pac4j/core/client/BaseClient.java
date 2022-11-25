@@ -69,22 +69,20 @@ public abstract class BaseClient extends InitializableObject implements Client {
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         try {
             final var optCredentials = this.credentialsExtractor.extract(context, sessionStore);
-            optCredentials.ifPresent(credentials -> {
+            if (optCredentials.isPresent()) {
                 final var t0 = System.currentTimeMillis();
                 try {
-                    this.authenticator.validate(credentials, context, sessionStore);
+                    return this.authenticator.validate(optCredentials.get(), context, sessionStore);
                 } finally {
                     final var t1 = System.currentTimeMillis();
                     logger.debug("Credentials validation took: {} ms", t1 - t0);
                 }
-            });
-            return optCredentials;
+            }
         } catch (CredentialsException e) {
             logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve or validate credentials", e);
-
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     @Override

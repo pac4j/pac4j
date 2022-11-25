@@ -6,7 +6,10 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.exception.*;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.MultipleAccountsFoundException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -16,9 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static org.pac4j.core.util.Pac4jConstants.*;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.Pac4jConstants.PASSWORD;
+import static org.pac4j.core.util.Pac4jConstants.USERNAME;
 
 /**
  * Abstract implementation of the {@link ProfileService} for the storage: LDAP, SQL and MongoDB.
@@ -275,7 +279,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         assertNotNull("credentials", cred);
@@ -310,6 +314,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             logger.debug("Authentication error", e);
             throw e;
         }
+
+        return Optional.of(cred);
     }
 
     protected boolean isLegacyMode() {

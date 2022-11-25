@@ -12,6 +12,8 @@ import org.pac4j.oauth.config.OAuthConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * OAuth authenticator.
  *
@@ -34,12 +36,13 @@ abstract class OAuthAuthenticator implements Authenticator {
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         try {
             retrieveAccessToken(context, credentials);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
+        return Optional.of(credentials);
     }
 
     /**

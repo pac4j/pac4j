@@ -3,12 +3,14 @@ package org.pac4j.http.credentials.authenticator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.IpProfile;
+
+import java.util.Optional;
 
 /**
  * Authenticates users based on their IP and a regexp pattern.
@@ -31,7 +33,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var ip = ((TokenCredentials) credentials).getToken();
@@ -45,5 +47,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
         logger.debug("profile: {}", profile);
 
         credentials.setUserProfile(profile);
+
+        return Optional.of(credentials);
     }
 }

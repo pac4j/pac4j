@@ -118,7 +118,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var credentials = (TokenCredentials) cred;
@@ -211,6 +211,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         } catch (final ParseException e) {
             throw new CredentialsException("Cannot decrypt / verify JWT", e);
         }
+
+        return Optional.of(credentials);
     }
 
     @SuppressWarnings("unchecked")

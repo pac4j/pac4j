@@ -11,6 +11,8 @@ import org.pac4j.kerberos.profile.KerberosProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * Authenticator for Kerberos. It creates the user profile and stores it in the credentials
  * for the {@link AuthenticatorProfileCreator}.
@@ -36,7 +38,7 @@ public class KerberosAuthenticator implements Authenticator {
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         final var credentials = (KerberosCredentials) cred;
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         var ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
@@ -48,5 +50,6 @@ public class KerberosAuthenticator implements Authenticator {
         var profile = new KerberosProfile(ticketValidation.getGssContext());
         profile.setId(subject);
         credentials.setUserProfile(profile);
+        return Optional.of(credentials);
     }
 }

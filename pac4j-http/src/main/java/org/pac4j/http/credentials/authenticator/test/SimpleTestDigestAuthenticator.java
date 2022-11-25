@@ -9,6 +9,8 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
 
+import java.util.Optional;
+
 /**
  * This class is a simple test authenticator: username and token must not be blank.
  *
@@ -18,7 +20,7 @@ import org.pac4j.http.credentials.DigestCredentials;
 public class SimpleTestDigestAuthenticator implements Authenticator {
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         if (cred == null) {
             throw new CredentialsException("No credential");
         }
@@ -39,5 +41,7 @@ public class SimpleTestDigestAuthenticator implements Authenticator {
         var profile = new CommonProfile();
         profile.setId(username);
         digestCredentials.setUserProfile(profile);
+
+        return Optional.of(digestCredentials);
     }
 }

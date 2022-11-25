@@ -1,19 +1,18 @@
 package org.pac4j.gae.client;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 import java.util.Optional;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * <p>This class is the OpenID client to authenticate users with UserService on App Engine</p>
@@ -56,6 +55,7 @@ public class GaeUserServiceClient extends IndirectClient {
                 }
                 credentials.setUserProfile(profile);
             }
+            return Optional.of(credentials);
         });
     }
 

@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Authenticates against a REST API. The username/password are passed as a basic auth via a POST request,
@@ -60,7 +61,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var credentials = (UsernamePasswordCredentials) cred;
@@ -68,7 +69,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         final var password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
             logger.info("Empty username or password");
-            return;
+            return Optional.of(credentials);
         }
 
         final var body = callRestApi(username, password);
@@ -76,6 +77,8 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         if (body != null) {
             buildProfile(credentials, body);
         }
+
+        return Optional.of(credentials);
     }
 
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {

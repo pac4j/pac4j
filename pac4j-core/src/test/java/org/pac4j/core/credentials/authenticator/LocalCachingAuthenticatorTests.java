@@ -4,10 +4,11 @@ import org.junit.Test;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertFalse;
@@ -27,22 +28,24 @@ public class LocalCachingAuthenticatorTests {
         private int n = 0;
 
         @Override
-        public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+        public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
             if (n > 0) {
                 throw new IllegalArgumentException("Cannot call validate twice");
             }
             credentials.setUserProfile(new CommonProfile());
             n++;
+            return Optional.of(credentials);
         }
     }
 
     private static class SimpleUPAuthenticator implements Authenticator {
 
         @Override
-        public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+        public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
             final var profile = new CommonProfile();
             profile.setId(((UsernamePasswordCredentials) credentials).getUsername());
             credentials.setUserProfile(profile);
+            return Optional.of(credentials);
         }
     }
 
@@ -136,7 +139,7 @@ public class LocalCachingAuthenticatorTests {
     private static class ThrowingAuthenticator implements Authenticator {
 
         @Override
-        public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+        public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
             throw new CredentialsException("fail");
         }
     }

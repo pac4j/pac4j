@@ -9,6 +9,8 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
 
+import java.util.Optional;
+
 /**
  * Authenticates {@link X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
  *
@@ -31,7 +33,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
     }
 
     @Override
-    public void validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var certificate = ((X509Credentials) credentials).getCertificate();
@@ -67,5 +69,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
         logger.debug("profile: {}", profile);
 
         credentials.setUserProfile(profile);
+
+        return Optional.of(credentials);
     }
 }

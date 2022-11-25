@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.isNotEmpty;
@@ -147,7 +148,7 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         final var credentials = (OidcCredentials) cred;
         final var code = credentials.getCode();
         // if we have a code
@@ -163,6 +164,7 @@ public class OidcAuthenticator implements Authenticator {
                 throw new TechnicalException(e);
             }
         }
+        return Optional.of(credentials);
     }
 
     public void refresh(final OidcCredentials credentials) {

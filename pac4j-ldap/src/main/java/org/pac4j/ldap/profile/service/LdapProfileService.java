@@ -1,16 +1,21 @@
 package org.pac4j.ldap.profile.service;
 
 import org.ldaptive.*;
-import org.ldaptive.auth.*;
+import org.ldaptive.auth.AuthenticationRequest;
+import org.ldaptive.auth.AuthenticationResponse;
+import org.ldaptive.auth.AuthenticationResultCode;
+import org.ldaptive.auth.Authenticator;
 import org.ldaptive.handler.ResultPredicate;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.exception.*;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.ldap.profile.LdapProfile;
 
@@ -172,7 +177,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var credentials = (UsernamePasswordCredentials) cred;
@@ -196,7 +201,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             listAttributes.add(getAttributesFromEntry(entry));
             final var profile = convertAttributesToProfile(listAttributes, username);
             credentials.setUserProfile(profile);
-            return;
+            return Optional.of(credentials);
         }
 
         if (AuthenticationResultCode.DN_RESOLUTION_FAILURE == response.getAuthenticationResultCode()) {

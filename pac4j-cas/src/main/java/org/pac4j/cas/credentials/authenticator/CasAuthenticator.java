@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * CAS authenticator which validates the service ticket.
@@ -61,7 +62,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public void validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
         final var credentials = (TokenCredentials) cred;
@@ -97,5 +98,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
             var message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);
         }
+
+        return Optional.of(credentials);
     }
 }
