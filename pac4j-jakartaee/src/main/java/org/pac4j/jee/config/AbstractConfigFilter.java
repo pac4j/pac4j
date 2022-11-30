@@ -1,22 +1,17 @@
 package org.pac4j.jee.config;
 
-import java.io.IOException;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import lombok.val;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * An abstract JEE filter which handles configuration.
@@ -28,19 +23,24 @@ public abstract class AbstractConfigFilter implements Filter {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private static Config CONFIG;
+
     private Config config;
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         final var configFactoryParam = filterConfig.getInitParameter(Pac4jConstants.CONFIG_FACTORY);
         if (configFactoryParam != null) {
-            final var config = ConfigBuilder.build(configFactoryParam);
-            setSharedConfig(config);
+            val builtConfig = ConfigBuilder.build(configFactoryParam);
+            if (builtConfig != null) {
+                this.config = builtConfig;
+                AbstractConfigFilter.CONFIG = builtConfig;
+            }
         }
     }
 
     protected String getStringParam(final FilterConfig filterConfig, final String name, final String defaultValue) {
-        final var param = filterConfig.getInitParameter(name);
+        val param = filterConfig.getInitParameter(name);
         final String value;
         if (param != null) {
             value = param;
@@ -52,7 +52,7 @@ public abstract class AbstractConfigFilter implements Filter {
     }
 
     protected Boolean getBooleanParam(final FilterConfig filterConfig, final String name, final Boolean defaultValue) {
-        final var param = filterConfig.getInitParameter(name);
+        val param = filterConfig.getInitParameter(name);
         final Boolean value;
         if (param != null) {
             value = Boolean.parseBoolean(param);
@@ -66,8 +66,8 @@ public abstract class AbstractConfigFilter implements Filter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
         throws IOException, ServletException {
-        final var req = (HttpServletRequest) request;
-        final var resp = (HttpServletResponse) response;
+        val req = (HttpServletRequest) request;
+        val resp = (HttpServletResponse) response;
 
         internalFilter(req, resp, chain);
     }
@@ -75,20 +75,11 @@ public abstract class AbstractConfigFilter implements Filter {
     protected abstract void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException;
 
-    @Override
-    public void destroy() {}
-
     public Config getSharedConfig() {
         if (this.config == null) {
-            return Config.INSTANCE;
+            return AbstractConfigFilter.CONFIG;
         }
         return this.config;
-    }
-
-    public void setSharedConfig(final Config config) {
-        CommonHelper.assertNotNull("config", config);
-        this.config = config;
-        Config.setConfig(config);
     }
 
     public Config getConfig() {

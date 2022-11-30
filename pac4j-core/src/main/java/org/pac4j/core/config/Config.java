@@ -1,5 +1,7 @@
 package org.pac4j.core.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
@@ -23,9 +25,9 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Setter
+@Getter
 public class Config {
-
-    public static final Config INSTANCE = new Config();
 
     private ProfileManagerFactory profileManagerFactory;
 
@@ -106,18 +108,6 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
-    public Clients getClients() {
-        return clients;
-    }
-
-    public void setClients(final Clients clients) {
-        this.clients = clients;
-    }
-
-    public Map<String, Authorizer> getAuthorizers() {
-        return authorizers;
-    }
-
     public void setAuthorizer(final Authorizer authorizer) {
         CommonHelper.assertNotNull("authorizer", authorizer);
         this.authorizers.put(authorizer.getClass().getSimpleName(), authorizer);
@@ -130,10 +120,6 @@ public class Config {
 
     public void addAuthorizer(final String name, final Authorizer authorizer) {
         authorizers.put(name, authorizer);
-    }
-
-    public Map<String, Matcher> getMatchers() {
-        return matchers;
     }
 
     public void setMatcher(final Matcher matcher) {
@@ -150,89 +136,15 @@ public class Config {
         matchers.put(name, matcher);
     }
 
-    public HttpActionAdapter getHttpActionAdapter() {
-        return httpActionAdapter;
-    }
-
-    public void setHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
-        this.httpActionAdapter = httpActionAdapter;
-    }
-
-    public SecurityLogic getSecurityLogic() {
-        return securityLogic;
-    }
-
-    public void setSecurityLogic(final SecurityLogic securityLogic) {
-        this.securityLogic = securityLogic;
-    }
-
-    public CallbackLogic getCallbackLogic() {
-        return callbackLogic;
-    }
-
-    public void setCallbackLogic(final CallbackLogic callbackLogic) {
-        this.callbackLogic = callbackLogic;
-    }
-
-    public LogoutLogic getLogoutLogic() {
-        return logoutLogic;
-    }
-
-    public void setLogoutLogic(final LogoutLogic logoutLogic) {
-        this.logoutLogic = logoutLogic;
-    }
-
-    public WebContextFactory getWebContextFactory() {
-        return webContextFactory;
-    }
-
-    public void setWebContextFactory(final WebContextFactory webContextFactory) {
-        this.webContextFactory = webContextFactory;
-    }
-
-    public SessionStoreFactory getSessionStoreFactory() {
-        return sessionStoreFactory;
-    }
-
-    public void setSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
-        this.sessionStoreFactory = sessionStoreFactory;
-    }
-
     public void defaultSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
         if (this.sessionStoreFactory == null) {
             this.sessionStoreFactory = sessionStoreFactory;
         }
     }
 
-    public ProfileManagerFactory getProfileManagerFactory() {
-        if (this.profileManagerFactory != null) {
-            return this.profileManagerFactory;
-        }
-        // Deprecated:
-        return INSTANCE.profileManagerFactory;
-    }
-
-    public void setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
-        this.profileManagerFactory = profileManagerFactory;
-        // Deprecated
-        INSTANCE.profileManagerFactory = profileManagerFactory;
-    }
-
     public void defaultProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
         if (this.profileManagerFactory == null) {
             setProfileManagerFactory(profileManagerFactory);
         }
-    }
-
-    public static void setConfig(final Config config) {
-        INSTANCE.setClients(config.getClients());
-        INSTANCE.setAuthorizers(config.getAuthorizers());
-        INSTANCE.setMatchers(config.getMatchers());
-        INSTANCE.setHttpActionAdapter(config.getHttpActionAdapter());
-        INSTANCE.setSecurityLogic(config.getSecurityLogic());
-        INSTANCE.setCallbackLogic(config.getCallbackLogic());
-        INSTANCE.setLogoutLogic(config.getLogoutLogic());
-        INSTANCE.setWebContextFactory(config.getWebContextFactory());
-        INSTANCE.setSessionStoreFactory(config.getSessionStoreFactory());
     }
 }
