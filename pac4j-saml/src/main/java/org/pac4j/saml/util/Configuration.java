@@ -47,7 +47,9 @@ public final class Configuration {
     }
 
     private static void bootstrap() {
-        final var configurationManagers = ServiceLoader.load(ConfigurationManager.class);
+        var configurationManagers = ServiceLoader.load(ConfigurationManager.class, Configuration.class.getClassLoader());
+        if (configurationManagers.findFirst().isEmpty())
+            configurationManagers = ServiceLoader.load(ConfigurationManager.class);
         final List<ConfigurationManager> configurationManagerList = new ArrayList<>();
         configurationManagers.forEach(configurationManagerList::add);
         if (!configurationManagerList.isEmpty()) {
