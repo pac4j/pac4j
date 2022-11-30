@@ -5,6 +5,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -50,10 +51,11 @@ public interface Client {
      *
      * @param context the current web context
      * @param sessionStore the session store
-
+     * @param profileManagerFactory the profile manager factory
      * @return the credentials (optional)
      */
-    Optional<Credentials> getCredentials(WebContext context, SessionStore sessionStore);
+    Optional<Credentials> getCredentials(WebContext context, SessionStore sessionStore,
+                                         ProfileManagerFactory profileManagerFactory);
 
     /**
      * Get the user profile based on the provided credentials.

@@ -5,16 +5,18 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This class tests the {@link BaseClient} class.
@@ -34,7 +36,7 @@ public final class BaseClientTests implements TestsConstants {
         final var action = (FoundAction) client.getRedirectionAction(context, sessionStore).get();
         final var redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
-        final var credentials = client.getCredentials(context, sessionStore);
+        final var credentials = client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
         assertFalse(credentials.isPresent());
     }
 
@@ -99,7 +101,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         final var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        client.getCredentials(context, sessionStore);
+        client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
         assertEquals("true", sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
     }
 

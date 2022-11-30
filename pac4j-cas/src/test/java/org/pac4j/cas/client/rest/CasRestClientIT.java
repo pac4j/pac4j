@@ -12,6 +12,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -58,7 +59,8 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
         val credentials =
-            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT).get();
         val profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
@@ -88,7 +90,8 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
         val credentials =
-            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT).get();
         val profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());

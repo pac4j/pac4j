@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -25,7 +26,8 @@ public class FormExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
         final var username = context.getRequestParameter(this.usernameParameter);
         final var password = context.getRequestParameter(this.passwordParameter);
         if (!username.isPresent() || !password.isPresent()) {

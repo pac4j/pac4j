@@ -1,10 +1,15 @@
 package org.pac4j.http.credentials.extractor;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -23,10 +28,14 @@ import java.util.Optional;
  * @author Guilherme I F L Weizenmann
  * @since 1.8.0
  */
+@Getter
+@Setter
+@ToString
 public class IpExtractor implements CredentialsExtractor {
 
     private List<String> alternateIpHeaders = Collections.emptyList();
 
+    @Getter
     private String proxyIp = Pac4jConstants.EMPTY_STRING;
 
     public IpExtractor() {}
@@ -36,12 +45,13 @@ public class IpExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
         final Optional<String> ip;
         if (alternateIpHeaders.isEmpty()) {
             ip = Optional.ofNullable(context.getRemoteAddr());
         } else {
-            var requestSourceIp = context.getRemoteAddr();
+            val requestSourceIp = context.getRemoteAddr();
             if (this.proxyIp.isEmpty()) {
                 ip = ipFromHeaders(context);
             }
@@ -72,42 +82,19 @@ public class IpExtractor implements CredentialsExtractor {
     }
 
     /**
-     * @return The verified proxy IP
-     * @since 2.1.0
-     */
-    public String getProxyIp() {
-        return proxyIp;
-    }
-
-    /**
      * @param proxyIp Set the IP to verify the proxy request source.
      *               Setting {@code null} or {@code ""} (empty string) disabled the proxy IP check.
-     * @since 2.1.0
      */
     public void setProxyIp(String proxyIp) {
         this.proxyIp = proxyIp == null ? Pac4jConstants.EMPTY_STRING : proxyIp;
     }
 
     /**
-     * @return Defined headers to search for IP as {@link Collections#unmodifiableList(List)}
-     * @since 2.1.0
-     */
-    public List getAlternateIpHeaders() {
-        return Collections.unmodifiableList(this.alternateIpHeaders);
-    }
-
-    /**
      * @param alternateIpHeaders Sets alternate headers to search for IP.
      *                           The first match will be returned as specified for {@code enhanced for} iteration over arrays.
-     * @since 2.1.0
      */
     public void setAlternateIpHeaders(final String... alternateIpHeaders) {
         CommonHelper.assertNotNull("alternateIpHeaders", alternateIpHeaders);
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "alternateIpHeaders", Arrays.asList(this.alternateIpHeaders));
     }
 }

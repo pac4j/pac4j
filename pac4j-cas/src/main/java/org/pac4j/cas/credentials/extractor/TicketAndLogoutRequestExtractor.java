@@ -15,6 +15,7 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -42,7 +43,8 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
         val logoutHandler = configuration.findLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
@@ -59,7 +61,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
 
             val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonHelper.isNotBlank(ticket)) {
-                logoutHandler.destroySessionBack(context, sessionStore, ticket);
+                logoutHandler.destroySessionBack(context, sessionStore, profileManagerFactory, ticket);
             }
             LOGGER.debug("back logout request: no credential returned");
             throw NoContentAction.INSTANCE;
@@ -71,7 +73,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
 
             val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonHelper.isNotBlank(ticket)) {
-                logoutHandler.destroySessionFront(context, sessionStore, ticket);
+                logoutHandler.destroySessionFront(context, sessionStore, profileManagerFactory, ticket);
             }
             LOGGER.debug("front logout request: no credential returned");
             throwFinalActionForFrontChannelLogout(context);

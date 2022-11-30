@@ -1,28 +1,21 @@
 package org.pac4j.saml.context;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
-import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
-import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
-import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
-import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
-import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
-import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
-import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
+import org.opensaml.saml.common.messaging.context.*;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
-import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SingleLogoutService;
-import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.opensaml.saml.saml2.metadata.*;
 import org.opensaml.soap.messaging.context.SOAP11Context;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -38,6 +31,8 @@ import java.util.List;
  * @author Michael Remond
  * @version 1.5.0
  */
+@Getter
+@Setter
 public class SAML2MessageContext {
 
     /**
@@ -63,6 +58,8 @@ public class SAML2MessageContext {
 
     private SAMLMessageStore samlMessageStore;
 
+    private ProfileManagerFactory profileManagerFactory;
+
     public SAML2MessageContext() {
         super();
     }
@@ -71,46 +68,6 @@ public class SAML2MessageContext {
         CommonHelper.assertNotNull("webContext", this.webContext);
         CommonHelper.assertNotNull("saml2Configuration", this.saml2Configuration);
         return new SAML2ConfigurationContext(this.webContext, this.saml2Configuration);
-    }
-
-    public void setSaml2Configuration(final SAML2Configuration saml2Configuration) {
-        this.saml2Configuration = saml2Configuration;
-    }
-
-    public MessageContext getMessageContext() {
-        return messageContext;
-    }
-
-    public void setMessageContext(final MessageContext messageContext) {
-        this.messageContext = messageContext;
-    }
-
-    public WebContext getWebContext() {
-        return webContext;
-    }
-
-    public void setWebContext(final WebContext webContext) {
-        this.webContext = webContext;
-    }
-
-    public SessionStore getSessionStore() {
-        return sessionStore;
-    }
-
-    public void setSessionStore(final SessionStore sessionStore) {
-        this.sessionStore = sessionStore;
-    }
-
-    public final Assertion getSubjectAssertion() {
-        return this.subjectAssertion;
-    }
-
-    public final void setSubjectAssertion(final Assertion subjectAssertion) {
-        this.subjectAssertion = subjectAssertion;
-    }
-
-    public SAML2Configuration getSAML2Configuration() {
-        return saml2Configuration;
     }
 
     public final SPSSODescriptor getSPSSODescriptor() {
@@ -233,18 +190,6 @@ public class SAML2MessageContext {
         return getMessageContext().getSubcontext(SAMLSubjectNameIdentifierContext.class, true);
     }
 
-    public final BaseID getBaseID() {
-        return baseID;
-    }
-
-    public final void setBaseID(final BaseID baseID) {
-        this.baseID = baseID;
-    }
-
-    public final List<SubjectConfirmation> getSubjectConfirmations() {
-        return subjectConfirmations;
-    }
-
     public final SAMLEndpointContext getSAMLPeerEndpointContext() {
         return getSAMLPeerEntityContext().getSubcontext(SAMLEndpointContext.class, true);
     }
@@ -275,13 +220,5 @@ public class SAML2MessageContext {
 
     public final SAMLEndpointContext getSAMLEndpointContext() {
         return getMessageContext().getSubcontext(SAMLEndpointContext.class, true);
-    }
-
-    public final SAMLMessageStore getSAMLMessageStore() {
-        return this.samlMessageStore;
-    }
-
-    public final void setSAMLMessageStore(final SAMLMessageStore samlMessageStore) {
-        this.samlMessageStore = samlMessageStore;
     }
 }

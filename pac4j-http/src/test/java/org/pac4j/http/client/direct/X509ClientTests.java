@@ -1,8 +1,10 @@
 package org.pac4j.http.client.direct;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
@@ -14,7 +16,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link X509Client}.
@@ -48,15 +50,16 @@ public final class X509ClientTests implements TestsConstants {
 
     @Test
     public void testOk() throws CertificateException {
-        final var context = MockWebContext.create();
-        final var certificateData = Base64.getDecoder().decode(CERTIFICATE);
-        final var cert = (X509Certificate) CertificateFactory.getInstance("X.509")
+        val context = MockWebContext.create();
+        val certificateData = Base64.getDecoder().decode(CERTIFICATE);
+        val cert = (X509Certificate) CertificateFactory.getInstance("X.509")
             .generateCertificate(new ByteArrayInputStream(certificateData));
-        final var certs = new X509Certificate[1];
+        val certs = new X509Certificate[1];
         certs[0] = cert;
         context.setRequestAttribute(X509CredentialsExtractor.CERTIFICATE_REQUEST_ATTRIBUTE, certs);
-        final var credentials = (X509Credentials) client.getCredentials(context, new MockSessionStore()).get();
-        final var profile = (X509Profile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val credentials = (X509Credentials) client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
+        val profile = (X509Profile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals("jerome", profile.getId());
     }
 }

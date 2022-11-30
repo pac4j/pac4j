@@ -1,16 +1,21 @@
 package org.pac4j.http.client.indirect;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.extractor.FormExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.credentials.extractor.FormExtractor;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
+import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
 
@@ -25,6 +30,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class FormClient extends IndirectClient {
 
     private String loginUrl;
@@ -67,22 +75,23 @@ public class FormClient extends IndirectClient {
         assertNotBlank("passwordParameter", this.passwordParameter);
 
         defaultRedirectionActionBuilder((ctx, session) -> {
-            final var finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
+            val finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
         });
         defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
+                                                        final ProfileManagerFactory profileManagerFactory) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
-        final var username = context.getRequestParameter(this.usernameParameter).orElse(null);
+        val username = context.getRequestParameter(this.usernameParameter).orElse(null);
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context, sessionStore);
+            credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (!credentials.isPresent()) {
                 throw handleInvalidCredentials(context, sessionStore, username,
@@ -120,37 +129,5 @@ public class FormClient extends IndirectClient {
      */
     protected String computeErrorMessage(final Exception e) {
         return e.getClass().getSimpleName();
-    }
-
-    public String getLoginUrl() {
-        return this.loginUrl;
-    }
-
-    public void setLoginUrl(final String loginUrl) {
-        this.loginUrl = loginUrl;
-    }
-
-    public String getUsernameParameter() {
-        return this.usernameParameter;
-    }
-
-    public void setUsernameParameter(final String usernameParameter) {
-        this.usernameParameter = usernameParameter;
-    }
-
-    public String getPasswordParameter() {
-        return this.passwordParameter;
-    }
-
-    public void setPasswordParameter(final String passwordParameter) {
-        this.passwordParameter = passwordParameter;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
-                this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "redirectionActionBuilder", getRedirectionActionBuilder(), "extractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

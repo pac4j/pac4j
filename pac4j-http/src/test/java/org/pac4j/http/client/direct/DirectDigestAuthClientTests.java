@@ -1,10 +1,12 @@
 package org.pac4j.http.client.direct;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.CredentialUtil;
@@ -13,7 +15,8 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestDigestAuthenticat
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
 import static org.junit.Assert.assertEquals;
-import static org.pac4j.core.context.HttpConstants.*;
+import static org.pac4j.core.context.HttpConstants.AUTHORIZATION_HEADER;
+import static org.pac4j.core.context.HttpConstants.HTTP_METHOD;
 
 /**
  * This class tests the {@link DirectDigestAuthClient} class.
@@ -25,14 +28,14 @@ public class DirectDigestAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final var digestAuthClient = new DirectDigestAuthClient(null);
-        TestsHelper.expectException(() -> digestAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
-            TechnicalException.class, "authenticator cannot be null");
+        val digestAuthClient = new DirectDigestAuthClient(null);
+        TestsHelper.expectException(() -> digestAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final var digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
+        val digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, HTTP_METHOD.POST.name(),
                 null, null, null, null, null, null, null), MockWebContext.create(), new MockSessionStore()), TechnicalException.class,
                 "profileCreator cannot be null");
@@ -40,26 +43,27 @@ public class DirectDigestAuthClientTests implements TestsConstants {
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final var digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator());
+        val digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator());
         digestAuthClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final var client = new DirectDigestAuthClient(new SimpleTestDigestAuthenticator());
+        val client = new DirectDigestAuthClient(new SimpleTestDigestAuthenticator());
         client.setRealm(REALM);
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.addRequestHeader(AUTHORIZATION_HEADER,
                 DIGEST_AUTHORIZATION_HEADER_VALUE);
         context.setRequestMethod(HTTP_METHOD.GET.name());
 
-        final var credentials = (DigestCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        val credentials = (DigestCredentials) client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
 
-        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
 
-        var ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
-        var serverDigest1 = credentials.calculateServerDigest(true, ha1);
-        var serverDigest2 = credentials.calculateServerDigest(false, PASSWORD);
+        val ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
+        val serverDigest1 = credentials.calculateServerDigest(true, ha1);
+        val serverDigest2 = credentials.calculateServerDigest(false, PASSWORD);
         assertEquals(DIGEST_RESPONSE, serverDigest1);
         assertEquals(DIGEST_RESPONSE, serverDigest2);
         assertEquals(USERNAME, profile.getId());

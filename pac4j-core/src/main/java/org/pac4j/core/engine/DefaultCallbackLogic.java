@@ -78,7 +78,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            val credentials = foundClient.getCredentials(webContext, sessionStore);
+            val credentials = foundClient.getCredentials(webContext, sessionStore, profileManagerFactory);
             LOGGER.debug("credentials: {}", credentials);
 
             val optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);

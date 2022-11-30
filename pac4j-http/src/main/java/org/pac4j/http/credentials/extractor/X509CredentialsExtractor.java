@@ -1,12 +1,13 @@
 package org.pac4j.http.credentials.extractor;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.http.credentials.X509Credentials;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.cert.X509Certificate;
 import java.util.Optional;
@@ -17,25 +18,25 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 3.3.0
  */
+@Slf4j
 public class X509CredentialsExtractor implements CredentialsExtractor  {
 
     public static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
-    private static final Logger logger = LoggerFactory.getLogger(X509CredentialsExtractor.class);
-
     @Override
-    public Optional<Credentials> extract(WebContext context, final SessionStore sessionStore) {
-        final var certificates =
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
+        val certificates =
             (Optional<X509Certificate[]>) context.getRequestAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 
         if (certificates.isPresent() && certificates.get().length > 0) {
-            final var certificate = certificates.get()[0];
-            logger.debug("X509 certificate: {}", certificate);
+            val certificate = certificates.get()[0];
+            LOGGER.debug("X509 certificate: {}", certificate);
 
             return Optional.of(new X509Credentials(certificate));
         }
 
-        logger.debug("No X509 certificate in request");
+        LOGGER.debug("No X509 certificate in request");
         return Optional.empty();
     }
 }

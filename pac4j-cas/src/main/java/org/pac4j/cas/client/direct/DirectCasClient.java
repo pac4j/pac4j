@@ -21,6 +21,7 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Optional;
@@ -74,13 +75,14 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
+                                                        final ProfileManagerFactory profileManagerFactory) {
         init();
         try {
             var callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
             val loginUrl = configuration.computeFinalLoginUrl(context);
 
-            val credentials = getCredentialsExtractor().extract(context, sessionStore);
+            val credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
             if (!credentials.isPresent()) {
                 // redirect to the login page
                 val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,

@@ -1,11 +1,12 @@
 package org.pac4j.core.credentials.extractor;
 
-import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
@@ -36,7 +37,8 @@ public class ParameterExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
         if (WebContextHelper.isGet(context) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");
         } else if (WebContextHelper.isPost(context) && !supportPostRequest) {

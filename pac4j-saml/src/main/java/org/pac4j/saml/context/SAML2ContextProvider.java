@@ -85,7 +85,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
         if (this.samlMessageStoreFactory != null) {
             logger.debug("Creating message store by {}", this.samlMessageStoreFactory.getClass().getName());
-            context.setSAMLMessageStore(this.samlMessageStoreFactory.getMessageStore(webContext, sessionStore));
+            context.setSamlMessageStore(this.samlMessageStoreFactory.getMessageStore(webContext, sessionStore));
         }
     }
 

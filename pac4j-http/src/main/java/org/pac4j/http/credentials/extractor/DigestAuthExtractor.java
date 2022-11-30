@@ -1,5 +1,7 @@
 package org.pac4j.http.credentials.extractor;
 
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -8,6 +10,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.http.credentials.DigestCredentials;
@@ -23,6 +26,7 @@ import java.util.StringTokenizer;
  * @author Mircea Carasel
  * @since 1.9.0
  */
+@ToString
 public class DigestAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
@@ -53,48 +57,44 @@ public class DigestAuthExtractor implements CredentialsExtractor {
      * @return the Digest credentials
      */
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final var credentials = this.extractor.extract(context, sessionStore);
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
+        val credentials = this.extractor.extract(context, sessionStore, profileManagerFactory);
         if (!credentials.isPresent()) {
             return Optional.empty();
         }
 
-        var token = ((TokenCredentials) credentials.get()).getToken();
-        var valueMap = parseTokenValue(token);
-        var username = valueMap.get("username");
-        var response = valueMap.get("response");
+        val token = ((TokenCredentials) credentials.get()).getToken();
+        val valueMap = parseTokenValue(token);
+        val username = valueMap.get("username");
+        val response = valueMap.get("response");
 
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
             throw new CredentialsException("Bad format of the digest auth header");
         }
-        var realm = valueMap.get("realm");
-        var nonce = valueMap.get("nonce");
-        var uri = valueMap.get("uri");
-        var cnonce = valueMap.get("cnonce");
-        var nc = valueMap.get("nc");
-        var qop = valueMap.get("qop");
-        var method = context.getRequestMethod();
+        val realm = valueMap.get("realm");
+        val nonce = valueMap.get("nonce");
+        val uri = valueMap.get("uri");
+        val cnonce = valueMap.get("cnonce");
+        val nc = valueMap.get("nc");
+        val qop = valueMap.get("qop");
+        val method = context.getRequestMethod();
 
         return Optional.of(new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop));
     }
 
     private Map<String, String> parseTokenValue(String token) {
-        var tokenizer = new StringTokenizer(token, ", ");
+        val tokenizer = new StringTokenizer(token, ", ");
         String keyval;
-        final Map<String, String> map = new HashMap<>();
+        val map = new HashMap<String, String>();
         while (tokenizer.hasMoreElements()) {
             keyval = tokenizer.nextToken();
             if (keyval.contains("=")) {
-                var key = keyval.substring(0, keyval.indexOf("="));
-                var value = keyval.substring(keyval.indexOf("=") + 1);
+                val key = keyval.substring(0, keyval.indexOf("="));
+                val value = keyval.substring(keyval.indexOf("=") + 1);
                 map.put(key.trim(), value.replaceAll("\"", Pac4jConstants.EMPTY_STRING).trim());
             }
         }
         return map;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "extractor", extractor);
     }
 }

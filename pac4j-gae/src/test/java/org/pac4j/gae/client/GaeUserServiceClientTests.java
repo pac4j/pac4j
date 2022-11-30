@@ -12,6 +12,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -70,7 +71,8 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final var credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        final var credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         final var user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals(Pac4jConstants.EMPTY_STRING, user.getAuthDomain());

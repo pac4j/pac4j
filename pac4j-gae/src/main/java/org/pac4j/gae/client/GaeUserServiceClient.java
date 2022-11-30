@@ -38,7 +38,7 @@ public class GaeUserServiceClient extends IndirectClient {
                 : service.createLoginURL(destinationUrl, authDomain);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, loginUrl));
         });
-        defaultCredentialsExtractor((ctx, session) -> {
+        defaultCredentialsExtractor((ctx, session, factory) -> {
             final var credentials = new GaeUserCredentials();
             credentials.setUser(service.getCurrentUser());
             return Optional.of(credentials);

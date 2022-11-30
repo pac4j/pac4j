@@ -11,6 +11,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.factory.ProfileFactory;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
@@ -66,9 +67,10 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @param context the web context
      * @return the credentials
      */
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
+                                                        final ProfileManagerFactory profileManagerFactory) {
         try {
-            final var optCredentials = this.credentialsExtractor.extract(context, sessionStore);
+            final var optCredentials = this.credentialsExtractor.extract(context, sessionStore, profileManagerFactory);
             if (optCredentials.isPresent()) {
                 final var t0 = System.currentTimeMillis();
                 try {

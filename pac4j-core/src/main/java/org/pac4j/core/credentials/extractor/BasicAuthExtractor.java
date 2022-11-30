@@ -4,9 +4,10 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -31,8 +32,9 @@ public class BasicAuthExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final var optCredentials = this.extractor.extract(context, sessionStore);
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
+        final var optCredentials = this.extractor.extract(context, sessionStore, profileManagerFactory);
         return optCredentials.map(cred -> {
 
             final var credentials = (TokenCredentials) cred;

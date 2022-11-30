@@ -43,7 +43,7 @@ public final class CasProxyReceptor extends IndirectClient {
         assertNotNull("store", this.store);
 
         defaultRedirectionActionBuilder((ctx, store) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
-        defaultCredentialsExtractor((ctx, store) -> {
+        defaultCredentialsExtractor((ctx, store, factory) -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             val proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);

@@ -1,5 +1,6 @@
 package org.pac4j.kerberos.client.indirect;
 
+import lombok.ToString;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -7,9 +8,10 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 
 import java.util.Optional;
@@ -19,6 +21,7 @@ import java.util.Optional;
  *
  * @since 2.1.0
  */
+@ToString(callSuper = true)
 public class IndirectKerberosClient extends IndirectClient {
 
     public IndirectKerberosClient() {}
@@ -40,7 +43,8 @@ public class IndirectKerberosClient extends IndirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
+                                                        final ProfileManagerFactory profileManagerFactory) {
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
@@ -50,7 +54,7 @@ public class IndirectKerberosClient extends IndirectClient {
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context, sessionStore);
+            credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
             logger.debug("kerberos credentials : {}", credentials);
             if (!credentials.isPresent()) {
                 throw HttpActionHelper.buildUnauthenticatedAction(context);
@@ -62,12 +66,5 @@ public class IndirectKerberosClient extends IndirectClient {
         }
 
         return credentials;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
-            "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
-            "profileCreator", getProfileCreator());
     }
 }

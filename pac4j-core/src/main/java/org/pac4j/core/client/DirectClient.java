@@ -5,10 +5,12 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 /**
  * Direct client: credentials are passed and authentication occurs for every HTTP request.
@@ -39,9 +41,10 @@ public abstract class DirectClient extends BaseClient {
     }
 
     @Override
-    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore) {
+    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore,
+                                                      final ProfileManagerFactory profileManagerFactory) {
         init();
-        return retrieveCredentials(context, sessionStore);
+        return retrieveCredentials(context, sessionStore, profileManagerFactory);
     }
 
     @Override

@@ -30,13 +30,10 @@ public class DefaultLogoutHandler implements LogoutHandler {
 
     private boolean destroySession;
 
-    private ProfileManagerFactory profileManagerFactory;
-
     public DefaultLogoutHandler() {}
 
-    public DefaultLogoutHandler(final Store<String, Object> store, final ProfileManagerFactory profileManagerFactory) {
+    public DefaultLogoutHandler(final Store<String, Object> store) {
         this.store = store;
-        this.profileManagerFactory = profileManagerFactory;
     }
 
     @Override
@@ -65,7 +62,8 @@ public class DefaultLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void destroySessionFront(final WebContext context, final SessionStore sessionStore, final String key) {
+    public void destroySessionFront(final WebContext context, final SessionStore sessionStore,
+                                    final ProfileManagerFactory profileManagerFactory, final String key) {
         if (sessionStore == null) {
             LOGGER.error("No session store available for this web context");
         } else {
@@ -80,19 +78,20 @@ public class DefaultLogoutHandler implements LogoutHandler {
                 store.remove(currentSessionId);
 
                 if (CommonHelper.areEquals(key, sessionToKey)) {
-                    destroy(context, sessionStore, "front");
+                    destroy(context, sessionStore, profileManagerFactory, "front");
                 } else {
                     LOGGER.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
                         + "key is not the same as the one linked to the current session");
                 }
             } else {
                 LOGGER.warn("no session for front channel logout => trying back channel logout");
-                destroySessionBack(context, sessionStore, key);
+                destroySessionBack(context, sessionStore, profileManagerFactory, key);
             }
         }
     }
 
-    protected void destroy(final WebContext context, final SessionStore sessionStore, final String channel) {
+    protected void destroy(final WebContext context, final SessionStore sessionStore,
+                           final ProfileManagerFactory profileManagerFactory, final String channel) {
         // remove profiles
         val manager = profileManagerFactory.apply(context, sessionStore);
         manager.removeProfiles();
@@ -108,7 +107,8 @@ public class DefaultLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void destroySessionBack(final WebContext context, final SessionStore sessionStore, final String key) {
+    public void destroySessionBack(final WebContext context, final SessionStore sessionStore,
+                                   final ProfileManagerFactory profileManagerFactory, final String key) {
         val optTrackableSession = store.get(key);
         LOGGER.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
         if (!optTrackableSession.isPresent()) {
@@ -130,7 +130,7 @@ public class DefaultLogoutHandler implements LogoutHandler {
                     LOGGER.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
-                    destroy(context, newSessionStore, "back");
+                    destroy(context, newSessionStore, profileManagerFactory, "back");
                 } else {
                     LOGGER.error("The session store should be able to build a new session store from the tracked session");
                 }

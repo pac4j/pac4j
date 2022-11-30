@@ -1,7 +1,5 @@
 package org.pac4j.kerberos.client.direct;
 
-import java.util.Optional;
-
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -9,7 +7,10 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the client to authenticate users directly based on Kerberos ticket.
@@ -38,11 +39,12 @@ public class DirectKerberosClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
+                                                        final ProfileManagerFactory profileManagerFactory) {
         // Set the WWW-Authenticate: Negotiate header in case no credentials are found
         // to trigger the SPNEGO process by replying with 401 Unauthorized
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
-        return super.retrieveCredentials(context, sessionStore);
+        return super.retrieveCredentials(context, sessionStore, profileManagerFactory);
     }
 
 }

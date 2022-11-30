@@ -2,6 +2,7 @@ package org.pac4j.core.logout.handler;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 /**
  * This interface defines how to handle logout requests on client side.
@@ -29,9 +30,11 @@ public interface LogoutHandler {
      *
      * @param context the web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @param key the key
      */
-    default void destroySessionFront(WebContext context, SessionStore sessionStore, String key) {
+    default void destroySessionFront(WebContext context, SessionStore sessionStore,
+                                     ProfileManagerFactory profileManagerFactory, String key) {
         // do nothing by default
     }
 
@@ -40,9 +43,11 @@ public interface LogoutHandler {
      *
      * @param context the web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @param key the key
      */
-    default void destroySessionBack(WebContext context, SessionStore sessionStore, String key) {
+    default void destroySessionBack(WebContext context, SessionStore sessionStore,
+                                    ProfileManagerFactory profileManagerFactory, String key) {
         // do nothing by default
     }
 

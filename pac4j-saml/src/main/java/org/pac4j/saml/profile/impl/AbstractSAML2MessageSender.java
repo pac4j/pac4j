@@ -1,5 +1,6 @@
 package org.pac4j.saml.profile.impl;
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncoder;
@@ -55,14 +56,14 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                             final T request,
                             final Object relayState) {
 
-        final var spDescriptor = context.getSPSSODescriptor();
-        final var idpssoDescriptor = context.getIDPSSODescriptor();
+        val spDescriptor = context.getSPSSODescriptor();
+        val idpssoDescriptor = context.getIDPSSODescriptor();
 
-        final var acsService = context.getSPAssertionConsumerService();
+        val acsService = context.getSPAssertionConsumerService();
 
-        final var encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
+        val encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
 
-        final var outboundContext = new SAML2MessageContext();
+        val outboundContext = new SAML2MessageContext();
         outboundContext.setMessageContext(context.getMessageContext());
         outboundContext.getProfileRequestContext().setProfileId(outboundContext.getProfileRequestContext().getProfileId());
 
@@ -86,7 +87,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
 
         try {
-            final var messageContext = outboundContext.getMessageContext();
+            val messageContext = outboundContext.getMessageContext();
             invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, messageContext);
 
             encoder.setMessageContext(messageContext);
@@ -104,12 +105,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
     }
 
     protected void storeMessage(final SAML2MessageContext context, final T request) {
-        final var messageStorage = context.getSAMLMessageStore();
+        val messageStorage = context.getSamlMessageStore();
         if (messageStorage != null) {
-            if (request instanceof RequestAbstractType) {
-                messageStorage.set(((RequestAbstractType) request).getID(), request);
-            } else if (request instanceof StatusResponseType) {
-                messageStorage.set(((StatusResponseType) request).getID(), request);
+            if (request instanceof RequestAbstractType requestAbstractType) {
+                messageStorage.set(requestAbstractType.getID(), request);
+            } else if (request instanceof StatusResponseType statusResponseType) {
+                messageStorage.set(statusResponseType.getID(), request);
             }
         }
     }
@@ -120,12 +121,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                                                        final IDPSSODescriptor idpssoDescriptor,
                                                        final MessageContext messageContext) {
         try {
-            final var handlerEnd =
+            val handlerEnd =
                 new EndpointURLSchemeSecurityHandler();
             handlerEnd.initialize();
             handlerEnd.invoke(messageContext);
 
-            final var handlerDest =
+            val handlerDest =
                 new SAMLOutboundDestinationHandler();
             handlerDest.initialize();
             handlerDest.invoke(messageContext);
@@ -133,7 +134,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             if (!destinationBindingType.equals(SAMLConstants.SAML2_REDIRECT_BINDING_URI) &&
                     mustSignRequest(spDescriptor, idpssoDescriptor)) {
                 logger.debug("Signing SAML2 outbound context...");
-                final var handler = new
+                val handler = new
                     SAMLOutboundProtocolMessageSigningHandler();
                 handler.setSignErrorResponses(this.signErrorResponses);
                 handler.invoke(messageContext);
@@ -151,17 +152,17 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             final IDPSSODescriptor idpssoDescriptor,
             final SAML2MessageContext ctx) {
 
-        final var adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
+        val adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
 
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
-            final var velocityEngine = VelocityEngineFactory.getEngine();
-            final var encoder = new Pac4jHTTPPostEncoder(adapter);
+            val velocityEngine = VelocityEngineFactory.getEngine();
+            val encoder = new Pac4jHTTPPostEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
 
         } else if (SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equals(destinationBindingType)) {
-            final var velocityEngine = VelocityEngineFactory.getEngine();
-            final var encoder = new Pac4jHTTPPostSimpleSignEncoder(adapter);
+            val velocityEngine = VelocityEngineFactory.getEngine();
+            val encoder = new Pac4jHTTPPostSimpleSignEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
 

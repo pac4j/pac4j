@@ -1,5 +1,8 @@
 package org.pac4j.saml.credentials.extractor;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -7,15 +10,16 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.SAML2Credentials;
-import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseMessageSender;
+import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 
 import java.util.Optional;
 
@@ -35,6 +39,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
     protected final String spLogoutResponseBindingType;
 
+    @Getter
+    @Setter
     protected SAML2LogoutResponseBuilder saml2LogoutResponseBuilder;
 
     protected final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
@@ -54,9 +60,10 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
-        final var samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
-        final var logoutEndpoint = isLogoutEndpointRequest(context, samlContext);
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
+        val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
+        val logoutEndpoint = isLogoutEndpointRequest(context, samlContext);
         if (logoutEndpoint) {
             receiveLogout(samlContext);
             sendLogoutResponse(samlContext);
@@ -68,23 +75,23 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
     protected Optional<Credentials> receiveLogin(final SAML2MessageContext samlContext, final WebContext context) {
         samlContext.setSaml2Configuration(saml2Client.getConfiguration());
-        final var credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
+        val credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
         return Optional.ofNullable(credentials);
     }
 
     protected void adaptLogoutResponseToBinding(final WebContext context, final SAML2MessageContext samlContext) {
-        final var adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
+        val adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
         if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            final var content = adapter.getOutgoingContent();
+            val content = adapter.getOutgoingContent();
             throw HttpActionHelper.buildFormPostContentAction(context, content);
         } else {
-            final var location = adapter.getRedirectUrl();
+            val location = adapter.getRedirectUrl();
             throw HttpActionHelper.buildRedirectUrlAction(context, location);
         }
     }
 
     protected void sendLogoutResponse(final SAML2MessageContext samlContext) {
-        final var logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
+        val logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
         this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
             samlContext.getSAMLBindingContext().getRelayState());
     }
@@ -97,13 +104,5 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     protected boolean isLogoutEndpointRequest(final WebContext context,
                                               final SAML2MessageContext samlContext) {
         return context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER).isPresent();
-    }
-
-    public SAML2LogoutResponseBuilder getSaml2LogoutResponseBuilder() {
-        return saml2LogoutResponseBuilder;
-    }
-
-    public void setSaml2LogoutResponseBuilder(final SAML2LogoutResponseBuilder saml2LogoutResponseBuilder) {
-        this.saml2LogoutResponseBuilder = saml2LogoutResponseBuilder;
     }
 }

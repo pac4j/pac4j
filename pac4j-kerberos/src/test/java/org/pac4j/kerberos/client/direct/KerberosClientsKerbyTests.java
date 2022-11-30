@@ -1,5 +1,6 @@
 package org.pac4j.kerberos.client.direct;
 
+import lombok.val;
 import org.apache.kerby.kerberos.kdc.impl.NettyKdcServerImpl;
 import org.apache.kerby.kerberos.kerb.KrbException;
 import org.apache.kerby.kerberos.kerb.server.SimpleKdcServer;
@@ -11,6 +12,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
@@ -81,7 +83,8 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
-        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create(), new MockSessionStore()).isPresent());
+        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create(), new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).isPresent());
     }
 
     @Test
@@ -97,9 +100,10 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectIncorrectAuth() {
         // a request with an incorrect Kerberos token, yields NULL credentials also
-        final var context = MockWebContext.create()
+        val context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertFalse(setupDirectKerberosClient().getCredentials(context, new MockSessionStore()).isPresent());
+        assertFalse(setupDirectKerberosClient().getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).isPresent());
     }
 
     @Test
@@ -111,7 +115,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testIndirectIncorrectAuth() {
         // a request with an incorrect Kerberos token, yields NULL credentials also
-        final var context = MockWebContext.create()
+        val context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
         assertGetCredentialsFailsWithAuthRequired(setupIndirectKerberosClient(), context, "Performing a 401 HTTP action");
     }
@@ -131,7 +135,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         MockWebContext context,
         String expectedMsg) {
         try {
-            kerbClient.getCredentials(context, new MockSessionStore());
+            kerbClient.getCredentials(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT);
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());
@@ -144,12 +148,13 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         var spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
 
         // mock web request
-        final var context = mockWebRequestContext(spnegoWebTicket);
-        final var credentials = client.getCredentials(context, new MockSessionStore());
+        val context = mockWebRequestContext(spnegoWebTicket);
+        val credentials = client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT);
         assertTrue(credentials.isPresent());
         System.out.println(credentials.get());
 
-        final var profile = client.getUserProfile(credentials.get(), context, new MockSessionStore());
+        val profile = client.getUserProfile(credentials.get(), context, new MockSessionStore());
         assertTrue(profile.isPresent());
         assertEquals(clientPrincipal, profile.get().getId());
     }
@@ -174,7 +179,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
     private MockWebContext mockWebRequestContext(String spnegoWebTicket) {
         System.out.println("spnegoWebTicket:" + spnegoWebTicket);
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + spnegoWebTicket);
         return context;
     }

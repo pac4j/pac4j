@@ -76,7 +76,7 @@ public class SAML2CredentialsTest {
         when(mockSaml2MessageContext.getMessageContext()).thenReturn(mockMessageContext);
         when(mockSaml2MessageContext.getConfigurationContext()).thenReturn(mock(SAML2ConfigurationContext.class));
         when(mockSaml2MessageContext.getSAMLEndpointContext()).thenReturn(mockSamlEndpointContext);
-        when(mockSaml2MessageContext.getSAML2Configuration()).thenReturn(mock(SAML2Configuration.class));
+        when(mockSaml2MessageContext.getSaml2Configuration()).thenReturn(mock(SAML2Configuration.class));
         when(mockSaml2MessageContext.getSAMLSubjectNameIdentifierContext()).thenReturn(mockSAMLSubjectNameIdentifierContext);
         when(mockSaml2MessageContext.getBaseID()).thenReturn(mock(BaseID.class));
 

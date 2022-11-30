@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -23,7 +24,8 @@ public interface CredentialsExtractor {
      *
      * @param context the current web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @return the credentials (optional)
      */
-    Optional<Credentials> extract(WebContext context, SessionStore sessionStore);
+    Optional<Credentials> extract(WebContext context, SessionStore sessionStore, ProfileManagerFactory profileManagerFactory);
 }

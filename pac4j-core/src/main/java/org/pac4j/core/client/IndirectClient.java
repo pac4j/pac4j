@@ -14,6 +14,7 @@ import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -140,9 +141,10 @@ public abstract class IndirectClient extends BaseClient {
      * @return the credentials
      */
     @Override
-    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore) {
+    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore,
+                                                      final ProfileManagerFactory profileManagerFactory) {
         init();
-        final var optCredentials = retrieveCredentials(context, sessionStore);
+        final var optCredentials = retrieveCredentials(context, sessionStore, profileManagerFactory);
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");

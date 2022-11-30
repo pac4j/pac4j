@@ -44,7 +44,7 @@ public class SAML2LogoutMessageReceiverTest {
         var context = getSaml2MessageContext(webContext);
         SAML2ResponseValidator validator = getLogoutValidator("/logoutUrl");
 
-        var unit = new SAML2LogoutMessageReceiver(validator, context.getSAML2Configuration());
+        var unit = new SAML2LogoutMessageReceiver(validator, context.getSaml2Configuration());
         try {
             unit.receiveMessage(context);
             fail("Should have thrown a FoundAction");
@@ -62,7 +62,7 @@ public class SAML2LogoutMessageReceiverTest {
         var context = getSaml2MessageContext(webContext);
         SAML2ResponseValidator validator = getLogoutValidator(Pac4jConstants.EMPTY_STRING);
 
-        var unit = new SAML2LogoutMessageReceiver(validator, context.getSAML2Configuration());
+        var unit = new SAML2LogoutMessageReceiver(validator, context.getSaml2Configuration());
         try {
             unit.receiveMessage(context);
             fail("Should have thrown a FoundAction");

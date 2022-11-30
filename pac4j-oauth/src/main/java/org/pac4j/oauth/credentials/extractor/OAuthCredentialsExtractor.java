@@ -7,6 +7,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -37,7 +38,8 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {

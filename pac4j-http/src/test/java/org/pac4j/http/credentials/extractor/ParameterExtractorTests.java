@@ -1,16 +1,19 @@
 package org.pac4j.http.credentials.extractor;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This class tests the {@link ParameterExtractor}.
@@ -27,47 +30,51 @@ public final class ParameterExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveGetParameterOk() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final var credentials = (TokenCredentials) getExtractor.extract(context, new MockSessionStore()).get();
+        val credentials = (TokenCredentials) getExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testRetrievePostParameterOk() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        final var credentials = (TokenCredentials) postExtractor.extract(context, new MockSessionStore()).get();
+        val credentials = (TokenCredentials) postExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testRetrievePostParameterNotSupported() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        TestsHelper.expectException(() -> getExtractor.extract(context, new MockSessionStore()),
-            CredentialsException.class, "POST requests not supported");
+        TestsHelper.expectException(() -> getExtractor.extract(context, new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), CredentialsException.class, "POST requests not supported");
     }
 
     @Test
     public void testRetrieveGetParameterNotSupported() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name())
             .addRequestParameter(GOOD_PARAMETER, VALUE);
-        TestsHelper.expectException(() -> postExtractor.extract(context, new MockSessionStore()),
-            CredentialsException.class, "GET requests not supported");
+        TestsHelper.expectException(() -> postExtractor.extract(context, new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), CredentialsException.class, "GET requests not supported");
     }
 
     @Test
     public void testRetrieveNoGetParameter() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
-        final var credentials = getExtractor.extract(context, new MockSessionStore());
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
+        val credentials = getExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT);
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testRetrieveNoPostParameter() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        final var credentials = postExtractor.extract(context, new MockSessionStore());
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        val credentials = postExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT);
         assertFalse(credentials.isPresent());
     }
 }

@@ -1,13 +1,16 @@
 package org.pac4j.http.credentials.extractor;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This class tests the {@link IpExtractor}.
@@ -25,49 +28,55 @@ public final class IpExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveIpOk() {
-        final var context = MockWebContext.create().setRemoteAddress(GOOD_IP);
-        final var credentials = (TokenCredentials) extractor.extract(context, new MockSessionStore()).get();
+        val context = MockWebContext.create().setRemoteAddress(GOOD_IP);
+        val credentials = (TokenCredentials) extractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(GOOD_IP, credentials.getToken());
     }
 
     @Test
     public void testRetrieveIpFromHeaderWithProxyIpCheck() {
-        final var context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
-        final var ipExtractor = new IpExtractor();
+        val context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
+        val ipExtractor = new IpExtractor();
         ipExtractor.setProxyIp(LOCALHOST);
         // test for varargs
         ipExtractor.setAlternateIpHeaders("fooBar", HEADER_NAME, "barFoo");
-        final var credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
+        val credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
         ipExtractor.setAlternateIpHeaders(HEADER_NAME);
-        final var credentials2 = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
+        val credentials2 = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
     @Test
     public void testRetrieveIpFromHeaderUsingConstructor() {
-        final var context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
+        val context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         // test for varargs
-        final var ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
-        final var credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore()).get();
+        val ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
+        val credentials = (TokenCredentials) ipExtractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
-        final var ipExtractor2 = new IpExtractor(HEADER_NAME);
-        final var credentials2 = (TokenCredentials) ipExtractor2.extract(context, new MockSessionStore()).get();
+        val ipExtractor2 = new IpExtractor(HEADER_NAME);
+        val credentials2 = (TokenCredentials) ipExtractor2.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
     @Test(expected = TechnicalException.class)
     public void testSetNullIpHeaderChain() {
-        final var ipExtractor = new IpExtractor();
+        val ipExtractor = new IpExtractor();
         ipExtractor.setAlternateIpHeaders((String[]) null);
     }
 
     @Test
     public void testNoIp() {
-        final var context = MockWebContext.create();
-        final var credentials = extractor.extract(context, new MockSessionStore());
+        val context = MockWebContext.create();
+        val credentials = extractor.extract(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT);
         assertFalse(credentials.isPresent());
     }
 }

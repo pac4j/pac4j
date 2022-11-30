@@ -5,10 +5,12 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
-import org.pac4j.core.profile.*;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.serializer.JavaSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +49,7 @@ public abstract class RunClient implements TestsConstants {
         final var scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         final var returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final var credentials = client.getCredentials(context, sessionStore);
+        final var credentials = client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
         if (credentials.isPresent()) {
             final var profile = client.getUserProfile(credentials.get(), context, sessionStore);
             logger.debug("userProfile: {}", profile);

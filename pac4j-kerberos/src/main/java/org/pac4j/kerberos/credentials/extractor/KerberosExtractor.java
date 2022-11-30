@@ -5,6 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,8 @@ import java.util.Optional;
 public class KerberosExtractor implements CredentialsExtractor {
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
+                                         final ProfileManagerFactory profileManagerFactory) {
         final var optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (!optHeader.isPresent()) {
             return Optional.empty();

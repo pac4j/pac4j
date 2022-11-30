@@ -1,7 +1,6 @@
 package org.pac4j.http.client.direct;
 
-import static org.junit.Assert.assertEquals;
-
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
@@ -15,11 +14,14 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
 import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the {@link DirectBearerAuthClient} class.
@@ -31,59 +33,61 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokenAuthenticator() {
-        final var bearerAuthClient = new DirectBearerAuthClient((Authenticator) null);
-        TestsHelper.expectException(() -> bearerAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
-            TechnicalException.class, "authenticator cannot be null");
+        val bearerAuthClient = new DirectBearerAuthClient((Authenticator) null);
+        TestsHelper.expectException(() -> bearerAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final var bearerAuthClient = new DirectBearerAuthClient((ProfileCreator) null);
-        TestsHelper.expectException(() -> bearerAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
-            TechnicalException.class, "profileCreator cannot be null");
+        val bearerAuthClient = new DirectBearerAuthClient((ProfileCreator) null);
+        TestsHelper.expectException(() -> bearerAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator2() {
-        final var bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator(), null);
+        val bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.expectException(() -> bearerAuthClient.getUserProfile(new TokenCredentials(TOKEN),
             MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final var bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
+        val bearerAuthClient = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
         bearerAuthClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final var client = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
-        final var context = MockWebContext.create();
+        val client = new DirectBearerAuthClient(new SimpleTestTokenAuthenticator());
+        val context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
                 HttpConstants.BEARER_HEADER_PREFIX + TOKEN);
-        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        val credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(TOKEN, credentials.getToken());
-        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(TOKEN, profile.getId());
     }
 
     @Test
     public void testProfileCreation() {
-        final var client = new DirectBearerAuthClient(new ProfileCreator() {
+        val client = new DirectBearerAuthClient(new ProfileCreator() {
             @Override
             public Optional<UserProfile> create(Credentials credentials, WebContext context, SessionStore sessionStore) {
-                final var profile = new CommonProfile();
+                val profile = new CommonProfile();
                 profile.setId(KEY);
                 return Optional.of(profile);
             }
         });
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
             HttpConstants.BEARER_HEADER_PREFIX + TOKEN);
-        final var credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        val credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(TOKEN, credentials.getToken());
-        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(KEY, profile.getId());
     }
 }

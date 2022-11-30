@@ -149,7 +149,7 @@ public class SAML2DefaultResponseValidatorTests {
 
         samlSelfMetadataContext.setRoleDescriptor(roleDescriptor);
 
-        final var receiver = new SAML2WebSSOMessageReceiver(validator, context.getSAML2Configuration());
+        final var receiver = new SAML2WebSSOMessageReceiver(validator, context.getSaml2Configuration());
         receiver.receiveMessage(context);
     }
 

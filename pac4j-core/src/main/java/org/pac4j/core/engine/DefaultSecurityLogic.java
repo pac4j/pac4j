@@ -112,7 +112,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                         if (currentClient instanceof DirectClient directClient) {
                             LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
-                            val credentials = currentClient.getCredentials(context, sessionStore);
+                            val credentials = currentClient.getCredentials(context, sessionStore, profileManagerFactory);
                             LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
                                 val optProfile =

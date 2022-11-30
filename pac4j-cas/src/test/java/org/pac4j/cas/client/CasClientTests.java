@@ -11,6 +11,7 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.WithContentAction;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -151,7 +152,8 @@ public final class CasClientTests implements TestsConstants {
         configuration.setGateway(true);
         val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action.getLocation().indexOf("gateway=true") >= 0);
-        val credentials = casClient.getCredentials(context, new MockSessionStore());
+        val credentials = casClient.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT);
         assertFalse(credentials.isPresent());
     }
 
@@ -165,7 +167,8 @@ public final class CasClientTests implements TestsConstants {
         val context = MockWebContext.create()
             .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod(HTTP_METHOD.POST.name());
-        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT));
         assertEquals(204, action.getCode());
     }
 
@@ -190,7 +193,8 @@ public final class CasClientTests implements TestsConstants {
         val context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod(HTTP_METHOD.GET.name());
-        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT));
         assertEquals(200, action.getCode());
         assertEquals(Pac4jConstants.EMPTY_STRING, ((WithContentAction) action).getContent());
     }
@@ -205,7 +209,8 @@ public final class CasClientTests implements TestsConstants {
         val context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HTTP_METHOD.GET.name());
-        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT));
         assertEquals(FOUND, action.getCode());
     }
 

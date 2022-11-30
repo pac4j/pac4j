@@ -1,20 +1,22 @@
 package org.pac4j.http.client.direct;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the {@link DirectBasicAuthClient} class.
@@ -26,47 +28,49 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final var basicAuthClient = new DirectBasicAuthClient(null);
-        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore()),
-            TechnicalException.class, "authenticator cannot be null");
+        val basicAuthClient = new DirectBasicAuthClient(null);
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final var basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
+        val basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
             MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final var basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        val basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.init();
     }
 
     @Test
     public void testAuthentication() {
-        final var client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        final var context = MockWebContext.create();
-        final var header = USERNAME + ":" + USERNAME;
+        val client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        val context = MockWebContext.create();
+        val header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final var credentials =
-            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val credentials =
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT).get();
+        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
     }
 
     @Test
     public void testAuthenticationLowercase() {
-        final var client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        final var context = MockWebContext.create();
-        final var header = USERNAME + ":" + USERNAME;
+        val client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        val context = MockWebContext.create();
+        val header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER.toLowerCase(),
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        final var credentials =
-            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final var profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val credentials =
+            (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT).get();
+        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USERNAME, profile.getId());
     }
 }

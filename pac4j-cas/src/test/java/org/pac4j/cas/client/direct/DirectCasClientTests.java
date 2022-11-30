@@ -11,6 +11,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -57,7 +58,8 @@ public final class DirectCasClientTests implements TestsConstants {
         val client = new DirectCasClient(configuration);
         val context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL);
-        val action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT));
         assertEquals(302, action.getCode());
         assertEquals(addParameter(LOGIN_URL, CasConfiguration.SERVICE_PARAMETER, CALLBACK_URL),
             ((FoundAction) action).getLocation());
@@ -77,7 +79,8 @@ public final class DirectCasClientTests implements TestsConstants {
         val context = MockWebContext.create();
         context.setFullRequestURL(CALLBACK_URL + "?" + CasConfiguration.TICKET_PARAMETER + "=" + TICKET);
         context.addRequestParameter(CasConfiguration.TICKET_PARAMETER, TICKET);
-        val credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore()).get();
+        val credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(TICKET, credentials.getToken());
         val profile = credentials.getUserProfile();
         assertTrue(profile instanceof CasProfile);

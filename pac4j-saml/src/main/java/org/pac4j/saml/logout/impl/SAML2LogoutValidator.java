@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
+import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -8,7 +9,6 @@ import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
@@ -26,7 +26,6 @@ import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -74,20 +73,18 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      */
     @Override
     public Credentials validate(final SAML2MessageContext context) {
-        final var message = (SAMLObject) context.getMessageContext().getMessage();
+        val message = (SAMLObject) context.getMessageContext().getMessage();
         // IDP-initiated
-        if (message instanceof LogoutRequest) {
-            final var logoutRequest = (LogoutRequest) message;
-            final var engine = this.signatureTrustEngineProvider.build();
+        if (message instanceof LogoutRequest logoutRequest) {
+            val engine = this.signatureTrustEngineProvider.build();
             validateLogoutRequest(logoutRequest, context, engine);
             return null;
-        } else if (message instanceof LogoutResponse) {
+        } else if (message instanceof LogoutResponse logoutResponse) {
             // SP-initiated
-            final var logoutResponse = (LogoutResponse) message;
-            final var engine = this.signatureTrustEngineProvider.build();
+            val engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
 
-            final var action = handlePostLogoutResponse(context);
+            val action = handlePostLogoutResponse(context);
             if (action != null) {
                 throw action;
             }
@@ -115,9 +112,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     protected void validateLogoutRequest(final LogoutRequest logoutRequest, final SAML2MessageContext context,
                                          final SignatureTrustEngine engine) {
 
-        if (logger.isTraceEnabled()) {
-            logger.trace("Validating logout request:\n{}", Configuration.serializeSamlObject(logoutRequest));
-        }
+        logger.trace("Validating logout request:\n{}", Configuration.serializeSamlObject(logoutRequest));
         validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
 
         // don't check because of CAS v5
@@ -126,29 +121,31 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         validateIssuerIfItExists(logoutRequest.getIssuer(), context);
 
         var nameId = logoutRequest.getNameID();
-        final var encryptedID = logoutRequest.getEncryptedID();
+        val encryptedID = logoutRequest.getEncryptedID();
         if (encryptedID != null) {
             nameId = decryptEncryptedId(encryptedID, decrypter);
         }
 
-        final var samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
+        val samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
         String sessionIndex = null;
-        final var sessionIndexes = logoutRequest.getSessionIndexes();
+        val sessionIndexes = logoutRequest.getSessionIndexes();
         if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
-            final var sessionIndexObject = sessionIndexes.get(0);
+            val sessionIndexObject = sessionIndexes.get(0);
             if (sessionIndexObject != null) {
                 sessionIndex = sessionIndexObject.getValue();
             }
         }
 
-        final var sloKey = computeSloKey(sessionIndex, samlNameId);
+        val sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
-            final var bindingUri = context.getSAMLBindingContext().getBindingUri();
+            val bindingUri = context.getSAMLBindingContext().getBindingUri();
             logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
             if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
-                logoutHandler.destroySessionBack(context.getWebContext(), context.getSessionStore(), sloKey);
+                logoutHandler.destroySessionBack(context.getWebContext(), context.getSessionStore(),
+                    context.getProfileManagerFactory(), sloKey);
             } else {
-                logoutHandler.destroySessionFront(context.getWebContext(), context.getSessionStore(), sloKey);
+                logoutHandler.destroySessionFront(context.getWebContext(), context.getSessionStore(),
+                    context.getProfileManagerFactory(), sloKey);
             }
         }
     }
@@ -163,9 +160,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     protected void validateLogoutResponse(final LogoutResponse logoutResponse, final SAML2MessageContext context,
                                           final SignatureTrustEngine engine) {
 
-        if (logger.isTraceEnabled()) {
-            logger.trace("Validating logout response:\n{}", Configuration.serializeSamlObject(logoutResponse));
-        }
+        logger.trace("Validating logout response:\n{}", Configuration.serializeSamlObject(logoutResponse));
         validateSuccess(logoutResponse.getStatus());
 
         validateSignatureIfItExists(logoutResponse.getSignature(), context, engine);
@@ -178,9 +173,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     }
 
     protected void validateDestinationEndpoint(final LogoutResponse logoutResponse, final SAML2MessageContext context) {
-        final List<String> expected = new ArrayList<>();
+        val expected = new ArrayList<String>();
         if (CommonHelper.isBlank(this.expectedDestination)) {
-            final Endpoint endpoint = Objects.requireNonNull(context.getSPSSODescriptor().getSingleLogoutServices().get(0));
+            val endpoint = Objects.requireNonNull(context.getSPSSODescriptor().getSingleLogoutServices().get(0));
             if (endpoint.getLocation() != null) {
                 expected.add(endpoint.getLocation());
             }
@@ -191,7 +186,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             expected.add(this.expectedDestination);
         }
 
-        final boolean isDestinationMandatory = context.getSAML2Configuration().isResponseDestinationAttributeMandatory();
+        val isDestinationMandatory = context.getSaml2Configuration().isResponseDestinationAttributeMandatory();
         verifyEndpoint(expected, logoutResponse.getDestination(), isDestinationMandatory);
     }
 

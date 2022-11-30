@@ -1,21 +1,26 @@
 package org.pac4j.http.client.indirect;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
+import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth.</p>
@@ -26,6 +31,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class IndirectBasicAuthClient extends IndirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
@@ -56,7 +64,8 @@ public class IndirectBasicAuthClient extends IndirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
+    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
+                                                        final ProfileManagerFactory profileManagerFactory) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
@@ -66,7 +75,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context, sessionStore);
+            credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
             logger.debug("credentials : {}", credentials);
 
             if (!credentials.isPresent()) {
@@ -80,23 +89,5 @@ public class IndirectBasicAuthClient extends IndirectClient {
         }
 
         return credentials;
-    }
-
-    public String getRealmName() {
-        return realmName;
-    }
-
-    public void setRealmName(String realmName) {
-        this.realmName = realmName;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
-            "realmName", this.realmName);
     }
 }

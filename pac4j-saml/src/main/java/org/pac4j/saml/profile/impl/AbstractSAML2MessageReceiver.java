@@ -1,5 +1,6 @@
 package org.pac4j.saml.profile.impl;
 
+import lombok.val;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
@@ -40,40 +41,40 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
     @Override
     public Credentials receiveMessage(final SAML2MessageContext context) {
         context.setSaml2Configuration(saml2Configuration);
-        final var peerContext = context.getSAMLPeerEntityContext();
-        final var webContext = context.getWebContext();
+        val peerContext = context.getSAMLPeerEntityContext();
+        val webContext = context.getWebContext();
 
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
-        final var decoder = getDecoder(webContext);
+        val decoder = getDecoder(webContext);
 
-        final var decodedCtx = prepareDecodedContext(context, decoder);
+        val decodedCtx = prepareDecodedContext(context, decoder);
 
         return this.validator.validate(decodedCtx);
     }
 
     protected SAML2MessageContext prepareDecodedContext(final SAML2MessageContext context, final AbstractPac4jDecoder decoder) {
-        final var decodedCtx = new SAML2MessageContext();
+        val decodedCtx = new SAML2MessageContext();
         decodedCtx.setSaml2Configuration(saml2Configuration);
 
         decodedCtx.setMessageContext(decoder.getMessageContext());
-        final var message = (SAMLObject) decoder.getMessageContext().getMessage();
+        val message = (SAMLObject) decoder.getMessageContext().getMessage();
         if (message == null) {
             throw new SAMLException("Response from the context cannot be null");
         }
         decodedCtx.getMessageContext().setMessage(message);
         context.getMessageContext().setMessage(message);
-        decodedCtx.setSAMLMessageStore(context.getSAMLMessageStore());
+        decodedCtx.setSamlMessageStore(context.getSamlMessageStore());
 
-        final var bindingContext = prepareBindingContext(context, decoder, decodedCtx);
+        val bindingContext = prepareBindingContext(context, decoder, decodedCtx);
 
         if (decodedCtx.getMessageContext().getMessage() instanceof StatusResponseType) {
-            final var response = (StatusResponseType) decodedCtx.getMessageContext().getMessage();
+            val response = (StatusResponseType) decodedCtx.getMessageContext().getMessage();
             getEndpoint(context, response).ifPresent(e -> decodedCtx.getSAMLEndpointContext().setEndpoint(e));
         }
 
-        final var metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
+        val metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
         if (metadata == null) {
             throw new SAMLException("IDP Metadata cannot be null");
         }
@@ -98,7 +99,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
                                             final SAML2MessageContext decodedCtx,
                                             final SAMLBindingContext bindingContext,
                                             final EntityDescriptor metadata) {
-        final var decodedPeerContext = decoder.getMessageContext().getSubcontext(SAMLPeerEntityContext.class);
+        val decodedPeerContext = decoder.getMessageContext().getSubcontext(SAMLPeerEntityContext.class);
         CommonHelper.assertNotNull("SAMLPeerEntityContext", bindingContext);
 
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
@@ -108,14 +109,14 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
     protected SAMLBindingContext prepareBindingContext(final SAML2MessageContext context,
                                                        final AbstractPac4jDecoder decoder,
                                                        final SAML2MessageContext decodedCtx) {
-        final var bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
+        val bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
         CommonHelper.assertNotNull("SAMLBindingContext", bindingContext);
         decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
         decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
         decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
         decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext
             .isIntendedDestinationEndpointURIRequired());
-        final var relayState = bindingContext.getRelayState();
+        val relayState = bindingContext.getRelayState();
         decodedCtx.getSAMLBindingContext().setRelayState(relayState);
         context.getSAMLBindingContext().setRelayState(relayState);
         return bindingContext;
