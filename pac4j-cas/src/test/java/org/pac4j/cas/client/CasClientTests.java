@@ -36,9 +36,10 @@ public final class CasClientTests implements TestsConstants {
     private static final String LOGIN = "/login";
     private static final String PREFIX_URL = "http://myserver/";
     private static final String PREFIX_URL_WITHOUT_SLASH = "http://myserver";
-    private static final String LOGOUT_MESSAGE = "\"<samlp:LogoutRequest xmlns:samlp=\\\"urn:oasis:names:tc:SAML:2.0:protocol\\\""
-        + "ID=\\\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\\\" Version=\\\"2.0\\\" IssueInstant=\\\"2012-12-19T15:30:55Z\\\">"
-        + "<saml:NameID xmlns:saml=\\\"urn:oasis:names:tc:SAML:2.0:assertion\\\">@NOT_USED@</saml:NameID><samlp:SessionIndex>\""
+    private static final String LOGOUT_MESSAGE = """
+        <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+        ID="LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y" Version="2.0" IssueInstant="2012-12-19T15:30:55Z">
+        <saml:NameID xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">@NOT_USED@</saml:NameID><samlp:SessionIndex>"""
         + TICKET + "\"</samlp:SessionIndex></samlp:LogoutRequest>\";";
 
     @Test

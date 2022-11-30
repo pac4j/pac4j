@@ -1,5 +1,10 @@
 package org.pac4j.core.client;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -7,8 +12,6 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -20,10 +23,11 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-@SuppressWarnings({ "unchecked" })
+@Slf4j
+@Getter
+@Setter
+@ToString
 public class Clients extends InitializableObject {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Clients.class);
 
     private volatile List<Client> clients = new ArrayList<>();
 
@@ -80,16 +84,15 @@ public class Clients extends InitializableObject {
     @Override
     protected void internalInit(final boolean forceReinit) {
         clientsMap = new HashMap<>();
-        for (final var client : this.clients) {
-            final var name = client.getName();
+        for (val client : this.clients) {
+            val name = client.getName();
             CommonHelper.assertNotBlank("name", name);
-            final var lowerTrimmedName = name.toLowerCase().trim();
+            val lowerTrimmedName = name.toLowerCase().trim();
             if (clientsMap.containsKey(lowerTrimmedName)) {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
             clientsMap.put(lowerTrimmedName, client);
-            if (client instanceof IndirectClient) {
-                final var indirectClient = (IndirectClient) client;
+            if (client instanceof IndirectClient indirectClient) {
                 if (this.callbackUrl != null && indirectClient.getCallbackUrl() == null) {
                     indirectClient.setCallbackUrl(this.callbackUrl);
                 }
@@ -103,7 +106,7 @@ public class Clients extends InitializableObject {
                     indirectClient.setAjaxRequestResolver(this.ajaxRequestResolver);
                 }
             }
-            final var baseClient = (BaseClient) client;
+            val baseClient = (BaseClient) client;
             if (!authorizationGenerators.isEmpty()) {
                 baseClient.addAuthorizationGenerators(this.authorizationGenerators);
             }
@@ -121,7 +124,7 @@ public class Clients extends InitializableObject {
         CommonHelper.assertNotBlank("name", name);
         init();
 
-        final var foundClient = clientsMap.get(name.toLowerCase().trim());
+        val foundClient = clientsMap.get(name.toLowerCase().trim());
         LOGGER.debug("Found client: {} for name: {}", foundClient, name);
         return Optional.ofNullable(foundClient);
     }
@@ -137,14 +140,6 @@ public class Clients extends InitializableObject {
         return getClients();
     }
 
-    public String getCallbackUrl() {
-        return this.callbackUrl;
-    }
-
-    public void setCallbackUrl(final String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
     public void addClient(final Client client) {
         this.clients.add(client);
     }
@@ -157,30 +152,6 @@ public class Clients extends InitializableObject {
     public void setClients(final Client... clients) {
         CommonHelper.assertNotNull("clients", clients);
         setClients(new ArrayList<>(Arrays.asList(clients)));
-    }
-
-    public List<Client> getClients() {
-        return this.clients;
-    }
-
-    public AjaxRequestResolver getAjaxRequestResolver() {
-        return ajaxRequestResolver;
-    }
-
-    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
-        this.ajaxRequestResolver = ajaxRequestResolver;
-    }
-
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
-    }
-
-    public List<AuthorizationGenerator> getAuthorizationGenerators() {
-        return this.authorizationGenerators;
     }
 
     public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
@@ -200,29 +171,5 @@ public class Clients extends InitializableObject {
     public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
         this.authorizationGenerators.add(authorizationGenerator);
-    }
-
-    public String getDefaultSecurityClients() {
-        return defaultSecurityClients;
-    }
-
-    public void setDefaultSecurityClients(final String defaultSecurityClients) {
-        this.defaultSecurityClients = defaultSecurityClients;
-    }
-
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
-    }
-
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "clients", getClients(),
-                "ajaxRequestResolver", ajaxRequestResolver, "callbackUrlResolver", callbackUrlResolver,
-                "authorizationGenerators", authorizationGenerators, "defaultSecurityClients", defaultSecurityClients,
-                "urlResolver", this.urlResolver);
     }
 }

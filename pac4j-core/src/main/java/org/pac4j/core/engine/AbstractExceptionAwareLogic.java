@@ -39,10 +39,9 @@ public abstract class AbstractExceptionAwareLogic {
     protected Object handleException(final Exception e, final HttpActionAdapter httpActionAdapter, final WebContext context) {
         if (httpActionAdapter == null || context == null) {
             throw runtimeException(e);
-        } else if (e instanceof HttpAction) {
-            val action = (HttpAction) e;
-            LOGGER.debug("extra HTTP action required in security: {}", action.getCode());
-            return httpActionAdapter.adapt(action, context);
+        } else if (e instanceof HttpAction httpAction) {
+            LOGGER.debug("extra HTTP action required in security: {}", httpAction.getCode());
+            return httpActionAdapter.adapt(httpAction, context);
         } else {
             if (CommonHelper.isNotBlank(errorUrl)) {
                 val action = HttpActionHelper.buildRedirectUrlAction(context, errorUrl);
@@ -60,8 +59,8 @@ public abstract class AbstractExceptionAwareLogic {
      * @return the RuntimeException
      */
     protected RuntimeException runtimeException(final Exception exception) {
-        if (exception instanceof RuntimeException) {
-            throw (RuntimeException) exception;
+        if (exception instanceof RuntimeException runtimeException) {
+            throw runtimeException;
         } else {
             throw new RuntimeException(exception);
         }

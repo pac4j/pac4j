@@ -1,8 +1,8 @@
 package org.pac4j.core.util.security;
 
+import lombok.val;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.exception.TechnicalException;
@@ -28,8 +28,8 @@ public class SecurityEndpointBuilder {
 
     public static void buildConfig(final SecurityEndpoint endpoint, Object... parameters) {
         Config config = null;
-        boolean configProvided = false;
-        for (final Object parameter : parameters) {
+        var configProvided = false;
+        for (val parameter : parameters) {
             if (parameter instanceof Config) {
                 if (config != null) {
                     throw new TechnicalException("Only one Config can be used");
@@ -43,57 +43,56 @@ public class SecurityEndpointBuilder {
             config = new Config();
         }
 
-        String clients = Pac4jConstants.EMPTY_STRING;
-        String authorizers = Pac4jConstants.EMPTY_STRING;
-        String matchers = Pac4jConstants.EMPTY_STRING;
+        var clients = Pac4jConstants.EMPTY_STRING;
+        var authorizers = Pac4jConstants.EMPTY_STRING;
+        var matchers = Pac4jConstants.EMPTY_STRING;
 
-        var paramList = new ArrayList<Object>();
-        for (final Object parameter : parameters) {
-            if (parameter instanceof Collection<?>) {
-                ((Collection<?>) parameter).forEach(element -> paramList.add(element));
-            } else if (parameter instanceof Object[]) {
-                Arrays.stream((Object[]) parameter).forEach(element -> paramList.add(element));
+        val paramList = new ArrayList<Object>();
+        for (val parameter : parameters) {
+            if (parameter instanceof Collection<?> collection) {
+                collection.forEach(element -> paramList.add(element));
+            } else if (parameter instanceof Object[] objects) {
+                Arrays.stream(objects).forEach(element -> paramList.add(element));
             } else {
                 paramList.add(parameter);
             }
         }
 
         int numString = 0;
-        for (final Object parameter : paramList) {
-            if (parameter instanceof String) {
+        for (val parameter : paramList) {
+            if (parameter instanceof String s) {
                 if (!configProvided) {
                     throw new TechnicalException("Cannot accept strings without a provided Config");
                 }
                 if (numString == 0) {
-                    clients = (String) parameter;
+                    clients = s;
                 } else if (numString == 1) {
-                    authorizers = (String) parameter;
+                    authorizers = s;
                 } else if (numString == 2) {
-                    matchers = (String) parameter;
+                    matchers = s;
                 } else {
                     throw new TechnicalException("Too many strings used in constructor");
                 }
                 numString++;
-            } else if (parameter instanceof Client) {
-                final Client client = (Client) parameter;
-                final String clientName = client.getName();
-                final Clients configClients = config.getClients();
+            } else if (parameter instanceof Client client) {
+                val clientName = client.getName();
+                val configClients = config.getClients();
                 if (configClients.findClient(clientName).isEmpty()) {
                     configClients.addClient(client);
                 }
                 clients = addElement(clients, clientName);
-            } else if (parameter instanceof Authorizer) {
+            } else if (parameter instanceof Authorizer authorizer) {
                 var internalName = "$int_authorizer" + internalNumber.getAndIncrement();
-                config.addAuthorizer(internalName, (Authorizer) parameter);
+                config.addAuthorizer(internalName, authorizer);
                 authorizers = addElement(authorizers, internalName);
-            } else if (parameter instanceof Matcher) {
+            } else if (parameter instanceof Matcher matcher) {
                 var internalName = "$int_matcher" + internalNumber.getAndIncrement();
-                config.addMatcher(internalName, (Matcher) parameter);
+                config.addMatcher(internalName, matcher);
                 matchers = addElement(matchers, internalName);
-            } else if (parameter instanceof HttpActionAdapter) {
-                endpoint.setHttpActionAdapter((HttpActionAdapter) parameter);
-            } else if (parameter instanceof SecurityLogic) {
-                endpoint.setSecurityLogic((SecurityLogic) parameter);
+            } else if (parameter instanceof HttpActionAdapter httpActionAdapter) {
+                endpoint.setHttpActionAdapter(httpActionAdapter);
+            } else if (parameter instanceof SecurityLogic securityLogic) {
+                endpoint.setSecurityLogic(securityLogic);
             } else if (!(parameter instanceof Config)) {
                 throw new TechnicalException("Unsupported parameter type: " + parameter);
             }

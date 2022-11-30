@@ -43,8 +43,7 @@ public final class CasRestProfile extends CommonProfile {
             return false;
         }
 
-        return obj instanceof CasRestProfile
-            && (obj == this || getTicketGrantingTicketId().equals(((CasRestProfile) obj).getTicketGrantingTicketId()));
-
+        return obj instanceof CasRestProfile casRestProfile
+            && (obj == this || getTicketGrantingTicketId().equals(casRestProfile.getTicketGrantingTicketId()));
     }
 }

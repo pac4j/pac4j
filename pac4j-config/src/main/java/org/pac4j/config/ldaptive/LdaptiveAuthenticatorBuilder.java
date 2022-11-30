@@ -1,16 +1,8 @@
 package org.pac4j.config.ldaptive;
 
-import org.ldaptive.BindConnectionInitializer;
-import org.ldaptive.ConnectionConfig;
-import org.ldaptive.Credential;
-import org.ldaptive.FilterTemplate;
-import org.ldaptive.PooledConnectionFactory;
-import org.ldaptive.ReturnAttributes;
-import org.ldaptive.SearchConnectionValidator;
-import org.ldaptive.SearchOperation;
-import org.ldaptive.SearchRequest;
-import org.ldaptive.SearchScope;
-import org.ldaptive.SimpleBindRequest;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.ldaptive.*;
 import org.ldaptive.ad.extended.FastBindConnectionInitializer;
 import org.ldaptive.auth.*;
 import org.ldaptive.control.PasswordPolicyControl;
@@ -22,20 +14,16 @@ import org.ldaptive.ssl.KeyStoreCredentialConfig;
 import org.ldaptive.ssl.SslConfig;
 import org.ldaptive.ssl.X509CredentialConfig;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
-
 import java.util.stream.Collectors;
 
 /**
  * Copy/pasted from CAS server v5.0.4: Beans + LdapAuthenticationConfiguration classes, only the Ldaptive stuffs are kept.
  */
+@Slf4j
 public class LdaptiveAuthenticatorBuilder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LdaptiveAuthenticatorBuilder.class);
 
     protected LdaptiveAuthenticatorBuilder() {
     }
@@ -71,7 +59,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getSaslAuthenticator(final LdapAuthenticationProperties l) {
-        final var resolver = new SearchDnResolver();
+        val resolver = new SearchDnResolver();
         resolver.setBaseDn(l.getBaseDn());
         resolver.setSubtreeSearch(l.isSubtreeSearch());
         resolver.setAllowMultipleDns(l.isAllowMultipleDns());
@@ -81,7 +69,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getAuthenticatedOrAnonSearchAuthenticator(final LdapAuthenticationProperties l) {
-        final var resolver = new SearchDnResolver();
+        val resolver = new SearchDnResolver();
         resolver.setBaseDn(l.getBaseDn());
         resolver.setSubtreeSearch(l.isSubtreeSearch());
         resolver.setAllowMultipleDns(l.isAllowMultipleDns());
@@ -105,8 +93,8 @@ public class LdaptiveAuthenticatorBuilder {
         if (CommonHelper.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for direct bind authentication");
         }
-        final var resolver = new FormatDnResolver(l.getDnFormat());
-        final var authenticator = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
+        val resolver = new FormatDnResolver(l.getDnFormat());
+        val authenticator = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
 
         if (l.isEnhanceWithEntryResolver()) {
             authenticator.setEntryResolver(newSearchEntryResolver(l));
@@ -118,8 +106,8 @@ public class LdaptiveAuthenticatorBuilder {
         if (CommonHelper.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for active directory authentication");
         }
-        final var resolver = new FormatDnResolver(l.getDnFormat());
-        final var authn = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
+        val resolver = new FormatDnResolver(l.getDnFormat());
+        val authn = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
 
         if (l.isEnhanceWithEntryResolver()) {
             authn.setEntryResolver(newSearchEntryResolver(l));
@@ -128,13 +116,13 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static SimpleBindAuthenticationHandler getPooledBindAuthenticationHandler(final LdapAuthenticationProperties l) {
-        final var handler = new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
+        val handler = new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
         handler.setAuthenticationControls(new PasswordPolicyControl());
         return handler;
     }
 
     private static CompareAuthenticationHandler getPooledCompareAuthenticationHandler(final LdapAuthenticationProperties l) {
-        final var handler = new CompareAuthenticationHandler(newPooledConnectionFactory(l));
+        val handler = new CompareAuthenticationHandler(newPooledConnectionFactory(l));
         handler.setPasswordAttribute(l.getPrincipalAttributePassword());
         return handler;
     }
@@ -154,7 +142,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the entry resolver
      */
     public static EntryResolver newSearchEntryResolver(final LdapAuthenticationProperties l) {
-        final var entryResolver = new SearchEntryResolver();
+        val entryResolver = new SearchEntryResolver();
         entryResolver.setBaseDn(l.getBaseDn());
         entryResolver.setUserFilter(l.getUserFilter());
         entryResolver.setSubtreeSearch(l.isSubtreeSearch());
@@ -170,19 +158,19 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the connection config
      */
     public static ConnectionConfig newConnectionConfig(final AbstractLdapProperties l) {
-        final var cc = new ConnectionConfig();
-        final var urls = Arrays.stream(l.getLdapUrl().split(",")).collect(Collectors.joining(" "));
+        val cc = new ConnectionConfig();
+        val urls = Arrays.stream(l.getLdapUrl().split(",")).collect(Collectors.joining(" "));
         LOGGER.debug("Transformed LDAP urls from [{}] to [{}]", l.getLdapUrl(), urls);
         cc.setLdapUrl(urls);
         cc.setUseStartTLS(l.isUseStartTls());
         cc.setConnectTimeout(newDuration(l.getConnectTimeout()));
 
         if (l.getTrustCertificates() != null) {
-            final var cfg = new X509CredentialConfig();
+            val cfg = new X509CredentialConfig();
             cfg.setTrustCertificates(l.getTrustCertificates());
             cc.setSslConfig(new SslConfig(cfg));
         } else if (l.getKeystore() != null) {
-            final var cfg = new KeyStoreCredentialConfig();
+            val cfg = new KeyStoreCredentialConfig();
             cfg.setKeyStore(l.getKeystore());
             cfg.setKeyStorePassword(l.getKeystorePassword());
             cfg.setKeyStoreType(l.getKeystoreType());
@@ -191,23 +179,14 @@ public class LdaptiveAuthenticatorBuilder {
             cc.setSslConfig(new SslConfig());
         }
         if (l.getSaslMechanism() != null) {
-            final var bc = new BindConnectionInitializer();
+            val bc = new BindConnectionInitializer();
             final SaslConfig sc;
             switch (l.getSaslMechanism()) {
-                case DIGEST_MD5:
-                    sc = SaslConfig.builder().mechanism(Mechanism.DIGEST_MD5).realm(l.getSaslRealm()).build();
-                    break;
-                case CRAM_MD5:
-                    sc = SaslConfig.builder().mechanism(Mechanism.CRAM_MD5).build();
-                    break;
-                case EXTERNAL:
-                    sc = SaslConfig.builder().mechanism(Mechanism.EXTERNAL).build();
-                    break;
-                case GSSAPI:
-                    sc = SaslConfig.builder().mechanism(Mechanism.GSSAPI).realm(l.getSaslRealm()).build();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown SASL mechanism " + l.getSaslMechanism().name());
+                case DIGEST_MD5 -> sc = SaslConfig.builder().mechanism(Mechanism.DIGEST_MD5).realm(l.getSaslRealm()).build();
+                case CRAM_MD5 -> sc = SaslConfig.builder().mechanism(Mechanism.CRAM_MD5).build();
+                case EXTERNAL -> sc = SaslConfig.builder().mechanism(Mechanism.EXTERNAL).build();
+                case GSSAPI -> sc = SaslConfig.builder().mechanism(Mechanism.GSSAPI).realm(l.getSaslRealm()).build();
+                default -> throw new IllegalArgumentException("Unknown SASL mechanism " + l.getSaslMechanism().name());
             }
             sc.setAuthorizationId(l.getSaslAuthorizationId());
             sc.setMutualAuthentication(l.getSaslMutualAuth());
@@ -230,44 +209,43 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the pooled connection factory
      */
     public static PooledConnectionFactory newPooledConnectionFactory(final AbstractLdapProperties l) {
-        final var cc = newConnectionConfig(l);
-        final var cf = new PooledConnectionFactory(cc);
+        val cc = newConnectionConfig(l);
+        val cf = new PooledConnectionFactory(cc);
         cf.setBlockWaitTime(newDuration(l.getBlockWaitTime()));
         cf.setMinPoolSize(l.getMinPoolSize());
         cf.setMaxPoolSize(l.getMaxPoolSize());
         cf.setValidateOnCheckOut(l.isValidateOnCheckout());
         cf.setValidatePeriodically(l.isValidatePeriodically());
 
-        final var strategy = new IdlePruneStrategy();
+        val strategy = new IdlePruneStrategy();
         strategy.setIdleTime(newDuration(l.getIdleTime()));
         strategy.setPrunePeriod(newDuration(l.getPrunePeriod()));
         cf.setPruneStrategy(strategy);
 
         cf.setFailFastInitialize(l.isFailFast());
 
-        final var validator = new SearchConnectionValidator();
+        val validator = new SearchConnectionValidator();
         validator.setValidatePeriod(newDuration(l.getValidatePeriod()));
         cf.setValidator(validator);
 
         if (CommonHelper.isNotBlank(l.getPoolPassivator())) {
-            final var pass =
+            val pass =
                 AbstractLdapProperties.LdapConnectionPoolPassivator.valueOf(l.getPoolPassivator().toUpperCase());
             switch (pass) {
-                case CLOSE:
+                case CLOSE -> {
                     // TODO: provide a property to disable pooling which return a DefaultConnectionFactory
                     // TODO: this is preferable to a pool of closed connections
                     cf.setPassivator(conn -> {
                         conn.close();
                         return true;
                     });
-                    break;
-                case BIND:
+                }
+                case BIND -> {
                     LOGGER.debug("Creating a bind passivator instance for the connection pool");
-                    final var bindRequest = new SimpleBindRequest(l.getBindDn(), new Credential(l.getBindCredential()));
+                    val bindRequest = new SimpleBindRequest(l.getBindDn(), new Credential(l.getBindCredential()));
                     cf.setPassivator(new BindConnectionPassivator(bindRequest));
-                    break;
-                default:
-                    break;
+                }
+                default -> {}
             }
         }
 
@@ -294,7 +272,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the search request
      */
     public static SearchRequest newSearchRequest(final String baseDn, final FilterTemplate filter) {
-        final var sr = new SearchRequest(baseDn, filter);
+        val sr = new SearchRequest(baseDn, filter);
         // TODO: this argument should be a list of individual attribute names
         //sr.setBinaryAttributes(ReturnAttributes.ALL_USER.value());
         sr.setReturnAttributes(ReturnAttributes.ALL_USER.value());
@@ -310,7 +288,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return Search filter with parameters applied.
      */
     public static FilterTemplate newSearchFilter(final String filterQuery, final String... params) {
-        final var filter = new FilterTemplate();
+        val filter = new FilterTemplate();
         filter.setFilter(filterQuery);
         if (params != null) {
             for (var i = 0; i < params.length; i++) {
@@ -334,7 +312,7 @@ public class LdaptiveAuthenticatorBuilder {
      * @return the search executor
      */
     public static SearchOperation newSearchOperation(final String baseDn, final String filterQuery, final String... params) {
-        final var operation = new SearchOperation();
+        val operation = new SearchOperation();
         operation.setRequest(SearchRequest.builder()
             .dn(baseDn)
             .filter(newSearchFilter(filterQuery, params))

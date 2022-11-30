@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.authorization.checker.AuthorizationChecker;
 import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.client.Client;
@@ -85,18 +86,18 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
-            final var configClients = config.getClients();
+            val configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
             // logic
             LOGGER.debug("url: {}", context.getFullRequestURL());
             LOGGER.debug("clients: {} | matchers: {}", clients, matchers);
-            final var currentClients = clientFinder.find(configClients, context, clients);
+            val currentClients = clientFinder.find(configClients, context, clients);
             LOGGER.debug("currentClients: {}", currentClients);
 
             if (matchingChecker.matches(context, sessionStore, matchers, config.getMatchers(), currentClients)) {
 
-                final var manager = profileManagerFactory.apply(context, sessionStore);
+                val manager = profileManagerFactory.apply(context, sessionStore);
                 manager.setConfig(config);
                 var profiles = this.loadProfilesFromSession
                     ? loadProfiles(manager, context, sessionStore, currentClients)
@@ -107,21 +108,20 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 if (isEmpty(profiles) && isNotEmpty(currentClients)) {
                     var updated = false;
                     // loop on all clients searching direct ones to perform authentication
-                    for (final var currentClient : currentClients) {
-                        if (currentClient instanceof DirectClient) {
+                    for (val currentClient : currentClients) {
+                        if (currentClient instanceof DirectClient directClient) {
                             LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
-                            final var credentials = currentClient.getCredentials(context, sessionStore);
+                            val credentials = currentClient.getCredentials(context, sessionStore);
                             LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
-                                final var optProfile =
+                                val optProfile =
                                     currentClient.getUserProfile(credentials.get(), context, sessionStore);
                                 LOGGER.debug("profile: {}", optProfile);
                                 if (optProfile.isPresent()) {
-                                    final var profile = optProfile.get();
-                                    final var directClient = (DirectClient) currentClient;
-                                    final boolean saveProfileInSession = directClient.getSaveProfileInSession(context, profile);
-                                    final var multiProfile = directClient.isMultiProfile(context, profile);
+                                    val profile = optProfile.get();
+                                    val saveProfileInSession = directClient.getSaveProfileInSession(context, profile);
+                                    val multiProfile = directClient.isMultiProfile(context, profile);
                                     LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                     manager.save(saveProfileInSession, profile, multiProfile);
                                     updated = true;
@@ -239,7 +239,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      */
     protected HttpAction redirectToIdentityProvider(final WebContext context, final SessionStore sessionStore,
                                                     final List<Client> currentClients) {
-        final var currentClient = (IndirectClient) currentClients.get(0);
+        val currentClient = (IndirectClient) currentClients.get(0);
         return currentClient.getRedirectionAction(context, sessionStore).get();
     }
 

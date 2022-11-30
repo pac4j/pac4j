@@ -1,8 +1,8 @@
 package org.pac4j.core.profile.converter;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.profile.Color;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class converts a String into a Color.
@@ -10,9 +10,8 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.1.0
  */
+@Slf4j
 public final class ColorConverter extends AbstractAttributeConverter {
-
-    private static final Logger logger = LoggerFactory.getLogger(ColorConverter.class);
 
     public ColorConverter() {
         super(Color.class);
@@ -20,20 +19,17 @@ public final class ColorConverter extends AbstractAttributeConverter {
 
     @Override
     protected Color internalConvert(final Object attribute) {
-        if (attribute instanceof String) {
-            final var s = (String) attribute;
-            if (s.length() == 6) {
-                try {
-                    var hex = s.substring(0, 2);
-                    final var r = Integer.parseInt(hex, 16);
-                    hex = s.substring(2, 4);
-                    final var g = Integer.parseInt(hex, 16);
-                    hex = s.substring(4, 6);
-                    final var b = Integer.parseInt(hex, 16);
-                    return new Color(r, g, b);
-                } catch (final NumberFormatException e) {
-                    logger.error("Cannot convert " + s + " into color", e);
-                }
+        if (attribute instanceof String s && s.length() == 6) {
+            try {
+                var hex = s.substring(0, 2);
+                val r = Integer.parseInt(hex, 16);
+                hex = s.substring(2, 4);
+                val g = Integer.parseInt(hex, 16);
+                hex = s.substring(4, 6);
+                val b = Integer.parseInt(hex, 16);
+                return new Color(r, g, b);
+            } catch (final NumberFormatException e) {
+                LOGGER.error("Cannot convert " + s + " into color", e);
             }
         }
         return null;

@@ -1,15 +1,16 @@
 package org.pac4j.core.credentials.authenticator;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -22,9 +23,11 @@ import java.util.concurrent.TimeUnit;
  * @author Misagh Moayyed
  * @since 1.8
  */
+@Getter
+@Setter
+@Slf4j
+@ToString
 public class LocalCachingAuthenticator extends InitializableObject implements Authenticator {
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Authenticator delegate;
     private int cacheSize;
@@ -54,14 +57,14 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
 
         var optProfile = this.store.get(credentials);
         if (optProfile.isEmpty()) {
-            logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
+            LOGGER.debug("No cached credentials found. Delegating authentication to {}...", delegate);
             delegate.validate(credentials, context, sessionStore);
             final var profile = credentials.getUserProfile();
-            logger.debug("Caching credential. Using profile {}...", profile);
+            LOGGER.debug("Caching credential. Using profile {}...", profile);
             store.set(credentials, profile);
         } else {
             credentials.setUserProfile(optProfile.get());
-            logger.debug("Found cached credential. Using cached profile {}...", optProfile.get());
+            LOGGER.debug("Found cached credential. Using cached profile {}...", optProfile.get());
         }
 
         return Optional.of(credentials);
@@ -73,8 +76,8 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
             this.store = new GuavaStore<>(cacheSize, timeout, timeUnit);
         }
 
-        if (delegate instanceof InitializableObject) {
-            ((InitializableObject) delegate).init(forceReinit);
+        if (delegate instanceof InitializableObject initializableObject) {
+            initializableObject.init(forceReinit);
         }
     }
 
@@ -84,50 +87,5 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
 
     public boolean isCached(final Credentials credentials) {
         return this.store.get(credentials).isPresent();
-    }
-
-    public Authenticator getDelegate() {
-        return delegate;
-    }
-
-    public void setDelegate(final Authenticator delegate) {
-        this.delegate = delegate;
-    }
-
-    public int getCacheSize() {
-        return cacheSize;
-    }
-
-    public void setCacheSize(final int cacheSize) {
-        this.cacheSize = cacheSize;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(final int timeout) {
-        this.timeout = timeout;
-    }
-
-    public TimeUnit getTimeUnit() {
-        return timeUnit;
-    }
-
-    public void setTimeUnit(final TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
-    }
-
-    public Store<Credentials, UserProfile> getStore() {
-        return store;
-    }
-
-    public void setStore(final Store<Credentials, UserProfile> store) {
-        this.store = store;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "delegate", this.delegate, "store", this.store);
     }
 }

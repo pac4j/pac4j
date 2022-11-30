@@ -157,16 +157,9 @@ public final class WebContextHelper implements HttpConstants {
 
         var sameSitePolicy = cookie.getSameSitePolicy() == null ? "lax" : cookie.getSameSitePolicy().toLowerCase();
         switch (sameSitePolicy) {
-            case "strict":
-                builder.append(" SameSite=Strict;");
-                break;
-            case "none":
-                builder.append(" SameSite=None;");
-                break;
-            case "lax":
-            default:
-                builder.append(" SameSite=Lax;");
-                break;
+            case "strict" -> builder.append(" SameSite=Strict;");
+            case "none" -> builder.append(" SameSite=None;");
+            default -> builder.append(" SameSite=Lax;");
         }
         if (cookie.isSecure() || "none".equals(sameSitePolicy)) {
             builder.append(" Secure;");

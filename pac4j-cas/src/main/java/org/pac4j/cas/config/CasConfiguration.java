@@ -1,17 +1,21 @@
 package org.pac4j.cas.config;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
 import org.apereo.cas.client.util.PrivateKeyUtils;
 import org.apereo.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
-import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.logout.handler.LogoutHandler;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
+import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 
 import javax.net.ssl.HostnameVerifier;
@@ -21,11 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * CAS configuration.
@@ -33,6 +33,9 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
+@ToString
 public class CasConfiguration extends BaseClientConfiguration {
 
     public static final String TICKET_PARAMETER = "ticket";
@@ -177,7 +180,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildSAMLTicketValidator(final WebContext context) {
-        final var saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
+        val saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
         saml11TicketValidator.setTolerance(getTimeTolerance());
         saml11TicketValidator.setEncoding(this.encoding);
         saml11TicketValidator.setRenew(this.renew);
@@ -192,7 +195,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas30ProxyTicketValidator(final WebContext context) {
-        final var cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
+        val cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas30ProxyTicketValidator.setEncoding(this.encoding);
         cas30ProxyTicketValidator.setRenew(this.renew);
         cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
@@ -207,7 +210,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas30TicketValidator(final WebContext context) {
-        final var cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
+        val cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas30ServiceTicketValidator.setEncoding(this.encoding);
         cas30ServiceTicketValidator.setRenew(this.renew);
         if (this.proxyReceptor != null) {
@@ -220,7 +223,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas20ProxyTicketValidator(final WebContext context) {
-        final var cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
+        val cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas20ProxyTicketValidator.setEncoding(this.encoding);
         cas20ProxyTicketValidator.setRenew(this.renew);
         cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
@@ -235,7 +238,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas20TicketValidator(final WebContext context) {
-        final var cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
+        val cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas20ServiceTicketValidator.setEncoding(this.encoding);
         cas20ServiceTicketValidator.setRenew(this.renew);
         if (this.proxyReceptor != null) {
@@ -248,19 +251,11 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected TicketValidator buildCas10TicketValidator(final WebContext context) {
-        final var cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
+        val cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
         cas10TicketValidator.setEncoding(this.encoding);
         cas10TicketValidator.setRenew(this.renew);
         getHttpURLConnectionFactory().ifPresent(cas10TicketValidator::setURLConnectionFactory);
         return cas10TicketValidator;
-    }
-
-    public String getEncoding() {
-        return encoding;
-    }
-
-    public void setEncoding(final String encoding) {
-        this.encoding = encoding;
     }
 
     public String computeFinalLoginUrl(final WebContext context) {
@@ -269,98 +264,10 @@ public class CasConfiguration extends BaseClientConfiguration {
         return urlResolver.compute(this.loginUrl, context);
     }
 
-    public String getLoginUrl() {
-        return loginUrl;
-    }
-
-    public void setLoginUrl(final String loginUrl) {
-        this.loginUrl = loginUrl;
-    }
-
-    public String getPrefixUrl() {
-        return prefixUrl;
-    }
-
     public String computeFinalPrefixUrl(final WebContext context) {
         init();
 
         return urlResolver.compute(this.prefixUrl, context);
-    }
-
-    public void setPrefixUrl(final String prefixUrl) {
-        this.prefixUrl = prefixUrl;
-    }
-
-    public HostnameVerifier getHostnameVerifier() {
-        return hostnameVerifier;
-    }
-
-    public void setHostnameVerifier(final HostnameVerifier hostnameVerifier) {
-        this.hostnameVerifier = hostnameVerifier;
-    }
-
-    public SSLSocketFactory getSslSocketFactory() {
-        return sslSocketFactory;
-    }
-
-    public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
-    }
-
-    public Map<String, String> getCustomParams() {
-        return customParams;
-    }
-
-    public void setCustomParams(final Map<String, String> customParams) {
-        this.customParams = customParams;
-    }
-
-    public long getTimeTolerance() {
-        return timeTolerance;
-    }
-
-    public void setTimeTolerance(final long timeTolerance) {
-        this.timeTolerance = timeTolerance;
-    }
-
-    public CasProtocol getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(final CasProtocol protocol) {
-        this.protocol = protocol;
-    }
-
-    public boolean isRenew() {
-        return renew;
-    }
-
-    public void setRenew(final boolean renew) {
-        this.renew = renew;
-    }
-
-    public boolean isGateway() {
-        return gateway;
-    }
-
-    public void setGateway(final boolean gateway) {
-        this.gateway = gateway;
-    }
-
-    public boolean isAcceptAnyProxy() {
-        return acceptAnyProxy;
-    }
-
-    public void setAcceptAnyProxy(final boolean acceptAnyProxy) {
-        this.acceptAnyProxy = acceptAnyProxy;
-    }
-
-    public ProxyList getAllowedProxyChains() {
-        return allowedProxyChains;
-    }
-
-    public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
-        this.allowedProxyChains = allowedProxyChains;
     }
 
     public void setAllowedProxies(final List<String> allowedProxies) {
@@ -373,102 +280,16 @@ public class CasConfiguration extends BaseClientConfiguration {
         this.allowedProxyChains = new ProxyList(proxyChains);
     }
 
-    public LogoutHandler getLogoutHandler() {
-        return logoutHandler;
-    }
-
     public LogoutHandler findLogoutHandler() {
         init();
 
         return logoutHandler;
     }
 
-    public void setLogoutHandler(final LogoutHandler logoutHandler) {
-        this.logoutHandler = logoutHandler;
-    }
-
-    public TicketValidator getDefaultTicketValidator() {
-        return defaultTicketValidator;
-    }
-
-    public void setDefaultTicketValidator(final TicketValidator defaultTicketValidator) {
-        this.defaultTicketValidator = defaultTicketValidator;
-    }
-
-    public CasProxyReceptor getProxyReceptor() {
-        return proxyReceptor;
-    }
-
-    public void setProxyReceptor(final CasProxyReceptor proxyReceptor) {
-        this.proxyReceptor = proxyReceptor;
-    }
-
-    public String getPostLogoutUrlParameter() {
-        return postLogoutUrlParameter;
-    }
-
-    public void setPostLogoutUrlParameter(final String postLogoutUrlParameter) {
-        this.postLogoutUrlParameter = postLogoutUrlParameter;
-    }
-
-    public String getRestUrl() {
-        return restUrl;
-    }
-
-    public void setRestUrl(final String restUrl) {
-        this.restUrl = restUrl;
-    }
-
     public String computeFinalRestUrl(final WebContext context) {
         init();
 
         return urlResolver.compute(this.restUrl, context);
-    }
-
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
-    }
-
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
-    }
-
-    public void addCustomParam(final String name, final String value) {
-        this.customParams.put(name, value);
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(final String method) {
-        this.method = method;
-    }
-
-    public String getPrivateKeyPath() {
-        return privateKeyPath;
-    }
-
-    public void setPrivateKeyPath(final String privateKeyPath) {
-        this.privateKeyPath = privateKeyPath;
-    }
-
-    public String getPrivateKeyAlgorithm() {
-        return privateKeyAlgorithm;
-    }
-
-    public void setPrivateKeyAlgorithm(final String privateKeyAlgorithm) {
-        this.privateKeyAlgorithm = privateKeyAlgorithm;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
-                "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
-                "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter",
-                this.postLogoutUrlParameter, "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver,
-                "method", this.method, "privateKeyPath", this.privateKeyPath, "privateKeyAlgorithm", this.privateKeyAlgorithm);
     }
 
     private Optional<HttpURLConnectionFactory> getHttpURLConnectionFactory() {
@@ -480,8 +301,7 @@ public class CasConfiguration extends BaseClientConfiguration {
 
             @Override
             public HttpURLConnection buildHttpURLConnection(URLConnection conn) {
-                if (conn instanceof HttpsURLConnection) {
-                    var httpsConnection = (HttpsURLConnection) conn;
+                if (conn instanceof HttpsURLConnection httpsConnection) {
                     if (getSslSocketFactory() != null) {
                         httpsConnection.setSSLSocketFactory(getSslSocketFactory());
                     }
