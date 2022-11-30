@@ -14,6 +14,7 @@ title: Release notes&#58;
 - Removed deprecated concepts and components
 - `Authenticator` now returns an `Optional<Credentials>`
 - Usage of Lombok
+- Remove `ProfileManagerFactoryAware`
 
 ---
 
