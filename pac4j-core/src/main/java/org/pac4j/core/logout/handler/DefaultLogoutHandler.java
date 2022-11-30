@@ -1,15 +1,17 @@
 package org.pac4j.core.logout.handler;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,40 +20,45 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements LogoutHandler {
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+@ToString
+@Getter
+@Setter
+@Slf4j
+public class DefaultLogoutHandler implements LogoutHandler {
 
     private Store<String, Object> store = new GuavaStore<>(10000, 30, TimeUnit.MINUTES);
 
     private boolean destroySession;
 
+    private ProfileManagerFactory profileManagerFactory;
+
     public DefaultLogoutHandler() {}
 
-    public DefaultLogoutHandler(final Store<String, Object> store) {
+    public DefaultLogoutHandler(final Store<String, Object> store, final ProfileManagerFactory profileManagerFactory) {
         this.store = store;
+        this.profileManagerFactory = profileManagerFactory;
     }
 
     @Override
     public void recordSession(final WebContext context, final SessionStore sessionStore, final String key) {
         if (sessionStore == null) {
-            logger.error("No session store available for this web context");
+            LOGGER.error("No session store available for this web context");
         } else {
-            final var optSessionId = sessionStore.getSessionId(context, true);
+            val optSessionId = sessionStore.getSessionId(context, true);
             if (optSessionId.isEmpty()) {
-                logger.error("No session identifier retrieved although the session creation has been requested");
+                LOGGER.error("No session identifier retrieved although the session creation has been requested");
             } else {
-                final var sessionId = optSessionId.get();
-                final var optTrackableSession = sessionStore.getTrackableSession(context);
+                val sessionId = optSessionId.get();
+                val optTrackableSession = sessionStore.getTrackableSession(context);
 
                 if (optTrackableSession.isPresent()) {
-                    final var trackableSession = optTrackableSession.get();
-                    logger.debug("key: {} -> trackableSession: {}", key, trackableSession);
-                    logger.debug("sessionId: {}", sessionId);
+                    val trackableSession = optTrackableSession.get();
+                    LOGGER.debug("key: {} -> trackableSession: {}", key, trackableSession);
+                    LOGGER.debug("sessionId: {}", sessionId);
                     store.set(key, trackableSession);
                     store.set(sessionId, key);
                 } else {
-                    logger.debug("No trackable session for the current session store: {}", sessionStore);
+                    LOGGER.debug("No trackable session for the current session store: {}", sessionStore);
                 }
             }
         }
@@ -60,26 +67,26 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
     @Override
     public void destroySessionFront(final WebContext context, final SessionStore sessionStore, final String key) {
         if (sessionStore == null) {
-            logger.error("No session store available for this web context");
+            LOGGER.error("No session store available for this web context");
         } else {
-            final Optional<String> optCurrentSessionId = sessionStore.getSessionId(context, false);
+            val optCurrentSessionId = sessionStore.getSessionId(context, false);
 
             if (optCurrentSessionId.isPresent()) {
                 store.remove(key);
-                final String currentSessionId = optCurrentSessionId.get();
-                logger.debug("currentSessionId: {}", currentSessionId);
-                final var sessionToKey = (String) store.get(currentSessionId).orElse(null);
-                logger.debug("-> key: {}", key);
+                val currentSessionId = optCurrentSessionId.get();
+                LOGGER.debug("currentSessionId: {}", currentSessionId);
+                val sessionToKey = (String) store.get(currentSessionId).orElse(null);
+                LOGGER.debug("-> key: {}", key);
                 store.remove(currentSessionId);
 
                 if (CommonHelper.areEquals(key, sessionToKey)) {
                     destroy(context, sessionStore, "front");
                 } else {
-                    logger.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
+                    LOGGER.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
                         + "key is not the same as the one linked to the current session");
                 }
             } else {
-                logger.warn("no session for front channel logout => trying back channel logout");
+                LOGGER.warn("no session for front channel logout => trying back channel logout");
                 destroySessionBack(context, sessionStore, key);
             }
         }
@@ -87,45 +94,45 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     protected void destroy(final WebContext context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final var manager = getProfileManager(context, sessionStore);
+        val manager = profileManagerFactory.apply(context, sessionStore);
         manager.removeProfiles();
-        logger.debug("{} channel logout call: destroy the user profiles", channel);
+        LOGGER.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session
         if (destroySession) {
-            logger.debug("destroy the whole session");
+            LOGGER.debug("destroy the whole session");
             final var invalidated = sessionStore.destroySession(context);
             if (!invalidated) {
-                logger.error("The session has not been invalidated");
+                LOGGER.error("The session has not been invalidated");
             }
         }
     }
 
     @Override
     public void destroySessionBack(final WebContext context, final SessionStore sessionStore, final String key) {
-        final var optTrackableSession = store.get(key);
-        logger.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
+        val optTrackableSession = store.get(key);
+        LOGGER.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
         if (!optTrackableSession.isPresent()) {
-            logger.error("No trackable session found for back channel logout. Either the session store does not support to track session "
+            LOGGER.error("No trackable session found for back channel logout. Either the session store does not support to track session "
                 + "or it has expired from the store and the store settings must be updated (expired data)");
         } else {
             store.remove(key);
 
             // renew context with the original session store
             if (sessionStore == null) {
-                logger.error("No session store available for this web context");
+                LOGGER.error("No session store available for this web context");
             } else {
-                final var optNewSessionStore = sessionStore
+                val optNewSessionStore = sessionStore
                     .buildFromTrackableSession(context, optTrackableSession.get());
                 if (optNewSessionStore.isPresent()) {
-                    final var newSessionStore = optNewSessionStore.get();
-                    logger.debug("newSesionStore: {}", newSessionStore);
-                    final var sessionId = newSessionStore.getSessionId(context, true).get();
-                    logger.debug("remove sessionId: {}", sessionId);
+                    val newSessionStore = optNewSessionStore.get();
+                    LOGGER.debug("newSesionStore: {}", newSessionStore);
+                    val sessionId = newSessionStore.getSessionId(context, true).get();
+                    LOGGER.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
                     destroy(context, newSessionStore, "back");
                 } else {
-                    logger.error("The session store should be able to build a new session store from the tracked session");
+                    LOGGER.error("The session store should be able to build a new session store from the tracked session");
                 }
             }
         }
@@ -133,34 +140,13 @@ public class DefaultLogoutHandler extends ProfileManagerFactoryAware implements 
 
     @Override
     public void renewSession(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
-        final Optional optKey = store.get(oldSessionId);
-        logger.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
+        val optKey = store.get(oldSessionId);
+        LOGGER.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
         if (optKey.isPresent()) {
-            final var key = (String) optKey.get();
+            val key = (String) optKey.get();
             store.remove(key);
             store.remove(oldSessionId);
             recordSession(context, sessionStore, key);
         }
-    }
-
-    public Store<String, Object> getStore() {
-        return store;
-    }
-
-    public void setStore(final Store<String, Object> store) {
-        this.store = store;
-    }
-
-    public boolean isDestroySession() {
-        return destroySession;
-    }
-
-    public void setDestroySession(final boolean destroySession) {
-        this.destroySession = destroySession;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "store", store, "destroySession", destroySession);
     }
 }

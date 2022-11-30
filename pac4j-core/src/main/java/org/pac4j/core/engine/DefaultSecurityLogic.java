@@ -1,5 +1,9 @@
 package org.pac4j.core.engine;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.authorization.checker.AuthorizationChecker;
 import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.client.Client;
@@ -20,9 +24,8 @@ import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,11 +50,13 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Getter
+@Setter
+@Slf4j
+@ToString(callSuper = true)
 public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements SecurityLogic {
 
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSecurityLogic.class);
 
     private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 
@@ -64,9 +69,10 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
     private boolean loadProfilesFromSession = true;
 
     @Override
-    public Object perform(final WebContext context, final SessionStore sessionStore, final Config config,
-                          final SecurityGrantedAccessAdapter securityGrantedAccessAdapter, final HttpActionAdapter httpActionAdapter,
-                          final String clients, final String authorizers, final String matchers, final Object... parameters) {
+    public Object perform(final WebContext context, final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory,
+                          final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
+                          final HttpActionAdapter httpActionAdapter, final String clients, final String authorizers,
+                          final String matchers, final Object... parameters) {
 
         LOGGER.debug("=== SECURITY ===");
 
@@ -90,7 +96,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
             if (matchingChecker.matches(context, sessionStore, matchers, config.getMatchers(), currentClients)) {
 
-                final var manager = getProfileManager(context, sessionStore);
+                final var manager = profileManagerFactory.apply(context, sessionStore);
                 manager.setConfig(config);
                 var profiles = this.loadProfilesFromSession
                     ? loadProfiles(manager, context, sessionStore, currentClients)
@@ -247,51 +253,5 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      */
     protected HttpAction unauthorized(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients) {
         return HttpActionHelper.buildUnauthenticatedAction(context);
-    }
-
-    public ClientFinder getClientFinder() {
-        return clientFinder;
-    }
-
-    public void setClientFinder(final ClientFinder clientFinder) {
-        this.clientFinder = clientFinder;
-    }
-
-    public AuthorizationChecker getAuthorizationChecker() {
-        return authorizationChecker;
-    }
-
-    public void setAuthorizationChecker(final AuthorizationChecker authorizationChecker) {
-        this.authorizationChecker = authorizationChecker;
-    }
-
-    public MatchingChecker getMatchingChecker() {
-        return matchingChecker;
-    }
-
-    public void setMatchingChecker(final MatchingChecker matchingChecker) {
-        this.matchingChecker = matchingChecker;
-    }
-
-    public SavedRequestHandler getSavedRequestHandler() {
-        return savedRequestHandler;
-    }
-
-    public void setSavedRequestHandler(final SavedRequestHandler savedRequestHandler) {
-        this.savedRequestHandler = savedRequestHandler;
-    }
-
-    public void setLoadProfilesFromSession(boolean loadProfilesFromSession) {
-        this.loadProfilesFromSession = loadProfilesFromSession;
-    }
-
-    public boolean isLoadProfilesFromSession() {
-        return loadProfilesFromSession;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
-            "matchingChecker", this.matchingChecker, "errorUrl", getErrorUrl(), "savedRequestHandler", savedRequestHandler);
     }
 }

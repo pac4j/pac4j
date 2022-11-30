@@ -1,13 +1,14 @@
 package org.pac4j.core.engine;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.factory.ProfileManagerFactoryAware;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pac4j.core.util.HttpActionHelper;
 
 /**
  * <p>Abstract logic to handle exceptions:</p>
@@ -20,9 +21,10 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 3.0.0
  */
-public abstract class AbstractExceptionAwareLogic extends ProfileManagerFactoryAware {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExceptionAwareLogic.class);
+@Getter
+@Setter
+@Slf4j
+public abstract class AbstractExceptionAwareLogic {
 
     private String errorUrl;
 
@@ -38,12 +40,12 @@ public abstract class AbstractExceptionAwareLogic extends ProfileManagerFactoryA
         if (httpActionAdapter == null || context == null) {
             throw runtimeException(e);
         } else if (e instanceof HttpAction) {
-            final var action = (HttpAction) e;
+            val action = (HttpAction) e;
             LOGGER.debug("extra HTTP action required in security: {}", action.getCode());
             return httpActionAdapter.adapt(action, context);
         } else {
             if (CommonHelper.isNotBlank(errorUrl)) {
-                final HttpAction action = HttpActionHelper.buildRedirectUrlAction(context, errorUrl);
+                val action = HttpActionHelper.buildRedirectUrlAction(context, errorUrl);
                 return httpActionAdapter.adapt(action, context);
             } else {
                 throw runtimeException(e);
@@ -63,18 +65,5 @@ public abstract class AbstractExceptionAwareLogic extends ProfileManagerFactoryA
         } else {
             throw new RuntimeException(exception);
         }
-    }
-
-    public String getErrorUrl() {
-        return errorUrl;
-    }
-
-    /**
-     * Define on which error URL the user will be redirected in case of an exception.
-     *
-     * @param errorUrl the error URL
-     */
-    public void setErrorUrl(final String errorUrl) {
-        this.errorUrl = errorUrl;
     }
 }

@@ -4,6 +4,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 /**
  * Logout logic for the application and the identity provider.
@@ -19,6 +20,7 @@ public interface LogoutLogic {
      *
      * @param context the web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @param config the security configuration
      * @param httpActionAdapter the HTTP action adapter
      * @param defaultUrl the default url
@@ -28,6 +30,7 @@ public interface LogoutLogic {
      * @param centralLogout whether a central logout is required
      * @return the resulting action for logout
      */
-    Object perform(WebContext context, SessionStore sessionStore, Config config, HttpActionAdapter httpActionAdapter,
-                   String defaultUrl, String logoutUrlPattern, Boolean localLogout, Boolean destroySession, Boolean centralLogout);
+    Object perform(WebContext context, SessionStore sessionStore, ProfileManagerFactory profileManagerFactory, Config config,
+                   HttpActionAdapter httpActionAdapter, String defaultUrl, String logoutUrlPattern, Boolean localLogout,
+                   Boolean destroySession, Boolean centralLogout);
 }

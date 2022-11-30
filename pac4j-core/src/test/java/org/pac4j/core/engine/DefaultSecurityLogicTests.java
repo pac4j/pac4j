@@ -14,6 +14,7 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -68,7 +69,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, sessionStore, config, securityGrantedAccessAdapter, httpActionAdapter, clients, authorizers, matchers);
+        logic.perform(context, sessionStore, ProfileManagerFactory.DEFAULT, config, securityGrantedAccessAdapter, httpActionAdapter,
+            clients, authorizers, matchers);
     }
 
     @Test

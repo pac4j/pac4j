@@ -18,6 +18,7 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.SeeOtherAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -68,7 +69,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, sessionStore, config, httpActionAdapter, defaultUrl, renewSession, null);
+        logic.perform(context, sessionStore, ProfileManagerFactory.DEFAULT, config, httpActionAdapter, defaultUrl, renewSession, null);
         logic.setClientFinder(clientFinder);
     }
 

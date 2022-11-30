@@ -1,5 +1,8 @@
 package org.pac4j.core.engine;
 
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
@@ -8,14 +11,14 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * <p>Default logout logic:</p>
@@ -33,16 +36,17 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@ToString(callSuper = true)
+@Slf4j
 public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements LogoutLogic {
 
     public static final DefaultLogoutLogic INSTANCE = new DefaultLogoutLogic();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLogoutLogic.class);
-
     @Override
-    public Object perform(final WebContext context, final SessionStore sessionStore, final Config config,
-                          final HttpActionAdapter httpActionAdapter, final String defaultUrl, final String inputLogoutUrlPattern,
-                          final Boolean inputLocalLogout, final Boolean inputDestroySession, final Boolean inputCentralLogout) {
+    public Object perform(final WebContext context, final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory,
+                          final Config config, final HttpActionAdapter httpActionAdapter, final String defaultUrl,
+                          final String inputLogoutUrlPattern, final Boolean inputLocalLogout, final Boolean inputDestroySession,
+                          final Boolean inputCentralLogout) {
 
         LOGGER.debug("=== LOGOUT ===");
 
@@ -56,25 +60,25 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             } else {
                 logoutUrlPattern = inputLogoutUrlPattern;
             }
-            final var localLogout = inputLocalLogout == null || inputLocalLogout;
-            final var destroySession = inputDestroySession != null && inputDestroySession;
-            final var centralLogout = inputCentralLogout != null && inputCentralLogout;
+            val localLogout = inputLocalLogout == null || inputLocalLogout;
+            val destroySession = inputDestroySession != null && inputDestroySession;
+            val centralLogout = inputCentralLogout != null && inputCentralLogout;
 
             // checks
             assertNotNull("context", context);
             assertNotNull("config", config);
             assertNotNull("httpActionAdapter", httpActionAdapter);
             assertNotBlank(Pac4jConstants.LOGOUT_URL_PATTERN, logoutUrlPattern);
-            final var configClients = config.getClients();
+            val configClients = config.getClients();
             assertNotNull("configClients", configClients);
 
             // logic
-            final var manager = getProfileManager(context, sessionStore);
+            val manager = profileManagerFactory.apply(context, sessionStore);
             manager.setConfig(config);
-            final var profiles = manager.getProfiles();
+            val profiles = manager.getProfiles();
 
             // compute redirection URL
-            final var url = context.getRequestParameter(Pac4jConstants.URL);
+            val url = context.getRequestParameter(Pac4jConstants.URL);
             var redirectUrl = defaultUrl;
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
@@ -105,11 +109,11 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             // central logout
             if (centralLogout) {
                 LOGGER.debug("Performing central logout");
-                for (final var profile : profiles) {
+                for (val profile : profiles) {
                     LOGGER.debug("Profile: {}", profile);
-                    final var clientName = profile.getClientName();
+                    val clientName = profile.getClientName();
                     if (clientName != null) {
-                        final var client = configClients.findClient(clientName);
+                        val client = configClients.findClient(clientName);
                         if (client.isPresent()) {
                             String targetUrl = null;
                             if (redirectUrl != null) {
@@ -119,7 +123,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                                     targetUrl = redirectUrl;
                                 }
                             }
-                            final var logoutAction =
+                            val logoutAction =
                                 client.get().getLogoutAction(context, sessionStore, profile, targetUrl);
                             LOGGER.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {
@@ -141,10 +145,5 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
     protected String enhanceRedirectUrl(final Config config, final Client client, final WebContext context,
                                         final SessionStore sessionStore, final String redirectUrl) {
         return redirectUrl;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "errorUrl", getErrorUrl());
     }
 }

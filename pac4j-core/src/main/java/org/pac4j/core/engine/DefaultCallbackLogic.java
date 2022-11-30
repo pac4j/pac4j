@@ -1,5 +1,10 @@
 package org.pac4j.core.engine;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
@@ -11,9 +16,8 @@ import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -25,20 +29,22 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Slf4j
 public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements CallbackLogic {
 
     public static final DefaultCallbackLogic INSTANCE = new DefaultCallbackLogic();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCallbackLogic.class);
 
     private ClientFinder clientFinder = new DefaultCallbackClientFinder();
 
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
-    public Object perform(final WebContext webContext, final SessionStore sessionStore, final Config config,
-                          final HttpActionAdapter httpActionAdapter, final String inputDefaultUrl, final Boolean inputRenewSession,
-                          final String defaultClient) {
+    public Object perform(final WebContext webContext, final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory,
+                          final Config config, final HttpActionAdapter httpActionAdapter, final String inputDefaultUrl,
+                          final Boolean inputRenewSession, final String defaultClient) {
 
         LOGGER.debug("=== CALLBACK ===");
 
@@ -52,7 +58,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             } else {
                 defaultUrl = inputDefaultUrl;
             }
-            final var renewSession = inputRenewSession == null || inputRenewSession;
+            val renewSession = inputRenewSession == null || inputRenewSession;
 
             // checks
             assertNotNull("clientFinder", clientFinder);
@@ -60,29 +66,30 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("config", config);
             assertNotNull("httpActionAdapter", httpActionAdapter);
             assertNotBlank(Pac4jConstants.DEFAULT_URL, defaultUrl);
-            final var clients = config.getClients();
+            val clients = config.getClients();
             assertNotNull("clients", clients);
 
             // logic
-            final var foundClients = clientFinder.find(clients, webContext, defaultClient);
+            val foundClients = clientFinder.find(clients, webContext, defaultClient);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
                     + " or ensure that your configuration defaults to one indirect client");
-            final var foundClient = foundClients.get(0);
+            val foundClient = foundClients.get(0);
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            final var credentials = foundClient.getCredentials(webContext, sessionStore);
+            val credentials = foundClient.getCredentials(webContext, sessionStore);
             LOGGER.debug("credentials: {}", credentials);
 
-            final var optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);
+            val optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);
             LOGGER.debug("optProfile: {}", optProfile);
             if (optProfile.isPresent()) {
-                final var profile = optProfile.get();
-                final boolean saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(webContext, profile);
-                final var multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
+                val profile = optProfile.get();
+                val saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(webContext, profile);
+                val multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
                 LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                saveUserProfile(webContext, sessionStore, config, profile, saveProfileInSession, multiProfile, renewSession);
+                saveUserProfile(webContext, sessionStore, profileManagerFactory, config,
+                                profile, saveProfileInSession, multiProfile, renewSession);
             }
 
             action = redirectToOriginallyRequestedUrl(webContext, sessionStore, defaultUrl);
@@ -94,10 +101,10 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
         return httpActionAdapter.adapt(action, webContext);
     }
 
-    protected void saveUserProfile(final WebContext context, final SessionStore sessionStore, final Config config,
-                                   final UserProfile profile, final boolean saveProfileInSession, final boolean multiProfile,
-                                   final boolean renewSession) {
-        final var manager = getProfileManager(context, sessionStore);
+    protected void saveUserProfile(final WebContext context, final SessionStore sessionStore,
+                                   final ProfileManagerFactory profileManagerFactory, final Config config, final UserProfile profile,
+                                   final boolean saveProfileInSession, final boolean multiProfile, final boolean renewSession) {
+        val manager = profileManagerFactory.apply(context, sessionStore);
         if (profile != null) {
             manager.save(saveProfileInSession, profile, multiProfile);
             if (renewSession) {
@@ -107,24 +114,24 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     }
 
     protected void renewSession(final WebContext context, final SessionStore sessionStore, final Config config) {
-        final var optOldSessionId = sessionStore.getSessionId(context, true);
+        val optOldSessionId = sessionStore.getSessionId(context, true);
         if (optOldSessionId.isEmpty()) {
             LOGGER.error("No old session identifier retrieved although the session creation has been requested");
         } else {
-            final var oldSessionId = optOldSessionId.get();
-            final var renewed = sessionStore.renewSession(context);
+            val oldSessionId = optOldSessionId.get();
+            val renewed = sessionStore.renewSession(context);
             if (renewed) {
-                final var optNewSessionId = sessionStore.getSessionId(context, true);
+                val optNewSessionId = sessionStore.getSessionId(context, true);
                 if (optNewSessionId.isEmpty()) {
                     LOGGER.error("No new session identifier retrieved although the session creation has been requested");
                 } else {
-                    final var newSessionId = optNewSessionId.get();
+                    val newSessionId = optNewSessionId.get();
                     LOGGER.debug("Renewing session: {} -> {}", oldSessionId, newSessionId);
-                    final var clients = config.getClients();
+                    val clients = config.getClients();
                     if (clients != null) {
-                        final var clientList = clients.getClients();
+                        val clientList = clients.getClients();
                         for (final var client : clientList) {
-                            final var baseClient = (BaseClient) client;
+                            val baseClient = (BaseClient) client;
                             baseClient.notifySessionRenewal(oldSessionId, context, sessionStore);
                         }
                     }
@@ -138,27 +145,5 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     protected HttpAction redirectToOriginallyRequestedUrl(final WebContext context, final SessionStore sessionStore,
                                                           final String defaultUrl) {
         return savedRequestHandler.restore(context, sessionStore, defaultUrl);
-    }
-
-    public ClientFinder getClientFinder() {
-        return clientFinder;
-    }
-
-    public void setClientFinder(final ClientFinder clientFinder) {
-        this.clientFinder = clientFinder;
-    }
-
-    public SavedRequestHandler getSavedRequestHandler() {
-        return savedRequestHandler;
-    }
-
-    public void setSavedRequestHandler(final SavedRequestHandler savedRequestHandler) {
-        this.savedRequestHandler = savedRequestHandler;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "clientFinder", clientFinder, "errorUrl", getErrorUrl(),
-            "savedRequestHandler", savedRequestHandler);
     }
 }
