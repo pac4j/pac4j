@@ -1,11 +1,15 @@
 package org.pac4j.cas.client.rest;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.credentials.extractor.FormExtractor;
+import org.pac4j.core.util.Pac4jConstants;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * Direct client which receives credentials as form parameters and validates them via the CAS REST API.
@@ -13,6 +17,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class CasRestFormClient extends AbstractCasRestClient {
 
     private String usernameParameter = Pac4jConstants.USERNAME;
@@ -35,29 +42,5 @@ public class CasRestFormClient extends AbstractCasRestClient {
 
         defaultCredentialsExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter));
         defaultAuthenticator(new CasRestAuthenticator(this.configuration));
-    }
-
-    public String getUsernameParameter() {
-        return usernameParameter;
-    }
-
-    public void setUsernameParameter(final String usernameParameter) {
-        this.usernameParameter = usernameParameter;
-    }
-
-    public String getPasswordParameter() {
-        return passwordParameter;
-    }
-
-    public void setPasswordParameter(final String passwordParameter) {
-        this.passwordParameter = passwordParameter;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
-            "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter);
     }
 }

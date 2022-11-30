@@ -1,18 +1,19 @@
 package org.pac4j.cas.client;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.Pac4jConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
-import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 /**
  * <p>This class is the CAS proxy receptor.</p>
@@ -26,13 +27,14 @@ import static org.pac4j.core.util.CommonHelper.toNiceString;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public final class CasProxyReceptor extends IndirectClient {
 
     public static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";
 
     public static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
-
-    private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
 
     private Store<String, String> store = new GuavaStore<>(1000, 1, TimeUnit.MINUTES);
 
@@ -43,9 +45,9 @@ public final class CasProxyReceptor extends IndirectClient {
         defaultRedirectionActionBuilder((ctx, store) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         defaultCredentialsExtractor((ctx, store) -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
-            final var proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+            val proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
-            final var proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+            val proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
             if (!proxyGrantingTicket.isPresent() || !proxyGrantingTicketIou.isPresent()) {
@@ -59,18 +61,5 @@ public final class CasProxyReceptor extends IndirectClient {
             throw new OkAction("<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         });
         defaultAuthenticator((credentials, ctx, store) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
-    }
-
-    public Store<String, String> getStore() {
-        return store;
-    }
-
-    public void setStore(final Store<String, String> store) {
-        this.store = store;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "callbackUrl", this.callbackUrl, "store", this.store);
     }
 }

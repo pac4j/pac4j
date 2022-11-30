@@ -1,5 +1,6 @@
 package org.pac4j.cas.client.rest;
 
+import lombok.val;
 import org.apereo.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
@@ -32,7 +33,7 @@ public final class CasRestClientIT implements TestsConstants {
     private final static String USER = "jleleu";
 
     private CasConfiguration getConfig() {
-        final var config = new CasConfiguration();
+        val config = new CasConfiguration();
         config.setPrefixUrl(CAS_PREFIX_URL);
         return config;
     }
@@ -48,22 +49,22 @@ public final class CasRestClientIT implements TestsConstants {
     }
 
     private void internalTestRestForm(final Authenticator authenticator) {
-        final var client = new CasRestFormClient();
+        val client = new CasRestFormClient();
         client.setConfiguration(getConfig());
         client.setAuthenticator(authenticator);
 
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.addRequestParameter(client.getUsernameParameter(), USER);
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
-        final var credentials =
+        val credentials =
             (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final var profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final var casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
-        final var casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
+        val casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        val casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
         assertNotNull(casProfile);
         assertEquals(USER, casProfile.getId());
         assertTrue(casProfile.getAttributes().size() > 0);
@@ -76,24 +77,24 @@ public final class CasRestClientIT implements TestsConstants {
 
     @Test
     public void testRestBasicWithCas20TicketValidator() {
-        final var config = getConfig();
+        val config = getConfig();
         config.setDefaultTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
         internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 0);
     }
 
     private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) {
-        final var context = MockWebContext.create();
-        final var token = USER + ":" + USER;
+        val context = MockWebContext.create();
+        val token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
-        final var credentials =
+        val credentials =
             (UsernamePasswordCredentials) client.getCredentials(context, new MockSessionStore()).get();
-        final var profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CasRestProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final var casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
-        final var casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
+        val casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        val casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
         assertNotNull(casProfile);
         assertEquals(USER, casProfile.getId());
         assertEquals(nbAttributes, casProfile.getAttributes().size());

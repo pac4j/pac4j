@@ -1,5 +1,6 @@
 package org.pac4j.cas.redirect;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
@@ -10,7 +11,8 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link CasRedirectionActionBuilder}.
@@ -22,8 +24,8 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
 
     @Test
     public void testRedirect() {
-        final var builder = newBuilder(new CasConfiguration());
-        final var action = builder.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val builder = newBuilder(new CasConfiguration());
+        val action = builder.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
             ((FoundAction) action).getLocation());
@@ -31,30 +33,30 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
 
     @Test
     public void testRedirectGatewayAttribute() {
-        final var builder = newBuilder(new CasConfiguration());
-        final var context = MockWebContext.create();
+        val builder = newBuilder(new CasConfiguration());
+        val context = MockWebContext.create();
         context.setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
-        final var action = builder.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = builder.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action instanceof FoundAction);
         assertTrue(((FoundAction) action).getLocation().contains("gateway=true"));
     }
 
     @Test
     public void testRedirectRenewAttribute() {
-        final var builder = newBuilder(new CasConfiguration());
-        final var context = MockWebContext.create();
+        val builder = newBuilder(new CasConfiguration());
+        val context = MockWebContext.create();
         context.setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
-        final var action = builder.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = builder.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action instanceof FoundAction);
         assertTrue(((FoundAction) action).getLocation().contains("renew=true"));
     }
 
     @Test
     public void testRedirectWithMethod() {
-        final var config = new CasConfiguration();
+        val config = new CasConfiguration();
         config.setMethod("post");
-        final var builder = newBuilder(config);
-        final var action = builder.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val builder = newBuilder(config);
+        val action = builder.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?service=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient&method=post",
             ((FoundAction) action).getLocation());
@@ -62,10 +64,10 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
 
     @Test
     public void testRedirectForSAMLProtocol() {
-        final var config = new CasConfiguration();
+        val config = new CasConfiguration();
         config.setProtocol(CasProtocol.SAML);
-        final var builder = newBuilder(config);
-        final var action = builder.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val builder = newBuilder(config);
+        val action = builder.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL + "?TARGET=http%3A%2F%2Fwww.pac4j.org%2Ftest.html%3Fclient_name%3DCasClient",
             ((FoundAction) action).getLocation());
@@ -73,7 +75,7 @@ public final class CasRedirectionActionBuilderTest implements TestsConstants {
 
     private CasRedirectionActionBuilder newBuilder(final CasConfiguration config) {
         config.setLoginUrl(LOGIN_URL);
-        final var client = new CasClient(config);
+        val client = new CasClient(config);
         client.setCallbackUrl(PAC4J_URL);
         client.init();
         return (CasRedirectionActionBuilder) client.getRedirectionActionBuilder();

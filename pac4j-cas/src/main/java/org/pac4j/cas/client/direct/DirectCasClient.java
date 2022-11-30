@@ -1,5 +1,9 @@
 package org.pac4j.cas.client.direct;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
@@ -41,6 +45,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
 public class DirectCasClient extends DirectClient {
 
     private CasConfiguration configuration;
@@ -71,12 +78,12 @@ public class DirectCasClient extends DirectClient {
         init();
         try {
             var callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
-            final var loginUrl = configuration.computeFinalLoginUrl(context);
+            val loginUrl = configuration.computeFinalLoginUrl(context);
 
-            final var credentials = getCredentialsExtractor().extract(context, sessionStore);
+            val credentials = getCredentialsExtractor().extract(context, sessionStore);
             if (!credentials.isPresent()) {
                 // redirect to the login page
-                final var redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
+                val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                         callbackUrl, configuration.isRenew(), false, null);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
                 throw HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl);
@@ -85,7 +92,7 @@ public class DirectCasClient extends DirectClient {
             // clean url from ticket parameter
             callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            final var casAuthenticator =
+            val casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
             casAuthenticator.validate(credentials.get(), context, sessionStore);
@@ -101,37 +108,5 @@ public class DirectCasClient extends DirectClient {
     protected void defaultAuthenticator(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "
             + "automatically created for each request");
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final CasConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
-    }
-
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
-    }
-
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration, "urlResolver", this.urlResolver,
-            "callbackUrlResolver", this.callbackUrlResolver);
     }
 }

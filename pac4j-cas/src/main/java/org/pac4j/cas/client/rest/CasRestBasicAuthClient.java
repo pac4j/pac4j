@@ -1,11 +1,15 @@
 package org.pac4j.cas.client.rest;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * Direct client which receives credentials as a basic auth and validates them via the CAS REST API.
@@ -13,6 +17,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
     private String headerName = HttpConstants.AUTHORIZATION_HEADER;
@@ -36,29 +43,5 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
         defaultCredentialsExtractor(new BasicAuthExtractor(this.headerName, this.prefixHeader));
         defaultAuthenticator(new CasRestAuthenticator(this.configuration));
-    }
-
-    public String getHeaderName() {
-        return headerName;
-    }
-
-    public void setHeaderName(final String headerName) {
-        this.headerName = headerName;
-    }
-
-    public String getPrefixHeader() {
-        return prefixHeader;
-    }
-
-    public void setPrefixHeader(final String prefixHeader) {
-        this.prefixHeader = prefixHeader;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
-            "headerName", this.headerName, "prefixHeader", this.prefixHeader);
     }
 }

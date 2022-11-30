@@ -1,5 +1,6 @@
 package org.pac4j.cas.client;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.MockWebContext;
@@ -44,17 +45,17 @@ public final class CasClientTests implements TestsConstants {
 
     @Test
     public void testMissingCasUrls() {
-        final var casClient = new CasClient();
+        val casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(casClient.getConfiguration(), "loginUrl, prefixUrl and restUrl cannot be all blank");
     }
 
     @Test
     public void testMissingSlashOnPrefixUrl() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setPrefixUrl(PREFIX_URL_WITHOUT_SLASH);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         configuration.init();
         assertEquals(PREFIX_URL, configuration.getPrefixUrl());
@@ -62,9 +63,9 @@ public final class CasClientTests implements TestsConstants {
 
     @Test
     public void testInitPrefixUrl() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         assertEquals(null, configuration.getPrefixUrl());
         configuration.init();
@@ -73,9 +74,9 @@ public final class CasClientTests implements TestsConstants {
 
     @Test
     public void testInitLoginUrl() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setPrefixUrl(PREFIX_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         assertEquals(null, configuration.getLoginUrl());
         configuration.init();
@@ -84,10 +85,10 @@ public final class CasClientTests implements TestsConstants {
 
     @Test
     public void testCallbackUrlResolver() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setPrefixUrl(CAS);
         configuration.setLoginUrl(CAS + LOGIN);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CASBACK);
         casClient.setUrlResolver((url, context) -> HOST + url);
         casClient.setCallbackUrlResolver(new CallbackUrlResolver() {
@@ -108,113 +109,113 @@ public final class CasClientTests implements TestsConstants {
 
     @Test
     public void testRenewMissing() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
-        final var context = MockWebContext.create();
-        final var action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val context = MockWebContext.create();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertFalse(action.getLocation().indexOf("renew=true") >= 0);
     }
 
     @Test
     public void testRenew() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         configuration.setRenew(true);
-        final var context = MockWebContext.create();
-        final var action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val context = MockWebContext.create();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action.getLocation().indexOf("renew=true") >= 0);
     }
 
     @Test
     public void testGatewayMissing() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
-        final var context = MockWebContext.create();
-        final var action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val context = MockWebContext.create();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertFalse(action.getLocation().indexOf("gateway=true") >= 0);
     }
 
     @Test
     public void testGatewayOK() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         configuration.setGateway(true);
-        final var action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
         assertTrue(action.getLocation().indexOf("gateway=true") >= 0);
-        final var credentials = casClient.getCredentials(context, new MockSessionStore());
+        val credentials = casClient.getCredentials(context, new MockSessionStore());
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testBackLogout() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init();
-        final var context = MockWebContext.create()
+        val context = MockWebContext.create()
             .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod(HTTP_METHOD.POST.name());
-        final var action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(204, action.getCode());
     }
 
     private String deflateAndBase64(final String data) {
-        final var deflater = new Deflater();
+        val deflater = new Deflater();
         deflater.setInput(data.getBytes(StandardCharsets.UTF_8));
         deflater.finish();
-        final var buffer = new byte[data.length()];
-        final var resultSize = deflater.deflate(buffer);
-        final var output = new byte[resultSize];
+        val buffer = new byte[data.length()];
+        val resultSize = deflater.deflate(buffer);
+        val output = new byte[resultSize];
         System.arraycopy(buffer, 0, output, 0, resultSize);
         return Base64.getEncoder().encodeToString(output);
     }
 
     @Test
     public void testFrontLogout() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init();
-        final var context = MockWebContext.create()
+        val context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod(HTTP_METHOD.GET.name());
-        final var action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(200, action.getCode());
         assertEquals(Pac4jConstants.EMPTY_STRING, ((WithContentAction) action).getContent());
     }
 
     @Test
     public void testFrontLogoutWithRelayState() {
-        final var configuration = new CasConfiguration();
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init();
-        final var context = MockWebContext.create()
+        val context = MockWebContext.create()
                 .addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HTTP_METHOD.GET.name());
-        final var action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
+        val action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context, new MockSessionStore()));
         assertEquals(FOUND, action.getCode());
     }
 
     @Test
     public void testInitUrlWithLoginString() {
-        final var testCasLoginUrl = "https://login.foo.bar/login/login";
-        final var testCasPrefixUrl = "https://login.foo.bar/login/";
-        final var configuration = new CasConfiguration();
+        val testCasLoginUrl = "https://login.foo.bar/login/login";
+        val testCasPrefixUrl = "https://login.foo.bar/login/";
+        val configuration = new CasConfiguration();
         configuration.setLoginUrl(testCasLoginUrl);
-        final var casClient = new CasClient(configuration);
+        val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         assertEquals(null, configuration.getPrefixUrl());
         configuration.init();

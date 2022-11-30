@@ -1,5 +1,9 @@
 package org.pac4j.cas.client.direct;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
@@ -28,6 +32,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class DirectCasProxyClient extends DirectClient {
 
     private CasConfiguration configuration;
@@ -50,52 +57,12 @@ public class DirectCasProxyClient extends DirectClient {
         assertNotBlank("serviceUrl", this.serviceUrl);
         assertNotNull("configuration", this.configuration);
         // must be a CAS proxy protocol
-        final var protocol = configuration.getProtocol();
+        val protocol = configuration.getProtocol();
         assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY,
             "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, this.serviceUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final CasConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public String getServiceUrl() {
-        return serviceUrl;
-    }
-
-    public void setServiceUrl(final String serviceUrl) {
-        this.serviceUrl = serviceUrl;
-    }
-
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
-    }
-
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
-    }
-
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "authorizationGenerators", getAuthorizationGenerators(), "configuration", this.configuration,
-            "callbackUrlResolver", callbackUrlResolver, "serviceUrl", serviceUrl, "urlResolver", this.urlResolver);
     }
 }

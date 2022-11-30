@@ -1,20 +1,23 @@
 package org.pac4j.cas.client;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.http.callback.CallbackUrlResolver;
-import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.logout.handler.DefaultLogoutHandler;
+import org.pac4j.core.logout.handler.LogoutHandler;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * <p>This class is the client to authenticate users on a CAS server for a web application in a stateful way: when trying to access a
@@ -33,8 +36,11 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@ToString(callSuper = true)
 public class CasClient extends IndirectClient {
 
+    @Getter
+    @Setter
     private CasConfiguration configuration = new CasConfiguration();
 
     public CasClient() { }
@@ -64,23 +70,5 @@ public class CasClient extends IndirectClient {
     @Override
     public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
         configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
-    }
-
-    public CasConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final CasConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-            "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
-            "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "logoutActionBuilder", getLogoutActionBuilder(), "authorizationGenerators", getAuthorizationGenerators(),
-            "configuration", this.configuration, "urlResolver", this.urlResolver);
     }
 }

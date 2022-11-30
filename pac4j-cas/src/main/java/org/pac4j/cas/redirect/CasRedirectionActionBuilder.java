@@ -1,5 +1,6 @@
 package org.pac4j.cas.redirect;
 
+import lombok.val;
 import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
@@ -39,13 +40,13 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
         var computeLoginUrl = configuration.computeFinalLoginUrl(context);
-        final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
+        val computedCallbackUrl = client.computeFinalCallbackUrl(context);
 
-        final var renew = configuration.isRenew()
+        val renew = configuration.isRenew()
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent();
-        final var gateway = configuration.isGateway()
+        val gateway = configuration.isGateway()
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
-        final var redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
+        val redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
         logger.debug("redirectionUrl: {}", redirectionUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl));

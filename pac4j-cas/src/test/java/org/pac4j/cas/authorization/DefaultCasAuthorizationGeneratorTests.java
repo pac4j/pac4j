@@ -1,15 +1,14 @@
 package org.pac4j.cas.authorization;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the {@link DefaultCasAuthorizationGenerator}.
@@ -21,9 +20,9 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testNoAttribute() {
-        final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
-        final Map<String, Object> attributes = new HashMap<>();
-        final var profile = new CasProfile();
+        val generator = new DefaultCasAuthorizationGenerator();
+        val attributes = new HashMap<String, Object>();
+        val profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
@@ -31,10 +30,10 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testBadAttributeValue() {
-        final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
-        final Map<String, Object> attributes = new HashMap<>();
+        val generator = new DefaultCasAuthorizationGenerator();
+        val attributes = new HashMap<String, Object>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
-        final var profile = new CasProfile();
+        val profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
@@ -42,10 +41,10 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testIsNotRemembered() {
-        final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
-        final Map<String, Object> attributes = new HashMap<>();
+        val generator = new DefaultCasAuthorizationGenerator();
+        val attributes = new HashMap<String, Object>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
-        final var profile = new CasProfile();
+        val profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(false, profile.isRemembered());
@@ -53,10 +52,10 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
 
     @Test
     public void testIsRemembered() {
-        final AuthorizationGenerator generator = new DefaultCasAuthorizationGenerator();
-        final Map<String, Object> attributes = new HashMap<>();
+        val generator = new DefaultCasAuthorizationGenerator();
+        val attributes = new HashMap<String, Object>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
-        final var profile = new CasProfile();
+        val profile = new CasProfile();
         profile.build(ID, attributes);
         generator.generate(null, new MockSessionStore(), profile);
         assertEquals(true, profile.isRemembered());

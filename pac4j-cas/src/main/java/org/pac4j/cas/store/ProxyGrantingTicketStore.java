@@ -1,8 +1,9 @@
 package org.pac4j.cas.store;
 
+import lombok.Getter;
+import lombok.ToString;
 import org.apereo.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.pac4j.core.store.Store;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * Apereo CAS client {@link ProxyGrantingTicketStorage} wrapper of a pac4j {@link Store}.
@@ -10,8 +11,10 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@ToString
 public class ProxyGrantingTicketStore implements ProxyGrantingTicketStorage {
 
+    @Getter
     private final Store<String, String> store;
 
     public ProxyGrantingTicketStore(final Store<String, String> store) {
@@ -31,14 +34,5 @@ public class ProxyGrantingTicketStore implements ProxyGrantingTicketStorage {
     @Override
     public void cleanUp() {
         // never called
-    }
-
-    public Store<String, String> getStore() {
-        return store;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "store", store);
     }
 }
