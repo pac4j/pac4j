@@ -13,6 +13,7 @@ title: Release notes&#58;
 - Renamed the `pac4j-springbootv3` module as `pac4j-springboot`
 - Removed deprecated concepts and components
 - `Authenticator` now returns an `Optional<Credentials>`
+- Usage of Lombok
 
 ---
 
