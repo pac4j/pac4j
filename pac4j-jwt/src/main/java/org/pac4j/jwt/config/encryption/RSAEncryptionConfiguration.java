@@ -6,6 +6,9 @@ import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jose.JWEEncrypter;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.util.JWKHelper;
@@ -20,6 +23,8 @@ import java.security.interfaces.RSAPublicKey;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
 public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration {
 
     private RSAPublicKey publicKey;
@@ -76,30 +81,9 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
         this.publicKey = (RSAPublicKey) keyPair.getPublic();
     }
 
-    public RSAPublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(final RSAPublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public RSAPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(final RSAPrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
     public void setKeysFromJwk(final String json) {
-        final var pair = JWKHelper.buildRSAKeyPairFromJwk(json);
+        val pair = JWKHelper.buildRSAKeyPairFromJwk(json);
         this.publicKey = (RSAPublicKey) pair.getPublic();
         this.privateKey = (RSAPrivateKey) pair.getPrivate();
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm, "method", method);
     }
 }

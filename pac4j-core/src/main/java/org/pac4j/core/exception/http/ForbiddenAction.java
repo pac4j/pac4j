@@ -1,7 +1,9 @@
 package org.pac4j.core.exception.http;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
 /**
@@ -10,6 +12,9 @@ import org.pac4j.core.util.Pac4jConstants;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class ForbiddenAction extends HttpAction implements WithContentAction {
 
     private static final long serialVersionUID = 6661068865264199225L;
@@ -18,19 +23,5 @@ public class ForbiddenAction extends HttpAction implements WithContentAction {
 
     public ForbiddenAction() {
         super(HttpConstants.FORBIDDEN);
-    }
-
-    @Override
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(final String content) {
-        this.content = content;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "content", content);
     }
 }

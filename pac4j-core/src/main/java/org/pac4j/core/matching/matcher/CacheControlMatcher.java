@@ -2,7 +2,6 @@ package org.pac4j.core.matching.matcher;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * Cache control header matcher.
@@ -28,10 +27,5 @@ public class CacheControlMatcher implements Matcher {
             context.setResponseHeader("Expires", "0");
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass());
     }
 }

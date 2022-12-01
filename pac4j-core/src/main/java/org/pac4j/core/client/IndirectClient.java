@@ -1,5 +1,9 @@
 package org.pac4j.core.client;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -21,7 +25,8 @@ import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * Indirect client: the requested protected URL is saved, the user is redirected to the identity provider for login and
@@ -30,6 +35,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Setter
+@Getter
+@ToString(callSuper = true)
 public abstract class IndirectClient extends BaseClient {
 
     public static final String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
@@ -95,13 +103,13 @@ public abstract class IndirectClient extends BaseClient {
         init();
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context, sessionStore)) {
-            final var httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore, redirectionActionBuilder);
+            val httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore, redirectionActionBuilder);
             logger.debug("AJAX request detected -> returning " + httpAction + " for " + context.getFullRequestURL());
             cleanRequestedUrl(context, sessionStore);
             throw httpAction;
         }
         // authentication has already been tried -> unauthorized
-        final var attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        val attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (attemptedAuth.isPresent() && !Pac4jConstants.EMPTY_STRING.equals(attemptedAuth.get())) {
             logger.debug("authentication already attempted -> 401");
             cleanAttemptedAuthentication(context, sessionStore);
@@ -144,7 +152,7 @@ public abstract class IndirectClient extends BaseClient {
     public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore,
                                                       final ProfileManagerFactory profileManagerFactory) {
         init();
-        final var optCredentials = retrieveCredentials(context, sessionStore, profileManagerFactory);
+        val optCredentials = retrieveCredentials(context, sessionStore, profileManagerFactory);
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");
@@ -167,62 +175,16 @@ public abstract class IndirectClient extends BaseClient {
         return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
     }
 
-    public void setCallbackUrl(final String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-    public String getCallbackUrl() { return this.callbackUrl; }
-
-    public UrlResolver getUrlResolver() {
-        return urlResolver;
-    }
-
-    public void setUrlResolver(final UrlResolver urlResolver) {
-        this.urlResolver = urlResolver;
-    }
-
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
-    }
-
-    public AjaxRequestResolver getAjaxRequestResolver() {
-        return ajaxRequestResolver;
-    }
-
-    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
-        this.ajaxRequestResolver = ajaxRequestResolver;
-    }
-
-    public RedirectionActionBuilder getRedirectionActionBuilder() {
-        return redirectionActionBuilder;
-    }
-
     protected void defaultRedirectionActionBuilder(final RedirectionActionBuilder redirectActionBuilder) {
         if (this.redirectionActionBuilder == null) {
             this.redirectionActionBuilder = redirectActionBuilder;
         }
     }
 
-    public LogoutActionBuilder getLogoutActionBuilder() {
-        return logoutActionBuilder;
-    }
-
     protected void defaultLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;
         }
-    }
-
-    public void setRedirectionActionBuilder(final RedirectionActionBuilder redirectionActionBuilder) {
-        this.redirectionActionBuilder = redirectionActionBuilder;
-    }
-
-    public void setLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
-        this.logoutActionBuilder = logoutActionBuilder;
     }
 
     public String getStateSessionAttributeName() {
@@ -235,23 +197,5 @@ public abstract class IndirectClient extends BaseClient {
 
     public String getCodeVerifierSessionAttributeName() {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
-    }
-
-    public boolean isCheckAuthenticationAttempt() {
-        return checkAuthenticationAttempt;
-    }
-
-    public void setCheckAuthenticationAttempt(final boolean checkAuthenticationAttempt) {
-        this.checkAuthenticationAttempt = checkAuthenticationAttempt;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "urlResolver", this.urlResolver, "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver",
-                this.ajaxRequestResolver, "redirectionActionBuilder", this.redirectionActionBuilder, "credentialsExtractor",
-                getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-                "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators(),
-                "checkAuthenticationAttempt", checkAuthenticationAttempt);
     }
 }

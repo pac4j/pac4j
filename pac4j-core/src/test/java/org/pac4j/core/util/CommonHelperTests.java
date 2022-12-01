@@ -27,10 +27,6 @@ public final class CommonHelperTests {
 
     private static final String ENCODED_VALUE = "va%2Bl%2Bue";
 
-    private static final Class<?> CLAZZ = String.class;
-
-    private static final String CLASS_NAME = String.class.getSimpleName();
-
     @Test
     public void testIsNotBlankNull() {
         assertFalse(CommonHelper.isNotBlank(null));
@@ -106,22 +102,6 @@ public final class CommonHelperTests {
     public void testAddParameterWithoutParameter() {
         assertEquals(URL_WITHOUT_PARAMETER + "?" + NAME + "=" + ENCODED_VALUE,
                 CommonHelper.addParameter(URL_WITHOUT_PARAMETER, NAME, VALUE));
-    }
-
-    @Test
-    public void testToNiceStringNoParameter() {
-        assertEquals("#" + CLASS_NAME + "# |", CommonHelper.toNiceString(CLAZZ));
-    }
-
-    @Test
-    public void testToNiceStringWithParameter() {
-        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " |", CommonHelper.toNiceString(CLAZZ, NAME, VALUE));
-    }
-
-    @Test
-    public void testToNiceStringWithParameters() {
-        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " | " + NAME + ": " + VALUE + " |",
-                CommonHelper.toNiceString(CLAZZ, NAME, VALUE, NAME, VALUE));
     }
 
     @Test

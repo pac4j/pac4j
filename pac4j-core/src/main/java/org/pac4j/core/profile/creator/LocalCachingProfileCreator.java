@@ -1,15 +1,17 @@
 package org.pac4j.core.profile.creator;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -22,9 +24,11 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome LELEU
  * @since 5.7.0
  */
+@Getter
+@Setter
+@ToString
+@Slf4j
 public class LocalCachingProfileCreator extends InitializableObject implements ProfileCreator {
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private ProfileCreator delegate;
     private int cacheSize;
@@ -52,17 +56,17 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
     public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        var optProfile = this.store.get(credentials);
+        val optProfile = this.store.get(credentials);
         if (optProfile.isEmpty()) {
-            logger.debug("No cached credentials found. Delegating profile creation to {}...", delegate);
-            final Optional<UserProfile> profile = delegate.create(credentials, context, sessionStore);
+            LOGGER.debug("No cached credentials found. Delegating profile creation to {}...", delegate);
+            val profile = delegate.create(credentials, context, sessionStore);
             if (profile.isPresent()) {
-                logger.debug("Caching credential. Using profile {}...", profile.get());
+                LOGGER.debug("Caching credential. Using profile {}...", profile.get());
                 store.set(credentials, profile.get());
             }
             return profile;
         } else {
-            logger.debug("Found cached credential. Using cached profile {}...", optProfile.get());
+            LOGGER.debug("Found cached credential. Using cached profile {}...", optProfile.get());
             return optProfile;
         }
     }
@@ -73,8 +77,8 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
             this.store = new GuavaStore<>(cacheSize, timeout, timeUnit);
         }
 
-        if (delegate instanceof InitializableObject) {
-            ((InitializableObject) delegate).init(forceReinit);
+        if (delegate instanceof InitializableObject initializableObject) {
+            initializableObject.init(forceReinit);
         }
     }
 
@@ -84,50 +88,5 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
 
     public boolean isCached(final Credentials credentials) {
         return this.store.get(credentials).isPresent();
-    }
-
-    public ProfileCreator getDelegate() {
-        return delegate;
-    }
-
-    public void setDelegate(final ProfileCreator delegate) {
-        this.delegate = delegate;
-    }
-
-    public int getCacheSize() {
-        return cacheSize;
-    }
-
-    public void setCacheSize(final int cacheSize) {
-        this.cacheSize = cacheSize;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(final int timeout) {
-        this.timeout = timeout;
-    }
-
-    public TimeUnit getTimeUnit() {
-        return timeUnit;
-    }
-
-    public void setTimeUnit(final TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
-    }
-
-    public Store<Credentials, UserProfile> getStore() {
-        return store;
-    }
-
-    public void setStore(final Store<Credentials, UserProfile> store) {
-        this.store = store;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "delegate", this.delegate, "store", this.store);
     }
 }

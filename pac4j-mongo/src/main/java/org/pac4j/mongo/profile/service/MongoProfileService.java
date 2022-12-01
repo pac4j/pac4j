@@ -2,6 +2,10 @@ package org.pac4j.mongo.profile.service;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.bson.Document;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -15,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * The MongoDB profile service (which supersedes the Mongo authenticator).
@@ -23,6 +27,9 @@ import static com.mongodb.client.model.Filters.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
     private MongoClient mongoClient;
@@ -67,8 +74,8 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
     @Override
     protected void insert(final Map<String, Object> attributes) {
-        final var doc = new Document();
-        for (final var entry : attributes.entrySet()) {
+        val doc = new Document();
+        for (val entry : attributes.entrySet()) {
             doc.append(entry.getKey(), entry.getValue());
         }
 
@@ -79,10 +86,10 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     @Override
     protected void update(final Map<String, Object> attributes) {
         String id = null;
-        final var doc = new Document();
-        for (final var entry : attributes.entrySet()) {
-            final var name = entry.getKey();
-            final var value = entry.getValue();
+        val doc = new Document();
+        for (val entry : attributes.entrySet()) {
+            val name = entry.getKey();
+            val value = entry.getValue();
             if (getIdAttribute().equals(name)) {
                 id = (String) value;
             } else {
@@ -106,15 +113,15 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
 
         logger.debug("Reading key / value: {} / {}", key, value);
-        final List<Map<String, Object>> listAttributes = new ArrayList<>();
-        try (var cursor = getCollection().find(eq(key, value)).iterator()) {
+        val listAttributes = new ArrayList<Map<String, Object>>();
+        try (val cursor = getCollection().find(eq(key, value)).iterator()) {
             var i = 0;
             while (cursor.hasNext() && i <= 2) {
-                final var result = cursor.next();
-                final Map<String, Object> newAttributes = new HashMap<>();
+                val result = cursor.next();
+                val newAttributes = new HashMap<String, Object>();
                 // filter on names
-                for (final var entry : result.entrySet()) {
-                    final var name = entry.getKey();
+                for (val entry : result.entrySet()) {
+                    val name = entry.getKey();
                     if (names == null || names.contains(name)) {
                         newAttributes.put(name, entry.getValue());
                     }
@@ -129,39 +136,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     }
 
     protected MongoCollection<Document> getCollection() {
-        final var db = mongoClient.getDatabase(usersDatabase);
+        val db = mongoClient.getDatabase(usersDatabase);
         return db.getCollection(usersCollection);
-    }
-
-    public String getUsersDatabase() {
-        return usersDatabase;
-    }
-
-    public void setUsersDatabase(final String usersDatabase) {
-        this.usersDatabase = usersDatabase;
-    }
-
-    public String getUsersCollection() {
-        return usersCollection;
-    }
-
-    public void setUsersCollection(final String usersCollection) {
-        this.usersCollection = usersCollection;
-    }
-
-    public MongoClient getMongoClient() {
-        return mongoClient;
-    }
-
-    public void setMongoClient(final MongoClient mongoClient) {
-        this.mongoClient = mongoClient;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "mongoClient", mongoClient, "usersCollection", usersCollection,
-                "passwordEncoder", getPasswordEncoder(), "usersDatabase", usersDatabase, "attributes", getAttributes(),
-                "profileDefinition", getProfileDefinition(), "idAttribute", getIdAttribute(),
-                "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }
 }

@@ -1,5 +1,8 @@
 package org.pac4j.http.client.direct;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
@@ -13,6 +16,9 @@ import org.pac4j.core.util.Pac4jConstants;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Getter
+@Setter
+@ToString
 public class HeaderClient extends DirectClient {
 
     private String headerName = Pac4jConstants.EMPTY_STRING;
@@ -69,28 +75,5 @@ public class HeaderClient extends DirectClient {
 
             defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader));
         }
-    }
-
-    public String getHeaderName() {
-        return headerName;
-    }
-
-    public void setHeaderName(String headerName) {
-        this.headerName = headerName;
-    }
-
-    public String getPrefixHeader() {
-        return prefixHeader;
-    }
-
-    public void setPrefixHeader(String prefixHeader) {
-        this.prefixHeader = prefixHeader;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "headerName", this.headerName,
-                "prefixHeader", this.prefixHeader, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
-                "profileCreator", getProfileCreator());
     }
 }

@@ -1,5 +1,8 @@
 package org.pac4j.core.matching.matcher;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@Getter
+@Setter
+@ToString
 public class CorsMatcher implements Matcher {
 
     private String allowOrigin;
@@ -57,59 +63,5 @@ public class CorsMatcher implements Matcher {
         }
 
         return true;
-    }
-
-    public String getAllowOrigin() {
-        return allowOrigin;
-    }
-
-    public void setAllowOrigin(final String allowOrigin) {
-        this.allowOrigin = allowOrigin;
-    }
-
-    public String getExposeHeaders() {
-        return exposeHeaders;
-    }
-
-    public void setExposeHeaders(final String exposeHeaders) {
-        this.exposeHeaders = exposeHeaders;
-    }
-
-    public int getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(final int maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    public Boolean getAllowCredentials() {
-        return allowCredentials;
-    }
-
-    public void setAllowCredentials(final Boolean allowCredentials) {
-        this.allowCredentials = allowCredentials;
-    }
-
-    public Set<HttpConstants.HTTP_METHOD> getAllowMethods() {
-        return allowMethods;
-    }
-
-    public void setAllowMethods(final Set<HttpConstants.HTTP_METHOD> allowMethods) {
-        this.allowMethods = allowMethods;
-    }
-
-    public String getAllowHeaders() {
-        return allowHeaders;
-    }
-
-    public void setAllowHeaders(final String allowHeaders) {
-        this.allowHeaders = allowHeaders;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "allowOrigin", allowOrigin, "exposeHeaders", exposeHeaders, "maxAge", maxAge,
-                "allowCredentials", allowCredentials, "allowMethods", allowMethods, "allowHeaders", allowHeaders);
     }
 }

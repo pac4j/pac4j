@@ -2,11 +2,15 @@ package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuthService;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.generator.RandomValueGenerator;
+import org.pac4j.core.util.generator.ValueGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +21,9 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
 public class OAuth20Configuration extends OAuthConfiguration {
 
     public static final String OAUTH_CODE = "code";
@@ -41,41 +48,14 @@ public class OAuth20Configuration extends OAuthConfiguration {
     public OAuthService buildService(final WebContext context, final IndirectClient client) {
         init();
 
-        final var finalCallbackUrl = client.computeFinalCallbackUrl(context);
+        val finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
         return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
             this.responseType, null, null, this.httpClientConfig, null);
     }
 
-    public Map<String, String> getCustomParams() {
-        return customParams;
-    }
-
-    public void setCustomParams(final Map<String, String> customParams) {
-        this.customParams = customParams;
-    }
-
-    public boolean isWithState() {
-        return withState;
-    }
-
-    public void setWithState(final boolean withState) {
-        this.withState = withState;
-    }
-
-    public ValueGenerator getStateGenerator() {
-        return stateGenerator;
-    }
-
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
-            "responseType", responseType, "scope", scope, "api", api, "hasBeenCancelledFactory", hasBeenCancelledFactory,
-            "profileDefinition", profileDefinition, "httpClientConfig", httpClientConfig);
     }
 }

@@ -1,5 +1,8 @@
 package org.pac4j.sql.profile.service;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
@@ -13,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * The DB profile service (which supersedes the DB authenticator).
@@ -21,12 +25,15 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Getter
+@ToString(callSuper = true)
 public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     protected DBI dbi;
 
     private String usersTable = "users";
 
+    @Setter
     private DataSource dataSource;
 
     public DbProfileService() {}
@@ -161,31 +168,8 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         return sb.toString();
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public String getUsersTable() {
-        return usersTable;
-    }
-
     public void setUsersTable(final String usersTable) {
         assertNotBlank("usersTable", usersTable);
         this.usersTable = usersTable;
-    }
-
-    public DBI getDbi() {
-        return dbi;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
-                "attributes", getAttributes(), "profileDefinition", getProfileDefinition(), "usersTable", usersTable,
-                "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }
 }

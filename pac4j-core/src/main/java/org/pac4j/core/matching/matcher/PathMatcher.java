@@ -1,11 +1,13 @@
 package org.pac4j.core.matching.matcher;
 
+import lombok.Getter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,10 +20,13 @@ import java.util.regex.Pattern;
  * @author Rob Ward
  * @since 2.0.0
  */
+@Slf4j
+@ToString
 public class PathMatcher implements Matcher {
-    private static final Logger logger = LoggerFactory.getLogger(PathMatcher.class);
     private final Set<String> includedPaths = new HashSet<>();
+    @Getter
     private final Set<String> excludedPaths = new HashSet<>();
+    @Getter
     private final Set<Pattern> excludedPatterns = new HashSet<>();
 
     private static boolean warnedRegexp;
@@ -100,7 +105,7 @@ public class PathMatcher implements Matcher {
 
     protected void warnRegexp() {
         if (!warnedRegexp) {
-            logger.warn("Be careful when using the 'excludeBranch' or 'excludeRegex' methods. "
+            LOGGER.warn("Be careful when using the 'excludeBranch' or 'excludeRegex' methods. "
                 + "They use regular expressions and their definitions may be error prone. You could exclude more URLs than expected.");
             warnedRegexp = true;
         }
@@ -108,7 +113,7 @@ public class PathMatcher implements Matcher {
 
     protected void warnInclude() {
         if (!warnedInclude) {
-            logger.warn("Be careful when using the 'includePath' or 'includePaths' methods. "
+            LOGGER.warn("Be careful when using the 'includePath' or 'includePaths' methods. "
                 + "The security will only apply on these paths. It could not be secure enough.");
             warnedInclude = true;
         }
@@ -122,10 +127,10 @@ public class PathMatcher implements Matcher {
     // Returns true if a path should be authenticated, false to skip authentication.
     boolean matches(final String requestPath) {
 
-        logger.debug("request path to match: {}", requestPath);
+        LOGGER.debug("request path to match: {}", requestPath);
 
         if (!includedPaths.isEmpty()) {
-            for (var path : includedPaths) {
+            for (val path : includedPaths) {
                 // accepts any request path starting with the included path
                 if (requestPath != null && requestPath.startsWith(path)) {
                     return true;
@@ -140,21 +145,13 @@ public class PathMatcher implements Matcher {
             return false;
         }
 
-        for (var pattern : excludedPatterns) {
+        for (val pattern : excludedPatterns) {
             if (pattern.matcher(requestPath).matches()) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    public Set<String> getExcludedPaths() {
-        return excludedPaths;
-    }
-
-    public Set<Pattern> getExcludedPatterns() {
-        return excludedPatterns;
     }
 
     public void setExcludedPaths(Collection<String> paths) {
@@ -182,11 +179,5 @@ public class PathMatcher implements Matcher {
         if (!path.startsWith("/")) {
             throw new TechnicalException("Excluded path must begin with a /");
         }
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "includedPaths", includedPaths,
-            "excludedPaths", excludedPaths, "excludedPatterns", excludedPatterns);
     }
 }

@@ -2,6 +2,9 @@ package org.pac4j.core.store;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
@@ -15,14 +18,22 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@ToString
 public class GuavaStore<K, O> extends AbstractStore<K, O> {
 
+    @Getter
     private Cache<K, O> cache;
 
+    @Getter
+    @Setter
     private int size = 0;
 
+    @Getter
+    @Setter
     private int timeout = -1;
 
+    @Getter
+    @Setter
     private TimeUnit timeUnit;
 
     public GuavaStore() {}
@@ -56,38 +67,5 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
     @Override
     protected void internalRemove(final K key) {
         cache.invalidate(key);
-    }
-
-    public Cache<K, O> getCache() {
-        return cache;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(final int size) {
-        this.size = size;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(final int timeout) {
-        this.timeout = timeout;
-    }
-
-    public TimeUnit getTimeUnit() {
-        return timeUnit;
-    }
-
-    public void setTimeUnit(final TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "size", size, "timeout", timeout, "timeUnit", timeUnit);
     }
 }

@@ -1,5 +1,8 @@
 package org.pac4j.oauth.client;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -14,8 +17,11 @@ import org.pac4j.oauth.redirect.OAuth20RedirectionActionBuilder;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@ToString(callSuper = true)
 public class OAuth20Client extends IndirectClient {
 
+    @Getter
+    @Setter
     protected OAuth20Configuration configuration = new OAuth20Configuration();
 
     @Override
@@ -32,14 +38,6 @@ public class OAuth20Client extends IndirectClient {
         defaultProfileCreator(new OAuth20ProfileCreator(configuration, this));
     }
 
-    public OAuth20Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final OAuth20Configuration configuration) {
-        this.configuration = configuration;
-    }
-
     public String getKey() {
         return configuration.getKey();
     }
@@ -54,13 +52,5 @@ public class OAuth20Client extends IndirectClient {
 
     public void setSecret(final String secret) {
         configuration.setSecret(secret);
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "callbackUrl", getCallbackUrl(),
-                "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
-                "redirectionActionBuilder", getRedirectionActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", this.configuration);
     }
 }

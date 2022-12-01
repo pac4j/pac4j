@@ -1,13 +1,12 @@
 package org.pac4j.core.logout;
 
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.context.WebContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Optional;
 
@@ -19,9 +18,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@ToString
+@Slf4j
 public class CasLogoutActionBuilder implements LogoutActionBuilder {
-
-    private static final Logger logger = LoggerFactory.getLogger(CasLogoutActionBuilder.class);
 
     private final String serverLogoutUrl;
 
@@ -46,12 +45,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
         if (isNotBlank(targetUrl)) {
             redirectUrl = addParameter(redirectUrl, postLogoutUrlParameter, targetUrl);
         }
-        logger.debug("redirectUrl: {}", redirectUrl);
+        LOGGER.debug("redirectUrl: {}", redirectUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectUrl));
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "serverLogoutUrl", serverLogoutUrl, "postLogoutUrlParameter", postLogoutUrlParameter);
     }
 }

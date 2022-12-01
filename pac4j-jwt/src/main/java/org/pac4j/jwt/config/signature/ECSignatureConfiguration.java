@@ -1,10 +1,15 @@
 package org.pac4j.jwt.config.signature;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.util.JWKHelper;
@@ -19,6 +24,8 @@ import java.security.interfaces.ECPublicKey;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
 public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
 
     private ECPublicKey publicKey;
@@ -60,8 +67,8 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
         CommonHelper.assertNotNull("privateKey", privateKey);
 
         try {
-            final JWSSigner signer = new ECDSASigner(this.privateKey);
-            final var signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            val signer = new ECDSASigner(this.privateKey);
+            val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
         } catch (final JOSEException e) {
@@ -74,7 +81,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
         init();
         CommonHelper.assertNotNull("publicKey", publicKey);
 
-        final JWSVerifier verifier = new ECDSAVerifier(this.publicKey);
+        val verifier = new ECDSAVerifier(this.publicKey);
         return jwt.verify(verifier);
     }
 
@@ -84,30 +91,9 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
         this.publicKey = (ECPublicKey) keyPair.getPublic();
     }
 
-    public ECPublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(final ECPublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public ECPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(final ECPrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
     public void setKeysFromJwk(final String json) {
-        final var pair = JWKHelper.buildECKeyPairFromJwk(json);
+        val pair = JWKHelper.buildECKeyPairFromJwk(json);
         this.publicKey = (ECPublicKey) pair.getPublic();
         this.privateKey = (ECPrivateKey) pair.getPrivate();
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm);
     }
 }

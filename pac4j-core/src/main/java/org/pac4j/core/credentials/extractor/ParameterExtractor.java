@@ -1,5 +1,7 @@
 package org.pac4j.core.credentials.extractor;
 
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.SessionStore;
@@ -7,7 +9,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@ToString
 public class ParameterExtractor implements CredentialsExtractor {
 
     private final String parameterName;
@@ -45,17 +47,11 @@ public class ParameterExtractor implements CredentialsExtractor {
             throw new CredentialsException("POST requests not supported");
         }
 
-        final var value = context.getRequestParameter(this.parameterName);
+        val value = context.getRequestParameter(this.parameterName);
         if (!value.isPresent()) {
             return Optional.empty();
         }
 
         return Optional.of(new TokenCredentials(value.get()));
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "parameterName", parameterName,
-                "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
     }
 }

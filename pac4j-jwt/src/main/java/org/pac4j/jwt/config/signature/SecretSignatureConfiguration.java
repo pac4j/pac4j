@@ -1,11 +1,14 @@
 package org.pac4j.jwt.config.signature;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -65,8 +68,8 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
         init();
 
         try {
-            final JWSSigner signer = new MACSigner(this.secret);
-            final var signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            val signer = new MACSigner(this.secret);
+            val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
         } catch (final JOSEException e) {
@@ -78,7 +81,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
 
-        final JWSVerifier verifier = new MACVerifier(this.secret);
+        val verifier = new MACVerifier(this.secret);
         return jwt.verify(verifier);
     }
 
@@ -98,17 +101,11 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
         this.secret = Arrays.copyOf(secretBytes,secretBytes.length);
     }
 
-
     public String getSecretBase64() {
         return Base64.encode(secret).toString();
     }
 
     public void setSecretBase64(final String secret) {
         this.secret = new Base64(secret).decode();
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "secret", "[protected]", "algorithm", algorithm);
     }
 }

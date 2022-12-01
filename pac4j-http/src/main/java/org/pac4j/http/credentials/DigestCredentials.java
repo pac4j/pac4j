@@ -1,8 +1,10 @@
 package org.pac4j.http.credentials;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * <p>This credentials is retrieved from a HTTP request.</p>
@@ -14,9 +16,13 @@ import org.pac4j.core.util.CommonHelper;
  * @author Mircea Carasel
  * @since 1.9.0
  */
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 public class DigestCredentials extends TokenCredentials {
 
     private static final long serialVersionUID = -5130296967270874521L;
+    @ToString.Include
+    @Getter
     private String username;
 
     private String realm;
@@ -99,46 +105,5 @@ public class DigestCredentials extends TokenCredentials {
         }
 
         return digest;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        final var that = (DigestCredentials) o;
-
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (realm != null ? !realm.equals(that.realm) : that.realm != null) return false;
-        if (nonce != null ? !nonce.equals(that.nonce) : that.nonce != null) return false;
-        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
-        if (cnonce != null ? !cnonce.equals(that.cnonce) : that.cnonce != null) return false;
-        if (nc != null ? !nc.equals(that.nc) : that.nc != null) return false;
-        return (qop != null? qop.equals(that.qop) : that.qop == null)
-            && !(httpMethod != null ? !httpMethod.equals(that.httpMethod) : that.httpMethod != null);
-    }
-
-    @Override
-    public int hashCode() {
-        var result = super.hashCode();
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (realm != null ? realm.hashCode() : 0);
-        result = 31 * result + (nonce != null ? nonce.hashCode() : 0);
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        result = 31 * result + (cnonce != null ? cnonce.hashCode() : 0);
-        result = 31 * result + (nc != null ? nc.hashCode() : 0);
-        result = 31 * result + (qop != null ? qop.hashCode() : 0);
-        result = 31 * result + (httpMethod != null ? httpMethod.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "username", this.username, "response", "[PROTECTED]");
     }
 }

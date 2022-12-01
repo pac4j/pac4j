@@ -1,6 +1,7 @@
 package org.pac4j.saml.sso.impl;
 
-import org.pac4j.core.util.CommonHelper;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -10,6 +11,8 @@ import java.io.Serializable;
  * @author Misagh Moayyed
  * @since 5.1.2
  */
+@Getter
+@ToString
 public class SAML2ScopingIdentityProvider implements Serializable {
     private final String providerId;
 
@@ -18,20 +21,5 @@ public class SAML2ScopingIdentityProvider implements Serializable {
     public SAML2ScopingIdentityProvider(final String providerId, final String name) {
         this.providerId = providerId;
         this.name = name;
-    }
-
-    public String getProviderId() {
-        return providerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(),
-            "providerId", this.providerId,
-            "name", this.name);
     }
 }

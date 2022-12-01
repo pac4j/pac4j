@@ -1,5 +1,9 @@
 package org.pac4j.core.matching.matcher;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -15,6 +19,9 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.9.3
  */
+@Getter
+@Setter
+@ToString
 public class HttpMethodMatcher implements Matcher {
 
     private Set<HttpConstants.HTTP_METHOD> methods;
@@ -30,26 +37,13 @@ public class HttpMethodMatcher implements Matcher {
     @Override
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("methods", methods);
-        final var requestMethod = context.getRequestMethod();
+        val requestMethod = context.getRequestMethod();
 
-        for (final var method : methods) {
+        for (val method : methods) {
             if (method.name().equalsIgnoreCase(requestMethod)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public Set<HttpConstants.HTTP_METHOD> getMethods() {
-        return methods;
-    }
-
-    public void setMethods(final Set<HttpConstants.HTTP_METHOD> methods) {
-        this.methods = methods;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "methods", this.methods);
     }
 }

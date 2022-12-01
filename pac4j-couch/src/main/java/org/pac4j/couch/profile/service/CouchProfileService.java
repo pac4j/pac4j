@@ -1,17 +1,19 @@
 package org.pac4j.couch.profile.service;
 
-import org.pac4j.core.util.serializer.JsonSerializer;
-import org.pac4j.couch.profile.CouchProfile;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewQuery;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.serializer.JsonSerializer;
+import org.pac4j.couch.profile.CouchProfile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * The CouchDB profile service.
@@ -27,11 +29,14 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Elie Roux
  * @since 2.0.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     private CouchDbConnector couchDbConnector;
     private ObjectMapper objectMapper;
-    private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+    private static final TypeReference<HashMap<String,Object>> TYPE_REFERENCE = new TypeReference<HashMap<String,Object>>() {};
 
     public static final String COUCH_ID = "_id";
 
@@ -78,10 +83,10 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final var id = (String) attributes.get(COUCH_ID);
+        val id = (String) attributes.get(COUCH_ID);
         try {
-            final var oldDocStream = couchDbConnector.getAsStream(id);
-            final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
+            val oldDocStream = couchDbConnector.getAsStream(id);
+            val res = objectMapper.readValue(oldDocStream, TYPE_REFERENCE);
             res.putAll(attributes);
             couchDbConnector.update(res);
             logger.debug("Updating id: {} with attributes: {}", id, attributes);
@@ -97,9 +102,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     protected void deleteById(final String id) {
         logger.debug("Delete id: {}", id);
         try {
-            final var oldDocStream = couchDbConnector.getAsStream(id);
-            final var oldDoc = objectMapper.readTree(oldDocStream);
-            final var rev = oldDoc.get("_rev").asText();
+            val oldDocStream = couchDbConnector.getAsStream(id);
+            val oldDoc = objectMapper.readTree(oldDocStream);
+            val rev = oldDoc.get("_rev").asText();
             couchDbConnector.delete(id, rev);
         } catch (DocumentNotFoundException e) {
             logger.debug("id {} is not in the database", id);
@@ -109,9 +114,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     }
 
     private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final List<String> names) {
-        final Map<String, Object> newAttributes = new HashMap<>();
-        for (final var entry : rowAttributes.entrySet()) {
-            final var name = entry.getKey();
+        val newAttributes = new HashMap<String, Object>();
+        for (val entry : rowAttributes.entrySet()) {
+            val name = entry.getKey();
             if (names == null || names.contains(name)) {
                 newAttributes.put(name, entry.getValue());
             }
@@ -122,11 +127,11 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         logger.debug("Reading key / value: {} / {}", key, value);
-        final List<Map<String, Object>> listAttributes = new ArrayList<>();
+        val listAttributes = new ArrayList<Map<String, Object>>();
         if (key.equals(COUCH_ID)) {
             try {
-                final var oldDocStream = couchDbConnector.getAsStream(value);
-                final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
+                val oldDocStream = couchDbConnector.getAsStream(value);
+                val res = objectMapper.readValue(oldDocStream, TYPE_REFERENCE);
                 listAttributes.add(populateAttributes(res, names));
             } catch (DocumentNotFoundException e) {
                 logger.debug("Document id {} not found", value);
@@ -136,16 +141,16 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         }
         else {
             // supposes a by_$key view in the design document, see documentation
-            final var query = new ViewQuery()
+            val query = new ViewQuery()
                     .designDocId("_design/pac4j")
                     .viewName("by_"+key)
                     .key(value);
-            final var result = couchDbConnector.queryView(query);
-            for (var row : result.getRows()) {
-                final var stringValue = row.getValue();
+            val result = couchDbConnector.queryView(query);
+            for (val row : result.getRows()) {
+                val stringValue = row.getValue();
                 Map<String, Object> res = null;
                 try {
-                    res = objectMapper.readValue(stringValue, typeRef);
+                    res = objectMapper.readValue(stringValue, TYPE_REFERENCE);
                     listAttributes.add(populateAttributes(res, names));
                 } catch (IOException e) {
                     logger.error("Unexpected IO CouchDB Exception", e);
@@ -155,28 +160,5 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         logger.debug("Found: {}", listAttributes);
 
         return listAttributes;
-    }
-
-    public CouchDbConnector getCouchDbConnector() {
-        return couchDbConnector;
-    }
-
-    public void setCouchDbConnector(final CouchDbConnector couchDbConnector) {
-        this.couchDbConnector = couchDbConnector;
-    }
-
-    public ObjectMapper getObjectMapper() {
-        return this.objectMapper;
-    }
-
-    public void setObjectMapper(final ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
-                "attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
-                "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }
 }

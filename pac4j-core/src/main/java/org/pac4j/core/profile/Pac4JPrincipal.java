@@ -1,9 +1,12 @@
 package org.pac4j.core.profile;
 
-import java.security.Principal;
-import java.util.Objects;
-
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
+
+import java.security.Principal;
 
 /**
  *
@@ -16,44 +19,19 @@ import org.pac4j.core.util.CommonHelper;
  * @author Victor Noel
  * @since 3.0.0
  */
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Pac4JPrincipal implements Principal {
 
     private final String name;
 
     public Pac4JPrincipal(final UserProfile profile) {
-        var username = profile.getUsername();
+        val username = profile.getUsername();
         if (CommonHelper.isNotBlank(username)) {
             this.name = username;
         } else {
             this.name = profile.getId();
         }
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getName());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final var principal = (Pac4JPrincipal) o;
-        return CommonHelper.areEquals(this.getName(), principal.getName());
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "profileId", this.name);
     }
 }

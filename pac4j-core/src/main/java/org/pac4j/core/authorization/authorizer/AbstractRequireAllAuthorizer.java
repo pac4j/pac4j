@@ -1,9 +1,9 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.ToString;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * An authorizer to require all the elements.
@@ -11,6 +11,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@ToString(callSuper = true)
 public abstract class AbstractRequireAllAuthorizer<E extends Object> extends AbstractRequireElementAuthorizer<E> {
 
     @Override
@@ -24,10 +25,5 @@ public abstract class AbstractRequireAllAuthorizer<E extends Object> extends Abs
             }
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "elements", getElements());
     }
 }

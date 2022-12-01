@@ -1,8 +1,10 @@
 package org.pac4j.scribe.model;
 
-import org.pac4j.core.util.CommonHelper;
-
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Wechat token extra.
@@ -13,6 +15,10 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  * @author zhangzhenli
  * @since 3.1.0
  */
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class WechatToken extends OAuth2AccessToken {
 
     private static final long serialVersionUID = -4657457530761699382L;
@@ -25,47 +31,5 @@ public class WechatToken extends OAuth2AccessToken {
         super(accessToken, tokenType, expiresIn, refreshToken, scope, rawResponse);
         this.openid = openid;
         this.unionid = unionid;
-    }
-
-    public String getOpenid() {
-        return openid;
-    }
-
-    public void setOpenid(String openid) {
-        this.openid = openid;
-    }
-
-    public String getUnionid() {
-        return unionid;
-    }
-
-    public void setUnionid(String unionid) {
-        this.unionid = unionid;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        var that = (WechatToken) o;
-
-        if (openid != null ? !openid.equals(that.openid) : that.openid != null) return false;
-        return unionid != null ? unionid.equals(that.unionid) : that.unionid == null;
-    }
-
-    @Override
-    public int hashCode() {
-        var result = super.hashCode();
-        result = 31 * result + (openid != null ? openid.hashCode() : 0);
-        result = 31 * result + (unionid != null ? unionid.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(WechatToken.class, "accessToken", getAccessToken(),
-            "openid", openid, "unionid", unionid);
     }
 }

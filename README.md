@@ -5,8 +5,14 @@
 ### `pac4j` is an easy and powerful security framework for Java to authenticate users, get their profiles and manage authorizations in order to secure web applications and web services.
 
 It provides a comprehensive set of [**concepts and components**](https://www.pac4j.org/docs/main-concepts-and-components.html).
-It is based on JDK 17 (v6.x), JDK 11 (v5.x) or JDK 8 (v4.x) and licensed under the Apache 2 license.
 It is **available for most frameworks/tools** and **supports most authentication/authorization mechanisms**.
+It is licensed under the Apache 2 license.
+
+| JDK | pac4j | Usage of Lombok |
+|-----|-------|-----------------|
+| 17  | v6.x  | Yes             |
+| 11  | v5.x  | No              |
+| 8   | v4.x  | No              |
 
 ## Available implementations (*Get started by clicking on your framework*):
 

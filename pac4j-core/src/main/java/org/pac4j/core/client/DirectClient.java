@@ -10,7 +10,6 @@ import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import java.util.Optional;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
-import static org.pac4j.core.util.CommonHelper.toNiceString;
 
 /**
  * Direct client: credentials are passed and authentication occurs for every HTTP request.
@@ -51,12 +50,5 @@ public abstract class DirectClient extends BaseClient {
     public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
                                                              final UserProfile currentProfile, final String targetUrl) {
         return Optional.empty();
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", getCredentialsExtractor(),
-            "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
-            "authorizationGenerators", getAuthorizationGenerators());
     }
 }

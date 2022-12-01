@@ -1,7 +1,8 @@
 package org.pac4j.core.exception.http;
 
+import lombok.Getter;
+import lombok.ToString;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * A "Found" HTTP action.
@@ -9,6 +10,8 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@Getter
+@ToString(callSuper = true)
 public class FoundAction extends RedirectionAction implements WithLocationAction {
 
     private static final long serialVersionUID = 5155686595276189592L;
@@ -17,15 +20,5 @@ public class FoundAction extends RedirectionAction implements WithLocationAction
     public FoundAction(final String location) {
         super(HttpConstants.FOUND);
         this.location = location;
-    }
-
-    @Override
-    public String getLocation() {
-        return location;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "location", location);
     }
 }

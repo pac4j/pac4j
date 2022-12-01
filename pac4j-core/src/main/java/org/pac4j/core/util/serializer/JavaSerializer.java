@@ -1,6 +1,7 @@
 package org.pac4j.core.util.serializer;
 
-import org.pac4j.core.util.CommonHelper;
+import lombok.ToString;
+import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@ToString
 public class JavaSerializer extends AbstractSerializer {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaSerializer.class);
@@ -40,8 +42,8 @@ public class JavaSerializer extends AbstractSerializer {
     @Override
     protected byte[] internalSerializeToBytes(final Object o) {
         byte[] bytes = null;
-        try (var baos = new ByteArrayOutputStream();
-             var oos = new ObjectOutputStream(baos)) {
+        try (val baos = new ByteArrayOutputStream();
+             val oos = new ObjectOutputStream(baos)) {
             oos.writeObject(o);
             oos.flush();
             bytes = baos.toByteArray();
@@ -60,7 +62,7 @@ public class JavaSerializer extends AbstractSerializer {
     @Override
     protected Serializable internalDeserializeFromBytes(final byte[] bytes) {
         Serializable o = null;
-        try (var bais = new ByteArrayInputStream(bytes);
+        try (val bais = new ByteArrayInputStream(bytes);
              ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {
             o = (Serializable) ois.readObject();
         } catch (final IOException | ClassNotFoundException e) {
@@ -111,11 +113,6 @@ public class JavaSerializer extends AbstractSerializer {
         this.trustedClasses.clear();
     }
 
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "trustedPackages", this.trustedPackages, "trustedClasses", this.trustedClasses);
-    }
-
     /**
      * Restricted <code>ObjectInputStream</code> for security reasons.
      */
@@ -134,8 +131,8 @@ public class JavaSerializer extends AbstractSerializer {
 
         @Override
         protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-            final var qualifiedClassName = desc.getName();
-            final var clazz = trustedClasses.get(qualifiedClassName);
+            val qualifiedClassName = desc.getName();
+            val clazz = trustedClasses.get(qualifiedClassName);
             if (Objects.nonNull(clazz)) {
                 return clazz;
             } else if (trustedPackages.stream().anyMatch(qualifiedClassName::startsWith)) {

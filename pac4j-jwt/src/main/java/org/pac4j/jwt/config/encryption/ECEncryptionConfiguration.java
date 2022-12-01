@@ -1,12 +1,11 @@
 package org.pac4j.jwt.config.encryption;
 
-import com.nimbusds.jose.EncryptionMethod;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWEDecrypter;
-import com.nimbusds.jose.JWEEncrypter;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDHDecrypter;
 import com.nimbusds.jose.crypto.ECDHEncrypter;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.util.JWKHelper;
@@ -21,6 +20,8 @@ import java.security.interfaces.ECPublicKey;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
 public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
 
     private ECPublicKey publicKey;
@@ -103,13 +104,8 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
     }
 
     public void setKeysFromJwk(final String json) {
-        final var pair = JWKHelper.buildECKeyPairFromJwk(json);
+        val pair = JWKHelper.buildECKeyPairFromJwk(json);
         this.publicKey = (ECPublicKey) pair.getPublic();
         this.privateKey = (ECPrivateKey) pair.getPrivate();
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm, "method", method);
     }
 }

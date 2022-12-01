@@ -2,6 +2,10 @@ package org.pac4j.jwt.credentials.authenticator;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -28,7 +32,8 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.util.*;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -37,6 +42,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@ToString
+@Getter
+@Setter
 public class JwtAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -89,7 +97,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
      * @return the corresponding user profile
      */
     public Map<String, Object> validateTokenAndGetClaims(final String token) {
-        final var profile = validateToken(token);
+        val profile = validateToken(token);
 
         final Map<String, Object> claims = new HashMap<>(profile.getAttributes());
         claims.put(JwtClaims.SUBJECT, profile.getId());
@@ -104,7 +112,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
      * @return the corresponding user profile
      */
     public UserProfile validateToken(final String token) {
-        final var credentials = new TokenCredentials(token);
+        val credentials = new TokenCredentials(token);
         try {
             validate(credentials, null, null);
         } catch (final HttpAction e) {
@@ -121,8 +129,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var credentials = (TokenCredentials) cred;
-        final var token = credentials.getToken();
+        val credentials = (TokenCredentials) cred;
+        val token = credentials.getToken();
 
         if (context != null) {
             // set the www-authenticate in case of error
@@ -150,12 +158,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 if (jwt instanceof EncryptedJWT) {
                     logger.debug("JWT is encrypted");
 
-                    final var encryptedJWT = (EncryptedJWT) jwt;
+                    val encryptedJWT = (EncryptedJWT) jwt;
                     var found = false;
-                    final var header = encryptedJWT.getHeader();
-                    final var algorithm = header.getAlgorithm();
-                    final var method = header.getEncryptionMethod();
-                    for (final var config : encryptionConfigurations) {
+                    val header = encryptedJWT.getHeader();
+                    val algorithm = header.getAlgorithm();
+                    val method = header.getEncryptionMethod();
+                    for (val config : encryptionConfigurations) {
                         if (config.supports(algorithm, method)) {
                             logger.debug("Using encryption configuration: {}", config);
                             try {
@@ -182,8 +190,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
                     var verified = false;
                     var found = false;
-                    final var algorithm = signedJWT.getHeader().getAlgorithm();
-                    for (final var config : signatureConfigurations) {
+                    val algorithm = signedJWT.getHeader().getAlgorithm();
+                    for (val config : signatureConfigurations) {
                         if (config.supports(algorithm)) {
                             logger.debug("Using signature configuration: {}", config);
                             try {
@@ -218,7 +226,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     @SuppressWarnings("unchecked")
     protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt, final WebContext context,
                                     final SessionStore sessionStore) throws ParseException {
-        final var claimSet = jwt.getJWTClaimsSet();
+        val claimSet = jwt.getJWTClaimsSet();
         var subject = claimSet.getSubject();
         if (subject == null) {
             if (identifierGenerator != null) {
@@ -229,9 +237,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             }
         }
 
-        final var expTime = claimSet.getExpirationTime();
+        val expTime = claimSet.getExpirationTime();
         if (expTime != null) {
-            final var now = new Date();
+            val now = new Date();
             if (expTime.before(now)) {
                 logger.error("The JWT is expired: no profile is built");
                 return;
@@ -242,15 +250,15 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             }
         }
 
-        final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
+        val attributes = new HashMap<String, Object>(claimSet.getClaims());
         attributes.remove(JwtClaims.SUBJECT);
 
-        final var roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
+        val roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
-        final var linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
+        val linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
         attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
 
-        final var profile = getProfileDefinition().newProfile(subject);
+        val profile = getProfileDefinition().newProfile(subject);
         profile.setId(ProfileHelper.sanitizeIdentifier(subject));
         getProfileDefinition().convertAndAdd(profile, attributes, null);
 
@@ -261,10 +269,6 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             profile.setLinkedId(linkedId);
         }
         credentials.setUserProfile(profile);
-    }
-
-    public List<SignatureConfiguration> getSignatureConfigurations() {
-        return signatureConfigurations;
     }
 
     public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
@@ -281,10 +285,6 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         this.signatureConfigurations = signatureConfigurations;
     }
 
-    public List<EncryptionConfiguration> getEncryptionConfigurations() {
-        return encryptionConfigurations;
-    }
-
     public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         addEncryptionConfiguration(encryptionConfiguration);
     }
@@ -299,34 +299,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
-    public String getRealmName() {
-        return realmName;
-    }
-
-    public void setRealmName(final String realmName) {
-        this.realmName = realmName;
-    }
-
     public void setExpirationTime(final Date expirationTime) {
         this.expirationTime = new Date(expirationTime.getTime());
     }
 
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());
-    }
-
-    public ValueGenerator getIdentifierGenerator() {
-        return identifierGenerator;
-    }
-
-    public void setIdentifierGenerator(final ValueGenerator identifierGenerator) {
-        this.identifierGenerator = identifierGenerator;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "signatureConfigurations", signatureConfigurations,
-            "encryptionConfigurations", encryptionConfigurations, "realmName", this.realmName,
-            "identifierGenerator", this.identifierGenerator);
     }
 }

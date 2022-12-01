@@ -6,6 +6,7 @@ import com.nimbusds.jose.crypto.AESEncrypter;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.util.Base64;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -50,9 +51,9 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     @Override
     public boolean supports(final JWEAlgorithm algorithm, final EncryptionMethod method) {
         if (algorithm != null && method != null) {
-            final var isDirect = DirectDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
+            val isDirect = DirectDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
                 && DirectDecrypter.SUPPORTED_ENCRYPTION_METHODS.contains(method);
-            final var isAes = AESDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
+            val isAes = AESDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)
                 && AESDecrypter.SUPPORTED_ENCRYPTION_METHODS.contains(method);
             return isDirect || isAes;
         }
@@ -118,10 +119,5 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
 
     public void setSecretBase64(final String secret) {
         this.secret = new Base64(secret).decode();
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "secret", "[protected]", "algorithm", algorithm, "method", method);
     }
 }

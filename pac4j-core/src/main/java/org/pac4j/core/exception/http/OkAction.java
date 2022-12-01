@@ -1,7 +1,8 @@
 package org.pac4j.core.exception.http;
 
+import lombok.Getter;
+import lombok.ToString;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * An OK HTTP action.
@@ -9,6 +10,8 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@Getter
+@ToString(callSuper = true)
 public class OkAction extends RedirectionAction implements WithContentAction {
 
     private static final long serialVersionUID = -8842651379112280831L;
@@ -17,15 +20,5 @@ public class OkAction extends RedirectionAction implements WithContentAction {
     public OkAction(final String content) {
         super(HttpConstants.OK);
         this.content = content;
-    }
-
-    @Override
-    public String getContent() {
-        return content;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "code", this.code, "content", content);
     }
 }

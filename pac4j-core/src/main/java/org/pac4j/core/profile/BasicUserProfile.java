@@ -1,6 +1,10 @@
 package org.pac4j.core.profile;
 
 import com.google.common.collect.Streams;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
@@ -21,24 +25,32 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@ToString
 public class BasicUserProfile implements UserProfile, Externalizable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
     protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Getter
     private String id;
 
     private Map<String, Object> attributes = new HashMap<>();
 
     private Map<String, Object> authenticationAttributes = new HashMap<>();
 
+    @Getter
+    @Setter
     private boolean isRemembered = false;
 
     private Set<String> roles = new HashSet<>();
 
+    @Getter
+    @Setter
     private String clientName;
 
+    @Getter
+    @Setter
     private String linkedId;
 
     private final boolean canAttributesBeMerged;
@@ -88,16 +100,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     public void setId(final String id) {
         CommonHelper.assertNotBlank("id", id);
         this.id = id;
-    }
-
-    /**
-     * Get the user identifier. This identifier is unique for this provider but not necessarily through all providers.
-     *
-     * @return the user identifier
-     */
-    @Override
-    public String getId() {
-        return this.id;
     }
 
     /**
@@ -182,7 +184,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public void addAttributes(final Map<String, Object> attributes) {
         if (attributes != null) {
-            for (final var entry : attributes.entrySet()) {
+            for (val entry : attributes.entrySet()) {
                 addAttribute(entry.getKey(), entry.getValue());
             }
         }
@@ -195,7 +197,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public void addAuthenticationAttributes(final Map<String, Object> attributeMap) {
         if (attributeMap != null) {
-            for (final var entry : attributeMap.entrySet()) {
+            for (val entry : attributeMap.entrySet()) {
                 addAuthenticationAttribute(entry.getKey(), entry.getValue());
             }
         }
@@ -242,8 +244,8 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     private static Map<String, Object> getAttributeMap(final Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (var entries : attributeMap.entrySet()) {
-            final var key = entries.getKey();
-            final var value = attributeMap.get(key);
+            val key = entries.getKey();
+            val value = attributeMap.get(key);
             newAttributes.put(key, value);
         }
         return newAttributes;
@@ -267,7 +269,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @return the attribute values as List of strings.
      */
     public List<String> extractAttributeValues(final String name) {
-        final var value = getAttribute(name);
+        val value = getAttribute(name);
         if (value instanceof String) {
             return Collections.singletonList((String) value);
         } else if (value instanceof String[]) {
@@ -322,7 +324,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @since 1.8
      */
     public <T> T getAttribute(final String name, final Class<T> clazz) {
-        final var attribute = getAttribute(name);
+        val attribute = getAttribute(name);
         return getAttributeByType(name, clazz, attribute);
     }
 
@@ -336,7 +338,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public <T> T getAuthenticationAttribute(final String name, final Class<T> clazz)
     {
-        final var attribute = getAuthenticationAttribute(name);
+        val attribute = getAuthenticationAttribute(name);
         return getAttributeByType(name, clazz, attribute);
     }
 
@@ -392,33 +394,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         this.roles = roles;
     }
 
-    /**
-     * Define if this profile is remembered.
-     *
-     * @param rme whether the user is remembered.
-     */
-    @Override
-    public void setRemembered(final boolean rme) {
-        this.isRemembered = rme;
-    }
-
-    /**
-     * Is the user remembered?
-     *
-     * @return whether the user is remembered.
-     */
-    @Override
-    public boolean isRemembered() {
-        return this.isRemembered;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "id", this.id, "attributes", this.attributes,
-                "authenticationAttributes", this.authenticationAttributes, "roles", this.roles,
-                "isRemembered", this.isRemembered, "clientName", this.clientName, "linkedId", this.linkedId);
-    }
-
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeObject(this.id);
@@ -447,26 +422,6 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      */
     public void removeLoginData() {
         // No-op. Allow subtypes to specify which state should be cleared out.
-    }
-
-    @Override
-    public String getClientName() {
-        return clientName;
-    }
-
-    @Override
-    public void setClientName(final String clientName) {
-        this.clientName = clientName;
-    }
-
-    @Override
-    public String getLinkedId() {
-        return linkedId;
-    }
-
-    @Override
-    public void setLinkedId(final String linkedId) {
-        this.linkedId = linkedId;
     }
 
     @Override

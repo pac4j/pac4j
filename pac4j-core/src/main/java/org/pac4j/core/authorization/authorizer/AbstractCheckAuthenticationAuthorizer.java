@@ -1,8 +1,10 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 
 /**
@@ -11,6 +13,9 @@ import org.pac4j.core.util.HttpActionHelper;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@ToString
+@Getter
+@Setter
 public abstract class AbstractCheckAuthenticationAuthorizer extends ProfileAuthorizer {
 
     private String redirectionUrl;
@@ -28,18 +33,5 @@ public abstract class AbstractCheckAuthenticationAuthorizer extends ProfileAutho
         } else {
             return false;
         }
-    }
-
-    public String getRedirectionUrl() {
-        return redirectionUrl;
-    }
-
-    public void setRedirectionUrl(final String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "redirectionUrl", redirectionUrl);
     }
 }

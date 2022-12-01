@@ -1,5 +1,9 @@
 package org.pac4j.core.client;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -37,6 +41,9 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Getter
+@Setter
+@ToString
 public abstract class BaseClient extends InitializableObject implements Client {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -70,13 +77,13 @@ public abstract class BaseClient extends InitializableObject implements Client {
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
                                                         final ProfileManagerFactory profileManagerFactory) {
         try {
-            final var optCredentials = this.credentialsExtractor.extract(context, sessionStore, profileManagerFactory);
+            val optCredentials = this.credentialsExtractor.extract(context, sessionStore, profileManagerFactory);
             if (optCredentials.isPresent()) {
-                final var t0 = System.currentTimeMillis();
+                val t0 = System.currentTimeMillis();
                 try {
                     return this.authenticator.validate(optCredentials.get(), context, sessionStore);
                 } finally {
-                    final var t1 = System.currentTimeMillis();
+                    val t1 = System.currentTimeMillis();
                     logger.debug("Credentials validation took: {} ms", t1 - t0);
                 }
             }
@@ -94,7 +101,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             if (profileFactoryWhenNotAuthenticated != null) {
-                final var customProfile = profileFactoryWhenNotAuthenticated.apply(new Object[] {context});
+                val customProfile = profileFactoryWhenNotAuthenticated.apply(new Object[] {context});
                 logger.debug("force custom profile when not authenticated: {}", customProfile);
                 return Optional.ofNullable(customProfile);
             } else {
@@ -106,7 +113,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
         if (profile.isPresent()) {
             profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
-                for (final var authorizationGenerator : this.authorizationGenerators) {
+                for (val authorizationGenerator : this.authorizationGenerators) {
                     profile = authorizationGenerator.generate(context, sessionStore, profile.get());
                 }
             }
@@ -123,7 +130,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      */
     protected final Optional<UserProfile> retrieveUserProfile(final Credentials credentials, final WebContext context,
                                                               final SessionStore sessionStore) {
-        final var profile = this.profileCreator.create(credentials, context, sessionStore);
+        val profile = this.profileCreator.create(credentials, context, sessionStore);
         logger.debug("profile: {}", profile);
         return profile;
     }
@@ -131,10 +138,6 @@ public abstract class BaseClient extends InitializableObject implements Client {
     @Override
     public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context, final SessionStore sessionStore) {
         return Optional.empty();
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override
@@ -153,10 +156,6 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @param sessionStore the session store
      */
     public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
-    }
-
-    public List<AuthorizationGenerator> getAuthorizationGenerators() {
-        return this.authorizationGenerators;
     }
 
     public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
@@ -188,18 +187,10 @@ public abstract class BaseClient extends InitializableObject implements Client {
         this.authorizationGenerators.addAll(authorizationGenerators);
     }
 
-    public CredentialsExtractor getCredentialsExtractor() {
-        return credentialsExtractor;
-    }
-
     protected void defaultCredentialsExtractor(final CredentialsExtractor credentialsExtractor) {
         if (this.credentialsExtractor == null) {
             this.credentialsExtractor = credentialsExtractor;
         }
-    }
-
-    public Authenticator getAuthenticator() {
-        return authenticator;
     }
 
     protected void defaultAuthenticator(final Authenticator authenticator) {
@@ -208,39 +199,15 @@ public abstract class BaseClient extends InitializableObject implements Client {
         }
     }
 
-    public ProfileCreator getProfileCreator() {
-        return profileCreator;
-    }
-
     protected void defaultProfileCreator(final ProfileCreator profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
     }
 
-    public void setCredentialsExtractor(final CredentialsExtractor credentialsExtractor) {
-        this.credentialsExtractor = credentialsExtractor;
-    }
-
-    public void setAuthenticator(final Authenticator authenticator) {
-        this.authenticator = authenticator;
-    }
-
-    public void setProfileCreator(final ProfileCreator profileCreator) {
-        this.profileCreator = profileCreator;
-    }
-
-    public Map<String, Object> getCustomProperties() {
-        return customProperties;
-    }
-
     public void setCustomProperties(final Map<String, Object> customProperties) {
         CommonHelper.assertNotNull("customProperties", customProperties);
         this.customProperties =  customProperties;
-    }
-
-    public ProfileFactory getProfileFactoryWhenNotAuthenticated() {
-        return profileFactoryWhenNotAuthenticated;
     }
 
     public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory profileFactoryWhenNotAuthenticated) {
@@ -257,24 +224,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
         return multiProfile;
     }
 
-    public void setMultiProfile(final boolean multiProfile) {
-        this.multiProfile = multiProfile;
-    }
-
     public Boolean getSaveProfileInSession(final WebContext context, final UserProfile profile) {
         return saveProfileInSession;
-    }
-
-    public void setSaveProfileInSession(final boolean saveProfileInSession) {
-        this.saveProfileInSession = saveProfileInSession;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
-            "authenticator", this.authenticator, "profileCreator", this.profileCreator,
-            "authorizationGenerators", authorizationGenerators, "customProperties", customProperties,
-            "profileFactoryWhenNotAuthenticated", profileFactoryWhenNotAuthenticated, "multiProfile", multiProfile,
-            "saveProfileInSession", saveProfileInSession);
     }
 }

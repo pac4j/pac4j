@@ -1,5 +1,9 @@
 package org.pac4j.core.matching.matcher;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
@@ -12,6 +16,9 @@ import java.util.regex.Pattern;
  * @author Jerome Leleu
  * @since 1.9.3
  */
+@Getter
+@Setter
+@ToString
 public class HeaderMatcher implements Matcher {
 
     private String headerName;
@@ -31,22 +38,10 @@ public class HeaderMatcher implements Matcher {
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotBlank("headerName", headerName);
 
-        final var headerValue = context.getRequestHeader(this.headerName);
-        final var headerNull = expectedValue == null && !headerValue.isPresent();
-        final var headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
+        val headerValue = context.getRequestHeader(this.headerName);
+        val headerNull = expectedValue == null && !headerValue.isPresent();
+        val headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
         return headerNull || headerMatches;
-    }
-
-    public String getHeaderName() {
-        return headerName;
-    }
-
-    public void setHeaderName(final String headerName) {
-        this.headerName = headerName;
-    }
-
-    public String getExpectedValue() {
-        return expectedValue;
     }
 
     public void setExpectedValue(final String expectedValue) {
@@ -54,10 +49,5 @@ public class HeaderMatcher implements Matcher {
         if (expectedValue != null) {
             pattern = Pattern.compile(expectedValue);
         }
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "headerName", this.headerName, "expectedValue", this.expectedValue);
     }
 }

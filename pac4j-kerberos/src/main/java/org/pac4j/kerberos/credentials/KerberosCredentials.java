@@ -1,7 +1,7 @@
 package org.pac4j.kerberos.credentials;
 
+import lombok.ToString;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.CommonHelper;
 
 import java.nio.charset.StandardCharsets;
 
@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
  * @author Garry Boyce
  * @since 2.1.0
  */
+@ToString
 public class KerberosCredentials extends Credentials {
     private byte[] kerberosTicket;
     /**
@@ -22,17 +23,8 @@ public class KerberosCredentials extends Credentials {
         this.kerberosTicket = kerberosTicket.clone();
     }
 
-    public byte[] getKerberosTicket() {
-        return kerberosTicket.clone();
-    }
-
     public String getKerberosTicketAsString() {
         return getTicketAsString(kerberosTicket);
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "token", this.kerberosTicket);
     }
 
     @Override
@@ -55,5 +47,9 @@ public class KerberosCredentials extends Credentials {
 
     private String getTicketAsString(byte[] kerberosTicket) {
         return new String(kerberosTicket, StandardCharsets.UTF_8);
+    }
+
+    public byte[] getKerberosTicket() {
+        return kerberosTicket.clone();
     }
 }

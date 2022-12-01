@@ -10,6 +10,10 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
@@ -27,7 +31,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * OpenID Connect configuration.
@@ -35,6 +40,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
+@ToString(exclude = "secret")
 public class OidcConfiguration extends BaseClientConfiguration {
 
     public static final String SCOPE = "scope";
@@ -195,56 +203,16 @@ public class OidcConfiguration extends BaseClientConfiguration {
         }
     }
 
-    public OIDCProviderMetadata getProviderMetadata() {
-        return this.providerMetadata;
-    }
-
     public OIDCProviderMetadata findProviderMetadata() {
         init();
 
         return this.providerMetadata;
     }
 
-    public void setProviderMetadata(final OIDCProviderMetadata providerMetadata) {
-        this.providerMetadata = providerMetadata;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(final String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(final String secret) {
-        this.secret = secret;
-    }
-
-    public String getDiscoveryURI() {
-        return discoveryURI;
-    }
-
     public void defaultDiscoveryURI(final String discoveryURI) {
         if (this.discoveryURI == null) {
             this.discoveryURI = discoveryURI;
         }
-    }
-
-    public String getScope() {
-        return this.scope;
-    }
-
-    public void setScope(final String scope) {
-        this.scope = scope;
-    }
-
-    public Map<String, String> getCustomParams() {
-        return customParams;
     }
 
     public String getCustomParam(String name) {
@@ -260,32 +228,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.customParams.put(key, value);
     }
 
-    public ClientAuthenticationMethod getClientAuthenticationMethod() {
-        return clientAuthenticationMethod;
-    }
-
-    public void setClientAuthenticationMethod(final ClientAuthenticationMethod clientAuthenticationMethod) {
-        this.clientAuthenticationMethod = clientAuthenticationMethod;
-    }
-
     public void setClientAuthenticationMethodAsString(final String auth) {
         this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
-    }
-
-    public boolean isUseNonce() {
-        return useNonce;
-    }
-
-    public void setUseNonce(final boolean useNonce) {
-        this.useNonce = useNonce;
-    }
-
-    public boolean isDisablePkce() {
-        return disablePkce;
-    }
-
-    public void setDisablePkce(boolean disablePkce) {
-        this.disablePkce = disablePkce;
     }
 
     public CodeChallengeMethod findPkceMethod() {
@@ -298,7 +242,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             if (getProviderMetadata() == null) {
                 return null;
             }
-            var methods = getProviderMetadata().getCodeChallengeMethods();
+            val methods = getProviderMetadata().getCodeChallengeMethods();
             if (methods == null || methods.isEmpty()) {
                 return null;
             }
@@ -310,65 +254,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return getPkceMethod();
     }
 
-    public CodeChallengeMethod getPkceMethod() {
-        return pkceMethod;
-    }
-
-    public void setPkceMethod(CodeChallengeMethod pkceMethod) {
-        this.pkceMethod = pkceMethod;
-    }
-
-    public JWSAlgorithm getPreferredJwsAlgorithm() {
-        return preferredJwsAlgorithm;
-    }
-
-    public void setPreferredJwsAlgorithm(final JWSAlgorithm preferredJwsAlgorithm) {
-        this.preferredJwsAlgorithm = preferredJwsAlgorithm;
-    }
-
     public void setPreferredJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
         this.preferredJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
-    }
-
-    public Integer getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(final Integer maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    public int getMaxClockSkew() {
-        return maxClockSkew;
-    }
-
-    public void setMaxClockSkew(final int maxClockSkew) {
-        this.maxClockSkew = maxClockSkew;
-    }
-
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(final int readTimeout) {
-        this.readTimeout = readTimeout;
     }
 
     public void configureHttpRequest(HTTPRequest request) {
         request.setConnectTimeout(getConnectTimeout());
         request.setReadTimeout(getReadTimeout());
-    }
-
-    public ResourceRetriever getResourceRetriever() {
-        return resourceRetriever;
     }
 
     public ResourceRetriever findResourceRetriever() {
@@ -377,32 +269,12 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return resourceRetriever;
     }
 
-    public void setDiscoveryURI(final String discoveryURI) {
-        this.discoveryURI = discoveryURI;
-    }
-
-    public void setResourceRetriever(final ResourceRetriever resourceRetriever) {
-        this.resourceRetriever = resourceRetriever;
-    }
-
-    public String getResponseType() {
-        return responseType.toString();
-    }
-
     public void setResponseType(final String responseType) {
         try {
             this.responseType = ResponseType.parse(responseType);
         } catch (ParseException e) {
             throw new TechnicalException("Unrecognised responseType: " + responseType, e);
         }
-    }
-
-    public String getResponseMode() {
-        return responseMode;
-    }
-
-    public void setResponseMode(final String responseMode) {
-        this.responseMode = responseMode;
     }
 
     public String findLogoutUrl() {
@@ -414,40 +286,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return logoutUrl;
     }
 
-    public String getLogoutUrl() {
-        return logoutUrl;
-    }
-
-    public void setLogoutUrl(final String logoutUrl) {
-        this.logoutUrl = logoutUrl;
-    }
-
-    public boolean isWithState() {
-        return withState;
-    }
-
-    public void setWithState(final boolean withState) {
-        this.withState = withState;
-    }
-
-    public boolean isExpireSessionWithToken() {
-        return expireSessionWithToken;
-    }
-
-    public void setExpireSessionWithToken(boolean expireSessionWithToken) {
-        this.expireSessionWithToken = expireSessionWithToken;
-    }
-
     public int getTokenExpirationAdvance() {
         return isExpireSessionWithToken() ? tokenExpirationAdvance : -1;
-    }
-
-    public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
-        this.tokenExpirationAdvance = tokenExpirationAdvance;
-    }
-
-    public ValueGenerator getStateGenerator() {
-        return stateGenerator;
     }
 
     public void setStateGenerator(final ValueGenerator stateGenerator) {
@@ -455,17 +295,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.stateGenerator = stateGenerator;
     }
 
-    public ValueGenerator getCodeVerifierGenerator() {
-        return codeVerifierGenerator;
-    }
-
     public void setCodeVerifierGenerator(ValueGenerator codeVerifierGenerator) {
         assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
         this.codeVerifierGenerator = codeVerifierGenerator;
-    }
-
-    public ValueRetriever getValueRetriever() {
-        return valueRetriever;
     }
 
     public void setValueRetriever(ValueRetriever valueRetriever) {
@@ -479,18 +311,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return logoutHandler;
     }
 
-    public void setLogoutHandler(final LogoutHandler logoutHandler) {
-        this.logoutHandler = logoutHandler;
-    }
-
-    public TokenValidator getTokenValidator() {
-        return tokenValidator;
-    }
-
-    public void setTokenValidator(final TokenValidator tokenValidator) {
-        this.tokenValidator = tokenValidator;
-    }
-
     public TokenValidator findTokenValidator() {
         if (this.tokenValidator == null) {
             setTokenValidator(new TokenValidator(this));
@@ -498,56 +318,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return tokenValidator;
     }
 
-    public Map<String, String> getMappedClaims() {
-        return mappedClaims;
-    }
-
-    public void setMappedClaims(Map<String, String> mappedClaims) {
-        this.mappedClaims = mappedClaims;
-    }
-
-    public boolean isAllowUnsignedIdTokens() {
-        return allowUnsignedIdTokens;
-    }
-
-    public void setAllowUnsignedIdTokens(final boolean allowUnsignedIdTokens) {
-        this.allowUnsignedIdTokens = allowUnsignedIdTokens;
-    }
-
-    public boolean isIncludeAccessTokenClaimsInProfile() {
-        return includeAccessTokenClaimsInProfile;
-    }
-
-    public void setIncludeAccessTokenClaimsInProfile(boolean includeAccessTokenClaimsInProfile) {
-        this.includeAccessTokenClaimsInProfile = includeAccessTokenClaimsInProfile;
-    }
-
-    public String getSSLFactory() {
-        return SSLFactory;
-    }
-
-    public void setSSLFactory(final String SSLFactory) {
-        this.SSLFactory = SSLFactory;
-    }
-
-    public PrivateKeyJWTClientAuthnMethodConfig getPrivateKeyJWTClientAuthnMethodConfig() {
-        return privateKeyJWTClientAuthnMethodConfig;
-    }
-
-    public void setPrivateKeyJWTClientAuthnMethodConfig(final PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig) {
-        this.privateKeyJWTClientAuthnMethodConfig = privateKeyJWTClientAuthnMethodConfig;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
-            "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
-            "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
-            "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxAge", maxAge, "maxClockSkew", maxClockSkew,
-            "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
-            "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
-            "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
-            "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens,
-            "SSLFactory", SSLFactory, "privateKeyJWTClientAuthnMethodConfig", privateKeyJWTClientAuthnMethodConfig);
+    public String getResponseType() {
+        return responseType.toString();
     }
 }

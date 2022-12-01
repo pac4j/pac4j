@@ -1,10 +1,15 @@
 package org.pac4j.jwt.config.signature;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.util.JWKHelper;
@@ -19,6 +24,8 @@ import java.security.interfaces.RSAPublicKey;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Getter
+@Setter
 public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
 
     private RSAPublicKey publicKey;
@@ -59,8 +66,8 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
         CommonHelper.assertNotNull("privateKey", privateKey);
 
         try {
-            final JWSSigner signer = new RSASSASigner(this.privateKey);
-            final var signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            val signer = new RSASSASigner(this.privateKey);
+            val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
         } catch (final JOSEException e) {
@@ -73,7 +80,7 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
         init();
         CommonHelper.assertNotNull("publicKey", publicKey);
 
-        final JWSVerifier verifier = new RSASSAVerifier(this.publicKey);
+        val verifier = new RSASSAVerifier(this.publicKey);
         return jwt.verify(verifier);
     }
 
@@ -83,30 +90,9 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
         this.publicKey = (RSAPublicKey) keyPair.getPublic();
     }
 
-    public RSAPublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(final RSAPublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public RSAPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(final RSAPrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
     public void setKeysFromJwk(final String json) {
-        final var pair = JWKHelper.buildRSAKeyPairFromJwk(json);
+        val pair = JWKHelper.buildRSAKeyPairFromJwk(json);
         this.publicKey = (RSAPublicKey) pair.getPublic();
         this.privateKey = (RSAPrivateKey) pair.getPrivate();
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "keys", "[protected]", "algorithm", algorithm);
     }
 }

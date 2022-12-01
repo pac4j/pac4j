@@ -1,5 +1,6 @@
 package org.pac4j.http.credentials.authenticator;
 
+import lombok.ToString;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -13,10 +14,12 @@ import java.util.regex.Pattern;
  * @author Jerome Leleu
  * @since 3.3.0
  */
+@ToString(onlyExplicitlyIncluded = true)
 public abstract class AbstractRegexpAuthenticator extends ProfileDefinitionAware {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @ToString.Include
     protected String regexpPattern;
 
     protected Pattern pattern;
@@ -25,10 +28,5 @@ public abstract class AbstractRegexpAuthenticator extends ProfileDefinitionAware
         CommonHelper.assertNotNull("regexpPattern", regexpPattern);
         this.regexpPattern = regexpPattern;
         this.pattern = Pattern.compile(regexpPattern);
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "regexpPattern", this.regexpPattern);
     }
 }

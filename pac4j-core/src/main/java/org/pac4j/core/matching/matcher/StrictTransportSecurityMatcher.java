@@ -1,9 +1,11 @@
 package org.pac4j.core.matching.matcher;
 
-import org.pac4j.core.context.WebContextHelper;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * Strict transport security header matcher.
@@ -11,6 +13,9 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@Getter
+@Setter
+@ToString
 public class StrictTransportSecurityMatcher implements Matcher {
 
     /**
@@ -32,18 +37,5 @@ public class StrictTransportSecurityMatcher implements Matcher {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }
         return true;
-    }
-
-    public int getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(int maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "maxAge", maxAge);
     }
 }

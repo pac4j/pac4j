@@ -1,10 +1,10 @@
 package org.pac4j.http.credentials;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.CommonHelper;
 
 import java.security.cert.X509Certificate;
-import java.util.Objects;
 
 /**
  * X509 credentials.
@@ -12,6 +12,8 @@ import java.util.Objects;
  * @author Jerome Leleu
  * @since 3.3.0
  */
+@EqualsAndHashCode
+@Getter
 public class X509Credentials extends Credentials {
 
     private static final long serialVersionUID = 2733744949087200768L;
@@ -22,26 +24,8 @@ public class X509Credentials extends Credentials {
         this.certificate = certificate;
     }
 
-    public X509Certificate getCertificate() {
-        return certificate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        var that = (X509Credentials) o;
-        return Objects.equals(certificate, that.certificate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(certificate);
-    }
-
     @Override
     public String toString() {
-        return CommonHelper.toNiceString(getClass(),
-            "certificate.serialNumber", certificate != null ? certificate.getSerialNumber() : null);
+        return "X509Credentials(certificate.serialNumber=" + (certificate != null ? certificate.getSerialNumber() : null) + ")";
     }
 }

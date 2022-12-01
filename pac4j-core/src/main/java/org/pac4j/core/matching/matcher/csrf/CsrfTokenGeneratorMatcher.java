@@ -1,5 +1,9 @@
 package org.pac4j.core.matching.matcher.csrf;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -13,6 +17,9 @@ import org.pac4j.core.util.Pac4jConstants;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@Getter
+@Setter
+@ToString
 public class CsrfTokenGeneratorMatcher implements Matcher {
 
     private CsrfTokenGenerator csrfTokenGenerator;
@@ -41,7 +48,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("csrfTokenGenerator", csrfTokenGenerator);
         if (addTokenAsAttribute || addTokenAsHeader || addTokenAsCookie) {
-            final var token = csrfTokenGenerator.get(context, sessionStore);
+            val token = csrfTokenGenerator.get(context, sessionStore);
 
             if (addTokenAsAttribute) {
                 context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
@@ -52,7 +59,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
             }
 
             if (addTokenAsCookie) {
-                final var cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
+                val cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
                 if (CommonHelper.isNotBlank(domain)) {
                     cookie.setDomain(domain);
                 } else {
@@ -77,88 +84,5 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
             }
         }
         return true;
-    }
-
-    public CsrfTokenGenerator getCsrfTokenGenerator() {
-        return csrfTokenGenerator;
-    }
-
-    public void setCsrfTokenGenerator(final CsrfTokenGenerator csrfTokenGenerator) {
-        this.csrfTokenGenerator = csrfTokenGenerator;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(final String domain) {
-        this.domain = domain;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(final String path) {
-        this.path = path;
-    }
-
-    public Boolean getHttpOnly() {
-        return httpOnly;
-    }
-
-    public void setHttpOnly(final Boolean httpOnly) {
-        this.httpOnly = httpOnly;
-    }
-
-    public Boolean getSecure() {
-        return secure;
-    }
-
-    public void setSecure(final Boolean secure) {
-        this.secure = secure;
-    }
-
-    public Integer getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(Integer maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    public String getSameSitePolicy() { return sameSitePolicy; }
-
-    public void setSameSitePolicy(String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
-
-    public boolean isAddTokenAsAttribute() {
-        return addTokenAsAttribute;
-    }
-
-    public void setAddTokenAsAttribute(final boolean addTokenAsAttribute) {
-        this.addTokenAsAttribute = addTokenAsAttribute;
-    }
-
-    public boolean isAddTokenAsHeader() {
-        return addTokenAsHeader;
-    }
-
-    public void setAddTokenAsHeader(final boolean addTokenAsHeader) {
-        this.addTokenAsHeader = addTokenAsHeader;
-    }
-
-    public boolean isAddTokenAsCookie() {
-        return addTokenAsCookie;
-    }
-
-    public void setAddTokenAsCookie(final boolean addTokenAsCookie) {
-        this.addTokenAsCookie = addTokenAsCookie;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "csrfTokenGenerator", csrfTokenGenerator, "domain", domain, "path", path,
-            "httpOnly", httpOnly, "secure", secure, "maxAge", maxAge, "addTokenAsAttribute", addTokenAsAttribute,
-            "addTokenAsHeader", addTokenAsHeader, "addTokenAsCookie", addTokenAsCookie);
     }
 }

@@ -3,6 +3,10 @@ package org.pac4j.http.credentials.authenticator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -24,7 +28,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -34,6 +37,9 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.1.0
  */
+@Getter
+@Setter
+@ToString
 public class RestAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAuthenticator.class);
@@ -64,15 +70,15 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var credentials = (UsernamePasswordCredentials) cred;
-        final var username = credentials.getUsername();
-        final var password = credentials.getPassword();
+        val credentials = (UsernamePasswordCredentials) cred;
+        val username = credentials.getUsername();
+        val password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
             logger.info("Empty username or password");
             return Optional.of(credentials);
         }
 
-        final var body = callRestApi(username, password);
+        val body = callRestApi(username, password);
         logger.debug("body: {}", body);
         if (body != null) {
             buildProfile(credentials, body);
@@ -82,7 +88,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     }
 
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
-        final var profileClass = (RestProfile) getProfileDefinition().newProfile();
+        val profileClass = (RestProfile) getProfileDefinition().newProfile();
         final RestProfile profile;
         try {
             profile = mapper.readValue(body, profileClass.getClass());
@@ -103,14 +109,14 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
      */
     protected String callRestApi(final String username, final String password) {
 
-        final var basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
-        final Map<String, String> headers = new HashMap<>();
+        val basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+        val headers = new HashMap<String, String>();
         headers.put(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX + basicAuth);
 
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openPostConnection(new URL(url), headers);
-            var code = connection.getResponseCode();
+            val code = connection.getResponseCode();
             if (code == 200) {
                 logger.debug("Authentication success for username: {}", username);
                 return HttpUtils.readBody(connection);
@@ -126,26 +132,5 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         } finally {
             HttpUtils.closeConnection(connection);
         }
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(final String url) {
-        this.url = url;
-    }
-
-    public ObjectMapper getMapper() {
-        return mapper;
-    }
-
-    public void setMapper(final ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "url", url, "mapper", mapper);
     }
 }

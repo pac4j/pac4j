@@ -1,5 +1,9 @@
 package org.pac4j.core.authorization.generator;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -15,6 +19,9 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Setter
+@Getter
+@ToString
 public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenerator {
 
     private ProfileService profileService;
@@ -31,7 +38,7 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         CommonHelper.assertNotNull("profileService", profileService);
 
-        final var linkedProfile = profileService.findByLinkedId(profile.getId());
+        val linkedProfile = profileService.findByLinkedId(profile.getId());
 
         if (linkedProfile != null) {
             return Optional.ofNullable(linkedProfile);
@@ -43,27 +50,5 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
                 return Optional.ofNullable(profile);
             }
         }
-    }
-
-    public ProfileService getProfileService() {
-        return profileService;
-    }
-
-    public void setProfileService(final ProfileService profileService) {
-        this.profileService = profileService;
-    }
-
-    public boolean isFailIfLinkedUserNotFound() {
-        return failIfLinkedUserNotFound;
-    }
-
-    public void setFailIfLinkedUserNotFound(final boolean failIfLinkedUserNotFound) {
-        this.failIfLinkedUserNotFound = failIfLinkedUserNotFound;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "profileService", profileService,
-            "failIfLinkedUserNotFound", failIfLinkedUserNotFound);
     }
 }

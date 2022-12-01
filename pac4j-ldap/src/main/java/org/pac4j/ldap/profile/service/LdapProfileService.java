@@ -1,5 +1,9 @@
 package org.pac4j.ldap.profile.service;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.ldaptive.*;
 import org.ldaptive.auth.AuthenticationRequest;
 import org.ldaptive.auth.AuthenticationResponse;
@@ -31,6 +35,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     private Authenticator ldapAuthenticator;
@@ -80,13 +87,13 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void insert(final Map<String, Object> attributes) {
         attributes.put("objectClass", "person");
-        final var ldapEntry = LdapEntry.builder()
+        val ldapEntry = LdapEntry.builder()
             .dn(getEntryId(attributes))
             .attributes(getLdapAttributes(attributes))
             .build();
 
         try {
-            final var add = new AddOperation(connectionFactory);
+            val add = new AddOperation(connectionFactory);
             add.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             add.execute(new AddRequest(ldapEntry.getDn(), ldapEntry.getAttributes()));
         } catch (final LdapException e) {
@@ -99,16 +106,16 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     protected List<LdapAttribute> getLdapAttributes(final Map<String, Object> attributes) {
-        final List<LdapAttribute> ldapAttributes = new ArrayList<>();
-        for (final var entry : attributes.entrySet()) {
-            final var value = entry.getValue();
+        val ldapAttributes = new ArrayList<LdapAttribute>();
+        for (val entry : attributes.entrySet()) {
+            val value = entry.getValue();
             if (value != null) {
-                final var key = entry.getKey();
+                val key = entry.getKey();
                 final LdapAttribute ldapAttribute;
                 if (value instanceof String) {
                     ldapAttribute = new LdapAttribute(key, (String) value);
                 } else if (value instanceof List) {
-                    final var list = (List<String>) value;
+                    val list = (List<String>) value;
                     ldapAttribute = new LdapAttribute(key, list.toArray(new String[list.size()]));
                 } else {
                     ldapAttribute = new LdapAttribute(key, value.toString());
@@ -122,13 +129,13 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void update(final Map<String, Object> attributes) {
         try {
-            final var modify = new ModifyOperation(connectionFactory);
+            val modify = new ModifyOperation(connectionFactory);
             modify.setThrowCondition(ResultPredicate.NOT_SUCCESS);
-            final List<AttributeModification> modifications = new ArrayList<>();
-            for (final var attribute : getLdapAttributes(attributes)) {
+            val modifications = new ArrayList<AttributeModification>();
+            for (val attribute : getLdapAttributes(attributes)) {
                 modifications.add(new AttributeModification(AttributeModification.Type.REPLACE, attribute));
             }
-            final var modifyRequest = new ModifyRequest(
+            val modifyRequest = new ModifyRequest(
                 getEntryId(attributes), modifications.toArray(new AttributeModification[modifications.size()]));
             modify.execute(modifyRequest);
         } catch (final LdapException e) {
@@ -139,7 +146,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     @Override
     protected void deleteById(final String id) {
         try {
-            final var delete = new DeleteOperation(connectionFactory);
+            val delete = new DeleteOperation(connectionFactory);
             delete.setThrowCondition(ResultPredicate.NOT_SUCCESS);
             delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
         } catch (final LdapException e) {
@@ -149,12 +156,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
-        final List<Map<String, Object>> listAttributes = new ArrayList<>();
+        val listAttributes = new ArrayList<Map<String, Object>>();
         try {
-            final var search = new SearchOperation(connectionFactory);
-            final var result = search.execute(new SearchRequest(usersDn,key + "=" + value,
+            val search = new SearchOperation(connectionFactory);
+            val result = search.execute(new SearchRequest(usersDn,key + "=" + value,
                 names.toArray(new String[names.size()])));
-            for (final var entry : result.getEntries()) {
+            for (val entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }
         } catch (final LdapException e) {
@@ -164,9 +171,9 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     protected Map<String, Object> getAttributesFromEntry(final LdapEntry entry) {
-        final Map<String, Object> attributes = new HashMap<>();
-        for (final var attribute : entry.getAttributes()) {
-            final var name = attribute.getName();
+        val attributes = new HashMap<String, Object>();
+        for (val attribute : entry.getAttributes()) {
+            val name = attribute.getName();
             if (attribute.size() > 1) {
                 attributes.put(name, attribute.getStringValues());
             } else {
@@ -180,14 +187,14 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var credentials = (UsernamePasswordCredentials) cred;
-        final var username = credentials.getUsername();
+        val credentials = (UsernamePasswordCredentials) cred;
+        val username = credentials.getUsername();
         assertNotBlank(Pac4jConstants.USERNAME, username);
         final AuthenticationResponse response;
         try {
             logger.debug("Attempting LDAP authentication for: {}", credentials);
-            final var attributesToRead = defineAttributesToRead();
-            final var request = new AuthenticationRequest(username, new Credential(credentials.getPassword()),
+            val attributesToRead = defineAttributesToRead();
+            val request = new AuthenticationRequest(username, new Credential(credentials.getPassword()),
                     attributesToRead.toArray(new String[attributesToRead.size()]));
             response = this.ldapAuthenticator.authenticate(request);
         } catch (final LdapException e) {
@@ -196,10 +203,10 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         logger.debug("LDAP response: {}", response);
 
         if (response.isSuccess()) {
-            final var entry = response.getLdapEntry();
-            final List<Map<String, Object>> listAttributes = new ArrayList<>();
+            val entry = response.getLdapEntry();
+            val listAttributes = new ArrayList<Map<String, Object>>();
             listAttributes.add(getAttributesFromEntry(entry));
-            final var profile = convertAttributesToProfile(listAttributes, username);
+            val profile = convertAttributesToProfile(listAttributes, username);
             credentials.setUserProfile(profile);
             return Optional.of(credentials);
         }
@@ -208,36 +215,5 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             throw new AccountNotFoundException(username + " not found");
         }
         throw new BadCredentialsException("Invalid credentials for: " + username);
-    }
-
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    public void setConnectionFactory(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
-
-    public String getUsersDn() {
-        return usersDn;
-    }
-
-    public void setUsersDn(final String usersDn) {
-        this.usersDn = usersDn;
-    }
-
-    public Authenticator getLdapAuthenticator() {
-        return ldapAuthenticator;
-    }
-
-    public void setLdapAuthenticator(final Authenticator ldapAuthenticator) {
-        this.ldapAuthenticator = ldapAuthenticator;
-    }
-
-    @Override
-    public String toString() {
-        return toNiceString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator,
-                "usersDn", usersDn, "idAttribute", getIdAttribute(), "attributes", getAttributes(),
-                "profileDefinition", getProfileDefinition());
     }
 }

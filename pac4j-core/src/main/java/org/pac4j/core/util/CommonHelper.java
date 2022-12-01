@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.UnsupportedEncodingException;
@@ -161,7 +162,7 @@ public final class CommonHelper {
      */
     public static String addParameter(final String url, final String name, final String value) {
         if (url != null) {
-            final var sb = new StringBuilder();
+            val sb = new StringBuilder();
             sb.append(url);
             if (name != null) {
                 if (url.indexOf("?") >= 0) {
@@ -196,43 +197,15 @@ public final class CommonHelper {
     }
 
     /**
-     * Build a "nice toString" for an object.
-     *
-     * @param clazz class
-     * @param args  arguments
-     * @return a "nice toString" text
-     */
-    public static String toNiceString(final Class<?> clazz, final Object... args) {
-        final var sb = new StringBuilder();
-        sb.append("#");
-        sb.append(clazz.getSimpleName());
-        sb.append("# |");
-        var b = true;
-        for (final var arg : args) {
-            if (b) {
-                sb.append(" ");
-                sb.append(arg);
-                sb.append(":");
-            } else {
-                sb.append(" ");
-                sb.append(arg);
-                sb.append(" |");
-            }
-            b = !b;
-        }
-        return sb.toString();
-    }
-
-    /**
      * Return a random string of a certain size.
      *
      * @param size the size
      * @return the random size
      */
     public static String randomString(final int size) {
-        final var builder = new StringBuilder();
+        val builder = new StringBuilder();
         while (builder.length() < size) {
-            final var suffix = java.util.UUID.randomUUID().toString().replace("-", Pac4jConstants.EMPTY_STRING);
+            val suffix = java.util.UUID.randomUUID().toString().replace("-", Pac4jConstants.EMPTY_STRING);
             builder.append(suffix);
         }
         return builder.substring(0, size);
@@ -272,9 +245,9 @@ public final class CommonHelper {
         if (str == null || open == null || close == null) {
             return null;
         }
-        var start = str.indexOf(open);
+        val start = str.indexOf(open);
         if (start != INDEX_NOT_FOUND) {
-            var end = str.indexOf(close, start + open.length());
+            val end = str.indexOf(close, start + open.length());
             if (end != INDEX_NOT_FOUND) {
                 return str.substring(start + open.length(), end);
             }
@@ -289,7 +262,7 @@ public final class CommonHelper {
         if (separator == null) {
             return Pac4jConstants.EMPTY_STRING;
         }
-        var pos = str.indexOf(separator);
+        val pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
             return Pac4jConstants.EMPTY_STRING;
         }
@@ -303,7 +276,7 @@ public final class CommonHelper {
         if (separator.length() == 0) {
             return Pac4jConstants.EMPTY_STRING;
         }
-        var pos = str.indexOf(separator);
+        val pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
             return str;
         }
@@ -334,7 +307,7 @@ public final class CommonHelper {
                     try {
                         clazz = Class.forName(name, true, CommonHelper.class.getClassLoader());
                     } catch (final ClassNotFoundException e) {
-                        var tccl = Thread.currentThread().getContextClassLoader();
+                        val tccl = Thread.currentThread().getContextClassLoader();
                         if (tccl == null) {
                             clazz = Class.forName(name);
                         } else {

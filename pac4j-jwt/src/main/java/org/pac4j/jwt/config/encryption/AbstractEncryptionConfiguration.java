@@ -4,6 +4,10 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.InitializableObject;
 
@@ -15,6 +19,9 @@ import java.text.ParseException;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@ToString
+@Getter
+@Setter
 public abstract class AbstractEncryptionConfiguration extends InitializableObject implements EncryptionConfiguration {
 
     protected JWEAlgorithm algorithm;
@@ -25,11 +32,11 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
     public String encrypt(final JWT jwt) {
         init();
 
-        if (jwt instanceof SignedJWT) {
+        if (jwt instanceof SignedJWT signedJWT) {
             // Create JWE object with signed JWT as payload
             final var jweObject = new JWEObject(
                     new JWEHeader.Builder(this.algorithm, this.method).contentType("JWT").build(),
-                    new Payload((SignedJWT) jwt));
+                    new Payload(signedJWT));
 
             try {
                 // Perform encryption
@@ -42,11 +49,11 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
             return jweObject.serialize();
         } else {
             // create header
-            final var header = new JWEHeader(this.algorithm, this.method);
+            val header = new JWEHeader(this.algorithm, this.method);
 
             try {
                 // encrypted jwt
-                var encryptedJwt = new EncryptedJWT(header, jwt.getJWTClaimsSet());
+                val encryptedJwt = new EncryptedJWT(header, jwt.getJWTClaimsSet());
 
                 // Perform encryption
                 encryptedJwt.encrypt(buildEncrypter());
@@ -80,20 +87,4 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
      * @return the appropriate decrypter
      */
     protected abstract JWEDecrypter buildDecrypter();
-
-    public JWEAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(final JWEAlgorithm algorithm) {
-        this.algorithm = algorithm;
-    }
-
-    public EncryptionMethod getMethod() {
-        return method;
-    }
-
-    public void setMethod(final EncryptionMethod method) {
-        this.method = method;
-    }
 }

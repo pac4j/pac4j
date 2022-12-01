@@ -3,6 +3,10 @@ package org.pac4j.jwt.profile;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
@@ -17,6 +21,9 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Getter
+@Setter
+@ToString
 public class JwtGenerator {
 
     public static final String INTERNAL_ROLES = "$int_roles";
@@ -47,10 +54,10 @@ public class JwtGenerator {
      */
     public String generate(final Map<String, Object> claims) {
         // claims builder
-        final var builder = new JWTClaimsSet.Builder();
+        val builder = new JWTClaimsSet.Builder();
 
         // add claims
-        for (final var entry : claims.entrySet()) {
+        for (val entry : claims.entrySet()) {
             builder.claim(entry.getKey(), entry.getValue());
         }
         if (this.expirationTime != null) {
@@ -102,7 +109,7 @@ public class JwtGenerator {
 
     protected JWTClaimsSet buildJwtClaimsSet(final UserProfile profile) {
         // claims builder with subject and issue time
-        final var builder = new JWTClaimsSet.Builder()
+        val builder = new JWTClaimsSet.Builder()
                 .issueTime(new Date());
 
         if (this.expirationTime != null) {
@@ -110,8 +117,8 @@ public class JwtGenerator {
         }
 
         // add attributes
-        final var attributes = profile.getAttributes();
-        for (final var entry : attributes.entrySet()) {
+        val attributes = profile.getAttributes();
+        for (val entry : attributes.entrySet()) {
             builder.claim(entry.getKey(), entry.getValue());
         }
         builder.claim(INTERNAL_ROLES, profile.getRoles());
@@ -123,33 +130,11 @@ public class JwtGenerator {
         return builder.build();
     }
 
-    public SignatureConfiguration getSignatureConfiguration() {
-        return signatureConfiguration;
-    }
-
-    public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
-        this.signatureConfiguration = signatureConfiguration;
-    }
-
-    public EncryptionConfiguration getEncryptionConfiguration() {
-        return encryptionConfiguration;
-    }
-
-    public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
-        this.encryptionConfiguration = encryptionConfiguration;
-    }
-
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());
     }
 
     public void setExpirationTime(final Date expirationTime) {
         this.expirationTime = new Date(expirationTime.getTime());
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toNiceString(this.getClass(), "signatureConfiguration", signatureConfiguration,
-            "encryptionConfiguration", encryptionConfiguration);
     }
 }
