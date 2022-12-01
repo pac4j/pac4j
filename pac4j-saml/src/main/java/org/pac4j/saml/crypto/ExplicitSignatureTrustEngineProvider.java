@@ -1,5 +1,6 @@
 package org.pac4j.saml.crypto;
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver;
@@ -31,11 +32,11 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
 
     @Override
     public SignatureTrustEngine build() {
-        final var metadataCredentialResolver = new MetadataCredentialResolver();
+        val metadataCredentialResolver = new MetadataCredentialResolver();
         final MetadataResolver metadataResolver = SAML2Utils.buildChainingMetadataResolver(idpMetadataResolver, spMetadataResolver);
-        final var roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
+        val roleResolver = new PredicateRoleDescriptorResolver(metadataResolver);
 
-        final var keyResolver =
+        val keyResolver =
                 DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
 
         metadataCredentialResolver.setKeyInfoCredentialResolver(keyResolver);

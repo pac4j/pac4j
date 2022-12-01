@@ -1,20 +1,23 @@
 package org.pac4j.core.profile.service;
 
+import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.junit.*;
-import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.util.TestsConstants;
+import org.junit.Before;
+import org.junit.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.TestsConstants;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests the {@link InMemoryProfileService}.
@@ -42,7 +45,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     public void setUp() {
         inMemoryProfileService = new InMemoryProfileService<>(x -> new CommonProfile());
         inMemoryProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final var password = PASSWORD_ENCODER.encode(PASSWORD);
+        val password = PASSWORD_ENCODER.encode(PASSWORD);
         // insert sample data
         final Map<String, Object> properties1 = new HashMap<>();
         properties1.put(USERNAME, GOOD_USERNAME);
@@ -66,15 +69,15 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 
     @Test(expected = AccountNotFoundException.class)
     public void authentFailed() {
-        final var credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
+        val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
         inMemoryProfileService.validate(credentials, null, null);
     }
 
     @Test
     public void authentSuccessSingleAttribute() {
-        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         inMemoryProfileService.validate(credentials, null, null);
-        final var profile = credentials.getUserProfile();
+        val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(GOOD_USERNAME, profile.getUsername());
         assertEquals(2, profile.getAttributes().size());
@@ -83,28 +86,28 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 
     @Test
     public void testCreateUpdateFindDelete() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(TEST_ID);
         profile.setLinkedId(TEST_LINKED_ID);
         profile.addAttribute(USERNAME, TEST_USER);
         // create
         inMemoryProfileService.create(profile, TEST_PASS);
         // check credentials
-        final var credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS);
+        val credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS);
         inMemoryProfileService.validate(credentials, null, null);
-        final var profile1 = credentials.getUserProfile();
+        val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
-        final var results = getData(TEST_ID);
+        val results = getData(TEST_ID);
         assertEquals(1, results.size());
-        final var result = results.get(0);
+        val result = results.get(0);
         assertEquals(5, result.size());
         assertEquals(TEST_ID, result.get("id"));
         assertEquals(TEST_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
         assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(TEST_USER, result.get(USERNAME));
         // findById
-        final var profile2 = inMemoryProfileService.findById(TEST_ID);
+        val profile2 = inMemoryProfileService.findById(TEST_ID);
         assertEquals(TEST_ID, profile2.getId());
         assertEquals(TEST_LINKED_ID, profile2.getLinkedId());
         assertEquals(TEST_USER, profile2.getUsername());
@@ -121,9 +124,9 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
-        final var credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2);
+        val credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2);
         inMemoryProfileService.validate(credentials2, null, null);
-        final var profile3 = credentials.getUserProfile();
+        val profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // update with no password update
         inMemoryProfileService.update(profile, null);
@@ -134,11 +137,11 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
         inMemoryProfileService.validate(credentials2, null, null);
-        final var profile4 = credentials.getUserProfile();
+        val profile4 = credentials.getUserProfile();
         assertNotNull(profile4);
         // remove
         inMemoryProfileService.remove(profile);
-        final var results3 = getData(TEST_ID);
+        val results3 = getData(TEST_ID);
         assertEquals(0, results3.size());
     }
 

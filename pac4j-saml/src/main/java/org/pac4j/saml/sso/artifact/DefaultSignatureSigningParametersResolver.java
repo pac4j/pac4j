@@ -1,6 +1,7 @@
 package org.pac4j.saml.sso.artifact;
 
 
+import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.saml.criterion.RoleDescriptorCriterion;
@@ -27,7 +28,7 @@ public class DefaultSignatureSigningParametersResolver implements SignatureSigni
 
     @Override
     public Iterable<SignatureSigningParameters> resolve(final CriteriaSet criteria) throws ResolverException {
-        final var ret = resolveSingle(criteria);
+        val ret = resolveSingle(criteria);
         return ret == null ? Collections.emptySet() : Collections.singleton(ret);
     }
 
@@ -36,7 +37,7 @@ public class DefaultSignatureSigningParametersResolver implements SignatureSigni
         if (criteria == null) {
             throw new ResolverException("CriteriaSet was null");
         }
-        final var role = criteria.get(RoleDescriptorCriterion.class);
+        val role = criteria.get(RoleDescriptorCriterion.class);
         if (role == null) {
             throw new ResolverException("No RoleDescriptorCriterion specified");
         }

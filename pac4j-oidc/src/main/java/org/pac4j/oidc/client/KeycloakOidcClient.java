@@ -1,5 +1,6 @@
 package org.pac4j.oidc.client;
 
+import lombok.val;
 import org.pac4j.oidc.authorization.generator.KeycloakRolesAuthorizationGenerator;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
@@ -29,7 +30,7 @@ public class KeycloakOidcClient extends OidcClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
+        val profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new KeycloakOidcProfile()));
         defaultProfileCreator(profileCreator);
 

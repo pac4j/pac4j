@@ -1,5 +1,6 @@
 package org.pac4j.core.config;
 
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public final class ConfigBuilder {
         try {
             logger.info("Build the configuration from factory: {}", factoryName);
 
-            final var factory = (ConfigFactory) CommonHelper.getConstructor(factoryName).newInstance();
+            val factory = (ConfigFactory) CommonHelper.getConstructor(factoryName).newInstance();
             return factory.build(parameters);
         } catch (final Exception e) {
             throw new TechnicalException("Cannot build configuration", e);

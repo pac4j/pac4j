@@ -1,12 +1,14 @@
 package org.pac4j.core.profile.creator;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This class tests the {@link AuthenticatorProfileCreator}.
@@ -23,10 +25,10 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnProfile() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN);
         credentials.setUserProfile(profile);
-        final var profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(credentials, null, null).get();
+        val profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(credentials, null, null).get();
         assertEquals(profile, profile2);
     }
 }

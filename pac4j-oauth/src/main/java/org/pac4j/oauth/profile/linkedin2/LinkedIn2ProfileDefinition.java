@@ -1,6 +1,7 @@
 package org.pac4j.oauth.profile.linkedin2;
 
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -8,9 +9,9 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.util.Arrays;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the LinkedIn profile definition.
@@ -37,13 +38,13 @@ public class LinkedIn2ProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public LinkedIn2Profile extractUserProfile(final String body) {
-        final var profile = (LinkedIn2Profile) newProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = (LinkedIn2Profile) newProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json == null) {
             raiseProfileExtractionJsonError(body);
         }
         profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-        for (final var attribute : getPrimaryAttributes()) {
+        for (val attribute : getPrimaryAttributes()) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
         }
         return profile;

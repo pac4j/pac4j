@@ -4,6 +4,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.jwt.AbstractJwtProfile;
 import org.pac4j.oidc.client.OidcClient;
@@ -108,7 +109,7 @@ public class OidcProfile extends AbstractJwtProfile {
             } else {
                 Date exp = null;
                 try {
-                    final var jwtClaimsSet = JWTParser.parse(accessToken.getValue()).getJWTClaimsSet();
+                    val jwtClaimsSet = JWTParser.parse(accessToken.getValue()).getJWTClaimsSet();
                     if (jwtClaimsSet != null) {
                         exp = jwtClaimsSet.getExpirationTime();
                     }

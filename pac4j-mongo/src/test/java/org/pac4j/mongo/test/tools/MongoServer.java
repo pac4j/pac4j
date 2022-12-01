@@ -7,6 +7,7 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.bson.Document;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -42,11 +43,11 @@ public final class MongoServer implements TestsConstants {
             mongodExecutable.start();
 
             // populate
-            final var mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
-            final var db = mongo.getDatabase("users");
+            val mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
+            val db = mongo.getDatabase("users");
             db.createCollection("users");
-            final var collection = db.getCollection("users");
-            final var password = PASSWORD_ENCODER.encode(PASSWORD);
+            val collection = db.getCollection("users");
+            val password = PASSWORD_ENCODER.encode(PASSWORD);
             Map<String, Object> properties1 = new HashMap<>();
             properties1.put(USERNAME, GOOD_USERNAME);
             properties1.put(PASSWORD, password);

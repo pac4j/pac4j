@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -35,7 +36,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var client = new CasOAuthWrapperClient();
+        val client = new CasOAuthWrapperClient();
         client.setKey("key");
         client.setSecret("secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
@@ -47,7 +48,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (CasOAuthWrapperProfile) userProfile;
+        val profile = (CasOAuthWrapperProfile) userProfile;
         assertEquals(getLogin(), profile.getId());
         assertEquals(CasOAuthWrapperProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + getLogin(),
                 profile.getTypedId());

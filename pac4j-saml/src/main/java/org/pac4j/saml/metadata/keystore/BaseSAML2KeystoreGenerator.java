@@ -1,10 +1,7 @@
 package org.pac4j.saml.metadata.keystore;
 
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERSequence;
+import lombok.val;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -20,11 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.Signature;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -70,21 +63,21 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
 
             validate();
 
-            final var ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
-            final var password = saml2Configuration.getKeystorePassword().toCharArray();
+            val ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
+            val password = saml2Configuration.getKeystorePassword().toCharArray();
             ks.load(null, password);
 
-            final var kpg = KeyPairGenerator.getInstance("RSA");
+            val kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(saml2Configuration.getPrivateKeySize());
-            final var kp = kpg.genKeyPair();
+            val kp = kpg.genKeyPair();
 
-            final var sigAlg = saml2Configuration.getCertificateSignatureAlg();
-            final var sigAlgID = new DefaultSignatureAlgorithmIdentifierFinder().find(sigAlg);
-            final var dn = InetAddress.getLocalHost().getHostName();
-            final var certificate = createSelfSignedCert(new X500Name("CN=" + dn), sigAlg, sigAlgID, kp);
+            val sigAlg = saml2Configuration.getCertificateSignatureAlg();
+            val sigAlgID = new DefaultSignatureAlgorithmIdentifierFinder().find(sigAlg);
+            val dn = InetAddress.getLocalHost().getHostName();
+            val certificate = createSelfSignedCert(new X500Name("CN=" + dn), sigAlg, sigAlgID, kp);
 
-            final var keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
-            final var signingKey = kp.getPrivate();
+            val keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
+            val signingKey = kp.getPrivate();
             ks.setKeyEntry(saml2Configuration.getKeyStoreAlias(), signingKey, keyPassword, new Certificate[]{certificate});
 
             store(ks, certificate, signingKey);
@@ -116,36 +109,36 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     private X509Certificate createSelfSignedCert(final X500Name dn, final String sigName,
                                                  final AlgorithmIdentifier sigAlgID,
                                                  final KeyPair keyPair) throws Exception {
-        final var certGen = new V3TBSCertificateGenerator();
+        val certGen = new V3TBSCertificateGenerator();
 
         certGen.setSerialNumber(new ASN1Integer(BigInteger.valueOf(1)));
         certGen.setIssuer(dn);
         certGen.setSubject(dn);
 
-        final var startDate = LocalDateTime.now(Clock.systemUTC()).minusSeconds(1);
+        val startDate = LocalDateTime.now(Clock.systemUTC()).minusSeconds(1);
         certGen.setStartDate(time(startDate));
 
-        final var endDate = startDate.plus(saml2Configuration.getCertificateExpirationPeriod());
+        val endDate = startDate.plus(saml2Configuration.getCertificateExpirationPeriod());
         certGen.setEndDate(time(endDate));
 
         certGen.setSignature(sigAlgID);
         certGen.setSubjectPublicKeyInfo(SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
 
-        final var sig = Signature.getInstance(sigName);
+        val sig = Signature.getInstance(sigName);
 
         sig.initSign(keyPair.getPrivate());
 
         sig.update(certGen.generateTBSCertificate().getEncoded(ASN1Encoding.DER));
 
-        final var tbsCert = certGen.generateTBSCertificate();
+        val tbsCert = certGen.generateTBSCertificate();
 
-        final var v = new ASN1EncodableVector();
+        val v = new ASN1EncodableVector();
 
         v.add(tbsCert);
         v.add(sigAlgID);
         v.add(new DERBitString(sig.sign()));
 
-        final var cert = (X509Certificate) CertificateFactory.getInstance("X.509")
+        val cert = (X509Certificate) CertificateFactory.getInstance("X.509")
             .generateCertificate(new ByteArrayInputStream(new DERSequence(v).getEncoded(ASN1Encoding.DER)));
 
         // check the certificate - this will confirm the encoded sig algorithm ID is correct.

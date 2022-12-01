@@ -2,6 +2,7 @@ package org.pac4j.oidc.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
@@ -59,22 +60,22 @@ public class AzureAd2Client extends OidcClient {
      * <p>https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token</p>
      */
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
-        final var azureConfig = (AzureAd2OidcConfiguration) getConfiguration();
+        val azureConfig = (AzureAd2OidcConfiguration) getConfiguration();
         HttpURLConnection connection = null;
         try {
             final Map<String, String> headers = new HashMap<>();
             headers.put(HttpConstants.CONTENT_TYPE_HEADER, HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE);
             headers.put(HttpConstants.ACCEPT_HEADER, HttpConstants.APPLICATION_JSON);
             // get the token endpoint from discovery URI
-            final var tokenEndpointURL = azureConfig.findProviderMetadata().getTokenEndpointURI().toURL();
+            val tokenEndpointURL = azureConfig.findProviderMetadata().getTokenEndpointURI().toURL();
             connection = HttpUtils.openPostConnection(tokenEndpointURL, headers);
 
-            final var out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
+            val out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),
                 StandardCharsets.UTF_8));
             out.write(azureConfig.makeOauth2TokenRequest(azureAdProfile.getRefreshToken().getValue()));
             out.close();
 
-            final var responseCode = connection.getResponseCode();
+            val responseCode = connection.getResponseCode();
             if (responseCode != 200) {
                 throw new TechnicalException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
             }

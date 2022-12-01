@@ -1,12 +1,13 @@
 package org.pac4j.oauth.profile.linkedin2;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
+import lombok.val;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  *
@@ -426,10 +427,10 @@ public class LinkedIn2ProfilePicture implements Serializable {
     }
 
     public static <T> T[] deepCopy(T[] array) {
-        final var mapper = new ObjectMapper();
+        val mapper = new ObjectMapper();
         // per https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects
         // per https://stackoverflow.com/questions/49903859/deep-copy-using-jackson-string-or-jsonnode
-        final var tb = new TokenBuffer(mapper, false);
+        val tb = new TokenBuffer(mapper, false);
         try {
             mapper.writeValue(tb, array);
             return (T[]) mapper.readValue(tb.asParser(), array.getClass());

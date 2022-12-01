@@ -1,5 +1,6 @@
 package org.pac4j.saml.client;
 
+import lombok.val;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
@@ -25,14 +26,14 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
     }
 
     protected final SAML2Client getClient() {
-        final var cfg = getSaml2Configuration();
-        final var saml2Client = new SAML2Client(cfg);
+        val cfg = getSaml2Configuration();
+        val saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
         return saml2Client;
     }
 
     protected SAML2Configuration getSaml2Configuration() {
-        final var cfg = new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
+        val cfg = new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
             "pac4j-demo-passwd",
             "pac4j-demo-passwd",
             new ClassPathResource("testshib-providers.xml"));
@@ -45,7 +46,7 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
 
-        final var attribute =
+        val attribute =
             new SAML2ServiceProviderRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName");
         attribute.setServiceLang("fr");
         attribute.setServiceName("MySAML2ServiceProvider");

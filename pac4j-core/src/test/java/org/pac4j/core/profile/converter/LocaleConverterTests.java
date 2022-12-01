@@ -1,10 +1,12 @@
 package org.pac4j.core.profile.converter;
 
-import java.util.Locale;
-
+import lombok.val;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * This class tests the {@link org.pac4j.core.profile.converter.LocaleConverter} class.
@@ -28,13 +30,13 @@ public final class LocaleConverterTests {
 
     @Test
     public void testLanguage() {
-        final var locale = (Locale) this.converter.convert("fr");
+        val locale = (Locale) this.converter.convert("fr");
         assertEquals("fr", locale.getLanguage());
     }
 
     @Test
     public void testLanguageCountry() {
-        final var locale = (Locale) this.converter.convert(Locale.FRANCE.toString());
+        val locale = (Locale) this.converter.convert(Locale.FRANCE.toString());
         assertEquals(Locale.FRANCE.getLanguage(), locale.getLanguage());
         assertEquals(Locale.FRANCE.getCountry(), locale.getCountry());
     }

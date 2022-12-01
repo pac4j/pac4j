@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
+import lombok.val;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
@@ -26,7 +27,7 @@ public class GenerateValidateJwtMain {
     }
 
     public static void generate() throws Exception {
-        final var keyGen = KeyPairGenerator.getInstance("RSA");
+        val keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(2048);
         final KeyPair pair = keyGen.generateKeyPair();
         var config = new RSASignatureConfiguration();
@@ -35,7 +36,7 @@ public class GenerateValidateJwtMain {
         config.setPublicKey(pub);
         config.setPrivateKey(priv);
         var claims = new JWTClaimsSet.Builder().subject("me").build();
-        final var signedJWT = config.sign(claims);
+        val signedJWT = config.sign(claims);
         System.out.println(signedJWT.serialize());
         System.out.println("verified: " + config.verify(signedJWT));
         JWK jwk = new RSAKey.Builder(pub)

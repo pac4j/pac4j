@@ -1,15 +1,16 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.Date;
@@ -63,7 +64,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     @Test
     public void testParameterExpiredDate() {
-        final var expiredDate = new Date().getTime() - 1000;
+        val expiredDate = new Date().getTime() - 1000;
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE);
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
@@ -111,7 +112,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     @Test
     public void testNoTokenCheckAll() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
@@ -128,7 +129,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     }
 
     private void internalTestNoTokenRequest(final HttpConstants.HTTP_METHOD method) {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);

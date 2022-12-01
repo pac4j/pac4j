@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -65,7 +66,7 @@ public final class RunOkClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var okClient = new OkClient();
+        val okClient = new OkClient();
         okClient.setKey("1139019264");
         okClient.setPublicKey("CBAPAFOEEBABABABA");
         okClient.setSecret("479452FD7CA726DF558B4303");
@@ -75,7 +76,7 @@ public final class RunOkClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (OkProfile) userProfile;
+        val profile = (OkProfile) userProfile;
         assertEquals(TEST_PROFILE_ID, profile.getId());
         assertEquals(OkProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());

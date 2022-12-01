@@ -1,11 +1,12 @@
 package org.pac4j.core.profile;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.substringBefore;
 
@@ -40,7 +41,7 @@ public final class ProfileHelper {
      */
     public static UserProfile buildUserProfileByClassCompleteName(final String completeName) {
         try {
-            final var constructor = CommonHelper.getConstructor(completeName);
+            val constructor = CommonHelper.getConstructor(completeName);
             return (UserProfile) constructor.newInstance();
         } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException
                  | InstantiationException e) {
@@ -56,7 +57,7 @@ public final class ProfileHelper {
      * @return the (optional) profile
      */
     public static <U extends UserProfile> Optional<U> flatIntoOneProfile(final Collection<U> profiles) {
-        final var profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
+        val profile = profiles.stream().filter(p -> p != null && !(p instanceof AnonymousProfile)).findFirst();
         if (profile.isPresent()) {
             return profile;
         } else {
@@ -85,8 +86,8 @@ public final class ProfileHelper {
         if (id != null) {
             var sId = id.toString();
             if (sId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-                final var profileClass = substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
-                for (final var profileClassPrefix : getProfileClassPrefixes()) {
+                val profileClass = substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                for (val profileClassPrefix : getProfileClassPrefixes()) {
                     if (profileClass.startsWith(profileClassPrefix)) {
                         return sId.substring(profileClass.length() + 1);
                     }

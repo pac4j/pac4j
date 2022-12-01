@@ -2,6 +2,7 @@ package org.pac4j.config.builder;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.oidc.client.AzureAd2Client;
 import org.pac4j.oidc.client.GoogleOidcClient;
@@ -28,44 +29,44 @@ public class OidcClientBuilder extends AbstractBuilder {
 
     public void tryCreateOidcClient(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final var id = getProperty(OIDC_ID, i);
+            val id = getProperty(OIDC_ID, i);
             if (isNotBlank(id)) {
-                final var configuration = new OidcConfiguration();
+                val configuration = new OidcConfiguration();
                 configuration.setClientId(id);
 
-                final var secret = getProperty(OIDC_SECRET, i);
+                val secret = getProperty(OIDC_SECRET, i);
                 if (isNotBlank(secret)) {
                     configuration.setSecret(secret);
                 }
-                final var scope = getProperty(OIDC_SCOPE, i);
+                val scope = getProperty(OIDC_SCOPE, i);
                 if (isNotBlank(scope)) {
                     configuration.setScope(scope);
                 }
-                final var discoveryUri = getProperty(OIDC_DISCOVERY_URI, i);
+                val discoveryUri = getProperty(OIDC_DISCOVERY_URI, i);
                 if (isNotBlank(discoveryUri)) {
                     configuration.setDiscoveryURI(discoveryUri);
                 }
-                final var responseType = getProperty(OIDC_RESPONSE_TYPE, i);
+                val responseType = getProperty(OIDC_RESPONSE_TYPE, i);
                 if (isNotBlank(responseType)) {
                     configuration.setResponseType(responseType);
                 }
-                final var responseMode = getProperty(OIDC_RESPONSE_MODE, i);
+                val responseMode = getProperty(OIDC_RESPONSE_MODE, i);
                 if (isNotBlank(responseMode)) {
                     configuration.setResponseMode(responseMode);
                 }
-                final var useNonce = getProperty(OIDC_USE_NONCE, i);
+                val useNonce = getProperty(OIDC_USE_NONCE, i);
                 if (isNotBlank(useNonce)) {
                     configuration.setUseNonce(Boolean.parseBoolean(useNonce));
                 }
-                final var jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM, i);
+                val jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM, i);
                 if (isNotBlank(jwsAlgo)) {
                     configuration.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
                 }
-                final var maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW, i);
+                val maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW, i);
                 if (isNotBlank(maxClockSkew)) {
                     configuration.setMaxClockSkew(Integer.parseInt(maxClockSkew));
                 }
-                final var clientAuthenticationMethod = getProperty(OIDC_CLIENT_AUTHENTICATION_METHOD, i);
+                val clientAuthenticationMethod = getProperty(OIDC_CLIENT_AUTHENTICATION_METHOD, i);
                 if (isNotBlank(clientAuthenticationMethod)) {
                     configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.parse(clientAuthenticationMethod));
                 }
@@ -76,11 +77,11 @@ public class OidcClientBuilder extends AbstractBuilder {
                     }
                 }
 
-                final var type = getProperty(OIDC_TYPE, i);
+                val type = getProperty(OIDC_TYPE, i);
                 final OidcClient oidcClient;
                 if (OIDC_AZURE_TYPE.equalsIgnoreCase(type)) {
-                    final var azureAdConfiguration = new AzureAd2OidcConfiguration(configuration);
-                    final var tenant = getProperty(OIDC_AZURE_TENANT, i);
+                    val azureAdConfiguration = new AzureAd2OidcConfiguration(configuration);
+                    val tenant = getProperty(OIDC_AZURE_TENANT, i);
                     if (isNotBlank(tenant)) {
                         azureAdConfiguration.setTenant(tenant);
                     }

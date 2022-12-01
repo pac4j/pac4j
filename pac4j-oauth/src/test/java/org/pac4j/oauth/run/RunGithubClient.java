@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -39,7 +40,7 @@ public class RunGithubClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var githubClient = new GitHubClient();
+        val githubClient = new GitHubClient();
         githubClient.setKey("62374f5573a89a8f9900");
         githubClient.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
         githubClient.setCallbackUrl(PAC4J_BASE_URL);
@@ -49,7 +50,7 @@ public class RunGithubClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (GitHubProfile) userProfile;
+        val profile = (GitHubProfile) userProfile;
         assertEquals("1412558", profile.getId());
         assertEquals(GitHubProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
@@ -74,7 +75,7 @@ public class RunGithubClient extends RunClient {
         assertEquals("2012-02-06T13:05:21Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getCreatedAt()));
         assertEquals(0, profile.getDiskUsage().intValue());
         assertEquals(0, profile.getOwnedPrivateRepos().intValue());
-        final var plan = profile.getPlan();
+        val plan = profile.getPlan();
         assertEquals("free", plan.getName());
         assertEquals(0, plan.getCollaborators().intValue());
         assertEquals(976562499, plan.getSpace().intValue());

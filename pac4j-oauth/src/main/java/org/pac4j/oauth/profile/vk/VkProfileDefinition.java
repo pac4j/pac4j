@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.vk;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
@@ -10,9 +11,9 @@ import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.util.Arrays;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the Vk profile definition.
@@ -71,7 +72,7 @@ public class VkProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public VkProfile extractUserProfile(final String body) {
-        final var profile = (VkProfile) newProfile();
+        val profile = (VkProfile) newProfile();
         var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             var array = (ArrayNode) json.get("response");
@@ -80,7 +81,7 @@ public class VkProfileDefinition extends OAuthProfileDefinition {
                 raiseProfileExtractionJsonError(body, "response");
             }
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, "uid")));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
         } else {

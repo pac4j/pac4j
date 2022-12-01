@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.facebook.FacebookObject;
@@ -67,7 +68,7 @@ public final class JsonHelperTests implements TestsConstants {
 
     @Test
     public void testToJSONString() {
-        final var object = new FacebookObject();
+        val object = new FacebookObject();
         object.setId(ID);
         object.setName(NAME);
         assertEquals("\"{\\\"id\\\":\\\"id\\\",\\\"name\\\":\\\"name\\\"}\"", JsonHelper.toJSONString(JsonHelper.toJSONString(object)));

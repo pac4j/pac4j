@@ -1,5 +1,6 @@
 package org.pac4j.sql.profile.service;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.AccountNotFoundException;
@@ -39,24 +40,24 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testNullPasswordEncoder() {
-        final var dbProfileService = new DbProfileService(ds, FIRSTNAME);
+        val dbProfileService = new DbProfileService(ds, FIRSTNAME);
         TestsHelper.expectException(() -> dbProfileService.validate(null, null, null), TechnicalException.class,
             "passwordEncoder cannot be null");
     }
 
     @Test
     public void testNullDataSource() {
-        final var dbProfileService = new DbProfileService(null, FIRSTNAME);
+        val dbProfileService = new DbProfileService(null, FIRSTNAME);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
         TestsHelper.expectException(() -> dbProfileService.validate(null, null, null),
             TechnicalException.class, "dataSource cannot be null");
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
-        final var dbProfileService = new DbProfileService(ds, attribute);
+        val dbProfileService = new DbProfileService(ds, attribute);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
-        final var credentials = new UsernamePasswordCredentials(username, password);
+        val credentials = new UsernamePasswordCredentials(username, password);
         dbProfileService.validate(credentials, null, null);
 
         return credentials;
@@ -64,24 +65,24 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testGoodUsernameAttribute() {
-        final var credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
+        val credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
-        final var profile = credentials.getUserProfile();
+        val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
-        final var dbProfile = (DbProfile) profile;
+        val dbProfile = (DbProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertEquals(FIRSTNAME_VALUE, dbProfile.getAttribute(FIRSTNAME));
     }
 
     @Test
     public void testGoodUsernameNoAttribute() {
-        final var credentials =  login(GOOD_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING);
+        val credentials =  login(GOOD_USERNAME, PASSWORD, Pac4jConstants.EMPTY_STRING);
 
-        final var profile = credentials.getUserProfile();
+        val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
-        final var dbProfile = (DbProfile) profile;
+        val dbProfile = (DbProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }
@@ -106,23 +107,23 @@ public final class DbProfileServiceTests implements TestsConstants {
 
     @Test
     public void testCreateUpdateFindDelete() {
-        final var profile = new DbProfile();
+        val profile = new DbProfile();
         profile.setId(Pac4jConstants.EMPTY_STRING + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
-        final var dbProfileService = new DbProfileService(ds);
+        val dbProfileService = new DbProfileService(ds);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
         // create
         dbProfileService.create(profile, DB_PASS);
         // check credentials
-        final var credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
+        val credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
         dbProfileService.validate(credentials, null, null);
-        final var profile1 = credentials.getUserProfile();
+        val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
-        final var results = getData(DB_ID);
+        val results = getData(DB_ID);
         assertEquals(1, results.size());
-        final var result = results.get(0);
+        val result = results.get(0);
         assertEquals(5, result.size());
         assertEquals(DB_ID, result.get(ID));
         assertEquals(DB_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
@@ -130,7 +131,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         assertTrue(DbServer.PASSWORD_ENCODER.matches(DB_PASS, (String) result.get(PASSWORD)));
         assertEquals(DB_USER, result.get(USERNAME));
         // findById
-        final var profile2 = dbProfileService.findById(Pac4jConstants.EMPTY_STRING + DB_ID);
+        val profile2 = dbProfileService.findById(Pac4jConstants.EMPTY_STRING + DB_ID);
         assertEquals(Pac4jConstants.EMPTY_STRING + DB_ID, profile2.getId());
         assertEquals(DB_LINKED_ID, profile2.getLinkedId());
         assertEquals(DB_USER, profile2.getUsername());
@@ -138,9 +139,9 @@ public final class DbProfileServiceTests implements TestsConstants {
         // update
         profile.addAttribute(USERNAME, DB_USER2);
         dbProfileService.update(profile, null);
-        final var results2 = getData(DB_ID);
+        val results2 = getData(DB_ID);
         assertEquals(1, results2.size());
-        final var result2 = results2.get(0);
+        val result2 = results2.get(0);
         assertEquals(5, result2.size());
         assertEquals(DB_ID, result2.get(ID));
         assertEquals(DB_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
@@ -149,7 +150,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         assertEquals(DB_USER2, result2.get(USERNAME));
         // remove
         dbProfileService.remove(profile);
-        final var results3 = getData(DB_ID);
+        val results3 = getData(DB_ID);
         assertEquals(0, results3.size());
     }
 
@@ -157,17 +158,17 @@ public final class DbProfileServiceTests implements TestsConstants {
     public void testChangeUserAndPasswordAttributes() {
         alterTableChangeColumnName(USERNAME, ALT_USER_ATT);
         alterTableChangeColumnName(PASSWORD, ALT_PASS_ATT);
-        final var dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
+        val dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
         dbProfileService.setPasswordAttribute(ALT_PASS_ATT);
         dbProfileService.setUsernameAttribute(ALT_USER_ATT);
-        final var profile = new DbProfile();
+        val profile = new DbProfile();
         profile.setId(Pac4jConstants.EMPTY_STRING + DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
         profile.addAttribute(USERNAME, DB_USER);
         // create
         dbProfileService.create(profile, DB_PASS);
         // check credentials
-        final var credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
+        val credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
         dbProfileService.validate(credentials, null, null);
         assertNotNull(credentials.getUserProfile());
 
@@ -178,14 +179,14 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     private void alterTableChangeColumnName(String from, String to) {
-        final var dbi = new DBI(ds);
+        val dbi = new DBI(ds);
         try (var h = dbi.open()) {
             h.execute("alter table users rename column " + from + " to " + to);
         }
     }
 
     private List<Map<String, Object>> getData(final int id) {
-        final var dbi = new DBI(ds);
+        val dbi = new DBI(ds);
         Handle h = null;
         try {
             h = dbi.open();

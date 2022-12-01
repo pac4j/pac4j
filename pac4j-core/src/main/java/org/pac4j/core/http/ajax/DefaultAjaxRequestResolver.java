@@ -1,15 +1,18 @@
 package org.pac4j.core.http.ajax;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.*;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pac4j.core.util.Pac4jConstants;
 
 /**
  * Default way to compute if a HTTP request is an AJAX one.
@@ -17,19 +20,20 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Slf4j
+@Getter
+@Setter
 public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpConstants, Pac4jConstants {
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean addRedirectionUrlAsHeader = false;
 
     @Override
     public boolean isAjax(final WebContext context, final SessionStore sessionStore) {
-        final var xmlHttpRequest = AJAX_HEADER_VALUE
+        val xmlHttpRequest = AJAX_HEADER_VALUE
             .equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
-        final var hasDynamicAjaxParameter = Boolean.TRUE.toString()
+        val hasDynamicAjaxParameter = Boolean.TRUE.toString()
             .equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
-        final var hasDynamicAjaxHeader = Boolean.TRUE.toString()
+        val hasDynamicAjaxHeader = Boolean.TRUE.toString()
             .equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
@@ -39,7 +43,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
                                         final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            final var action = redirectionActionBuilder.getRedirectionAction(context, sessionStore).orElse(null);
+            val action = redirectionActionBuilder.getRedirectionAction(context, sessionStore).orElse(null);
             if (action instanceof WithLocationAction) {
                 url = ((WithLocationAction) action).getLocation();
             }
@@ -49,11 +53,11 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
             if (CommonHelper.isNotBlank(url)) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
-            logger.debug("Faces is not used: returning unauthenticated error for url: {}", url);
+            LOGGER.debug("Faces is not used: returning unauthenticated error for url: {}", url);
             return HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
-        final var buffer = new StringBuilder();
+        val buffer = new StringBuilder();
         buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
         buffer.append("<partial-response>");
         if (CommonHelper.isNotBlank(url)) {
@@ -61,15 +65,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         }
         buffer.append("</partial-response>");
 
-        logger.debug("Faces is used: returning partial response content for url: {}", url);
+        LOGGER.debug("Faces is used: returning partial response content for url: {}", url);
         return HttpActionHelper.buildFormPostContentAction(context, buffer.toString());
-    }
-
-    public boolean isAddRedirectionUrlAsHeader() {
-        return addRedirectionUrlAsHeader;
-    }
-
-    public void setAddRedirectionUrlAsHeader(boolean addRedirectionUrlAsHeader) {
-        this.addRedirectionUrlAsHeader = addRedirectionUrlAsHeader;
     }
 }

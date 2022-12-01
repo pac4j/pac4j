@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -9,10 +10,10 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.util.Arrays;
 import java.util.List;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the Strava profile definition.
@@ -62,7 +63,7 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
         primary(CREATED_AT, Converters.DATE_TZ_RFC822);
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(CLUBS, new JsonConverter(List.class, new TypeReference<List<StravaClub>>() {}));
-        final var multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
+        val multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
         primary(BIKES, multiGearConverter);
         primary(SHOES, multiGearConverter);
         primary(PROFILE, Converters.URL);
@@ -75,11 +76,11 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public StravaProfile extractUserProfile(String body) {
-        final var profile = (StravaProfile) newProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = (StravaProfile) newProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, StravaProfileDefinition.ID)));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

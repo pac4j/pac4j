@@ -5,6 +5,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -29,34 +30,34 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void testMissingSecret() {
-        final var config = new SecretSignatureConfiguration();
+        val config = new SecretSignatureConfiguration();
         TestsHelper.expectException(config::init, TechnicalException.class, "secret cannot be null");
     }
 
     @Test
     public void testMissingAlgorithm() {
-        final var config = new SecretSignatureConfiguration(MAC_SECRET, null);
+        val config = new SecretSignatureConfiguration(MAC_SECRET, null);
         TestsHelper.expectException(config::init, TechnicalException.class, "algorithm cannot be null");
     }
 
     @Test
     public void testBadAlgorithm() {
-        final var config = new SecretSignatureConfiguration(MAC_SECRET, JWSAlgorithm.ES256);
+        val config = new SecretSignatureConfiguration(MAC_SECRET, JWSAlgorithm.ES256);
         TestsHelper.expectException(config::init, TechnicalException.class,
             "Only the HS256, HS384 and HS512 algorithms are supported for HMac signature");
     }
 
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
-        final var json = new OctetSequenceKey.Builder(MAC_SECRET.getBytes("UTF-8")).build().toJSONString();
+        val json = new OctetSequenceKey.Builder(MAC_SECRET.getBytes("UTF-8")).build().toJSONString();
         JWKHelper.buildSecretFromJwk(json);
     }
 
     @Test
     public void testSignVerify() throws JOSEException {
-        final var config = new SecretSignatureConfiguration(MAC_SECRET);
-        final var claims = new JWTClaimsSet.Builder().subject(VALUE).build();
-        final var signedJwt = config.sign(claims);
+        val config = new SecretSignatureConfiguration(MAC_SECRET);
+        val claims = new JWTClaimsSet.Builder().subject(VALUE).build();
+        val signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));
     }
 
@@ -93,8 +94,8 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
     public void testSignVerifyBase64() throws JOSEException {
         var config = new SecretSignatureConfiguration();
         config.setSecretBase64(BASE64_512_BIT_SIG_SECRET);
-        final var claims = new JWTClaimsSet.Builder().subject(VALUE).build();
-        final var signedJwt = config.sign(claims);
+        val claims = new JWTClaimsSet.Builder().subject(VALUE).build();
+        val signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));
     }
 

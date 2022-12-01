@@ -1,10 +1,11 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.DropBoxClient;
@@ -12,7 +13,8 @@ import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Run manually a test for the {@link DropBoxClient}.
@@ -38,7 +40,7 @@ public final class RunDropboxClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var dropBoxClient = new DropBoxClient();
+        val dropBoxClient = new DropBoxClient();
         dropBoxClient.setKey("0194c6m79qll0ia");
         dropBoxClient.setSecret("a0ylze9a0bhsvxv");
         dropBoxClient.setCallbackUrl("https://www.google.com");
@@ -47,7 +49,7 @@ public final class RunDropboxClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (DropBoxProfile) userProfile;
+        val profile = (DropBoxProfile) userProfile;
         assertEquals("dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU", profile.getId());
         assertEquals(DropBoxProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "dbid:AAAQmbTqWmcB1jsyM9xwe9m1rEPS5SH9UEU",
             profile.getTypedId());

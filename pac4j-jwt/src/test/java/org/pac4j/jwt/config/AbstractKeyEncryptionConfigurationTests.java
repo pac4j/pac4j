@@ -1,5 +1,6 @@
 package org.pac4j.jwt.config;
 
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -17,9 +18,9 @@ import java.security.NoSuchAlgorithmException;
 public abstract class AbstractKeyEncryptionConfigurationTests implements TestsConstants {
 
     protected KeyPair buildKeyPair() {
-        final var algorithm = getAlgorithm();
+        val algorithm = getAlgorithm();
         try {
-            final var keyGen = KeyPairGenerator.getInstance(algorithm);
+            val keyGen = KeyPairGenerator.getInstance(algorithm);
             if (CommonHelper.areEquals(algorithm, "RSA")) {
                 keyGen.initialize(2048);
             }

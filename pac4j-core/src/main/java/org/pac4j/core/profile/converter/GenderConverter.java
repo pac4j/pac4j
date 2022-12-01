@@ -1,8 +1,9 @@
 package org.pac4j.core.profile.converter;
 
-import java.util.regex.Pattern;
-
+import lombok.val;
 import org.pac4j.core.profile.Gender;
+
+import java.util.regex.Pattern;
 
 /**
  * This class converts a String to a Gender.
@@ -29,7 +30,7 @@ public final class GenderConverter extends AbstractAttributeConverter {
 
     @Override
     protected Gender internalConvert(final Object attribute) {
-        final var s = attribute.toString().toLowerCase();
+        val s = attribute.toString().toLowerCase();
         if (maleText.matcher(s).matches()) {
             return Gender.MALE;
         } else if (femaleText.matcher(s).matches()) {

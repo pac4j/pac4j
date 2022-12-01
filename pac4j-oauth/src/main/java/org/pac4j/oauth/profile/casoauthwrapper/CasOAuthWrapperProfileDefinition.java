@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.casoauthwrapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -43,8 +44,8 @@ public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public CasOAuthWrapperProfile extractUserProfile(final String body) {
-        final var profile = (CasOAuthWrapperProfile) newProfile();
-        final var attributesNode = "attributes";
+        val profile = (CasOAuthWrapperProfile) newProfile();
+        val attributesNode = "attributes";
         var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
@@ -52,17 +53,17 @@ public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
             if (json != null) {
                 // CAS <= v4.2
                 if (json instanceof ArrayNode) {
-                    final var nodes = json.iterator();
+                    val nodes = json.iterator();
                     while (nodes.hasNext()) {
                         json = nodes.next();
-                        final var attribute = json.fieldNames().next();
+                        val attribute = json.fieldNames().next();
                         convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                     }
                     // CAS v5
                 } else if (json instanceof ObjectNode) {
-                    final var keys = json.fieldNames();
+                    val keys = json.fieldNames();
                     while (keys.hasNext()) {
-                        final var key = keys.next();
+                        val key = keys.next();
                         convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, key));
                     }
                 }

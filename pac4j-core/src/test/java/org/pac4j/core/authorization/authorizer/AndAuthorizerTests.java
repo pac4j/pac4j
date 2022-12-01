@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
@@ -37,7 +38,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint1() {
-        final var authorizer = and(
+        val authorizer = and(
             isAuthenticated(),
             requireAnyRole("profile_role")
         );
@@ -46,7 +47,7 @@ public class AndAuthorizerTests {
 
     @Test
     public void testAuthorizerConstraint2() {
-        final var authorizer = and(
+        val authorizer = and(
             requireAnyRole("profile_role2")
         );
         assertFalse(authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), profiles));

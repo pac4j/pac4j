@@ -1,6 +1,7 @@
 package org.pac4j.config.client;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import lombok.val;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
@@ -127,42 +128,42 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             properties.put(REST_URL.concat(".3"), PAC4J_BASE_URL);
             properties.put(DIRECTBASICAUTH_AUTHENTICATOR.concat(".7"), "rest.3");
 
-            final var factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
-            final var config = factory.build();
-            final var clients = config.getClients();
+            val factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
+            val config = factory.build();
+            val clients = config.getClients();
             assertEquals(13, clients.getClients().size());
 
-            final var fbClient = (FacebookClient) clients.findClient("FacebookClient").get();
+            val fbClient = (FacebookClient) clients.findClient("FacebookClient").get();
             assertEquals(ID, fbClient.getKey());
             assertEquals(SECRET, fbClient.getSecret());
 
             assertNotNull(clients.findClient("AnonymousClient"));
 
-            final var twClient = (TwitterClient) clients.findClient("TwitterClient").get();
+            val twClient = (TwitterClient) clients.findClient("TwitterClient").get();
             assertEquals(ID, twClient.getKey());
             assertEquals(SECRET, twClient.getSecret());
 
-            final var casClient = (CasClient) clients.findClient("CasClient").get();
+            val casClient = (CasClient) clients.findClient("CasClient").get();
             assertEquals(CALLBACK_URL, casClient.getConfiguration().getLoginUrl());
             assertEquals(CasProtocol.CAS20, casClient.getConfiguration().getProtocol());
 
-            final var saml2client = (SAML2Client) clients.findClient("SAML2Client").get();
+            val saml2client = (SAML2Client) clients.findClient("SAML2Client").get();
             assertNotNull(saml2client);
-            final var saml2Config = saml2client.getConfiguration();
+            val saml2Config = saml2client.getConfiguration();
             assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2Config.getAuthnRequestBindingType());
             assertEquals(VALUE, saml2Config.getKeyStoreAlias());
 
-            final var oidcClient = (OidcClient) clients.findClient("OidcClient").get();
+            val oidcClient = (OidcClient) clients.findClient("OidcClient").get();
             assertNotNull(oidcClient);
             assertEquals(oidcClient.getConfiguration().getResponseType(), "id_token");
             assertEquals(oidcClient.getConfiguration().getResponseMode(), "form_post");
             assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(),
                 oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
 
-            final var casClient1 = (CasClient) clients.findClient("CasClient.1").get();
+            val casClient1 = (CasClient) clients.findClient("CasClient.1").get();
             assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
 
-            final var googleOidcClient = (GoogleOidcClient) clients.findClient("GoogleOidcClient.1").get();
+            val googleOidcClient = (GoogleOidcClient) clients.findClient("GoogleOidcClient.1").get();
             googleOidcClient.init();
             assertEquals(ID, googleOidcClient.getConfiguration().getClientId());
             assertEquals(SECRET, googleOidcClient.getConfiguration().getSecret());
@@ -172,35 +173,35 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
                 .compute(googleOidcClient.getUrlResolver(), googleOidcClient.getCallbackUrl(),
                     googleOidcClient.getName(), MockWebContext.create()));
 
-            final var formClient = (FormClient) clients.findClient("FormClient").get();
+            val formClient = (FormClient) clients.findClient("FormClient").get();
             assertEquals(LOGIN_URL, formClient.getLoginUrl());
             assertTrue(formClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
 
-            final var formClient2 = (FormClient) clients.findClient("FormClient.2").get();
+            val formClient2 = (FormClient) clients.findClient("FormClient.2").get();
             assertEquals(PAC4J_BASE_URL, formClient2.getLoginUrl());
             assertTrue(formClient2.getAuthenticator() instanceof LdapProfileService);
-            final var ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
-            final var ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+            val ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
+            val ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             ldapAuthenticator.validate(ldapCredentials, MockWebContext.create(), new MockSessionStore());
             assertNotNull(ldapCredentials.getUserProfile());
 
-            final var indirectBasicAuthClient =
+            val indirectBasicAuthClient =
                 (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.2").get();
             assertEquals("authentication required", indirectBasicAuthClient.getRealmName());
             assertTrue(indirectBasicAuthClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
 
-            final var indirectBasicAuthClient2 =
+            val indirectBasicAuthClient2 =
                 (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.5").get();
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
-            final var dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
+            val dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
-            final var dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+            val dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             dbAuthenticator.validate(dbCredentials, MockWebContext.create(), new MockSessionStore());
             assertNotNull(dbCredentials.getUserProfile());
 
-            final var directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7").get();
+            val directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7").get();
             assertNotNull(directBasicAuthClient);
-            final var restAuthenticator = (RestAuthenticator) directBasicAuthClient.getAuthenticator();
+            val restAuthenticator = (RestAuthenticator) directBasicAuthClient.getAuthenticator();
             assertEquals(PAC4J_BASE_URL, restAuthenticator.getUrl());
 
         } finally {

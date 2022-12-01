@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
@@ -24,7 +25,7 @@ public final class HttpActionHelper {
      * @return the appropriate HTTP action
      */
     public static HttpAction buildUnauthenticatedAction(final WebContext context) {
-        final var hasHeader = context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isPresent();
+        val hasHeader = context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isPresent();
         if (alwaysUse401ForUnauthenticated) {
             // add the WWW-Authenticate header to be compliant with the HTTP spec if it does not already exist
             if (!hasHeader) {
@@ -73,15 +74,15 @@ public final class HttpActionHelper {
      * @return the form POST content
      */
     public static String buildFormPostContent(final WebContext context) {
-        final var requestedUrl = context.getFullRequestURL();
-        final var parameters = context.getRequestParameters();
-        final var buffer = new StringBuilder();
+        val requestedUrl = context.getFullRequestURL();
+        val parameters = context.getRequestParameters();
+        val buffer = new StringBuilder();
         buffer.append("<html>\n");
         buffer.append("<body>\n");
         buffer.append("<form action=\"" + escapeHtml(requestedUrl) + "\" name=\"f\" method=\"post\">\n");
         if (parameters != null) {
-            for (final var entry : parameters.entrySet()) {
-                final var values = entry.getValue();
+            for (val entry : parameters.entrySet()) {
+                val values = entry.getValue();
                 if (values != null && values.length > 0) {
                     buffer.append("<input type='hidden' name=\"" + escapeHtml(entry.getKey()) + "\" value=\"" + values[0] + "\" />\n");
                 }

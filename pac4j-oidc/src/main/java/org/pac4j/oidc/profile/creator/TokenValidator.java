@@ -10,6 +10,7 @@ import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -38,11 +39,11 @@ public class TokenValidator {
         CommonHelper.assertNotNull("configuration", configuration);
 
         // check algorithms
-        final var metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
+        val metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
             "There must at least one JWS algorithm supported on the OpenID Connect provider side");
         List<JWSAlgorithm> jwsAlgorithms = new ArrayList<>();
-        final var preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
+        val preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
         if (metadataAlgorithms.contains(preferredAlgorithm)) {
             jwsAlgorithms.add(preferredAlgorithm);
         } else {
@@ -52,7 +53,7 @@ public class TokenValidator {
         }
 
         idTokenValidators = new ArrayList<>();
-        final var _clientID = new ClientID(configuration.getClientId());
+        val _clientID = new ClientID(configuration.getClientId());
 
         for (var jwsAlgorithm : jwsAlgorithms) {
             // build validator
@@ -70,7 +71,7 @@ public class TokenValidator {
                 idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
             } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
-                final var _secret = new Secret(configuration.getSecret());
+                val _secret = new Secret(configuration.getSecret());
                 idTokenValidator = createHMACTokenValidator(configuration, jwsAlgorithm, _clientID, _secret);
             } else {
                 idTokenValidator = createRSATokenValidator(configuration, jwsAlgorithm, _clientID);
@@ -103,7 +104,7 @@ public class TokenValidator {
 
         BadJOSEException badJOSEException = null;
         JOSEException joseException = null;
-        for (final var idTokenValidator : idTokenValidators) {
+        for (val idTokenValidator : idTokenValidators) {
             try {
                 return idTokenValidator.validate(idToken, expectedNonce);
             } catch (final BadJOSEException e1) {

@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -177,7 +178,7 @@ public final class CommonHelperTests {
     }
 
     private void testRandomString(final int size) {
-        final var s = CommonHelper.randomString(size);
+        val s = CommonHelper.randomString(size);
         assertEquals(size, s.length());
     }
 
@@ -213,7 +214,7 @@ public final class CommonHelperTests {
     @Test
     public void testGetConstructorOK() throws Exception {
         var constructor = CommonHelper.getConstructor(CommonProfile.class.getName());
-        final var profile = (CommonProfile) constructor.newInstance();
+        val profile = (CommonProfile) constructor.newInstance();
         assertNotNull(profile);
     }
 

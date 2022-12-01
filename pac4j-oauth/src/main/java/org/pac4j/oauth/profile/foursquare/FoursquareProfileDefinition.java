@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.foursquare;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -9,9 +10,9 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.util.Arrays;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the Foursquare profile definition.
@@ -60,7 +61,7 @@ public class FoursquareProfileDefinition extends OAuthProfileDefinition {
         if (user != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(user, "id")));
 
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(user, attribute));
             }
         } else {

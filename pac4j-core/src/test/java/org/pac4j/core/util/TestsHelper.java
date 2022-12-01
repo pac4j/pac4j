@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import lombok.val;
 import org.junit.Assert;
 import org.pac4j.core.exception.TechnicalException;
 
@@ -29,7 +30,7 @@ public final class TestsHelper {
     }
 
     public static void expectException(final Executable executable, final Class<? extends Exception> clazz, final String message) {
-        final var e = expectException(executable);
+        val e = expectException(executable);
         Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
         Assert.assertEquals(message, e.getMessage());
     }

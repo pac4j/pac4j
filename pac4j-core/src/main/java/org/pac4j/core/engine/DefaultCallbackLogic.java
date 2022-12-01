@@ -130,7 +130,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
                     val clients = config.getClients();
                     if (clients != null) {
                         val clientList = clients.getClients();
-                        for (final var client : clientList) {
+                        for (val client : clientList) {
                             val baseClient = (BaseClient) client;
                             baseClient.notifySessionRenewal(oldSessionId, context, sessionStore);
                         }

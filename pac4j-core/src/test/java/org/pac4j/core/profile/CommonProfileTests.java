@@ -1,5 +1,6 @@
 package org.pac4j.core.profile;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -29,7 +30,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testSetId() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertNull(userProfile.getId());
         userProfile.setId(ID);
         assertEquals(ID, userProfile.getId());
@@ -37,7 +38,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAttributes().size());
@@ -46,7 +47,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testGenderAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(CommonProfileDefinition.GENDER, Gender.MALE);
         assertEquals(Gender.MALE, userProfile.getGender());
@@ -54,7 +55,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testInvalidGenderAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(CommonProfileDefinition.GENDER, "invalid");
         assertEquals(Gender.UNSPECIFIED, userProfile.getGender());
@@ -62,7 +63,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testLocaleAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(CommonProfileDefinition.LOCALE, Locale.US);
         assertEquals(Locale.US, userProfile.getLocale());
@@ -70,7 +71,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testInvalidLocaleAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(CommonProfileDefinition.LOCALE, "invalid");
         assertNull(userProfile.getLocale());
@@ -78,7 +79,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testPictureURLAttribute() throws URISyntaxException {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         java.net.URI pictureUri = new java.net.URI("http://example.com/picture");
         userProfile.addAttribute(CommonProfileDefinition.PICTURE_URL, pictureUri);
@@ -87,7 +88,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testInvalidPictureURLAttribute() throws URISyntaxException {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(CommonProfileDefinition.PICTURE_URL, "invalid");
         assertNull(userProfile.getPictureUrl());
@@ -95,7 +96,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testProfileURLAttribute() throws URISyntaxException {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         java.net.URI profileUri = new java.net.URI("http://example.com/picture");
         userProfile.addAttribute(CommonProfileDefinition.PROFILE_URL, profileUri);
@@ -104,7 +105,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testInvalidProfileURLAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(CommonProfileDefinition.PROFILE_URL, "invalid");
         assertNull(userProfile.getProfileUrl());
@@ -112,7 +113,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testUsernameAttribute() throws URISyntaxException {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(Pac4jConstants.USERNAME, "username");
         assertEquals("username", userProfile.getUsername());
@@ -120,7 +121,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testInvalidUsernameAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(Pac4jConstants.USERNAME, 1);
         assertEquals("1", userProfile.getUsername());
@@ -128,7 +129,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttributeMultipleValues() {
-        final var userProfile = new CommonProfile(true);
+        val userProfile = new CommonProfile(true);
         userProfile.addAttribute(KEY, Arrays.asList("Value1"));
         userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
         assertEquals(1, userProfile.getAttributes().size());
@@ -137,7 +138,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttributeMultipleValuesOldBehaviour() {
-        final var userProfile = new CommonProfile(false);
+        val userProfile = new CommonProfile(false);
         userProfile.addAttribute(KEY, Arrays.asList("Value1"));
         userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
         assertEquals(1, userProfile.getAttributes().size());
@@ -146,7 +147,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAuthenticationAttribute() {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAuthenticationAttributes().size());
         userProfile.addAuthenticationAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAuthenticationAttributes().size());
@@ -157,7 +158,7 @@ public final class CommonProfileTests implements TestsConstants {
     public void testAddAttributes() {
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(KEY, VALUE);
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttributes(attributes);
         assertEquals(1, userProfile.getAttributes().size());
@@ -168,7 +169,7 @@ public final class CommonProfileTests implements TestsConstants {
     public void testAddAuthenticationAttributes() {
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(KEY, VALUE);
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAuthenticationAttributes().size());
         userProfile.addAuthenticationAttributes(attributes);
         assertEquals(1, userProfile.getAuthenticationAttributes().size());
@@ -177,19 +178,19 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testUnsafeAddAttribute() throws UnsupportedOperationException {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         userProfile.getAttributes().put(KEY, VALUE);
     }
 
     @Test
     public void testUnsafeAddAuthenticationAttribute() throws UnsupportedOperationException {
-        final var userProfile = new CommonProfile();
+        val userProfile = new CommonProfile();
         userProfile.getAuthenticationAttributes().put(KEY, VALUE);
     }
 
     @Test
     public void testRoles() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         assertEquals(0, profile.getRoles().size());
         profile.addRole(ROLE1);
         assertEquals(1, profile.getRoles().size());
@@ -198,7 +199,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testRme() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         assertFalse(profile.isRemembered());
         profile.setRemembered(true);
         assertTrue(profile.isRemembered());
@@ -206,41 +207,41 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testTypeId() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(ID);
         assertEquals("org.pac4j.core.profile.CommonProfile" + Pac4jConstants.TYPED_ID_SEPARATOR + ID, profile.getTypedId());
     }
 
     @Test
     public void testNullId() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.setId(null), TechnicalException.class, "id cannot be blank");
     }
 
     @Test
     public void testBlankRole() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRole(Pac4jConstants.EMPTY_STRING), TechnicalException.class, "role cannot be blank");
     }
 
     @Test
     public void testNullRoles() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRoles(null), TechnicalException.class, "roles cannot be null");
     }
 
     @Test
     public void serializeProfile() {
-        final var helper = new JavaSerializer();
-        final var profile = new CommonProfile();
-        final var s = helper.serializeToString(profile);
-        final var profile2 = (CommonProfile)helper.deserializeFromString(s);
+        val helper = new JavaSerializer();
+        val profile = new CommonProfile();
+        val s = helper.serializeToString(profile);
+        val profile2 = (CommonProfile)helper.deserializeFromString(s);
         assertNotNull(profile2);
     }
 
     @Test
     public void testSetNullLinkedIdWhenAlreadySet() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setLinkedId("dummyLinkecId");
         profile.setLinkedId(null);
         assertNull(profile.getLinkedId());
@@ -248,7 +249,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testSetNullLinkedIdWhenNotAlreadySet() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setLinkedId(null);
         assertNull(profile.getLinkedId());
     }

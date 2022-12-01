@@ -1,17 +1,11 @@
 package org.pac4j.saml.sso.impl;
 
+import lombok.val;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
-import org.opensaml.saml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
-import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.opensaml.saml.saml2.core.Extensions;
-import org.opensaml.saml.saml2.core.IDPEntry;
-import org.opensaml.saml.saml2.core.IDPList;
-import org.opensaml.saml.saml2.core.Issuer;
-import org.opensaml.saml.saml2.core.Scoping;
+import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
@@ -45,14 +39,14 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     @Override
     public AuthnRequest build(final SAML2MessageContext context) {
-        final var configContext = context.getConfigurationContext();
+        val configContext = context.getConfigurationContext();
 
-        final var ssoService = context.getIDPSingleSignOnService(configContext.getAuthnRequestBindingType());
-        final var idx = configContext.getAssertionConsumerServiceIndex() > 0
+        val ssoService = context.getIDPSingleSignOnService(configContext.getAuthnRequestBindingType());
+        val idx = configContext.getAssertionConsumerServiceIndex() > 0
             ? String.valueOf(configContext.getAssertionConsumerServiceIndex())
             : null;
-        final var assertionConsumerService = context.getSPAssertionConsumerService(idx);
-        final var authnRequest = buildAuthnRequest(context, assertionConsumerService, ssoService);
+        val assertionConsumerService = context.getSPAssertionConsumerService(idx);
+        val authnRequest = buildAuthnRequest(context, assertionConsumerService, ssoService);
         SAML2Utils.logProtocolMessage(authnRequest);
         return authnRequest;
     }
@@ -61,24 +55,24 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     protected final AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
                                                    final AssertionConsumerService assertionConsumerService,
                                                    final SingleSignOnService ssoService) {
-        final var configContext = context.getConfigurationContext();
-        final var builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
+        val configContext = context.getConfigurationContext();
+        val builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
             .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
-        final var request = builder.buildObject();
+        val request = builder.buildObject();
 
-        final var comparisonType = getComparisonTypeEnumFromString(configContext.getComparisonType());
+        val comparisonType = getComparisonTypeEnumFromString(configContext.getComparisonType());
         if (comparisonType != null) {
-            final var authnContext = new RequestedAuthnContextBuilder().buildObject();
+            val authnContext = new RequestedAuthnContextBuilder().buildObject();
             authnContext.setComparison(comparisonType);
 
             if (configContext.getAuthnContextClassRefs() != null && !configContext.getAuthnContextClassRefs().isEmpty()) {
-                final var refs = authnContext.getAuthnContextClassRefs();
+                val refs = authnContext.getAuthnContextClassRefs();
                 configContext.getAuthnContextClassRefs().forEach(r -> refs.add(buildAuthnContextClassRef(r)));
             }
             request.setRequestedAuthnContext(authnContext);
         }
 
-        final var selfContext = context.getSAMLSelfEntityContext();
+        val selfContext = context.getSAMLSelfEntityContext();
 
         request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(context, selfContext.getEntityId()));
@@ -93,7 +87,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         }
 
         if (configContext.getNameIdPolicyFormat() != null) {
-            final var nameIdPolicy = new NameIDPolicyBuilder().buildObject();
+            val nameIdPolicy = new NameIDPolicyBuilder().buildObject();
             if (configContext.isNameIdPolicyAllowCreate() != null) {
                 nameIdPolicy.setAllowCreate(configContext.isNameIdPolicyAllowCreate());
             }
@@ -113,14 +107,14 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             request.setAttributeConsumingServiceIndex(configContext.getAttributeConsumingServiceIndex());
         }
 
-        final var extensions = ((SAMLObjectBuilder<Extensions>) this.builderFactory
+        val extensions = ((SAMLObjectBuilder<Extensions>) this.builderFactory
             .getBuilder(Extensions.DEFAULT_ELEMENT_NAME)).buildObject();
 
         if (!configContext.getSAML2Configuration().getRequestedServiceProviderAttributes().isEmpty()) {
-            final var attrBuilder =
+            val attrBuilder =
                 (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory.getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
             configContext.getSAML2Configuration().getRequestedServiceProviderAttributes().forEach(attribute -> {
-                final var requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+                val requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
                 requestAttribute.setIsRequired(attribute.isRequired());
                 requestAttribute.setName(attribute.getName());
                 requestAttribute.setFriendlyName(attribute.getFriendlyName());
@@ -138,20 +132,20 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             request.setExtensions(extensions);
         }
 
-        final var givenIdPs = configContext.getSAML2Configuration().getScopingIdentityProviders();
+        val givenIdPs = configContext.getSAML2Configuration().getScopingIdentityProviders();
         if (!givenIdPs.isEmpty()) {
-            final var scopingBuilder = (SAMLObjectBuilder<Scoping>) this.builderFactory
+            val scopingBuilder = (SAMLObjectBuilder<Scoping>) this.builderFactory
                 .getBuilder(Scoping.DEFAULT_ELEMENT_NAME);
-            final var scoping = scopingBuilder.buildObject();
-            final var idpEntryBuilder = (SAMLObjectBuilder<IDPEntry>) this.builderFactory
+            val scoping = scopingBuilder.buildObject();
+            val idpEntryBuilder = (SAMLObjectBuilder<IDPEntry>) this.builderFactory
                 .getBuilder(IDPEntry.DEFAULT_ELEMENT_NAME);
 
-            final var idpListBuilder = (SAMLObjectBuilder<IDPList>) this.builderFactory
+            val idpListBuilder = (SAMLObjectBuilder<IDPList>) this.builderFactory
                 .getBuilder(IDPList.DEFAULT_ELEMENT_NAME);
             scoping.setIDPList(idpListBuilder.buildObject());
 
             givenIdPs.forEach(idp -> {
-                final var idpEntry = idpEntryBuilder.buildObject();
+                val idpEntry = idpEntryBuilder.buildObject();
                 idpEntry.setProviderID(idp.getProviderId());
                 idpEntry.setName(idp.getName());
                 scoping.getIDPList().getIDPEntrys().add(idpEntry);
@@ -165,20 +159,20 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     }
 
     protected AuthnContextClassRef buildAuthnContextClassRef(final String authnContextClassRef) {
-        final var classRef = new AuthnContextClassRefBuilder().buildObject();
+        val classRef = new AuthnContextClassRefBuilder().buildObject();
         classRef.setURI(authnContextClassRef);
         return classRef;
     }
 
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final SAML2MessageContext context, final String spEntityId) {
-        final var configContext = context.getConfigurationContext();
+        val configContext = context.getConfigurationContext();
 
-        final var issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
+        val issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
             .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
-        final var issuer = issuerBuilder.buildObject();
+        val issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
-        final var issuerFormat = configContext.getIssuerFormat();
+        val issuerFormat = configContext.getIssuerFormat();
         if (issuerFormat != null) {
             issuer.setFormat(issuerFormat);
         }

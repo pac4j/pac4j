@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.cronofy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -40,12 +41,12 @@ public class CronofyProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public CronofyProfile extractUserProfile(final String body) {
-        final var profile = (CronofyProfile) newProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = (CronofyProfile) newProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, SUB)));
             convertAndAdd(profile, PROFILE_ATTRIBUTE, ACCOUNT_ID, JsonHelper.getElement(json, ACCOUNT_ID));
-            final var linkingProfile = (JsonNode) JsonHelper.getElement(json, "linking_profile");
+            val linkingProfile = (JsonNode) JsonHelper.getElement(json, "linking_profile");
             if (linkingProfile != null) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, PROVIDER_NAME, JsonHelper.getElement(linkingProfile, PROVIDER_NAME));
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, PROFILE_ID, JsonHelper.getElement(linkingProfile, PROFILE_ID));

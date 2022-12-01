@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import com.google.common.collect.Lists;
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
@@ -38,7 +39,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testAttributeNotFound() {
-        final var authorizer = new RequireAnyAttributeAuthorizer(Pac4jConstants.EMPTY_STRING);
+        val authorizer = new RequireAnyAttributeAuthorizer(Pac4jConstants.EMPTY_STRING);
         authorizer.setElements("name1");
         profile.addAttribute("name2", "anything-goes-here");
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -46,7 +47,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testNoValueProvided() {
-        final var authorizer = new RequireAnyAttributeAuthorizer(Pac4jConstants.EMPTY_STRING);
+        val authorizer = new RequireAnyAttributeAuthorizer(Pac4jConstants.EMPTY_STRING);
         authorizer.setElements("name1");
         profile.addAttribute("name1", "anything-goes-here");
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -54,7 +55,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testPatternSingleValuedAttribute() {
-        final var authorizer = new RequireAnyAttributeAuthorizer("^value.+");
+        val authorizer = new RequireAnyAttributeAuthorizer("^value.+");
         authorizer.setElements("name1");
         profile.addAttribute("name1", "valueAddedHere");
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -62,7 +63,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testPatternFails() {
-        final var authorizer = new RequireAnyAttributeAuthorizer("^v");
+        val authorizer = new RequireAnyAttributeAuthorizer("^v");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -70,7 +71,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testMatchesPattern() {
-        final var authorizer = new RequireAnyAttributeAuthorizer("^v\\d");
+        val authorizer = new RequireAnyAttributeAuthorizer("^v\\d");
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
         profile.addAttribute("name2", "v3");
@@ -79,7 +80,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     @Test
     public void testMatchesEverythingByDefault() {
-        final var authorizer = new RequireAnyAttributeAuthorizer();
+        val authorizer = new RequireAnyAttributeAuthorizer();
         authorizer.setElements("name1");
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2"));
         profile.addAttribute("name2", "v3");

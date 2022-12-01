@@ -1,5 +1,7 @@
 package org.pac4j.core.credentials.extractor;
 
+import lombok.Getter;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -14,6 +16,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Getter
 public class FormExtractor implements CredentialsExtractor {
 
     private final String usernameParameter;
@@ -28,20 +31,12 @@ public class FormExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
                                          final ProfileManagerFactory profileManagerFactory) {
-        final var username = context.getRequestParameter(this.usernameParameter);
-        final var password = context.getRequestParameter(this.passwordParameter);
+        val username = context.getRequestParameter(this.usernameParameter);
+        val password = context.getRequestParameter(this.passwordParameter);
         if (!username.isPresent() || !password.isPresent()) {
             return Optional.empty();
         }
 
         return Optional.of(new UsernamePasswordCredentials(username.get(), password.get()));
-    }
-
-    public String getUsernameParameter() {
-        return usernameParameter;
-    }
-
-    public String getPasswordParameter() {
-        return passwordParameter;
     }
 }

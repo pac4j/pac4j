@@ -1,5 +1,6 @@
 package org.pac4j.core.client;
 
+import lombok.val;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
@@ -41,7 +42,7 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testMissingClient() {
-        final var clients = new Clients();
+        val clients = new Clients();
         clients.setCallbackUrl(CALLBACK_URL);
         TestsHelper.expectException(() -> clients.setClients((List<Client>) null), TechnicalException.class, "clients cannot be null");
     }
@@ -49,7 +50,7 @@ public final class ClientsTests implements TestsConstants {
     @Test
     public void testNoValuesSet() {
         var facebookClient = newFacebookClient();
-        final var clients = new Clients(facebookClient);
+        val clients = new Clients(facebookClient);
         clients.findAllClients();
         assertNull(facebookClient.getCallbackUrl());
         assertNull(facebookClient.getUrlResolver());
@@ -61,7 +62,7 @@ public final class ClientsTests implements TestsConstants {
     @Test
     public void testValuesSet() {
         var facebookClient = newFacebookClient();
-        final var clients = new Clients(facebookClient);
+        val clients = new Clients(facebookClient);
         final AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
         final UrlResolver urlResolver = new DefaultUrlResolver();
         final CallbackUrlResolver callbackUrlResolver = new QueryParameterCallbackUrlResolver();
@@ -81,15 +82,15 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testAllClients() {
-        final var facebookClient = newFacebookClient();
-        final var yahooClient = newYahooClient();
+        val facebookClient = newFacebookClient();
+        val yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<>();
         clients.add(facebookClient);
         clients.add(yahooClient);
-        final var clientsGroup = new Clients();
+        val clientsGroup = new Clients();
         clientsGroup.setClients(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
-        final var clients2 = clientsGroup.findAllClients();
+        val clients2 = clientsGroup.findAllClients();
         assertEquals(2, clients2.size());
         assertTrue(clients2.containsAll(clients));
     }
@@ -105,8 +106,8 @@ public final class ClientsTests implements TestsConstants {
     }
 
     private void internalTestByName(final boolean fakeFirst) {
-        final var facebookClient = newFacebookClient();
-        final var fakeClient = new MockDirectClient(NAME, Optional.empty(), null);
+        val facebookClient = newFacebookClient();
+        val fakeClient = new MockDirectClient(NAME, Optional.empty(), null);
         final Clients clients;
         if (fakeFirst) {
             clients = new Clients(CALLBACK_URL, fakeClient, facebookClient);
@@ -119,21 +120,21 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void rejectSameName() {
-        final var client1 =
+        val client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final var client2 =
+        val client2 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final var clients = new Clients(CALLBACK_URL, client1, client2);
+        val clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.expectException(() -> clients.findAllClients(),
             TechnicalException.class, "Duplicate name in clients: name");
     }
 
     @Test
     public void rejectSameNameOnAddingNewClient() {
-        final var client1 =
+        val client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final var clients = new Clients(CALLBACK_URL, client1);
-        final var client2 =
+        val clients = new Clients(CALLBACK_URL, client1);
+        val client2 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         clients.getClients().add(client2);
         TestsHelper.expectException(() -> clients.findClient(NAME),
@@ -142,71 +143,71 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void rejectSameNameDifferentCase() {
-        final var client1 =
+        val client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final var client2 =
+        val client2 =
             new MockIndirectClient(NAME.toUpperCase(), new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final var clients = new Clients(CALLBACK_URL, client1, client2);
+        val clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.expectException(() -> clients.findAllClients(),
             TechnicalException.class, "Duplicate name in clients: NAME");
     }
 
     @Test
     public void testFindByName() {
-        final var facebookClient = newFacebookClient();
-        final var yahooClient = newYahooClient();
-        final var clients = new Clients(facebookClient, yahooClient);
+        val facebookClient = newFacebookClient();
+        val yahooClient = newYahooClient();
+        val clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient("FacebookClient"));
     }
 
     @Test
     public void testFindByNameCase() {
-        final var facebookClient = newFacebookClient();
-        final var yahooClient = newYahooClient();
-        final var clients = new Clients(facebookClient, yahooClient);
+        val facebookClient = newFacebookClient();
+        val yahooClient = newYahooClient();
+        val clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient("FACEBOOKclient"));
     }
 
     @Test
     public void testFindByNameBlankSpaces() {
-        final var facebookClient = newFacebookClient();
-        final var yahooClient = newYahooClient();
-        final var clients = new Clients(facebookClient, yahooClient);
+        val facebookClient = newFacebookClient();
+        val yahooClient = newYahooClient();
+        val clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient(" FacebookClient          "));
     }
 
     @Test
     public void testAddClient() {
-        final var facebookClient = newFacebookClient();
-        final var yahooClient = newYahooClient();
-        final var clients = new Clients(CALLBACK_URL, facebookClient);
+        val facebookClient = newFacebookClient();
+        val yahooClient = newYahooClient();
+        val clients = new Clients(CALLBACK_URL, facebookClient);
         clients.findAllClients();
         final List<Client> list = new ArrayList<>();
         list.add(facebookClient);
         list.add(yahooClient);
         clients.setClients(list);
         clients.setCallbackUrlResolver(new NoParameterCallbackUrlResolver());
-        final var yclient = (IndirectClient) clients.findClient("YahooClient").get();
+        val yclient = (IndirectClient) clients.findClient("YahooClient").get();
         assertTrue(yclient.getCallbackUrlResolver() instanceof NoParameterCallbackUrlResolver);
-        final var fclient = (IndirectClient) clients.findClient("FacebookClient").get();
+        val fclient = (IndirectClient) clients.findClient("FacebookClient").get();
         assertTrue(fclient.getCallbackUrlResolver() instanceof NoParameterCallbackUrlResolver);
     }
 
     @Test
     @Ignore
     public void testPerfFind() {
-        final var list = new ArrayList<Client>();
+        val list = new ArrayList<Client>();
         final int max = 10000;
         for (int i = 1; i < max; i++) {
             list.add(new MockIndirectClient("Client" + i, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile()));
         }
-        final var clients = new Clients(CALLBACK_URL, list);
+        val clients = new Clients(CALLBACK_URL, list);
         Optional<Client> c = Optional.empty();
-        final var t0 = System.currentTimeMillis();
+        val t0 = System.currentTimeMillis();
         for (int j = 0; j < max; j++) {
             c = clients.findClient("Client" + (max/2));
         }
-        final var t1 = System.currentTimeMillis();
+        val t1 = System.currentTimeMillis();
         assertTrue(c.isPresent());
         System.out.println("Time: " + (t1-t0) + " ms");
     }

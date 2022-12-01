@@ -1,5 +1,6 @@
 package org.pac4j.http.credentials.authenticator;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -36,24 +37,24 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
     public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var certificate = ((X509Credentials) credentials).getCertificate();
+        val certificate = ((X509Credentials) credentials).getCertificate();
         if (certificate == null) {
             throw new CredentialsException("No X509 certificate");
         }
 
-        final var principal = certificate.getSubjectDN();
+        val principal = certificate.getSubjectDN();
         if (principal == null) {
             throw new CredentialsException("No X509 principal");
         }
 
-        final var subjectDN = principal.getName();
+        val subjectDN = principal.getName();
         logger.debug("subjectDN: {}", subjectDN);
 
         if (subjectDN == null) {
             throw new CredentialsException("No X509 subjectDN");
         }
 
-        final var matcher = this.pattern.matcher(subjectDN);
+        val matcher = this.pattern.matcher(subjectDN);
 
         if (!matcher.find()) {
             throw new CredentialsException("No matching for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
@@ -63,8 +64,8 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
             throw new CredentialsException("Too many matchings for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
-        final var id = matcher.group(1);
-        final var profile = (X509Profile) getProfileDefinition().newProfile();
+        val id = matcher.group(1);
+        val profile = (X509Profile) getProfileDefinition().newProfile();
         profile.setId(id);
         logger.debug("profile: {}", profile);
 

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -59,7 +60,7 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         if (optProfile.isEmpty()) {
             LOGGER.debug("No cached credentials found. Delegating authentication to {}...", delegate);
             delegate.validate(credentials, context, sessionStore);
-            final var profile = credentials.getUserProfile();
+            val profile = credentials.getUserProfile();
             LOGGER.debug("Caching credential. Using profile {}...", profile);
             store.set(credentials, profile);
         } else {

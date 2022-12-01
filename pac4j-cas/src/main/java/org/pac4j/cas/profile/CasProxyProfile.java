@@ -1,5 +1,6 @@
 package org.pac4j.cas.profile;
 
+import lombok.val;
 import org.apereo.cas.client.authentication.AttributePrincipal;
 
 /**
@@ -37,7 +38,7 @@ public class CasProxyProfile extends CasProfile {
     public String getProxyTicketFor(final String service) {
         if (this.attributePrincipal != null) {
             logger.debug("Requesting PT from principal: {} and for service: {}", attributePrincipal, service);
-            final var pt = this.attributePrincipal.getProxyTicketFor(service);
+            val pt = this.attributePrincipal.getProxyTicketFor(service);
             logger.debug("Get PT: {}", pt);
             return pt;
         }

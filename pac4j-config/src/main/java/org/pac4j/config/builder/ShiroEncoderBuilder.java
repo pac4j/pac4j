@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.crypto.hash.DefaultHashService;
 import org.apache.shiro.util.ByteSource;
@@ -8,7 +9,7 @@ import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 
 import java.util.Map;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for Shiro (DefaultHashService and) DefaultPasswordService as password encoder.
@@ -24,16 +25,16 @@ public class ShiroEncoderBuilder extends AbstractBuilder {
 
     public void tryCreatePasswordEncoder(final Map<String, PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
-            final var exists = getProperty(SHIRO_ENCODER, i);
-            final var hasProperty =  containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
+            val exists = getProperty(SHIRO_ENCODER, i);
+            val hasProperty =  containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ITERATIONS, i) || containsProperty(SHIRO_ENCODER_PRIVATE_SALT, i);
             if (isNotBlank(exists) || hasProperty) {
 
-                final var passwordService = new DefaultPasswordService();
+                val passwordService = new DefaultPasswordService();
 
                 if (hasProperty) {
-                    final var hashService = new DefaultHashService();
+                    val hashService = new DefaultHashService();
 
                     if (containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)) {
                         hashService.setGeneratePublicSalt(getPropertyAsBoolean(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i));

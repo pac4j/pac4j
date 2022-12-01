@@ -1,5 +1,6 @@
 package org.pac4j.core.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -32,10 +33,10 @@ public abstract class RunClient implements TestsConstants {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public void run() {
-        final var client = getClient();
-        final var context = MockWebContext.create();
+        val client = getClient();
+        val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        final var url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
+        val url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
         if (CommonHelper.isNotBlank(getLogin()) && CommonHelper.isNotBlank(getPassword())) {
             logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
@@ -46,19 +47,19 @@ public abstract class RunClient implements TestsConstants {
             logger.warn("You can CANCEL the authentication.");
         }
         logger.warn("Returned url (copy/paste the fragment starting before the question mark of the query string):");
-        final var scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
-        final var returnedUrl = scanner.nextLine().trim();
+        val scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
+        val returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        final var credentials = client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
+        val credentials = client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
         if (credentials.isPresent()) {
-            final var profile = client.getUserProfile(credentials.get(), context, sessionStore);
+            val profile = client.getUserProfile(credentials.get(), context, sessionStore);
             logger.debug("userProfile: {}", profile);
             if (profile.isPresent() || !canCancel()) {
                 verifyProfile((CommonProfile) profile.get());
                 logger.warn("## Java serialization");
-                final var javaSerializer = new JavaSerializer();
+                val javaSerializer = new JavaSerializer();
                 var bytes = javaSerializer.serializeToBytes(profile.get());
-                final var profile2 = (CommonProfile) javaSerializer.deserializeFromBytes(bytes);
+                val profile2 = (CommonProfile) javaSerializer.deserializeFromBytes(bytes);
                 verifyProfile(profile2);
             }
         }
@@ -96,7 +97,7 @@ public abstract class RunClient implements TestsConstants {
         if (profileUrl == null) {
             assertNull(profile.getProfileUrl());
         } else {
-            final var profUrl = profile.getProfileUrl().toString();
+            val profUrl = profile.getProfileUrl().toString();
             assertTrue(profUrl.startsWith(profileUrl));
         }
         assertEquals(location, profile.getLocation());
@@ -120,10 +121,10 @@ public abstract class RunClient implements TestsConstants {
             }
         }
         final Map<String, String> parameters = new HashMap<>();
-        final var st = new StringTokenizer(url, "&");
+        val st = new StringTokenizer(url, "&");
         while (st.hasMoreTokens()) {
-            final var keyValue = st.nextToken();
-            final var parts = keyValue.split("=");
+            val keyValue = st.nextToken();
+            val parts = keyValue.split("=");
             if (parts != null && parts.length >= 2) {
                 try {
                     parameters.put(parts[0], URLDecoder.decode(parts[1], StandardCharsets.UTF_8.name()));

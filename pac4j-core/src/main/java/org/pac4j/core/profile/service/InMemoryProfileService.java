@@ -1,5 +1,6 @@
 package org.pac4j.core.profile.service;
 
+import lombok.val;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.factory.ProfileFactory;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * In-memory profile service.
@@ -46,16 +47,16 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
 
     @Override
     protected void insert(final Map<String, Object> attributes) {
-        final var id = (String) attributes.get(getIdAttribute());
+        val id = (String) attributes.get(getIdAttribute());
         logger.debug("Inserting doc id: {} with attributes: {}", id, attributes);
         profiles.put(id, attributes);
     }
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final var id = (String) attributes.get(getIdAttribute());
+        val id = (String) attributes.get(getIdAttribute());
         logger.debug("Updating id: {} with attributes: {}", id, attributes);
-        final var profile = profiles.get(id);
+        val profile = profiles.get(id);
         if (profile != null) {
             profile.putAll(attributes);
         } else {
@@ -83,7 +84,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         final List<Map<String, Object>> listAttributes;
         if (key.equals(getIdAttribute())) {
             listAttributes = new ArrayList<>();
-            final var profile = profiles.get(value);
+            val profile = profiles.get(value);
             if (profile != null) {
                 listAttributes.add(populateAttributes(profile, names));
             }

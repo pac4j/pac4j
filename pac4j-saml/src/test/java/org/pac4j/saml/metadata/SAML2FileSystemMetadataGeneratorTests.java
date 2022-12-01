@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.ConfigurationManager;
@@ -7,7 +8,7 @@ import org.pac4j.saml.util.DefaultConfigurationManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This is {@link SAML2FileSystemMetadataGeneratorTests}.
@@ -20,7 +21,7 @@ public class SAML2FileSystemMetadataGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -31,9 +32,9 @@ public class SAML2FileSystemMetadataGeneratorTests {
         configuration.init();
 
         var metadataGenerator = new SAML2FileSystemMetadataGenerator(configuration.getServiceProviderMetadataResource());
-        final var entity = metadataGenerator.buildEntityDescriptor();
+        val entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
-        final var metadata = metadataGenerator.getMetadata(entity);
+        val metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
         metadataGenerator.storeMetadata(metadata, true);

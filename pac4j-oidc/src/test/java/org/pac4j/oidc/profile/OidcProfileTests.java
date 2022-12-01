@@ -6,6 +6,7 @@ import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
@@ -158,7 +159,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testNoExpirationWithNoExpiredToken() {
         final AccessToken token = new BearerAccessToken("token_value", 3600, new Scope("scope"));
-        final var profile = new OidcProfile();
+        val profile = new OidcProfile();
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(0);
         assertFalse(profile.isExpired());
@@ -170,7 +171,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testExpirationWithExpiredToken() {
         final AccessToken token = new BearerAccessToken("token_value", -1, new Scope("scope"));
-        final var profile = new OidcProfile();
+        val profile = new OidcProfile();
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(0);
         assertTrue(profile.isExpired());
@@ -183,7 +184,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testAdvancedExpirationWithNoExpiredToken() {
         final AccessToken token = new BearerAccessToken("token_value", 3600, new Scope("scope"));
-        final var profile = new OidcProfile();
+        val profile = new OidcProfile();
         profile.setAccessToken(token);
         profile.setTokenExpirationAdvance(3600); // 1 hour
         assertTrue(profile.isExpired());
@@ -195,7 +196,7 @@ public final class OidcProfileTests implements TestsConstants {
     @Test
     public void testAccessTokenExpiration(){
 
-        final var profile = new OidcProfile();
+        val profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken(ID_TOKEN));
 
         assertTrue(profile.isExpired());

@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -33,7 +34,7 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile,
                             final HttpConstants.HTTP_METHOD element) {
-        final var requestMethod = context.getRequestMethod();
+        val requestMethod = context.getRequestMethod();
         return requestMethod.equalsIgnoreCase(element.toString());
     }
 

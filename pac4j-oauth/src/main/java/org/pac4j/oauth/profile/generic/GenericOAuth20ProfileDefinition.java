@@ -2,12 +2,7 @@ package org.pac4j.oauth.profile.generic;
 
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
-
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.StringConverter;
@@ -15,6 +10,11 @@ import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * <p>This class is the user profile for generic OAuth2 with appropriate getters.</p>
@@ -56,19 +56,19 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public OAuth20Profile extractUserProfile(final String body) {
-        final var profile = new OAuth20Profile();
-        final var json = JsonHelper.getFirstNode(body, getFirstNodePath());
+        val profile = new OAuth20Profile();
+        val json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, getProfileId())));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
-            for (final var attribute : getSecondaryAttributes()) {
+            for (val attribute : getSecondaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
-            for (final var entry : getProfileAttributes().entrySet()) {
-                final var key = entry.getKey();
-                final var value = entry.getValue();
+            for (val entry : getProfileAttributes().entrySet()) {
+                val key = entry.getKey();
+                val value = entry.getValue();
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, value));
             }
 

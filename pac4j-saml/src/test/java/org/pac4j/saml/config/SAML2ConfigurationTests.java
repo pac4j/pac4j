@@ -1,12 +1,13 @@
 package org.pac4j.saml.config;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
+import lombok.val;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is {@link SAML2ConfigurationTests}.
@@ -16,7 +17,7 @@ import org.springframework.core.io.FileSystemResource;
 public class SAML2ConfigurationTests {
     @Test
     public void verifySigningCertExported() {
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -24,19 +25,19 @@ public class SAML2ConfigurationTests {
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
-        final var signingCertPem = new File("target/saml-signing-cert.pem");
+        val signingCertPem = new File("target/saml-signing-cert.pem");
         assertTrue(signingCertPem.exists());
-        final var signingCert = new File("target/saml-signing-cert.crt");
+        val signingCert = new File("target/saml-signing-cert.crt");
         assertTrue(signingCert.exists());
-        final var signingCertKey = new File("target/saml-signing-cert.key");
+        val signingCertKey = new File("target/saml-signing-cert.key");
         assertTrue(signingCertKey.exists());
     }
 
     @Test
     public void verifySigningCertNamedExported() {
-        final var certNamePart = "id-09 _*#AD";
-        final var certNameResult = "id-09_AD";
-        final var configuration = new SAML2Configuration();
+        val certNamePart = "id-09 _*#AD";
+        val certNameResult = "id-09_AD";
+        val configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setCertificateNameToAppend(certNamePart);
@@ -45,11 +46,11 @@ public class SAML2ConfigurationTests {
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
-        final var signingCertPem = new File("target/saml-signing-cert-" + certNameResult + ".pem");
+        val signingCertPem = new File("target/saml-signing-cert-" + certNameResult + ".pem");
         assertTrue(signingCertPem.exists());
-        final var signingCert = new File("target/saml-signing-cert-" + certNameResult + ".crt");
+        val signingCert = new File("target/saml-signing-cert-" + certNameResult + ".crt");
         assertTrue(signingCert.exists());
-        final var signingCertKey = new File("target/saml-signing-cert-" + certNameResult + ".key");
+        val signingCertKey = new File("target/saml-signing-cert-" + certNameResult + ".key");
         assertTrue(signingCertKey.exists());
     }
 }

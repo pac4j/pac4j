@@ -3,6 +3,7 @@ package org.pac4j.sql.profile.service;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
@@ -75,26 +76,26 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         final List<String> names = new ArrayList<>();
         final List<String> questionMarks = new ArrayList<>();
         final List<Object> values = new ArrayList<>();
-        for (final var entry : attributes.entrySet()) {
+        for (val entry : attributes.entrySet()) {
             names.add(entry.getKey());
             questionMarks.add("?");
             values.add(entry.getValue());
         }
 
-        final var query = "insert into " + usersTable + " (" + buildAttributesList(names) + ") values ("
+        val query = "insert into " + usersTable + " (" + buildAttributesList(names) + ") values ("
             + buildAttributesList(questionMarks) + ")";
         execute(query, values.toArray());
     }
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final var attributesList = new StringBuilder();
+        val attributesList = new StringBuilder();
         String id = null;
         final List<Object> values = new ArrayList<>();
         var i = 0;
-        for (final var entry : attributes.entrySet()) {
-            final var name = entry.getKey();
-            final var value = entry.getValue();
+        for (val entry : attributes.entrySet()) {
+            val name = entry.getKey();
+            val value = entry.getValue();
             if (ID.equals(name)) {
                 id = (String) value;
             } else {
@@ -111,13 +112,13 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
         assertNotNull(ID, id);
         values.add(id);
-        final var query = "update " + usersTable + " set " + attributesList.toString() + " where " + getIdAttribute() + " = :id";
+        val query = "update " + usersTable + " set " + attributesList.toString() + " where " + getIdAttribute() + " = :id";
         execute(query, values.toArray());
     }
 
     @Override
     protected void deleteById(final String id) {
-        final var query = "delete from " + usersTable + " where " + getIdAttribute() + " = :id";
+        val query = "delete from " + usersTable + " where " + getIdAttribute() + " = :id";
         execute(query, id);
     }
 
@@ -136,9 +137,9 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
-        final var attributesList = buildAttributesList(names);
+        val attributesList = buildAttributesList(names);
 
-        final var query = "select " + attributesList + " from " + usersTable + " where " + key + " = :" + key;
+        val query = "select " + attributesList + " from " + usersTable + " where " + key + " = :" + key;
         return query(query, key, value);
     }
 
@@ -156,9 +157,9 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     protected String buildAttributesList(final List<String> names) {
-        final var sb = new StringBuilder();
+        val sb = new StringBuilder();
         var firstOne = true;
-        for (final var name : names) {
+        for (val name : names) {
             if (!firstOne) {
                 sb.append(",");
             }

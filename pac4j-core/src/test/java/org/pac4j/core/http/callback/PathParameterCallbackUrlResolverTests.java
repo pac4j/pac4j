@@ -1,5 +1,6 @@
 package org.pac4j.core.http.callback;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.http.url.DefaultUrlResolver;
@@ -19,7 +20,7 @@ public final class PathParameterCallbackUrlResolverTests implements TestsConstan
 
     @Test
     public void testCompute() {
-        final var url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
+        val url = resolver.compute(new DefaultUrlResolver(), CALLBACK_URL, MY_CLIENT_NAME, MockWebContext.create());
         assertEquals(CALLBACK_URL + "/" + MY_CLIENT_NAME, url);
     }
 
@@ -30,14 +31,14 @@ public final class PathParameterCallbackUrlResolverTests implements TestsConstan
 
     @Test
     public void testMatchesSimplePath() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.setPath(MY_CLIENT_NAME);
         assertTrue(resolver.matches(MY_CLIENT_NAME, context));
     }
 
     @Test
     public void testMatchesComplexPath() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.setPath(VALUE + "/" + MY_CLIENT_NAME);
         assertTrue(resolver.matches(MY_CLIENT_NAME, context));
     }

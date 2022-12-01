@@ -1,5 +1,6 @@
 package org.pac4j.cas.authorization;
 
+import lombok.val;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -31,8 +32,8 @@ public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator 
 
     @Override
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
-        final var rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
-        final var isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
+        val rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
+        val isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);
         return Optional.of(profile);
     }

@@ -2,6 +2,7 @@ package org.pac4j.gae.client;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinition;
@@ -33,20 +34,20 @@ public class GaeUserServiceClient extends IndirectClient {
         service = UserServiceFactory.getUserService();
         CommonHelper.assertNotNull("service", this.service);
         defaultRedirectionActionBuilder((ctx, session) -> {
-            final var destinationUrl = computeFinalCallbackUrl(ctx);
-            final var loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
+            val destinationUrl = computeFinalCallbackUrl(ctx);
+            val loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
                 : service.createLoginURL(destinationUrl, authDomain);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, loginUrl));
         });
         defaultCredentialsExtractor((ctx, session, factory) -> {
-            final var credentials = new GaeUserCredentials();
+            val credentials = new GaeUserCredentials();
             credentials.setUser(service.getCurrentUser());
             return Optional.of(credentials);
         });
         defaultAuthenticator((credentials, ctx, session) -> {
-            final var user = ((GaeUserCredentials) credentials).getUser();
+            val user = ((GaeUserCredentials) credentials).getUser();
             if (user != null) {
-                final var profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
+                val profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
                 profile.setId(user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.EMAIL, user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());

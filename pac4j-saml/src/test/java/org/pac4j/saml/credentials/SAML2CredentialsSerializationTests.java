@@ -1,5 +1,6 @@
 package org.pac4j.saml.credentials;
 
+import lombok.val;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This is {@link SAML2CredentialsSerializationTests}.
@@ -28,42 +29,42 @@ public class SAML2CredentialsSerializationTests {
 
     @Test
     public void verifyOperation() {
-        final var nameIdBuilder = (SAMLObjectBuilder<NameID>)
+        val nameIdBuilder = (SAMLObjectBuilder<NameID>)
             this.builderFactory.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
         assertNotNull(nameIdBuilder);
 
-        final var nameid = nameIdBuilder.buildObject();
+        val nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
         nameid.setSPNameQualifier("pac4j");
         nameid.setNameQualifier("pac4j");
         nameid.setSPProvidedID("pac4j");
 
-        final var conditionsBuilder = (SAMLObjectBuilder<Conditions>)
+        val conditionsBuilder = (SAMLObjectBuilder<Conditions>)
             this.builderFactory.getBuilder(Conditions.DEFAULT_ELEMENT_NAME);
         assertNotNull(conditionsBuilder);
 
-        final var conditions = conditionsBuilder.buildObject();
+        val conditions = conditionsBuilder.buildObject();
         conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
         conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
 
         final List<String> contexts = new ArrayList<>();
         contexts.add("cas-context");
 
-        final var attributeBuilder = (SAMLObjectBuilder<Attribute>)
+        val attributeBuilder = (SAMLObjectBuilder<Attribute>)
             this.builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
         assertNotNull(attributeBuilder);
 
         final List<Attribute> attributes = new ArrayList<>();
-        final var attr = attributeBuilder.buildObject();
+        val attr = attributeBuilder.buildObject();
         attr.setFriendlyName("pac4j");
         attr.setName("pac4j");
         attr.setNameFormat("pac4j");
         attributes.add(attr);
-        final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid), "example.issuer.com",
+        val credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid), "example.issuer.com",
             SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index", contexts,
             UUID.randomUUID().toString());
-        final var data = SerializationUtils.serialize(credentials);
-        final var result = (SAML2Credentials) SerializationUtils.deserialize(data);
+        val data = SerializationUtils.serialize(credentials);
+        val result = (SAML2Credentials) SerializationUtils.deserialize(data);
         assertNotNull(result);
         assertNotNull(result.getInResponseTo());
     }

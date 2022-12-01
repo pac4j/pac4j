@@ -1,5 +1,8 @@
 package org.pac4j.core.profile.definition;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.CommonProfile;
@@ -11,12 +14,15 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
-import java.util.*;
-
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.substringBefore;
 
 /**
  * Define a profile (its class and attributes).
@@ -24,20 +30,24 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Getter
 public abstract class ProfileDefinition {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Setter
     private String profileId = null;
 
-    private final List<String> primaries = new ArrayList<>();
+    private final List<String> primaryAttributes = new ArrayList<>();
 
-    private final List<String> secondaries = new ArrayList<>();
+    private final List<String> secondaryAttributes = new ArrayList<>();
 
     private final Map<String, AttributeConverter> converters = new HashMap<>();
 
+    @Setter
     private ProfileFactory profileFactory = parameters -> new CommonProfile();
 
+    @Setter
     private boolean restoreProfileFromTypedId = false;
 
     /**
@@ -48,13 +58,13 @@ public abstract class ProfileDefinition {
      */
     public UserProfile newProfile(final Object... parameters) {
         if (restoreProfileFromTypedId) {
-            final var typedId = getParameter(parameters, 0);
+            val typedId = getParameter(parameters, 0);
             if (typedId instanceof String) {
                 logger.debug("Building user profile based on typedId: {}", typedId);
-                final var sTypedId = (String) typedId;
+                val sTypedId = (String) typedId;
                 if (sTypedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-                    final var profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
-                    for (final var profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
+                    val profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                    for (val profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
                         if (profileClass.startsWith(profileClassPrefix)) {
                             try {
                                 return ProfileHelper.buildUserProfileByClassCompleteName(profileClass);
@@ -89,7 +99,7 @@ public abstract class ProfileDefinition {
             final Object value) {
         if (value != null) {
             final Object convertedValue;
-            final var converter = this.converters.get(name);
+            val converter = this.converters.get(name);
             if (converter != null) {
                 convertedValue = converter.convert(value);
                 if (convertedValue != null) {
@@ -145,7 +155,7 @@ public abstract class ProfileDefinition {
      * @param converter converter
      */
     protected void primary(final String name, final AttributeConverter converter) {
-        primaries.add(name);
+        primaryAttributes.add(name);
         converters.put(name, converter);
     }
 
@@ -156,35 +166,7 @@ public abstract class ProfileDefinition {
      * @param converter converter
      */
     protected void secondary(final String name, final AttributeConverter converter) {
-        secondaries.add(name);
+        secondaryAttributes.add(name);
         converters.put(name, converter);
-    }
-
-    public List<String> getPrimaryAttributes() {
-        return this.primaries;
-    }
-
-    public List<String> getSecondaryAttributes() {
-        return this.secondaries;
-    }
-
-    public Map<String, AttributeConverter> getConverters() {
-        return converters;
-    }
-
-    public void setProfileId(final String profileId) {
-        this.profileId = profileId;
-    }
-
-    public String getProfileId() {
-        return profileId;
-    }
-
-    public boolean isRestoreProfileFromTypedId() {
-        return restoreProfileFromTypedId;
-    }
-
-    public void setRestoreProfileFromTypedId(final boolean restoreProfileFromTypedId) {
-        this.restoreProfileFromTypedId = restoreProfileFromTypedId;
     }
 }

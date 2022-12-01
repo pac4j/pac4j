@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
@@ -11,7 +12,8 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link CheckHttpMethodAuthorizer}.
@@ -31,7 +33,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     @Test
     public void testGoodHttpMethod() {
-        final var authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
+        val authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
             HttpConstants.HTTP_METHOD.POST);
         assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name()),
             new MockSessionStore(), profiles));
@@ -39,7 +41,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     @Test
     public void testBadHttpMethod() {
-        final var authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
+        val authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
         assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.DELETE.name()),
             new MockSessionStore(), profiles));
     }

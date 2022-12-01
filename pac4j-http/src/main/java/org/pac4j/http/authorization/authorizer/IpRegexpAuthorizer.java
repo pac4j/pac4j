@@ -1,5 +1,6 @@
 package org.pac4j.http.authorization.authorizer;
 
+import lombok.val;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -35,7 +36,7 @@ public class IpRegexpAuthorizer implements Authorizer {
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profile) {
         CommonHelper.assertNotNull("pattern", pattern);
 
-        final var ip = context.getRemoteAddr();
+        val ip = context.getRemoteAddr();
         return this.pattern.matcher(ip).matches();
     }
 

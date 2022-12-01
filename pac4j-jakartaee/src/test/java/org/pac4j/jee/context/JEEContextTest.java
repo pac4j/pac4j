@@ -2,6 +2,7 @@ package org.pac4j.jee.context;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.util.Pac4jConstants;
@@ -51,28 +52,28 @@ public final class JEEContextTest implements TestsConstants {
         headerNames.add(KEY);
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(headerNames));
         when(request.getHeader(KEY)).thenReturn(VALUE);
-        final var context = new JEEContext(request, response);
+        val context = new JEEContext(request, response);
         assertEquals(VALUE, context.getRequestHeader(key).get());
     }
 
     @Test
     public void testGetPathNullFullPath() {
         when(request.getRequestURI()).thenReturn(null);
-        final var context = new JEEContext(request, response);
+        val context = new JEEContext(request, response);
         assertEquals(Pac4jConstants.EMPTY_STRING, context.getPath());
     }
 
     @Test
     public void testGetPathFullpath() {
         when(request.getRequestURI()).thenReturn(CTX_PATH);
-        final var context = new JEEContext(request, response);
+        val context = new JEEContext(request, response);
         assertEquals(CTX_PATH, context.getPath());
     }
 
     @Test
     public void testGetRequestUrl() throws Exception {
         when(request.getRequestURL()).thenReturn(new StringBuffer("https://pac4j.org?name=value&name2=value2"));
-        final var context = new JEEContext(request, response);
+        val context = new JEEContext(request, response);
         assertEquals("https://pac4j.org", context.getRequestURL());
     }
 
@@ -80,7 +81,7 @@ public final class JEEContextTest implements TestsConstants {
     public void testGetPathFullpathContext() {
         when(request.getRequestURI()).thenReturn(CTX_PATH);
         when(request.getContextPath()).thenReturn(CTX);
-        final var context = new JEEContext(request, response);
+        val context = new JEEContext(request, response);
         assertEquals(PATH, context.getPath());
     }
 
@@ -88,7 +89,7 @@ public final class JEEContextTest implements TestsConstants {
     public void testGetPathDoubleSlashFullpathContext() {
         when(request.getRequestURI()).thenReturn("/" + CTX_PATH);
         when(request.getContextPath()).thenReturn(CTX);
-        final var context = new JEEContext(request, response);
+        val context = new JEEContext(request, response);
         assertEquals(PATH, context.getPath());
     }
 }

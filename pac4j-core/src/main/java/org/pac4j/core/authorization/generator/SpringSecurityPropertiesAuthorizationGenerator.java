@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
@@ -22,14 +23,14 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
     private Map<String, List<String>> rolesByUsers = new HashMap<>();
 
     public SpringSecurityPropertiesAuthorizationGenerator(final Properties properties) {
-        final var keys = properties.stringPropertyNames();
-        for (final var key : keys) {
-            final var value = properties.getProperty(key);
+        val keys = properties.stringPropertyNames();
+        for (val key : keys) {
+            val value = properties.getProperty(key);
             if (CommonHelper.isNotBlank(value)) {
-                final var parts = value.split(",");
-                final var nb = parts.length;
+                val parts = value.split(",");
+                val nb = parts.length;
                 if (nb > 1) {
-                    final var latest = parts[nb - 1];
+                    val latest = parts[nb - 1];
                     if (!DISABLED.equals(latest)) {
                         final List<String> roles = new ArrayList<>(Arrays.asList(parts));
                         if (ENABLED.equals(latest)) {
@@ -45,8 +46,8 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
 
     @Override
     public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
-        final var id = profile.getId();
-        final var roles = rolesByUsers.get(id);
+        val id = profile.getId();
+        val roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {
             profile.addRoles(roles);
         }

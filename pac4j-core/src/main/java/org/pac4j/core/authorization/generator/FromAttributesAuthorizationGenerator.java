@@ -1,5 +1,8 @@
 package org.pac4j.core.authorization.generator;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
@@ -14,6 +17,8 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.5.0
  */
+@Getter
+@Setter
 public class FromAttributesAuthorizationGenerator implements AuthorizationGenerator {
 
     private Collection<String> roleAttributes;
@@ -47,11 +52,11 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
             return;
         }
 
-        for (final var attribute : attributes) {
-            final var value = profile.getAttribute(attribute);
+        for (val attribute : attributes) {
+            val value = profile.getAttribute(attribute);
             if (value != null) {
                 if (value instanceof String) {
-                    final var st = new StringTokenizer((String) value, this.splitChar);
+                    val st = new StringTokenizer((String) value, this.splitChar);
                     while (st.hasMoreTokens()) {
                         addRoleToProfile(profile, st.nextToken());
                     }
@@ -73,17 +78,5 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
 
     private void addRoleToProfile(final UserProfile profile, final String value) {
         profile.addRole(value);
-    }
-
-    public String getSplitChar() {
-        return this.splitChar;
-    }
-
-    public void setSplitChar(final String splitChar) {
-        this.splitChar = splitChar;
-    }
-
-    public void setRoleAttributes(final String roleAttributesStr) {
-        this.roleAttributes = Arrays.asList(roleAttributesStr.split(splitChar));
     }
 }

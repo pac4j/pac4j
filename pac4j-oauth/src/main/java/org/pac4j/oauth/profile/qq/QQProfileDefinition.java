@@ -1,19 +1,19 @@
 package org.pac4j.oauth.profile.qq;
 
-import java.util.Arrays;
-import java.util.regex.Pattern;
-
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.profile.converter.GenderConverter;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
-
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -81,10 +81,10 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public QQProfile extractUserProfile(String body) {
-        final var profile = new QQProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = new QQProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }
@@ -102,7 +102,7 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
     protected static String extractParameter(String response, Pattern regexPattern,
                                              boolean required)
         throws OAuthException {
-        final var matcher = regexPattern.matcher(response);
+        val matcher = regexPattern.matcher(response);
         if (matcher.find()) {
             return matcher.group(1);
         }

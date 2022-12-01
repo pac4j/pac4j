@@ -3,14 +3,15 @@ package org.pac4j.oauth.redirect;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.oauth.AuthorizationUrlBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +51,8 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             } else {
                 state = null;
             }
-            final var service = (OAuth20Service) this.configuration.buildService(context, client);
-            final var authorizationUrl = new AuthorizationUrlBuilder(service)
+            val service = (OAuth20Service) this.configuration.buildService(context, client);
+            val authorizationUrl = new AuthorizationUrlBuilder(service)
                 .state(state).additionalParams(this.configuration.getCustomParams()).build();
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));

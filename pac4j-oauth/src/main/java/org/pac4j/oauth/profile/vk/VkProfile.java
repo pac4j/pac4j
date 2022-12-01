@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.vk;
 
+import lombok.val;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -55,7 +56,7 @@ public class VkProfile extends OAuth20Profile {
 
     @Override
     public Gender getGender() {
-        final var gender = (Gender) getAttribute(VkProfileDefinition.SEX);
+        val gender = (Gender) getAttribute(VkProfileDefinition.SEX);
         if (gender == null) {
             return Gender.UNSPECIFIED;
         } else {

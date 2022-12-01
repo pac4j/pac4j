@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.ok;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.Pac4jConstants;
@@ -54,14 +55,14 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
-        final var accessToken = ((OAuth2AccessToken) token).getAccessToken();
+        val accessToken = ((OAuth2AccessToken) token).getAccessToken();
         var baseParams =
                 "application_key=" + ((OkConfiguration) configuration).getPublicKey() +
                         "&format=json" +
                         "&method=users.getCurrentUser";
         final String finalSign;
         try {
-            final var preSign = getMD5SignAsHexString(accessToken + configuration.getSecret());
+            val preSign = getMD5SignAsHexString(accessToken + configuration.getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", Pac4jConstants.EMPTY_STRING) + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -85,11 +86,11 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public OkProfile extractUserProfile(String body) {
-        final var profile = (OkProfile) newProfile();
+        val profile = (OkProfile) newProfile();
         var userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, OkProfileDefinition.UID)));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }
         } else {

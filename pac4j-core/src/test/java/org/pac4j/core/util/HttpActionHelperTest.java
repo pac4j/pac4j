@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import lombok.val;
 import org.junit.After;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
@@ -27,7 +28,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testRedirectUrlAfterGet() {
         HttpActionHelper.setUseModernHttpCodes(true);
-        final var action = HttpActionHelper.buildRedirectUrlAction(MockWebContext.create(), PAC4J_URL);
+        val action = HttpActionHelper.buildRedirectUrlAction(MockWebContext.create(), PAC4J_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(PAC4J_URL, ((FoundAction) action).getLocation());
     }
@@ -35,7 +36,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testRedirectUrlAfterPost() {
         HttpActionHelper.setUseModernHttpCodes(true);
-        final var action = HttpActionHelper
+        val action = HttpActionHelper
             .buildRedirectUrlAction(MockWebContext.create().setRequestMethod("POST"), PAC4J_URL);
         assertTrue(action instanceof SeeOtherAction);
         assertEquals(PAC4J_URL, ((SeeOtherAction) action).getLocation());
@@ -44,7 +45,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testRedirectUrlAfterPostWithoutModernCode() {
         HttpActionHelper.setUseModernHttpCodes(false);
-        final var action = HttpActionHelper
+        val action = HttpActionHelper
             .buildRedirectUrlAction(MockWebContext.create().setRequestMethod("POST"), PAC4J_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(PAC4J_URL, ((FoundAction) action).getLocation());
@@ -53,7 +54,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testFormPostContentAfterGet() {
         HttpActionHelper.setUseModernHttpCodes(true);
-        final var action = HttpActionHelper.buildFormPostContentAction(MockWebContext.create(), VALUE);
+        val action = HttpActionHelper.buildFormPostContentAction(MockWebContext.create(), VALUE);
         assertTrue(action instanceof OkAction);
         assertEquals(VALUE, ((OkAction) action).getContent());
     }
@@ -61,7 +62,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testFormPostContentAfterPost() {
         HttpActionHelper.setUseModernHttpCodes(true);
-        final var action = HttpActionHelper
+        val action = HttpActionHelper
             .buildFormPostContentAction(MockWebContext.create().setRequestMethod("POST"), VALUE);
         assertTrue(action instanceof OkAction);
         assertEquals(VALUE, ((OkAction) action).getContent());
@@ -70,7 +71,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testFormPostContentAfterPostWithoutModernCode() {
         HttpActionHelper.setUseModernHttpCodes(false);
-        final var action = HttpActionHelper
+        val action = HttpActionHelper
             .buildFormPostContentAction(MockWebContext.create().setRequestMethod("POST"), VALUE);
         assertTrue(action instanceof OkAction);
         assertEquals(VALUE, ((OkAction) action).getContent());
@@ -78,7 +79,7 @@ public final class HttpActionHelperTest implements TestsConstants {
 
     @Test
     public void testBuildFormPostContent() {
-        final var content = HttpActionHelper.buildFormPostContent(MockWebContext.create().setFullRequestURL(CALLBACK_URL));
+        val content = HttpActionHelper.buildFormPostContent(MockWebContext.create().setFullRequestURL(CALLBACK_URL));
         assertEquals("<html>\n<body>\n<form action=\"" + CALLBACK_URL + "\" name=\"f\" method=\"post\">\n"
             + "<input value='POST' type='submit' />\n</form>\n" +
             "<script type='text/javascript'>document.forms['f'].submit();</script>\n" +
@@ -87,7 +88,7 @@ public final class HttpActionHelperTest implements TestsConstants {
 
     @Test
     public void testBuildFormPostContentWithData() {
-        final var content = HttpActionHelper
+        val content = HttpActionHelper
             .buildFormPostContent(MockWebContext.create().setFullRequestURL(CALLBACK_URL).addRequestParameter(NAME, VALUE));
         assertEquals("<html>\n<body>\n<form action=\"" + CALLBACK_URL + "\" name=\"f\" method=\"post\">\n"
             + "<input type='hidden' name=\"" + NAME + "\" value=\"" + VALUE + "\" />\n" +
@@ -100,7 +101,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     public void testBuildUnauthenticated401WithHeader() {
         final WebContext context = MockWebContext.create();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, VALUE);
-        final var action = HttpActionHelper.buildUnauthenticatedAction(context);
+        val action = HttpActionHelper.buildUnauthenticatedAction(context);
         assertTrue(action instanceof UnauthorizedAction);
         assertEquals(VALUE, context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
@@ -108,7 +109,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     @Test
     public void testBuildUnauthenticated401WithoutHeader() {
         final WebContext context = MockWebContext.create();
-        final var action = HttpActionHelper.buildUnauthenticatedAction(context);
+        val action = HttpActionHelper.buildUnauthenticatedAction(context);
         assertTrue(action instanceof UnauthorizedAction);
         assertEquals("Bearer realm=\"pac4j\"", context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
@@ -118,7 +119,7 @@ public final class HttpActionHelperTest implements TestsConstants {
         HttpActionHelper.setAlwaysUse401ForUnauthenticated(false);
         final WebContext context = MockWebContext.create();
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, VALUE);
-        final var action = HttpActionHelper.buildUnauthenticatedAction(context);
+        val action = HttpActionHelper.buildUnauthenticatedAction(context);
         assertTrue(action instanceof UnauthorizedAction);
         assertEquals(VALUE, context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
@@ -127,7 +128,7 @@ public final class HttpActionHelperTest implements TestsConstants {
     public void testBuildUnauthenticated403WithoutHeader() {
         HttpActionHelper.setAlwaysUse401ForUnauthenticated(false);
         final WebContext context = MockWebContext.create();
-        final var action = HttpActionHelper.buildUnauthenticatedAction(context);
+        val action = HttpActionHelper.buildUnauthenticatedAction(context);
         assertTrue(action instanceof ForbiddenAction);
         assertTrue(context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).isEmpty());
     }

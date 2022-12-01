@@ -191,7 +191,7 @@ public final class CommonHelper {
         try {
             return URLEncoder.encode(text, StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
-            final var message = "Unable to encode text : " + text;
+            val message = "Unable to encode text : " + text;
             throw new TechnicalException(message, e);
         }
     }

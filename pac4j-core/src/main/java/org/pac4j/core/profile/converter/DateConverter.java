@@ -1,13 +1,13 @@
 package org.pac4j.core.profile.converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class converts a String (depending on a specified format) into a Date.
@@ -39,14 +39,13 @@ public class DateConverter extends AbstractAttributeConverter {
 
     @Override
     protected Date internalConvert(final Object attribute) {
-        if (attribute instanceof String) {
+        if (attribute instanceof String s) {
             SimpleDateFormat simpleDateFormat;
             if (this.locale == null) {
                 simpleDateFormat = new SimpleDateFormat(this.format);
             } else {
                 simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
             }
-            final var s = (String) attribute;
             try {
                 return simpleDateFormat.parse(s);
             } catch (final ParseException e) {

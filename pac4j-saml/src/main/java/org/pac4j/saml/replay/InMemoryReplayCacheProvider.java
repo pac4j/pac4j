@@ -1,5 +1,6 @@
 package org.pac4j.saml.replay;
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.storage.ReplayCache;
 import org.opensaml.storage.impl.MemoryStorageService;
@@ -17,7 +18,7 @@ public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
 
     public InMemoryReplayCacheProvider() {
         try {
-            final var storageService = new MemoryStorageService();
+            val storageService = new MemoryStorageService();
             storageService.setId("pac4j-replay-storage");
             storageService.initialize();
 

@@ -8,6 +8,7 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class SAML2MongoMetadataGeneratorIT implements TestsConstants {
         var mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -70,9 +71,9 @@ public class SAML2MongoMetadataGeneratorIT implements TestsConstants {
         configuration.init();
 
         var metadataGenerator = configuration.toMetadataGenerator();
-        final var entity = metadataGenerator.buildEntityDescriptor();
+        val entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
-        final var metadata = metadataGenerator.getMetadata(entity);
+        val metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
         assertTrue(metadataGenerator.storeMetadata(metadata, true));
@@ -98,8 +99,8 @@ public class SAML2MongoMetadataGeneratorIT implements TestsConstants {
 
                 mongodExecutable = starter.prepare(mongodConfig);
                 mongodExecutable.start();
-                final var mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
-                final var db = mongo.getDatabase("saml2");
+                val mongo = MongoClients.create(String.format("mongodb://localhost:%d", port));
+                val db = mongo.getDatabase("saml2");
                 db.createCollection("metadata");
             } catch (final IOException e) {
                 throw new RuntimeException(e);

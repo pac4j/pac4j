@@ -1,11 +1,13 @@
 package org.pac4j.core.profile.converter;
 
+import lombok.val;
+import org.junit.Test;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * This class tests the {@link DateConverter} class.
@@ -35,8 +37,8 @@ public final class DateConverterTests {
 
     @Test
     public void testGoodDate() {
-        final var d = (Date) this.converter.convert(GOOD_DATE);
-        final var simpleDateFormat = new SimpleDateFormat(FORMAT);
+        val d = (Date) this.converter.convert(GOOD_DATE);
+        val simpleDateFormat = new SimpleDateFormat(FORMAT);
         assertEquals(GOOD_DATE, simpleDateFormat.format(d));
     }
 

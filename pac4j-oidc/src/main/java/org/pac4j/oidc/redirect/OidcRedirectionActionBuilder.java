@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -43,10 +44,10 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
-        final var configContext = new OidcConfigurationContext(context, client.getConfiguration());
-        final var params = buildParams(context);
+        val configContext = new OidcConfigurationContext(context, client.getConfiguration());
+        val params = buildParams(context);
 
-        final var computedCallbackUrl = client.computeFinalCallbackUrl(context);
+        val computedCallbackUrl = client.computeFinalCallbackUrl(context);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
         addStateAndNonceParameters(context, sessionStore, params);
@@ -63,16 +64,16 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
             params.put(OidcConfiguration.PROMPT, "none");
         }
 
-        final var location = buildAuthenticationRequestUrl(params);
+        val location = buildAuthenticationRequestUrl(params);
         logger.debug("Authentication request url: {}", location);
 
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
     }
 
     protected Map<String, String> buildParams(final WebContext webContext) {
-        final var configContext = new OidcConfigurationContext(webContext, client.getConfiguration());
+        val configContext = new OidcConfigurationContext(webContext, client.getConfiguration());
 
-        final var authParams = new HashMap<String, String>();
+        val authParams = new HashMap<String, String>();
         authParams.put(OidcConfiguration.SCOPE, configContext.getScope());
         authParams.put(OidcConfiguration.RESPONSE_TYPE, configContext.getResponseType());
         authParams.put(OidcConfiguration.RESPONSE_MODE, configContext.getResponseMode());
@@ -85,21 +86,21 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     protected void addStateAndNonceParameters(final WebContext context, final SessionStore sessionStore, final Map<String, String> params) {
         // Init state for CSRF mitigation
         if (client.getConfiguration().isWithState()) {
-            final var state = new State(client.getConfiguration().getStateGenerator().generateValue(context, sessionStore));
+            val state = new State(client.getConfiguration().getStateGenerator().generateValue(context, sessionStore));
             params.put(OidcConfiguration.STATE, state.getValue());
             sessionStore.set(context, client.getStateSessionAttributeName(), state);
         }
 
         // Init nonce for replay attack mitigation
         if (client.getConfiguration().isUseNonce()) {
-            final var nonce = new Nonce();
+            val nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
             sessionStore.set(context, client.getNonceSessionAttributeName(), nonce.getValue());
         }
 
         var pkceMethod = client.getConfiguration().findPkceMethod();
         if (pkceMethod != null) {
-            final var verfifier = new CodeVerifier(
+            val verfifier = new CodeVerifier(
                 client.getConfiguration().getCodeVerifierGenerator().generateValue(context, sessionStore));
             sessionStore.set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
             params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());

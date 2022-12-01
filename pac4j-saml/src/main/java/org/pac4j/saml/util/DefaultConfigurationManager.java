@@ -1,6 +1,7 @@
 package org.pac4j.saml.util;
 
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.xml.ParserPool;
 import net.shibboleth.shared.xml.impl.BasicParserPool;
@@ -30,14 +31,14 @@ public class DefaultConfigurationManager implements ConfigurationManager {
             throw new RuntimeException("Exception initializing OpenSAML", e);
         }
 
-        final var parserPool = initParserPool();
+        val parserPool = initParserPool();
         registry.setParserPool(parserPool);
     }
 
     private static ParserPool initParserPool() {
 
         try {
-            final var parserPool = new BasicParserPool();
+            val parserPool = new BasicParserPool();
             parserPool.setMaxPoolSize(100);
             parserPool.setCoalescing(true);
             parserPool.setIgnoreComments(true);

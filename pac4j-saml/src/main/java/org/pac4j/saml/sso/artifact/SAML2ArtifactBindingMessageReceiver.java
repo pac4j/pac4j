@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.artifact;
 
+import lombok.val;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.pac4j.core.context.WebContext;
@@ -46,7 +47,7 @@ public class SAML2ArtifactBindingMessageReceiver extends AbstractSAML2MessageRec
 
     @Override
     protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
-        final var decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
+        val decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
                 spMetadataResolver, soapPipelineProvider);
         try {
             decoder.setParserPool(Configuration.getParserPool());

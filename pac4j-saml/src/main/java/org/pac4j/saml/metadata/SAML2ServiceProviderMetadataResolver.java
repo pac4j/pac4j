@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata;
 
 
+import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
@@ -37,11 +38,11 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
-            final var metadataGenerator = configuration.toMetadataGenerator();
-            final var resource = configuration.getServiceProviderMetadataResource();
+            val metadataGenerator = configuration.toMetadataGenerator();
+            val resource = configuration.getServiceProviderMetadataResource();
             if (resource == null || !resource.exists() || configuration.isForceServiceProviderMetadataGeneration()) {
-                final var entity = metadataGenerator.buildEntityDescriptor();
-                final var metadata = metadataGenerator.getMetadata(entity);
+                val entity = metadataGenerator.buildEntityDescriptor();
+                val metadata = metadataGenerator.getMetadata(entity);
                 metadataGenerator.storeMetadata(metadata,
                     configuration.isForceServiceProviderMetadataGeneration());
             }
@@ -64,8 +65,8 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     @Override
     public String getMetadata() {
         try {
-            final var metadataGenerator = configuration.toMetadataGenerator();
-            final var entity = metadataGenerator.buildEntityDescriptor();
+            val metadataGenerator = configuration.toMetadataGenerator();
+            val entity = metadataGenerator.buildEntityDescriptor();
             return metadataGenerator.getMetadata(entity);
         } catch (final Exception e) {
             throw new SAMLException("Unable to fetch metadata", e);

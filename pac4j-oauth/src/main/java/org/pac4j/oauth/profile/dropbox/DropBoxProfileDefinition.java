@@ -3,14 +3,14 @@ package org.pac4j.oauth.profile.dropbox;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
-
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the DropBox profile definition.
@@ -45,11 +45,11 @@ public class DropBoxProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public DropBoxProfile extractUserProfile(final String body) {
-        final var profile = (DropBoxProfile) newProfile();
+        val profile = (DropBoxProfile) newProfile();
         var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "account_id")));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             json = (JsonNode) JsonHelper.getElement(json, "name");

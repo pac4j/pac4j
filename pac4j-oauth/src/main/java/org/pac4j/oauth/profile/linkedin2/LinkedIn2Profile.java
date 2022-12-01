@@ -1,9 +1,10 @@
 package org.pac4j.oauth.profile.linkedin2;
 
-import java.net.URI;
-
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
+
+import java.net.URI;
 
 /**
  *
@@ -45,37 +46,37 @@ public class LinkedIn2Profile extends OAuth20Profile {
 
     @Override
     public URI getPictureUrl() {
-        final var pp = getProfilePicture();
+        val pp = getProfilePicture();
         if (pp == null) {
             return null;
         }
 
-        final var displayImageTilde = pp.getDisplayImageTilde();
+        val displayImageTilde = pp.getDisplayImageTilde();
         if (displayImageTilde == null) {
             return null;
         }
 
-        final var elements = displayImageTilde.getElements();
+        val elements = displayImageTilde.getElements();
         if (elements == null || elements.length == 0) {
             return null;
         }
 
-        final var element = elements[0];
+        val element = elements[0];
         if (element == null) {
             return null;
         }
 
-        final var identifiers = element.getIdentifiers();
+        val identifiers = element.getIdentifiers();
         if (identifiers == null || identifiers.length == 0) {
             return null;
         }
 
-        final var identifier = identifiers[0];
+        val identifier = identifiers[0];
         if (identifier == null) {
             return null;
         }
 
-        final var identifier2 = identifier.getIdentifier();
+        val identifier2 = identifier.getIdentifier();
         if (identifier2 == null) {
             return null;
         }
@@ -85,23 +86,23 @@ public class LinkedIn2Profile extends OAuth20Profile {
 
     @Override
     public String getEmail() {
-        final var pe = getProfileEmails();
+        val pe = getProfileEmails();
 
         if (pe == null) {
             return null;
         }
 
-        final var elements = pe.getElements();
+        val elements = pe.getElements();
         if (elements == null || elements.length == 0) {
             return null;
         }
 
-        final var element = elements[0];
+        val element = elements[0];
         if (element == null) {
             return null;
         }
 
-        final var handleTilde = element.getHandleTilde();
+        val handleTilde = element.getHandleTilde();
         if (handleTilde == null) {
             return null;
         }

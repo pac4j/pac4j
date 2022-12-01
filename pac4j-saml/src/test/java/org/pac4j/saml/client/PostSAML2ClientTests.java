@@ -1,13 +1,14 @@
 package org.pac4j.saml.client;
 
+import lombok.val;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
@@ -17,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * POST tests on the {@link SAML2Client}.
@@ -30,11 +31,11 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testCustomSpEntityIdForPostBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
         client.getConfiguration().setUseNameQualifier(true);
 
-        final var person = new SAML2MetadataContactPerson();
+        val person = new SAML2MetadataContactPerson();
         person.setCompanyName("Pac4j");
         person.setGivenName("Bob");
         person.setSurname("Smith");
@@ -43,7 +44,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         person.setTelephoneNumbers(Collections.singletonList("+13476547689"));
         client.getConfiguration().getContactPersons().add(person);
 
-        final var uiInfo = new SAML2MetadataUIInfo();
+        val uiInfo = new SAML2MetadataUIInfo();
         uiInfo.setDescriptions(Collections.singletonList("description1"));
         uiInfo.setDisplayNames(Collections.singletonList("displayName"));
         uiInfo.setPrivacyUrls(Collections.singletonList("https://pac4j.org"));
@@ -52,52 +53,52 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         uiInfo.setLogos(Collections.singletonList(new SAML2MetadataUIInfo.SAML2MetadataUILogo("https://pac4j.org/logo.png", 16, 16)));
         client.getConfiguration().getMetadataUIInfos().add(uiInfo);
 
-        final var action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
 
-        final var issuerJdk11 = "<saml2:Issuer "
+        val issuerJdk11 = "<saml2:Issuer "
                 + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
                 + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
                 + "NameQualifier=\"http://localhost:8080/cb\">http://localhost:8080/cb</saml2:Issuer>";
-        final var decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
+        val decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
         assertTrue(decodedAuthnRequest.contains(issuerJdk11));
     }
 
     @Test
     public void testStandardSpEntityIdForPostBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
-        final var action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
 
-        final var issuerJdk11 = "<saml2:Issuer "
+        val issuerJdk11 = "<saml2:Issuer "
             + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
             + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">http://localhost:8080/cb</saml2:Issuer>";
-        final var decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
+        val decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
         assertTrue(decodedAuthnRequest.contains(issuerJdk11));
     }
 
     @Test
     public void testForceAuthIsSetForPostBinding() {
-        final var client =  getClient();
+        val client =  getClient();
         client.getConfiguration().setForceAuth(true);
-        final var action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
 
     @Test
     public void testSetComparisonTypeWithPostBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        final var action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (OkAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
 
     @Test
     public void testRelayState() {
-        final var client = getClient();
+        val client = getClient();
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        final var action = (OkAction) client.getRedirectionAction(context, sessionStore).get();
+        val action = (OkAction) client.getRedirectionAction(context, sessionStore).get();
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 
@@ -113,8 +114,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
 
     private static String getDecodedAuthnRequest(final String content) {
         assertTrue(content.contains("<form"));
-        final var samlRequestField = CommonHelper.substringBetween(content, "SAMLRequest", "</div");
-        final var value = CommonHelper.substringBetween(samlRequestField, "value=\"", "\"");
+        val samlRequestField = CommonHelper.substringBetween(content, "SAMLRequest", "</div");
+        val value = CommonHelper.substringBetween(samlRequestField, "value=\"", "\"");
         return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
     }
 }

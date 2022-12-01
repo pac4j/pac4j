@@ -1,5 +1,6 @@
 package org.pac4j.saml.credentials.authenticator;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -66,10 +67,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var credentials = (SAML2Credentials) cred;
-        final var profile = (SAML2Profile) getProfileDefinition().newProfile();
+        val credentials = (SAML2Credentials) cred;
+        val profile = (SAML2Profile) getProfileDefinition().newProfile();
 
-        final var nameId = credentials.getNameId();
+        val nameId = credentials.getNameId();
         profile.setId(nameId.getValue());
 
         profile.addAuthenticationAttribute(SESSION_INDEX, credentials.getSessionIndex());
@@ -78,13 +79,13 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         profile.addAuthenticationAttribute(SAML_NAME_ID_SP_NAME_QUALIFIER, nameId.getSpNameQualifier());
         profile.addAuthenticationAttribute(SAML_NAME_ID_SP_PROVIDED_ID, nameId.getSpProviderId());
 
-        for (final var attribute : credentials.getAttributes()) {
+        for (val attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
-            final var name = attribute.getName();
-            final var friendlyName = attribute.getFriendlyName();
+            val name = attribute.getName();
+            val friendlyName = attribute.getFriendlyName();
 
-            final var values = attribute.getAttributeValues();
+            val values = attribute.getAttributeValues();
             if (!values.isEmpty()) {
                 if (CommonHelper.isNotBlank(attributeAsId)
                     && (attributeAsId.equalsIgnoreCase(name) || attributeAsId.equalsIgnoreCase(friendlyName))) {
@@ -120,7 +121,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         profile.addAuthenticationAttribute(AUTHN_CONTEXT, credentials.getAuthnContexts());
         // Retrieve conditions attributes
         // Adding them to both the "regular" and authentication attributes so we don't break anyone currently using it.
-        final var conditions = credentials.getConditions();
+        val conditions = credentials.getConditions();
         if (conditions != null) {
             if (conditions.getNotBefore() != null) {
                 profile.addAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());

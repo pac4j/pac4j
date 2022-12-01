@@ -1,5 +1,7 @@
 package org.pac4j.core.util.serializer;
 
+import lombok.val;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -47,7 +49,7 @@ public abstract class AbstractSerializer implements Serializer {
     }
 
     protected Object internalDeserializeFromString(final String encoded) {
-        final var enc = Base64.getDecoder().decode(encoded);
+        val enc = Base64.getDecoder().decode(encoded);
         return internalDeserializeFromBytes(enc);
     }
 

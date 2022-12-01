@@ -1,6 +1,7 @@
 package org.pac4j.saml.profile.impl;
 
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.net.URIComparator;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -10,12 +11,7 @@ import org.opensaml.saml.common.binding.security.impl.MessageReplaySecurityHandl
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
-import org.opensaml.saml.saml2.core.EncryptedID;
-import org.opensaml.saml.saml2.core.Issuer;
-import org.opensaml.saml.saml2.core.NameID;
-import org.opensaml.saml.saml2.core.NameIDType;
-import org.opensaml.saml.saml2.core.Status;
-import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
@@ -30,13 +26,7 @@ import org.pac4j.core.logout.handler.LogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
-import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.exceptions.SAMLIssueInstantException;
-import org.pac4j.saml.exceptions.SAMLIssuerException;
-import org.pac4j.saml.exceptions.SAMLNameIdDecryptionException;
-import org.pac4j.saml.exceptions.SAMLReplayException;
-import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
+import org.pac4j.saml.exceptions.*;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.slf4j.Logger;
@@ -93,7 +83,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
         var statusValue = status.getStatusCode().getValue();
         if (!StatusCode.SUCCESS.equals(statusValue)) {
-            final var statusMessage = status.getStatusMessage();
+            val statusMessage = status.getStatusMessage();
             if (statusMessage != null) {
                 statusValue += " / " + statusMessage.getValue();
             }
@@ -104,7 +94,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected void validateSignatureIfItExists(final Signature signature, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
         if (signature != null) {
-            final var entityId = context.getSAMLPeerEntityContext().getEntityId();
+            val entityId = context.getSAMLPeerEntityContext().getEntityId();
             validateSignature(signature, entityId, engine);
             context.getSAMLPeerEntityContext().setAuthenticated(true);
             logger.debug("Successfully validated signature for entity id {}", entityId);
@@ -124,7 +114,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
                                      final SignatureTrustEngine trustEngine) {
 
 
-        final var validator = new SAMLSignatureProfileValidator();
+        val validator = new SAMLSignatureProfileValidator();
         try {
             logger.debug("Validating profile signature for entity id {}", idpEntityId);
             validator.validate(signature);
@@ -132,7 +122,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLSignatureValidationException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
-        final var criteriaSet = new CriteriaSet();
+        val criteriaSet = new CriteriaSet();
         criteriaSet.add(new UsageCriterion(UsageType.SIGNING));
         criteriaSet.add(new EntityRoleCriterion(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
         criteriaSet.add(new ProtocolCriterion(SAMLConstants.SAML20P_NS));
@@ -166,7 +156,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLIssuerException("Issuer type is not entity but " + issuer.getFormat());
         }
 
-        final var entityId = context.getSAMLPeerEntityContext().getEntityId();
+        val entityId = context.getSAMLPeerEntityContext().getEntityId();
         logger.debug("Comparing issuer {} against {}", issuer.getValue(), entityId);
         if (entityId == null || !entityId.equals(issuer.getValue())) {
             throw new SAMLIssuerException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
@@ -184,13 +174,13 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     }
 
     protected boolean isDateValid(final Instant issueInstant, final long interval) {
-        final var now = ZonedDateTime.now(ZoneOffset.UTC);
-        final var before = now.plusSeconds(acceptedSkew);
-        final var after = now.minusSeconds(acceptedSkew + interval);
+        val now = ZonedDateTime.now(ZoneOffset.UTC);
+        val before = now.plusSeconds(acceptedSkew);
+        val after = now.minusSeconds(acceptedSkew + interval);
 
-        final var issueInstanceUtc = ZonedDateTime.ofInstant(issueInstant, ZoneOffset.UTC);
+        val issueInstanceUtc = ZonedDateTime.ofInstant(issueInstant, ZoneOffset.UTC);
 
-        final var isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
+        val isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {
             logger.warn("interval={},before={},after={},issueInstant={}", interval, before, after, issueInstanceUtc);
         }
@@ -205,7 +195,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
             throw new SAMLEndpointMismatchException("SAML configuration does not allow response Destination to be null");
         }
 
-        final var verified = endpoints.stream()
+        val verified = endpoints.stream()
             .allMatch(endpoint -> compareEndpoints(destination, endpoint));
         if (!verified) {
             throw new SAMLEndpointMismatchException("Intended destination " + destination
@@ -229,7 +219,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
 
         try {
-            final var messageReplayHandler = new MessageReplaySecurityHandler();
+            val messageReplayHandler = new MessageReplaySecurityHandler();
             messageReplayHandler.setExpires(Duration.ofMillis(acceptedSkew * 1000));
             messageReplayHandler.setReplayCache(replayCache.get());
             messageReplayHandler.initialize();
@@ -260,7 +250,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
         try {
             logger.debug("Decrypting name id {}", encryptedId);
-            final var decryptedId = (NameID) decrypter.decrypt(encryptedId);
+            val decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (final DecryptionException e) {
             throw new SAMLNameIdDecryptionException("Decryption of an EncryptedID failed.", e);

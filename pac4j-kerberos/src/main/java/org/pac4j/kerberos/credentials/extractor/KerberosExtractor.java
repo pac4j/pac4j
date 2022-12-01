@@ -1,5 +1,6 @@
 package org.pac4j.kerberos.credentials.extractor;
 
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -23,12 +24,12 @@ public class KerberosExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
                                          final ProfileManagerFactory profileManagerFactory) {
-        final var optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
+        val optHeader = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (!optHeader.isPresent()) {
             return Optional.empty();
         }
 
-        final var header = optHeader.get();
+        val header = optHeader.get();
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
             // "Authorization" header do not indicate Kerberos mechanism yet,
             // so the extractor shouldn't throw an exception

@@ -1,5 +1,6 @@
 package org.pac4j.core.profile.creator;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
@@ -50,33 +51,33 @@ public class LocalCachingProfileCreatorTests {
 
     @Test
     public void testCachingNoProfile() {
-        final var c1 = new TokenCredentials("T1");
-        final var pc = new LocalCachingProfileCreator(NoProfileCreator.INSTANCE, 10, 10, TimeUnit.SECONDS);
-        final var optProfile = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val c1 = new TokenCredentials("T1");
+        val pc = new LocalCachingProfileCreator(NoProfileCreator.INSTANCE, 10, 10, TimeUnit.SECONDS);
+        val optProfile = pc.create(c1, MockWebContext.create(), new MockSessionStore());
         assertTrue(optProfile.isEmpty());
         assertTrue(pc.getStore().get(c1).isEmpty());
     }
 
     @Test
     public void testCachingProfile() {
-        final var c1 = new TokenCredentials("T1");
-        final var pc = new LocalCachingProfileCreator(SimpleProfileCreator.INSTANCE, 10, 1, TimeUnit.SECONDS);
-        final var optProfile = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val c1 = new TokenCredentials("T1");
+        val pc = new LocalCachingProfileCreator(SimpleProfileCreator.INSTANCE, 10, 1, TimeUnit.SECONDS);
+        val optProfile = pc.create(c1, MockWebContext.create(), new MockSessionStore());
         assertTrue(optProfile.isPresent());
-        final var profileId = optProfile.get().getId();
+        val profileId = optProfile.get().getId();
         assertEquals(profileId, pc.getStore().get(c1).get().getId());
 
-        final var optProfile2 = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val optProfile2 = pc.create(c1, MockWebContext.create(), new MockSessionStore());
         assertTrue(optProfile2.isPresent());
-        final var profileId2 = optProfile2.get().getId();
+        val profileId2 = optProfile2.get().getId();
         assertEquals(profileId, pc.getStore().get(c1).get().getId());
         assertEquals(profileId, profileId2);
 
         TestsHelper.wait(1500);
 
-        final var optProfile3 = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val optProfile3 = pc.create(c1, MockWebContext.create(), new MockSessionStore());
         assertTrue(optProfile3.isPresent());
-        final var profileId3 = optProfile3.get().getId();
+        val profileId3 = optProfile3.get().getId();
         assertEquals(profileId3, pc.getStore().get(c1).get().getId());
         assertNotEquals(profileId3, profileId2);
     }

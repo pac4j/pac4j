@@ -1,5 +1,6 @@
 package org.pac4j.core.engine;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.*;
@@ -155,9 +156,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testAlreadyAuthenticatedAndAuthorized() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(ID);
-        final var profiles = new LinkedHashMap<String, CommonProfile>();
+        val profiles = new LinkedHashMap<String, CommonProfile>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
@@ -171,8 +172,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testAlreadyAuthenticatedNotAuthorized() {
-        final var profile = new CommonProfile();
-        final var profiles = new LinkedHashMap<String, CommonProfile>();
+        val profile = new CommonProfile();
+        val profiles = new LinkedHashMap<String, CommonProfile>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
@@ -185,8 +186,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testAuthorizerThrowsRequiresHttpAction() {
-        final var profile = new CommonProfile();
-        final var profiles = new LinkedHashMap<String, CommonProfile>();
+        val profile = new CommonProfile();
+        val profiles = new LinkedHashMap<String, CommonProfile>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
@@ -200,9 +201,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDoubleDirectClient() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(NAME);
-        final var profile2 = new CommonProfile();
+        val profile2 = new CommonProfile();
         profile2.setId(VALUE);
         final DirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), profile);
         final DirectClient directClient2 = new MockDirectClient(VALUE, Optional.of(new MockCredentials()), profile2);
@@ -211,7 +212,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        final var profiles =
+        val profiles =
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile));
@@ -219,7 +220,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDirectClientThrowsRequiresHttpAction() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(NAME);
         final DirectClient directClient = new MockDirectClient(NAME, () -> { throw new StatusAction(400); },
             profile);
@@ -232,9 +233,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDoubleDirectClientSupportingMultiProfile() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(NAME);
-        final var profile2 = new CommonProfile();
+        val profile2 = new CommonProfile();
         profile2.setId(VALUE);
         final DirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), profile);
         directClient.setMultiProfile(true);
@@ -245,7 +246,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        final var profiles =
+        val profiles =
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(2, profiles.size());
         assertTrue(profiles.containsValue(profile));
@@ -254,9 +255,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDoubleDirectClientChooseDirectClient() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(NAME);
-        final var profile2 = new CommonProfile();
+        val profile2 = new CommonProfile();
         profile2.setId(VALUE);
         final DirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), profile);
         final DirectClient directClient2 = new MockDirectClient(VALUE, Optional.of(new MockCredentials()), profile2);
@@ -266,7 +267,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        final var profiles =
+        val profiles =
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile2));
@@ -274,9 +275,9 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testDoubleDirectClientChooseBadDirectClient() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(NAME);
-        final var profile2 = new CommonProfile();
+        val profile2 = new CommonProfile();
         profile2.setId(VALUE);
         final DirectClient directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), profile);
         final DirectClient directClient2 = new MockDirectClient(VALUE, Optional.of(new MockCredentials()), profile2);

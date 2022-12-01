@@ -34,7 +34,7 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
 
         if (jwt instanceof SignedJWT signedJWT) {
             // Create JWE object with signed JWT as payload
-            final var jweObject = new JWEObject(
+            val jweObject = new JWEObject(
                     new JWEHeader.Builder(this.algorithm, this.method).contentType("JWT").build(),
                     new Payload(signedJWT));
 

@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -39,7 +40,7 @@ public final class RunTwitterClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var twitterClient = new TwitterClient();
+        val twitterClient = new TwitterClient();
         twitterClient.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterClient.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
         twitterClient.setCallbackUrl(PAC4J_URL);
@@ -53,7 +54,7 @@ public final class RunTwitterClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (TwitterProfile) userProfile;
+        val profile = (TwitterProfile) userProfile;
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));

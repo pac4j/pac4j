@@ -1,5 +1,6 @@
 package org.pac4j.saml.profile.converter;
 
+import lombok.val;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.pac4j.core.profile.converter.AttributeConverter;
@@ -22,7 +23,7 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
 
     @Override
     public Object convert(final Object a) {
-        final var attribute = (Attribute) a;
+        val attribute = (Attribute) a;
 
         List<SAML2Credentials.SAMLAttribute> extractedAttributes = new ArrayList<>();
 
@@ -43,7 +44,7 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
     }
 
     private SAML2Credentials.SAMLAttribute from(Attribute attribute) {
-        final var samlAttribute = new SAML2Credentials.SAMLAttribute();
+        val samlAttribute = new SAML2Credentials.SAMLAttribute();
         samlAttribute.setFriendlyName(attribute.getFriendlyName());
         samlAttribute.setName(attribute.getName());
         samlAttribute.setNameFormat(attribute.getNameFormat());

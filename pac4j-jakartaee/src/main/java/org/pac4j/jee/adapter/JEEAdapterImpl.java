@@ -1,6 +1,7 @@
 package org.pac4j.jee.adapter;
 
 import jakarta.annotation.Priority;
+import lombok.val;
 import org.pac4j.core.adapter.JEEAdapter;
 
 /**
@@ -15,11 +16,11 @@ public class JEEAdapterImpl extends JEEAdapter {
     public int compareManagers(Object obj1, Object obj2) {
         var p1 = 100;
         var p2 = 100;
-        final var p1a = obj1.getClass().getAnnotation(Priority.class);
+        val p1a = obj1.getClass().getAnnotation(Priority.class);
         if (p1a != null) {
             p1 = p1a.value();
         }
-        final var p2a = obj2.getClass().getAnnotation(Priority.class);
+        val p2a = obj2.getClass().getAnnotation(Priority.class);
         if (p2a != null) {
             p2 = p2a.value();
         }

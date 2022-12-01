@@ -2,6 +2,7 @@ package org.pac4j.gae.client;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import lombok.val;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
-        final var localClient = new GaeUserServiceClient();
+        val localClient = new GaeUserServiceClient();
         localClient.getRedirectionAction(context, new MockSessionStore());
     }
 
@@ -71,12 +72,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        final var credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore(),
+        val credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore(),
             ProfileManagerFactory.DEFAULT).get();
-        final var user = credentials.getUser();
+        val user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals(Pac4jConstants.EMPTY_STRING, user.getAuthDomain());
-        final var profile =
+        val profile =
             (GaeUserServiceProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
         logger.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());

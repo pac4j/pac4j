@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata.keystore;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import org.springframework.core.io.FileSystemResource;
 import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This is {@link SAML2HttpUrlKeystoreGeneratorTests}.
@@ -28,7 +29,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final var wireMockServer = new WireMockServer(8085);
+        val wireMockServer = new WireMockServer(8085);
         try {
             wireMockServer.stubFor(
                 post(urlPathEqualTo("/keystore"))
@@ -36,7 +37,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
                         .withStatus(200)
                         .withHeader("Content-Type", ContentType.TEXT_PLAIN.getMimeType())));
 
-            final var restBody = IOUtils.toString(
+            val restBody = IOUtils.toString(
                 new ClassPathResource("dummy-keystore.txt").getInputStream(), StandardCharsets.UTF_8);
 
             wireMockServer.stubFor(
@@ -47,7 +48,7 @@ public class SAML2HttpUrlKeystoreGeneratorTests {
                         .withBody(restBody)));
             wireMockServer.start();
 
-            final var configuration = new SAML2Configuration();
+            val configuration = new SAML2Configuration();
             configuration.setCertificateSignatureAlg("SHA256withRSA");
             configuration.setForceKeystoreGeneration(true);
             configuration.setKeystoreResourceUrl("http://localhost:8085/keystore");

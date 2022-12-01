@@ -1,5 +1,6 @@
 package org.pac4j.oidc.client;
 
+import lombok.val;
 import org.pac4j.oidc.config.AppleOidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.pac4j.oidc.profile.apple.AppleProfile;
@@ -23,7 +24,7 @@ public class AppleClient extends OidcClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
+        val profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new AppleProfile()));
         defaultProfileCreator(profileCreator);
         super.internalInit(forceReinit);

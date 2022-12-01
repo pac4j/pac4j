@@ -1,10 +1,11 @@
 package org.pac4j.oidc.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -38,17 +39,17 @@ public class RunGoogleOidcClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new OidcConfiguration();
+        val configuration = new OidcConfiguration();
         configuration.setClientId("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         configuration.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
-        final var client = new GoogleOidcClient(configuration);
+        val client = new GoogleOidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (GoogleOidcProfile) userProfile;
+        val profile = (GoogleOidcProfile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(GoogleOidcProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "113675986756217860428",
                 profile.getTypedId());

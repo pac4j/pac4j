@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.jwk.RSAKey;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -29,7 +30,7 @@ public final class JWKHelper {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final var octetSequenceKey = OctetSequenceKey.parse(json);
+            val octetSequenceKey = OctetSequenceKey.parse(json);
             return new String(octetSequenceKey.toByteArray(), "UTF-8");
         } catch (final UnsupportedEncodingException | ParseException e) {
             throw new TechnicalException(e);
@@ -46,7 +47,7 @@ public final class JWKHelper {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final var rsaKey = RSAKey.parse(json);
+            val rsaKey = RSAKey.parse(json);
             return rsaKey.toKeyPair();
         } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);
@@ -63,7 +64,7 @@ public final class JWKHelper {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final var ecKey = ECKey.parse(json);
+            val ecKey = ECKey.parse(json);
             return ecKey.toKeyPair();
         } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);

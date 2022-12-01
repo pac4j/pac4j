@@ -1,9 +1,11 @@
 package org.pac4j.scribe.builder.api;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
+import lombok.val;
+import org.pac4j.core.util.CommonHelper;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.pac4j.core.util.CommonHelper;
 
 /**
  * This class represents the OAuth API implementation for PayPal. It could be part of the Scribe library.
@@ -24,7 +26,7 @@ public class PayPalApi20 extends DefaultApi20 {
         if (additionalParams == null) {
             additionalParams = new HashMap<>();
         }
-        final var nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
+        val nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
         additionalParams.put("nonce", nonce);
         return super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
     }

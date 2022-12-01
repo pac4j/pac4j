@@ -1,11 +1,12 @@
 package org.pac4j.oauth.profile.facebook;
 
+import lombok.val;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.profile.OAuth20Profile;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
-
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
  * <p>This class is the user profile for Facebook with appropriate getters.</p>
@@ -31,7 +32,7 @@ public class FacebookProfile extends OAuth20Profile {
 
     @Override
     public URI getPictureUrl() {
-        final var picture = (FacebookPicture) getAttribute(FacebookProfileDefinition.PICTURE);
+        val picture = (FacebookPicture) getAttribute(FacebookProfileDefinition.PICTURE);
         if (picture != null) {
             return CommonHelper.asURI(picture.getUrl());
         }
@@ -45,7 +46,7 @@ public class FacebookProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        final var location = (FacebookObject) getAttribute(FacebookProfileDefinition.LOCATION);
+        val location = (FacebookObject) getAttribute(FacebookProfileDefinition.LOCATION);
         if (location != null) {
             return location.getName();
         }

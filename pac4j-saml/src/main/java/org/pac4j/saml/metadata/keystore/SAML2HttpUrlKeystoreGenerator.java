@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata.keystore;
 
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -37,19 +38,19 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
     public InputStream retrieve() throws Exception {
         validate();
 
-        final var url = saml2Configuration.getKeystoreResource().getURL().toExternalForm();
+        val url = saml2Configuration.getKeystoreResource().getURL().toExternalForm();
         logger.debug("Loading keystore from {}", url);
-        final var httpGet = new HttpGet(url);
+        val httpGet = new HttpGet(url);
         httpGet.addHeader("Accept", ContentType.TEXT_PLAIN.getMimeType());
         httpGet.addHeader("Content-Type", ContentType.TEXT_PLAIN.getMimeType());
         HttpResponse response = null;
         try {
             response = saml2Configuration.getHttpClient().execute(httpGet);
             if (response != null) {
-                final var code = response.getStatusLine().getStatusCode();
+                val code = response.getStatusLine().getStatusCode();
                 if (code == HttpStatus.SC_OK) {
                     logger.info("Successfully submitted/created keystore to {}", url);
-                    final var results = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                    val results = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
                     return new ByteArrayInputStream(Base64.getDecoder().decode(results));
                 }
             }
@@ -68,17 +69,17 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 
         HttpResponse response = null;
         try (var out = new ByteArrayOutputStream()) {
-            final var password = saml2Configuration.getKeystorePassword().toCharArray();
+            val password = saml2Configuration.getKeystorePassword().toCharArray();
             ks.store(out, password);
             out.flush();
-            final var content = Base64.getEncoder().encodeToString(out.toByteArray());
+            val content = Base64.getEncoder().encodeToString(out.toByteArray());
 
             if (logger.isTraceEnabled()) {
                 logger.trace("Encoded keystore as base-64: {}", content);
             }
 
-            final var url = saml2Configuration.getKeystoreResource().getURL().toExternalForm();
-            final var httpPost = new HttpPost(url);
+            val url = saml2Configuration.getKeystoreResource().getURL().toExternalForm();
+            val httpPost = new HttpPost(url);
             httpPost.addHeader("Accept", ContentType.TEXT_PLAIN.getMimeType());
             httpPost.addHeader("Content-Type", ContentType.TEXT_PLAIN.getMimeType());
             httpPost.setEntity(new StringEntity(content, ContentType.TEXT_PLAIN));
@@ -86,7 +87,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 
             response = saml2Configuration.getHttpClient().execute(httpPost);
             if (response != null) {
-                final var code = response.getStatusLine().getStatusCode();
+                val code = response.getStatusLine().getStatusCode();
                 if (code == HttpStatus.SC_NOT_IMPLEMENTED) {
                     logger.info("Storing keystore is not supported/implemented by {}", url);
                 } else if (code == HttpStatus.SC_OK || code == HttpStatus.SC_CREATED) {

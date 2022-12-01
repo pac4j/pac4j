@@ -1,9 +1,12 @@
 package org.pac4j.core.http.callback;
 
-import org.pac4j.core.util.Pac4jConstants;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +18,8 @@ import java.util.Map;
  * @since 3.0.0
  */
 public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
+    @Getter
+    @Setter
     private String clientNameParameter = Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER;
 
     private Map<String, String> customParams = new HashMap<>();
@@ -32,7 +37,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
         if (newUrl != null && !newUrl.contains(this.clientNameParameter + '=')) {
             newUrl = CommonHelper.addParameter(newUrl, this.clientNameParameter, clientName);
         }
-        for (final var entry : this.customParams.entrySet()) {
+        for (val entry : this.customParams.entrySet()) {
             newUrl = CommonHelper.addParameter(newUrl, entry.getKey(), entry.getValue());
         }
         return newUrl;
@@ -40,15 +45,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public boolean matches(final String clientName, final WebContext context) {
-        final var name = context.getRequestParameter(this.clientNameParameter).orElse(null);
+        val name = context.getRequestParameter(this.clientNameParameter).orElse(null);
         return CommonHelper.areEqualsIgnoreCaseAndTrim(name, clientName);
-    }
-
-    public String getClientNameParameter() {
-        return clientNameParameter;
-    }
-
-    public void setClientNameParameter(final String clientNameParameter) {
-        this.clientNameParameter = clientNameParameter;
     }
 }

@@ -1,6 +1,7 @@
 package org.pac4j.oidc.run;
 
 import com.nimbusds.jose.JWSAlgorithm;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -37,19 +38,19 @@ public class RunMitreIdOrg extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new OidcConfiguration();
+        val configuration = new OidcConfiguration();
         configuration.setClientId("acdf79d7-0129-4ba3-bc61-a52486cf82ff");
         configuration.setSecret("ALhlPK5ONNGojjZvEiIgyNEUfX1MbAlDXT1dM0-pVQSa-IID5QMq-lEhlawRqejPZ8c70LBqfKyFL79tefmPb7k");
         configuration.setDiscoveryURI("https://mitreid.org/.well-known/openid-configuration");
         configuration.setPreferredJwsAlgorithm(JWSAlgorithm.parse("none"));
-        final var client = new OidcClient(configuration);
+        val client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (OidcProfile) userProfile;
+        val profile = (OidcProfile) userProfile;
         assertEquals("90342.ASDFJWFA", profile.getId());
         assertEquals(OidcProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "90342.ASDFJWFA",
                 profile.getTypedId());

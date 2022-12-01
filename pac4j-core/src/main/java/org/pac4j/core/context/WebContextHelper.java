@@ -1,5 +1,6 @@
 package org.pac4j.core.context;
 
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 
 import java.time.Instant;
@@ -33,7 +34,7 @@ public final class WebContextHelper implements HttpConstants {
      */
     public static Cookie getCookie(final Collection<Cookie> cookies, final String name) {
         if (cookies != null) {
-            for (final var cookie : cookies) {
+            for (val cookie : cookies) {
                 if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
                     return cookie;
                 }

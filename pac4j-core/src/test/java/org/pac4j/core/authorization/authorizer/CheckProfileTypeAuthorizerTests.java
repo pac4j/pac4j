@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
@@ -32,7 +33,7 @@ public final class CheckProfileTypeAuthorizerTests {
 
     @Test
     public void testGoodProfile() {
-        final var authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
+        val authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile1());
         assertTrue(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
@@ -40,7 +41,7 @@ public final class CheckProfileTypeAuthorizerTests {
 
     @Test
     public void testBadProfileType() {
-        final var authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
+        val authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile2());
         assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));

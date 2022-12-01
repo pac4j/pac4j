@@ -1,12 +1,6 @@
 package org.pac4j.saml.credentials;
 
-import java.io.Serializable;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import lombok.val;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
@@ -14,6 +8,13 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Credentials containing the nameId of the SAML subject and all of its attributes.
@@ -93,7 +94,7 @@ public class SAML2Credentials extends Credentials {
             return false;
         }
 
-        final var that = (SAML2Credentials) o;
+        val that = (SAML2Credentials) o;
 
         if (nameId != null ? !nameId.equals(that.nameId) : that.nameId != null) {
             return false;
@@ -150,7 +151,7 @@ public class SAML2Credentials extends Credentials {
         private String value;
 
         public static SAMLNameID from(final NameID nameId) {
-            final var result = new SAMLNameID();
+            val result = new SAMLNameID();
             result.setNameQualifier(nameId.getNameQualifier());
             result.setFormat(nameId.getFormat());
             result.setSpNameQualifier(nameId.getSPNameQualifier());
@@ -160,7 +161,7 @@ public class SAML2Credentials extends Credentials {
         }
 
         public static SAMLNameID from(final SAMLAttribute attribute) {
-            final var result = new SAMLNameID();
+            val result = new SAMLNameID();
             result.setValue(attribute.getAttributeValues().get(0));
             result.setFormat(attribute.getNameFormat());
             result.setNameQualifier(attribute.getName());
@@ -229,10 +230,10 @@ public class SAML2Credentials extends Credentials {
 
         public static List<SAMLAttribute> from(final AttributeConverter samlAttributeConverter, final List<Attribute> samlAttributes) {
 
-            final var attributes = new ArrayList<SAMLAttribute>();
+            val attributes = new ArrayList<SAMLAttribute>();
 
             samlAttributes.forEach(attribute -> {
-                final var result = samlAttributeConverter.convert(attribute);
+                val result = samlAttributeConverter.convert(attribute);
                 if (result instanceof Collection) {
                     attributes.addAll((Collection<? extends SAMLAttribute>) result);
                 } else {

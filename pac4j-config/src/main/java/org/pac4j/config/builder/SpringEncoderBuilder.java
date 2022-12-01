@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import lombok.val;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 import java.util.Map;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder of Spring Crypto password encoder.
@@ -31,7 +32,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
 
     public void tryCreatePasswordEncoder(final Map<String, org.pac4j.core.credentials.password.PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
-            final var type = getProperty(SPRING_ENCODER_TYPE, i);
+            val type = getProperty(SPRING_ENCODER_TYPE, i);
             if (isNotBlank(type)) {
                 final PasswordEncoder encoder;
                 if (SpringEncoderType.NOOP.toString().equalsIgnoreCase(type)) {
@@ -45,7 +46,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                     }
                 } else if (SpringEncoderType.PBKDF2.toString().equalsIgnoreCase(type)) {
                     if (containsProperty(SPRING_ENCODER_PBKDF2_SECRET, i)) {
-                        final var secret = getProperty(SPRING_ENCODER_PBKDF2_SECRET, i);
+                        val secret = getProperty(SPRING_ENCODER_PBKDF2_SECRET, i);
                         if (containsProperty(SPRING_ENCODER_PBKDF2_ITERATIONS, i)
                             && containsProperty(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i)) {
                             encoder = new Pbkdf2PasswordEncoder(secret, 16, getPropertyAsInteger(SPRING_ENCODER_PBKDF2_ITERATIONS, i),

@@ -1,9 +1,10 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.oauth.client.StravaClient;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 
@@ -33,7 +34,7 @@ public final class RunStravaClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var stravaClient = new StravaClient();
+        val stravaClient = new StravaClient();
         stravaClient.setApprovalPrompt("force");
         stravaClient.setKey("3945");
         stravaClient.setSecret("f03df80582396cddfbe0b895a726bac27c8cf739");
@@ -44,7 +45,7 @@ public final class RunStravaClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (StravaProfile) userProfile;
+        val profile = (StravaProfile) userProfile;
         assertEquals("7319316", profile.getId());
         assertEquals(Gender.MALE, profile.getGender());
         assertEquals(Integer.valueOf(3), profile.getResourceState());

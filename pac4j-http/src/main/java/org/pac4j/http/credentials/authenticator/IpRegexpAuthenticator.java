@@ -1,5 +1,6 @@
 package org.pac4j.http.credentials.authenticator;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -36,13 +37,13 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
     public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         init();
 
-        final var ip = ((TokenCredentials) credentials).getToken();
+        val ip = ((TokenCredentials) credentials).getToken();
 
         if (!this.pattern.matcher(ip).matches()) {
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
 
-        final var profile = (IpProfile) getProfileDefinition().newProfile();
+        val profile = (IpProfile) getProfileDefinition().newProfile();
         profile.setId(ip);
         logger.debug("profile: {}", profile);
 

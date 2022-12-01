@@ -1,12 +1,13 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import lombok.val;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.profile.OAuth10Profile;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.profile.OAuth10Profile;
 
 /**
  * <p>This class is the user profile for Yahoo with appropriate getters.</p>
@@ -22,9 +23,9 @@ public class YahooProfile extends OAuth10Profile {
 
     @Override
     public String getEmail() {
-        final var emails = getEmails();
+        val emails = getEmails();
         if (emails != null) {
-            for (final var email : emails) {
+            for (val email : emails) {
                 if (email != null && (Boolean.TRUE.equals(email.getPrimary()) || emails.size() == 1)) {
                     return email.getHandle();
                 }
@@ -60,7 +61,7 @@ public class YahooProfile extends OAuth10Profile {
 
     @Override
     public URI getPictureUrl() {
-        final var yahooImage = (YahooImage) getAttribute(YahooProfileDefinition.IMAGE);
+        val yahooImage = (YahooImage) getAttribute(YahooProfileDefinition.IMAGE);
         if (yahooImage != null) {
             return CommonHelper.asURI(yahooImage.getImageUrl());
         }

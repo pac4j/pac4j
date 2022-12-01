@@ -1,5 +1,6 @@
 package org.pac4j.springboot.config;
 
+import lombok.val;
 import org.pac4j.config.client.PropertiesConfigFactory;
 import org.pac4j.core.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,7 @@ public class ConfigAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Config config() {
-        final var factory =
-            new PropertiesConfigFactory(pac4j.getCallbackUrl(), pac4j.getProperties());
+        val factory = new PropertiesConfigFactory(pac4j.getCallbackUrl(), pac4j.getProperties());
         return factory.build();
     }
 }

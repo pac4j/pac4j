@@ -1,5 +1,6 @@
 package org.pac4j.core.util.serializer;
 
+import lombok.val;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.Test;
 import org.pac4j.core.exception.http.FoundAction;
@@ -19,7 +20,7 @@ public final class JavaSerializerTests implements TestsConstants {
     private JavaSerializer helper = new JavaSerializer();
 
     private CommonProfile getUserProfile() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
         return profile;
@@ -27,18 +28,18 @@ public final class JavaSerializerTests implements TestsConstants {
 
     @Test
     public void testBytesSerialization() {
-        final var profile = getUserProfile();
-        final var serialized = helper.serializeToBytes(profile);
-        final var profile2 = (CommonProfile) helper.deserializeFromBytes(serialized);
+        val profile = getUserProfile();
+        val serialized = helper.serializeToBytes(profile);
+        val profile2 = (CommonProfile) helper.deserializeFromBytes(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
 
     @Test
     public void testStringSerialization() {
-        final var profile = getUserProfile();
-        final var serialized = helper.serializeToString(profile);
-        final var profile2 = (CommonProfile) helper.deserializeFromString(serialized);
+        val profile = getUserProfile();
+        val serialized = helper.serializeToString(profile);
+        val profile2 = (CommonProfile) helper.deserializeFromString(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
@@ -48,8 +49,8 @@ public final class JavaSerializerTests implements TestsConstants {
         var h = new JavaSerializer();
         h.clearTrustedClasses();
         h.clearTrustedPackages();
-        final var profile = getUserProfile();
-        final var serialized = h.serializeToBytes(profile);
+        val profile = getUserProfile();
+        val serialized = h.serializeToBytes(profile);
         assertNull(h.deserializeFromBytes(serialized));
     }
 
@@ -59,8 +60,8 @@ public final class JavaSerializerTests implements TestsConstants {
         h.clearTrustedPackages();
         h.clearTrustedClasses();
         h.addTrustedClass(SimplePrincipalCollection.class);
-        final var spc = new SimplePrincipalCollection();
-        final var serialized = h.serializeToBytes(spc);
+        val spc = new SimplePrincipalCollection();
+        val serialized = h.serializeToBytes(spc);
         assertEquals(spc, h.deserializeFromBytes(serialized));
     }
 
@@ -74,25 +75,25 @@ public final class JavaSerializerTests implements TestsConstants {
     public void testBytesSerializationTrustedPackage() {
         var h = new JavaSerializer();
         h.addTrustedPackage("org.apache");
-        final var spc = new SimplePrincipalCollection();
-        final var serialized = h.serializeToBytes(spc);
+        val spc = new SimplePrincipalCollection();
+        val serialized = h.serializeToBytes(spc);
         assertNotNull(h.deserializeFromBytes(serialized));
     }
 
     @Test
     public void testBase64StringSerialization() {
-        final var profile = getUserProfile();
-        final var serialized = helper.serializeToString(profile);
-        final var profile2 = (CommonProfile) helper.deserializeFromString(serialized);
+        val profile = getUserProfile();
+        val serialized = helper.serializeToString(profile);
+        val profile2 = (CommonProfile) helper.deserializeFromString(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
 
     @Test
     public void testFoundActionSerialization() {
-        final var action = new FoundAction(PAC4J_BASE_URL);
-        final var serialized = helper.serializeToBytes(action);
-        final var action2 = (FoundAction) helper.deserializeFromBytes(serialized);
+        val action = new FoundAction(PAC4J_BASE_URL);
+        val serialized = helper.serializeToBytes(action);
+        val action2 = (FoundAction) helper.deserializeFromBytes(serialized);
         assertEquals(action.getLocation(), action2.getLocation());
     }
 }

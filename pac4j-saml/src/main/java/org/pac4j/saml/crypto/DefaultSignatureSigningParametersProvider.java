@@ -1,5 +1,6 @@
 package org.pac4j.saml.crypto;
 
+import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.saml.criterion.RoleDescriptorCriterion;
 import org.opensaml.saml.saml2.metadata.SSODescriptor;
@@ -34,14 +35,14 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
     @Override
     public SignatureSigningParameters build(final SSODescriptor descriptor) {
         try {
-            final var criteria = new CriteriaSet();
+            val criteria = new CriteriaSet();
             criteria.add(new SignatureSigningConfigurationCriterion(
                     getSignatureSigningConfiguration()));
             criteria.add(new RoleDescriptorCriterion(descriptor));
-            final var resolver =
+            val resolver =
                     new SAMLMetadataSignatureSigningParametersResolver();
 
-            final var params = resolver.resolveSingle(criteria);
+            val params = resolver.resolveSingle(criteria);
             augmentSignatureSigningParameters(params);
 
             if (params == null) {
@@ -62,7 +63,7 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
     }
 
     protected SignatureSigningConfiguration getSignatureSigningConfiguration() {
-        final var config =
+        val config =
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 
         if (this.configuration.getBlackListedSignatureSigningAlgorithms() != null) {

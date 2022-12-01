@@ -1,5 +1,6 @@
 package org.pac4j.saml.client;
 
+import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -12,14 +13,9 @@ import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
-import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
-import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
-import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
-import org.pac4j.saml.crypto.LogOnlySignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
+import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
+import org.pac4j.saml.crypto.*;
 import org.pac4j.saml.logout.SAML2LogoutActionBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutMessageReceiver;
 import org.pac4j.saml.logout.impl.SAML2LogoutProfileHandler;
@@ -28,12 +24,12 @@ import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
-import org.pac4j.saml.redirect.SAML2RedirectionActionBuilder;
-import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
-import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.profile.api.SAML2MessageReceiver;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
+import org.pac4j.saml.redirect.SAML2RedirectionActionBuilder;
+import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
+import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.sso.artifact.DefaultSOAPPipelineProvider;
 import org.pac4j.saml.sso.artifact.SAML2ArtifactBindingMessageReceiver;
 import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
@@ -44,7 +40,7 @@ import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * This class is the client to authenticate and logout users with a SAML2 Identity Provider.
@@ -103,7 +99,7 @@ public class SAML2Client extends IndirectClient {
         assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
-        final var callbackUrl = computeFinalCallbackUrl(null);
+        val callbackUrl = computeFinalCallbackUrl(null);
         configuration.setCallbackUrl(callbackUrl);
         configuration.init(forceReinit);
 

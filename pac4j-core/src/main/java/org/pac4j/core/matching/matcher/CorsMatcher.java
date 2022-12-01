@@ -3,6 +3,7 @@ package org.pac4j.core.matching.matcher;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -54,7 +55,7 @@ public class CorsMatcher implements Matcher {
         }
 
         if (allowMethods != null) {
-            final var methods = allowMethods.stream().map(Enum::toString).collect(Collectors.joining(", "));
+            val methods = allowMethods.stream().map(Enum::toString).collect(Collectors.joining(", "));
             context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER, methods);
         }
 

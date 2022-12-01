@@ -1,5 +1,6 @@
 package org.pac4j.core.http.callback;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.CommonHelper;
@@ -26,9 +27,9 @@ public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     @Override
     public boolean matches(final String clientName, final WebContext context) {
-        final var path = context.getPath();
+        val path = context.getPath();
         if (path != null) {
-            final var pos = path.lastIndexOf("/");
+            val pos = path.lastIndexOf("/");
             final String name;
             if (pos >= 0) {
                 name = path.substring(pos + 1);

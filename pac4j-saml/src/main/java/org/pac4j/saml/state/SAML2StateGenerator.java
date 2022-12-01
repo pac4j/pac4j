@@ -1,5 +1,6 @@
 package org.pac4j.saml.state;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.generator.ValueGenerator;
@@ -23,7 +24,7 @@ public class SAML2StateGenerator implements ValueGenerator {
 
     @Override
     public String generateValue(final WebContext webContext, final SessionStore sessionStore) {
-        final var relayState = sessionStore.get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
+        val relayState = sessionStore.get(webContext, SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
         if (relayState.isPresent()) {
             sessionStore.set(webContext, SAML_RELAY_STATE_ATTRIBUTE, null);

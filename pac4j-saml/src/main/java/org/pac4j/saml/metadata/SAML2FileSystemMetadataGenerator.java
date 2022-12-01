@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.val;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.pac4j.core.util.CommonHelper;
@@ -48,21 +49,21 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
             logger.info("Metadata file already exists at {}.", metadataResource.getFile());
         } else {
             logger.info("Writing metadata to {}", metadataResource.getFilename());
-            final var parent = metadataResource.getFile().getParentFile();
+            val parent = metadataResource.getFile().getParentFile();
             if (parent != null) {
                 logger.debug("Attempting to create directory structure for: {}", parent.getCanonicalPath());
                 if (!parent.exists() && !parent.mkdirs()) {
                     logger.warn("Could not construct the directory structure for metadata: {}", parent.getCanonicalPath());
                 }
             }
-            final var transformer = TransformerFactory.newInstance().newTransformer();
+            val transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            final var result = new StreamResult(new StringWriter());
-            final var source = new StreamSource(new StringReader(metadata));
+            val result = new StreamResult(new StringWriter());
+            val source = new StreamSource(new StringReader(metadata));
             transformer.transform(source, result);
 
-            final var destination = WritableResource.class.cast(metadataResource);
+            val destination = WritableResource.class.cast(metadataResource);
             try (var spMetadataOutputStream = destination.getOutputStream()) {
                 spMetadataOutputStream.write(result.getWriter().toString().getBytes(StandardCharsets.UTF_8));
             }

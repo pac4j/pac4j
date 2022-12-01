@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
 
@@ -22,39 +23,39 @@ public final class DefaultRolesAuthorizationGeneratorTests {
 
     @Test
     public void testNullArrays() {
-        final var generator = new DefaultRolesAuthorizationGenerator((String[]) null);
+        val generator = new DefaultRolesAuthorizationGenerator((String[]) null);
         checkEmptyProfile(generator);
     }
 
     private void checkEmptyProfile(final DefaultRolesAuthorizationGenerator generator) {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         generator.generate(null, null, profile);
         assertEquals(0, profile.getRoles().size());
     }
 
     @Test
     public void testNullLists() {
-        final var generator = new DefaultRolesAuthorizationGenerator((List<String>) null);
+        val generator = new DefaultRolesAuthorizationGenerator((List<String>) null);
         checkEmptyProfile(generator);
     }
 
     @Test
     public void testDefaultValuesArrays() {
-        final var generator = new DefaultRolesAuthorizationGenerator(DEFAULT_ROLES_ARRAY);
+        val generator = new DefaultRolesAuthorizationGenerator(DEFAULT_ROLES_ARRAY);
         checkProfile(generator);
     }
 
     private void checkProfile(final DefaultRolesAuthorizationGenerator generator) {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         generator.generate(null, null, profile);
-        final var roles = profile.getRoles();
+        val roles = profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.containsAll(DEFAULT_ROLES_LIST));
     }
 
     @Test
     public void testDefaultValuesLists() {
-        final var generator = new DefaultRolesAuthorizationGenerator(DEFAULT_ROLES_LIST);
+        val generator = new DefaultRolesAuthorizationGenerator(DEFAULT_ROLES_LIST);
         checkProfile(generator);
     }
 }

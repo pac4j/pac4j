@@ -1,14 +1,15 @@
 package org.pac4j.saml.client;
 
+import lombok.val;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.state.SAML2StateGenerator;
 
 import java.io.BufferedReader;
@@ -21,7 +22,7 @@ import java.util.Base64;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Redirection tests on the {@link SAML2Client}.
@@ -34,14 +35,14 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testCustomSpEntityIdForRedirectBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
         client.getConfiguration().setUseNameQualifier(true);
 
-        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        final var inflated = getInflatedAuthnRequest(action.getLocation());
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val inflated = getInflatedAuthnRequest(action.getLocation());
 
-        final var issuerJdk11 = "<saml2:Issuer "
+        val issuerJdk11 = "<saml2:Issuer "
                 + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
                 + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
                 + "NameQualifier=\"http://localhost:8080/callback\">http://localhost:8080/callback</saml2:Issuer>";
@@ -50,13 +51,13 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testStandardSpEntityIdForRedirectBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
 
-        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        final var inflated = getInflatedAuthnRequest(action.getLocation());
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val inflated = getInflatedAuthnRequest(action.getLocation());
 
-        final var issuerJdk11 = "<saml2:Issuer "
+        val issuerJdk11 = "<saml2:Issuer "
             + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
             + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">http://localhost:8080/callback</saml2:Issuer>";
         assertTrue(inflated.contains(issuerJdk11));
@@ -64,39 +65,39 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testForceAuthIsSetForRedirectBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setForceAuth(true);
-        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
     }
 
     @Test
     public void testSetComparisonTypeWithRedirectBinding() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
 
     @Test
     public void testNameIdPolicyFormat() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
-        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
-        final var loc = action.getLocation();
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val loc = action.getLocation();
         assertTrue(getInflatedAuthnRequest(loc).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" " +
                 "Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
     }
 
     @Test
     public void testAuthnContextClassRef() {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.getConfiguration()
             .setAuthnContextClassRefs(Arrays.asList("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"));
-        final var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
 
-        final var checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef " +
+        val checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef " +
                 "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">" +
                 "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>" +
                 "</saml2p:RequestedAuthnContext>";
@@ -106,11 +107,11 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testRelayState() {
-        final var client = getClient();
+        val client = getClient();
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        final var action = (FoundAction) client.getRedirectionAction(context, sessionStore).get();
+        val action = (FoundAction) client.getRedirectionAction(context, sessionStore).get();
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }
 
@@ -125,14 +126,14 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     private String getInflatedAuthnRequest(final String location) {
-        final var pairs = URLEncodedUtils.parse(java.net.URI.create(location), StandardCharsets.UTF_8);
-        final var inflater = new Inflater(true);
-        final var decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
-        final var is = new ByteArrayInputStream(decodedRequest);
-        final var inputStream = new InflaterInputStream(is, inflater);
-        final var reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        val pairs = URLEncodedUtils.parse(java.net.URI.create(location), StandardCharsets.UTF_8);
+        val inflater = new Inflater(true);
+        val decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
+        val is = new ByteArrayInputStream(decodedRequest);
+        val inputStream = new InflaterInputStream(is, inflater);
+        val reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         String line;
-        final var bldr = new StringBuilder();
+        val bldr = new StringBuilder();
         try {
             while ((line = reader.readLine()) != null) {
                 bldr.append(line);

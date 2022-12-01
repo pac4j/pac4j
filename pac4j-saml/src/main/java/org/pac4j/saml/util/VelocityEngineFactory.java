@@ -1,6 +1,7 @@
 
 package org.pac4j.saml.util;
 
+import lombok.val;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -20,13 +21,13 @@ public class VelocityEngineFactory {
     public static VelocityEngine getEngine() {
 
         try {
-            final var props = new Properties();
+            val props = new Properties();
             props.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             props.setProperty("resource.loader.string.class", StringResourceLoader.class.getName());
             props.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
             props.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath,string");
-            final var engine = new VelocityEngine();
+            val engine = new VelocityEngine();
             engine.init(props);
             return engine;
         } catch (final Exception e) {

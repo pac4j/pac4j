@@ -1,15 +1,16 @@
 package org.pac4j.http.credentials.authenticator;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.profile.IpProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the {@link IpRegexpAuthenticator}.
@@ -26,22 +27,22 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
-        final var credentials = new TokenCredentials(GOOD_IP);
+        val credentials = new TokenCredentials(GOOD_IP);
         var authenticator = new IpRegexpAuthenticator();
         authenticator.validate(credentials, null, new MockSessionStore());
     }
 
     @Test
     public void testValidateGoodIP() {
-        final var credentials = new TokenCredentials(GOOD_IP);
+        val credentials = new TokenCredentials(GOOD_IP);
         authenticator.validate(credentials, null, new MockSessionStore());
-        final var profile = (IpProfile) credentials.getUserProfile();
+        val profile = (IpProfile) credentials.getUserProfile();
         assertEquals(GOOD_IP, profile.getId());
     }
 
     @Test
     public void testValidateBadIP() {
-        final var credentials = new TokenCredentials(BAD_IP);
+        val credentials = new TokenCredentials(BAD_IP);
         TestsHelper.expectException(() -> authenticator.validate(credentials, null, new MockSessionStore()), CredentialsException.class,
             "Unauthorized IP address: " + BAD_IP);
     }

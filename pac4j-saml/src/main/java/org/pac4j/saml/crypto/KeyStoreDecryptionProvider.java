@@ -1,5 +1,6 @@
 package org.pac4j.saml.crypto;
 
+import lombok.val;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
@@ -37,9 +38,9 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
 
     @Override
     public final Decrypter build() {
-        final var encryptionCredential = this.credentialProvider.getCredential();
+        val encryptionCredential = this.credentialProvider.getCredential();
         final KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
-        final var decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
+        val decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
         decrypter.setRootInNewDocument(true);
 
         return decrypter;

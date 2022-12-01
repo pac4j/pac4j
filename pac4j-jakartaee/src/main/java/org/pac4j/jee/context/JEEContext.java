@@ -2,6 +2,7 @@ package org.pac4j.jee.context;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.val;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
@@ -64,10 +65,10 @@ public class JEEContext implements WebContext {
 
     @Override
     public Optional<String> getRequestHeader(final String name) {
-        final var names = request.getHeaderNames();
+        val names = request.getHeaderNames();
         if (names != null) {
             while (names.hasMoreElements()) {
-                final var headerName = names.nextElement();
+                val headerName = names.nextElement();
                 if (headerName != null && headerName.equalsIgnoreCase(name)) {
                     return Optional.ofNullable(this.request.getHeader(headerName));
                 }
@@ -141,7 +142,7 @@ public class JEEContext implements WebContext {
 
     @Override
     public String getRequestURL() {
-        final var url = request.getRequestURL().toString();
+        val url = request.getRequestURL().toString();
         var idx = url.indexOf('?');
         if (idx != -1) {
             return url.substring(0, idx);
@@ -151,8 +152,8 @@ public class JEEContext implements WebContext {
 
     @Override
     public String getFullRequestURL() {
-        final var requestURL = request.getRequestURL();
-        final var queryString = request.getQueryString();
+        val requestURL = request.getRequestURL();
+        val queryString = request.getQueryString();
         if (queryString == null) {
             return requestURL.toString();
         }
@@ -162,11 +163,11 @@ public class JEEContext implements WebContext {
     @Override
     public Collection<Cookie> getRequestCookies() {
         final Collection<Cookie> pac4jCookies = new LinkedHashSet<>();
-        final var cookies = this.request.getCookies();
+        val cookies = this.request.getCookies();
 
         if (cookies != null) {
-            for (final var c : cookies) {
-                final var cookie = new Cookie(c.getName(), c.getValue());
+            for (val c : cookies) {
+                val cookie = new Cookie(c.getName(), c.getValue());
                 cookie.setDomain(c.getDomain());
                 cookie.setHttpOnly(c.isHttpOnly());
                 cookie.setMaxAge(c.getMaxAge());
@@ -199,7 +200,7 @@ public class JEEContext implements WebContext {
         if (fullPath.startsWith("//")) {
             fullPath = fullPath.substring(1);
         }
-        final var context = request.getContextPath();
+        val context = request.getContextPath();
         // this one shouldn't be null either, but in case it is, then let's consider it is empty
         if (context != null) {
             return fullPath.substring(context.length());

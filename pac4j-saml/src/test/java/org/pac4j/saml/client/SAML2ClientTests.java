@@ -1,5 +1,6 @@
 package org.pac4j.saml.client;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -14,7 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Generic tests on the {@link SAML2Client}.
@@ -45,14 +47,14 @@ public final class SAML2ClientTests {
             throw new TechnicalException("File could not be deleted");
         }
 
-        final var cfg =
+        val cfg =
                 new SAML2Configuration("testKeystore.jks",
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
                         "resource:testshib-providers.xml");
         cfg.init();
 
-        final var p = new KeyStoreCredentialProvider(cfg);
+        val p = new KeyStoreCredentialProvider(cfg);
         assertNotNull(p.getKeyInfoGenerator());
         assertNotNull(p.getCredentialResolver());
         assertNotNull(p.getKeyInfo());
@@ -66,14 +68,14 @@ public final class SAML2ClientTests {
             throw new TechnicalException("File could not be deleted");
         }
 
-        final var cfg =
+        val cfg =
                 new SAML2Configuration(new FileSystemResource("testKeystore.jks"),
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
                         new ClassPathResource("testshib-providers.xml"));
         cfg.init();
 
-        final var p = new KeyStoreCredentialProvider(cfg);
+        val p = new KeyStoreCredentialProvider(cfg);
         assertNotNull(p.getKeyInfoGenerator());
         assertNotNull(p.getCredentialResolver());
         assertNotNull(p.getKeyInfo());
@@ -82,17 +84,17 @@ public final class SAML2ClientTests {
     }
 
     private void internalTestIdpMetadataParsing(final Resource resource) {
-        final var client = getClient();
+        val client = getClient();
         client.getConfiguration().setIdentityProviderMetadataResource(resource);
         client.init();
 
         client.getIdentityProviderMetadataResolver().resolve();
-        final var id = client.getIdentityProviderMetadataResolver().getEntityId();
+        val id = client.getIdentityProviderMetadataResolver().getEntityId();
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
     protected SAML2Client getClient() {
-        final var cfg =
+        val cfg =
                 new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
                         "pac4j-demo-passwd",
                         "pac4j-demo-passwd",
@@ -101,7 +103,7 @@ public final class SAML2ClientTests {
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
 
-        final var saml2Client = new SAML2Client(cfg);
+        val saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl("http://localhost:8080/something");
         return saml2Client;
     }

@@ -1,5 +1,6 @@
 package org.pac4j.oidc.run;
 
+import lombok.val;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
@@ -48,7 +49,7 @@ public class RunAppleClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new AppleOidcConfiguration();
+        val configuration = new AppleOidcConfiguration();
         var classLoader = getClass().getClassLoader();
         var file = new File(Objects.requireNonNull(classLoader.getResource("apple.pem")).getFile());
         var privateKey = readPrivateKey(file);
@@ -61,7 +62,7 @@ public class RunAppleClient extends RunClient {
         configuration.setResponseMode("form_post");
         configuration.setScope("openid name email");
         configuration.setUseNonce(true); // Required in the implicit and hybrid flows
-        final var client = new AppleClient(configuration);
+        val client = new AppleClient(configuration);
         // MUST begin with https://
         client.setCallbackUrl(CommonHelper.addParameter("https://www.pac4j.org/test.html",
             DEFAULT_CLIENT_NAME_PARAMETER, client.getName()));
@@ -71,8 +72,8 @@ public class RunAppleClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (AppleProfile) userProfile;
-        final var id = profile.getId();
+        val profile = (AppleProfile) userProfile;
+        val id = profile.getId();
         assertNotNull(id);
         assertEquals(AppleProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + id,
             profile.getTypedId());

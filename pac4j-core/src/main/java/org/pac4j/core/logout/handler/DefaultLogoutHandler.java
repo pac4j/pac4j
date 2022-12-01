@@ -99,7 +99,7 @@ public class DefaultLogoutHandler implements LogoutHandler {
         // and optionally the web session
         if (destroySession) {
             LOGGER.debug("destroy the whole session");
-            final var invalidated = sessionStore.destroySession(context);
+            val invalidated = sessionStore.destroySession(context);
             if (!invalidated) {
                 LOGGER.error("The session has not been invalidated");
             }

@@ -1,9 +1,10 @@
 package org.pac4j.oauth.credentials;
 
 import com.github.scribejava.core.model.OAuth1RequestToken;
+import lombok.val;
 import org.junit.Test;
-import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.serializer.JavaSerializer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,16 +20,16 @@ public final class OAuth10CredentialsTests implements TestsConstants {
 
     @Test
     public void testOAuth10Credentials() {
-        final var credentials = new OAuth10Credentials(REQUEST_TOKEN, TOKEN, VERIFIER);
+        val credentials = new OAuth10Credentials(REQUEST_TOKEN, TOKEN, VERIFIER);
         assertEquals(TOKEN, credentials.getToken());
         assertEquals(VERIFIER, credentials.getVerifier());
-        final var requestToken = credentials.getRequestToken();
+        val requestToken = credentials.getRequestToken();
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getTokenSecret());
         // test serialization
-        final var javaSerializer = new JavaSerializer();
-        final var bytes = javaSerializer.serializeToBytes(credentials);
-        final var credentials2 = (OAuth10Credentials) javaSerializer.deserializeFromBytes(bytes);
+        val javaSerializer = new JavaSerializer();
+        val bytes = javaSerializer.serializeToBytes(credentials);
+        val credentials2 = (OAuth10Credentials) javaSerializer.deserializeFromBytes(bytes);
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());

@@ -1,6 +1,7 @@
 package org.pac4j.oauth.run;
 
 import com.github.scribejava.apis.GitHubApi;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.client.OAuth20Client;
@@ -21,13 +22,13 @@ public final class RunOAuth20Client extends RunGithubClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var config = new OAuth20Configuration();
+        val config = new OAuth20Configuration();
         config.setApi(GitHubApi.instance());
         config.setProfileDefinition(new GitHubProfileDefinition());
         config.setScope("user");
         config.setKey("62374f5573a89a8f9900");
         config.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
-        final var client = new OAuth20Client();
+        val client = new OAuth20Client();
         client.setConfiguration(config);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;

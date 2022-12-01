@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import fi.iki.elonen.NanoHTTPD;
+import lombok.val;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
@@ -27,7 +28,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @BeforeClass
     public static void setUp() {
-        final var webServer = new WebServer(PORT)
+        val webServer = new WebServer(PORT)
             .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json",
                 "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }"))
             .defineResponse("notfound", new ServerResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found"))
@@ -37,10 +38,10 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testProfileOk() {
-        final var authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
-        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        val authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
+        val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
-        final var profile = (RestProfile) credentials.getUserProfile();
+        val profile = (RestProfile) credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(ID, profile.getId());
         assertEquals(1, profile.getRoles().size());
@@ -49,17 +50,17 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testNotFound() {
-        final var authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
-        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        val authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
+        val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
-        final var profile = (RestProfile) credentials.getUserProfile();
+        val profile = (RestProfile) credentials.getUserProfile();
         assertNull(profile);
     }
 
     @Test
     public void testParsingError() {
-        final var authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
-        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        val authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
+        val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore()),
             TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting " +
                 "('true', 'false' or 'null')\n at [Source: (String)\"bad\"; line: 1, column: 7]");
@@ -67,8 +68,8 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testHttps() {
-        final var authenticator = new RestAuthenticator("https://www.google.com");
-        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        val authenticator = new RestAuthenticator("https://www.google.com");
+        val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
     }
 }

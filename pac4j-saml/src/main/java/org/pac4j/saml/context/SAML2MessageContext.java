@@ -2,6 +2,7 @@ package org.pac4j.saml.context;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
@@ -71,20 +72,20 @@ public class SAML2MessageContext {
     }
 
     public final SPSSODescriptor getSPSSODescriptor() {
-        final var selfContext = getSAMLSelfMetadataContext();
-        final var spDescriptor = (SPSSODescriptor) selfContext.getRoleDescriptor();
+        val selfContext = getSAMLSelfMetadataContext();
+        val spDescriptor = (SPSSODescriptor) selfContext.getRoleDescriptor();
         return spDescriptor;
     }
 
     public final IDPSSODescriptor getIDPSSODescriptor() {
-        final var peerContext = getSAMLPeerMetadataContext();
-        final var idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
+        val peerContext = getSAMLPeerMetadataContext();
+        val idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
         return idpssoDescriptor;
     }
 
     public final SingleLogoutService getIDPSingleLogoutService(final String binding) {
-        final var services = getIDPSSODescriptor().getSingleLogoutServices();
-        for (final var service : services) {
+        val services = getIDPSSODescriptor().getSingleLogoutServices();
+        for (val service : services) {
             if (service.getBinding().equals(binding)) {
                 return service;
             }
@@ -94,8 +95,8 @@ public class SAML2MessageContext {
     }
 
     public SingleSignOnService getIDPSingleSignOnService(final String binding) {
-        final var services = getIDPSSODescriptor().getSingleSignOnServices();
-        for (final var service : services) {
+        val services = getIDPSSODescriptor().getSingleSignOnServices();
+        for (val service : services) {
             if (service.getBinding().equals(binding)) {
                 return service;
             }
@@ -105,17 +106,17 @@ public class SAML2MessageContext {
     }
 
     public AssertionConsumerService getSPAssertionConsumerService() {
-        final var spssoDescriptor = getSPSSODescriptor();
+        val spssoDescriptor = getSPSSODescriptor();
         return getSPAssertionConsumerService(spssoDescriptor, spssoDescriptor.getAssertionConsumerServices());
     }
 
     public AssertionConsumerService getSPAssertionConsumerService(final StatusResponseType response) {
-        final var spssoDescriptor = getSPSSODescriptor();
-        final var services = spssoDescriptor.getAssertionConsumerServices();
+        val spssoDescriptor = getSPSSODescriptor();
+        val services = spssoDescriptor.getAssertionConsumerServices();
 
         // Get by index
         if (response != null && StringUtils.isNotEmpty(response.getDestination())) {
-            for (final var service : services) {
+            for (val service : services) {
                 if (response.getDestination().equals(service.getLocation())) {
                     return service;
                 }
@@ -128,12 +129,12 @@ public class SAML2MessageContext {
     }
 
     public AssertionConsumerService getSPAssertionConsumerService(final String acsIndex) {
-        final var spssoDescriptor = getSPSSODescriptor();
-        final var services = spssoDescriptor.getAssertionConsumerServices();
+        val spssoDescriptor = getSPSSODescriptor();
+        val services = spssoDescriptor.getAssertionConsumerServices();
 
         // Get by index
         if (acsIndex != null) {
-            for (final var service : services) {
+            for (val service : services) {
                 if (Integer.valueOf(acsIndex).equals(service.getIndex())) {
                     return service;
                 }

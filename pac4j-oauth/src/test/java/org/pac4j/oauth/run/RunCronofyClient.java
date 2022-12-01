@@ -1,12 +1,14 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.oauth.client.CronofyClient;
 import org.pac4j.oauth.profile.cronofy.CronofyProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Manually run a test for the {@link CronofyClient}.
@@ -32,7 +34,7 @@ public final class RunCronofyClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var cronofyClient = new CronofyClient();
+        val cronofyClient = new CronofyClient();
         cronofyClient.setKey("EYRQwgxE3u9gthGZgI2KbFw5Jrkt5dgt");
         cronofyClient.setSecret("CRN_ovKtaeBlrO0DxBosm9tnXn9l6xHF2HAD0iOeer");
         cronofyClient.setCallbackUrl(PAC4J_BASE_URL);
@@ -43,7 +45,7 @@ public final class RunCronofyClient extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (CronofyProfile) userProfile;
+        val profile = (CronofyProfile) userProfile;
         assertNotNull(profile.getId());
         assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getRefreshToken());

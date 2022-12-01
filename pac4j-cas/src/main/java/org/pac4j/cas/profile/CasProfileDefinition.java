@@ -1,5 +1,6 @@
 package org.pac4j.cas.profile;
 
+import lombok.val;
 import org.apereo.cas.client.authentication.AttributePrincipal;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.core.profile.UserProfile;
@@ -19,9 +20,9 @@ public class CasProfileDefinition extends CommonProfileDefinition {
 
     @Override
     public UserProfile newProfile(final Object... parameters) {
-        final var proxyReceptor = (CasProxyReceptor) getParameter(parameters, 1);
+        val proxyReceptor = (CasProxyReceptor) getParameter(parameters, 1);
         if (proxyReceptor != null) {
-            final var profile = new CasProxyProfile();
+            val profile = new CasProxyProfile();
             profile.setPrincipal((AttributePrincipal) getParameter(parameters, 2));
             return profile;
         } else {

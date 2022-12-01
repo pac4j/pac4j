@@ -1,11 +1,13 @@
 package org.pac4j.http.authorization.authorizer;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the {@link IpRegexpAuthorizer}.
@@ -22,7 +24,7 @@ public final class IpRegexpAuthorizerTests {
 
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
-        final var authorizer = new IpRegexpAuthorizer();
+        val authorizer = new IpRegexpAuthorizer();
         authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), null);
     }
 

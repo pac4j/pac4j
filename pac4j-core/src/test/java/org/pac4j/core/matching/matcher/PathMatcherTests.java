@@ -1,5 +1,6 @@
 package org.pac4j.core.matching.matcher;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -23,21 +24,21 @@ public class PathMatcherTests {
 
     @Test
     public void testBlankPath() {
-        final var pathMatcher = new PathMatcher();
+        val pathMatcher = new PathMatcher();
         assertTrue(pathMatcher.matches(MockWebContext.create().setPath("/page.html"), new MockSessionStore()));
         assertTrue(pathMatcher.matches(MockWebContext.create(), new MockSessionStore()));
     }
 
     @Test
     public void testFixedPath() {
-        final var pathMatcher = new PathMatcher().excludePath("/foo");
+        val pathMatcher = new PathMatcher().excludePath("/foo");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo"), new MockSessionStore()));
         assertTrue(pathMatcher.matches(MockWebContext.create().setPath("/foo/bar"), new MockSessionStore()));
     }
 
     @Test
     public void testBranch() {
-        final var pathMatcher = new PathMatcher().excludeBranch("/foo");
+        val pathMatcher = new PathMatcher().excludeBranch("/foo");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo"), new MockSessionStore()));
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo/"), new MockSessionStore()));
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo/bar"), new MockSessionStore()));
@@ -62,13 +63,13 @@ public class PathMatcherTests {
 
     @Test
     public void testNoPath() {
-        final var pathMatcher = new PathMatcher().excludeRegex("^/$");
+        val pathMatcher = new PathMatcher().excludeRegex("^/$");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/"), new MockSessionStore()));
     }
 
     @Test
     public void testMatch() {
-        final var matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
+        val matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
         assertTrue(matcher.matches(MockWebContext.create().setPath("/js/app.js"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/page.htm"), new MockSessionStore()));
@@ -76,7 +77,7 @@ public class PathMatcherTests {
 
     @Test
     public void testDontMatch() {
-        final var matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
+        val matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
         assertFalse(matcher.matches(MockWebContext.create().setPath("/css/app.css"), new MockSessionStore()));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/img/"), new MockSessionStore()));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/page.html"), new MockSessionStore()));
@@ -89,7 +90,7 @@ public class PathMatcherTests {
         final Set<String> excludedRegexs = new HashSet<>();
         excludedRegexs.add("^/(img/.*|css/.*|page\\.html)$");
 
-        final var matcher = new PathMatcher();
+        val matcher = new PathMatcher();
         matcher.setExcludedPaths(excludedPaths);
         matcher.setExcludedPatterns(excludedRegexs);
 
@@ -102,7 +103,7 @@ public class PathMatcherTests {
 
     @Test
     public void testIncludePath() {
-        final var matcher = new PathMatcher().includePath("/protect");
+        val matcher = new PathMatcher().includePath("/protect");
 
         assertTrue(matcher.matches(MockWebContext.create().setPath("/protect"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/protected"), new MockSessionStore()));
@@ -113,7 +114,7 @@ public class PathMatcherTests {
 
     @Test
     public void testIncludePaths() {
-        final var matcher = new PathMatcher().includePaths("/protect", "/css");
+        val matcher = new PathMatcher().includePaths("/protect", "/css");
 
         assertTrue(matcher.matches(MockWebContext.create().setPath("/protect"), new MockSessionStore()));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/protected"), new MockSessionStore()));

@@ -2,6 +2,7 @@ package org.pac4j.saml.transport;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.logic.Constraint;
@@ -49,7 +50,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
 
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         Optional<String> encodedMessage = Optional.empty();
-        for (final var parameter : SAML_PARAMETERS) {
+        for (val parameter : SAML_PARAMETERS) {
             encodedMessage = this.context.getRequestParameter(parameter);
             if (encodedMessage.isPresent()) {
                 break;
@@ -60,13 +61,13 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
             // we have a body, it may be the SAML request/response directly
             // but we also try to parse it as a list key=value where the value is the SAML request/response
             if (encodedMessage.isPresent()) {
-                final var a = URLEncodedUtils.parse(encodedMessage.get(), StandardCharsets.UTF_8);
+                val a = URLEncodedUtils.parse(encodedMessage.get(), StandardCharsets.UTF_8);
                 final Multimap<String, String>  paramMap = HashMultimap.create();
-                for (final var p : a) {
+                for (val p : a) {
                     paramMap.put(p.getName(), p.getValue());
                 }
-                for (final var parameter : SAML_PARAMETERS) {
-                    final var newEncodedMessageCollection = paramMap.get(parameter);
+                for (val parameter : SAML_PARAMETERS) {
+                    val newEncodedMessageCollection = paramMap.get(parameter);
                     if (newEncodedMessageCollection != null && !newEncodedMessageCollection.isEmpty()) {
                         encodedMessage = Optional.of(newEncodedMessageCollection.iterator().next());
                         break;
@@ -85,7 +86,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
             } else {
 
                 try {
-                    final var decodedBytes = Base64Support.decode(encodedMessage.get());
+                    val decodedBytes = Base64Support.decode(encodedMessage.get());
                     logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
                     return decodedBytes;
                 } catch (final Exception e) {
@@ -118,7 +119,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
      * @param messageContext the current message context
      */
     protected void populateBindingContext(final SAML2MessageContext messageContext) {
-        final var bindingContext = messageContext.getMessageContext().getSubcontext(SAMLBindingContext.class, true);
+        val bindingContext = messageContext.getMessageContext().getSubcontext(SAMLBindingContext.class, true);
         bindingContext.setBindingUri(getBindingURI(messageContext));
         bindingContext.setHasBindingSignature(false);
         bindingContext.setIntendedDestinationEndpointURIRequired(SAMLBindingSupport.isMessageSigned(messageContext.getMessageContext()));
@@ -143,7 +144,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
      */
     protected XMLObject unmarshallMessage(final InputStream messageStream) throws MessageDecodingException {
         try {
-            final var message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
+            val message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
             return message;
         } catch (final XMLParserException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);

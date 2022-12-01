@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.val;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -34,7 +35,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
 
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
-        final var resolver = new HTTPMetadataResolver(httpClient, this.metadataUrl.toExternalForm());
+        val resolver = new HTTPMetadataResolver(httpClient, this.metadataUrl.toExternalForm());
         if (minRefreshDelay != null) {
             resolver.setMinRefreshDelay(minRefreshDelay);
         }
@@ -54,14 +55,14 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
         try {
             logger.debug("Posting metadata to {}", this.metadataUrl.toURI());
 
-            final var httpPost = new HttpPost(this.metadataUrl.toURI());
+            val httpPost = new HttpPost(this.metadataUrl.toURI());
             httpPost.addHeader("Accept", ContentType.APPLICATION_XML.getMimeType());
             httpPost.addHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType());
             httpPost.setEntity(new StringEntity(metadata, ContentType.APPLICATION_XML));
 
             response = httpClient.execute(httpPost);
             if (response != null) {
-                final var code = response.getStatusLine().getStatusCode();
+                val code = response.getStatusLine().getStatusCode();
                 if (code == HttpStatus.SC_NOT_IMPLEMENTED) {
                     logger.info("Storing metadata is not supported/implemented by {}", metadataUrl);
                     return false;

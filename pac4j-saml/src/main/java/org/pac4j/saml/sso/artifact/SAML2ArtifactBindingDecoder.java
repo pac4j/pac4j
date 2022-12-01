@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.artifact;
 
+import lombok.val;
 import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.binding.impl.DefaultEndpointResolver;
@@ -48,16 +49,16 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     @Override
     protected void doDecode() throws MessageDecodingException {
         try {
-            final var endpointResolver = new DefaultEndpointResolver<ArtifactResolutionService>();
+            val endpointResolver = new DefaultEndpointResolver<ArtifactResolutionService>();
             endpointResolver.initialize();
 
-            final var roleResolver = new PredicateRoleDescriptorResolver(
+            val roleResolver = new PredicateRoleDescriptorResolver(
                     idpMetadataResolver.resolve());
             roleResolver.initialize();
 
-            final var messageContext = new SAML2MessageContext();
+            val messageContext = new SAML2MessageContext();
 
-            final var soapClient = new PipelineFactoryHttpSOAPClient() {
+            val soapClient = new PipelineFactoryHttpSOAPClient() {
                 @SuppressWarnings("rawtypes")
                 @Override
                 public void send(final String endpoint, final InOutOperationContext operationContext)
@@ -69,7 +70,7 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
             soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
 
-            final var artifactDecoder = new Pac4jHTTPArtifactDecoder();
+            val artifactDecoder = new Pac4jHTTPArtifactDecoder();
             artifactDecoder.setWebContext(context);
             artifactDecoder.setSelfEntityIDResolver(new FixedEntityIdResolver(spMetadataResolver));
             artifactDecoder.setRoleDescriptorResolver(roleResolver);

@@ -1,22 +1,13 @@
 package org.pac4j.saml.credentials.authenticator;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
-import java.net.URISyntaxException;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.*;
-
-import javax.xml.namespace.QName;
-
+import lombok.val;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.Gender;
@@ -26,6 +17,17 @@ import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Element;
+
+import javax.xml.namespace.QName;
+import java.net.URISyntaxException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This is {@link SAML2AuthenticatorTests}.
@@ -42,13 +44,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void verifyAttributeMapping() {
-        final var credentials = createCredentialsForTest(true, true);
+        val credentials = createCredentialsForTest(true, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        val authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final var finalProfile = credentials.getUserProfile();
+        val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
@@ -56,13 +58,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void validateWithMissingNotBeforeCondition() {
-        final var credentials = createCredentialsForTest(false, true);
+        val credentials = createCredentialsForTest(false, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        val authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final var finalProfile = credentials.getUserProfile();
+        val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
@@ -70,13 +72,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void validateAttributeConversion() throws URISyntaxException {
-        final var credentials = createCredentialsForTest(false, true);
+        val credentials = createCredentialsForTest(false, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        val authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final var finalProfile = credentials.getUserProfile();
+        val finalProfile = credentials.getUserProfile();
         authenticator.getProfileDefinition().convertAndAdd(credentials.getUserProfile(), PROFILE_ATTRIBUTE, CommonProfileDefinition.GENDER,
             List.of("m"));
         authenticator.getProfileDefinition().convertAndAdd(credentials.getUserProfile(), PROFILE_ATTRIBUTE, CommonProfileDefinition.LOCALE,
@@ -101,13 +103,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void validateInvalidAttributeConversion() {
-        final var credentials = createCredentialsForTest(false, true);
+        val credentials = createCredentialsForTest(false, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        val authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final var finalProfile = credentials.getUserProfile();
+        val finalProfile = credentials.getUserProfile();
         authenticator.getProfileDefinition().convertAndAdd(credentials.getUserProfile(), PROFILE_ATTRIBUTE, CommonProfileDefinition.GENDER,
             List.of("invalid"));
         authenticator.getProfileDefinition().convertAndAdd(credentials.getUserProfile(), PROFILE_ATTRIBUTE, CommonProfileDefinition.LOCALE,
@@ -130,13 +132,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void validateWithMissingNotOnOrAfterCondition() {
-        final var credentials = createCredentialsForTest(true, false);
+        val credentials = createCredentialsForTest(true, false);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        val authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final var finalProfile = credentials.getUserProfile();
+        val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
@@ -144,13 +146,13 @@ public class SAML2AuthenticatorTests {
 
     @Test
     public void validateWithEmptyConditions() {
-        final var credentials = createCredentialsForTest(false, false);
+        val credentials = createCredentialsForTest(false, false);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        final var authenticator = new SAML2Authenticator("username", mappedAttributes);
+        val authenticator = new SAML2Authenticator("username", mappedAttributes);
         authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
 
-        final var finalProfile = credentials.getUserProfile();
+        val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
         assertTrue(finalProfile.containsAttribute("mapped-given-name"));
         assertTrue(finalProfile.containsAttribute("mapped-surname"));
@@ -165,13 +167,13 @@ public class SAML2AuthenticatorTests {
     }
 
     private SAML2Credentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
-        final var nameid = nameIdBuilder.buildObject();
+        val nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
         nameid.setSPNameQualifier("pac4j");
         nameid.setNameQualifier("pac4j");
         nameid.setSPProvidedID("pac4j");
 
-        final var conditions = conditionsBuilder.buildObject();
+        val conditions = conditionsBuilder.buildObject();
 
         if (includeNotBefore) {
             conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
@@ -191,7 +193,7 @@ public class SAML2AuthenticatorTests {
         attributes.add(createAttribute("givenName", "urn:oid:2.5.4.42", "developer"));
         attributes.add(createAttribute("surname", "urn:oid:2.5.4.4", "security"));
 
-        final var credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
+        val credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
             SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index", contexts,
             UUID.randomUUID().toString());
@@ -199,14 +201,14 @@ public class SAML2AuthenticatorTests {
     }
 
     private Attribute createAttribute(final String friendlyName, final String name, final String value) {
-        final var attributeBuilder = (SAMLObjectBuilder<Attribute>)this.builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
+        val attributeBuilder = (SAMLObjectBuilder<Attribute>)this.builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
 
-        final var attr = attributeBuilder.buildObject();
+        val attr = attributeBuilder.buildObject();
         attr.setFriendlyName(friendlyName);
         attr.setName(name);
 
-        final var attrValue = mock(XMLObject.class);
-        final var dom = mock(Element.class);
+        val attrValue = mock(XMLObject.class);
+        val dom = mock(Element.class);
         when(dom.getTextContent()).thenReturn(value);
         when(attrValue.getDOM()).thenReturn(dom);
         when(attrValue.getSchemaType()).thenReturn(new QName(" http://www.w3.org/2001/XMLSchema", "string", "xs"));

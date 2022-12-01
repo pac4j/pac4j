@@ -1,12 +1,14 @@
 package org.pac4j.core.client.finder;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +21,10 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Getter
+@Setter
+@Slf4j
 public class DefaultSecurityClientFinder implements ClientFinder {
-
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSecurityClientFinder.class);
 
     private String clientNameParameter = Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER;
 
@@ -33,31 +36,31 @@ public class DefaultSecurityClientFinder implements ClientFinder {
         // we don't have defined clients to secure the URL, use the general default security ones from the Clients if they exist
         // we check the nullity and not the blankness to allow the blank string to mean no client
         // so no clients parameter -> use the default security ones; clients=blank string -> no clients defined
-        logger.debug("Provided clientNames: {}", securityClientNames);
+        LOGGER.debug("Provided clientNames: {}", securityClientNames);
         if (securityClientNames == null) {
             securityClientNames = clients.getDefaultSecurityClients();
-            logger.debug("Default security clients: {}", securityClientNames);
+            LOGGER.debug("Default security clients: {}", securityClientNames);
             // still no clients defined and we only have one client, use it
             if (securityClientNames == null && clients.findAllClients().size() == 1) {
                 securityClientNames = clients.getClients().get(0).getName();
-                logger.debug("Only client: {}", securityClientNames);
+                LOGGER.debug("Only client: {}", securityClientNames);
             }
         }
 
         if (CommonHelper.isNotBlank(securityClientNames)) {
-            final var names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
-            final var clientOnRequest = context.getRequestParameter(clientNameParameter);
+            val names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
+            val clientOnRequest = context.getRequestParameter(clientNameParameter);
 
             // if a client is provided on the request, get the client
             // and check if it is allowed (defined in the list of the clients)
-            logger.debug("clientNameOnRequest: {}", clientOnRequest);
+            LOGGER.debug("clientNameOnRequest: {}", clientOnRequest);
             if (clientOnRequest.isPresent()) {
                 // from the request
-                final var client = clients.findClient(clientOnRequest.get());
+                val client = clients.findClient(clientOnRequest.get());
                 if (client.isPresent()) {
-                    final var nameFound = client.get().getName();
+                    val nameFound = client.get().getName();
                     // if allowed -> return it
-                    for (final var name : names) {
+                    for (val name : names) {
                         if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, nameFound)) {
                             result.add(client.get());
                             break;
@@ -66,24 +69,16 @@ public class DefaultSecurityClientFinder implements ClientFinder {
                 }
             } else {
                 // no client provided, return all
-                for (final var name : names) {
+                for (val name : names) {
                     // from its name
-                    final var client = clients.findClient(name);
+                    val client = clients.findClient(name);
                     if (client.isPresent()) {
                         result.add(client.get());
                     }
                 }
             }
         }
-        logger.debug("result: {}", result.stream().map(Client::getName).collect(Collectors.toList()));
+        LOGGER.debug("result: {}", result.stream().map(Client::getName).collect(Collectors.toList()));
         return result;
-    }
-
-    public String getClientNameParameter() {
-        return clientNameParameter;
-    }
-
-    public void setClientNameParameter(final String clientNameParameter) {
-        this.clientNameParameter = clientNameParameter;
     }
 }

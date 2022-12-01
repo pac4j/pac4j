@@ -1,11 +1,12 @@
 package org.pac4j.core.profile;
 
+import lombok.val;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.util.Pac4jConstants;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
-
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.util.Pac4jConstants;
 
 /**
  * This class is the base implementation with the default attribute getters which can be retrieved for most profiles.
@@ -117,7 +118,7 @@ public class CommonProfile extends BasicUserProfile {
     }
 
     protected String getAttributeAsString(final String name) {
-        final var value = getAttribute(name);
+        val value = getAttribute(name);
         if (value != null) {
             return value.toString();
         }
@@ -127,7 +128,7 @@ public class CommonProfile extends BasicUserProfile {
     }
 
     protected <T> T getAttributeAsType(final String name, Class<T> clazz, T defaultValue) {
-        final var value = getAttribute(name);
+        val value = getAttribute(name);
         if (value != null && clazz.isAssignableFrom(value.getClass())) {
             return clazz.cast(value);
         }
@@ -137,16 +138,16 @@ public class CommonProfile extends BasicUserProfile {
     }
 
     protected Date getAttributeAsDate(final String name) {
-        final var value = getAttribute(name);
+        val value = getAttribute(name);
         // it should be a Date, but in case it's a Long (Vertx issue with profiles serialized to JSON and restored)
-        if (value instanceof Long) {
-            return new Date((long)value);
+        if (value instanceof Long l) {
+            return new Date(l);
         }
-        else if (value instanceof Double) {
-            return new Date(((Double)value).longValue());
+        else if (value instanceof Double d) {
+            return new Date(d.longValue());
         }
         else {
-            return (Date)getAttribute(name);
+            return (Date) getAttribute(name);
         }
     }
 }

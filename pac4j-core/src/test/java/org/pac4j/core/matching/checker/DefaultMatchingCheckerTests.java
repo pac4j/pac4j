@@ -1,5 +1,6 @@
 package org.pac4j.core.matching.checker;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
@@ -55,14 +56,14 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testNoMatcherName() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         assertTrue(checker.matches(context, new MockSessionStore(), null, new HashMap<>(), new ArrayList<>()));
         assertEquals(6, context.getResponseHeaders().size());
     }
 
     @Test
     public void testNoneMatcherName() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         assertTrue(checker.matches(context, new MockSessionStore(), "  NoNe   ", new HashMap<>(), new ArrayList<>()));
         assertEquals(0, context.getResponseHeaders().size());
     }
@@ -155,7 +156,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testHsts() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.setScheme(SCHEME_HTTPS);
         checker.matches(context, new MockSessionStore(), DefaultMatchers.HSTS, new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
@@ -163,7 +164,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testHstsCaseTrim() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.setScheme(SCHEME_HTTPS);
         checker.matches(context, new MockSessionStore(), "  HSTS ", new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
@@ -171,28 +172,28 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testNosniff() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         checker.matches(context, new MockSessionStore(), DefaultMatchers.NOSNIFF, new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
     }
 
     @Test
     public void testNoframe() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         checker.matches(context, new MockSessionStore(), DefaultMatchers.NOFRAME, new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("X-Frame-Options"));
     }
 
     @Test
     public void testXssprotection() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         checker.matches(context, new MockSessionStore(), DefaultMatchers.XSSPROTECTION, new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("X-XSS-Protection"));
     }
 
     @Test
     public void testNocache() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         checker.matches(context, new MockSessionStore(), DefaultMatchers.NOCACHE, new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("Cache-Control"));
         assertNotNull(context.getResponseHeaders().get("Pragma"));
@@ -201,12 +202,12 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testAllowAjaxRequests() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         checker.matches(context, new MockSessionStore(), DefaultMatchers.ALLOW_AJAX_REQUESTS, new HashMap<>(), new ArrayList<>());
         assertEquals("*", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER));
         assertEquals("true", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER));
-        final var methods = context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_METHODS_HEADER);
-        final var methodArray = Arrays.asList(methods.split(",")).stream().map(String::trim).collect(Collectors.toList());
+        val methods = context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_METHODS_HEADER);
+        val methodArray = Arrays.asList(methods.split(",")).stream().map(String::trim).collect(Collectors.toList());
         assertTrue(methodArray.contains(HTTP_METHOD.POST.name()));
         assertTrue(methodArray.contains(HTTP_METHOD.PUT.name()));
         assertTrue(methodArray.contains(HTTP_METHOD.DELETE.name()));
@@ -216,7 +217,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testSecurityHeaders() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         context.setScheme(SCHEME_HTTPS);
         checker.matches(context, new MockSessionStore(), DefaultMatchers.SECURITYHEADERS, new HashMap<>(), new ArrayList<>());
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
@@ -230,7 +231,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfToken() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         assertTrue(checker.matches(context, new MockSessionStore(), DefaultMatchers.CSRF_TOKEN, new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
@@ -238,7 +239,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfTokenDefault() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         assertTrue(checker.matches(context, new MockSessionStore(), Pac4jConstants.EMPTY_STRING, new HashMap<>(), new ArrayList<>()));
         assertFalse(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
@@ -246,7 +247,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfTokenDefaultButSessionAlreadyExists() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.getSessionId(context, true);
         assertTrue(checker.matches(context, sessionStore, Pac4jConstants.EMPTY_STRING, new HashMap<>(), new ArrayList<>()));
@@ -256,7 +257,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfTokenDefaultButIndirectClient() {
-        final var context = MockWebContext.create();
+        val context = MockWebContext.create();
         final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
         assertTrue(checker.matches(context, new MockSessionStore(), Pac4jConstants.EMPTY_STRING, new HashMap<>(), clients));
@@ -266,7 +267,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfTokenPost() {
-        final var context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
+        val context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         assertTrue(checker.matches(context, new MockSessionStore(), DefaultMatchers.CSRF_TOKEN, new HashMap<>(), new ArrayList<>()));
         assertTrue(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).isPresent());
         assertNotNull(WebContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));

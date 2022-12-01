@@ -1,11 +1,12 @@
 package org.pac4j.sql.test.tools;
 
+import lombok.val;
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.skife.jdbi.v2.DBI;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
@@ -25,9 +26,9 @@ public final class DbServer implements TestsConstants {
 
     static {
         ds = JdbcConnectionPool.create("jdbc:h2:mem:test", Pac4jConstants.USERNAME, Pac4jConstants.PASSWORD);
-        final var dbi = new DBI(ds);
-        final var h = dbi.open();
-        final var password = PASSWORD_ENCODER.encode(PASSWORD);
+        val dbi = new DBI(ds);
+        val h = dbi.open();
+        val password = PASSWORD_ENCODER.encode(PASSWORD);
         h.execute("create table users (" + AbstractProfileService.ID + " int primary key, " + Pac4jConstants.USERNAME +  " varchar(100), "
             + Pac4jConstants.PASSWORD + " varchar(300), " + FIRSTNAME + " varchar(100), " + AbstractProfileService.LINKEDID
             + " varchar(100), " + AbstractProfileService.SERIALIZED_PROFILE + " varchar(6000))");

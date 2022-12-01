@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.oauth.client.OAuth10Client;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -20,12 +21,12 @@ public final class RunOAuth10Client extends RunBitbucketClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var config = new OAuth10Configuration();
+        val config = new OAuth10Configuration();
         config.setKey("bjEt8BMpLwFDqZUvp6");
         config.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
         config.setApi(new BitBucketApi());
         config.setProfileDefinition(new BitbucketProfileDefinition());
-        final var client = new OAuth10Client();
+        val client = new OAuth10Client();
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setConfiguration(config);
         return client;

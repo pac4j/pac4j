@@ -1,18 +1,24 @@
 package org.pac4j.core.profile;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class is a generic way to manage the current user profile(s), i.e. the one(s) of the current authenticated user.
@@ -32,6 +38,8 @@ public class ProfileManager {
 
     protected SessionStore sessionStore;
 
+    @Getter
+    @Setter
     protected Config config;
 
     public ProfileManager(final WebContext context, final SessionStore sessionStore) {
@@ -47,7 +55,7 @@ public class ProfileManager {
      * @return the user profile
      */
     public Optional<UserProfile> getProfile() {
-        final var allProfiles = retrieveAll(true);
+        val allProfiles = retrieveAll(true);
         return ProfileHelper.flatIntoOneProfile(allProfiles.values());
     }
 
@@ -61,7 +69,7 @@ public class ProfileManager {
      * @return the user profiles
      */
     public List<UserProfile> getProfiles() {
-        final var profiles = retrieveAll(true);
+        val profiles = retrieveAll(true);
         return ProfileHelper.flatIntoAProfileList(profiles);
     }
 
@@ -72,7 +80,7 @@ public class ProfileManager {
      * @return the map of profiles
      */
     protected LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {
-        final var profiles = new LinkedHashMap<String, UserProfile>();
+        val profiles = new LinkedHashMap<String, UserProfile>();
         this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES)
             .ifPresent(requestAttribute -> {
                 LOGGER.debug("Retrieved profiles (request): {}", requestAttribute);
@@ -93,18 +101,18 @@ public class ProfileManager {
 
     protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, UserProfile> profiles, final boolean readFromSession) {
         var profilesUpdated = false;
-        for (final var entry : profiles.entrySet()) {
-            final var key = entry.getKey();
-            final var profile = entry.getValue();
+        for (val entry : profiles.entrySet()) {
+            val key = entry.getKey();
+            val profile = entry.getValue();
             if (profile.isExpired()) {
                 LOGGER.debug("Expired profile: {}", profile);
                 profilesUpdated = true;
                 profiles.remove(key);
                 if (config != null && profile.getClientName() != null) {
-                    final var client = config.getClients().findClient(profile.getClientName());
+                    val client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
                         try {
-                            final var newProfile = client.get().renewUserProfile(profile, context, sessionStore);
+                            val newProfile = client.get().renewUserProfile(profile, context, sessionStore);
                             if (newProfile.isPresent()) {
                                 LOGGER.debug("Renewed by profile: {}", newProfile);
                                 profiles.put(key, newProfile.get());
@@ -125,7 +133,7 @@ public class ProfileManager {
      * Remove the current user profile(s).
      */
     public void removeProfiles() {
-        final var sessionExists = sessionStore.getSessionId(context, false).isPresent();
+        val sessionExists = sessionStore.getSessionId(context, false).isPresent();
         if (sessionExists) {
             LOGGER.debug("Removing profiles from session");
             this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
@@ -144,7 +152,7 @@ public class ProfileManager {
     public void save(final boolean saveInSession, final UserProfile profile, final boolean multiProfile) {
         final LinkedHashMap<String, UserProfile> profiles;
 
-        final var clientName = retrieveClientName(profile);
+        val clientName = retrieveClientName(profile);
         if (multiProfile) {
             profiles = retrieveAll(saveInSession);
             profiles.remove(clientName);
@@ -184,13 +192,5 @@ public class ProfileManager {
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(final Config config) {
-        this.config = config;
     }
 }

@@ -1,13 +1,16 @@
 package org.pac4j.core.engine.savedrequest;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.http.*;
+import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.util.HttpActionHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pac4j.core.util.Pac4jConstants;
 
 /**
  * The default {@link SavedRequestHandler} which handles GET and POST requests.
@@ -15,16 +18,15 @@ import org.slf4j.LoggerFactory;
  * @author Jerome LELEU
  * @since 4.0.0
  */
+@Slf4j
 public class DefaultSavedRequestHandler implements SavedRequestHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSavedRequestHandler.class);
 
     @Override
     public void save(final WebContext context, final SessionStore sessionStore) {
-        final var requestedUrl = getRequestedUrl(context, sessionStore);
+        val requestedUrl = getRequestedUrl(context, sessionStore);
         if (WebContextHelper.isPost(context)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
-            final var formPost = HttpActionHelper.buildFormPostContent(context);
+            val formPost = HttpActionHelper.buildFormPostContent(context);
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
@@ -38,11 +40,11 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
     @Override
     public HttpAction restore(final WebContext context, final SessionStore sessionStore, final String defaultUrl) {
-        final var optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
+        val optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
         HttpAction requestedAction = null;
         if (optRequestedUrl.isPresent()) {
             sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
-            final var requestedUrl = optRequestedUrl.get();
+            val requestedUrl = optRequestedUrl.get();
             if (requestedUrl instanceof String) {
                 requestedAction = new FoundAction((String) requestedUrl);
             } else if (requestedUrl instanceof RedirectionAction) {

@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -31,7 +32,7 @@ public final class RunWechatClient extends RunClient {
 //        System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\Administrator\\cacerts");
 //        System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 //        System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
-        final var runWechatClient = new RunWechatClient();
+        val runWechatClient = new RunWechatClient();
         runWechatClient.run();
     }
 
@@ -47,7 +48,7 @@ public final class RunWechatClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var wechatClient = new WechatClient();
+        val wechatClient = new WechatClient();
         final String apiKey;
         final String apiSecret;
         final String callbackUrl;
@@ -80,7 +81,7 @@ public final class RunWechatClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (WechatProfile) userProfile;
+        val profile = (WechatProfile) userProfile;
         String openid;
         // Note: different apiKey get the same user's uid differently, headimgurl may also be different.
         if (QRCODE) {

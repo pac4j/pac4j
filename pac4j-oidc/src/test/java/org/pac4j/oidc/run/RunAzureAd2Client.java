@@ -1,5 +1,6 @@
 package org.pac4j.oidc.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -36,11 +37,11 @@ public class RunAzureAd2Client extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new AzureAd2OidcConfiguration();
+        val configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
         configuration.setSecret("7~nTx-1_-zn~04jLMfY4J~af6vRY9wXrYW");
         configuration.setTenant("38c46e5a-21f0-46e5-940d-3ca06fd1a330");
-        final var client = new AzureAd2Client(configuration);
+        val client = new AzureAd2Client(configuration);
         client.setName("AzureAdClient");
         // MUST begin with https:// or http://localhost
         client.setCallbackUrl("https://www.pac4j.org/test.html");
@@ -49,7 +50,7 @@ public class RunAzureAd2Client extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (AzureAdProfile) userProfile;
+        val profile = (AzureAdProfile) userProfile;
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
         assertEquals(AzureAdProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
             profile.getTypedId());

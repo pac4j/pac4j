@@ -1,10 +1,11 @@
 package org.pac4j.oauth.profile.weibo;
 
-import java.net.URI;
-import java.util.Locale;
-
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
+
+import java.net.URI;
+import java.util.Locale;
 
 /**
  * <p>This class is the user profile for  Sina Weibo (using OAuth protocol version 2) with appropriate getters.</p>
@@ -44,7 +45,7 @@ public class WeiboProfile extends OAuth20Profile {
 
     @Override
     public URI getProfileUrl() {
-        final var attribute = (URI) getAttribute(WeiboProfileDefinition.PROFILE_URL);
+        val attribute = (URI) getAttribute(WeiboProfileDefinition.PROFILE_URL);
         if (attribute.isAbsolute()) {
             return attribute;
         } else {

@@ -1,5 +1,6 @@
 package org.pac4j.core.engine;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.Clients;
@@ -106,7 +107,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testDirectClient() {
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final var directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
+        val directClient = new MockDirectClient(NAME, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(directClient));
         TestsHelper.expectException(this::call, TechnicalException.class,
             "unable to find one indirect client for the callback: check the callback URL for a client name parameter or" +
@@ -115,14 +116,14 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallback() {
-        final var originalSessionId = sessionStore.getSessionId(context, false);
+        val originalSessionId = sessionStore.getSessionId(context, false);
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
-        final var newSessionId = sessionStore.getSessionId(context, false);
-        final var profiles =
+        val newSessionId = sessionStore.getSessionId(context, false);
+        val profiles =
             (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
@@ -143,15 +144,15 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void internalTestCallbackWithOriginallyRequestedUrl(final int code) {
-        final var originalSessionId = sessionStore.getSessionId(context, false);
+        val originalSessionId = sessionStore.getSessionId(context, false);
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
-        final var newSessionId = sessionStore.getSessionId(context, false);
-        final var profiles =
+        val newSessionId = sessionStore.getSessionId(context, false);
+        val profiles =
             (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
@@ -166,15 +167,15 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     @Test
     public void testCallbackNoRenew() {
-        final var originalSessionId = sessionStore.getSessionId(context, true);
+        val originalSessionId = sessionStore.getSessionId(context, true);
         context.addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
         call();
-        final var newSessionId = sessionStore.getSessionId(context, false);
-        final var profiles =
+        val newSessionId = sessionStore.getSessionId(context, false);
+        val profiles =
             (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());

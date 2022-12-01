@@ -1,9 +1,10 @@
 package org.pac4j.oauth.profile.wechat;
 
-import java.net.URI;
-
+import lombok.val;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
+
+import java.net.URI;
 
 /**
  * <p>This class is the user profile for Tencent Wechat with appropriate getters.</p>
@@ -33,7 +34,7 @@ public class WechatProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        final var location = getAttribute(WechatProfileDefinition.CITY) + ","
+        val location = getAttribute(WechatProfileDefinition.CITY) + ","
             + getAttribute(WechatProfileDefinition.PROVINCE) + ","
             + getAttribute(WechatProfileDefinition.COUNTRY);
         return location;

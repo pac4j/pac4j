@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
+import lombok.val;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
@@ -43,7 +44,7 @@ public class TwitterClient extends OAuth10Client {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition(includeEmail));
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final var denied = ctx.getRequestParameter("denied");
+            val denied = ctx.getRequestParameter("denied");
             if (denied.isPresent()) {
                 return true;
             } else {

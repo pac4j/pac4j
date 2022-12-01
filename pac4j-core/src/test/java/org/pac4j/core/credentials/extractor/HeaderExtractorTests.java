@@ -1,5 +1,6 @@
 package org.pac4j.core.credentials.extractor;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -28,21 +29,21 @@ public final class HeaderExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrieveHeaderOk() {
-        final var context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
-        final var credentials = (TokenCredentials) extractor.extract(context, null, null).get();
+        val context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
+        val credentials = (TokenCredentials) extractor.extract(context, null, null).get();
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
     public void testBadHeader() {
-        final var context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
-        final var credentials = extractor.extract(context, null, null);
+        val context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
+        val credentials = extractor.extract(context, null, null);
         assertFalse(credentials.isPresent());
     }
 
     @Test
     public void testBadPrefix() {
-        final var context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
+        val context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
         TestsHelper.expectException(() -> extractor.extract(context, null, null), CredentialsException.class,
             "Wrong prefix for header: " + GOOD_HEADER);
     }

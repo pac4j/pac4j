@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 
 import java.io.BufferedReader;
@@ -33,7 +34,7 @@ public final class HttpUtils {
      * @throws IOException an IO exception
      */
     public static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
-        final var messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
+        val messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
         if (connection.getResponseMessage() != null) {
             messageBuilder.append(" ");
             messageBuilder.append(connection.getResponseMessage());
@@ -66,14 +67,14 @@ public final class HttpUtils {
 
     protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers)
         throws IOException {
-        final var connection = (HttpURLConnection) url.openConnection();
+        val connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestMethod(requestMethod);
         connection.setConnectTimeout(connectTimeout);
         connection.setReadTimeout(readTimeout);
         if (headers != null) {
-            for (final var entry : headers.entrySet()) {
+            for (val entry : headers.entrySet()) {
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
         }
@@ -83,7 +84,7 @@ public final class HttpUtils {
     public static String readBody(final HttpURLConnection connection) throws IOException {
         try (var isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
              var br = new BufferedReader(isr)) {
-            final var sb = new StringBuilder();
+            val sb = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null) {
                 sb.append(output);

@@ -1,12 +1,13 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.FacebookApi;
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
+import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
-import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Facebook.</p>
@@ -48,12 +49,12 @@ public class FacebookClient extends OAuth20Client {
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final var error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
-            final var errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON).orElse(null);
-            final var userDenied = "access_denied".equals(error) && "user_denied".equals(errorReason);
-            final var errorCode = ctx.getRequestParameter("error_code").orElse(null);
-            final var errorMessage = ctx.getRequestParameter("error_message").orElse(null);
-            final var hasError = CommonHelper.isNotBlank(errorCode) || CommonHelper.isNotBlank(errorMessage);
+            val error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            val errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON).orElse(null);
+            val userDenied = "access_denied".equals(error) && "user_denied".equals(errorReason);
+            val errorCode = ctx.getRequestParameter("error_code").orElse(null);
+            val errorMessage = ctx.getRequestParameter("error_message").orElse(null);
+            val hasError = CommonHelper.isNotBlank(errorCode) || CommonHelper.isNotBlank(errorMessage);
             if (userDenied || hasError) {
                 return true;
             } else {

@@ -1,5 +1,6 @@
 package org.pac4j.core.matching.matcher;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 
@@ -13,7 +14,7 @@ public class CacheControlMatcher implements Matcher {
 
     @Override
     public boolean matches(final WebContext context, final SessionStore sessionStore) {
-        final var url = context.getFullRequestURL().toLowerCase();
+        val url = context.getFullRequestURL().toLowerCase();
         if (!url.endsWith(".css")
                 && !url.endsWith(".js")
                 && !url.endsWith(".png")

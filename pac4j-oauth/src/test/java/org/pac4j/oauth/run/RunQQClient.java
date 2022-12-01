@@ -1,5 +1,6 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -29,7 +30,7 @@ public final class RunQQClient extends RunClient {
 //        System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\Administrator\\cacerts");
 //        System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 //        System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
-        final var runQQClient = new RunQQClient();
+        val runQQClient = new RunQQClient();
         runQQClient.run();
     }
 
@@ -45,9 +46,9 @@ public final class RunQQClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var qqClient = new QQClient();
-        final var apiKey = "101481951";
-        final var apiSecret = "60e9b925304a223403c7342efffcfa76";
+        val qqClient = new QQClient();
+        val apiKey = "101481951";
+        val apiSecret = "60e9b925304a223403c7342efffcfa76";
 
         qqClient.setKey(apiKey);
         qqClient.setSecret(apiSecret);
@@ -63,7 +64,7 @@ public final class RunQQClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (QQProfile) userProfile;
+        val profile = (QQProfile) userProfile;
         assertEquals("8585AB16822E1437050D63C27D277991", profile.getId());
         assertEquals(QQProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "8585AB16822E1437050D63C27D277991",
             profile.getTypedId());

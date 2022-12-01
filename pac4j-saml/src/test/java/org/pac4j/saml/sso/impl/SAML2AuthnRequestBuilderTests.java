@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
@@ -20,7 +21,8 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -45,13 +47,13 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     public void testHttpSessionStoreGetterAndSetter() {
         final WebContext webContext = MockWebContext.create();
 
-        final var messageStoreFactory = configuration.getSamlMessageStoreFactory();
-        final var store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
+        val messageStoreFactory = configuration.getSamlMessageStoreFactory();
+        val store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
 
-        final var builder = new SAML2AuthnRequestBuilder();
-        final var context = buildContext();
+        val builder = new SAML2AuthnRequestBuilder();
+        val context = buildContext();
 
-        final var authnRequest = builder.build(context);
+        val authnRequest = builder.build(context);
         authnRequest.setAssertionConsumerServiceURL("https://pac4j.org");
 
         store.set(authnRequest.getID(), authnRequest);
@@ -61,20 +63,20 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     }
 
     private SAML2MessageContext buildContext() {
-        final var acs = mock(AssertionConsumerService.class);
+        val acs = mock(AssertionConsumerService.class);
         when(acs.getLocation()).thenReturn("https://pac4j.org");
         when(acs.getIndex()).thenReturn(configuration.getAssertionConsumerServiceIndex());
 
-        final var ssoService = mock(SingleSignOnService.class);
+        val ssoService = mock(SingleSignOnService.class);
         when(ssoService.getBinding()).thenReturn(getSaml2Configuration().getAuthnRequestBindingType());
 
-        final var idpDescriptor = mock(IDPSSODescriptor.class);
+        val idpDescriptor = mock(IDPSSODescriptor.class);
         when(idpDescriptor.getSingleSignOnServices()).thenReturn(Collections.singletonList(ssoService));
 
-        final var spDescriptor = mock(SPSSODescriptor.class);
+        val spDescriptor = mock(SPSSODescriptor.class);
         when(spDescriptor.getAssertionConsumerServices()).thenReturn(Collections.singletonList(acs));
 
-        final var context = new SAML2MessageContext();
+        val context = new SAML2MessageContext();
         context.getSAMLPeerMetadataContext().setRoleDescriptor(idpDescriptor);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         context.getSAMLSelfEntityContext().setEntityId("entity-id");
@@ -89,31 +91,31 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         configuration.setUseNameQualifier(true);
         configuration.setNameIdPolicyFormat("sample-nameid-format");
         configuration.setNameIdPolicyAllowCreate(null);
-        final var builder = new SAML2AuthnRequestBuilder();
-        final var context = buildContext();
+        val builder = new SAML2AuthnRequestBuilder();
+        val context = buildContext();
         assertNotNull(builder.build(context));
     }
 
     @Test
     public void testForceAuthAsRequestAttribute() {
-        final var builder = new SAML2AuthnRequestBuilder();
-        final var context = buildContext();
+        val builder = new SAML2AuthnRequestBuilder();
+        val context = buildContext();
         context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
         assertNotNull(builder.build(context));
     }
 
     @Test
     public void testPassiveAuthAsRequestAttribute() {
-        final var builder = new SAML2AuthnRequestBuilder();
-        final var context = buildContext();
+        val builder = new SAML2AuthnRequestBuilder();
+        val context = buildContext();
         context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
         assertNotNull(builder.build(context));
     }
 
     @Test
     public void testScopingIdentityProviders() {
-        final var builder = new SAML2AuthnRequestBuilder();
-        final var context = buildContext();
+        val builder = new SAML2AuthnRequestBuilder();
+        val context = buildContext();
         var authnRequest = builder.build(context);
         assertNotNull(authnRequest);
         assertNotNull(authnRequest.getScoping());

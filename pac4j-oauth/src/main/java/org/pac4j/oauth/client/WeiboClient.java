@@ -1,5 +1,6 @@
 package org.pac4j.oauth.client;
 
+import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.weibo.WeiboProfile;
@@ -58,7 +59,7 @@ public class WeiboClient extends OAuth20Client {
         configuration.setProfileDefinition(new WeiboProfileDefinition());
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final var error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            val error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
             if ("access_denied".equals(error)) {
                 return true;
             }

@@ -2,6 +2,7 @@ package org.pac4j.oidc.client;
 
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
@@ -38,12 +39,12 @@ public final class OidcRedirectTests implements TestsConstants {
         var providerMetadata = mock(OIDCProviderMetadata.class);
         when(providerMetadata.getAuthorizationEndpointURI()).thenReturn(new java.net.URI("http://localhost:8080/auth"));
 
-        var configuration = new OidcConfiguration();
+        val configuration = new OidcConfiguration();
         configuration.setClientId("testClient");
         configuration.setSecret("secret");
         configuration.setProviderMetadata(providerMetadata);
 
-        final var client = new OidcClient();
+        val client = new OidcClient();
         client.setConfiguration(configuration);
         client.setCallbackUrl(CALLBACK_URL);
 
@@ -78,7 +79,7 @@ public final class OidcRedirectTests implements TestsConstants {
         var context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
 
-        final var firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore).orElse(null);
+        val firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore).orElse(null);
         var state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
 
         try {

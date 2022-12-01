@@ -1,18 +1,18 @@
 package org.pac4j.jee.saml.metadata;
 
-import java.io.IOException;
+import lombok.val;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.jee.config.AbstractConfigFilter;
+import org.pac4j.saml.client.SAML2Client;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.jee.config.AbstractConfigFilter;
-import org.pac4j.saml.client.SAML2Client;
+import java.io.IOException;
 
 /**
  * This filter prints the SP metadata for SAML.
@@ -48,7 +48,7 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
         CommonHelper.assertNotNull("clientName", clientName);
 
         SAML2Client client;
-        final var result = getSharedConfig().getClients().findClient(this.clientName);
+        val result = getSharedConfig().getClients().findClient(this.clientName);
         if (result.isPresent()) {
             client = (SAML2Client) result.get();
         } else {

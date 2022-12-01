@@ -1,6 +1,7 @@
 package org.pac4j.saml.transport;
 
 
+import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.codec.HTMLEncoder;
 import net.shibboleth.shared.component.ComponentInitializationException;
@@ -81,14 +82,14 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
 
     @Override
     protected void doEncode() throws MessageEncodingException {
-        final var messageContext = getMessageContext();
+        val messageContext = getMessageContext();
 
-        final var outboundMessage = (SAMLObject) messageContext.getMessage();
+        val outboundMessage = (SAMLObject) messageContext.getMessage();
         if (outboundMessage == null) {
             throw new MessageEncodingException("No outbound SAML message contained in message context");
         }
 
-        final var endpointURL = getEndpointURL(messageContext).toString();
+        val endpointURL = getEndpointURL(messageContext).toString();
 
         postEncode(messageContext, endpointURL);
     }
@@ -112,13 +113,13 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
         log.debug("Invoking Velocity template to create POST body");
 
         try {
-            final var velocityContext = new VelocityContext();
+            val velocityContext = new VelocityContext();
             this.populateVelocityContext(velocityContext, messageContext, endpointURL);
 
             responseAdapter.setContentType("text/html");
             responseAdapter.init();
 
-            final var out = responseAdapter.getOutputStreamWriter();
+            val out = responseAdapter.getOutputStreamWriter();
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", velocityContext, out);
             out.flush();
         } catch (final Exception e) {
@@ -181,17 +182,17 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     protected void populateVelocityContext(final VelocityContext velocityContext, final MessageContext messageContext,
                                            final String endpointURL) throws MessageEncodingException {
 
-        final var encodedEndpointURL = HTMLEncoder.encodeForHTMLAttribute(endpointURL);
+        val encodedEndpointURL = HTMLEncoder.encodeForHTMLAttribute(endpointURL);
         log.debug("Encoding action url of '{}' with encoded value '{}'", endpointURL, encodedEndpointURL);
         velocityContext.put("action", encodedEndpointURL);
         velocityContext.put("binding", getBindingURI());
 
-        final var outboundMessage = (SAMLObject) messageContext.getMessage();
+        val outboundMessage = (SAMLObject) messageContext.getMessage();
 
         log.debug("Marshalling and Base64 encoding SAML message");
-        final var domMessage = marshallMessage(outboundMessage);
+        val domMessage = marshallMessage(outboundMessage);
 
-        final var messageXML = SerializeSupport.nodeToString(domMessage);
+        val messageXML = SerializeSupport.nodeToString(domMessage);
         log.trace("Output XML message: {}", messageXML);
         final String encodedMessage;
         try {
@@ -208,9 +209,9 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
             throw new MessageEncodingException("SAML message is neither a SAML RequestAbstractType or StatusResponseType");
         }
 
-        final var relayState = SAMLBindingSupport.getRelayState(messageContext);
+        val relayState = SAMLBindingSupport.getRelayState(messageContext);
         if (SAMLBindingSupport.checkRelayState(relayState)) {
-            final var encodedRelayState = HTMLEncoder.encodeForHTMLAttribute(relayState);
+            val encodedRelayState = HTMLEncoder.encodeForHTMLAttribute(relayState);
             log.debug("Setting RelayState parameter to: '{}', encoded as '{}'", relayState, encodedRelayState);
             velocityContext.put("RelayState", encodedRelayState);
         }

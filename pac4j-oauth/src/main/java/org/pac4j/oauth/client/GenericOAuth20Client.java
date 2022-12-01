@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.model.Verb;
+import lombok.val;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -66,7 +67,7 @@ public class GenericOAuth20Client extends OAuth20Client {
     protected void internalInit(final boolean forceReinit) {
         this.converterClasses = findAttributeConverterClasses();
 
-        final var genApi = new GenericApi20(authUrl, tokenUrl);
+        val genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
         if (clientAuthenticationMethod != null) {

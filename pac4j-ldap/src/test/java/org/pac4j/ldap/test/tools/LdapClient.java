@@ -1,14 +1,11 @@
 package org.pac4j.ldap.test.tools;
 
-import org.ldaptive.ConnectionConfig;
-import org.ldaptive.ConnectionFactory;
-import org.ldaptive.DefaultConnectionFactory;
-import org.ldaptive.PooledConnectionFactory;
-import org.ldaptive.SearchConnectionValidator;
+import lombok.val;
+import org.ldaptive.*;
 import org.ldaptive.auth.Authenticator;
 import org.ldaptive.auth.FormatDnResolver;
 import org.ldaptive.auth.SimpleBindAuthenticationHandler;
-import org.ldaptive.pool.*;
+import org.ldaptive.pool.IdlePruneStrategy;
 
 import java.time.Duration;
 
@@ -25,21 +22,21 @@ public final class LdapClient {
     private final Authenticator authenticator;
 
     public LdapClient(final int port) {
-        final var dnResolver = new FormatDnResolver();
+        val dnResolver = new FormatDnResolver();
         dnResolver.setFormat(LdapServer.CN + "=%s," + LdapServer.BASE_PEOPLE_DN);
 
-        final var connectionConfig = new ConnectionConfig();
+        val connectionConfig = new ConnectionConfig();
         connectionConfig.setConnectTimeout(Duration.ofMillis(500));
         connectionConfig.setResponseTimeout(Duration.ofSeconds(1));
         connectionConfig.setLdapUrl("ldap://localhost:" + port);
 
         connectionFactory = new DefaultConnectionFactory(connectionConfig);
 
-        final var searchValidator = new SearchConnectionValidator();
+        val searchValidator = new SearchConnectionValidator();
 
-        final var pruneStrategy = new IdlePruneStrategy();
+        val pruneStrategy = new IdlePruneStrategy();
 
-        final var pooledConnectionFactory = new PooledConnectionFactory(connectionConfig);
+        val pooledConnectionFactory = new PooledConnectionFactory(connectionConfig);
         pooledConnectionFactory.setMinPoolSize(1);
         pooledConnectionFactory.setMaxPoolSize(2);
         pooledConnectionFactory.setValidateOnCheckOut(true);
@@ -50,7 +47,7 @@ public final class LdapClient {
         pooledConnectionFactory.setPruneStrategy(pruneStrategy);
         pooledConnectionFactory.initialize();
 
-        final var handler = new SimpleBindAuthenticationHandler();
+        val handler = new SimpleBindAuthenticationHandler();
         handler.setConnectionFactory(pooledConnectionFactory);
 
         authenticator = new Authenticator();

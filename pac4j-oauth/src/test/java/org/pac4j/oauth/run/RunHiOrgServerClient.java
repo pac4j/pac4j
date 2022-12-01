@@ -1,11 +1,13 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.oauth.client.HiOrgServerClient;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Run manually a test for the {@link HiOrgServerClient}.
@@ -36,7 +38,7 @@ public class RunHiOrgServerClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var client = new HiOrgServerClient();
+        val client = new HiOrgServerClient();
         client.setKey("your client id");
         client.setSecret("your secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
@@ -45,7 +47,7 @@ public class RunHiOrgServerClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (HiOrgServerProfile) userProfile;
+        val profile = (HiOrgServerProfile) userProfile;
         assertEquals("1a396c7895f10eac304a81eef63ca0e2", profile.getId());
         assertEquals("doej", profile.getUsername().toLowerCase());
         assertEquals("John", profile.getFirstName());

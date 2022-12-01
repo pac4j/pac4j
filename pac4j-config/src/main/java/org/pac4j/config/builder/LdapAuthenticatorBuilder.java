@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import lombok.val;
 import org.ldaptive.ConnectionFactoryManager;
 import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.QualityOfProtection;
@@ -27,13 +28,13 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
 
     public void tryBuildLdapAuthenticator(final Map<String, Authenticator> authenticators) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            final var type = getProperty(LDAP_TYPE, i);
+            val type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
-                final var ldapProp = buildLdapProperties(i);
-                final var ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
+                val ldapProp = buildLdapProperties(i);
+                val ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
 
-                final var authenticator = new LdapProfileService(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
-                final var connectionFactoryManager =
+                val authenticator = new LdapProfileService(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
+                val connectionFactoryManager =
                     (ConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
                 authenticator.setConnectionFactory(connectionFactoryManager.getConnectionFactory());
                 authenticator.setUsersDn(getProperty(LDAP_USERS_DN, i));
@@ -50,8 +51,8 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     }
 
     private LdapAuthenticationProperties buildLdapProperties(final int i) {
-        final var ldapProp = new LdapAuthenticationProperties();
-        final var type = getProperty(LDAP_TYPE, i);
+        val ldapProp = new LdapAuthenticationProperties();
+        val type = getProperty(LDAP_TYPE, i);
         ldapProp.setType(LdapAuthenticationProperties.AuthenticationTypes.valueOf(type.toUpperCase()));
         ldapProp.setDnFormat(getProperty(LDAP_DN_FORMAT, i));
         if (containsProperty(LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD, i)) {

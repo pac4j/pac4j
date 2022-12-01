@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
@@ -93,7 +94,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         } catch (final Exception e) {
             newLastModified = NO_LAST_MODIFIED;
         }
-        final var hasChanged = lastModified != newLastModified;
+        val hasChanged = lastModified != newLastModified;
         logger.debug("lastModified: {} / newLastModified: {} -> hasChanged: {}", lastModified, newLastModified, hasChanged);
         lastModified = newLastModified;
         return hasChanged;
@@ -186,7 +187,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     @Override
     public String getEntityId() {
-        final var md = getEntityDescriptorElement();
+        val md = getEntityDescriptorElement();
         if (md instanceof EntitiesDescriptor) {
             return ((EntitiesDescriptor) md).getEntityDescriptors().get(0).getEntityID();
         }

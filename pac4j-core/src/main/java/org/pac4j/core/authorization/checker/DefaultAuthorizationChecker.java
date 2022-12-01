@@ -1,17 +1,20 @@
 package org.pac4j.core.authorization.checker;
 
+import lombok.val;
 import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -35,7 +38,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles,
                                 final String authorizersValue, final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
 
-        final var authorizers = computeAuthorizers(context, profiles, authorizersValue, authorizersMap, clients);
+        val authorizers = computeAuthorizers(context, profiles, authorizersValue, authorizersMap, clients);
         return isAuthorized(context, sessionStore, profiles, authorizers);
     }
 
@@ -46,7 +49,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
         } else {
             if (authorizersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
-                final var authorizerNames = substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
+                val authorizerNames = substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
                 authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
                 authorizers.addAll(computeAuthorizersFromNames(authorizerNames, authorizersMap));
             } else {
@@ -58,7 +61,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
     protected List<Authorizer> computeDefaultAuthorizers(final WebContext context, final List<UserProfile> profiles,
                                                          final List<Client> clients, final Map<String, Authorizer> authorizersMap) {
-        final List<Authorizer> authorizers = new ArrayList<>();
+        val authorizers = new ArrayList<Authorizer>();
         if (containsClientType(clients, IndirectClient.class)) {
             authorizers.add(retrieveAuthorizer(DefaultAuthorizers.CSRF_CHECK, authorizersMap));
         }
@@ -70,13 +73,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
     protected List<Authorizer> computeAuthorizersFromNames(final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
         assertNotNull("authorizersMap", authorizersMap);
-        final List<Authorizer> authorizers = new ArrayList<>();
-        final var names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
-        final var nb = names.length;
+        val authorizers = new ArrayList<Authorizer>();
+        val names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
+        val nb = names.length;
         for (var i = 0; i < nb; i++) {
-            final var name = names[i].trim();
+            val name = names[i].trim();
             if (!DefaultAuthorizers.NONE.equalsIgnoreCase(name)){
-                final var result = retrieveAuthorizer(name, authorizersMap);
+                val result = retrieveAuthorizer(name, authorizersMap);
                 // we must have an authorizer defined for this name
                 assertTrue(result != null, "The authorizer '" + name + "' must be defined in the security configuration");
                 authorizers.add(result);
@@ -87,7 +90,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
     protected Authorizer retrieveAuthorizer(final String authorizerName, final Map<String, Authorizer> authorizersMap) {
         Authorizer authorizer = null;
-        for (final var entry : authorizersMap.entrySet()) {
+        for (val entry : authorizersMap.entrySet()) {
             if (areEqualsIgnoreCaseAndTrim(entry.getKey(), authorizerName)) {
                 authorizer = entry.getValue();
                 break;
@@ -110,7 +113,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     protected boolean containsClientType(final List<Client> clients, final Class<? extends Client> clazz) {
-        for (final var client : clients) {
+        for (val client : clients) {
             if (clazz.isAssignableFrom(client.getClass())) {
                 return true;
             }
@@ -125,7 +128,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         if (isNotEmpty(authorizers)) {
             // check authorizations using authorizers: all must be satisfied
             for (var authorizer : authorizers) {
-                final var isAuthorized = authorizer.isAuthorized(context, sessionStore, profiles);
+                val isAuthorized = authorizer.isAuthorized(context, sessionStore, profiles);
                 LOGGER.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
                 if (!isAuthorized) {
                     return false;

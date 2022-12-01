@@ -1,5 +1,6 @@
 package org.pac4j.oidc.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -57,7 +58,7 @@ public class RunIdentityServer4 extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new OidcConfiguration();
+        val configuration = new OidcConfiguration();
         configuration.setClientId("test");
         configuration.setSecret("secret");
         configuration.setDiscoveryURI("http://localhost:1941/.well-known/openid-configuration");
@@ -81,14 +82,14 @@ public class RunIdentityServer4 extends RunClient {
         } else if (flow != Flow.AUTHORIZATION_CODE) {
             throw new TechnicalException("Unsupported flow for tests");
         }
-        final var client = new OidcClient(configuration);
+        val client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (OidcProfile) userProfile;
+        val profile = (OidcProfile) userProfile;
         assertEquals("818727", profile.getId());
         assertNotNull(profile.getIdToken());
         assertEquals("test", profile.getAudience().get(0));

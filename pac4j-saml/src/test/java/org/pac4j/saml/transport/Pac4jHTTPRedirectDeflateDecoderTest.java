@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import lombok.val;
 import org.junit.Test;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
@@ -10,7 +11,8 @@ import org.pac4j.saml.util.Configuration;
 
 import java.io.StringReader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link Pac4jHTTPRedirectDeflateDecoder}.
@@ -36,16 +38,16 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
 
     @Test
     public void testEncodeDecode() throws Exception {
-        final var webContext = MockWebContext.create();
+        val webContext = MockWebContext.create();
 
-        final var xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
+        val xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
 
-        final var encoder =
+        val encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
-        final var message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        val message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
 
         webContext.addRequestParameter("SAMLResponse", message);
-        final var decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
+        val decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
         decoder.setParserPool(Configuration.getParserPool());
         decoder.initialize();
         decoder.decode();
@@ -55,17 +57,17 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
 
     @Test
     public void testBuildRedirectUrlWithExistingQueryParameters() throws Exception {
-        final var webContext = MockWebContext.create();
+        val webContext = MockWebContext.create();
 
-        final var xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
+        val xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), new StringReader(AUTHN_REQUEST));
 
-        final var encoder =
+        val encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
-        final var messageContext = new MessageContext();
+        val messageContext = new MessageContext();
         messageContext.setMessage((SAMLObject) xmlObject);
 
-        final var encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
-        final var redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);
+        val encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
+        val redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);
 
         assertTrue(redirectURL.contains("qp=0000"));
         assertTrue(redirectURL.contains("SAMLRequest"));

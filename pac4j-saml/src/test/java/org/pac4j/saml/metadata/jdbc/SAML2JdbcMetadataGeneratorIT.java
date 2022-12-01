@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata.jdbc;
 
+import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class SAML2JdbcMetadataGeneratorIT implements TestsConstants {
         var mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
@@ -54,9 +55,9 @@ public class SAML2JdbcMetadataGeneratorIT implements TestsConstants {
         configuration.init();
 
         var metadataGenerator = configuration.toMetadataGenerator();
-        final var entity = metadataGenerator.buildEntityDescriptor();
+        val entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
-        final var metadata = metadataGenerator.getMetadata(entity);
+        val metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
         assertTrue(metadataGenerator.storeMetadata(metadata, true));

@@ -6,6 +6,7 @@ import com.unboundid.ldap.listener.InMemoryListenerConfig;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldif.LDIFException;
+import lombok.val;
 import org.pac4j.core.util.TestsConstants;
 
 /**
@@ -46,7 +47,7 @@ public final class LdapServer implements TestsConstants {
     }
 
     protected void startServer() throws LDAPException, LDIFException {
-        final var dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
+        val dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
         dsConfig.setSchema(null);
         dsConfig.setEnforceAttributeSyntaxCompliance(false);
         dsConfig.setEnforceSingleStructuralObjectClass(false);

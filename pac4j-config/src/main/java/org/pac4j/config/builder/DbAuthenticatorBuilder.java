@@ -1,6 +1,7 @@
 package org.pac4j.config.builder;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.val;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
@@ -26,8 +27,8 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             if (containsProperty(DB_DATASOURCE_CLASS_NAME, i) || containsProperty(DB_JDBC_URL, i)) {
                 try {
-                    final var ds = buildDataSource(i);
-                    final var authenticator = new DbProfileService(ds);
+                    val ds = buildDataSource(i);
+                    val authenticator = new DbProfileService(ds);
                     if (containsProperty(DB_ATTRIBUTES, i)) {
                         authenticator.setAttributes(getProperty(DB_ATTRIBUTES, i));
                     }
@@ -55,7 +56,7 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
     }
 
     private DataSource buildDataSource(final int i) throws SQLException {
-        final var ds = new HikariDataSource();
+        val ds = new HikariDataSource();
         if (containsProperty(DB_DATASOURCE_CLASS_NAME, i)) {
             ds.setDataSourceClassName(getProperty(DB_DATASOURCE_CLASS_NAME, i));
         } else if (containsProperty(DB_JDBC_URL, i)) {

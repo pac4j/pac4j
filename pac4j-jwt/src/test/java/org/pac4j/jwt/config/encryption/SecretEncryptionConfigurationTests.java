@@ -5,6 +5,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.*;
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -13,7 +14,7 @@ import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 
 import java.text.ParseException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link SecretEncryptionConfiguration}.
@@ -29,25 +30,25 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
 
     @Test
     public void testMissingSecret() {
-        final var config = new SecretEncryptionConfiguration();
+        val config = new SecretEncryptionConfiguration();
         TestsHelper.expectException(config::init, TechnicalException.class, "secret cannot be null");
     }
 
     @Test
     public void testMissingAlgorithm() {
-        final var config = new SecretEncryptionConfiguration(SECRET, null, EncryptionMethod.A128CBC_HS256);
+        val config = new SecretEncryptionConfiguration(SECRET, null, EncryptionMethod.A128CBC_HS256);
         TestsHelper.expectException(config::init, TechnicalException.class, "algorithm cannot be null");
     }
 
     @Test
     public void testMissingMethod() {
-        final var config = new SecretEncryptionConfiguration(SECRET, JWEAlgorithm.DIR, null);
+        val config = new SecretEncryptionConfiguration(SECRET, JWEAlgorithm.DIR, null);
         TestsHelper.expectException(config::init, TechnicalException.class, "method cannot be null");
     }
 
     @Test
     public void testUnsupportedAlgorithm() {
-        final var config = new SecretEncryptionConfiguration(SECRET, JWEAlgorithm.ECDH_ES,
+        val config = new SecretEncryptionConfiguration(SECRET, JWEAlgorithm.ECDH_ES,
             EncryptionMethod.A128CBC_HS256);
         TestsHelper.expectException(config::init, TechnicalException.class,
             "Only the direct and AES algorithms are supported with the appropriate encryption method");
@@ -55,26 +56,26 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
 
     @Test
     public void testEncryptDecryptSignedJWT() throws ParseException, JOSEException {
-        final var macConfig = new SecretSignatureConfiguration(MAC_SECRET);
-        final var signedJWT = macConfig.sign(buildClaims());
+        val macConfig = new SecretSignatureConfiguration(MAC_SECRET);
+        val signedJWT = macConfig.sign(buildClaims());
 
-        final var config = new SecretEncryptionConfiguration(MAC_SECRET);
-        final var token = config.encrypt(signedJWT);
-        final var encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
+        val config = new SecretEncryptionConfiguration(MAC_SECRET);
+        val token = config.encrypt(signedJWT);
+        val encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
         config.decrypt(encryptedJwt);
-        final var signedJWT2 = encryptedJwt.getPayload().toSignedJWT();
+        val signedJWT2 = encryptedJwt.getPayload().toSignedJWT();
         assertEquals(VALUE, signedJWT2.getJWTClaimsSet().getSubject());
     }
 
     @Test
     public void testEncryptDecryptPlainJWT() throws ParseException, JOSEException {
-        final var config = new SecretEncryptionConfiguration(MAC_SECRET);
+        val config = new SecretEncryptionConfiguration(MAC_SECRET);
         config.setAlgorithm(JWEAlgorithm.A256GCMKW);
         config.setMethod(EncryptionMethod.A128GCM);
 
         final JWT jwt = new PlainJWT(buildClaims());
-        final var token = config.encrypt(jwt);
-        final var encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
+        val token = config.encrypt(jwt);
+        val encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
         config.decrypt(encryptedJwt);
         final JWT jwt2 = encryptedJwt;
         assertEquals(VALUE, jwt2.getJWTClaimsSet().getSubject());
@@ -83,15 +84,15 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
 
     @Test
     public void testEncryptDecryptPlainJWTBase64Secret() throws ParseException, JOSEException {
-        final var config = new SecretEncryptionConfiguration();
+        val config = new SecretEncryptionConfiguration();
         config.setSecretBase64(BASE64_256_BIT_ENC_SECRET);
 
         config.setAlgorithm(JWEAlgorithm.A256GCMKW);
         config.setMethod(EncryptionMethod.A128GCM);
 
         final JWT jwt = new PlainJWT(buildClaims());
-        final var token = config.encrypt(jwt);
-        final var encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
+        val token = config.encrypt(jwt);
+        val encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
         config.decrypt(encryptedJwt);
         final JWT jwt2 = encryptedJwt;
         assertEquals(VALUE, jwt2.getJWTClaimsSet().getSubject());
@@ -100,15 +101,15 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
 
     @Test
     public void testEncryptDecryptPlainJWTBytesSecret() throws ParseException, JOSEException {
-        final var config = new SecretEncryptionConfiguration();
+        val config = new SecretEncryptionConfiguration();
         config.setSecretBytes(new Base64(BASE64_256_BIT_ENC_SECRET).decode());
 
         config.setAlgorithm(JWEAlgorithm.A256GCMKW);
         config.setMethod(EncryptionMethod.A128GCM);
 
         final JWT jwt = new PlainJWT(buildClaims());
-        final var token = config.encrypt(jwt);
-        final var encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
+        val token = config.encrypt(jwt);
+        val encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
         config.decrypt(encryptedJwt);
         final JWT jwt2 = encryptedJwt;
         assertEquals(VALUE, jwt2.getJWTClaimsSet().getSubject());

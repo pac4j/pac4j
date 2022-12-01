@@ -1,6 +1,7 @@
 package org.pac4j.saml.sso.artifact;
 
 import com.google.common.base.Function;
+import lombok.val;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.core.Issuer;
@@ -20,7 +21,7 @@ public class IssuerFunction implements Function<MessageContext, String> {
         if (context == null) {
             return null;
         }
-        final var message = (SAMLObject) context.getMessage();
+        val message = (SAMLObject) context.getMessage();
         Issuer issuer = null;
         if (message instanceof RequestAbstractType) {
             issuer = ((RequestAbstractType) message).getIssuer();

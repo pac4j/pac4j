@@ -1,13 +1,15 @@
 package org.pac4j.oidc.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.oidc.profile.OidcProfile;
-
-import static org.junit.Assert.*;
 import org.pac4j.oidc.client.KeycloakOidcClient;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
+import org.pac4j.oidc.profile.OidcProfile;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Run a manual test for keycloak (http://www.keycloak.org/)
@@ -51,7 +53,7 @@ public class RunKeycloakOidcClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new KeycloakOidcConfiguration();
+        val configuration = new KeycloakOidcConfiguration();
 
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret(SECRET_VALUE);
@@ -65,7 +67,7 @@ public class RunKeycloakOidcClient extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (OidcProfile) userProfile;
+        val profile = (OidcProfile) userProfile;
         assertEquals(IDENTIFIER, profile.getId());
         assertNotNull(profile.getIdToken());
         assertNotNull(profile.getNotBefore());

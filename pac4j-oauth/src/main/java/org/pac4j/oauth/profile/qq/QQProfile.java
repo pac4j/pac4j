@@ -1,10 +1,11 @@
 package org.pac4j.oauth.profile.qq;
 
-import java.net.URI;
-
+import lombok.val;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.client.QQClient;
 import org.pac4j.oauth.profile.OAuth20Profile;
+
+import java.net.URI;
 
 /**
  * <p>This class is the user profile for Tencent QQ Connect with appropriate getters.</p>
@@ -34,7 +35,7 @@ public class QQProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        final var location = getAttribute(QQProfileDefinition.PROVINCE) + " " + getAttribute(QQProfileDefinition.CITY);
+        val location = getAttribute(QQProfileDefinition.PROVINCE) + " " + getAttribute(QQProfileDefinition.CITY);
         return location;
     }
 

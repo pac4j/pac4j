@@ -1,6 +1,7 @@
 package org.pac4j.saml.config;
 
 
+import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.apache.commons.lang3.StringUtils;
@@ -21,16 +22,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
-import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
-import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
-import org.pac4j.saml.metadata.SAML2MetadataGenerator;
-import org.pac4j.saml.metadata.SAML2MetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataSigner;
-import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
-import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
+import org.pac4j.saml.metadata.*;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
@@ -51,14 +43,7 @@ import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -305,7 +290,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.callbackUrl = callbackUrl;
         try {
             if (CommonHelper.isBlank(getServiceProviderEntityId())) {
-                final var url = new URL(callbackUrl);
+                val url = new URL(callbackUrl);
                 if (url.getQuery() != null) {
                     setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), Pac4jConstants.EMPTY_STRING));
                 } else {
@@ -336,7 +321,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        final var keystoreGenerator = getKeystoreGenerator();
+        val keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
             keystoreGenerator.generate();
@@ -878,7 +863,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private void initSignatureSigningConfiguration() {
         // Bootstrap signature signing configuration if not manually set
-        final var config = DefaultSecurityConfigurationBootstrap
+        val config = DefaultSecurityConfigurationBootstrap
             .buildDefaultSignatureSigningConfiguration();
         if (this.blackListedSignatureSigningAlgorithms == null) {
             this.blackListedSignatureSigningAlgorithms = new ArrayList<>(
@@ -937,9 +922,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public SAML2MetadataGenerator toMetadataGenerator() {
         try {
-            final var instance = getMetadataGenerator();
+            val instance = getMetadataGenerator();
             if (instance instanceof BaseSAML2MetadataGenerator) {
-                final var generator = (BaseSAML2MetadataGenerator) instance;
+                val generator = (BaseSAML2MetadataGenerator) instance;
                 generator.setWantAssertionSigned(isWantsAssertionsSigned());
                 generator.setAuthnRequestSigned(isAuthnRequestSigned());
                 generator.setSignMetadata(isSignMetadata());
@@ -974,8 +959,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
-        final var url = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
-        final var logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
+        val url = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
+        val logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
         // the logout URL is callback URL with an extra parameter
         generator.setSingleLogoutServiceUrl(logoutUrl);
     }

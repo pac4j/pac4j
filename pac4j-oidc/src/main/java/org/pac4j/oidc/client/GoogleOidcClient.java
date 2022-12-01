@@ -1,5 +1,6 @@
 package org.pac4j.oidc.client;
 
+import lombok.val;
 import org.pac4j.core.logout.GoogleLogoutActionBuilder;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
@@ -25,7 +26,7 @@ public class GoogleOidcClient extends OidcClient {
     @Override
     protected void internalInit(final boolean forceReinit) {
         getConfiguration().defaultDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
-        final var profileCreator = new OidcProfileCreator(getConfiguration(), this);
+        val profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new GoogleOidcProfile()));
         defaultProfileCreator(profileCreator);
         defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());

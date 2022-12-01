@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.GoogleApi20;
+import lombok.val;
 import org.pac4j.core.logout.GoogleLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -55,7 +56,7 @@ public class Google2Client extends OAuth20Client {
         configuration.setScope(scopeValue);
         configuration.setWithState(true);
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final var error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            val error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
             // user has denied autorization
             if ("access_denied".equals(error)) {
                 return true;

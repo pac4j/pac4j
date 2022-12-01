@@ -6,6 +6,7 @@ import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.oauth.OAuthService;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
@@ -32,7 +33,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     protected OAuth2AccessToken getAccessToken(final Credentials credentials) {
         // we assume the access token only has been passed: it can be a bearer call (HTTP client)
         if (credentials instanceof TokenCredentials) {
-            final var accessToken = ((TokenCredentials) credentials).getToken();
+            val accessToken = ((TokenCredentials) credentials).getToken();
             return new OAuth2AccessToken(accessToken);
         }
         // regular OAuth flow
@@ -42,8 +43,8 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     @Override
     protected void addTokenToProfile(final UserProfile profile, final Token token) {
         if (profile != null) {
-            final var oauth2Token = (OAuth2AccessToken) token;
-            final var accessToken = oauth2Token.getAccessToken();
+            val oauth2Token = (OAuth2AccessToken) token;
+            val accessToken = oauth2Token.getAccessToken();
             logger.debug("add access_token: {} to profile", accessToken);
             ((OAuth20Profile) profile).setAccessToken(accessToken);
             ((OAuth20Profile) profile).setRefreshToken(oauth2Token.getRefreshToken());
@@ -53,7 +54,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     @Override
     protected void signRequest(final OAuthService service, final Token token, final OAuthRequest request) {
         ((OAuth20Service) service).signRequest((OAuth2AccessToken) token, request);
-        final var accessToken = ((OAuth2AccessToken) token).getAccessToken();
+        val accessToken = ((OAuth2AccessToken) token).getAccessToken();
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken);
         }

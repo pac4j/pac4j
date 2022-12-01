@@ -8,6 +8,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -74,18 +75,18 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             accessToken = oidcCredentials.getAccessToken();
         } else {
             // we assume the access token only has been passed: it can be a bearer call (HTTP client)
-            final var token = ((TokenCredentials) credentials).getToken();
+            val token = ((TokenCredentials) credentials).getToken();
             accessToken = new BearerAccessToken(token);
         }
 
         // Create profile
-        final var profile = (OidcProfile) getProfileDefinition().newProfile();
+        val profile = (OidcProfile) getProfileDefinition().newProfile();
         profile.setAccessToken(accessToken);
 
         if (oidcCredentials != null) {
             profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
             // Check if there is a refresh token
-            final var refreshToken = oidcCredentials.getRefreshToken();
+            val refreshToken = oidcCredentials.getRefreshToken();
             if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
                 profile.setRefreshToken(refreshToken);
                 logger.debug("Refresh Token successful retrieved");
@@ -102,12 +103,12 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
             // Check ID Token
             if (oidcCredentials != null) {
-                final var claimsSet = configuration.findTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
+                val claimsSet = configuration.findTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
                 assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
                 // keep the session ID if provided
-                final var sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                 if (isNotBlank(sid)) {
                     configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
                 }
@@ -115,19 +116,19 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             // User Info request
             if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final var userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(), accessToken);
-                final var userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+                val userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(), accessToken);
+                val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
-                final var httpResponse = userInfoHttpRequest.send();
+                val httpResponse = userInfoHttpRequest.send();
                 logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
 
-                final var userInfoResponse = UserInfoResponse.parse(httpResponse);
+                val userInfoResponse = UserInfoResponse.parse(httpResponse);
                 if (userInfoResponse instanceof UserInfoErrorResponse) {
                     logger.error("Bad User Info response, error={}",
                         ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
-                    final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                    val userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     final JWTClaimsSet userInfoClaimsSet;
                     if (userInfoSuccessResponse.getUserInfo() != null) {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
@@ -144,9 +145,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             // add attributes of the ID token if they don't already exist
             if (oidcCredentials != null) {
-                for (final var entry : oidcCredentials.getIdToken().getJWTClaimsSet().getClaims().entrySet()) {
-                    final var key = entry.getKey();
-                    final var value = entry.getValue();
+                for (val entry : oidcCredentials.getIdToken().getJWTClaimsSet().getClaims().entrySet()) {
+                    val key = entry.getKey();
+                    val value = entry.getValue();
                     // it's not the subject and this attribute does not already exist, add it
                     if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
                         getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
@@ -176,9 +177,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 var accessTokenClaims = configuration.findTokenValidator().validate(accessTokenJwt, nonce);
 
                 // add attributes of the access token if they don't already exist
-                for (final var entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {
-                    final var key = entry.getKey();
-                    final var value = entry.getValue();
+                for (val entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {
+                    val key = entry.getKey();
+                    val value = entry.getValue();
                     if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
                         getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
                     }

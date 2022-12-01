@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
@@ -30,13 +31,13 @@ MTUsImlhdCI6MTQ0MDExMjAxNSwianRpIjoiaWQxMjM0NTYiLCJ0eXAiOiJodHRwczovL2V4YW1wbGUu
 
     @Test
     public void testSerialization() throws ParseException {
-        final var credentials = new OidcCredentials();
+        val credentials = new OidcCredentials();
         credentials.setCode(new AuthorizationCode(VALUE));
         credentials.setAccessToken(new BearerAccessToken(VALUE, 0L, Scope.parse("oidc email")));
         credentials.setRefreshToken(new RefreshToken(VALUE));
         credentials.setIdToken(JWTParser.parse(ID_TOKEN));
         var result = serializer.serializeToBytes(credentials);
-        final var credentials2 = (OidcCredentials) serializer.deserializeFromBytes(result);
+        val credentials2 = (OidcCredentials) serializer.deserializeFromBytes(result);
         assertEquals(credentials.getAccessToken(), credentials2.getAccessToken());
         assertEquals(credentials.getRefreshToken(), credentials2.getRefreshToken());
         assertEquals(credentials.getIdToken().getParsedString(), credentials2.getIdToken().getParsedString());

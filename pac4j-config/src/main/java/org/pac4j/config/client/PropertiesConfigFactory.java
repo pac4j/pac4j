@@ -1,5 +1,6 @@
 package org.pac4j.config.client;
 
+import lombok.val;
 import org.pac4j.config.builder.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
@@ -42,27 +43,27 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
         // spring-security-crypto dependency required
         if (hasSpringEncoder()) {
-            final var springEncoderBuilder = new SpringEncoderBuilder(properties);
+            val springEncoderBuilder = new SpringEncoderBuilder(properties);
             springEncoderBuilder.tryCreatePasswordEncoder(encoders);
         }
         // shiro-core dependency required
         if (hasShiroEncoder()) {
-            final var shiroEncoderBuilder = new ShiroEncoderBuilder(properties);
+            val shiroEncoderBuilder = new ShiroEncoderBuilder(properties);
             shiroEncoderBuilder.tryCreatePasswordEncoder(encoders);
         }
         // pac4j-ldap dependency required
         if (hasLdapAuthenticator()) {
-            final var ldapAuthenticatorBuilder = new LdapAuthenticatorBuilder(properties);
+            val ldapAuthenticatorBuilder = new LdapAuthenticatorBuilder(properties);
             ldapAuthenticatorBuilder.tryBuildLdapAuthenticator(authenticators);
         }
         // pac4j-sql dependency required
         if (hasDbAuthenticator()) {
-            final var dbAuthenticatorBuilder = new DbAuthenticatorBuilder(properties);
+            val dbAuthenticatorBuilder = new DbAuthenticatorBuilder(properties);
             dbAuthenticatorBuilder.tryBuildDbAuthenticator(authenticators, encoders);
         }
         // pac4j-oauth dependency required
         if (hasOAuthClients()) {
-            final var oAuthBuilder = new OAuthBuilder(properties);
+            val oAuthBuilder = new OAuthBuilder(properties);
             oAuthBuilder.tryCreateFacebookClient(clients);
             oAuthBuilder.tryCreateTwitterClient(clients);
             oAuthBuilder.tryCreateDropboxClient(clients);
@@ -76,28 +77,28 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         }
         // pac4j-saml dependency required
         if (hasSaml2Clients()) {
-            final var saml2ClientBuilder = new Saml2ClientBuilder(properties);
+            val saml2ClientBuilder = new Saml2ClientBuilder(properties);
             saml2ClientBuilder.tryCreateSaml2Client(clients);
         }
         // pac4j-cas dependency required
         if (hasCasClients()) {
-            final var casClientBuilder = new CasClientBuilder(properties);
+            val casClientBuilder = new CasClientBuilder(properties);
             casClientBuilder.tryCreateCasClient(clients);
         }
         // pac4j-oidc dependency required
         if (hasOidcClients()) {
-            final var oidcClientBuilder = new OidcClientBuilder(properties);
+            val oidcClientBuilder = new OidcClientBuilder(properties);
             oidcClientBuilder.tryCreateOidcClient(clients);
         }
         // pac4j-http dependency required
         if (hasHttpAuthenticatorsOrClients()) {
-            final var restAuthenticatorBuilder = new RestAuthenticatorBuilder(properties);
+            val restAuthenticatorBuilder = new RestAuthenticatorBuilder(properties);
             restAuthenticatorBuilder.tryBuildRestAuthenticator(authenticators);
 
-            final var indirectHttpClientBuilder = new IndirectHttpClientBuilder(properties, authenticators);
+            val indirectHttpClientBuilder = new IndirectHttpClientBuilder(properties, authenticators);
             indirectHttpClientBuilder.tryCreateLoginFormClient(clients);
             indirectHttpClientBuilder.tryCreateIndirectBasicAuthClient(clients);
-            final var directClientBuilder = new DirectClientBuilder(properties, authenticators);
+            val directClientBuilder = new DirectClientBuilder(properties, authenticators);
             directClientBuilder.tryCreateAnonymousClient(clients);
             directClientBuilder.tryCreateDirectBasciAuthClient(clients);
         }
@@ -117,7 +118,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
     protected boolean hasSpringEncoder() {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
-            final var type = getProperty(SPRING_ENCODER_TYPE, i);
+            val type = getProperty(SPRING_ENCODER_TYPE, i);
             if (isNotBlank(type)) {
                 return true;
             }
@@ -127,7 +128,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
     protected boolean hasLdapAuthenticator() {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            final var type = getProperty(LDAP_TYPE, i);
+            val type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
                 return true;
             }
@@ -137,8 +138,8 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
     protected boolean hasDbAuthenticator() {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            final var className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
-            final var jdbcUrl = getProperty(DB_JDBC_URL, i);
+            val className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
+            val jdbcUrl = getProperty(DB_JDBC_URL, i);
             if (isNotBlank(className) || isNotBlank(jdbcUrl)) {
                 return true;
             }

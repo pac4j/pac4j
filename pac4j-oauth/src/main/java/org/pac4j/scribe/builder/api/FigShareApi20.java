@@ -1,7 +1,5 @@
 package org.pac4j.scribe.builder.api;
 
-import java.io.OutputStream;
-
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
@@ -9,6 +7,9 @@ import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.AccessTokenRequestParams;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import lombok.val;
+
+import java.io.OutputStream;
 
 /**
 *
@@ -24,7 +25,7 @@ public class FigShareApi20 extends DefaultApi20 {
 
         @Override
         protected OAuthRequest createAccessTokenRequest(AccessTokenRequestParams params) {
-            final var request = super.createAccessTokenRequest(params);
+            val request = super.createAccessTokenRequest(params);
             request.addParameter(OAuthConstants.CLIENT_ID, getApiKey());
             request.addParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
             return request;

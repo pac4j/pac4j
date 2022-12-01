@@ -1,12 +1,13 @@
 package org.pac4j.jee.context.session;
 
+import jakarta.servlet.http.HttpSession;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.jee.context.JEEContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,8 +39,8 @@ public class JEESessionStore implements SessionStore {
             LOGGER.debug("Provided session: {}", httpSession);
             return Optional.of(httpSession);
         } else {
-            final var jeeContext = (JEEContext) context;
-            final var session = jeeContext.getNativeRequest().getSession(createSession);
+            val jeeContext = (JEEContext) context;
+            val session = jeeContext.getNativeRequest().getSession(createSession);
             LOGGER.debug("createSession: {}, retrieved session: {}", createSession, session);
             return Optional.ofNullable(session);
         }
@@ -47,9 +48,9 @@ public class JEESessionStore implements SessionStore {
 
     @Override
     public Optional<String> getSessionId(final WebContext context, final boolean createSession) {
-        final var httpSession = getNativeSession(context, createSession);
+        val httpSession = getNativeSession(context, createSession);
         if (httpSession.isPresent()) {
-            final var sessionId = httpSession.get().getId();
+            val sessionId = httpSession.get().getId();
             LOGGER.debug("Get sessionId: {}", sessionId);
             return Optional.of(sessionId);
         } else {
@@ -60,9 +61,9 @@ public class JEESessionStore implements SessionStore {
 
     @Override
     public Optional<Object> get(final WebContext context, final String key) {
-        final var httpSession = getNativeSession(context, false);
+        val httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            final var value = httpSession.get().getAttribute(key);
+            val value = httpSession.get().getAttribute(key);
             LOGGER.debug("Get value: {} for key: {}", value, key);
             return Optional.ofNullable(value);
         } else {
@@ -74,13 +75,13 @@ public class JEESessionStore implements SessionStore {
     @Override
     public void set(final WebContext context, final String key, final Object value) {
         if (value == null) {
-            final var httpSession = getNativeSession(context, false);
+            val httpSession = getNativeSession(context, false);
             if (httpSession.isPresent()) {
                 LOGGER.debug("Remove value for key: {}", key);
                 httpSession.get().removeAttribute(key);
             }
         } else {
-            final var httpSession = getNativeSession(context, true);
+            val httpSession = getNativeSession(context, true);
             if (value instanceof Exception) {
                 LOGGER.debug("Set key: {} for value: {}", key, value.toString());
             } else {
@@ -92,9 +93,9 @@ public class JEESessionStore implements SessionStore {
 
     @Override
     public boolean destroySession(final WebContext context) {
-        final var httpSession = getNativeSession(context, false);
+        val httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            final var session = httpSession.get();
+            val session = httpSession.get();
             LOGGER.debug("Invalidate session: {}", session);
             session.invalidate();
         }
@@ -103,9 +104,9 @@ public class JEESessionStore implements SessionStore {
 
     @Override
     public Optional<Object> getTrackableSession(final WebContext context) {
-        final var httpSession = getNativeSession(context, false);
+        val httpSession = getNativeSession(context, false);
         if (httpSession.isPresent()) {
-            final var session = httpSession.get();
+            val session = httpSession.get();
             LOGGER.debug("Return trackable session: {}", session);
             return Optional.of(session);
         } else {
@@ -128,8 +129,8 @@ public class JEESessionStore implements SessionStore {
     @Override
     public boolean renewSession(final WebContext context) {
         Map<String, Object> attributes = new HashMap<>();
-        final var request = ((JEEContext) context).getNativeRequest();
-        final var session = request.getSession(false);
+        val request = ((JEEContext) context).getNativeRequest();
+        val session = request.getSession(false);
         if (session != null) {
             LOGGER.debug("Discard old session: {}", session.getId());
             attributes = Collections.list(session.getAttributeNames())
@@ -137,7 +138,7 @@ public class JEESessionStore implements SessionStore {
                 .collect(Collectors.toMap(k -> k, session::getAttribute, (a, b) -> b));
             session.invalidate();
         }
-        final var newSession = request.getSession(true);
+        val newSession = request.getSession(true);
         LOGGER.debug("And copy all data to the new one: {}", newSession.getId());
         attributes.forEach(newSession::setAttribute);
         return true;

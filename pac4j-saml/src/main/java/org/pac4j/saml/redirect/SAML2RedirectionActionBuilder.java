@@ -1,5 +1,6 @@
 package org.pac4j.saml.redirect;
 
+import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
@@ -33,21 +34,21 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore) {
-        final var context = this.client.getContextProvider().buildContext(this.client, wc, sessionStore);
-        final var relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
+        val context = this.client.getContextProvider().buildContext(this.client, wc, sessionStore);
+        val relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
 
-        final var authnRequest = this.saml2ObjectBuilder.build(context);
+        val authnRequest = this.saml2ObjectBuilder.build(context);
         this.client.getProfileHandler().send(context, authnRequest, relayState);
 
-        final var adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
+        val adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
 
-        final var bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
+        val bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
         if (SAMLConstants.SAML2_POST_BINDING_URI.equalsIgnoreCase(bindingType) ||
             SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equalsIgnoreCase(bindingType)) {
-            final var content = adapter.getOutgoingContent();
+            val content = adapter.getOutgoingContent();
             return Optional.of(HttpActionHelper.buildFormPostContentAction(wc, content));
         }
-        final var location = adapter.getRedirectUrl();
+        val location = adapter.getRedirectUrl();
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(wc, location));
     }
 }

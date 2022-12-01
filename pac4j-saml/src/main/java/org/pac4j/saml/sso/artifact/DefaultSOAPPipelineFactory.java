@@ -1,28 +1,16 @@
 package org.pac4j.saml.sso.artifact;
 
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.messaging.handler.MessageHandler;
-import org.opensaml.messaging.handler.impl.BasicMessageHandlerChain;
-import org.opensaml.messaging.handler.impl.CheckExpectedIssuer;
-import org.opensaml.messaging.handler.impl.CheckMandatoryAuthentication;
-import org.opensaml.messaging.handler.impl.CheckMandatoryIssuer;
-import org.opensaml.messaging.handler.impl.SchemaValidateXMLMessage;
+import org.opensaml.messaging.handler.impl.*;
 import org.opensaml.messaging.pipeline.httpclient.BasicHttpClientMessagePipeline;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipeline;
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFactory;
-import org.opensaml.saml.common.binding.impl.CheckMessageVersionHandler;
-import org.opensaml.saml.common.binding.impl.PopulateSignatureSigningParametersHandler;
-import org.opensaml.saml.common.binding.impl.SAMLMetadataLookupHandler;
-import org.opensaml.saml.common.binding.impl.SAMLProtocolAndRoleHandler;
-import org.opensaml.saml.common.binding.impl.SAMLSOAPDecoderBodyHandler;
-import org.opensaml.saml.common.binding.security.impl.CheckAndRecordServerTLSEntityAuthenticationtHandler;
-import org.opensaml.saml.common.binding.security.impl.InResponseToSecurityHandler;
-import org.opensaml.saml.common.binding.security.impl.MessageLifetimeSecurityHandler;
-import org.opensaml.saml.common.binding.security.impl.MessageReplaySecurityHandler;
-import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
-import org.opensaml.saml.common.binding.security.impl.SAMLProtocolMessageXMLSignatureSecurityHandler;
+import org.opensaml.saml.common.binding.impl.*;
+import org.opensaml.saml.common.binding.security.impl.*;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.common.xml.SAMLSchemaBuilder;
@@ -119,7 +107,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSAMLProtocolAndRoleHandler(final QName roleName)
         throws ComponentInitializationException {
-        final var protocolAndRoleHandler = new SAMLProtocolAndRoleHandler();
+        val protocolAndRoleHandler = new SAMLProtocolAndRoleHandler();
         protocolAndRoleHandler.setProtocol(SAMLConstants.SAML20P_NS);
         protocolAndRoleHandler.setRole(roleName);
         protocolAndRoleHandler.initialize();
@@ -128,10 +116,10 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSAMLMetadataLookupHandler(final SAML2MetadataResolver metadataResolver)
         throws ComponentInitializationException {
-        final var roleResolver = new PredicateRoleDescriptorResolver(metadataResolver.resolve());
+        val roleResolver = new PredicateRoleDescriptorResolver(metadataResolver.resolve());
         roleResolver.initialize();
 
-        final var metadataLookupHandler = new SAMLMetadataLookupHandler();
+        val metadataLookupHandler = new SAMLMetadataLookupHandler();
         metadataLookupHandler.setRoleDescriptorResolver(roleResolver);
         metadataLookupHandler.initialize();
         return metadataLookupHandler;
@@ -139,7 +127,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSchemaValidateXMLMessage() throws ComponentInitializationException {
         try {
-            final var validateXMLHandler = new SchemaValidateXMLMessage(
+            val validateXMLHandler = new SchemaValidateXMLMessage(
                 new SAMLSchemaBuilder(SAML1Version.SAML_11).getSAMLSchema());
             validateXMLHandler.initialize();
             return validateXMLHandler;
@@ -149,26 +137,26 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
     }
 
     protected MessageHandler buildCheckMessageVersionHandler() throws ComponentInitializationException {
-        final var messageVersionHandler = new CheckMessageVersionHandler();
+        val messageVersionHandler = new CheckMessageVersionHandler();
         messageVersionHandler.initialize();
         return messageVersionHandler;
     }
 
     protected MessageHandler buildMessageLifetimeSecurityHandler() throws ComponentInitializationException {
-        final var lifetimeHandler = new MessageLifetimeSecurityHandler();
+        val lifetimeHandler = new MessageLifetimeSecurityHandler();
         lifetimeHandler.setClockSkew(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
         lifetimeHandler.initialize();
         return lifetimeHandler;
     }
 
     protected MessageHandler buildInResponseToSecurityHandler() throws ComponentInitializationException {
-        final var inResponseToHandler = new InResponseToSecurityHandler();
+        val inResponseToHandler = new InResponseToSecurityHandler();
         inResponseToHandler.initialize();
         return inResponseToHandler;
     }
 
     protected MessageHandler buildMessageReplaySecurityHandler() throws ComponentInitializationException {
-        final var messageReplayHandler = new MessageReplaySecurityHandler();
+        val messageReplayHandler = new MessageReplaySecurityHandler();
         messageReplayHandler.setExpires(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
         messageReplayHandler.setReplayCache(replayCache.get());
         messageReplayHandler.initialize();
@@ -176,14 +164,14 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
     }
 
     protected MessageHandler buildCheckMandatoryIssuer() throws ComponentInitializationException {
-        final var mandatoryIssuer = new CheckMandatoryIssuer();
+        val mandatoryIssuer = new CheckMandatoryIssuer();
         mandatoryIssuer.setIssuerLookupStrategy(new IssuerFunction());
         mandatoryIssuer.initialize();
         return mandatoryIssuer;
     }
 
     protected MessageHandler buildCheckExpectedIssuer() throws ComponentInitializationException {
-        final var expectedIssuer = new CheckExpectedIssuer();
+        val expectedIssuer = new CheckExpectedIssuer();
         expectedIssuer.setIssuerLookupStrategy(new IssuerFunction());
         expectedIssuer.setExpectedIssuerLookupStrategy(messageContext -> idpMetadataResolver.getEntityId());
         expectedIssuer.initialize();
@@ -192,7 +180,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildPopulateSignatureSigningParametersHandler()
         throws ComponentInitializationException {
-        final var signatureSigningParameters = new PopulateSignatureSigningParametersHandler();
+        val signatureSigningParameters = new PopulateSignatureSigningParametersHandler();
         signatureSigningParameters.setSignatureSigningParametersResolver(
             new DefaultSignatureSigningParametersResolver(signingParametersProvider));
         signatureSigningParameters.initialize();
@@ -201,7 +189,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildPopulateSignatureValidationParametersHandler()
         throws ComponentInitializationException {
-        final var signatureValidationParameters =
+        val signatureValidationParameters =
             new PopulateSignatureValidationParametersHandler();
         signatureValidationParameters
             .setSignatureValidationParametersResolver(new BasicSignatureValidationParametersResolver() {
@@ -216,7 +204,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildSAMLProtocolMessageXMLSignatureSecurityHandler()
         throws ComponentInitializationException {
-        final var messageXMLSignatureHandler =
+        val messageXMLSignatureHandler =
             new SAMLProtocolMessageXMLSignatureSecurityHandler();
         messageXMLSignatureHandler.initialize();
         return messageXMLSignatureHandler;
@@ -224,41 +212,41 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected MessageHandler buildCheckAndRecordServerTLSEntityAuthenticationtHandler()
         throws ComponentInitializationException {
-        final var tlsHandler =
+        val tlsHandler =
             new CheckAndRecordServerTLSEntityAuthenticationtHandler();
         tlsHandler.initialize();
         return tlsHandler;
     }
 
     protected MessageHandler buildCheckMandatoryAuthentication() {
-        final var mandatoryAuthentication = new CheckMandatoryAuthentication();
+        val mandatoryAuthentication = new CheckMandatoryAuthentication();
         mandatoryAuthentication.setAuthenticationLookupStrategy(
             context -> context.getSubcontext(SAMLPeerEntityContext.class).isAuthenticated());
         return mandatoryAuthentication;
     }
 
     protected MessageHandler buildSAMLSOAPDecoderBodyHandler() throws ComponentInitializationException {
-        final var soapDecoderBody = new SAMLSOAPDecoderBodyHandler();
+        val soapDecoderBody = new SAMLSOAPDecoderBodyHandler();
         soapDecoderBody.initialize();
         return soapDecoderBody;
     }
 
     protected MessageHandler buildSAMLOutboundProtocolMessageSigningHandler()
         throws ComponentInitializationException {
-        final var messageSigner = new SAMLOutboundProtocolMessageSigningHandler();
+        val messageSigner = new SAMLOutboundProtocolMessageSigningHandler();
         messageSigner.initialize();
         return messageSigner;
     }
 
     protected BasicMessageHandlerChain toHandlerChain(final List<MessageHandler> handlers) {
-        final var ret = new BasicMessageHandlerChain();
+        val ret = new BasicMessageHandlerChain();
         ret.setHandlers(handlers);
         return ret;
     }
 
     @Override
     public HttpClientMessagePipeline newInstance() {
-        final var ret = new BasicHttpClientMessagePipeline(
+        val ret = new BasicHttpClientMessagePipeline(
             new HttpClientRequestSOAP11Encoder(), new HttpClientResponseSOAP11Decoder());
         try {
             ret.setInboundHandler(toHandlerChain(getInboundHandlers()));

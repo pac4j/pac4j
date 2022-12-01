@@ -1,10 +1,11 @@
 package org.pac4j.saml.transport;
 
+import lombok.val;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.util.SAML2Utils;
 
@@ -13,7 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.zip.*;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Decoder for messages sent via HTTP-Redirect binding.
@@ -29,12 +31,12 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
     @Override
     protected void doDecode() throws MessageDecodingException {
-        final var messageContext = new SAML2MessageContext();
+        val messageContext = new SAML2MessageContext();
 
         if (WebContextHelper.isGet(context)) {
-            final var base64DecodedMessage = this.getBase64DecodedMessage();
-            final var inflatedMessage = inflate(base64DecodedMessage);
-            final var inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
+            val base64DecodedMessage = this.getBase64DecodedMessage();
+            val inflatedMessage = inflate(base64DecodedMessage);
+            val inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
             SAML2Utils.logProtocolMessage(inboundMessage);
             messageContext.getMessageContext().setMessage(inboundMessage);
             logger.debug("Decoded SAML message");
@@ -60,16 +62,16 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
     }
 
     protected InputStream internalInflate(final byte[] input, final Inflater inflater) throws IOException {
-        final var baos = new ByteArrayOutputStream();
-        final var iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
+        val baos = new ByteArrayOutputStream();
+        val iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
         try {
-            final var buffer = new byte[1000];
+            val buffer = new byte[1000];
             int length;
             while ((length = iis.read(buffer)) > 0) {
                 baos.write(buffer, 0, length);
             }
-            final var decodedBytes = baos.toByteArray();
-            final var decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
+            val decodedBytes = baos.toByteArray();
+            val decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
             logger.debug("Inflated SAML message: {}", decodedMessage);
             return new ByteArrayInputStream(decodedBytes);
         } finally {

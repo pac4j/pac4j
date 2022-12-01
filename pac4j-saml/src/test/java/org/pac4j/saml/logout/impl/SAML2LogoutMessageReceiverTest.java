@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
+import lombok.val;
 import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -156,7 +157,7 @@ public class SAML2LogoutMessageReceiverTest {
     }
 
     protected SAML2Configuration getSaml2Configuration() {
-        final var cfg = new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
+        val cfg = new SAML2Configuration(new FileSystemResource("target/samlKeystore.jks"),
             "pac4j-demo-passwd",
             "pac4j-demo-passwd",
             new ClassPathResource("testshib-providers.xml"));

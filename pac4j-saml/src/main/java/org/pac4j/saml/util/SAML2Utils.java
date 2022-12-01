@@ -1,10 +1,6 @@
 package org.pac4j.saml.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.ResolverException;
 import net.shibboleth.shared.xml.SerializeSupport;
@@ -19,6 +15,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SAML2 utilities.
@@ -68,9 +69,9 @@ public final class SAML2Utils implements HttpConstants {
         }
 
         try {
-            final var normalizedUri1 = normalizePortNumbersInUri(uri1);
-            final var normalizedUri2 = normalizePortNumbersInUri(uri2);
-            final var eq = normalizedUri1.equals(normalizedUri2);
+            val normalizedUri1 = normalizePortNumbersInUri(uri1);
+            val normalizedUri2 = normalizePortNumbersInUri(uri2);
+            val eq = normalizedUri1.equals(normalizedUri2);
             return eq;
         } catch (final URISyntaxException use) {
             logger.error("Cannot compare 2 URIs.", use);
@@ -91,7 +92,7 @@ public final class SAML2Utils implements HttpConstants {
      */
     private static URI normalizePortNumbersInUri(final URI uri) throws URISyntaxException {
         var port = uri.getPort();
-        final var scheme = uri.getScheme();
+        val scheme = uri.getScheme();
 
         if (SCHEME_HTTP.equals(scheme) && port == DEFAULT_HTTP_PORT) {
             port = -1;
@@ -100,13 +101,13 @@ public final class SAML2Utils implements HttpConstants {
             port = -1;
         }
 
-        final var result = new URI(scheme, uri.getUserInfo(), uri.getHost(), port, uri.getPath(), uri.getQuery(), uri.getFragment());
+        val result = new URI(scheme, uri.getUserInfo(), uri.getHost(), port, uri.getPath(), uri.getQuery(), uri.getFragment());
         return result;
     }
 
     public static ChainingMetadataResolver buildChainingMetadataResolver(final SAML2MetadataResolver idpMetadataProvider,
                                                                          final SAML2MetadataResolver spMetadataProvider) {
-        final var metadataManager = new ChainingMetadataResolver();
+        val metadataManager = new ChainingMetadataResolver();
         metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
         try {
             final List<MetadataResolver> list = new ArrayList<>();
@@ -125,7 +126,7 @@ public final class SAML2Utils implements HttpConstants {
     public static void logProtocolMessage(final XMLObject object) {
         if (protocolMessageLog.isDebugEnabled()) {
             try {
-                final var requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
+                val requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
                 protocolMessageLog.debug(requestXml);
             } catch (final MarshallingException e) {
                 logger.error(e.getMessage(), e);

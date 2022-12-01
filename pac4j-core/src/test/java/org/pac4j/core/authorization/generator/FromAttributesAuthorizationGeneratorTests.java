@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
@@ -47,14 +48,14 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfigWithCollections() {
-        final var generator = new FromAttributesAuthorizationGenerator(new ArrayList<>());
+        val generator = new FromAttributesAuthorizationGenerator(new ArrayList<>());
         generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
 
     @Test
     public void testNoConfig() {
-        final var generator =
+        val generator =
                 new FromAttributesAuthorizationGenerator((String[]) null);
         generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
@@ -62,12 +63,12 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testRole() {
-        final var roleAttributes = new String[] {
+        val roleAttributes = new String[] {
             ATTRIB1
         };
-        final var generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.generate(null, null, this.profile);
-        final var roles = this.profile.getRoles();
+        val roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
         assertTrue(roles.contains("info12"));
@@ -75,35 +76,35 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoRole() {
-        final var roleAttributes = new String[] {
+        val roleAttributes = new String[] {
             ATTRIB5
         };
-        final var generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.generate(null, null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
 
     @Test
     public void testRoleChangeSplit() {
-        final var roleAttributes = new String[] {
+        val roleAttributes = new String[] {
             ATTRIB1
         };
-        final var generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.setSplitChar("|");
         generator.generate(null, null, this.profile);
-        final var roles = this.profile.getRoles();
+        val roles = this.profile.getRoles();
         assertEquals(1, roles.size());
         assertTrue(roles.contains(VALUE1));
     }
 
     @Test
     public void testListRoles() {
-        final var roleAttributes = new String[] {
+        val roleAttributes = new String[] {
                 ATTRIB3, ATTRIB4
         };
-        final var generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.generate(null, null, this.profile);
-        final var roles = this.profile.getRoles();
+        val roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
         for(var value : ATTRIB_ARRAY) {
             assertTrue(roles.contains(value));

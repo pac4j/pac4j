@@ -1,18 +1,19 @@
 package org.pac4j.core.config;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the {@link Config}.
@@ -24,7 +25,7 @@ public final class ConfigTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testNullAuthorizersSetter() {
-        final var config = new Config();
+        val config = new Config();
         config.setAuthorizers(null);
     }
 
@@ -35,17 +36,17 @@ public final class ConfigTests implements TestsConstants {
 
     @Test
     public void testAddAuthorizer() {
-        final var config = new Config();
-        final var authorizer = new RequireAnyRoleAuthorizer();
+        val config = new Config();
+        val authorizer = new RequireAnyRoleAuthorizer();
         config.addAuthorizer(NAME, authorizer);
         assertEquals(authorizer, config.getAuthorizers().get(NAME));
     }
 
     @Test
     public void testConstructor() {
-        final var client =
+        val client =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        final var config = new Config(CALLBACK_URL, client);
+        val config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));
     }

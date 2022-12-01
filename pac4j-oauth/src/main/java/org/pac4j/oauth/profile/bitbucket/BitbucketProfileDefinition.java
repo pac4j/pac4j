@@ -2,16 +2,17 @@ package org.pac4j.oauth.profile.bitbucket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.Token;
-import org.pac4j.core.util.Pac4jConstants;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.util.Arrays;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the Bitbucket profile definition.
@@ -42,13 +43,13 @@ public class BitbucketProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public BitbucketProfile extractUserProfile(final String body) {
-        final var profile = (BitbucketProfile) newProfile();
+        val profile = (BitbucketProfile) newProfile();
         var json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = (JsonNode) JsonHelper.getElement(json, "user");
             if (json != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, Pac4jConstants.USERNAME)));
-                for (final var attribute : getPrimaryAttributes()) {
+                for (val attribute : getPrimaryAttributes()) {
                     convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
                 }
             } else {

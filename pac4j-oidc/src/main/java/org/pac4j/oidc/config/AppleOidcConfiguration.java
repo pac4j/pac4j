@@ -11,6 +11,7 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.SubjectType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
@@ -68,7 +69,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         if (store == null) {
             store = new GuavaStore<>(1000, (int) timeout.toSeconds(), TimeUnit.SECONDS);
         }
-        final var providerMetadata =
+        val providerMetadata =
             new OIDCProviderMetadata(
                 new Issuer("https://appleid.apple.com"),
                 Collections.singletonList(SubjectType.PAIRWISE),

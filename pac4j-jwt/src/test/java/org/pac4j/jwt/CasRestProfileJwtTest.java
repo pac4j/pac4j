@@ -3,6 +3,7 @@ package org.pac4j.jwt;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.JWSAlgorithm;
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -15,7 +16,8 @@ import org.pac4j.jwt.profile.JwtGenerator;
 import java.time.Instant;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests the CasRestProfile in JWT generation/authentication.
@@ -29,18 +31,18 @@ public class CasRestProfileJwtTest implements TestsConstants {
 
     @Test
     public void testGenerateAuthenticate() {
-        final var signingSecret = CommonHelper.randomString(32);
-        final var encryptionSecret = CommonHelper.randomString(32);
-        final var generator = new JwtGenerator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
+        val signingSecret = CommonHelper.randomString(32);
+        val encryptionSecret = CommonHelper.randomString(32);
+        val generator = new JwtGenerator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
             new SecretEncryptionConfiguration(encryptionSecret, JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256));
-        final var casRestProfile = new CasRestProfile(TGT_ID, USERNAME);
+        val casRestProfile = new CasRestProfile(TGT_ID, USERNAME);
         assertNotNull(casRestProfile.getTicketGrantingTicketId());
 
         var token = generator.generate(casRestProfile);
-        final var jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
+        val jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(signingSecret, JWSAlgorithm.HS256),
             new SecretEncryptionConfiguration(encryptionSecret, JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256));
         jwtAuthenticator.setExpirationTime(Date.from(Instant.now().plusSeconds(5 * 60)));
-        final var newCasProfile = (CasRestProfile) jwtAuthenticator.validateToken(token);
+        val newCasProfile = (CasRestProfile) jwtAuthenticator.validateToken(token);
         assertEquals(TGT_ID, newCasProfile.getTicketGrantingTicketId());
     }
 }

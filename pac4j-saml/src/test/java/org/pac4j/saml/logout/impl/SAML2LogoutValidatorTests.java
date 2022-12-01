@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout.impl;
 
+import lombok.val;
 import org.junit.Test;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.saml2.core.LogoutResponse;
@@ -46,7 +47,7 @@ public class SAML2LogoutValidatorTests {
     }
 
     private static SAML2Configuration getSaml2Configuration() {
-        final var config = new SAML2Configuration();
+        val config = new SAML2Configuration();
         config.setForceKeystoreGeneration(true);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         config.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
@@ -63,21 +64,21 @@ public class SAML2LogoutValidatorTests {
     }
 
     private static SAML2MessageContext getSaml2MessageContext(final MockWebContext webContext, final String xml) {
-        final var context = new SAML2MessageContext();
+        val context = new SAML2MessageContext();
         context.setSaml2Configuration(getSaml2Configuration());
 
-        final var samlMessage = new MessageContext();
-        final var samlResponse = (LogoutResponse) Configuration.deserializeSamlObject(xml).get();
+        val samlMessage = new MessageContext();
+        val samlResponse = (LogoutResponse) Configuration.deserializeSamlObject(xml).get();
 
         samlMessage.setMessage(samlResponse);
         context.setMessageContext(samlMessage);
-        final var entityDescriptor = new EntityDescriptorBuilder().buildObject();
+        val entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
         context.setWebContext(webContext);
         context.setSessionStore(new MockSessionStore());
 
-        final var spDescriptor = new SPSSODescriptorBuilder().buildObject();
-        final var logoutService = new SingleLogoutServiceBuilder().buildObject();
+        val spDescriptor = new SPSSODescriptorBuilder().buildObject();
+        val logoutService = new SingleLogoutServiceBuilder().buildObject();
         logoutService.setLocation("http://sp.example.com/demo1/logout");
         spDescriptor.getSingleLogoutServices().add(logoutService);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
@@ -87,7 +88,7 @@ public class SAML2LogoutValidatorTests {
     @Test
     public void verifyHostComparison() {
 
-        final var xml = "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
+        val xml = "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
             "xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" " +
             "ID=\"_6c3737282f007720e736f0f4028feed8cb9b40291c\" Version=\"2.0\" " +
             "IssueInstant=\"" + ZonedDateTime.now(ZoneOffset.UTC)
@@ -100,9 +101,9 @@ public class SAML2LogoutValidatorTests {
             "</samlp:LogoutResponse>";
 
         try {
-            final var webContext = getMockWebContext();
-            final var context = getSaml2MessageContext(webContext, xml);
-            final var validator = new SAML2LogoutValidator(
+            val webContext = getMockWebContext();
+            val context = getSaml2MessageContext(webContext, xml);
+            val validator = new SAML2LogoutValidator(
                 getTrustEngine(),
                 mock(Decrypter.class),
                 mock(LogoutHandler.class),
@@ -120,7 +121,7 @@ public class SAML2LogoutValidatorTests {
     @Test
     public void verifyThatPartialLogoutAsSecondLevelStatusCodeIsAcceptedAsSuccess() throws Exception {
 
-        final var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" "+
             "Destination=\"http://sp.example.com/demo1/logout\" " +
             "ID=\"_0a59a9e8-1885-4127-84c8-515354c7e29d\" InResponseTo=\"_1981f72063034b65b659cf5dc484e2f01698e96\" " +
@@ -139,7 +140,7 @@ public class SAML2LogoutValidatorTests {
     @Test
     public void verifyThatPartialLogoutAsTopLevelStatusCodeIsAcceptedAsSuccess() throws Exception {
 
-        final var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<samlp:LogoutResponse xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" "+
             "Destination=\"http://sp.example.com/demo1/logout\" " +
             "ID=\"_0a59a9e8-1885-4127-84c8-515354c7e29d\" InResponseTo=\"_1981f72063034b65b659cf5dc484e2f01698e96\" " +
@@ -154,9 +155,9 @@ public class SAML2LogoutValidatorTests {
     }
 
     private void validateResponse(String xml) {
-        final var webContext = getMockWebContext();
-        final var context = getSaml2MessageContext(webContext, xml);
-        final var validator = new SAML2LogoutValidator(
+        val webContext = getMockWebContext();
+        val context = getSaml2MessageContext(webContext, xml);
+        val validator = new SAML2LogoutValidator(
             getTrustEngine(),
             mock(Decrypter.class),
             mock(LogoutHandler.class),

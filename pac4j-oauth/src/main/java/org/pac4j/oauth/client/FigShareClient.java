@@ -1,11 +1,12 @@
 package org.pac4j.oauth.client;
 
-import java.util.Optional;
-
+import lombok.val;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.profile.figshare.FigShareProfileCreator;
 import org.pac4j.oauth.profile.figshare.FigShareProfileDefinition;
 import org.pac4j.scribe.builder.api.FigShareApi20;
+
+import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in FigShare (using OAuth 2.0 protocol).</p>
@@ -19,10 +20,10 @@ public class FigShareClient extends OAuth20Client {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        final var api = new FigShareApi20();
+        val api = new FigShareApi20();
         configuration.setApi(api);
 
-        final var profileDefinition = new FigShareProfileDefinition();
+        val profileDefinition = new FigShareProfileDefinition();
 
         profileDefinition.setProfileId("id");
 

@@ -1,6 +1,7 @@
 package org.pac4j.saml.transport;
 
 
+import lombok.val;
 import net.shibboleth.shared.annotation.constraint.NonnullAfterInit;
 import net.shibboleth.shared.annotation.constraint.NotEmpty;
 import net.shibboleth.shared.codec.Base64Support;
@@ -32,19 +33,11 @@ import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.soap.SAMLSOAPClientContextBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.config.SAMLConfigurationSupport;
-import org.opensaml.saml.criterion.ArtifactCriterion;
-import org.opensaml.saml.criterion.EndpointCriterion;
-import org.opensaml.saml.criterion.EntityRoleCriterion;
-import org.opensaml.saml.criterion.ProtocolCriterion;
-import org.opensaml.saml.criterion.RoleDescriptorCriterion;
+import org.opensaml.saml.criterion.*;
 import org.opensaml.saml.metadata.resolver.RoleDescriptorResolver;
 import org.opensaml.saml.saml2.binding.artifact.SAML2Artifact;
 import org.opensaml.saml.saml2.binding.artifact.SAML2ArtifactBuilderFactory;
-import org.opensaml.saml.saml2.core.Artifact;
-import org.opensaml.saml.saml2.core.ArtifactResolve;
-import org.opensaml.saml.saml2.core.ArtifactResponse;
-import org.opensaml.saml.saml2.core.Issuer;
-import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.metadata.ArtifactResolutionService;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.security.SecurityException;
@@ -183,9 +176,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      */
     @Override
     protected void doDecode() throws MessageDecodingException {
-        final var messageContext = new MessageContext();
+        val messageContext = new MessageContext();
 
-        final var relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
+        val relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
         log.debug("Decoded SAML relay state of: {}", relayState);
         SAMLBindingSupport.setRelayState(messageContext, relayState);
 
@@ -495,23 +488,23 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     private void processArtifact(final MessageContext messageContext, final WebContext webContext)
         throws MessageDecodingException {
 
-        final var encodedArtifact = StringSupport.trimOrNull(webContext.getRequestParameter("SAMLart").orElse(null));
+        val encodedArtifact = StringSupport.trimOrNull(webContext.getRequestParameter("SAMLart").orElse(null));
         if (encodedArtifact == null) {
             log.error("URL SAMLart parameter was missing or did not contain a value.");
             throw new MessageDecodingException("URL SAMLart parameter was missing or did not contain a value.");
         }
 
         try {
-            final var artifact = parseArtifact(encodedArtifact);
+            val artifact = parseArtifact(encodedArtifact);
 
-            final var peerRoleDescriptor = resolvePeerRoleDescriptor(artifact);
+            val peerRoleDescriptor = resolvePeerRoleDescriptor(artifact);
             if (peerRoleDescriptor == null) {
                 throw new MessageDecodingException("Failed to resolve peer RoleDescriptor based on inbound artifact");
             }
 
-            final var ars = resolveArtifactEndpoint(artifact, peerRoleDescriptor);
+            val ars = resolveArtifactEndpoint(artifact, peerRoleDescriptor);
 
-            final var inboundMessage = dereferenceArtifact(artifact, peerRoleDescriptor, ars);
+            val inboundMessage = dereferenceArtifact(artifact, peerRoleDescriptor, ars);
 
             messageContext.setMessage(inboundMessage);
         } catch (final MessageDecodingException e) {
@@ -536,10 +529,10 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         throws MessageDecodingException {
 
         try {
-            final var selfEntityID = resolveSelfEntityID(peerRoleDescriptor);
+            val selfEntityID = resolveSelfEntityID(peerRoleDescriptor);
 
             // TODO can assume/enforce response as ArtifactResponse here?
-            final var opContext = new SAMLSOAPClientContextBuilder()
+            val opContext = new SAMLSOAPClientContextBuilder()
                 .setOutboundMessage(buildArtifactResolveRequestMessage(
                     artifact, ars.getLocation(), selfEntityID))
                 .setProtocol(SAMLConstants.SAML20P_NS)
@@ -551,7 +544,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
             log.trace("Executing ArtifactResolve over SOAP 1.1 binding to endpoint: {}", ars.getLocation());
             soapClient.send(ars.getLocation(), opContext);
-            final var response = (SAMLObject) opContext.getInboundMessageContext().getMessage();
+            val response = (SAMLObject) opContext.getInboundMessageContext().getMessage();
             if (response instanceof ArtifactResponse) {
                 return validateAndExtractResponseMessage((ArtifactResponse) response);
             } else {
@@ -602,10 +595,10 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
                                                                final String endpoint,
                                                                final String selfEntityID) {
 
-        final var request =
+        val request =
             (ArtifactResolve) XMLObjectSupport.buildXMLObject(ArtifactResolve.DEFAULT_ELEMENT_NAME);
 
-        final var requestArtifact = (Artifact) XMLObjectSupport.buildXMLObject(Artifact.DEFAULT_ELEMENT_NAME);
+        val requestArtifact = (Artifact) XMLObjectSupport.buildXMLObject(Artifact.DEFAULT_ELEMENT_NAME);
         try {
             requestArtifact.setValue(Base64Support.encode(artifact.getArtifactBytes(), false));
         } catch (final Exception e) {
@@ -632,9 +625,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     private String resolveSelfEntityID(final RoleDescriptor peerRoleDescriptor)
         throws MessageDecodingException {
 
-        final var criteria = new CriteriaSet(new RoleDescriptorCriterion(peerRoleDescriptor));
+        val criteria = new CriteriaSet(new RoleDescriptorCriterion(peerRoleDescriptor));
         try {
-            final var selfEntityID = getSelfEntityIDResolver().resolveSingle(criteria);
+            val selfEntityID = getSelfEntityIDResolver().resolveSingle(criteria);
             if (selfEntityID == null) {
                 throw new MessageDecodingException("Unable to resolve self entityID from peer RoleDescriptor");
             } else {
@@ -652,7 +645,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      * @return the Issuer element
      */
     private Issuer buildIssuer(final String selfEntityID) {
-        final var issuer = (Issuer) XMLObjectSupport.buildXMLObject(Issuer.DEFAULT_ELEMENT_NAME);
+        val issuer = (Issuer) XMLObjectSupport.buildXMLObject(Issuer.DEFAULT_ELEMENT_NAME);
         issuer.setValue(selfEntityID);
         return issuer;
     }
@@ -670,9 +663,9 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
                                                               final RoleDescriptor peerRoleDescriptor)
         throws MessageDecodingException {
 
-        final var roleDescriptorCriterion = new RoleDescriptorCriterion(peerRoleDescriptor);
+        val roleDescriptorCriterion = new RoleDescriptorCriterion(peerRoleDescriptor);
 
-        final var arsTemplate =
+        val arsTemplate =
             (ArtifactResolutionService) XMLObjectSupport.buildXMLObject(
                 ArtifactResolutionService.DEFAULT_ELEMENT_NAME);
 
@@ -685,13 +678,13 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         final Integer endpointIndex = SAMLBindingSupport.convertSAML2ArtifactEndpointIndex(artifact.getEndpointIndex());
         arsTemplate.setIndex(endpointIndex);
 
-        final var endpointCriterion =
+        val endpointCriterion =
             new EndpointCriterion<ArtifactResolutionService>(arsTemplate, false);
 
-        final var criteriaSet = new CriteriaSet(roleDescriptorCriterion, endpointCriterion);
+        val criteriaSet = new CriteriaSet(roleDescriptorCriterion, endpointCriterion);
 
         try {
-            final var ars = artifactEndpointResolver.resolveSingle(criteriaSet);
+            val ars = artifactEndpointResolver.resolveSingle(criteriaSet);
             if (ars != null) {
                 return ars;
             } else {
@@ -713,12 +706,12 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     private RoleDescriptor resolvePeerRoleDescriptor(final SAML2Artifact artifact)
         throws MessageDecodingException {
 
-        final var criteriaSet = new CriteriaSet(
+        val criteriaSet = new CriteriaSet(
             new ArtifactCriterion(artifact),
             new ProtocolCriterion(SAMLConstants.SAML20P_NS),
             new EntityRoleCriterion(getPeerEntityRole()));
         try {
-            final var rd = roleDescriptorResolver.resolveSingle(criteriaSet);
+            val rd = roleDescriptorResolver.resolveSingle(criteriaSet);
             if (rd == null) {
                 throw new MessageDecodingException("Unable to resolve peer RoleDescriptor from supplied artifact");
             }
@@ -740,7 +733,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         //TODO not sure if this handles well bad input.  Determine if can throw an unchecked and handle here.
         try {
-            final var artifact = artifactBuilderFactory.buildArtifact(encodedArtifact);
+            val artifact = artifactBuilderFactory.buildArtifact(encodedArtifact);
             if (artifact == null) {
                 throw new MessageDecodingException("Could not build SAML2Artifact instance from encoded artifact");
             }
@@ -756,7 +749,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      * @param messageContext the current message context
      */
     protected void populateBindingContext(final MessageContext messageContext) {
-        final var bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
+        val bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
         bindingContext.setBindingUri(getBindingURI());
         bindingContext.setBindingDescriptor(bindingDescriptor);
         bindingContext.setHasBindingSignature(false);

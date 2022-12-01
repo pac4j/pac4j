@@ -1,6 +1,7 @@
 package org.pac4j.http.test.tools;
 
 import fi.iki.elonen.NanoHTTPD;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.IOException;
@@ -38,11 +39,11 @@ public class WebServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         String r = null;
-        final var parameterList = session.getParameters().get("r");
+        val parameterList = session.getParameters().get("r");
         if (parameterList != null && parameterList.size() > 0) {
             r = parameterList.get(0);
         }
-        final var response = responses.get(r);
+        val response = responses.get(r);
         if (response != null) {
             return newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
         } else {

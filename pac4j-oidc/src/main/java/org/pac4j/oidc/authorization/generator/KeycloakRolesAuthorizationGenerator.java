@@ -1,6 +1,7 @@
 package org.pac4j.oidc.authorization.generator;
 
 import com.nimbusds.jwt.SignedJWT;
+import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -37,23 +38,23 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
         if (profile instanceof KeycloakOidcProfile) {
             try {
-                final var jwt = SignedJWT.parse(((KeycloakOidcProfile) profile).getAccessToken().getValue());
-                final var jwtClaimsSet = jwt.getJWTClaimsSet();
+                val jwt = SignedJWT.parse(((KeycloakOidcProfile) profile).getAccessToken().getValue());
+                val jwtClaimsSet = jwt.getJWTClaimsSet();
 
-                final var realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
+                val realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
                 if (realmRolesJsonObject != null) {
-                    final var realmRolesJsonArray = (List<String>) realmRolesJsonObject.get("roles");
+                    val realmRolesJsonArray = (List<String>) realmRolesJsonObject.get("roles");
                     if (realmRolesJsonArray != null) {
                         realmRolesJsonArray.forEach(role -> profile.addRole((String) role));
                     }
                 }
 
                 if (clientId != null) {
-                    final var resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
+                    val resourceAccess = jwtClaimsSet.getJSONObjectClaim("resource_access");
                     if (resourceAccess != null) {
-                        final var clientRolesJsonObject = (Map) resourceAccess.get(clientId);
+                        val clientRolesJsonObject = (Map) resourceAccess.get(clientId);
                         if (clientRolesJsonObject != null) {
-                            final var clientRolesJsonArray = (List<String>) clientRolesJsonObject.get("roles");
+                            val clientRolesJsonArray = (List<String>) clientRolesJsonObject.get("roles");
                             if (clientRolesJsonArray != null) {
                                 clientRolesJsonArray.forEach(profile::addRole);
                             }

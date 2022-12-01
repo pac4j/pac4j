@@ -1,5 +1,6 @@
 package org.pac4j.http.credentials.authenticator.test;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -24,12 +25,12 @@ public class SimpleTestTokenAuthenticator implements Authenticator {
         if (cred == null) {
             throw new CredentialsException("credentials must not be null");
         }
-        final var credentials = (TokenCredentials) cred;
+        val credentials = (TokenCredentials) cred;
         if (CommonHelper.isBlank(credentials.getToken())) {
             throw new CredentialsException("token must not be blank");
         }
-        final var token = credentials.getToken();
-        final var profile = new CommonProfile();
+        val token = credentials.getToken();
+        val profile = new CommonProfile();
         profile.setId(token);
         credentials.setUserProfile(profile);
 

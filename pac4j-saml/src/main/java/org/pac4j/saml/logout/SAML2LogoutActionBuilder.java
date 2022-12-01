@@ -1,13 +1,14 @@
 package org.pac4j.saml.logout;
 
+import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -55,19 +56,19 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
                                                        final UserProfile currentProfile, final String targetUrl) {
         try {
             if (currentProfile instanceof SAML2Profile) {
-                final var saml2Profile = (SAML2Profile) currentProfile;
-                final var samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
-                final var relayState = this.stateGenerator.generateValue(context, sessionStore);
+                val saml2Profile = (SAML2Profile) currentProfile;
+                val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
+                val relayState = this.stateGenerator.generateValue(context, sessionStore);
 
-                final var logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
+                val logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
                 this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
-                final var adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
+                val adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
                 if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-                    final var content = adapter.getOutgoingContent();
+                    val content = adapter.getOutgoingContent();
                     return Optional.of(HttpActionHelper.buildFormPostContentAction(context, content));
                 }
-                final var location = adapter.getRedirectUrl();
+                val location = adapter.getRedirectUrl();
                 return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
             }
         } catch (final Exception e) {

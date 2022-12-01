@@ -1,5 +1,6 @@
 package org.pac4j.saml.util;
 
+import lombok.val;
 import net.shibboleth.shared.xml.ParserPool;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -76,16 +77,16 @@ public final class Configuration {
     }
 
     public static StringWriter serializeSamlObject(final XMLObject samlObject) {
-        final var writer = new StringWriter();
+        val writer = new StringWriter();
         try {
-            final var marshaller = getMarshallerFactory().getMarshaller(samlObject.getElementQName());
+            val marshaller = getMarshallerFactory().getMarshaller(samlObject.getElementQName());
             if (marshaller != null) {
-                final var element = marshaller.marshall(samlObject);
-                final var domSource = new DOMSource(element);
+                val element = marshaller.marshall(samlObject);
+                val domSource = new DOMSource(element);
 
-                final var result = new StreamResult(writer);
-                final var tf = TransformerFactory.newInstance();
-                final var transformer = tf.newTransformer();
+                val result = new StreamResult(writer);
+                val tf = TransformerFactory.newInstance();
+                val transformer = tf.newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
                 transformer.transform(domSource, result);

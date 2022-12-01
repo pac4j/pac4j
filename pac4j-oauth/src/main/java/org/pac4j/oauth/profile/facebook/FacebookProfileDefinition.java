@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
@@ -17,14 +18,13 @@ import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConv
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the Facebook profile definition.
@@ -82,9 +82,9 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
         primary(LINK, Converters.URL);
-        final var objectConverter = new JsonConverter(FacebookObject.class);
-        final var multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
-        final var multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
+        val objectConverter = new JsonConverter(FacebookObject.class);
+        val multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
+        val multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
@@ -111,7 +111,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
-        final var fbConfiguration = (FacebookConfiguration) configuration;
+        val fbConfiguration = (FacebookConfiguration) configuration;
         var url = BASE_URL + "?fields=" + fbConfiguration.getFields();
         if (fbConfiguration.getLimit() > DEFAULT_LIMIT) {
             url += "&limit=" + fbConfiguration.getLimit();
@@ -140,7 +140,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
             sha256_HMAC.init(secret_key);
             var proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
                 .getBytes(StandardCharsets.UTF_8)));
-            final var computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
+            val computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return computedUrl;
         } catch (final InvalidKeyException | NoSuchAlgorithmException e) {
             throw new TechnicalException("Unable to compute appsecret_proof", e);
@@ -149,11 +149,11 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public FacebookProfile extractUserProfile(final String body) {
-        final var profile = (FacebookProfile) newProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = (FacebookProfile) newProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             extractData(profile, json, FacebookProfileDefinition.FRIENDS);
@@ -173,7 +173,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
     }
 
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
-        final var data = (JsonNode) JsonHelper.getElement(json, name);
+        val data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, name, JsonHelper.getElement(data, "data"));
         }

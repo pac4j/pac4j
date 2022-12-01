@@ -1,6 +1,7 @@
 package org.pac4j.saml.crypto;
 
 
+import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
@@ -21,7 +22,6 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
@@ -45,12 +45,12 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
 
         try (var inputStream = configuration.getKeystoreGenerator().retrieve()) {
-            final var keyStoreType = configuration.getKeyStoreType() == null
+            val keyStoreType = configuration.getKeyStoreType() == null
                 ? DEFAULT_KEYSTORE_TYPE
                 : configuration.getKeyStoreType();
-            final var keyStore = loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
+            val keyStore = loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
             this.privateKeyAlias = getPrivateKeyAlias(keyStore, configuration.getKeyStoreAlias());
-            final Map<String, String> passwords = new HashMap<>();
+            val passwords = new HashMap<String, String>();
             passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());
             this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
         } catch (final Exception e) {
@@ -61,7 +61,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     private static KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
         try {
             logger.debug("Loading keystore with type {}", keyStoreType);
-            final var ks = KeyStore.getInstance(keyStoreType);
+            val ks = KeyStore.getInstance(keyStoreType);
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             logger.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
             return ks;
@@ -72,9 +72,9 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
-            final var aliases = keyStore.aliases();
+            val aliases = keyStore.aliases();
             while (aliases.hasMoreElements()) {
-                final var currentAlias = aliases.nextElement();
+                val currentAlias = aliases.nextElement();
                 if (keyStoreAlias != null) {
                     if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
                         return currentAlias;
@@ -91,7 +91,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     @Override
     public KeyInfo getKeyInfo() {
-        final var serverCredential = getCredential();
+        val serverCredential = getCredential();
         return generateKeyInfoForCredential(serverCredential);
     }
 
@@ -107,16 +107,16 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     @Override
     public final KeyInfoGenerator getKeyInfoGenerator() {
-        final var mgmr = DefaultSecurityConfigurationBootstrap.buildBasicKeyInfoGeneratorManager();
-        final var credential = getCredential();
+        val mgmr = DefaultSecurityConfigurationBootstrap.buildBasicKeyInfoGeneratorManager();
+        val credential = getCredential();
         return mgmr.getDefaultManager().getFactory(credential).newInstance();
     }
 
     @Override
     public final Credential getCredential() {
         try {
-            final var cs = new CriteriaSet();
-            final var criteria = new EntityIdCriterion(this.privateKeyAlias);
+            val cs = new CriteriaSet();
+            val criteria = new EntityIdCriterion(this.privateKeyAlias);
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
         } catch (final ResolverException e) {

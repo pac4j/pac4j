@@ -1,5 +1,6 @@
 package org.pac4j.core.engine;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.Clients;
@@ -147,9 +148,9 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     @Test
     public void testCentralLogout() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setClientName(NAME);
-        final var client = new MockIndirectClient(NAME);
+        val client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setLogoutActionBuilder((ctx, store, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));
@@ -166,9 +167,9 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     @Test
     public void testCentralLogoutWithRelativeUrl() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setClientName(NAME);
-        final var client = new MockIndirectClient(NAME);
+        val client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setLogoutActionBuilder((ctx, store, p, targetUrl) -> Optional.of(new FoundAction(CALLBACK_URL + "?p=" + targetUrl)));
         config.setClients(new Clients(client));

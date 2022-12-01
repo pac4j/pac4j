@@ -1,5 +1,6 @@
 package org.pac4j.core.context;
 
+import lombok.val;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.*;
@@ -140,9 +141,9 @@ public final class MockWebContext implements WebContext {
     @Override
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<>();
-        for (final var entry : this.parameters.entrySet()) {
-            final var value = entry.getValue();
-            final var values = new String[] {value};
+        for (val entry : this.parameters.entrySet()) {
+            val value = entry.getValue();
+            val values = new String[] {value};
             map.put(entry.getKey(), values);
         }
         return map;

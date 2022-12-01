@@ -1,13 +1,14 @@
 package org.pac4j.core.profile;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link ProfileHelper}.
@@ -28,10 +29,10 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testBuildUserProfileByClassCompleteName() {
-        final var profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
-        final var profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
+        val profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
         assertNotNull(profile2);
     }
 
@@ -69,17 +70,17 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testFlatIntoOneProfileOneProfile() {
-        final var profile1 = new CommonProfile();
+        val profile1 = new CommonProfile();
         profile1.setId("ONE");
-        final var profiles = Arrays.asList( profile1 );
+        val profiles = Arrays.asList( profile1 );
         assertEquals(profile1, ProfileHelper.flatIntoOneProfile(profiles).get());
     }
 
     @Test
     public void testFlatIntoOneProfileNProfiles() {
-        final var profile2 = new CommonProfile();
+        val profile2 = new CommonProfile();
         profile2.setId("TWO");
-        final var profiles = Arrays.asList( AnonymousProfile.INSTANCE, null, profile2 );
+        val profiles = Arrays.asList( AnonymousProfile.INSTANCE, null, profile2 );
         assertEquals(profile2, ProfileHelper.flatIntoOneProfile(profiles).get());
     }
 }

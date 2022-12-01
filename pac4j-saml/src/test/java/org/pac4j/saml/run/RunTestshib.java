@@ -1,5 +1,6 @@
 package org.pac4j.saml.run;
 
+import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
@@ -14,7 +15,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the testshib.org provider.
@@ -40,20 +41,20 @@ public class RunTestshib extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
+        val cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
                 "pac4j-demo-passwd", "pac4j-demo-passwd", new ClassPathResource("testshib-providers.xml"));
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "test-sp-metadata.xml").getAbsolutePath()));
         cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-        final var client = new SAML2Client(cfg);
+        val client = new SAML2Client(cfg);
         client.setCallbackUrl(PAC4J_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (SAML2Profile) userProfile;
+        val profile = (SAML2Profile) userProfile;
         assertEquals("[Member, Staff]", profile.getAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").toString());
         assertEquals("[myself]", profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.1").toString());
         assertEquals("[Me Myself And I]", profile.getAttribute("urn:oid:2.5.4.3").toString());

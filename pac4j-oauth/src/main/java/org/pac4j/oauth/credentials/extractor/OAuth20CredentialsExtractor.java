@@ -1,6 +1,7 @@
 package org.pac4j.oauth.credentials.extractor;
 
 import com.github.scribejava.core.utils.OAuthEncoder;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -27,32 +28,32 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
     protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
         if (((OAuth20Configuration) configuration).isWithState()) {
 
-            final var stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
+            val stateParameter = context.getRequestParameter(OAuth20Configuration.STATE_REQUEST_PARAMETER);
 
             if (stateParameter.isPresent()) {
-                final var stateSessionAttributeName = this.client.getStateSessionAttributeName();
-                final var sessionState = (String) sessionStore.get(context, stateSessionAttributeName).orElse(null);
+                val stateSessionAttributeName = this.client.getStateSessionAttributeName();
+                val sessionState = (String) sessionStore.get(context, stateSessionAttributeName).orElse(null);
                 // clean from session after retrieving it
                 sessionStore.set(context, stateSessionAttributeName, null);
                 logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
                 if (!stateParameter.get().equals(sessionState)) {
-                    final var message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
+                    val message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
                     throw new OAuthCredentialsException(message);
                 }
             } else {
-                final var message = "Missing state parameter: session expired or possible threat of cross-site request forgery";
+                val message = "Missing state parameter: session expired or possible threat of cross-site request forgery";
                 throw new OAuthCredentialsException(message);
             }
 
         }
 
-        final var codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
+        val codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
         if (codeParameter.isPresent()) {
-            final var code = OAuthEncoder.decode(codeParameter.get());
+            val code = OAuthEncoder.decode(codeParameter.get());
             logger.debug("code: {}", code);
             return Optional.of(new OAuth20Credentials(code));
         } else {
-            final var message = "No credential found";
+            val message = "No credential found";
             throw new OAuthCredentialsException(message);
         }
     }

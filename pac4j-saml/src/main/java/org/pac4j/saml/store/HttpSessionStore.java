@@ -1,15 +1,16 @@
 package org.pac4j.saml.store;
 
+import lombok.val;
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
-import org.pac4j.saml.util.Configuration;
 
 /**
  * Class implements store of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
@@ -72,7 +73,7 @@ public class HttpSessionStore implements SAMLMessageStore {
     @Override
     public void set(final String messageID, final XMLObject message) {
         log.debug("Storing message {} to session {}", messageID, sessionStore.getSessionId(context, true).get());
-        final var messages = getMessages();
+        val messages = getMessages();
         messages.put(messageID, Configuration.serializeSamlObject(message).toString());
         updateSession(messages);
     }
@@ -93,8 +94,8 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @Override
     public Optional<XMLObject> get(final String messageID) {
-        final var messages = getMessages();
-        final var o = messages.get(messageID);
+        val messages = getMessages();
+        val o = messages.get(messageID);
         if (o == null) {
             log.debug("Message {} not found in session {}", messageID, sessionStore.getSessionId(context, true).get());
             return Optional.empty();

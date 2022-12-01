@@ -29,7 +29,7 @@ public abstract class AbstractConfigFilter implements Filter {
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        final var configFactoryParam = filterConfig.getInitParameter(Pac4jConstants.CONFIG_FACTORY);
+        val configFactoryParam = filterConfig.getInitParameter(Pac4jConstants.CONFIG_FACTORY);
         if (configFactoryParam != null) {
             val builtConfig = ConfigBuilder.build(configFactoryParam);
             if (builtConfig != null) {

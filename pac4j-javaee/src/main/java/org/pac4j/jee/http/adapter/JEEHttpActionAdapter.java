@@ -1,11 +1,14 @@
 package org.pac4j.jee.http.adapter;
 
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.jee.context.JEEContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.*;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.WithContentAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
+import org.pac4j.jee.context.JEEContext;
 
 import java.io.IOException;
 
@@ -28,7 +31,7 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
     public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {
             var code = action.getCode();
-            final var response = ((JEEContext) context).getNativeResponse();
+            val response = ((JEEContext) context).getNativeResponse();
 
             if (code < 400) {
                 response.setStatus(code);
@@ -41,12 +44,12 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
             }
 
             if (action instanceof WithLocationAction) {
-                final var withLocationAction = (WithLocationAction) action;
+                val withLocationAction = (WithLocationAction) action;
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, withLocationAction.getLocation());
 
             } else if (action instanceof WithContentAction) {
-                final var withContentAction = (WithContentAction) action;
-                final var content = withContentAction.getContent();
+                val withContentAction = (WithContentAction) action;
+                val content = withContentAction.getContent();
 
                 if (content != null) {
                     try {

@@ -1,5 +1,6 @@
 package org.pac4j.oidc.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -7,7 +8,8 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Run a manual test for the CAS OpenID Connect wrapper support.
@@ -35,19 +37,19 @@ public class RunCasOidcWrapper extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var configuration = new OidcConfiguration();
+        val configuration = new OidcConfiguration();
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret("secret");
         //configuration.setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration");
         configuration.setDiscoveryURI("http://localhost:8888/cas/oidc/.well-known/openid-configuration");
-        final var client = new OidcClient(configuration);
+        val client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        final var profile = (OidcProfile) userProfile;
+        val profile = (OidcProfile) userProfile;
         assertEquals(getLogin(), profile.getId());
         assertNotNull(profile.getIdToken());
         assertEquals("http://localhost:8080/cas/oidc", profile.getIssuer());

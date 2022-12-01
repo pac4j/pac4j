@@ -1,20 +1,21 @@
 package org.pac4j.saml.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import lombok.val;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class VelocityEngineFactoryTest {
 
     @Test
     public void defaultProperties()  {
-        final var engine = VelocityEngineFactory.getEngine();
+        val engine = VelocityEngineFactory.getEngine();
         assertNotNull(engine);
         assertEquals("org.apache.velocity.runtime.resource.loader.StringResourceLoader",
             engine.getProperty("resource.loader.string.class"));

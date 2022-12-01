@@ -1,7 +1,6 @@
 package org.pac4j.oauth.run;
 
-import java.util.Locale;
-
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -11,6 +10,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WeiboClient;
 import org.pac4j.oauth.profile.weibo.WeiboProfile;
+
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,10 +47,10 @@ public final class RunWeiboClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var apiKey = "3722350620";
-        final var apiSecret = "3edbe998b0d53130db83928c330c879b";
+        val apiKey = "3722350620";
+        val apiSecret = "3edbe998b0d53130db83928c330c879b";
 
-        final var weiboClient = new WeiboClient();
+        val weiboClient = new WeiboClient();
         weiboClient.setKey(apiKey);
         weiboClient.setSecret(apiSecret);
         weiboClient.setCallbackUrl("https://git.xjiakao.com/cas/login?client_name=WeiboClient");
@@ -64,7 +65,7 @@ public final class RunWeiboClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (WeiboProfile) userProfile;
+        val profile = (WeiboProfile) userProfile;
         assertEquals("6591860688", profile.getId());
         assertEquals(WeiboProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "6591860688",
             profile.getTypedId());

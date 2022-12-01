@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.DefaultConfigurationManager;
@@ -19,13 +20,13 @@ import static org.junit.Assert.assertNotNull;
 public class DefaultSAML2MetadataSignerTests {
     @Test
     public void verifySigningWithConfigurationDefaults() throws Exception {
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         verifyMetadataSigning(configuration);
     }
 
     @Test
     public void verifySigningWithConfigurationOverride() throws Exception {
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setSignatureAlgorithms(List.of("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"));
         configuration.setSignatureReferenceDigestMethods(List.of("http://www.w3.org/2001/04/xmlenc#sha256"));
         verifyMetadataSigning(configuration);
@@ -42,12 +43,12 @@ public class DefaultSAML2MetadataSignerTests {
         configuration.setMetadataSigner(new DefaultSAML2MetadataSigner(configuration));
         configuration.init();
 
-        final var mgr = new DefaultConfigurationManager();
+        val mgr = new DefaultConfigurationManager();
         mgr.configure();
-        final var metadataGenerator = configuration.toMetadataGenerator();
-        final var entity = metadataGenerator.buildEntityDescriptor();
+        val metadataGenerator = configuration.toMetadataGenerator();
+        val entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
-        final var metadata = metadataGenerator.getMetadata(entity);
+        val metadata = metadataGenerator.getMetadata(entity);
         assertNotNull(metadata);
 
         metadataGenerator.storeMetadata(metadata, true);

@@ -1,9 +1,11 @@
 package org.pac4j.core.credentials.password;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link JBCryptPasswordEncoder}.
@@ -17,7 +19,7 @@ public final class JBCryptPasswordEncoderTests implements TestsConstants {
 
     @Test
     public void test() {
-        final var hashedPwd = encoder.encode(PASSWORD);
+        val hashedPwd = encoder.encode(PASSWORD);
         assertTrue(encoder.matches(PASSWORD, hashedPwd));
         assertFalse(encoder.matches(VALUE, hashedPwd));
     }

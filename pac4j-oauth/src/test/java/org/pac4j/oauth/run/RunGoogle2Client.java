@@ -1,10 +1,11 @@
 package org.pac4j.oauth.run;
 
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.Google2Client;
@@ -12,7 +13,8 @@ import org.pac4j.oauth.profile.google2.Google2Profile;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Run manually a test for the {@link Google2Client}.
@@ -38,7 +40,7 @@ public final class RunGoogle2Client extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final var google2Client = new Google2Client();
+        val google2Client = new Google2Client();
         google2Client.setKey("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         google2Client.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
         google2Client.setCallbackUrl(PAC4J_BASE_URL);
@@ -53,7 +55,7 @@ public final class RunGoogle2Client extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        final var profile = (Google2Profile) userProfile;
+        val profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(Google2Profile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "113675986756217860428",
             profile.getTypedId());

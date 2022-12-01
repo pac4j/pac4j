@@ -2,6 +2,7 @@ package org.pac4j.saml.metadata.mongo;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import lombok.val;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
@@ -80,7 +81,7 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
         var filter = buildMetadataDocumentFilter(metadataEntityId);
         var foundDoc = getCollection().find(filter).first();
         if (foundDoc == null) {
-            final var doc = new Document();
+            val doc = new Document();
             doc.put("metadata", metadataToUse);
             doc.put("entityId", metadataEntityId);
             return getCollection().insertOne(doc).getInsertedId() != null;
@@ -91,7 +92,7 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     }
 
     protected MongoCollection<Document> getCollection() {
-        final var db = mongoClient.getDatabase(metadataDatabase);
+        val db = mongoClient.getDatabase(metadataDatabase);
         return Objects.requireNonNull(db.getCollection(metadataCollection));
     }
 

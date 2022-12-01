@@ -1,6 +1,7 @@
 package org.pac4j.oauth.profile.paypal;
 
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -8,9 +9,9 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import java.util.Arrays;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the PayPal profile definition.
@@ -40,12 +41,12 @@ public class PayPalProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public PayPalProfile extractUserProfile(final String body) {
-        final var profile = (PayPalProfile) newProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = (PayPalProfile) newProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            final var userId = (String) JsonHelper.getElement(json, "user_id");
+            val userId = (String) JsonHelper.getElement(json, "user_id");
             profile.setId(CommonHelper.substringAfter(userId, "/user/"));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

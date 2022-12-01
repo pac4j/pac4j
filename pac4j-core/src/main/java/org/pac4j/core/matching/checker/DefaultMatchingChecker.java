@@ -1,5 +1,6 @@
 package org.pac4j.core.matching.checker;
 
+import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
@@ -56,7 +57,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
     public boolean matches(final WebContext context, final SessionStore sessionStore, final String matchersValue,
                            final Map<String, Matcher> matchersMap, final List<Client> clients) {
 
-        final var matchers = computeMatchers(context, sessionStore, matchersValue, matchersMap, clients);
+        val matchers = computeMatchers(context, sessionStore, matchersValue, matchersMap, clients);
         return matches(context, sessionStore, matchers);
     }
 
@@ -81,7 +82,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
             name += Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
             return name;
         }
-        for (final var client : clients) {
+        for (val client : clients) {
             if (client instanceof IndirectClient) {
                 name += Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
                 return name;
@@ -95,9 +96,9 @@ public class DefaultMatchingChecker implements MatchingChecker {
         final List<Matcher> matchers = new ArrayList<>();
         final List<String> names = new ArrayList<>(Arrays.asList(matchersValue.split(Pac4jConstants.ELEMENT_SEPARATOR)));
         for (var i = 0; i < names.size(); ) {
-            final var name = names.get(i++).trim();
+            val name = names.get(i++).trim();
             if (DefaultMatchers.SECURITYHEADERS.equalsIgnoreCase(name)) {
-                final var results = retrieveMatchers(name, matchersMap);
+                val results = retrieveMatchers(name, matchersMap);
                 // the securityheaders shortcut has not been overriden, replace it by its associated matchers
                 if (results.isEmpty()) {
                     names.add(i, DefaultMatchers.XSSPROTECTION);
@@ -109,7 +110,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
                     matchers.addAll(results);
                 }
             } else if (!DefaultMatchers.NONE.equalsIgnoreCase(name)) {
-                final var results = retrieveMatchers(name, matchersMap);
+                val results = retrieveMatchers(name, matchersMap);
                 // we must have matchers defined for this name
                 assertTrue(!results.isEmpty(),
                     "The matcher '" + name + "' must be defined in the security configuration");
@@ -121,7 +122,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
 
     protected List<Matcher> retrieveMatchers(final String matcherName, final Map<String, Matcher> matchersMap) {
         final List<Matcher> results = new ArrayList<>();
-        for (final var entry : matchersMap.entrySet()) {
+        for (val entry : matchersMap.entrySet()) {
             if (areEqualsIgnoreCaseAndTrim(entry.getKey(), matcherName)) {
                 results.add(entry.getValue());
                 break;
@@ -159,8 +160,8 @@ public class DefaultMatchingChecker implements MatchingChecker {
     protected boolean matches(final WebContext context, final SessionStore sessionStore, final List<Matcher> matchers) {
         if (!matchers.isEmpty()) {
             // check matching using matchers: all must be satisfied
-            for (final var matcher : matchers) {
-                final var matches = matcher.matches(context, sessionStore);
+            for (val matcher : matchers) {
+                val matches = matcher.matches(context, sessionStore);
                 LOGGER.debug("Checking matcher: {} -> {}", matcher, matches);
                 if (!matches) {
                     return false;

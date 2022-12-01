@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class SAML2ServiceProviderMetadataResolverTest {
 
@@ -26,7 +27,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
         httpClient.setConnectionTimeout(Duration.ofSeconds(1));
         httpClient.setSocketTimeout(Duration.ofSeconds(1));
 
-        final var config = new SAML2Configuration();
+        val config = new SAML2Configuration();
         config.setHttpClient(httpClient.build());
         config.setKeystorePath(keystorePath);
         config.setKeystorePassword("pac4j");
@@ -47,7 +48,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     @Test
     public void resolveServiceProviderMetadataViaFile() {
-        final var configuration =
+        val configuration =
             initializeConfiguration(new FileSystemResource("target/out.xml"), "target/keystore.jks");
         final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         assertNotNull(metadataResolver.resolve());
@@ -55,7 +56,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     @Test
     public void resolveServiceProviderMetadataViaExistingClasspath() {
-        final var configuration =
+        val configuration =
             initializeConfiguration(new ClassPathResource("sample-sp-metadata.xml"), "target/keystore.jks");
         final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         assertNotNull(metadataResolver.resolve());
@@ -63,9 +64,9 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
     @Test
     public void resolveServiceProviderMetadataViaUrl() throws Exception {
-        final var restBody = IOUtils.toString(
+        val restBody = IOUtils.toString(
             new ClassPathResource("sample-sp-metadata.xml").getInputStream(), StandardCharsets.UTF_8);
-        final var wireMockServer = new WireMockServer(8081);
+        val wireMockServer = new WireMockServer(8081);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/saml"))
                 .willReturn(aResponse()
@@ -76,7 +77,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
             post(urlPathEqualTo("/saml"))
                 .willReturn(aResponse().withStatus(200)));
 
-        final var keystore = IOUtils.toString(
+        val keystore = IOUtils.toString(
             new ClassPathResource("dummy-keystore.txt").getInputStream(), StandardCharsets.UTF_8);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/keystore"))
@@ -87,7 +88,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
 
         try {
             wireMockServer.start();
-            final var configuration =
+            val configuration =
                 initializeConfiguration(new FileUrlResource(new URL("http://localhost:8081/saml")),
                     "http://localhost:8081/keystore");
             final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);

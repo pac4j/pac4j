@@ -1,8 +1,8 @@
 package org.pac4j.oauth.profile.weibo;
 
-import java.util.Arrays;
-
+import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
@@ -12,7 +12,7 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.pac4j.scribe.model.WeiboToken;
 
-import com.github.scribejava.core.exceptions.OAuthException;
+import java.util.Arrays;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -223,12 +223,12 @@ public class WeiboProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public WeiboProfile extractUserProfile(final String body) throws HttpAction {
-        final var profile = new WeiboProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = new WeiboProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(
                 ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute,
                     JsonHelper.getElement(json, attribute));
             }

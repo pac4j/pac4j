@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import org.apache.velocity.VelocityContext;
 import org.opensaml.messaging.context.MessageContext;
@@ -49,13 +50,13 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
         log.debug("Invoking Velocity template to create POST body");
 
         try {
-            final var velocityContext = new VelocityContext();
+            val velocityContext = new VelocityContext();
             this.populateVelocityContext(velocityContext, messageContext, endpointURL);
 
             responseAdapter.setContentType("text/html");
             responseAdapter.init();
 
-            final var out = responseAdapter.getOutputStreamWriter();
+            val out = responseAdapter.getOutputStreamWriter();
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", velocityContext, out);
             out.flush();
         } catch (final Exception e) {

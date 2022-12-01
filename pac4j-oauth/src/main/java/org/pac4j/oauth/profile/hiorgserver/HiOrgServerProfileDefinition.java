@@ -1,15 +1,17 @@
 package org.pac4j.oauth.profile.hiorgserver;
 
-import java.util.HashSet;
-import java.util.Set;
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-
 import com.github.scribejava.core.model.Token;
+import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class is the HiOrg-Server profile definition.
@@ -58,12 +60,12 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
 
     @Override
     public HiOrgServerProfile extractUserProfile(String body) {
-        final var profile = (HiOrgServerProfile) newProfile();
-        final var json = JsonHelper.getFirstNode(body);
+        val profile = (HiOrgServerProfile) newProfile();
+        val json = JsonHelper.getFirstNode(body);
         if (json != null) {
             logger.debug("Extracting user profile from JSON node " + json);
             profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, USER_ID)));
-            for (final var attribute : getPrimaryAttributes()) {
+            for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
             // Secondary attributes are generated from primary attributes

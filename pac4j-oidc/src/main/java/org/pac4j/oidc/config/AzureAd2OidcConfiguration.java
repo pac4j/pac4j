@@ -1,5 +1,6 @@
 package org.pac4j.oidc.config;
 
+import lombok.val;
 import org.pac4j.core.util.HttpUtils;
 
 import static org.pac4j.core.util.CommonHelper.isBlank;
@@ -66,7 +67,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
             // default values
             scope = "openid profile email";
         }
-        final var payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
+        val payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
             + "&" + HttpUtils.encodeQueryParam("client_secret",this.getSecret())
             + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")
             + "&" + HttpUtils.encodeQueryParam("refresh_token",refreshToken)

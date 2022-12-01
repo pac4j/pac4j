@@ -1,9 +1,11 @@
 package org.pac4j.core.profile.converter;
 
+import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.profile.Color;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * This class tests the {@link ColorConverter} class.
@@ -43,7 +45,7 @@ public final class ColorConverterTests {
 
     @Test
     public void testGoodString() {
-        final var color = (Color) this.converter.convert(GOOD_COLOR);
+        val color = (Color) this.converter.convert(GOOD_COLOR);
         assertEquals(255, color.getRed());
         assertEquals(0, color.getGreen());
         assertEquals(5, color.getBlue());
@@ -51,8 +53,8 @@ public final class ColorConverterTests {
 
     @Test
     public void testColorToString() {
-        final var color = new Color(10, 20, 30);
-        final var color2 = (Color) this.converter.convert(color.toString());
+        val color = new Color(10, 20, 30);
+        val color2 = (Color) this.converter.convert(color.toString());
         assertEquals(color.getRed(), color2.getRed());
         assertEquals(color.getGreen(), color2.getGreen());
         assertEquals(color.getBlue(), color2.getBlue());

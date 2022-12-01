@@ -96,7 +96,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                 manager.removeProfiles();
                 if (destroySession) {
                     if (sessionStore != null) {
-                        final var removed = sessionStore.destroySession(context);
+                        val removed = sessionStore.destroySession(context);
                         if (!removed) {
                             LOGGER.error("Unable to destroy the web session. The session store may not support this feature");
                         }

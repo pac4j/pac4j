@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 
 import java.io.ByteArrayOutputStream;
@@ -81,7 +82,7 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
 
         public final String getOutgoingContent() {
             try {
-                final var result = new String(this.outputStream.toByteArray(), StandardCharsets.UTF_8);
+                val result = new String(this.outputStream.toByteArray(), StandardCharsets.UTF_8);
                 return result;
             } catch (final Exception e) {
                 throw new RuntimeException(e);

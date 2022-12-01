@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata.keystore;
 
+import lombok.val;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -11,7 +12,8 @@ import org.pac4j.saml.util.DefaultConfigurationManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is {@link SAML2FileSystemKeystoreGeneratorTests}.
@@ -25,11 +27,11 @@ public class SAML2FileSystemKeystoreGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setCertificateSignatureAlg("SHA256withRSA");
         configuration.setForceKeystoreGeneration(true);
 
-        final var path = RandomStringUtils.randomAlphabetic(4);
+        val path = RandomStringUtils.randomAlphabetic(4);
         configuration.setKeystorePath(String.format("%s/%s/keystore.jks", FileUtils.getTempDirectoryPath(), path));
 
         configuration.setKeystorePassword("pac4j");
@@ -49,7 +51,7 @@ public class SAML2FileSystemKeystoreGeneratorTests {
         final ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
-        final var configuration = new SAML2Configuration();
+        val configuration = new SAML2Configuration();
         configuration.setCertificateSignatureAlg("SHA256withRSA");
         configuration.setForceKeystoreGeneration(true);
         configuration.setKeystorePath("target/keystore.jks");

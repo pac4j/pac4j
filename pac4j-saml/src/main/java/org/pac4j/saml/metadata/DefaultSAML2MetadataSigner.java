@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.val;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.signature.SignableXMLObject;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
@@ -47,11 +48,11 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
         this.signatureReferenceDigestMethod = signatureReferenceDigestMethod;
     }
     private byte[] sign(final byte[] metadata) throws Exception {
-        try (var is = new ByteArrayInputStream(metadata)) {
-            final var document = Configuration.getParserPool().parse(is);
-            final var documentElement = document.getDocumentElement();
-            final var unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller(documentElement);
-            final var xmlObject = Objects.requireNonNull(unmarshaller).unmarshall(documentElement);
+        try (val is = new ByteArrayInputStream(metadata)) {
+            val document = Configuration.getParserPool().parse(is);
+            val documentElement = document.getDocumentElement();
+            val unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller(documentElement);
+            val xmlObject = Objects.requireNonNull(unmarshaller).unmarshall(documentElement);
             if (xmlObject instanceof SignableXMLObject root && !root.isSigned()) {
                 sign(root);
                 try (var writer = Configuration.serializeSamlObject(root)) {
@@ -87,22 +88,22 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
     @Override
     public void sign(final SignableXMLObject descriptor) {
         try {
-            final var signingParameters = new SignatureSigningParameters();
+            val signingParameters = new SignatureSigningParameters();
 
-            final var activeProvider = Objects.requireNonNull(Optional.ofNullable(configuration)
+            val activeProvider = Objects.requireNonNull(Optional.ofNullable(configuration)
                 .map(SAML2Configuration::getCredentialProvider)
                 .orElse(this.credentialProvider));
             signingParameters.setKeyInfoGenerator(activeProvider.getKeyInfoGenerator());
             signingParameters.setSigningCredential(activeProvider.getCredential());
 
-            final var signingAlgorithm = Optional.ofNullable(configuration)
+            val signingAlgorithm = Optional.ofNullable(configuration)
                 .map(SAML2Configuration::getSignatureAlgorithms)
                 .filter(algorithms -> !algorithms.isEmpty())
                 .map(algorithms -> algorithms.get(0))
                 .orElse(this.signatureAlgorithm);
             signingParameters.setSignatureAlgorithm(signingAlgorithm);
 
-            final var signingReference = Optional.ofNullable(configuration)
+            val signingReference = Optional.ofNullable(configuration)
                 .map(SAML2Configuration::getSignatureReferenceDigestMethods)
                 .filter(algorithms -> !algorithms.isEmpty())
                 .map(algorithms -> algorithms.get(0))

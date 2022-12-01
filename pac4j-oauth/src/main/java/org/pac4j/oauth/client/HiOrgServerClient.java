@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.HiOrgServerApi20;
+import lombok.val;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerConfiguration;
@@ -33,8 +34,8 @@ public class HiOrgServerClient extends OAuth20Client {
         configuration.setApi(HiOrgServerApi20.instance());
         configuration.setProfileDefinition(new HiOrgServerProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
-            final var error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
-            final var errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION).orElse(null);
+            val error = ctx.getRequestParameter(OAuthCredentialsException.ERROR).orElse(null);
+            val errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION).orElse(null);
             // user has denied authorizations
             if ("access_denied".equals(error)) {
                 logger.debug(errorDescription);

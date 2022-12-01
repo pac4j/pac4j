@@ -1,14 +1,18 @@
 package org.pac4j.couch.profile.service;
 
+import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.ektorp.CouchDbConnector;
-import org.junit.*;
-import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.service.AbstractProfileService;
-import org.pac4j.core.util.TestsConstants;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.couch.profile.CouchProfile;
 import org.pac4j.couch.test.tools.CouchServer;
@@ -46,8 +50,8 @@ public final class CouchProfileServiceTests implements TestsConstants {
 
     @BeforeClass
     public static void setUp() {
-        final var password = PASSWORD_ENCODER.encode(PASSWORD);
-        final var couchProfileService = new CouchProfileService(couchDbConnector);
+        val password = PASSWORD_ENCODER.encode(PASSWORD);
+        val couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         // insert sample data
         final Map<String, Object> properties1 = new HashMap<>();
@@ -77,30 +81,30 @@ public final class CouchProfileServiceTests implements TestsConstants {
 
     @Test
     public void testNullConnector() {
-        final var couchProfileService = new CouchProfileService(null);
+        val couchProfileService = new CouchProfileService(null);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         TestsHelper.expectException(couchProfileService::init, TechnicalException.class, "couchDbConnector cannot be null");
     }
 
     @Test(expected = AccountNotFoundException.class)
     public void authentFailed() {
-        final var couchProfileService = new CouchProfileService(couchDbConnector);
+        val couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final var credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
+        val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
         couchProfileService.validate(credentials, null, null);
     }
 
     @Test
     public void authentSuccessSingleAttribute() {
-        final var couchProfileService = new CouchProfileService(couchDbConnector);
+        val couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final var credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
+        val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         couchProfileService.validate(credentials, null, null);
 
-        final var profile = credentials.getUserProfile();
+        val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof CouchProfile);
-        final var couchProfile = (CouchProfile) profile;
+        val couchProfile = (CouchProfile) profile;
         assertEquals(GOOD_USERNAME, couchProfile.getUsername());
         assertEquals(2, couchProfile.getAttributes().size());
         assertEquals(FIRSTNAME_VALUE, couchProfile.getAttribute(FIRSTNAME));
@@ -108,30 +112,30 @@ public final class CouchProfileServiceTests implements TestsConstants {
 
     @Test
     public void testCreateUpdateFindDelete() {
-        final var profile = new CouchProfile();
+        val profile = new CouchProfile();
         profile.setId(COUCH_ID);
         profile.setLinkedId(COUCH_LINKED_ID);
         profile.addAttribute(USERNAME, COUCH_USER);
-        final var couchProfileService = new CouchProfileService(couchDbConnector);
+        val couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         // create
         couchProfileService.create(profile, COUCH_PASS);
         // check credentials
-        final var credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS);
+        val credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS);
         couchProfileService.validate(credentials, null, null);
-        final var profile1 = credentials.getUserProfile();
+        val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
-        final var results = getData(couchProfileService, COUCH_ID);
+        val results = getData(couchProfileService, COUCH_ID);
         assertEquals(1, results.size());
-        final var result = results.get(0);
+        val result = results.get(0);
         assertEquals(5, result.size());
         assertEquals(COUCH_ID, result.get(COUCH_ID_FIELD));
         assertEquals(COUCH_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
         assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(COUCH_USER, result.get(USERNAME));
         // findById
-        final var profile2 = couchProfileService.findById(COUCH_ID);
+        val profile2 = couchProfileService.findById(COUCH_ID);
         assertEquals(COUCH_ID, profile2.getId());
         assertEquals(COUCH_LINKED_ID, profile2.getLinkedId());
         assertEquals(COUCH_USER, profile2.getUsername());
@@ -148,7 +152,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(COUCH_USER2, result2.get(USERNAME));
         // check credentials
-        final var credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2);
+        val credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2);
         couchProfileService.validate(credentials2, null, null);
         var profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
@@ -165,7 +169,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         assertNotNull(profile3);
         // remove
         couchProfileService.remove(profile);
-        final var results3 = getData(couchProfileService, COUCH_ID);
+        val results3 = getData(couchProfileService, COUCH_ID);
         assertEquals(0, results3.size());
     }
 

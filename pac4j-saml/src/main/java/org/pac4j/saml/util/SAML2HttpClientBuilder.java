@@ -1,5 +1,6 @@
 package org.pac4j.saml.util;
 
+import lombok.val;
 import net.shibboleth.shared.httpclient.HttpClientBuilder;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
@@ -24,7 +25,7 @@ public class SAML2HttpClientBuilder {
 
     public HttpClient build() {
         try {
-            final var builder = new Pac4jHttpClientBuilder();
+            val builder = new Pac4jHttpClientBuilder();
             builder.resetDefaults();
 
             if (this.connectionTimeout != null) {
@@ -106,7 +107,7 @@ public class SAML2HttpClientBuilder {
     private static class Pac4jHttpClientBuilder extends HttpClientBuilder {
         @Override
         protected org.apache.http.impl.client.HttpClientBuilder getApacheBuilder() {
-            final var builder = super.getApacheBuilder();
+            val builder = super.getApacheBuilder();
             return builder;
         }
     }

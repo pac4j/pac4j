@@ -1,5 +1,7 @@
 package org.pac4j.core.profile.converter;
 
+import lombok.val;
+
 import java.util.List;
 
 /**
@@ -23,9 +25,9 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
             if (clazz.isAssignableFrom(attribute.getClass())) {
                 t = attribute;
             } else if (attribute instanceof List) {
-                final var l = (List) attribute;
+                val l = (List) attribute;
                 if (l.size() > 0) {
-                    final var element = l.get(0);
+                    val element = l.get(0);
                     if (clazz.isAssignableFrom(element.getClass())) {
                         t = element;
                     }else {

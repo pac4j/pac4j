@@ -1,6 +1,7 @@
 package org.pac4j.oauth.credentials.extractor;
 
 import com.github.scribejava.core.exceptions.OAuthException;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -49,10 +50,10 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
         // check errors
         try {
             var errorFound = false;
-            final var oauthCredentialsException =
+            val oauthCredentialsException =
                 new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
-            for (final var key : OAuthCredentialsException.ERROR_NAMES) {
-                final var value = context.getRequestParameter(key);
+            for (val key : OAuthCredentialsException.ERROR_NAMES) {
+                val value = context.getRequestParameter(key);
                 if (value.isPresent()) {
                     errorFound = true;
                     oauthCredentialsException.setErrorMessage(key, value.get());

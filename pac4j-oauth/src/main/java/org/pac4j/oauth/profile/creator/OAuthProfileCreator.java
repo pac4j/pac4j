@@ -7,6 +7,7 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -55,7 +56,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     @Override
     public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
         try {
-            final var token = getAccessToken(credentials);
+            val token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(context, token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
@@ -78,10 +79,10 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      * @return the user profile
      */
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
-        final var profileDefinition = configuration.getProfileDefinition();
-        final var profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
-        final var service = this.configuration.buildService(context, client);
-        final var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
+        val profileDefinition = configuration.getProfileDefinition();
+        val profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
+        val service = this.configuration.buildService(context, client);
+        val body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {
             throw new HttpCommunicationException("No data found for accessToken: " + accessToken);
@@ -102,8 +103,8 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      */
     protected String sendRequestForData(final OAuthService service, final Token accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
-        final var t0 = System.currentTimeMillis();
-        final var request = createOAuthRequest(dataUrl, verb);
+        val t0 = System.currentTimeMillis();
+        val request = createOAuthRequest(dataUrl, verb);
         signRequest(service, accessToken, request);
         final String body;
         final int code;
@@ -114,7 +115,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting body: " + e.getMessage());
         }
-        final var t1 = System.currentTimeMillis();
+        val t1 = System.currentTimeMillis();
         logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
         logger.debug("response code: {} / response body: {}", code, body);
         if (code != 200) {

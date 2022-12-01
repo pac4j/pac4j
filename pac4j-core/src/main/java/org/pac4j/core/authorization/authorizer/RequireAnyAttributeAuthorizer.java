@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
@@ -38,7 +39,7 @@ public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<
             return true;
         }
 
-        final var attributeValues = profile.getAttribute(element);
+        val attributeValues = profile.getAttribute(element);
         if (attributeValues instanceof Collection) {
             return Collection.class.cast(attributeValues)
                     .stream()

@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.authorizer;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
@@ -12,7 +13,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link RequireAllRolesAuthorizer}.
@@ -41,7 +43,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder() {
-        final var authorizer = new RequireAllRolesAuthorizer(ROLE3, ROLE1);
+        val authorizer = new RequireAllRolesAuthorizer(ROLE3, ROLE1);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -49,7 +51,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder2() {
-        final var authorizer = new RequireAllRolesAuthorizer(Arrays.asList(ROLE3, ROLE1));
+        val authorizer = new RequireAllRolesAuthorizer(Arrays.asList(ROLE3, ROLE1));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -57,7 +59,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder3() {
-        final var authorizer = new RequireAllRolesAuthorizer();
+        val authorizer = new RequireAllRolesAuthorizer();
         authorizer.setElements(ROLE3, ROLE1);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -66,7 +68,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder4() {
-        final var authorizer = new RequireAllRolesAuthorizer();
+        val authorizer = new RequireAllRolesAuthorizer();
         authorizer.setElements(new HashSet<>(Arrays.asList(ROLE3, ROLE1)));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -75,7 +77,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder5() {
-        final var authorizer = new RequireAllRolesAuthorizer();
+        val authorizer = new RequireAllRolesAuthorizer();
         authorizer.setElements(Arrays.asList(ROLE3, ROLE1));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -84,7 +86,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesNull() {
-        final var authorizer = new RequireAllRolesAuthorizer((List<String>) null);
+        val authorizer = new RequireAllRolesAuthorizer((List<String>) null);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -92,7 +94,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesEmpty() {
-        final var authorizer = new RequireAllRolesAuthorizer(new String[]{});
+        val authorizer = new RequireAllRolesAuthorizer(new String[]{});
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
         assertTrue(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -100,7 +102,7 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesTwoRolesFail() {
-        final var authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
+        val authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
         profile.addRole(ROLE1);
         profile.addRole(ROLE2);
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));
@@ -108,10 +110,10 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesTwoRolesFailTwoProfiles() {
-        final var authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
+        val authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
         profile.addRole(ROLE1);
         profile.addRole(ROLE2);
-        final var profile2 = new CommonProfile();
+        val profile2 = new CommonProfile();
         profile2.addRole(ROLE3);
         profiles.add(profile2);
         assertFalse(authorizer.isAuthorized(context, new MockSessionStore(), profiles));

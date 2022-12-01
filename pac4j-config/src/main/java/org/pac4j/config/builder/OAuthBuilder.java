@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.oauth.client.*;
 
@@ -21,12 +22,12 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateLinkedInClient(final List<Client> clients) {
-        final var id = getProperty(LINKEDIN_ID);
-        final var secret = getProperty(LINKEDIN_SECRET);
-        final var scope = getProperty(LINKEDIN_SCOPE);
+        val id = getProperty(LINKEDIN_ID);
+        val secret = getProperty(LINKEDIN_SECRET);
+        val scope = getProperty(LINKEDIN_SCOPE);
 
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var linkedInClient = new LinkedIn2Client(id, secret);
+            val linkedInClient = new LinkedIn2Client(id, secret);
             if (isNotBlank(scope)) {
                 linkedInClient.setScope(scope);
             }
@@ -35,12 +36,12 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateFacebookClient(final List<Client> clients) {
-        final var id = getProperty(FACEBOOK_ID);
-        final var secret = getProperty(FACEBOOK_SECRET);
-        final var scope = getProperty(FACEBOOK_SCOPE);
-        final var fields = getProperty(FACEBOOK_FIELDS);
+        val id = getProperty(FACEBOOK_ID);
+        val secret = getProperty(FACEBOOK_SECRET);
+        val scope = getProperty(FACEBOOK_SCOPE);
+        val fields = getProperty(FACEBOOK_FIELDS);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var facebookClient = new FacebookClient(id, secret);
+            val facebookClient = new FacebookClient(id, secret);
             if (isNotBlank(scope)) {
                 facebookClient.setScope(scope);
             }
@@ -52,29 +53,29 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateWindowsLiveClient(final List<Client> clients) {
-        final var id = getProperty(WINDOWSLIVE_ID);
-        final var secret = getProperty(WINDOWSLIVE_SECRET);
+        val id = getProperty(WINDOWSLIVE_ID);
+        val secret = getProperty(WINDOWSLIVE_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var client = new WindowsLiveClient(id, secret);
+            val client = new WindowsLiveClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateFoursquareClient(final List<Client> clients) {
-        final var id = getProperty(FOURSQUARE_ID);
-        final var secret = getProperty(FOURSQUARE_SECRET);
+        val id = getProperty(FOURSQUARE_ID);
+        val secret = getProperty(FOURSQUARE_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var client = new FoursquareClient(id, secret);
+            val client = new FoursquareClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateGoogleClient(final List<Client> clients) {
-        final var id = getProperty(GOOGLE_ID);
-        final var secret = getProperty(GOOGLE_SECRET);
+        val id = getProperty(GOOGLE_ID);
+        val secret = getProperty(GOOGLE_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var client = new Google2Client(id, secret);
-            final var scope = getProperty(GOOGLE_SCOPE);
+            val client = new Google2Client(id, secret);
+            val scope = getProperty(GOOGLE_SCOPE);
             if (isNotBlank(scope)) {
                 client.setScope(Google2Client.Google2Scope.valueOf(scope.toUpperCase()));
             }
@@ -83,48 +84,48 @@ public class OAuthBuilder extends AbstractBuilder {
     }
 
     public void tryCreateYahooClient(final List<Client> clients) {
-        final var id = getProperty(YAHOO_ID);
-        final var secret = getProperty(YAHOO_SECRET);
+        val id = getProperty(YAHOO_ID);
+        val secret = getProperty(YAHOO_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var client = new YahooClient(id, secret);
+            val client = new YahooClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateDropboxClient(final List<Client> clients) {
-        final var id = getProperty(DROPBOX_ID);
-        final var secret = getProperty(DROPBOX_SECRET);
+        val id = getProperty(DROPBOX_ID);
+        val secret = getProperty(DROPBOX_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var client = new DropBoxClient(id, secret);
+            val client = new DropBoxClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateGithubClient(final List<Client> clients) {
-        final var id = getProperty(GITHUB_ID);
-        final var secret = getProperty(GITHUB_SECRET);
+        val id = getProperty(GITHUB_ID);
+        val secret = getProperty(GITHUB_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var client = new GitHubClient(id, secret);
+            val client = new GitHubClient(id, secret);
             clients.add(client);
         }
     }
 
     public void tryCreateTwitterClient(final List<Client> clients) {
-        final var id = getProperty(TWITTER_ID);
-        final var secret = getProperty(TWITTER_SECRET);
+        val id = getProperty(TWITTER_ID);
+        val secret = getProperty(TWITTER_SECRET);
         if (isNotBlank(id) && isNotBlank(secret)) {
-            final var twitterClient = new TwitterClient(id, secret);
+            val twitterClient = new TwitterClient(id, secret);
             clients.add(twitterClient);
         }
     }
 
     public void tryCreateGenericOAuth2Clients(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final var id = getProperty(OAUTH2_ID, i);
-            final var secret = getProperty(OAUTH2_SECRET, i);
+            val id = getProperty(OAUTH2_ID, i);
+            val secret = getProperty(OAUTH2_SECRET, i);
 
             if (isNotBlank(id) && isNotBlank(secret)) {
-                final var client = new GenericOAuth20Client();
+                val client = new GenericOAuth20Client();
                 client.setName(concat(client.getName(), i));
 
                 client.setKey(id);

@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata.keystore;
 
+import lombok.val;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.pac4j.core.util.CommonHelper;
@@ -28,12 +29,12 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
 
     private void writeEncodedCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
-            final var res = file.delete();
+            val res = file.delete();
             logger.debug("Deleted file [{}]:{}", file, res);
         }
         try (var pemWriter = new PemWriter(
             new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            final var pemObject = new PemObject(file.getName(), certificate);
+            val pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);
@@ -42,7 +43,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
 
     private void writeBinaryCertificateToFile(final File file, final byte[] certificate) {
         if (file.exists()) {
-            final var res = file.delete();
+            val res = file.delete();
             logger.debug("Deleted file [{}]:{}", file, res);
         }
         try (OutputStream fos = new FileOutputStream(file)) {
@@ -56,7 +57,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
     @Override
     public boolean shouldGenerate() {
         validate();
-        final var keystoreFile = saml2Configuration.getKeystoreResource();
+        val keystoreFile = saml2Configuration.getKeystoreResource();
         return keystoreFile != null && !keystoreFile.exists() || super.shouldGenerate();
     }
 
@@ -77,24 +78,24 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
                          final PrivateKey privateKey) throws Exception {
         validate();
 
-        final var keystoreFile = saml2Configuration.getKeystoreResource().getFile();
-        final var parentFile = keystoreFile.getParentFile();
+        val keystoreFile = saml2Configuration.getKeystoreResource().getFile();
+        val parentFile = keystoreFile.getParentFile();
         if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
             logger.warn("Could not construct the directory structure for keystore: {}", keystoreFile.getCanonicalPath());
         }
-        final var password = saml2Configuration.getKeystorePassword().toCharArray();
+        val password = saml2Configuration.getKeystorePassword().toCharArray();
         try (OutputStream fos = new FileOutputStream(keystoreFile.getCanonicalPath())) {
             ks.store(fos, password);
             fos.flush();
         }
 
-        final var signingCertEncoded = getSigningBase64CertificatePath();
+        val signingCertEncoded = getSigningBase64CertificatePath();
         writeEncodedCertificateToFile(signingCertEncoded, certificate.getEncoded());
 
-        final var signingCertBinary = getSigningBinaryCertificatePath();
+        val signingCertBinary = getSigningBinaryCertificatePath();
         writeBinaryCertificateToFile(signingCertBinary, certificate.getEncoded());
 
-        final var signingKeyEncoded = getSigningKeyFile();
+        val signingKeyEncoded = getSigningKeyFile();
         writeEncodedCertificateToFile(signingKeyEncoded, privateKey.getEncoded());
     }
 
@@ -102,7 +103,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
      * Sanitize String to use it as fileName for Signing Certificate Names
      */
     private String getNormalizedCertificateName() {
-        final var certName = new StringBuilder(CERTIFICATES_PREFIX);
+        val certName = new StringBuilder(CERTIFICATES_PREFIX);
         if (CommonHelper.isNotBlank(saml2Configuration.getCertificateNameToAppend())) {
             certName.append('-');
             certName.append(NORMALIZE_PATTERN.matcher(saml2Configuration.getCertificateNameToAppend())

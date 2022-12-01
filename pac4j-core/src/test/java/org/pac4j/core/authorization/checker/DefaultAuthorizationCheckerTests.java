@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.checker;
 
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
@@ -69,13 +70,13 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testNullAuthorizerNameAProfilePostRequestNoIndirectClient() {
-        final var context = MockWebContext.create().setRequestMethod("POST");
+        val context = MockWebContext.create().setRequestMethod("POST");
         assertTrue(checker.isAuthorized(context, new MockSessionStore(), profiles, null, new HashMap<>(), new ArrayList<>()));
     }
 
     @Test
     public void testNullAuthorizerNameAProfilePostRequestIndirectClient() {
-        final var context = MockWebContext.create().setRequestMethod("POST");
+        val context = MockWebContext.create().setRequestMethod("POST");
         final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
         assertFalse(checker.isAuthorized(context, new MockSessionStore(), profiles, null, new HashMap<>(), clients));
@@ -83,13 +84,13 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testBlankAuthorizerNameAProfilePostRequestNoIndirectClient() {
-        final var context = MockWebContext.create().setRequestMethod("POST");
+        val context = MockWebContext.create().setRequestMethod("POST");
         assertTrue(checker.isAuthorized(context, new MockSessionStore(), profiles, " ", new HashMap<>(), new ArrayList<>()));
     }
 
     @Test
     public void testBlankAuthorizerNameAProfilePostRequestIndirectClient() {
-        final var context = MockWebContext.create().setRequestMethod("POST");
+        val context = MockWebContext.create().setRequestMethod("POST");
         final List<Client> clients = new ArrayList<>();
         clients.add(new MockIndirectClient("test"));
         assertFalse(checker.isAuthorized(context, new MockSessionStore(), profiles, " ", new HashMap<>(), clients));
@@ -97,7 +98,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testNoneAuthorizerNameAProfilePostRequest() {
-        final var context = MockWebContext.create().setRequestMethod("POST");
+        val context = MockWebContext.create().setRequestMethod("POST");
         assertTrue(checker.isAuthorized(context, new MockSessionStore(), profiles, "noNe", new HashMap<>(), new ArrayList<>()));
     }
 
@@ -217,8 +218,8 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfCheckPost() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        final var generator = new DefaultCsrfTokenGenerator();
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        val generator = new DefaultCsrfTokenGenerator();
         final SessionStore sessionStore = new MockSessionStore();
         generator.get(context, sessionStore);
         assertFalse(checker.isAuthorized(context, sessionStore, profiles, DefaultAuthorizers.CSRF_CHECK, new HashMap<>(),
@@ -227,10 +228,10 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfCheckPostTokenParameter() {
-        final var context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        final var generator = new DefaultCsrfTokenGenerator();
+        val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        val generator = new DefaultCsrfTokenGenerator();
         final SessionStore sessionStore = new MockSessionStore();
-        final var token = generator.get(context, sessionStore);
+        val token = generator.get(context, sessionStore);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, token);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, new Date().getTime() + 1000 * generator.getTtlInSeconds());

@@ -1,5 +1,6 @@
 package org.pac4j.core.credentials.extractor;
 
+import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -34,19 +35,19 @@ public class BasicAuthExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
                                          final ProfileManagerFactory profileManagerFactory) {
-        final var optCredentials = this.extractor.extract(context, sessionStore, profileManagerFactory);
+        val optCredentials = this.extractor.extract(context, sessionStore, profileManagerFactory);
         return optCredentials.map(cred -> {
 
-            final var credentials = (TokenCredentials) cred;
+            val credentials = (TokenCredentials) cred;
             final byte[] decoded;
             try {
                 decoded = Base64.getDecoder().decode(credentials.getToken());
             } catch (IllegalArgumentException e) {
                 throw new CredentialsException("Bad format of the basic auth header");
             }
-            final var token = new String(decoded, StandardCharsets.UTF_8);
+            val token = new String(decoded, StandardCharsets.UTF_8);
 
-            final var delim = token.indexOf(":");
+            val delim = token.indexOf(":");
             if (delim < 0) {
                 throw new CredentialsException("Bad format of the basic auth header");
             }

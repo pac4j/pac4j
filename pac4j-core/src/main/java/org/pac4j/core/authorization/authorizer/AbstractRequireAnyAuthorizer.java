@@ -1,6 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
@@ -19,7 +20,7 @@ public abstract class AbstractRequireAnyAuthorizer<E extends Object> extends Abs
         if (elements == null || elements.isEmpty()) {
             return check(context, sessionStore, profile, null);
         }
-        for (final var element : elements) {
+        for (val element : elements) {
             if (check(context, sessionStore, profile, element)) {
                 return true;
             }
