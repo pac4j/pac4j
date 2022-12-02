@@ -1,5 +1,6 @@
 package org.pac4j.core.profile;
 
+import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.Pac4jConstants;
@@ -13,6 +14,7 @@ import java.util.Locale;
  * @author Jerome Leleu
  * @since 1.3.0
  */
+@ToString(callSuper = true)
 public class CommonProfile extends BasicUserProfile {
 
     private static final long serialVersionUID = -1856159870249261877L;

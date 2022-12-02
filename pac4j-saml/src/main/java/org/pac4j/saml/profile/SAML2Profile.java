@@ -1,5 +1,6 @@
 package org.pac4j.saml.profile;
 
+import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author Ruochao Zheng
  * @version 1.5.0
  */
+@ToString(callSuper = true)
 public class SAML2Profile extends CommonProfile {
 
     private static final long serialVersionUID = -7811733390277407623L;

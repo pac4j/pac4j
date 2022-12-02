@@ -1,5 +1,6 @@
 package org.pac4j.mongo.profile;
 
+import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -8,6 +9,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@ToString(callSuper = true)
 public class MongoProfile extends CommonProfile {
 
     private static final long serialVersionUID = 7289249610131900281L;

@@ -1,5 +1,8 @@
 package org.pac4j.core.util;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,16 +15,20 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 1.4.0
  */
 @Slf4j
+@ToString
+@Getter
 public abstract class InitializableObject {
 
     private AtomicBoolean initialized = new AtomicBoolean(false);
 
+    @Setter
     private int maxAttempts = 3;
 
     private AtomicInteger nbAttempts = new AtomicInteger(0);
 
     private volatile Long lastAttempt;
 
+    @Setter
     private long minTimeIntervalBetweenAttemptsInMilliseconds = 5000;
 
     /**
@@ -85,27 +92,7 @@ public abstract class InitializableObject {
 
     protected void afterInternalInit(final boolean forceReinit) {}
 
-    public final int getMaxAttempts() {
-        return maxAttempts;
-    }
-
-    public final void setMaxAttempts(int maxAttempts) {
-        this.maxAttempts = maxAttempts;
-    }
-
-    public final int getNbAttempts() {
+    public int getNbAttempts() {
         return nbAttempts.get();
-    }
-
-    public final Long getLastAttempt() {
-        return lastAttempt;
-    }
-
-    public final long getMinTimeIntervalBetweenAttemptsInMilliseconds() {
-        return minTimeIntervalBetweenAttemptsInMilliseconds;
-    }
-
-    public final void setMinTimeIntervalBetweenAttemptsInMilliseconds(long minTimeIntervalBetweenAttemptsInMilliseconds) {
-        this.minTimeIntervalBetweenAttemptsInMilliseconds = minTimeIntervalBetweenAttemptsInMilliseconds;
     }
 }

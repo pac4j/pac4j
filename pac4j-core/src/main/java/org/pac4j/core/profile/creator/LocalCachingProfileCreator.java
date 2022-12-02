@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @Slf4j
 public class LocalCachingProfileCreator extends InitializableObject implements ProfileCreator {
 

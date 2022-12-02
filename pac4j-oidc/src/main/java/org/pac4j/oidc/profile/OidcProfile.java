@@ -4,6 +4,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.jwt.AbstractJwtProfile;
@@ -21,6 +22,7 @@ import java.util.Date;
  * @author Michael Remond
  * @version 1.7.0
  */
+@ToString(callSuper = true)
 public class OidcProfile extends AbstractJwtProfile {
 
     private static final long serialVersionUID = -52855988661742374L;

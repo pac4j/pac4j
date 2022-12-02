@@ -1,5 +1,6 @@
 package org.pac4j.core.profile.jwt;
 
+import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author Jérôme Leleu
  * @since 2.0.0
  */
+@ToString(callSuper = true)
 public abstract class AbstractJwtProfile extends CommonProfile {
 
     private static final long serialVersionUID = -6146872796913837767L;

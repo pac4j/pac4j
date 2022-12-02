@@ -1,5 +1,6 @@
 package org.pac4j.sql.profile;
 
+import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -9,6 +10,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@ToString(callSuper = true)
 public class DbProfile extends CommonProfile {
 
     private static final long serialVersionUID = 4740352872728540613L;

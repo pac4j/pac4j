@@ -1,5 +1,6 @@
 package org.pac4j.cas.profile;
 
+import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -9,6 +10,8 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
+@ToString(callSuper = true)
+
 public final class CasRestProfile extends CommonProfile {
 
     private static final long serialVersionUID = -1688563185891330018L;

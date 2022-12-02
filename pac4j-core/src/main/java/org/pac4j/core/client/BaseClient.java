@@ -43,7 +43,7 @@ import java.util.*;
  */
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "logger")
 public abstract class BaseClient extends InitializableObject implements Client {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

@@ -1,5 +1,6 @@
 package org.pac4j.gae.profile;
 
+import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.gae.client.GaeUserServiceClient;
 
@@ -11,6 +12,7 @@ import org.pac4j.gae.client.GaeUserServiceClient;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
+@ToString(callSuper = true)
 public class GaeUserServiceProfile extends CommonProfile {
 
     private static final long serialVersionUID = 7866288887408897456L;
