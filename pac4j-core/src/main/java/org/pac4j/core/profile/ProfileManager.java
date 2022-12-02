@@ -2,6 +2,7 @@ package org.pac4j.core.profile;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
@@ -26,9 +27,8 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Slf4j
 public class ProfileManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileManager.class);
 
     private final Authorizer IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer();
 

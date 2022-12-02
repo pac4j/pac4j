@@ -1,12 +1,11 @@
 package org.pac4j.jee.context.session;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.jee.context.JEEContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,11 +19,10 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@Slf4j
 public class JEESessionStore implements SessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JEESessionStore.class);
 
     protected HttpSession httpSession;
 

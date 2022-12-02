@@ -1,7 +1,6 @@
 package org.pac4j.core.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,9 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Slf4j
 public abstract class InitializableObject {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(InitializableObject.class);
 
     private AtomicBoolean initialized = new AtomicBoolean(false);
 

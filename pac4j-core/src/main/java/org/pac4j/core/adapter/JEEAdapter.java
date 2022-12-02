@@ -1,9 +1,8 @@
 package org.pac4j.core.adapter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,9 +13,8 @@ import java.lang.reflect.InvocationTargetException;
  * @author Jerome LELEU
  * @since 5.6.0
  */
+@Slf4j
 public abstract class JEEAdapter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JEEAdapter.class);
 
     public static final JEEAdapter INSTANCE;
 

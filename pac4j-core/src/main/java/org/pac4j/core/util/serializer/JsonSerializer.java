@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -15,9 +14,8 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome LELEU
  * @since 3.9.0
  */
+@Slf4j
 public class JsonSerializer extends AbstractSerializer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonSerializer.class);
 
     private ObjectMapper objectMapper;
 

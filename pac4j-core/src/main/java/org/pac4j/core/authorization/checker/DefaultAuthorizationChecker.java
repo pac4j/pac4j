@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.checker;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.client.Client;
@@ -9,8 +10,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +23,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Slf4j
 public class DefaultAuthorizationChecker implements AuthorizationChecker {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAuthorizationChecker.class);
 
     protected static final CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
     protected static final IsAnonymousAuthorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();

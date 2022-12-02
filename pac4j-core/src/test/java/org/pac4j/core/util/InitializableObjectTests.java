@@ -1,9 +1,8 @@
 package org.pac4j.core.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
@@ -13,9 +12,8 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Slf4j
 public final class InitializableObjectTests {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(InitializableObjectTests.class);
 
     @Test
     public void testInitCalledOnlyOnce() {

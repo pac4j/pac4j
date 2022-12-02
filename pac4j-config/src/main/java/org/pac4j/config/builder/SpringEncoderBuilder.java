@@ -1,10 +1,9 @@
 package org.pac4j.config.builder;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,9 +21,8 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.1.0
  */
+@Slf4j
 public class SpringEncoderBuilder extends AbstractBuilder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpringEncoderBuilder.class);
 
     public SpringEncoderBuilder(final Map<String, String> properties) {
         super(properties);
