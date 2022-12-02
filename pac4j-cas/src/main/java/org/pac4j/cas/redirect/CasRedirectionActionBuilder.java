@@ -1,5 +1,6 @@
 package org.pac4j.cas.redirect;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.client.CasClient;
@@ -11,8 +12,6 @@ import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -22,9 +21,8 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Slf4j
 public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected CasConfiguration configuration;
 
@@ -48,7 +46,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
             || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
         val redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
-        logger.debug("redirectionUrl: {}", redirectionUrl);
+        LOGGER.debug("redirectionUrl: {}", redirectionUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl));
     }
 

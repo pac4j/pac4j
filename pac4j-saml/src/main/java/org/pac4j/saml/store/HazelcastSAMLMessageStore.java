@@ -2,14 +2,14 @@ package org.pac4j.saml.store;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.util.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Optional;
 
 /**
  * Class implements store of SAML messages and uses Hazelcast as underlying dataStore.
@@ -20,9 +20,8 @@ import org.slf4j.LoggerFactory;
  * @author Francesco Chicchiriccò
  * @since 5.0.1
  */
+@Slf4j
 public class HazelcastSAMLMessageStore implements SAMLMessageStore {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastSAMLMessageStore.class);
 
     private static final String MAP_NAME = HazelcastSAMLMessageStore.class.getSimpleName();
 

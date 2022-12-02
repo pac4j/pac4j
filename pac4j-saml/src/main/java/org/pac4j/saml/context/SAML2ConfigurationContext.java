@@ -72,7 +72,7 @@ public class SAML2ConfigurationContext extends BaseContext {
 
     public Boolean isNameIdPolicyAllowCreate() {
         return (Boolean) webContext.getRequestAttribute(REQUEST_ATTR_NAME_ID_POLICY_ALLOW_CREATE)
-            .orElse(BooleanUtils.toBoolean(configuration.isNameIdPolicyAllowCreate()));
+            .orElse(BooleanUtils.toBoolean(configuration.getNameIdPolicyAllowCreate()));
     }
 
     public String getProviderName() {

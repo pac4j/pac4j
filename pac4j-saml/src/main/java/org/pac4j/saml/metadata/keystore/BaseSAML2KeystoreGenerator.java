@@ -35,7 +35,7 @@ import java.util.Date;
 public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerator {
     protected static final String CERTIFICATES_PREFIX = "saml-signing-cert";
 
-    protected final Logger logger = LoggerFactory.getLogger(BaseSAML2KeystoreGenerator.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final SAML2Configuration saml2Configuration;
 
@@ -52,12 +52,12 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     public void generate() {
         try {
             if (CommonHelper.isBlank(saml2Configuration.getKeyStoreAlias())) {
-                saml2Configuration.setKeystoreAlias(getClass().getSimpleName());
+                saml2Configuration.setKeyStoreAlias(getClass().getSimpleName());
                 logger.warn("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
             }
 
             if (CommonHelper.isBlank(saml2Configuration.getKeyStoreType())) {
-                saml2Configuration.setKeystoreType(KeyStore.getDefaultType());
+                saml2Configuration.setKeyStoreType(KeyStore.getDefaultType());
                 logger.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
             }
 

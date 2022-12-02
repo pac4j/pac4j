@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -16,8 +17,6 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfigurationContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,8 +31,8 @@ import java.util.stream.Collectors;
  * @since 1.9.2
  */
 @SuppressWarnings("unchecked")
+@Slf4j
 public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(OidcRedirectionActionBuilder.class);
 
     protected OidcClient client;
 
@@ -65,7 +64,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         }
 
         val location = buildAuthenticationRequestUrl(params);
-        logger.debug("Authentication request url: {}", location);
+        LOGGER.debug("Authentication request url: {}", location);
 
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
     }

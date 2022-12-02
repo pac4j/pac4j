@@ -2,10 +2,9 @@ package org.pac4j.oauth.profile.converter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -15,9 +14,8 @@ import java.io.IOException;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Slf4j
 public final class JsonConverter implements AttributeConverter {
-
-    private static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
     private final Class<? extends Object> clazz;
 
@@ -52,7 +50,7 @@ public final class JsonConverter implements AttributeConverter {
                         return JsonHelper.getMapper().readValue(s, clazz);
                     }
                 } catch (final IOException e) {
-                    logger.error("Cannot read value", e);
+                    LOGGER.error("Cannot read value", e);
                 }
             }
         }

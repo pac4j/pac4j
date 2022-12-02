@@ -134,7 +134,7 @@ public class OAuthBuilder extends AbstractBuilder {
                 client.setAuthUrl(getProperty(OAUTH2_AUTH_URL, i));
                 client.setTokenUrl(getProperty(OAUTH2_TOKEN_URL, i));
                 client.setProfileUrl(getProperty(OAUTH2_PROFILE_URL, i));
-                client.setProfileNodePath(getProperty(OAUTH2_PROFILE_PATH, i));
+                client.setProfilePath(getProperty(OAUTH2_PROFILE_PATH, i));
                 client.setProfileId(getProperty(OAUTH2_PROFILE_ID, i));
                 client.setScope(getProperty(OAUTH2_SCOPE, i));
 

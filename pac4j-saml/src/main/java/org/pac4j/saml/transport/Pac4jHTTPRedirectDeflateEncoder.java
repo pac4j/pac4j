@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.collection.Pair;
@@ -23,8 +24,6 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.ByteArrayOutputStream;
@@ -41,9 +40,8 @@ import java.util.zip.DeflaterOutputStream;
  * @author Misagh Moayyed
  * @since 1.8
  */
+@Slf4j
 public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
-
-    private static final Logger log = LoggerFactory.getLogger(Pac4jHTTPRedirectDeflateEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
     private final boolean isAuthnRequestSigned;
@@ -71,7 +69,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
 
     @Override
     protected void doInitialize() throws ComponentInitializationException {
-        log.debug("Initialized {}", this.getClass().getSimpleName());
+        LOGGER.debug("Initialized {}", this.getClass().getSimpleName());
     }
 
     /**
@@ -100,7 +98,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
         if (message instanceof SignableSAMLObject) {
             val signableMessage = (SignableSAMLObject) message;
             if (signableMessage.isSigned()) {
-                log.debug("Removing SAML protocol message signature");
+                LOGGER.debug("Removing SAML protocol message signature");
                 signableMessage.setSignature(null);
             }
         }
@@ -116,10 +114,10 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * @throws MessageEncodingException thrown if there is a problem compressing the message
      */
     String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
-        log.debug("Deflating and Base64 encoding SAML message");
+        LOGGER.debug("Deflating and Base64 encoding SAML message");
         try {
             val messageStr = SerializeSupport.nodeToString(marshallMessage(message));
-            log.trace("Output XML message: {}", messageStr);
+            LOGGER.trace("Output XML message: {}", messageStr);
 
             val bytesOut = new ByteArrayOutputStream();
             val deflater = new Deflater(Deflater.DEFLATED, true);
@@ -143,7 +141,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
      */
     protected Element marshallMessage(final XMLObject message) throws MessageEncodingException {
-        log.debug("Marshalling message");
+        LOGGER.debug("Marshalling message");
 
         try {
             return XMLObjectSupport.marshall(message);
@@ -165,7 +163,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      */
     protected String buildRedirectURL(final MessageContext messageContext, final String endpoint, final String message)
             throws MessageEncodingException {
-        log.debug("Building URL to redirect client to");
+        LOGGER.debug("Building URL to redirect client to");
 
         final URLBuilder urlBuilder;
         try {
@@ -211,7 +209,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
                 queryParams.add(new Pair<>("Signature", generateSignature(
                         signingParameters.getSigningCredential(), sigAlgURI, sigMaterial)));
             } else {
-                log.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");
+                LOGGER.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");
             }
         }
 
@@ -252,7 +250,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
     protected String generateSignature(final Credential signingCredential, final String algorithmURI, final String queryString)
             throws MessageEncodingException {
 
-        log.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
+        LOGGER.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
                 CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
 
         final String b64Signature;
@@ -260,7 +258,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
             val rawSignature =
                     XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes(StandardCharsets.UTF_8));
             b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
-            log.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
+            LOGGER.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
         } catch (final Exception e) {
             throw new MessageEncodingException("Unable to sign URL query string", e);
         }

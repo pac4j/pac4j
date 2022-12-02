@@ -1,6 +1,7 @@
 package org.pac4j.saml.crypto;
 
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
@@ -15,8 +16,6 @@ import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -30,9 +29,8 @@ import java.util.HashMap;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
+@Slf4j
 public class KeyStoreCredentialProvider implements CredentialProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
 
     private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 
@@ -60,10 +58,10 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     private static KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
         try {
-            logger.debug("Loading keystore with type {}", keyStoreType);
+            LOGGER.debug("Loading keystore with type {}", keyStoreType);
             val ks = KeyStore.getInstance(keyStoreType);
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
-            logger.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
+            LOGGER.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
             return ks;
         } catch (final Exception e) {
             throw new SAMLException("Error loading keystore", e);

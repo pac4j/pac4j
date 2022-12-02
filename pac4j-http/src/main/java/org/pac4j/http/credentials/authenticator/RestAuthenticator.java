@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -19,8 +20,6 @@ import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.http.profile.RestProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -40,9 +39,8 @@ import java.util.Optional;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class RestAuthenticator extends ProfileDefinitionAware implements Authenticator {
-
-    private static final Logger logger = LoggerFactory.getLogger(RestAuthenticator.class);
 
     private ObjectMapper mapper;
 
@@ -74,12 +72,12 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         val username = credentials.getUsername();
         val password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
-            logger.info("Empty username or password");
+            LOGGER.info("Empty username or password");
             return Optional.of(credentials);
         }
 
         val body = callRestApi(username, password);
-        logger.debug("body: {}", body);
+        LOGGER.debug("body: {}", body);
         if (body != null) {
             buildProfile(credentials, body);
         }
@@ -95,7 +93,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         } catch (final IOException e) {
             throw new TechnicalException(e);
         }
-        logger.debug("profile: {}", profile);
+        LOGGER.debug("profile: {}", profile);
         credentials.setUserProfile(profile);
     }
 
@@ -118,13 +116,13 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
             connection = HttpUtils.openPostConnection(new URL(url), headers);
             val code = connection.getResponseCode();
             if (code == 200) {
-                logger.debug("Authentication success for username: {}", username);
+                LOGGER.debug("Authentication success for username: {}", username);
                 return HttpUtils.readBody(connection);
             } else if (code == 401 || code == 403) {
-                logger.info("Authentication failure for username: {} -> {}", username, HttpUtils.buildHttpErrorMessage(connection));
+                LOGGER.info("Authentication failure for username: {} -> {}", username, HttpUtils.buildHttpErrorMessage(connection));
                 return null;
             } else {
-                logger.warn("Unexpected error for username: {} -> {}", username, HttpUtils.buildHttpErrorMessage(connection));
+                LOGGER.warn("Unexpected error for username: {} -> {}", username, HttpUtils.buildHttpErrorMessage(connection));
                 return null;
             }
         } catch (final IOException e) {

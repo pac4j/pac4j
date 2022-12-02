@@ -1,5 +1,6 @@
 package org.pac4j.saml.crypto;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.saml.criterion.RoleDescriptorCriterion;
@@ -12,8 +13,6 @@ import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.criterion.SignatureSigningConfigurationCriterion;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,8 @@ import java.util.List;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@Slf4j
 public class DefaultSignatureSigningParametersProvider implements SignatureSigningParametersProvider {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSignatureSigningParametersProvider.class);
 
     private final SAML2Configuration configuration;
 
@@ -49,7 +48,7 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
                 throw new SAMLException("Could not determine the signature parameters");
             }
 
-            logger.info("Created signature signing parameters." +
+            LOGGER.info("Created signature signing parameters." +
                     "\nSignature algorithm: {}" +
                     "\nSignature canonicalization algorithm: {}" +
                     "\nSignature reference digest methods: {}",

@@ -1,6 +1,7 @@
 package org.pac4j.saml.transport;
 
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.annotation.constraint.NonnullAfterInit;
 import net.shibboleth.shared.annotation.constraint.NotEmpty;
@@ -46,8 +47,6 @@ import org.opensaml.soap.client.http.PipelineFactoryHttpSOAPClient;
 import org.opensaml.soap.common.SOAPException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.util.SAML2Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import java.time.ZoneOffset;
@@ -60,12 +59,8 @@ import java.time.ZonedDateTime;
  * @author Jerome LELEU
  * @since 3.8.0
  */
+@Slf4j
 public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements SAMLMessageDecoder {
-
-    /**
-     * Class logger.
-     */
-    private final Logger log = LoggerFactory.getLogger(Pac4jHTTPArtifactDecoder.class);
 
     /**
      * The web context
@@ -144,15 +139,15 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      */
     @Override
     public void decode() throws MessageDecodingException {
-        log.debug("Beginning to decode message from WebContext");
+        LOGGER.debug("Beginning to decode message from WebContext");
 
-        log.debug("HttpServletRequest indicated Content-Type: {}", webContext.getRequestHeader("Content-type"));
+        LOGGER.debug("HttpServletRequest indicated Content-Type: {}", webContext.getRequestHeader("Content-type"));
 
         super.decode();
 
         SAML2Utils.logProtocolMessage((XMLObject) getMessageContext().getMessage());
 
-        log.debug("Successfully decoded message from WebContext.");
+        LOGGER.debug("Successfully decoded message from WebContext.");
     }
 
     /**
@@ -179,7 +174,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         val messageContext = new MessageContext();
 
         val relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
-        log.debug("Decoded SAML relay state of: {}", relayState);
+        LOGGER.debug("Decoded SAML relay state of: {}", relayState);
         SAMLBindingSupport.setRelayState(messageContext, relayState);
 
         processArtifact(messageContext, webContext);
@@ -490,7 +485,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         val encodedArtifact = StringSupport.trimOrNull(webContext.getRequestParameter("SAMLart").orElse(null));
         if (encodedArtifact == null) {
-            log.error("URL SAMLart parameter was missing or did not contain a value.");
+            LOGGER.error("URL SAMLart parameter was missing or did not contain a value.");
             throw new MessageDecodingException("URL SAMLart parameter was missing or did not contain a value.");
         }
 
@@ -542,7 +537,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
                 .setSelfEntityID(selfEntityID)
                 .build();
 
-            log.trace("Executing ArtifactResolve over SOAP 1.1 binding to endpoint: {}", ars.getLocation());
+            LOGGER.trace("Executing ArtifactResolve over SOAP 1.1 binding to endpoint: {}", ars.getLocation());
             soapClient.send(ars.getLocation(), opContext);
             val response = (SAMLObject) opContext.getInboundMessageContext().getMessage();
             if (response instanceof ArtifactResponse) {

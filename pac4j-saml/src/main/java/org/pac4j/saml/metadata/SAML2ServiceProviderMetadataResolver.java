@@ -1,6 +1,5 @@
 package org.pac4j.saml.metadata;
 
-
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
@@ -10,16 +9,12 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Misagh Moayyed
  * @since 1.7
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
-
-    protected static final Logger logger = LoggerFactory.getLogger(SAML2ServiceProviderMetadataResolver.class);
 
     protected final SAML2Configuration configuration;
     private MetadataResolver metadataResolver;

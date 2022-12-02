@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @Setter
 public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerator {
 
-    protected static final Logger logger = LoggerFactory.getLogger(BaseSAML2MetadataGenerator.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 

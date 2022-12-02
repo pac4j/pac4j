@@ -1,9 +1,8 @@
 package org.pac4j.core.util.serializer;
 
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -17,9 +16,8 @@ import java.util.stream.Collectors;
  * @since 1.8.1
  */
 @ToString
+@Slf4j
 public class JavaSerializer extends AbstractSerializer {
-
-    private static final Logger logger = LoggerFactory.getLogger(JavaSerializer.class);
 
     private Set<String> trustedPackages;
 
@@ -48,7 +46,7 @@ public class JavaSerializer extends AbstractSerializer {
             oos.flush();
             bytes = baos.toByteArray();
         } catch (final IOException e) {
-            logger.warn("cannot Java serialize object", e);
+            LOGGER.warn("cannot Java serialize object", e);
         }
         return bytes;
     }
@@ -66,7 +64,7 @@ public class JavaSerializer extends AbstractSerializer {
              ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages, this.trustedClasses)) {
             o = (Serializable) ois.readObject();
         } catch (final IOException | ClassNotFoundException e) {
-            logger.warn("cannot Java deserialize object", e);
+            LOGGER.warn("cannot Java deserialize object", e);
         }
         return o;
     }

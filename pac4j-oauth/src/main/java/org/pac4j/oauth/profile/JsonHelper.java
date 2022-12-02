@@ -1,14 +1,12 @@
 package org.pac4j.oauth.profile;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 
 /**
  * This class is an helper to work with JSON.
@@ -16,9 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@Slf4j
 public final class JsonHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
 
     private static ObjectMapper mapper;
 
@@ -54,7 +51,7 @@ public final class JsonHelper {
             }
             return node;
         } catch (final IOException e) {
-            logger.error("Cannot get first node", e);
+            LOGGER.error("Cannot get first node", e);
         }
         return null;
     }
@@ -105,7 +102,7 @@ public final class JsonHelper {
         try {
             return mapper.writeValueAsString(obj);
         } catch (final JsonProcessingException e) {
-            logger.error("Cannot to JSON string", e);
+            LOGGER.error("Cannot to JSON string", e);
         }
         return null;
     }

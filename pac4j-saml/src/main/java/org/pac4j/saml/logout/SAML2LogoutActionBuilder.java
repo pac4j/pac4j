@@ -1,5 +1,6 @@
 package org.pac4j.saml.logout;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -16,8 +17,6 @@ import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestBuilder;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.api.SAML2ProfileHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -27,8 +26,8 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Slf4j
 public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
-    protected final Logger logger = LoggerFactory.getLogger(SAML2LogoutActionBuilder.class);
 
     protected SAML2LogoutRequestBuilder saml2LogoutRequestBuilder;
 
@@ -72,10 +71,10 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
                 return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
             }
         } catch (final Exception e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(e.getMessage(), e);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(e.getMessage(), e);
             } else {
-                logger.warn(e.getMessage());
+                LOGGER.warn(e.getMessage());
             }
         }
         return Optional.empty();

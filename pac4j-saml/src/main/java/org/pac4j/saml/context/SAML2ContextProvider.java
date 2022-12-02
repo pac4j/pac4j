@@ -1,5 +1,6 @@
 package org.pac4j.saml.context;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.resolver.ResolverException;
@@ -22,8 +23,6 @@ import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.pac4j.saml.transport.DefaultPac4jSAMLResponse;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.pac4j.saml.util.SAML2Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 
@@ -36,10 +35,9 @@ import javax.xml.namespace.QName;
  * @since 1.7
  */
 @SuppressWarnings("rawtypes")
+@Slf4j
 public class SAML2ContextProvider implements SAMLContextProvider {
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
-
-    protected static final Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
     protected final SAML2MetadataResolver idpEntityId;
 
@@ -85,7 +83,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
 
         if (this.samlMessageStoreFactory != null) {
-            logger.debug("Creating message store by {}", this.samlMessageStoreFactory.getClass().getName());
+            LOGGER.debug("Creating message store by {}", this.samlMessageStoreFactory.getClass().getName());
             context.setSamlMessageStore(this.samlMessageStoreFactory.getMessageStore(webContext, sessionStore));
         }
     }

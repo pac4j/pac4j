@@ -1,6 +1,7 @@
 package org.pac4j.saml.transport;
 
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.codec.HTMLEncoder;
@@ -21,8 +22,6 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.net.URI;
@@ -35,13 +34,12 @@ import java.nio.charset.StandardCharsets;
  * @author Misagh Moayyed
  * @since 1.8
  */
+@Slf4j
 public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     /**
      * Default template ID.
      */
     public static final String DEFAULT_TEMPLATE_ID = "/templates/saml2-post-binding.vm";
-
-    private static final Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
 
@@ -70,7 +68,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
-        log.debug("Initialized {}", this.getClass().getSimpleName());
+        LOGGER.debug("Initialized {}", this.getClass().getSimpleName());
 
         if (velocityEngine == null) {
             throw new ComponentInitializationException("VelocityEngine must be supplied");
@@ -110,7 +108,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     }
 
     protected void postEncode(final MessageContext messageContext, final String endpointURL) throws MessageEncodingException {
-        log.debug("Invoking Velocity template to create POST body");
+        LOGGER.debug("Invoking Velocity template to create POST body");
 
         try {
             val velocityContext = new VelocityContext();
@@ -183,17 +181,17 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
                                            final String endpointURL) throws MessageEncodingException {
 
         val encodedEndpointURL = HTMLEncoder.encodeForHTMLAttribute(endpointURL);
-        log.debug("Encoding action url of '{}' with encoded value '{}'", endpointURL, encodedEndpointURL);
+        LOGGER.debug("Encoding action url of '{}' with encoded value '{}'", endpointURL, encodedEndpointURL);
         velocityContext.put("action", encodedEndpointURL);
         velocityContext.put("binding", getBindingURI());
 
         val outboundMessage = (SAMLObject) messageContext.getMessage();
 
-        log.debug("Marshalling and Base64 encoding SAML message");
+        LOGGER.debug("Marshalling and Base64 encoding SAML message");
         val domMessage = marshallMessage(outboundMessage);
 
         val messageXML = SerializeSupport.nodeToString(domMessage);
-        log.trace("Output XML message: {}", messageXML);
+        LOGGER.trace("Output XML message: {}", messageXML);
         final String encodedMessage;
         try {
             encodedMessage = Base64Support.encode(messageXML.getBytes(StandardCharsets.UTF_8), Base64Support.UNCHUNKED);
@@ -212,7 +210,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
         val relayState = SAMLBindingSupport.getRelayState(messageContext);
         if (SAMLBindingSupport.checkRelayState(relayState)) {
             val encodedRelayState = HTMLEncoder.encodeForHTMLAttribute(relayState);
-            log.debug("Setting RelayState parameter to: '{}', encoded as '{}'", relayState, encodedRelayState);
+            LOGGER.debug("Setting RelayState parameter to: '{}', encoded as '{}'", relayState, encodedRelayState);
             velocityContext.put("RelayState", encodedRelayState);
         }
     }
@@ -229,7 +227,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
      * @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
      */
     protected Element marshallMessage(final XMLObject message) throws MessageEncodingException {
-        log.debug("Marshalling message");
+        LOGGER.debug("Marshalling message");
 
         try {
             return XMLObjectSupport.marshall(message);

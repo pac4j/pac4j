@@ -1,6 +1,9 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.model.Verb;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.profile.converter.AbstractAttributeConverter;
 import org.pac4j.core.profile.converter.AttributeConverter;
@@ -10,8 +13,6 @@ import org.pac4j.scribe.builder.api.GenericApi20;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -27,9 +28,10 @@ import java.util.stream.Collectors;
  *
  * @author Julio Arrebola
  */
+@Slf4j
+@Getter
+@Setter
 public class GenericOAuth20Client extends OAuth20Client {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GenericOAuth20Client.class);
 
     private String authUrl;
     private String tokenUrl;
@@ -58,7 +60,7 @@ public class GenericOAuth20Client extends OAuth20Client {
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .collect(Collectors.toList());
         } catch (Exception e) {
-            LOG.warn(e.toString());
+            LOGGER.warn(e.toString());
         }
         return new ArrayList<>(0);
     }
@@ -92,7 +94,7 @@ public class GenericOAuth20Client extends OAuth20Client {
                 } else if (tokens.length == 1) {
                     profileDefinition.profileAttribute(key, value, null);
                 } else {
-                    LOG.warn("Ignored incorrect attribute value expressions: {}", value);
+                    LOGGER.warn("Ignored incorrect attribute value expressions: {}", value);
                 }
             }
         }
@@ -113,7 +115,7 @@ public class GenericOAuth20Client extends OAuth20Client {
                         var accept = AbstractAttributeConverter.class.getDeclaredMethod("accept", String.class);
                         return (Boolean) accept.invoke(converter, typeName);
                     } catch (ReflectiveOperationException e) {
-                        LOG.warn("Ignore type which no parameterless constructor:" + x.getName());
+                        LOGGER.warn("Ignore type which no parameterless constructor:" + x.getName());
                     }
                     return false;
                 });
@@ -122,67 +124,10 @@ public class GenericOAuth20Client extends OAuth20Client {
                 return converterClazz.getDeclaredConstructor().newInstance();
             }
         } catch (Exception e) {
-            LOG.warn(e.toString());
+            LOGGER.warn(e.toString());
         }
         return null;
     }
-
-    public void setAuthUrl(final String authUrl) {
-        this.authUrl = authUrl;
-    }
-
-    public void setTokenUrl(final String tokenUrl) {
-        this.tokenUrl = tokenUrl;
-    }
-
-    public void setProfileUrl(final String profileUrl) {
-        this.profileUrl = profileUrl;
-    }
-
-    public void setProfileNodePath(final String profilePath) {
-        this.profilePath = profilePath;
-    }
-
-    public void setProfileVerb(final Verb profileVerb) {
-        this.profileVerb = profileVerb;
-    }
-
-    public void setProfileAttrs(final Map<String, String> profileAttrsMap) {
-        this.profileAttrs = profileAttrsMap;
-    }
-
-    public void setCustomParams(final Map<String, String> customParamsMap) {
-        this.customParams = customParamsMap;
-    }
-
-    public void setProfileId(final String profileId) {
-        this.profileId = profileId;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(final String scope) {
-        this.scope = scope;
-    }
-
-    public boolean isWithState() {
-        return withState;
-    }
-
-    public void setWithState(final boolean withState) {
-        this.withState = withState;
-    }
-
-    public String getClientAuthenticationMethod() {
-        return clientAuthenticationMethod;
-    }
-
-    public void setClientAuthenticationMethod(final String clientAuthenticationMethod) {
-        this.clientAuthenticationMethod = clientAuthenticationMethod;
-    }
-
     public List<Class<? extends AbstractAttributeConverter>> getConverters() {
         return List.copyOf(converterClasses);
     }

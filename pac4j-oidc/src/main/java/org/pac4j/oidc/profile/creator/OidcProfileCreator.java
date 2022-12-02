@@ -8,6 +8,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -25,8 +26,6 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -41,9 +40,8 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Slf4j
 public class OidcProfileCreator extends ProfileDefinitionAware implements ProfileCreator {
-
-    private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
     protected OidcConfiguration configuration;
 
@@ -89,7 +87,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             val refreshToken = oidcCredentials.getRefreshToken();
             if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
                 profile.setRefreshToken(refreshToken);
-                logger.debug("Refresh Token successful retrieved");
+                LOGGER.debug("Refresh Token successful retrieved");
             }
         }
 
@@ -120,12 +118,12 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
                 val httpResponse = userInfoHttpRequest.send();
-                logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
+                LOGGER.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
 
                 val userInfoResponse = UserInfoResponse.parse(httpResponse);
                 if (userInfoResponse instanceof UserInfoErrorResponse) {
-                    logger.error("Bad User Info response, error={}",
+                    LOGGER.error("Bad User Info response, error={}",
                         ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
                     val userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
@@ -138,7 +136,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                     if (userInfoClaimsSet != null) {
                         getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
                     } else {
-                        logger.warn("Cannot retrieve claims from user info");
+                        LOGGER.warn("Cannot retrieve claims from user info");
                     }
                 }
             }
@@ -186,7 +184,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
             }
         } catch (final ParseException | java.text.ParseException | JOSEException | BadJOSEException e) {
-            logger.debug(e.getMessage(), e);
+            LOGGER.debug(e.getMessage(), e);
         } catch (final Exception e) {
             throw new TechnicalException(e);
         }

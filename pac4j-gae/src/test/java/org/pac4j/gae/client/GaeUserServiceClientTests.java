@@ -2,6 +2,7 @@ package org.pac4j.gae.client;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.After;
 import org.junit.Before;
@@ -19,8 +20,6 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,9 +30,8 @@ import static org.junit.Assert.assertTrue;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Slf4j
 public final class GaeUserServiceClientTests implements TestsConstants {
-
-    private final static Logger logger = LoggerFactory.getLogger(GaeUserServiceClientTests.class);
 
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalUserServiceTestConfig())
@@ -79,7 +77,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
         assertEquals(Pac4jConstants.EMPTY_STRING, user.getAuthDomain());
         val profile =
             (GaeUserServiceProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
-        logger.debug("userProfile: {}", profile);
+        LOGGER.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
         assertEquals(GaeUserServiceProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + EMAIL, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GaeUserServiceProfile.class));

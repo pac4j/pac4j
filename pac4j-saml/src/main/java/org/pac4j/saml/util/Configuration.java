@@ -1,5 +1,6 @@
 package org.pac4j.saml.util;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.xml.ParserPool;
 import org.opensaml.core.xml.XMLObject;
@@ -10,8 +11,6 @@ import org.opensaml.core.xml.io.UnmarshallerFactory;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.pac4j.core.adapter.JEEAdapter;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
@@ -36,14 +35,14 @@ import java.util.ServiceLoader;
  * @author Misagh Moayyed
  * @since 1.7
  */
+@Slf4j
 public final class Configuration {
-    protected static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     private Configuration() {
     }
 
     static {
-        logger.info("Bootstrapping OpenSAML configuration via Pac4j...");
+        LOGGER.info("Bootstrapping OpenSAML configuration via Pac4j...");
         bootstrap();
     }
 
@@ -58,7 +57,6 @@ public final class Configuration {
             configurationManagerList.get(0).configure();
         }
     }
-
 
     public static ParserPool getParserPool() {
         return XMLObjectProviderRegistrySupport.getParserPool();
@@ -98,10 +96,10 @@ public final class Configuration {
     }
 
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
-        try (var reader = new StringReader(obj)) {
+        try (val reader = new StringReader(obj)) {
             return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
         } catch (final Exception e) {
-            logger.error("Error unmarshalling message from input stream", e);
+            LOGGER.error("Error unmarshalling message from input stream", e);
             return Optional.empty();
         }
     }

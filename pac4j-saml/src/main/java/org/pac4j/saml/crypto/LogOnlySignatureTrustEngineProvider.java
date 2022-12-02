@@ -1,5 +1,6 @@
 package org.pac4j.saml.crypto;
 
+import lombok.extern.slf4j.Slf4j;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.Credential;
@@ -8,17 +9,14 @@ import org.opensaml.security.trust.TrustedCredentialTrustEngine;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provider wrapping another trust engine provider to suppress all signature validation errors and only log them.
  *
  * @since 3.8.0
  */
+@Slf4j
 public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustEngineProvider {
-
-    private static final Logger log = LoggerFactory.getLogger(LogOnlySignatureTrustEngineProvider.class);
 
     private final SAML2SignatureTrustEngineProvider wrapped;
 
@@ -35,7 +33,7 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
         private final SignatureTrustEngine wrapped;
 
         public LogOnlySignatureTrustEngine(final SignatureTrustEngine wrapped) {
-            log.error("SIGNATURE VALIDATION DISABLED, DO NOT USE THIS ON PRODUCTION");
+            LOGGER.error("SIGNATURE VALIDATION DISABLED, DO NOT USE THIS ON PRODUCTION");
             this.wrapped = wrapped;
         }
 
@@ -53,10 +51,10 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
         public boolean validate(final Signature token, final CriteriaSet trustBasisCriteria) throws SecurityException {
             try {
                 if (!wrapped.validate(token, trustBasisCriteria)) {
-                    log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
+                    LOGGER.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
                 }
             } catch (final SecurityException e) {
-                log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
+                LOGGER.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
                         + e.getMessage(), e);
             }
             return true;
@@ -69,10 +67,10 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
                                 final Credential candidateCredential) throws SecurityException {
             try {
                 if (!wrapped.validate(signature, content, algorithmURI, trustBasisCriteria, candidateCredential)) {
-                    log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
+                    LOGGER.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria);
                 }
             } catch (final SecurityException e) {
-                log.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
+                LOGGER.error("Signature validation failed, continuing anyway. Criteria: " + trustBasisCriteria + ", cause: "
                         + e.getMessage(), e);
             }
             return true;

@@ -1,5 +1,6 @@
 package org.pac4j.saml.util;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.ResolverException;
@@ -27,10 +28,10 @@ import java.util.List;
  * @author jkacer
  * @since 1.8.0
  */
+@Slf4j
 public final class SAML2Utils implements HttpConstants {
 
     /** SLF4J logger. */
-    private static final Logger logger = LoggerFactory.getLogger(SAML2Utils.class);
     private static final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
 
     /**
@@ -74,7 +75,7 @@ public final class SAML2Utils implements HttpConstants {
             val eq = normalizedUri1.equals(normalizedUri2);
             return eq;
         } catch (final URISyntaxException use) {
-            logger.error("Cannot compare 2 URIs.", use);
+            LOGGER.error("Cannot compare 2 URIs.", use);
             return false;
         }
     }
@@ -129,7 +130,7 @@ public final class SAML2Utils implements HttpConstants {
                 val requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
                 protocolMessageLog.debug(requestXml);
             } catch (final MarshallingException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
     }

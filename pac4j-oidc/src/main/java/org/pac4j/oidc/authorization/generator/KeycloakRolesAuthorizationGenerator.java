@@ -1,14 +1,15 @@
 package org.pac4j.oidc.authorization.generator;
 
 import com.nimbusds.jwt.SignedJWT;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,10 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 3.4.0
  */
+@Slf4j
+@Getter
+@Setter
 public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakRolesAuthorizationGenerator.class);
 
     private String clientId;
 
@@ -67,13 +69,5 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
         }
 
         return Optional.of(profile);
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(final String clientId) {
-        this.clientId = clientId;
     }
 }

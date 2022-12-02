@@ -1,7 +1,6 @@
 package org.pac4j.core.profile.converter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,9 +14,8 @@ import java.util.Locale;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@Slf4j
 public class DateConverter extends AbstractAttributeConverter {
-
-    protected static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
 
     protected String format;
 
@@ -49,7 +47,7 @@ public class DateConverter extends AbstractAttributeConverter {
             try {
                 return simpleDateFormat.parse(s);
             } catch (final ParseException e) {
-                logger.error("parse exception on {} with format: {} and locale: {}", s, this.format, this.locale, e);
+                LOGGER.error("parse exception on {} with format: {} and locale: {}", s, this.format, this.locale, e);
             }
         }
         return null;

@@ -57,7 +57,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                     cfg.setAuthnRequestBindingType(destinationBindingType);
                 }
                 if (isNotBlank(keystoreAlias)) {
-                    cfg.setKeystoreAlias(keystoreAlias);
+                    cfg.setKeyStoreAlias(keystoreAlias);
                 }
 
                 val acceptedSkew = getProperty(SAML_ACCEPTED_SKEW, i);
