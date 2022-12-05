@@ -47,6 +47,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <version>5.3.24</version>
             <scope>test</scope>
         </dependency>
         <dependency>
