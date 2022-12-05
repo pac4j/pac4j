@@ -60,7 +60,7 @@
 
 	<properties>
         <mongo-driver.version>4.8.0</mongo-driver.version>
-        <flapdoodle.version>3.5.3</flapdoodle.version>
+        <flapdoodle.version>4.1.0</flapdoodle.version>
 		<junit.version>4.13.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
