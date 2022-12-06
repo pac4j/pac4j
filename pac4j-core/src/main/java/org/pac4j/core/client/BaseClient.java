@@ -29,11 +29,11 @@ import java.util.*;
  * <li>The initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit(boolean)}
  * must be implemented in sub-classes. The {@link #init()} method must be called implicitly by the main methods of
  * the {@link Client} interface, so that no explicit call is required to initialize the client</li>
- * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
+ * <li>The name of the client is handled through the <code>getName</code> and <code>setName</code> methods</li>
  * <li>After retrieving the user profile, the client can generate the authorization information (roles and remember-me) by
  * using the appropriate {@link AuthorizationGenerator}</li>
- * <li>The credentials extraction and validation in the {@link #getCredentials(WebContext, SessionStore)} method are handled by the
- * {@link #credentialsExtractor} and {@link #authenticator} components</li>
+ * <li>The credentials extraction and validation in the {@link #getCredentials(WebContext, SessionStore, ProfileManagerFactory)} method are
+ * handled by the {@link #credentialsExtractor} and {@link #authenticator} components</li>
  * <li>The user profile retrieval in the {@link #getUserProfile(Credentials, WebContext, SessionStore)} method is ensured
  * by the {@link #profileCreator} component.</li>
  * </ul>

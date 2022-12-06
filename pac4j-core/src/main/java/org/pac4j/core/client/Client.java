@@ -15,13 +15,13 @@ import java.util.Optional;
  * <p>Clients can be "indirect": in that case, credentials are not provided with the HTTP request, but the user must be redirected to
  * an identity provider to perform login, the original requested url being saved and restored after the authentication process is done.</p>
  * <p>The {@link #getRedirectionAction(WebContext, SessionStore)} method is called to get the redirection to the identity provider,
- * the {@link #getCredentials(WebContext, SessionStore)} method is used to retrieve the credentials provided
+ * the {@link #getCredentials(WebContext, SessionStore, ProfileManagerFactory)} method is used to retrieve the credentials provided
  * by the remote identity provider and the {@link #getUserProfile(Credentials, WebContext, SessionStore)} method is called
  * to get the user profile from the identity provider and based on the provided credentials.</p>
  * <p>Clients can be "direct": in that case, credentials are provided along with the HTTP request and validated by the application.</p>
  * <p>The {@link #getRedirectionAction(WebContext, SessionStore)} method is not used,
- * the {@link #getCredentials(WebContext, SessionStore)} method is used to retrieve and validate the credentials provided
- * and the {@link #getUserProfile(Credentials, WebContext, SessionStore)} method is called
+ * the {@link #getCredentials(WebContext, SessionStore, ProfileManagerFactory)} method is used to retrieve and validate the credentials
+ * provided and the {@link #getUserProfile(Credentials, WebContext, SessionStore)} method is called
  * to get the user profile from the appropriate system.</p>
  *
  * @author Jerome Leleu

@@ -11,8 +11,7 @@ import java.util.*;
 
 /**
  * <p>Generate the authorization information by inspecting attributes.</p>
- * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)})
- * are defined in the constructor.</p>
+ * <p>The attributes containing the roles separated by the {@link #splitChar} property are defined in the constructor.</p>
  *
  * @author Jerome Leleu
  * @since 1.5.0

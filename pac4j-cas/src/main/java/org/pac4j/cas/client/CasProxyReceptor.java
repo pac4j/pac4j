@@ -18,11 +18,11 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 /**
  * <p>This class is the CAS proxy receptor.</p>
  *
- * <p>The url of the proxy receptor is defined via the {@link #setCallbackUrl(String)} method, it's the <code>proxyReceptorUrl</code>
+ * <p>The url of the proxy receptor is defined via the <code>setCallbackUrl(String)</code> method, it's the <code>proxyReceptorUrl</code>
  * concept of the Jasig CAS client.</p>
  *
  * <p>The proxy granting tickets and associations are stored by default in a {@link Store} class, which can be overridden by using the
- * {@link #setStore(Store)} method.</p>
+ * <code>setStore(Store)</code> method.</p>
  *
  * @author Jerome Leleu
  * @since 1.4.0
