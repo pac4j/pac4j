@@ -463,6 +463,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <sourcepath>src/main/java</sourcepath>
                     <source>${java.version}</source>
                     <release>${java.version}</release>
                 </configuration>
