@@ -3,7 +3,9 @@ package org.pac4j.saml.config;
 import net.shibboleth.utilities.java.support.net.URIComparator;
 import net.shibboleth.utilities.java.support.net.impl.BasicURLComparator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.Issuer;
@@ -48,7 +50,9 @@ import org.springframework.core.io.UrlResource;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -928,7 +932,32 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 generator.setRequestInitiatorLocation(callbackUrl);
                 // Assertion consumer service url is the callback URL
                 generator.setAssertionConsumerServiceUrl(callbackUrl);
-                generator.setResponseBindingType(getResponseBindingType());
+
+                LOGGER.debug("callbackUrl: " + callbackUrl);
+
+                //retrieving list of url params in order to extract "client_name" parameter
+                List<NameValuePair> params = URLEncodedUtils.parse(new URI(callbackUrl), Charset.forName("UTF-8"));
+                String clientParamValue= "";
+                for (NameValuePair param : params) {
+                    LOGGER.debug(param.getName() + " : " + param.getValue());
+                    if(StringUtils.equalsIgnoreCase(param.getName(),"client_name")){
+                        clientParamValue = param.getValue();
+                        break;
+                    }
+                }
+
+                //if client_name param is equal to the SAML client ID that supports artifact binding, set the response binding type to SAMLConstants.SAML2_ARTIFACT_BINDING_URI
+                if(StringUtils.equals(clientParamValue, "saml_client_id")) {
+                    LOGGER.debug("clientParamValue = " + clientParamValue);
+                    LOGGER.debug("setting Response Binding Type as: " + SAMLConstants.SAML2_ARTIFACT_BINDING_URI);
+                    generator.setResponseBindingType(SAMLConstants.SAML2_ARTIFACT_BINDING_URI);
+                    setResponseBindingType(SAMLConstants.SAML2_ARTIFACT_BINDING_URI);
+                } else {
+                    LOGGER.debug("clientParamValue = " + clientParamValue);
+                    LOGGER.debug("setting Response Binding Type as: " + SAMLConstants.SAML2_POST_BINDING_URI);
+                    generator.setResponseBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+                    setResponseBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+                }
 
                 determineSingleSignOutServiceUrl(generator);
 
