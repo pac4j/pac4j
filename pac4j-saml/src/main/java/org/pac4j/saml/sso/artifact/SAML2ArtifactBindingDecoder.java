@@ -1,6 +1,10 @@
 package org.pac4j.saml.sso.artifact;
 
 import lombok.val;
+import net.shibboleth.shared.httpclient.HttpClientBuilder;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.binding.impl.DefaultEndpointResolver;
@@ -18,7 +22,14 @@ import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
 import org.pac4j.saml.transport.Pac4jHTTPArtifactDecoder;
 
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Decodes a SAML artifact binding request by fetching the actual artifact via
@@ -67,9 +78,47 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
                     transferContext(operationContext, messageContext);
                 }
             };
-            soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
-            soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
 
+            /**
+             * SAML integration with HTTP-artifact binding
+             *
+             * Since CAS does not support artifact binding, I come across an issue trying to perform the back-end channel artifact resolution request over to IDP entity that only supports HTTP-artifact binding.
+             * The issue is that the two-way SSL handshake does not occur because we are not sending our certificate over once they request for our certificate for validation.
+             * The solution below attempts to create a brand new SSLConnectionSocketFactory object,
+             * where the correct keystore and truststore values are specified. This way, we should be able to correctly complete the two-way handshake for the artifact resolution request.
+             *
+             */
+            KeyStore keyStore = KeyStore.getInstance("JKS");
+            Optional map = this.context.getRequestAttribute("props");
+
+            if(map.isPresent()) {
+                logger.debug("Creating custom SSL Connection socket");
+
+                HashMap<String, String> propertiesMap = (HashMap) map.get();
+
+                InputStream keystoreStream = new FileInputStream(propertiesMap.get("keystore-path"));
+                String keystorePassword = propertiesMap.get("keystore-password");
+                keyStore.load(keystoreStream, keystorePassword.toCharArray());
+                keystoreStream.close();
+
+                HttpClientBuilder httpClientBuilder = soapPipelineProvider.getHttpClientBuilder();
+
+                SSLContextBuilder sslContextBuilder = SSLContexts.custom();
+                sslContextBuilder = sslContextBuilder.loadTrustMaterial(new File(propertiesMap.get("truststore-path")), propertiesMap.get("truststore-password").toCharArray());
+                sslContextBuilder = sslContextBuilder.loadKeyMaterial(keyStore , keystorePassword.toCharArray());
+                SSLContext sslContextNew = sslContextBuilder.build();
+
+                SSLConnectionSocketFactory sslConSocFactory = new SSLConnectionSocketFactory(sslContextNew, new String[]{"TLSv1.2"}, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+                httpClientBuilder.setTLSSocketFactory(sslConSocFactory);
+                soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
+                soapClient.setHttpClient(httpClientBuilder.buildClient());
+
+            } else {
+                //else statement contains the original code from this pac4j class.
+                logger.debug("props request attribute was not found, proceeding with default soap request without any customized SSL Connection socket.");
+                soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
+                soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
+            }
             val artifactDecoder = new Pac4jHTTPArtifactDecoder();
             artifactDecoder.setWebContext(context);
             artifactDecoder.setSelfEntityIDResolver(new FixedEntityIdResolver(spMetadataResolver));
