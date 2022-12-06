@@ -17,9 +17,6 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
  * This class defines the attributes of the Wechat profile.
- * <p>More info at: <a href=
- * "https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;
- * id=open1419316518&amp;token=&amp;lang=zh_CN">https://api.weixin.qq.com/sns/userinfo</a></p>
  *
  * @author zhangzhenli
  * @since 3.1.0

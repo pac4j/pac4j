@@ -11,9 +11,6 @@ import java.util.List;
 /**
  * <p>This class is the OAuth client to authenticate users in Tencent Wechat.</p>
  * <p>It returns a {@link WechatProfile}.</p>
- * <p>More info at: <a href=
- * "https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;
- * id=open1419316505&amp;token=&amp;lang=zh_CN">WeChat login development guide</a></p>
  *
  * @author zhangzhenli
  * @since 3.1.0

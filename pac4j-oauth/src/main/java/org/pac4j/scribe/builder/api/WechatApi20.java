@@ -23,9 +23,6 @@ import java.util.Map;
 /**
  * This class represents the OAuth API implementation for Tencent Wechat using OAuth protocol version 2.
  * It could be part of the Scribe library.
- * <p>More info at: <a href=
- * "https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;
- * id=open1419316505&amp;token=&amp;lang=zh_CN">OAuth2.0</a></p>
  *
  * @author zhangzhenli
  * @since 3.1.0
