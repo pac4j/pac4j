@@ -94,25 +94,25 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
 
                 HashMap<String, String> propertiesMap = (HashMap) map.get();
 
-                InputStream keystoreStream = new FileInputStream(propertiesMap.get("keystore-path"));
-                String keystorePassword = propertiesMap.get("keystore-password");
-                keyStore.load(keystoreStream, keystorePassword.toCharArray());
-                keystoreStream.close();
+                try(InputStream keystoreStream = new FileInputStream(propertiesMap.get("keystore-path"))) {
+                    String keystorePassword = propertiesMap.get("keystore-password");
+                    keyStore.load(keystoreStream, keystorePassword.toCharArray());
+                    keystoreStream.close();
 
-                HttpClientBuilder httpClientBuilder = soapPipelineProvider.getHttpClientBuilder();
+                    HttpClientBuilder httpClientBuilder = soapPipelineProvider.getHttpClientBuilder();
 
-                SSLContextBuilder sslContextBuilder = SSLContexts.custom();
-                sslContextBuilder = sslContextBuilder.loadTrustMaterial(
-                    new File(propertiesMap.get("truststore-path")), propertiesMap.get("truststore-password").toCharArray());
-                sslContextBuilder = sslContextBuilder.loadKeyMaterial(keyStore , keystorePassword.toCharArray());
-                SSLContext sslContextNew = sslContextBuilder.build();
+                    SSLContextBuilder sslContextBuilder = SSLContexts.custom();
+                    sslContextBuilder = sslContextBuilder.loadTrustMaterial(
+                        new File(propertiesMap.get("truststore-path")), propertiesMap.get("truststore-password").toCharArray());
+                    sslContextBuilder = sslContextBuilder.loadKeyMaterial(keyStore , keystorePassword.toCharArray());
+                    SSLContext sslContextNew = sslContextBuilder.build();
 
-                SSLConnectionSocketFactory sslConSocFactory = new SSLConnectionSocketFactory(sslContextNew, new String[]{"TLSv1.2"},
-                    null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-                httpClientBuilder.setTLSSocketFactory(sslConSocFactory);
-                soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
-                soapClient.setHttpClient(httpClientBuilder.buildClient());
-
+                    SSLConnectionSocketFactory sslConSocFactory = new SSLConnectionSocketFactory(sslContextNew, new String[]{"TLSv1.2"},
+                        null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+                    httpClientBuilder.setTLSSocketFactory(sslConSocFactory);
+                    soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
+                    soapClient.setHttpClient(httpClientBuilder.buildClient());
+                }
             } else {
                 //else statement contains the original code from this pac4j class.
                 logger.debug("Proceeding with default soap request without any customized SSL Connection socket.");
