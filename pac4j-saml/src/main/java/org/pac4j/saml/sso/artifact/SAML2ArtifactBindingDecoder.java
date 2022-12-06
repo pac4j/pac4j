@@ -82,11 +82,9 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             /**
              * SAML integration with HTTP-artifact binding
              *
-             * Since CAS does not support artifact binding, I come across an issue trying to perform the back-end channel artifact resolution request over to IDP entity that only supports HTTP-artifact binding.
-             * The issue is that the two-way SSL handshake does not occur because we are not sending our certificate over once they request for our certificate for validation.
-             * The solution below attempts to create a brand new SSLConnectionSocketFactory object,
-             * where the correct keystore and truststore values are specified. This way, we should be able to correctly complete the two-way handshake for the artifact resolution request.
-             *
+             * In case of HTTP-artifact binding, create new SSLConnectionSocketFactory object
+             * with expected keystore and truststore values.
+             * This resolves two-way SSL handshake issues when performing Artifact Resolve request
              */
             KeyStore keyStore = KeyStore.getInstance("JKS");
             Optional map = this.context.getRequestAttribute("props");
@@ -104,18 +102,20 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
                 HttpClientBuilder httpClientBuilder = soapPipelineProvider.getHttpClientBuilder();
 
                 SSLContextBuilder sslContextBuilder = SSLContexts.custom();
-                sslContextBuilder = sslContextBuilder.loadTrustMaterial(new File(propertiesMap.get("truststore-path")), propertiesMap.get("truststore-password").toCharArray());
+                sslContextBuilder = sslContextBuilder.loadTrustMaterial(
+                    new File(propertiesMap.get("truststore-path")), propertiesMap.get("truststore-password").toCharArray());
                 sslContextBuilder = sslContextBuilder.loadKeyMaterial(keyStore , keystorePassword.toCharArray());
                 SSLContext sslContextNew = sslContextBuilder.build();
 
-                SSLConnectionSocketFactory sslConSocFactory = new SSLConnectionSocketFactory(sslContextNew, new String[]{"TLSv1.2"}, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+                SSLConnectionSocketFactory sslConSocFactory = new SSLConnectionSocketFactory(sslContextNew, new String[]{"TLSv1.2"},
+                    null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
                 httpClientBuilder.setTLSSocketFactory(sslConSocFactory);
                 soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
                 soapClient.setHttpClient(httpClientBuilder.buildClient());
 
             } else {
                 //else statement contains the original code from this pac4j class.
-                logger.debug("props request attribute was not found, proceeding with default soap request without any customized SSL Connection socket.");
+                logger.debug("Proceeding with default soap request without any customized SSL Connection socket.");
                 soapClient.setPipelineFactory(soapPipelineProvider.getPipelineFactory());
                 soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
             }

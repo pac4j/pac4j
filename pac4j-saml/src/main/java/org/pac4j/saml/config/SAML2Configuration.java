@@ -461,7 +461,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
                     }
                 }
 
-                //if client_name param is equal to the SAML client ID that supports artifact binding, set the response binding type to SAMLConstants.SAML2_ARTIFACT_BINDING_URI
+                //if client_name param is equal to the SAML client ID that supports artifact binding,
+                //set the response binding type to SAMLConstants.SAML2_ARTIFACT_BINDING_URI
                 if(StringUtils.equals(clientParamValue, "saml_client_id")) {
                     LOGGER.debug("clientParamValue = " + clientParamValue);
                     LOGGER.debug("setting Response Binding Type as: " + SAMLConstants.SAML2_ARTIFACT_BINDING_URI);
