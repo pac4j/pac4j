@@ -10,12 +10,11 @@ import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -27,9 +26,8 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 3.4.0
  */
+@Slf4j
 public class TokenValidator {
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final List<IDTokenValidator> idTokenValidators;
 
@@ -48,7 +46,7 @@ public class TokenValidator {
             jwsAlgorithms.add(preferredAlgorithm);
         } else {
             jwsAlgorithms = metadataAlgorithms;
-            logger.warn("Preferred JWS algorithm: {} not available. Using all metadata algorithms: {}",
+            LOGGER.warn("Preferred JWS algorithm: {} not available. Using all metadata algorithms: {}",
                 preferredAlgorithm, metadataAlgorithms);
         }
 
@@ -67,7 +65,7 @@ public class TokenValidator {
                         "they must be explicitly enabled on client side and " +
                         "the response_type used must return no ID Token from the authorization endpoint");
                 }
-                logger.warn("Allowing unsigned ID tokens");
+                LOGGER.warn("Allowing unsigned ID tokens");
                 idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
             } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
@@ -105,13 +103,14 @@ public class TokenValidator {
         BadJOSEException badJOSEException = null;
         JOSEException joseException = null;
         for (val idTokenValidator : idTokenValidators) {
+            LOGGER.debug("Trying IDToken validator: {}", idTokenValidator);
             try {
                 return idTokenValidator.validate(idToken, expectedNonce);
             } catch (final BadJOSEException e1) {
-                logger.debug(e1.getMessage(), e1);
+                LOGGER.debug(e1.getMessage(), e1);
                 badJOSEException = e1;
             } catch (final JOSEException e2) {
-                logger.debug(e2.getMessage(), e2);
+                LOGGER.debug(e2.getMessage(), e2);
                 joseException = e2;
             }
         }

@@ -204,7 +204,7 @@ public class OidcAuthenticator implements Authenticator {
         if (response instanceof TokenErrorResponse tokenErrorResponse) {
             val errorObject = tokenErrorResponse.getErrorObject();
             throw new TechnicalException("Bad token response, error=" + errorObject.getCode() + "," +
-                " description=" + errorObject.getDescription());
+                " description=" + errorObject.getDescription() + ", status=" + errorObject.getHTTPStatusCode());
         }
         LOGGER.debug("Token response successful");
         val tokenSuccessResponse = (OIDCTokenResponse) response;
