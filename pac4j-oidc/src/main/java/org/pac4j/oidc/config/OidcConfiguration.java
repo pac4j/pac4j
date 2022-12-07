@@ -42,7 +42,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 @Getter
 @Setter
-@ToString(exclude = "secret")
+@ToString(exclude = {"secret", "providerMetadata"})
 public class OidcConfiguration extends BaseClientConfiguration {
 
     public static final String SCOPE = "scope";
