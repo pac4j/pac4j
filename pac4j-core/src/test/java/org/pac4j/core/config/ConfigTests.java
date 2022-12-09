@@ -7,6 +7,7 @@ import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.matching.matcher.CacheControlMatcher;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
@@ -49,5 +50,20 @@ public final class ConfigTests implements TestsConstants {
         val config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));
+    }
+
+    @Test
+    public void testFluent() {
+        val client = new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        val authorizer = new RequireAnyRoleAuthorizer();
+        val matcher = new CacheControlMatcher();
+        val config = new Config(CALLBACK_URL).addClient(client).addAuthorizer(NAME, authorizer).addMatcher(NAME, matcher);
+        assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
+        assertEquals(1, config.getClients().findAllClients().size());
+        assertEquals(client, config.getClients().findAllClients().get(0));
+        assertEquals(1, config.getAuthorizers().size());
+        assertEquals(authorizer, config.getAuthorizers().get(NAME));
+        assertEquals(1, config.getMatchers().size());
+        assertEquals(matcher, config.getMatchers().get(NAME));
     }
 }

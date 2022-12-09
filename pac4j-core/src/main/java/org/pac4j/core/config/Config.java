@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @Setter
 @Getter
-public class Config implements Cloneable {
+public class Config {
 
     private ProfileManagerFactory profileManagerFactory = ProfileManagerFactory.DEFAULT;
 
@@ -37,11 +37,11 @@ public class Config implements Cloneable {
 
     protected HttpActionAdapter httpActionAdapter;
 
-    protected SecurityLogic securityLogic = new DefaultSecurityLogic();
+    protected SecurityLogic securityLogic = DefaultSecurityLogic.INSTANCE;
 
-    protected CallbackLogic callbackLogic = new DefaultCallbackLogic();
+    protected CallbackLogic callbackLogic = DefaultCallbackLogic.INSTANCE;
 
-    protected LogoutLogic logoutLogic = new DefaultLogoutLogic();
+    protected LogoutLogic logoutLogic = DefaultLogoutLogic.INSTANCE;
 
     protected WebContextFactory webContextFactory;
 
@@ -106,32 +106,83 @@ public class Config implements Cloneable {
         setAuthorizers(authorizers);
     }
 
-    public void setAuthorizer(final Authorizer authorizer) {
+    public Config setAuthorizer(final Authorizer authorizer) {
         CommonHelper.assertNotNull("authorizer", authorizer);
         this.authorizers.put(authorizer.getClass().getSimpleName(), authorizer);
+        return this;
     }
 
-    public void setAuthorizers(final Map<String, Authorizer> authorizers) {
+    public Config setAuthorizers(final Map<String, Authorizer> authorizers) {
         CommonHelper.assertNotNull("authorizers", authorizers);
         this.authorizers = authorizers;
+        return this;
     }
 
-    public void addAuthorizer(final String name, final Authorizer authorizer) {
+    public Config addAuthorizer(final String name, final Authorizer authorizer) {
         authorizers.put(name, authorizer);
+        return this;
     }
 
-    public void setMatcher(final Matcher matcher) {
+    public Config setMatcher(final Matcher matcher) {
         CommonHelper.assertNotNull("matcher", matcher);
         this.matchers.put(matcher.getClass().getSimpleName(), matcher);
+        return this;
     }
 
-    public void setMatchers(final Map<String, Matcher> matchers) {
+    public Config setMatchers(final Map<String, Matcher> matchers) {
         CommonHelper.assertNotNull("matchers", matchers);
         this.matchers = matchers;
+        return this;
     }
 
-    public void addMatcher(final String name, final Matcher matcher) {
+    public Config addMatcher(final String name, final Matcher matcher) {
         matchers.put(name, matcher);
+        return this;
+    }
+
+    public Config setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
+        this.profileManagerFactory = profileManagerFactory;
+        return this;
+    }
+
+    public Config setClients(final Clients clients) {
+        this.clients = clients;
+        return this;
+    }
+
+    public Config addClient(final Client client) {
+        this.clients.addClient(client);
+        return this;
+    }
+
+    public Config setHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
+        this.httpActionAdapter = httpActionAdapter;
+        return this;
+    }
+
+    public Config setSecurityLogic(final SecurityLogic securityLogic) {
+        this.securityLogic = securityLogic;
+        return this;
+    }
+
+    public Config setCallbackLogic(final CallbackLogic callbackLogic) {
+        this.callbackLogic = callbackLogic;
+        return this;
+    }
+
+    public Config setLogoutLogic(final LogoutLogic logoutLogic) {
+        this.logoutLogic = logoutLogic;
+        return this;
+    }
+
+    public Config setWebContextFactory(final WebContextFactory webContextFactory) {
+        this.webContextFactory = webContextFactory;
+        return this;
+    }
+
+    public Config setSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
+        this.sessionStoreFactory = sessionStoreFactory;
+        return this;
     }
 
     public void defaultSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
@@ -150,10 +201,5 @@ public class Config implements Cloneable {
         if (this.httpActionAdapter == null) {
             setHttpActionAdapter(httpActionAdapter);
         }
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 }
