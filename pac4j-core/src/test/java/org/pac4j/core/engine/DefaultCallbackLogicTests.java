@@ -17,9 +17,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.SeeOtherAction;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -46,8 +44,6 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
 
     private Config config;
 
-    private HttpActionAdapter httpActionAdapter;
-
     private String defaultUrl;
 
     private Boolean renewSession;
@@ -59,10 +55,12 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Before
     public void setUp() {
         logic = new DefaultCallbackLogic();
-        context = MockWebContext.create();
-        sessionStore = new MockSessionStore();
         config = new Config();
-        httpActionAdapter = (act, ctx) -> { action = act; return null; };
+        context = MockWebContext.create();
+        config.setWebContextFactory(p -> context);
+        sessionStore = new MockSessionStore();
+        config.setSessionStoreFactory(p -> sessionStore);
+        config.setHttpActionAdapter((act, ctx) -> { action = act; return null; });
         defaultUrl = null;
         renewSession = null;
         clientFinder = new DefaultCallbackClientFinder();
@@ -70,7 +68,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, sessionStore, ProfileManagerFactory.DEFAULT, config, httpActionAdapter, defaultUrl, renewSession, null);
+        logic.perform(config, defaultUrl, renewSession, null);
         logic.setClientFinder(clientFinder);
     }
 
@@ -83,12 +81,12 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     @Test
     public void testNullContext() {
         context = null;
-        TestsHelper.expectException(this::call, TechnicalException.class, "webContext cannot be null");
+        TestsHelper.expectException(this::call, TechnicalException.class, "context cannot be null");
     }
 
     @Test
     public void testNullHttpActionAdapter() {
-        httpActionAdapter = null;
+        config.setHttpActionAdapter(null);
         TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 

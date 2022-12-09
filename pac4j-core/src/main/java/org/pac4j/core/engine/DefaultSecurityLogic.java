@@ -19,13 +19,11 @@ import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Collections;
@@ -70,22 +68,31 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
     private boolean loadProfilesFromSession = true;
 
     @Override
-    public Object perform(final WebContext context, final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory,
-                          final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
-                          final HttpActionAdapter httpActionAdapter, final String clients, final String authorizers,
-                          final String matchers, final Object... parameters) {
+    public Object perform(final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
+                          final String clients, final String authorizers, final String matchers, final Object... parameters) {
 
         LOGGER.debug("=== SECURITY ===");
 
+        // checks
+        assertNotNull("config", config);
+        assertNotNull("config.getWebContextFactory()", config.getWebContextFactory());
+        val context = config.getWebContextFactory().newContext(parameters);
+        assertNotNull("context", context);
+        val httpActionAdapter = config.getHttpActionAdapter();
+        assertNotNull("httpActionAdapter", httpActionAdapter);
+
         HttpAction action;
         try {
-            // checks
-            assertNotNull("context", context);
-            assertNotNull("config", config);
-            assertNotNull("httpActionAdapter", httpActionAdapter);
+            assertNotNull("config.getSessionStoreFactory()", config.getSessionStoreFactory());
+            val sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
+            assertNotNull("sessionStore", sessionStore);
+            val profileManagerFactory = config.getProfileManagerFactory();
+            assertNotNull("profileManagerFactory", profileManagerFactory);
+
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
+
             val configClients = config.getClients();
             assertNotNull("configClients", configClients);
 

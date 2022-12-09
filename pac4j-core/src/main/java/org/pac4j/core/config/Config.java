@@ -7,9 +7,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.context.session.SessionStoreFactory;
-import org.pac4j.core.engine.CallbackLogic;
-import org.pac4j.core.engine.LogoutLogic;
-import org.pac4j.core.engine.SecurityLogic;
+import org.pac4j.core.engine.*;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
@@ -20,16 +18,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The default configuration with clients, authorizers, matchers, etc.
+ * The configuration with clients, authorizers, matchers, etc.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
 @Setter
 @Getter
-public class Config {
+public class Config implements Cloneable {
 
-    private ProfileManagerFactory profileManagerFactory;
+    private ProfileManagerFactory profileManagerFactory = ProfileManagerFactory.DEFAULT;
 
     protected Clients clients = new Clients();
 
@@ -39,11 +37,11 @@ public class Config {
 
     protected HttpActionAdapter httpActionAdapter;
 
-    protected SecurityLogic securityLogic;
+    protected SecurityLogic securityLogic = new DefaultSecurityLogic();
 
-    protected CallbackLogic callbackLogic;
+    protected CallbackLogic callbackLogic = new DefaultCallbackLogic();
 
-    protected LogoutLogic logoutLogic;
+    protected LogoutLogic logoutLogic = new DefaultLogoutLogic();
 
     protected WebContextFactory webContextFactory;
 
@@ -142,9 +140,20 @@ public class Config {
         }
     }
 
-    public void defaultProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
-        if (this.profileManagerFactory == null) {
-            setProfileManagerFactory(profileManagerFactory);
+    public void defaultWebContextFactory(final WebContextFactory webContextFactory) {
+        if (this.webContextFactory == null) {
+            setWebContextFactory(webContextFactory);
         }
+    }
+
+    public void defaultHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
+        if (this.httpActionAdapter == null) {
+            setHttpActionAdapter(httpActionAdapter);
+        }
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

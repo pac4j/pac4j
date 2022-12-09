@@ -14,7 +14,9 @@ title: Release notes&#58;
 - Removed deprecated concepts and components
 - `Authenticator` now returns an `Optional<Credentials>`
 - Usage of Lombok
-- Remove `ProfileManagerFactoryAware`
+- Removed `ProfileManagerFactoryAware`
+- Removed `FindBest`
+- Customisations for the endpoints/interceptors can only be done via the `Config` component. JEE specificities (to set up by default) are specified in `Pac4jJEEConfig`
 
 ---
 

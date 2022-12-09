@@ -14,7 +14,6 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
@@ -42,14 +41,28 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
     @Override
-    public Object perform(final WebContext webContext, final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory,
-                          final Config config, final HttpActionAdapter httpActionAdapter, final String inputDefaultUrl,
-                          final Boolean inputRenewSession, final String defaultClient) {
+    public Object perform(final Config config, final String inputDefaultUrl, final Boolean inputRenewSession,
+                          final String defaultClient, final Object... parameters) {
 
         LOGGER.debug("=== CALLBACK ===");
 
+        // checks
+        assertNotNull("config", config);
+        assertNotNull("config.getWebContextFactory()", config.getWebContextFactory());
+        val context = config.getWebContextFactory().newContext(parameters);
+        assertNotNull("context", context);
+        val httpActionAdapter = config.getHttpActionAdapter();
+        assertNotNull("httpActionAdapter", httpActionAdapter);
+
         HttpAction action;
         try {
+            assertNotNull("config.getSessionStoreFactory()", config.getSessionStoreFactory());
+            val sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
+            assertNotNull("sessionStore", sessionStore);
+            val profileManagerFactory = config.getProfileManagerFactory();
+            assertNotNull("profileManagerFactory", profileManagerFactory);
+
+            assertNotNull("clientFinder", clientFinder);
 
             // default values
             final String defaultUrl;
@@ -60,17 +73,12 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             }
             val renewSession = inputRenewSession == null || inputRenewSession;
 
-            // checks
-            assertNotNull("clientFinder", clientFinder);
-            assertNotNull("webContext", webContext);
-            assertNotNull("config", config);
-            assertNotNull("httpActionAdapter", httpActionAdapter);
             assertNotBlank(Pac4jConstants.DEFAULT_URL, defaultUrl);
             val clients = config.getClients();
             assertNotNull("clients", clients);
 
             // logic
-            val foundClients = clientFinder.find(clients, webContext, defaultClient);
+            val foundClients = clientFinder.find(clients, context, defaultClient);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
                     + " or ensure that your configuration defaults to one indirect client");
@@ -78,27 +86,27 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            val credentials = foundClient.getCredentials(webContext, sessionStore, profileManagerFactory);
+            val credentials = foundClient.getCredentials(context, sessionStore, profileManagerFactory);
             LOGGER.debug("credentials: {}", credentials);
 
-            val optProfile = foundClient.getUserProfile(credentials.orElse(null), webContext, sessionStore);
+            val optProfile = foundClient.getUserProfile(credentials.orElse(null), context, sessionStore);
             LOGGER.debug("optProfile: {}", optProfile);
             if (optProfile.isPresent()) {
                 val profile = optProfile.get();
-                val saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(webContext, profile);
-                val multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
+                val saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(context, profile);
+                val multiProfile = ((BaseClient) foundClient).isMultiProfile(context, profile);
                 LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                saveUserProfile(webContext, sessionStore, profileManagerFactory, config,
+                saveUserProfile(context, sessionStore, profileManagerFactory, config,
                                 profile, saveProfileInSession, multiProfile, renewSession);
             }
 
-            action = redirectToOriginallyRequestedUrl(webContext, sessionStore, defaultUrl);
+            action = redirectToOriginallyRequestedUrl(context, sessionStore, defaultUrl);
 
         } catch (final RuntimeException e) {
-            return handleException(e, httpActionAdapter, webContext);
+            return handleException(e, httpActionAdapter, context);
         }
 
-        return httpActionAdapter.adapt(action, webContext);
+        return httpActionAdapter.adapt(action, context);
     }
 
     protected void saveUserProfile(final WebContext context, final SessionStore sessionStore,

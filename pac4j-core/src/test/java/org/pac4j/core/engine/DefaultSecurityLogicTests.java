@@ -13,9 +13,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -43,8 +41,6 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private SecurityGrantedAccessAdapter securityGrantedAccessAdapter;
 
-    private HttpActionAdapter httpActionAdapter;
-
     private String clients;
 
     private String authorizers;
@@ -58,11 +54,13 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Before
     public void setUp() {
         logic = new DefaultSecurityLogic();
-        context = MockWebContext.create();
-        sessionStore = new MockSessionStore();
         config = new Config();
+        context = MockWebContext.create();
+        config.setWebContextFactory(p -> context);
+        sessionStore = new MockSessionStore();
+        config.setSessionStoreFactory(p -> sessionStore);
         securityGrantedAccessAdapter = (context, sessionStore, profiles, parameters) -> { nbCall++; return null; };
-        httpActionAdapter = (act, ctx) -> { action = act; return null; };
+        config.setHttpActionAdapter((act, ctx) -> { action = act; return null; });
         clients = null;
         authorizers = null;
         matchers = null;
@@ -70,8 +68,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, sessionStore, ProfileManagerFactory.DEFAULT, config, securityGrantedAccessAdapter, httpActionAdapter,
-            clients, authorizers, matchers);
+        logic.perform(config, securityGrantedAccessAdapter, clients, authorizers, matchers);
     }
 
     @Test
@@ -88,7 +85,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     @Test
     public void testNullHttpActionAdapter() {
-        httpActionAdapter = null;
+        config.setHttpActionAdapter(null);
         TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 

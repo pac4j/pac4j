@@ -59,7 +59,7 @@ In that case, you can define for **all** the clients:
 You can define at the `Config` level a few components that will be used by the security filter and callback/logout endpoints:
 
 - `config.setProfileManagerFactory(x)` to build a specific [`ProfileManager`](profile-manager.html) from the `WebContext`
-- `config.setSessionStore(x)` to set a specific [`SessionStore`](session-store.html)
+- `config.setSessionStoreFactory(x)` to set a specific [`SessionStore`](session-store.html)
 - `config.setHttpActionAdapter(x)` to set a specific [`HttpActionAdapter`](http-action-adapter.html)
 - `config.setSecurityLogic(x)` to set a specific `SecurityLogic`
 - `config.setCallbackLogic(x)` to set a specific `CallbackLogic`

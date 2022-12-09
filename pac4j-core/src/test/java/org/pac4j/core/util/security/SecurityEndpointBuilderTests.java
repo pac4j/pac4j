@@ -8,9 +8,7 @@ import org.pac4j.core.authorization.authorizer.IsAnonymousAuthorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.matcher.HttpMethodMatcher;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.matching.matcher.PathMatcher;
@@ -23,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link SecurityEndpointBuilder}.
@@ -55,8 +52,6 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
         assertNull(endpoint.getClients());
         assertNull(endpoint.getAuthorizers());
         assertNull(endpoint.getMatchers());
-        assertNull(endpoint.getSecurityLogic());
-        assertNull(endpoint.getHttpActionAdapter());
     }
 
     @Test
@@ -67,8 +62,6 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
         assertEquals(CLIENT1, endpoint.getClients());
         assertEquals(AUTHORIZER1, endpoint.getAuthorizers());
         assertEquals(MATCHER1, endpoint.getMatchers());
-        assertNull(endpoint.getSecurityLogic());
-        assertNull(endpoint.getHttpActionAdapter());
     }
 
     @Test
@@ -85,8 +78,6 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
         assertEquals(CLIENT1, endpoint.getClients());
         assertEquals(AUTHORIZER1, endpoint.getAuthorizers());
         assertEquals(MATCHER1, endpoint.getMatchers());
-        assertNull(endpoint.getSecurityLogic());
-        assertNull(endpoint.getHttpActionAdapter());
     }
 
     @Test
@@ -106,8 +97,6 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
         assertEquals(KEY, endpoint.getClients());
         assertAuthorizer(config, endpoint.getAuthorizers(), authorizer, 1);
         assertMatcher(config, endpoint.getMatchers(), matcher, 1);
-        assertNull(endpoint.getSecurityLogic());
-        assertNull(endpoint.getHttpActionAdapter());
     }
 
     @Test
@@ -135,8 +124,6 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
         final String[] matcherNames = endpoint.getMatchers().split(",");
         assertMatcher(config, matcherNames[0], matcher1, 2);
         assertMatcher(config, matcherNames[1], matcher2, 2);
-        assertNull(endpoint.getSecurityLogic());
-        assertNull(endpoint.getHttpActionAdapter());
     }
 
     @Test
@@ -210,14 +197,12 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
 
     @Test
     public void buildOtherTypes() {
-        SecurityEndpointBuilder.buildConfig(endpoint, config, mock(HttpActionAdapter.class), mock(SecurityLogic.class));
+        SecurityEndpointBuilder.buildConfig(endpoint, config);
 
         assertEquals(config, endpoint.getConfig());
         assertNull(endpoint.getClients());
         assertNull(endpoint.getAuthorizers());
         assertNull(endpoint.getMatchers());
-        assertNotNull(endpoint.getSecurityLogic());
-        assertNotNull(endpoint.getHttpActionAdapter());
     }
 
     @Test
@@ -231,18 +216,14 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
         final Client client = new MockDirectClient(KEY);
         final Authorizer authorizer = new CheckHttpMethodAuthorizer();
         final Matcher matcher = new HttpMethodMatcher();
-        final SecurityLogic logic = mock(SecurityLogic.class);
-        final HttpActionAdapter adapter = mock(HttpActionAdapter.class);
 
-        SecurityEndpointBuilder.buildConfig(endpoint, client, authorizer, matcher, adapter, logic);
+        SecurityEndpointBuilder.buildConfig(endpoint, client, authorizer, matcher);
 
         final Config config = endpoint.getConfig();
         assertNotNull(endpoint.getConfig());
         assertEquals(client, config.getClients().findClient(KEY).orElse(null));
         assertAuthorizer(config, endpoint.getAuthorizers(), authorizer, 1);
         assertMatcher(config, endpoint.getMatchers(), matcher, 1);
-        assertEquals(logic, endpoint.getSecurityLogic());
-        assertEquals(adapter, endpoint.getHttpActionAdapter());
     }
 
     protected void assertAuthorizer(final Config config, final String name, final Authorizer authorizer, final int size) {

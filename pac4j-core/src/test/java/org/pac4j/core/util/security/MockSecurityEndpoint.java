@@ -1,8 +1,8 @@
 package org.pac4j.core.util.security;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.engine.SecurityLogic;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 
 /**
  * Mock of a security endpoint.
@@ -10,6 +10,8 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
  * @author Jerome LELEU
  * @since 5.5.0
  */
+@Getter
+@Setter
 public class MockSecurityEndpoint implements SecurityEndpoint{
 
     private String clients;
@@ -18,63 +20,5 @@ public class MockSecurityEndpoint implements SecurityEndpoint{
 
     private String matchers;
 
-    private HttpActionAdapter httpActionAdapter;
-
-    private SecurityLogic securityLogic;
-
     private Config config;
-
-    public String getClients() {
-        return clients;
-    }
-
-    @Override
-    public void setClients(final String clients) {
-        this.clients = clients;
-    }
-
-    public String getAuthorizers() {
-        return authorizers;
-    }
-
-    @Override
-    public void setAuthorizers(final String authorizers) {
-        this.authorizers = authorizers;
-    }
-
-    public String getMatchers() {
-        return matchers;
-    }
-
-    @Override
-    public void setMatchers(final String matchers) {
-        this.matchers = matchers;
-    }
-
-    public HttpActionAdapter getHttpActionAdapter() {
-        return httpActionAdapter;
-    }
-
-    @Override
-    public void setHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
-        this.httpActionAdapter = httpActionAdapter;
-    }
-
-    public SecurityLogic getSecurityLogic() {
-        return securityLogic;
-    }
-
-    @Override
-    public void setSecurityLogic(final SecurityLogic securityLogic) {
-        this.securityLogic = securityLogic;
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    @Override
-    public void setConfig(final Config config) {
-        this.config = config;
-    }
 }

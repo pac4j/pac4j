@@ -4,9 +4,7 @@ import lombok.val;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -89,10 +87,6 @@ public class SecurityEndpointBuilder {
                 var internalName = "$int_matcher" + internalNumber.getAndIncrement();
                 config.addMatcher(internalName, matcher);
                 matchers = addElement(matchers, internalName);
-            } else if (parameter instanceof HttpActionAdapter httpActionAdapter) {
-                endpoint.setHttpActionAdapter(httpActionAdapter);
-            } else if (parameter instanceof SecurityLogic securityLogic) {
-                endpoint.setSecurityLogic(securityLogic);
             } else if (!(parameter instanceof Config)) {
                 throw new TechnicalException("Unsupported parameter type: " + parameter);
             }

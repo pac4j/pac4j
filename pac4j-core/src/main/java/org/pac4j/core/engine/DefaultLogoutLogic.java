@@ -10,8 +10,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.NoContentAction;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -43,15 +41,26 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
     public static final DefaultLogoutLogic INSTANCE = new DefaultLogoutLogic();
 
     @Override
-    public Object perform(final WebContext context, final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory,
-                          final Config config, final HttpActionAdapter httpActionAdapter, final String defaultUrl,
-                          final String inputLogoutUrlPattern, final Boolean inputLocalLogout, final Boolean inputDestroySession,
-                          final Boolean inputCentralLogout) {
+    public Object perform(final Config config, final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
+                          final Boolean inputDestroySession, final Boolean inputCentralLogout, final Object... parameters) {
 
         LOGGER.debug("=== LOGOUT ===");
 
+        // checks
+        assertNotNull("config", config);
+        assertNotNull("config.getWebContextFactory()", config.getWebContextFactory());
+        val context = config.getWebContextFactory().newContext(parameters);
+        assertNotNull("context", context);
+        val httpActionAdapter = config.getHttpActionAdapter();
+        assertNotNull("httpActionAdapter", httpActionAdapter);
+
         HttpAction action;
         try {
+            assertNotNull("config.getSessionStoreFactory()", config.getSessionStoreFactory());
+            val sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
+            assertNotNull("sessionStore", sessionStore);
+            val profileManagerFactory = config.getProfileManagerFactory();
+            assertNotNull("profileManagerFactory", profileManagerFactory);
 
             // default values
             final String logoutUrlPattern;
@@ -64,10 +73,6 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             val destroySession = inputDestroySession != null && inputDestroySession;
             val centralLogout = inputCentralLogout != null && inputCentralLogout;
 
-            // checks
-            assertNotNull("context", context);
-            assertNotNull("config", config);
-            assertNotNull("httpActionAdapter", httpActionAdapter);
             assertNotBlank(Pac4jConstants.LOGOUT_URL_PATTERN, logoutUrlPattern);
             val configClients = config.getClients();
             assertNotNull("configClients", configClients);

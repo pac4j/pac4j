@@ -12,9 +12,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -40,8 +38,6 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private Config config;
 
-    private HttpActionAdapter httpActionAdapter;
-
     private String defaultUrl;
 
     private String logoutUrlPattern;
@@ -57,11 +53,13 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     @Before
     public void setUp() {
         logic = new DefaultLogoutLogic();
-        context = MockWebContext.create();
-        sessionStore = new MockSessionStore();
         config = new Config();
+        context = MockWebContext.create();
+        config.setWebContextFactory(p -> context);
+        sessionStore = new MockSessionStore();
+        config.setSessionStoreFactory(p -> sessionStore);
         config.setClients(new Clients());
-        httpActionAdapter = (act, ctx) -> { action = act; return null; };
+        config.setHttpActionAdapter((act, ctx) -> { action = act; return null; });
         defaultUrl = null;
         logoutUrlPattern = null;
         localLogout = null;
@@ -70,8 +68,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, sessionStore, ProfileManagerFactory.DEFAULT, config, httpActionAdapter, defaultUrl, logoutUrlPattern,
-            localLogout, null, centralLogout);
+        logic.perform(config, defaultUrl, logoutUrlPattern, localLogout, null, centralLogout);
     }
 
     @Test
@@ -88,7 +85,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     @Test
     public void testNullHttpActionAdapter() {
-        httpActionAdapter = null;
+        config.setHttpActionAdapter(null);
         TestsHelper.expectException(this::call, TechnicalException.class, "httpActionAdapter cannot be null");
     }
 
