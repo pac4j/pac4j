@@ -54,29 +54,3 @@ It defines whether a central logout must be performed. It is an optional paramet
 
 In case of a central logout, the SLO process happening at the identity provider will send logout requests to the applications.
 Yet, these logout requests will be received by the [callback endpoint](callback-endpoint.html) and not this logout endpoint.
-
-
----
-
-## 4) Advanced options
-
-Advanced options can be set at:
-
-- the `Config` level
-- directly at the logout endpoint level via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
-
-### a) sessionStore
-
-You may define a specific [`SessionStore`](session-store.html) instead of the default one of the *pac4j* implementation.
-
-### b) httpActionAdapter
-
-You may define a specific [`HttpActionAdapter`](http-action-adapter.html) instead of the default one of the *pac4j* implementation.
-
-### c) logoutLogic
-
-You may define a specific `LogoutLogic` instead of the default `DefaultLogoutLogic`.
-
-### d) webContextFactory
-
-You may define a specific [`WebContextFactory`](web-context.html) instead of the default one of the *pac4j* implementation.

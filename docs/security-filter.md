@@ -53,29 +53,3 @@ If the `matchers` is blank or not defined, it matches as by default the `securit
 
 You can also use the [out-of-the-box matchers](matchers.html#3-default-matchers), already available without defining them in the security configuration.
 Start the `matchers` string by "+" to add other matchers to the default ones or without to replace them.
-
-
----
-
-## 3) Advanced options
-
-Advanced options can be set at:
-
-- the `Config` level
-- directly at the security filter level via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
-
-### a) sessionStore
-
-You may define a specific [`SessionStore`](session-store.html) instead of the default one of the *pac4j* implementation.
-
-### b) httpActionAdapter
-
-You may define a specific [`HttpActionAdapter`](http-action-adapter.html) instead of the default one of the *pac4j* implementation.
-
-### c) logoutLogic
-
-You may define a specific `SecurityLogic` instead of the default `DefaultSecurityLogic`.
-
-### d) webContextFactory
-
-You may define a specific [`WebContextFactory`](web-context.html) instead of the default one of the *pac4j* implementation.

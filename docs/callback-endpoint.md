@@ -42,28 +42,3 @@ It defines the default client to use to finish the login process if none is prov
 
 With the [logout endpoint](logout-endpoint.html), you can trigger the local and central logout process. Yet, in case of a Single-Log-Out process happening at the identity provider,
 it's this callback endpoint which will receive a logout request (with some session key) to destroy the application session.
-
----
-
-## 4) Advanced options
-
-Advanced options can be set at:
-
-- the `Config` level
-- directly at the callback endpoint level via setters, constructors, servlet parameters, etc... depending on the *pac4j* implementation:
-
-### a) sessionStore
-
-You may define a specific [`SessionStore`](session-store.html) instead of the default one of the *pac4j* implementation.
-
-### b) httpActionAdapter
-
-You may define a specific [`HttpActionAdapter`](http-action-adapter.html) instead of the default one of the *pac4j* implementation.
-
-### c) callbackLogic
-
-You may define a specific `CallbackLogic` instead of the default `DefaultCallbackLogic`.
-
-### d) webContextFactory
-
-You may define a specific [`WebContextFactory`](web-context.html) instead of the default one of the *pac4j* implementation.
