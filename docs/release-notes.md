@@ -17,6 +17,7 @@ title: Release notes&#58;
 - Removed `ProfileManagerFactoryAware`
 - Removed `FindBest`
 - Customisations for the endpoints/interceptors can only be done via the `Config` component. JEE specificities (to set up by default) are specified in `Pac4jJEEConfig`
+- Renamed `defaultXXX` methods as `setXXXIfUndefined`
 
 ---
 
