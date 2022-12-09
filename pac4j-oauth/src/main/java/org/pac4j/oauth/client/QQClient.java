@@ -71,7 +71,7 @@ public class QQClient extends OAuth20Client {
         configuration.setScope(getOAuthScope());
         configuration.setProfileDefinition(new QQProfileDefinition());
         configuration.setWithState(true);
-        defaultProfileCreator(new QQProfileCreator(configuration, this));
+        setProfileCreatorIfUndefined(new QQProfileCreator(configuration, this));
 
         super.internalInit(forceReinit);
     }

@@ -78,7 +78,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         assertNull("passwordEncoder", getPasswordEncoder());
         assertNotBlank("usersDn", usersDn);
 
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new LdapProfile()));
+        setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new LdapProfile()));
         setSerializer(new JsonSerializer(LdapProfile.class));
 
         super.internalInit(forceReinit);

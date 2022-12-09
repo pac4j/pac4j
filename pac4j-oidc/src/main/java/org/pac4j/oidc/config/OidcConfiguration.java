@@ -209,7 +209,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return this.providerMetadata;
     }
 
-    public void defaultDiscoveryURI(final String discoveryURI) {
+    public void setDiscoveryURIIfUndefined(final String discoveryURI) {
         if (this.discoveryURI == null) {
             this.discoveryURI = discoveryURI;
         }

@@ -42,8 +42,9 @@ public final class CasProxyReceptor extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("store", this.store);
 
-        defaultRedirectionActionBuilder((ctx, store) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
-        defaultCredentialsExtractor((ctx, store, factory) -> {
+        setRedirectionActionBuilderIfUndefined((ctx, store)
+            -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        setCredentialsExtractorIfUndefined((ctx, store, factory) -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             val proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
@@ -60,6 +61,7 @@ public final class CasProxyReceptor extends IndirectClient {
             logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
             throw new OkAction("<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         });
-        defaultAuthenticator((credentials, ctx, store) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        setAuthenticatorIfUndefined((credentials, ctx, store)
+            -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }
 }

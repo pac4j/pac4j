@@ -27,19 +27,19 @@ public class IndirectKerberosClient extends IndirectClient {
     public IndirectKerberosClient() {}
 
     public IndirectKerberosClient(final Authenticator authenticator) {
-        defaultAuthenticator(authenticator);
+        setAuthenticatorIfUndefined(authenticator);
     }
 
     public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
-        defaultAuthenticator(authenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(authenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultRedirectionActionBuilder((webContext, sessionStore) ->
+        setRedirectionActionBuilderIfUndefined((webContext, sessionStore) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
-        defaultCredentialsExtractor(new KerberosExtractor());
+        setCredentialsExtractorIfUndefined(new KerberosExtractor());
     }
 
     @Override

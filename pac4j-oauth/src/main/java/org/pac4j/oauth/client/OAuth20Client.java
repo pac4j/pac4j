@@ -32,10 +32,10 @@ public class OAuth20Client extends IndirectClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultRedirectionActionBuilder(new OAuth20RedirectionActionBuilder(configuration, this));
-        defaultCredentialsExtractor(new OAuth20CredentialsExtractor(configuration, this));
-        defaultAuthenticator(new OAuth20Authenticator(configuration, this));
-        defaultProfileCreator(new OAuth20ProfileCreator(configuration, this));
+        setRedirectionActionBuilderIfUndefined(new OAuth20RedirectionActionBuilder(configuration, this));
+        setCredentialsExtractorIfUndefined(new OAuth20CredentialsExtractor(configuration, this));
+        setAuthenticatorIfUndefined(new OAuth20Authenticator(configuration, this));
+        setProfileCreatorIfUndefined(new OAuth20ProfileCreator(configuration, this));
     }
 
     public String getKey() {

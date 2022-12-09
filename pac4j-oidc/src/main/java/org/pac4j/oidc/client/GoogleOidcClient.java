@@ -25,11 +25,11 @@ public class GoogleOidcClient extends OidcClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        getConfiguration().defaultDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
+        getConfiguration().setDiscoveryURIIfUndefined("https://accounts.google.com/.well-known/openid-configuration");
         val profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new GoogleOidcProfile()));
-        defaultProfileCreator(profileCreator);
-        defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());
+        setProfileCreatorIfUndefined(profileCreator);
+        setLogoutActionBuilderIfUndefined(new GoogleLogoutActionBuilder());
 
         super.internalInit(forceReinit);
     }

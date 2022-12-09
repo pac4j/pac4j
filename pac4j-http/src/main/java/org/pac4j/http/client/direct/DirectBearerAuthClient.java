@@ -35,25 +35,25 @@ public class DirectBearerAuthClient extends DirectClient {
     }
 
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator) {
-        defaultAuthenticator(tokenAuthenticator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
     public DirectBearerAuthClient(final ProfileCreator profileCreator) {
-        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator,
                                  final ProfileCreator profileCreator) {
-        defaultAuthenticator(tokenAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
-        defaultCredentialsExtractor(new BearerAuthExtractor());
+        setCredentialsExtractorIfUndefined(new BearerAuthExtractor());
     }
 
     @Override

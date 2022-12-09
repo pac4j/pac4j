@@ -51,7 +51,7 @@ public class TwitterClient extends OAuth10Client {
                 return false;
             }
         });
-        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://twitter.com/logout")));
 
         super.internalInit(forceReinit);

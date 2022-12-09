@@ -15,14 +15,14 @@ import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 public final class Pac4jJEEConfig {
 
     /**
-     * Configure the default implementations for JEE.
+     * Apply the default JEE settings if they are not already defined in the configuration.
      *
      * @param config the config
      */
-    public static void configureDefaults(final Config config) {
+    public static void applyJEESettingsIfUndefined(final Config config) {
         CommonHelper.assertNotNull("config", config);
-        config.defaultWebContextFactory(JEEContextFactory.INSTANCE);
-        config.defaultSessionStoreFactory(JEESessionStoreFactory.INSTANCE);
-        config.defaultHttpActionAdapter(JEEHttpActionAdapter.INSTANCE);
+        config.setWebContextFactoryIfUndefined(JEEContextFactory.INSTANCE);
+        config.setSessionStoreFactoryIfUndefined(JEESessionStoreFactory.INSTANCE);
+        config.setHttpActionAdapterIfUndefined(JEEHttpActionAdapter.INSTANCE);
     }
 }

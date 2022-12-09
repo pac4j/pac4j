@@ -31,8 +31,8 @@ public class FigShareClient extends OAuth20Client {
         configuration.setScope("all");
         configuration.setWithState(true);
 
-        defaultProfileCreator(new FigShareProfileCreator(configuration, this));
-        defaultLogoutActionBuilder((ctx, store, profile, targetUrl) -> Optional
+        setProfileCreatorIfUndefined(new FigShareProfileCreator(configuration, this));
+        setLogoutActionBuilderIfUndefined((ctx, store, profile, targetUrl) -> Optional
             .of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://figshare.com/account/logout")));
 
         super.internalInit(forceReinit);

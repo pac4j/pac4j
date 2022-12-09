@@ -55,7 +55,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("url", url);
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new RestProfile()));
+        setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new RestProfile()));
         if (mapper == null) {
             mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);

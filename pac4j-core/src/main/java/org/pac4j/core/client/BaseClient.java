@@ -187,19 +187,19 @@ public abstract class BaseClient extends InitializableObject implements Client {
         this.authorizationGenerators.addAll(authorizationGenerators);
     }
 
-    protected void defaultCredentialsExtractor(final CredentialsExtractor credentialsExtractor) {
+    protected void setCredentialsExtractorIfUndefined(final CredentialsExtractor credentialsExtractor) {
         if (this.credentialsExtractor == null) {
             this.credentialsExtractor = credentialsExtractor;
         }
     }
 
-    protected void defaultAuthenticator(final Authenticator authenticator) {
+    protected void setAuthenticatorIfUndefined(final Authenticator authenticator) {
         if (this.authenticator == null) {
             this.authenticator = authenticator;
         }
     }
 
-    protected void defaultProfileCreator(final ProfileCreator profileCreator) {
+    protected void setProfileCreatorIfUndefined(final ProfileCreator profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }

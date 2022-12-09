@@ -69,7 +69,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         assertNotNull("passwordEncoder", getPasswordEncoder());
         assertNotNull("couchDbConnector", this.couchDbConnector);
 
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new CouchProfile()));
+        setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new CouchProfile()));
         setSerializer(new JsonSerializer(CouchProfile.class));
 
         super.internalInit(forceReinit);

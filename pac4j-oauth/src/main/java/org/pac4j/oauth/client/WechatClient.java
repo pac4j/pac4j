@@ -49,7 +49,7 @@ public class WechatClient extends OAuth20Client {
         configuration.setScope(getOAuthScope());
         configuration.setProfileDefinition(new WechatProfileDefinition());
         configuration.setWithState(true);
-        defaultProfileCreator(new WechatProfileCreator(configuration, this));
+        setProfileCreatorIfUndefined(new WechatProfileCreator(configuration, this));
 
         super.internalInit(forceReinit);
     }

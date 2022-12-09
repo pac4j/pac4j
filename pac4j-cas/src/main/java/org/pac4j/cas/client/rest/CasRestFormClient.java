@@ -40,7 +40,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
         assertNotBlank("passwordParameter", this.passwordParameter);
         assertNotNull("configuration", this.configuration);
 
-        defaultCredentialsExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter));
-        defaultAuthenticator(new CasRestAuthenticator(this.configuration));
+        setCredentialsExtractorIfUndefined(new FormExtractor(this.usernameParameter, this.passwordParameter));
+        setAuthenticatorIfUndefined(new CasRestAuthenticator(this.configuration));
     }
 }

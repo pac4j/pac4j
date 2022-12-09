@@ -41,7 +41,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         assertNotNull("prefixHeader", this.prefixHeader);
         assertNotNull("configuration", this.configuration);
 
-        defaultCredentialsExtractor(new BasicAuthExtractor(this.headerName, this.prefixHeader));
-        defaultAuthenticator(new CasRestAuthenticator(this.configuration));
+        setCredentialsExtractorIfUndefined(new BasicAuthExtractor(this.headerName, this.prefixHeader));
+        setAuthenticatorIfUndefined(new CasRestAuthenticator(this.configuration));
     }
 }

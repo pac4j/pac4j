@@ -38,18 +38,18 @@ public class DirectDigestAuthClient extends DirectClient {
     }
 
     public DirectDigestAuthClient(final Authenticator digestAuthenticator) {
-        defaultAuthenticator(digestAuthenticator);
+        setAuthenticatorIfUndefined(digestAuthenticator);
     }
 
     public DirectDigestAuthClient(final Authenticator digestAuthenticator,
                                  final ProfileCreator profileCreator) {
-        defaultAuthenticator(digestAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(digestAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultCredentialsExtractor(new DigestAuthExtractor());
+        setCredentialsExtractorIfUndefined(new DigestAuthExtractor());
     }
 
     /** Per RFC 2617

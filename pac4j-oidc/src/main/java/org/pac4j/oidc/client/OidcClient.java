@@ -53,11 +53,11 @@ public class OidcClient extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         configuration.init(forceReinit);
 
-        defaultRedirectionActionBuilder(new OidcRedirectionActionBuilder(this));
-        defaultCredentialsExtractor(new OidcExtractor(configuration, this));
-        defaultAuthenticator(new OidcAuthenticator(configuration, this));
-        defaultProfileCreator(new OidcProfileCreator(configuration, this));
-        defaultLogoutActionBuilder(new OidcLogoutActionBuilder(configuration));
+        setRedirectionActionBuilderIfUndefined(new OidcRedirectionActionBuilder(this));
+        setCredentialsExtractorIfUndefined(new OidcExtractor(configuration, this));
+        setAuthenticatorIfUndefined(new OidcAuthenticator(configuration, this));
+        setProfileCreatorIfUndefined(new OidcProfileCreator(configuration, this));
+        setLogoutActionBuilderIfUndefined(new OidcLogoutActionBuilder(configuration));
     }
 
     @Override

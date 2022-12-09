@@ -14,7 +14,7 @@ public class X509Client extends DirectClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultCredentialsExtractor(new X509CredentialsExtractor());
-        defaultAuthenticator(new X509Authenticator());
+        setCredentialsExtractorIfUndefined(new X509CredentialsExtractor());
+        setAuthenticatorIfUndefined(new X509Authenticator());
     }
 }

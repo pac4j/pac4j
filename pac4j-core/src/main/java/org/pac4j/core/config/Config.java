@@ -185,19 +185,19 @@ public class Config {
         return this;
     }
 
-    public void defaultSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
+    public void setSessionStoreFactoryIfUndefined(final SessionStoreFactory sessionStoreFactory) {
         if (this.sessionStoreFactory == null) {
             this.sessionStoreFactory = sessionStoreFactory;
         }
     }
 
-    public void defaultWebContextFactory(final WebContextFactory webContextFactory) {
+    public void setWebContextFactoryIfUndefined(final WebContextFactory webContextFactory) {
         if (this.webContextFactory == null) {
             setWebContextFactory(webContextFactory);
         }
     }
 
-    public void defaultHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
+    public void setHttpActionAdapterIfUndefined(final HttpActionAdapter httpActionAdapter) {
         if (this.httpActionAdapter == null) {
             setHttpActionAdapter(httpActionAdapter);
         }

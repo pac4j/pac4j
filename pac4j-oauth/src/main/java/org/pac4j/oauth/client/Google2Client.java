@@ -63,7 +63,7 @@ public class Google2Client extends OAuth20Client {
             }
             return false;
         });
-        defaultLogoutActionBuilder(new GoogleLogoutActionBuilder());
+        setLogoutActionBuilderIfUndefined(new GoogleLogoutActionBuilder());
 
         super.internalInit(forceReinit);
     }

@@ -54,10 +54,10 @@ public class CasClient extends IndirectClient {
         assertNotNull("configuration", configuration);
         configuration.setUrlResolver(this.getUrlResolver());
 
-        defaultRedirectionActionBuilder(new CasRedirectionActionBuilder(configuration, this));
-        defaultCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration));
-        defaultAuthenticator(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
-        defaultLogoutActionBuilder(new CasLogoutActionBuilder(configuration.computeFinalPrefixUrl(null) + "logout",
+        setRedirectionActionBuilderIfUndefined(new CasRedirectionActionBuilder(configuration, this));
+        setCredentialsExtractorIfUndefined(new TicketAndLogoutRequestExtractor(configuration));
+        setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
+        setLogoutActionBuilderIfUndefined(new CasLogoutActionBuilder(configuration.computeFinalPrefixUrl(null) + "logout",
             configuration.getPostLogoutUrlParameter()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }

@@ -35,20 +35,20 @@ public class DirectBasicAuthClient extends DirectClient {
     }
 
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
-        defaultAuthenticator(usernamePasswordAuthenticator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator,
                                  final ProfileCreator profileCreator) {
-        defaultAuthenticator(usernamePasswordAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
-        defaultCredentialsExtractor(new BasicAuthExtractor());
+        setCredentialsExtractorIfUndefined(new BasicAuthExtractor());
     }
 
     @Override

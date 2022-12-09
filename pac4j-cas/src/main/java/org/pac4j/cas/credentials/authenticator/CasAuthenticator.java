@@ -56,7 +56,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
         CommonHelper.assertNotNull("configuration", configuration);
 
-        defaultProfileDefinition(new CasProfileDefinition());
+        setProfileDefinitionIfUndefined(new CasProfileDefinition());
     }
 
     @Override

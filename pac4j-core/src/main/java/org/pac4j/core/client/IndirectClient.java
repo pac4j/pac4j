@@ -175,13 +175,13 @@ public abstract class IndirectClient extends BaseClient {
         return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
     }
 
-    protected void defaultRedirectionActionBuilder(final RedirectionActionBuilder redirectActionBuilder) {
+    protected void setRedirectionActionBuilderIfUndefined(final RedirectionActionBuilder redirectActionBuilder) {
         if (this.redirectionActionBuilder == null) {
             this.redirectionActionBuilder = redirectActionBuilder;
         }
     }
 
-    protected void defaultLogoutActionBuilder(final LogoutActionBuilder logoutActionBuilder) {
+    protected void setLogoutActionBuilderIfUndefined(final LogoutActionBuilder logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;
         }

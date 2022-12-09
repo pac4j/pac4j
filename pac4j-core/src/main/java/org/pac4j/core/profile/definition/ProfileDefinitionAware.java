@@ -22,7 +22,7 @@ public abstract class ProfileDefinitionAware extends InitializableObject {
         this.profileDefinition = profileDefinition;
     }
 
-    protected void defaultProfileDefinition(final ProfileDefinition profileDefinition) {
+    protected void setProfileDefinitionIfUndefined(final ProfileDefinition profileDefinition) {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
         if (this.profileDefinition == null) {
             this.profileDefinition = profileDefinition;

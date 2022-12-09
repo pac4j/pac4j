@@ -41,26 +41,26 @@ public class IndirectBasicAuthClient extends IndirectClient {
     public IndirectBasicAuthClient() {}
 
     public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
-        defaultAuthenticator(usernamePasswordAuthenticator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
     public IndirectBasicAuthClient(final String realmName, final Authenticator usernamePasswordAuthenticator) {
         this.realmName = realmName;
-        defaultAuthenticator(usernamePasswordAuthenticator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
     public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator, final ProfileCreator profileCreator) {
-        defaultAuthenticator(usernamePasswordAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
-        defaultRedirectionActionBuilder((webContext, sessionStore) ->
+        setRedirectionActionBuilderIfUndefined((webContext, sessionStore) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
-        defaultCredentialsExtractor(new BasicAuthExtractor());
+        setCredentialsExtractorIfUndefined(new BasicAuthExtractor());
     }
 
     @Override

@@ -68,9 +68,9 @@ public class DirectCasClient extends DirectClient {
         assertNotNull("configuration", this.configuration);
         assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
 
-        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
+        setCredentialsExtractorIfUndefined(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.defaultAuthenticator(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
+        super.setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
@@ -107,7 +107,7 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected void defaultAuthenticator(final Authenticator authenticator) {
+    protected void setAuthenticatorIfUndefined(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "
             + "automatically created for each request");
     }

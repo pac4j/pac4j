@@ -32,7 +32,7 @@ public class KeycloakOidcClient extends OidcClient {
     protected void internalInit(final boolean forceReinit) {
         val profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new KeycloakOidcProfile()));
-        defaultProfileCreator(profileCreator);
+        setProfileCreatorIfUndefined(profileCreator);
 
         addAuthorizationGenerator(new KeycloakRolesAuthorizationGenerator(getConfiguration().getClientId()));
 

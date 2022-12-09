@@ -31,9 +31,9 @@ public class DropBoxClient extends OAuth20Client {
         configuration.setApi(DropboxApi20.INSTANCE);
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
 
-        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.dropbox.com/logout")));
-        defaultProfileCreator(new DropBoxProfileCreator(configuration, this));
+        setProfileCreatorIfUndefined(new DropBoxProfileCreator(configuration, this));
 
         super.internalInit(forceReinit);
     }

@@ -66,7 +66,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         CommonHelper.assertNotBlank("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotBlank("usersCollection", this.usersCollection);
 
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new MongoProfile()));
+        setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new MongoProfile()));
         setSerializer(new JsonSerializer(MongoProfile.class));
 
         super.internalInit(forceReinit);

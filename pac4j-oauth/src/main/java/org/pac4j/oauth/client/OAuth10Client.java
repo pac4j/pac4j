@@ -32,10 +32,10 @@ public class OAuth10Client extends IndirectClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultRedirectionActionBuilder(new OAuth10RedirectionActionBuilder(configuration, this));
-        defaultCredentialsExtractor(new OAuth10CredentialsExtractor(configuration, this));
-        defaultAuthenticator(new OAuth10Authenticator(configuration, this));
-        defaultProfileCreator(new OAuth10ProfileCreator(configuration, this));
+        setRedirectionActionBuilderIfUndefined(new OAuth10RedirectionActionBuilder(configuration, this));
+        setCredentialsExtractorIfUndefined(new OAuth10CredentialsExtractor(configuration, this));
+        setAuthenticatorIfUndefined(new OAuth10Authenticator(configuration, this));
+        setProfileCreatorIfUndefined(new OAuth10ProfileCreator(configuration, this));
     }
 
     public String getKey() {

@@ -50,7 +50,7 @@ public class FormClient extends IndirectClient {
 
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
-        defaultAuthenticator(usernamePasswordAuthenticator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
@@ -58,14 +58,14 @@ public class FormClient extends IndirectClient {
         this.loginUrl = loginUrl;
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
-        defaultAuthenticator(usernamePasswordAuthenticator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator,
                       final ProfileCreator profileCreator) {
         this.loginUrl = loginUrl;
-        defaultAuthenticator(usernamePasswordAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
@@ -74,11 +74,11 @@ public class FormClient extends IndirectClient {
         assertNotBlank("usernameParameter", this.usernameParameter);
         assertNotBlank("passwordParameter", this.passwordParameter);
 
-        defaultRedirectionActionBuilder((ctx, session) -> {
+        setRedirectionActionBuilderIfUndefined((ctx, session) -> {
             val finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
         });
-        defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter));
+        setCredentialsExtractorIfUndefined(new FormExtractor(usernameParameter, passwordParameter));
     }
 
     @Override

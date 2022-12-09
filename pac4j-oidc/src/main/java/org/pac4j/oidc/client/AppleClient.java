@@ -26,7 +26,7 @@ public class AppleClient extends OidcClient {
     protected void internalInit(final boolean forceReinit) {
         val profileCreator = new OidcProfileCreator(getConfiguration(), this);
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new AppleProfile()));
-        defaultProfileCreator(profileCreator);
+        setProfileCreatorIfUndefined(profileCreator);
         super.internalInit(forceReinit);
     }
 }

@@ -65,7 +65,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         assertNotNull("dataSource", this.dataSource);
         this.dbi = new DBI(this.dataSource);
 
-        defaultProfileDefinition(new CommonProfileDefinition(x -> new DbProfile()));
+        setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new DbProfile()));
         setSerializer(new JsonSerializer(DbProfile.class));
 
         super.internalInit(forceReinit);

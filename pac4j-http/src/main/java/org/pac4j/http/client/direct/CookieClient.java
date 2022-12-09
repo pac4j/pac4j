@@ -19,14 +19,14 @@ public class CookieClient extends DirectClient {
 
     public CookieClient(final String cookieName, final Authenticator cookieAuthenticator) {
         this.cookieName = cookieName;
-        defaultAuthenticator(cookieAuthenticator);
+        setAuthenticatorIfUndefined(cookieAuthenticator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
-        defaultCredentialsExtractor(new CookieExtractor(this.cookieName));
+        setCredentialsExtractorIfUndefined(new CookieExtractor(this.cookieName));
     }
 
     public String getCookieName() {

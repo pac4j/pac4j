@@ -60,7 +60,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultProfileDefinition(new SAML2ProfileDefinition());
+        setProfileDefinitionIfUndefined(new SAML2ProfileDefinition());
     }
 
     @Override

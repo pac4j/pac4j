@@ -116,10 +116,11 @@ public class SAML2Client extends IndirectClient {
         initSAMLLogoutResponseValidator();
         initSAMLLogoutProfileHandler();
 
-        defaultRedirectionActionBuilder(new SAML2RedirectionActionBuilder(this));
-        defaultCredentialsExtractor(new SAML2CredentialsExtractor(this));
-        defaultAuthenticator(new SAML2Authenticator(this.configuration.getAttributeAsId(), this.configuration.getMappedAttributes()));
-        defaultLogoutActionBuilder(new SAML2LogoutActionBuilder(this));
+        setRedirectionActionBuilderIfUndefined(new SAML2RedirectionActionBuilder(this));
+        setCredentialsExtractorIfUndefined(new SAML2CredentialsExtractor(this));
+        setAuthenticatorIfUndefined(new SAML2Authenticator(this.configuration.getAttributeAsId(),
+            this.configuration.getMappedAttributes()));
+        setLogoutActionBuilderIfUndefined(new SAML2LogoutActionBuilder(this));
     }
 
     protected void initSOAPPipelineProvider() {

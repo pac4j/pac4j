@@ -29,42 +29,42 @@ public class HeaderClient extends DirectClient {
 
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
-        defaultAuthenticator(tokenAuthenticator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
-        defaultAuthenticator(tokenAuthenticator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator,
                         final ProfileCreator profileCreator) {
         this.headerName = headerName;
-        defaultAuthenticator(tokenAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     public HeaderClient(final String headerName, final ProfileCreator profileCreator) {
         this.headerName = headerName;
-        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
-        defaultAuthenticator(tokenAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     public HeaderClient(final String headerName, final String prefixHeader, final ProfileCreator profileCreator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
-        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class HeaderClient extends DirectClient {
             CommonHelper.assertNotBlank("headerName", this.headerName);
             CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-            defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader));
+            setCredentialsExtractorIfUndefined(new HeaderExtractor(this.headerName, this.prefixHeader));
         }
     }
 }

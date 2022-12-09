@@ -30,7 +30,7 @@ public class WordPressClient extends OAuth20Client {
         configuration.setApi(new WordPressApi20());
         configuration.setProfileDefinition(new WordPressProfileDefinition());
         configuration.setTokenAsHeader(true);
-        defaultLogoutActionBuilder((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://wordpress.com/wp-login.php?action=logout")));
 
         super.internalInit(forceReinit);

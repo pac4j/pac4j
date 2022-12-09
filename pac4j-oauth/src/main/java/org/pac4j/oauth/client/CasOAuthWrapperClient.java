@@ -53,7 +53,7 @@ public class CasOAuthWrapperClient extends OAuth20Client {
         } else {
             configuration.setResponseType("code");
         }
-        defaultLogoutActionBuilder(new CasLogoutActionBuilder(casLogoutUrl, "service"));
+        setLogoutActionBuilderIfUndefined(new CasLogoutActionBuilder(casLogoutUrl, "service"));
 
         super.internalInit(forceReinit);
     }

@@ -31,7 +31,7 @@ public class CronofyClient extends OAuth20Client {
         configuration.setProfileDefinition(new CronofyProfileDefinition());
         configuration.setScope(scope);
         configuration.setWithState(true);
-        defaultProfileCreator(new CronofyProfileCreator(configuration, this));
+        setProfileCreatorIfUndefined(new CronofyProfileCreator(configuration, this));
 
         super.internalInit(forceReinit);
     }

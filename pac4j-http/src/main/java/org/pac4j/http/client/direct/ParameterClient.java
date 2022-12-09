@@ -32,22 +32,22 @@ public class ParameterClient extends DirectClient {
 
     public ParameterClient(final String parameterName, final Authenticator tokenAuthenticator) {
         this.parameterName = parameterName;
-        defaultAuthenticator(tokenAuthenticator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
     public ParameterClient(final String parameterName,
                            final ProfileCreator profileCreator) {
         this.parameterName = parameterName;
-        defaultAuthenticator(Authenticator.ALWAYS_VALIDATE);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     public ParameterClient(final String parameterName,
                            final Authenticator tokenAuthenticator,
                            final ProfileCreator profileCreator) {
         this.parameterName = parameterName;
-        defaultAuthenticator(tokenAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
 
@@ -55,6 +55,6 @@ public class ParameterClient extends DirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("parameterName", this.parameterName);
 
-        defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest));
+        setCredentialsExtractorIfUndefined(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest));
     }
 }

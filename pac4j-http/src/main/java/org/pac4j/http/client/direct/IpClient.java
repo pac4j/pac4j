@@ -16,16 +16,16 @@ public class IpClient extends DirectClient {
     public IpClient() {}
 
     public IpClient(final Authenticator tokenAuthenticator) {
-        defaultAuthenticator(tokenAuthenticator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
     public IpClient(final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
-        defaultAuthenticator(tokenAuthenticator);
-        defaultProfileCreator(profileCreator);
+        setAuthenticatorIfUndefined(tokenAuthenticator);
+        setProfileCreatorIfUndefined(profileCreator);
     }
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        defaultCredentialsExtractor(new IpExtractor());
+        setCredentialsExtractorIfUndefined(new IpExtractor());
     }
 }
