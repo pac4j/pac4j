@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.client.BaseClient;
@@ -32,6 +33,7 @@ import static org.pac4j.core.util.CommonHelper.*;
 @Setter
 @ToString(callSuper = true)
 @Slf4j
+@Accessors(chain = true)
 public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements CallbackLogic {
 
     public static final DefaultCallbackLogic INSTANCE = new DefaultCallbackLogic();

@@ -1,7 +1,10 @@
 package org.pac4j.core.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
+import lombok.experimental.Accessors;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
@@ -25,6 +28,9 @@ import java.util.Map;
  */
 @Setter
 @Getter
+@With
+@AllArgsConstructor
+@Accessors(chain = true)
 public class Config {
 
     private ProfileManagerFactory profileManagerFactory = ProfileManagerFactory.DEFAULT;
@@ -201,5 +207,6 @@ public class Config {
         if (this.httpActionAdapter == null) {
             setHttpActionAdapter(httpActionAdapter);
         }
+
     }
 }

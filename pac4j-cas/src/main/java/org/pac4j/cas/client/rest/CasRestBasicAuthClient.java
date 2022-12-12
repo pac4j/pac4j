@@ -3,6 +3,7 @@ package org.pac4j.cas.client.rest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.context.HttpConstants;
@@ -20,6 +21,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
     private String headerName = HttpConstants.AUTHORIZATION_HEADER;

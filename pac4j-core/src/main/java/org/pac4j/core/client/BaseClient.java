@@ -3,6 +3,7 @@ package org.pac4j.core.client;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
@@ -44,6 +45,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString(exclude = "logger")
+@Accessors(chain = true)
 public abstract class BaseClient extends InitializableObject implements Client {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
