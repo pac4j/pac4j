@@ -3,6 +3,7 @@ package org.pac4j.core.client;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -38,6 +39,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Setter
 @Getter
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public abstract class IndirectClient extends BaseClient {
 
     public static final String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";

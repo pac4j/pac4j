@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.authorization.checker.AuthorizationChecker;
@@ -53,6 +54,7 @@ import static org.pac4j.core.util.CommonHelper.*;
 @Setter
 @Slf4j
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements SecurityLogic {
 
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();

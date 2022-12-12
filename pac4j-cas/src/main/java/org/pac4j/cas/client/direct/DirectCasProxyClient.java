@@ -3,6 +3,7 @@ package org.pac4j.cas.client.direct;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
@@ -35,6 +36,7 @@ import static org.pac4j.core.util.CommonHelper.*;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class DirectCasProxyClient extends DirectClient {
 
     private CasConfiguration configuration;
