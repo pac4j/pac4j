@@ -1,9 +1,8 @@
 package org.pac4j.jee.context;
 
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.WebContextFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.pac4j.core.exception.TechnicalException;
 
 /**
  * Build a JEE context from parameters.
@@ -16,9 +15,10 @@ public class JEEContextFactory implements WebContextFactory {
     public static final JEEContextFactory INSTANCE = new JEEContextFactory();
 
     @Override
-    public JEEContext newContext(final Object... parameters) {
-        var request = (HttpServletRequest) parameters[0];
-        var response = (HttpServletResponse) parameters[1];
-        return new JEEContext(request, response);
+    public JEEContext newContext(final FrameworkParameters parameters) {
+        if (parameters instanceof JEEFrameworkParameters jeeFrameworkParameters) {
+            return new JEEContext(jeeFrameworkParameters.getRequest(), jeeFrameworkParameters.getResponse());
+        }
+        throw new TechnicalException("Bad parameters type");
     }
 }

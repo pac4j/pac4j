@@ -14,6 +14,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
@@ -71,7 +72,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
     @Override
     public Object perform(final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
-                          final String clients, final String authorizers, final String matchers, final Object... parameters) {
+                          final String clients, final String authorizers, final String matchers, final FrameworkParameters parameters) {
 
         LOGGER.debug("=== SECURITY ===");
 

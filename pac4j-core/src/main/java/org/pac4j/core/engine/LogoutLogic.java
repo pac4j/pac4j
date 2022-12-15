@@ -1,6 +1,7 @@
 package org.pac4j.core.engine;
 
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 
 /**
  * Logout logic for the application and the identity provider.
@@ -20,9 +21,9 @@ public interface LogoutLogic {
      * @param localLogout whether a local logout is required
      * @param destroySession whether the web session must be destroyed
      * @param centralLogout whether a central logout is required
-     * @param parameters additional parameters
+     * @param parameters framework parameters
      * @return the resulting action for logout
      */
     Object perform(Config config, String defaultUrl, String logoutUrlPattern, Boolean localLogout, Boolean destroySession,
-                   Boolean centralLogout, Object... parameters);
+                   Boolean centralLogout, FrameworkParameters parameters);
 }

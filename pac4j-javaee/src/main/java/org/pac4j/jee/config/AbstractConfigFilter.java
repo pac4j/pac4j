@@ -1,5 +1,6 @@
 package org.pac4j.jee.config;
 
+import lombok.Getter;
 import lombok.val;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigBuilder;
@@ -25,6 +26,7 @@ public abstract class AbstractConfigFilter implements Filter {
 
     private static Config CONFIG;
 
+    @Getter
     private Config config;
 
     @Override
@@ -79,10 +81,6 @@ public abstract class AbstractConfigFilter implements Filter {
         if (this.config == null) {
             return AbstractConfigFilter.CONFIG;
         }
-        return this.config;
-    }
-
-    public Config getConfig() {
         return this.config;
     }
 

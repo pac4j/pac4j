@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.*;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
@@ -22,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link DefaultSecurityLogic}.
@@ -68,7 +70,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(config, securityGrantedAccessAdapter, clients, authorizers, matchers);
+        logic.perform(config, securityGrantedAccessAdapter, clients, authorizers, matchers, mock(FrameworkParameters.class));
     }
 
     @Test

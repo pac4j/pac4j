@@ -10,6 +10,7 @@ import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.MockCredentials;
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link DefaultCallbackLogic}.
@@ -68,7 +70,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(config, defaultUrl, renewSession, null);
+        logic.perform(config, defaultUrl, renewSession, null, mock(FrameworkParameters.class));
         logic.setClientFinder(clientFinder);
     }
 

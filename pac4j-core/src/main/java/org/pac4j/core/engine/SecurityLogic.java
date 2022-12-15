@@ -1,6 +1,7 @@
 package org.pac4j.core.engine;
 
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 
 /**
  * Security logic to protect an url.
@@ -19,9 +20,9 @@ public interface SecurityLogic {
      * @param clients the defined clients
      * @param authorizers the defined authorizers
      * @param matchers the defined matchers
-     * @param parameters additional parameters
+     * @param parameters framework parameters
      * @return the resulting action of the security
      */
     Object perform(Config config, SecurityGrantedAccessAdapter securityGrantedAccessAdapter, String clients,
-                   String authorizers, String matchers, Object... parameters);
+                   String authorizers, String matchers, FrameworkParameters parameters);
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -42,7 +43,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
 
     @Override
     public Object perform(final Config config, final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
-                          final Boolean inputDestroySession, final Boolean inputCentralLogout, final Object... parameters) {
+                          final Boolean inputDestroySession, final Boolean inputCentralLogout, final FrameworkParameters parameters) {
 
         LOGGER.debug("=== LOGOUT ===");
 

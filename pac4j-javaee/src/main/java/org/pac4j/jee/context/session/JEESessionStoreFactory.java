@@ -1,5 +1,6 @@
 package org.pac4j.jee.context.session;
 
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.context.session.SessionStoreFactory;
 
@@ -16,11 +17,11 @@ public class JEESessionStoreFactory implements SessionStoreFactory {
     /**
      * Create the session store.
      *
-     * @param parameters the parameters (expected: request, response)
+     * @param parameters the JEE parameters
      * @return the JEE session store
      */
     @Override
-    public SessionStore newSessionStore(final Object... parameters) {
+    public SessionStore newSessionStore(final FrameworkParameters parameters) {
         return JEESessionStore.INSTANCE;
     }
 }

@@ -9,5 +9,5 @@ package org.pac4j.core.context;
 @FunctionalInterface
 public interface WebContextFactory {
 
-    WebContext newContext(Object... parameters);
+    WebContext newContext(FrameworkParameters parameters);
 }

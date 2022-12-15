@@ -10,6 +10,7 @@ import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
@@ -44,7 +45,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
 
     @Override
     public Object perform(final Config config, final String inputDefaultUrl, final Boolean inputRenewSession,
-                          final String defaultClient, final Object... parameters) {
+                          final String defaultClient, final FrameworkParameters parameters) {
 
         LOGGER.debug("=== CALLBACK ===");
 

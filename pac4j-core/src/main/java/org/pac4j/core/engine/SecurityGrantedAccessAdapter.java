@@ -1,10 +1,11 @@
 package org.pac4j.core.engine;
 
-import java.util.Collection;
-
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
+
+import java.util.Collection;
 
 /**
  * Success adapter.
@@ -20,10 +21,11 @@ public interface SecurityGrantedAccessAdapter {
      *
      * @param context the web context
      * @param sessionStore the session store
-     * @param parameters additional parameters
+     * @param parameters framework parameters
      * @param profiles the profiles granted, can be empty
      * @return an adapted result
      * @throws Exception any exception
      */
-    Object adapt(WebContext context, SessionStore sessionStore, Collection<UserProfile> profiles, Object... parameters) throws Exception;
+    Object adapt(WebContext context, SessionStore sessionStore,
+                 Collection<UserProfile> profiles, FrameworkParameters parameters) throws Exception;
 }
