@@ -23,7 +23,7 @@ public abstract class FrameworkAdapter {
         Constructor constructor = null;
 
         try {
-            constructor = CommonHelper.getConstructor("org.pac4j.framework.adapter.FrameworkAdapter");
+            constructor = CommonHelper.getConstructor("org.pac4j.framework.adapter.FrameworkAdapterImpl");
         } catch (final ClassNotFoundException | NoSuchMethodException e) {
             LOGGER.debug("Cannot find a framework adapter: {}", e.getMessage());
         }
