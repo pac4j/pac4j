@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.client.*;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.FrameworkParameters;
@@ -70,6 +71,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     private void call() {
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
+
         logic.perform(config, securityGrantedAccessAdapter, clients, authorizers, matchers, mock(FrameworkParameters.class));
     }
 

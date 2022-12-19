@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.config.Config;
@@ -70,6 +71,8 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private void call() {
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
+
         logic.perform(config, defaultUrl, logoutUrlPattern, localLogout, null, centralLogout, mock(FrameworkParameters.class));
     }
 

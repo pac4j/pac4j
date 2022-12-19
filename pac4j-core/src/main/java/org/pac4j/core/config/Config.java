@@ -33,25 +33,25 @@ import java.util.Map;
 @Accessors(chain = true)
 public class Config {
 
-    private ProfileManagerFactory profileManagerFactory = ProfileManagerFactory.DEFAULT;
+    private Clients clients = new Clients();
 
-    protected Clients clients = new Clients();
+    private Map<String, Authorizer> authorizers = new HashMap<>();
 
-    protected Map<String, Authorizer> authorizers = new HashMap<>();
+    private Map<String, Matcher> matchers = new HashMap<>();
 
-    protected Map<String, Matcher> matchers = new HashMap<>();
+    private SecurityLogic securityLogic;
 
-    protected HttpActionAdapter httpActionAdapter;
+    private CallbackLogic callbackLogic;
 
-    protected SecurityLogic securityLogic = DefaultSecurityLogic.INSTANCE;
+    private LogoutLogic logoutLogic;
 
-    protected CallbackLogic callbackLogic = DefaultCallbackLogic.INSTANCE;
+    private WebContextFactory webContextFactory;
 
-    protected LogoutLogic logoutLogic = DefaultLogoutLogic.INSTANCE;
+    private SessionStoreFactory sessionStoreFactory;
 
-    protected WebContextFactory webContextFactory;
+    private ProfileManagerFactory profileManagerFactory;
 
-    protected SessionStoreFactory sessionStoreFactory;
+    private HttpActionAdapter httpActionAdapter;
 
     public Config() {}
 
@@ -112,6 +112,16 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
+    public Config setClients(final Clients clients) {
+        this.clients = clients;
+        return this;
+    }
+
+    public Config addClient(final Client client) {
+        this.clients.addClient(client);
+        return this;
+    }
+
     public Config setAuthorizer(final Authorizer authorizer) {
         CommonHelper.assertNotNull("authorizer", authorizer);
         this.authorizers.put(authorizer.getClass().getSimpleName(), authorizer);
@@ -146,26 +156,6 @@ public class Config {
         return this;
     }
 
-    public Config setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
-        this.profileManagerFactory = profileManagerFactory;
-        return this;
-    }
-
-    public Config setClients(final Clients clients) {
-        this.clients = clients;
-        return this;
-    }
-
-    public Config addClient(final Client client) {
-        this.clients.addClient(client);
-        return this;
-    }
-
-    public Config setHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
-        this.httpActionAdapter = httpActionAdapter;
-        return this;
-    }
-
     public Config setSecurityLogic(final SecurityLogic securityLogic) {
         this.securityLogic = securityLogic;
         return this;
@@ -191,9 +181,31 @@ public class Config {
         return this;
     }
 
-    public void setSessionStoreFactoryIfUndefined(final SessionStoreFactory sessionStoreFactory) {
-        if (this.sessionStoreFactory == null) {
-            this.sessionStoreFactory = sessionStoreFactory;
+    public Config setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
+        this.profileManagerFactory = profileManagerFactory;
+        return this;
+    }
+
+    public Config setHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
+        this.httpActionAdapter = httpActionAdapter;
+        return this;
+    }
+
+    public void setSecurityLogicIfUndefined(final SecurityLogic securityLogic) {
+        if (this.securityLogic == null) {
+            setSecurityLogic(securityLogic);
+        }
+    }
+
+    public void setCallbackLogicIfUndefined(final CallbackLogic callbackLogic) {
+        if (this.callbackLogic == null) {
+            setCallbackLogic(callbackLogic);
+        }
+    }
+
+    public void setLogoutLogicIfUndefined(final LogoutLogic logoutLogic) {
+        if (this.logoutLogic == null) {
+            setLogoutLogic(logoutLogic);
         }
     }
 
@@ -203,10 +215,21 @@ public class Config {
         }
     }
 
+    public void setSessionStoreFactoryIfUndefined(final SessionStoreFactory sessionStoreFactory) {
+        if (this.sessionStoreFactory == null) {
+            setSessionStoreFactory(sessionStoreFactory);
+        }
+    }
+
+    public void setProfileManagerFactoryIfUndefined(final ProfileManagerFactory profileManagerFactory) {
+        if (this.profileManagerFactory == null) {
+            setProfileManagerFactory(profileManagerFactory);
+        }
+    }
+
     public void setHttpActionAdapterIfUndefined(final HttpActionAdapter httpActionAdapter) {
         if (this.httpActionAdapter == null) {
             setHttpActionAdapter(httpActionAdapter);
         }
-
     }
 }

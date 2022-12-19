@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.MockDirectClient;
@@ -70,6 +71,8 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
     }
 
     private void call() {
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
+
         logic.perform(config, defaultUrl, renewSession, null, mock(FrameworkParameters.class));
         logic.setClientFinder(clientFinder);
     }

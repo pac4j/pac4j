@@ -9,7 +9,7 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
 import org.opensaml.core.xml.util.XMLObjectSupport;
-import org.pac4j.core.adapter.JEEAdapter;
+import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.saml.exceptions.SAMLException;
 
 import javax.xml.transform.OutputKeys;
@@ -53,7 +53,7 @@ public final class Configuration {
         final List<ConfigurationManager> configurationManagerList = new ArrayList<>();
         configurationManagers.forEach(configurationManagerList::add);
         if (!configurationManagerList.isEmpty()) {
-            configurationManagerList.sort(JEEAdapter.INSTANCE::compareManagers);
+            configurationManagerList.sort(FrameworkAdapter.INSTANCE::compareManagers);
             configurationManagerList.get(0).configure();
         }
     }
