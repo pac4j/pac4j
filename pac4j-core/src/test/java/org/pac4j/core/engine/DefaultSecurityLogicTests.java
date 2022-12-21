@@ -62,7 +62,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setWebContextFactory(p -> context);
         sessionStore = new MockSessionStore();
         config.setSessionStoreFactory(p -> sessionStore);
-        securityGrantedAccessAdapter = (context, sessionStore, profiles, parameters) -> { nbCall++; return null; };
+        securityGrantedAccessAdapter = (context, sessionStore, profiles) -> { nbCall++; return null; };
         config.setHttpActionAdapter((act, ctx) -> { action = act; return null; });
         clients = null;
         authorizers = null;

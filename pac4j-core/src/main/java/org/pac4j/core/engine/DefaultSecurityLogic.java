@@ -154,7 +154,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                     if (authorizationChecker.isAuthorized(context, sessionStore, profiles,
                                                           authorizers, config.getAuthorizers(), currentClients)) {
                         LOGGER.debug("authenticated and authorized -> grant access");
-                        return securityGrantedAccessAdapter.adapt(context, sessionStore, profiles, parameters);
+                        return securityGrantedAccessAdapter.adapt(context, sessionStore, profiles);
                     } else {
                         LOGGER.debug("forbidden");
                         action = forbidden(context, sessionStore, currentClients, profiles, authorizers);
@@ -173,7 +173,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
             } else {
 
                 LOGGER.debug("no matching for this request -> grant access");
-                return securityGrantedAccessAdapter.adapt(context, sessionStore, Collections.emptyList(), parameters);
+                return securityGrantedAccessAdapter.adapt(context, sessionStore, Collections.emptyList());
             }
 
         } catch (final Exception e) {
