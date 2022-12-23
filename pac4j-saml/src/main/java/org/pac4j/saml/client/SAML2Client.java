@@ -78,10 +78,10 @@ public class SAML2Client extends IndirectClient {
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
     @Getter
-    protected SAML2MetadataResolver idpMetadataResolver;
+    protected SAML2MetadataResolver identityProviderMetadataResolver;
 
     @Getter
-    protected SAML2MetadataResolver spMetadataResolver;
+    protected SAML2MetadataResolver serviceProviderMetadataResolver;
 
     protected Decrypter decrypter;
 
@@ -150,7 +150,7 @@ public class SAML2Client extends IndirectClient {
             messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator, this.configuration);
         } else if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_ARTIFACT_BINDING_URI)) {
             messageReceiver = new SAML2ArtifactBindingMessageReceiver(this.authnResponseValidator,
-                    this.idpMetadataResolver, this.spMetadataResolver, this.soapPipelineProvider, this.configuration);
+                    this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver, this.soapPipelineProvider, this.configuration);
         } else {
             throw new TechnicalException(
                     "Unsupported response binding type: " + configuration.getResponseBindingType());
@@ -199,7 +199,7 @@ public class SAML2Client extends IndirectClient {
 
     protected void initSignatureTrustEngineProvider() {
         // Build provider for digital signature validation and encryption
-        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(this.idpMetadataResolver, this.spMetadataResolver);
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver);
         if (this.configuration.isAllSignatureValidationDisabled()) {
             this.signatureTrustEngineProvider = new LogOnlySignatureTrustEngineProvider(this.signatureTrustEngineProvider);
         }
@@ -207,18 +207,18 @@ public class SAML2Client extends IndirectClient {
 
     protected void initSAMLContextProvider() {
         // Build the contextProvider
-        this.contextProvider = new SAML2ContextProvider(this.idpMetadataResolver, this.spMetadataResolver,
+        this.contextProvider = new SAML2ContextProvider(this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver,
                 this.configuration.getSamlMessageStoreFactory());
     }
 
     protected void initServiceProviderMetadataResolver() {
-        this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
-        this.spMetadataResolver.resolve();
+        this.serviceProviderMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
+        this.serviceProviderMetadataResolver.resolve();
     }
 
     protected void initIdentityProviderMetadataResolver() {
-        this.idpMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
-        ((SAML2IdentityProviderMetadataResolver) this.idpMetadataResolver).init();
+        this.identityProviderMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
+        ((SAML2IdentityProviderMetadataResolver) this.identityProviderMetadataResolver).init();
     }
 
     protected void initDecrypter() {
@@ -234,7 +234,7 @@ public class SAML2Client extends IndirectClient {
     }
 
     public void destroy() {
-        ((SAML2ServiceProviderMetadataResolver) spMetadataResolver).destroy();
+        ((SAML2ServiceProviderMetadataResolver) serviceProviderMetadataResolver).destroy();
     }
 
     @Override
@@ -243,11 +243,11 @@ public class SAML2Client extends IndirectClient {
     }
 
     public final String getIdentityProviderResolvedEntityId() {
-        return this.idpMetadataResolver.getEntityId();
+        return this.identityProviderMetadataResolver.getEntityId();
     }
 
     public final String getServiceProviderResolvedEntityId() {
-        return this.spMetadataResolver.getEntityId();
+        return this.serviceProviderMetadataResolver.getEntityId();
     }
 
 }

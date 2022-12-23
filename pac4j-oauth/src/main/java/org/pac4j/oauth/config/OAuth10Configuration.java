@@ -3,7 +3,6 @@ package org.pac4j.oauth.config;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuthService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.With;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
@@ -17,7 +16,6 @@ import org.pac4j.core.context.WebContext;
  */
 @With
 @AllArgsConstructor
-@NoArgsConstructor
 public class OAuth10Configuration extends OAuthConfiguration {
 
     public static final String OAUTH_VERIFIER = "oauth_verifier";

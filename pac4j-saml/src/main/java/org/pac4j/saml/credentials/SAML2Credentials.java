@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class SAML2Credentials extends Credentials {
 
