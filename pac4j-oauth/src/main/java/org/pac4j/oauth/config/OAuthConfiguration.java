@@ -5,6 +5,7 @@ import com.github.scribejava.core.oauth.OAuthService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
@@ -20,6 +21,7 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 @Getter
 @Setter
 @ToString(exclude = "secret")
+@Accessors(chain = true)
 public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
     public static final String OAUTH_TOKEN = "oauth_token";

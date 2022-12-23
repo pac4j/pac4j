@@ -1,8 +1,11 @@
 package org.pac4j.cas.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
 import org.apereo.cas.client.util.PrivateKeyUtils;
@@ -36,6 +39,9 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
 public class CasConfiguration extends BaseClientConfiguration {
 
     public static final String TICKET_PARAMETER = "ticket";

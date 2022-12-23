@@ -1,5 +1,7 @@
 package org.pac4j.saml.client;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -53,30 +55,45 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 public class SAML2Client extends IndirectClient {
 
+    @Getter
     protected SAMLContextProvider contextProvider;
 
+    @Getter
     protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
+    @Getter
     protected SAML2ProfileHandler<AuthnRequest> profileHandler;
 
+    @Getter
+    @Setter
     protected SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
 
+    @Getter
     protected SAML2ResponseValidator authnResponseValidator;
 
+    @Getter
     protected SAML2LogoutValidator logoutValidator;
 
+    @Getter
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
+    @Getter
     protected SAML2MetadataResolver idpMetadataResolver;
 
+    @Getter
     protected SAML2MetadataResolver spMetadataResolver;
 
     protected Decrypter decrypter;
 
+    @Getter
+    @Setter
     protected SAML2Configuration configuration;
 
+    @Getter
+    @Setter
     protected ValueGenerator stateGenerator = new SAML2StateGenerator(this);
 
+    @Getter
     protected ReplayCacheProvider replayCache;
 
     protected SOAPPipelineProvider soapPipelineProvider;
@@ -225,18 +242,6 @@ public class SAML2Client extends IndirectClient {
         configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
     }
 
-    public SAML2ResponseValidator getAuthnResponseValidator() {
-        return this.authnResponseValidator;
-    }
-
-    public final SAML2MetadataResolver getServiceProviderMetadataResolver() {
-        return this.spMetadataResolver;
-    }
-
-    public final SAML2MetadataResolver getIdentityProviderMetadataResolver() {
-        return this.idpMetadataResolver;
-    }
-
     public final String getIdentityProviderResolvedEntityId() {
         return this.idpMetadataResolver.getEntityId();
     }
@@ -245,60 +250,4 @@ public class SAML2Client extends IndirectClient {
         return this.spMetadataResolver.getEntityId();
     }
 
-    public void setConfiguration(final SAML2Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public final SAML2Configuration getConfiguration() {
-        return this.configuration;
-    }
-
-    public SAMLContextProvider getContextProvider() {
-        return contextProvider;
-    }
-
-    public SAML2LogoutValidator getLogoutValidator() {
-        return logoutValidator;
-    }
-
-    public SAML2MetadataResolver getIdpMetadataResolver() {
-        return idpMetadataResolver;
-    }
-
-    public SAML2MetadataResolver getSpMetadataResolver() {
-        return spMetadataResolver;
-    }
-
-    public SAML2ProfileHandler<AuthnRequest> getProfileHandler() {
-        return profileHandler;
-    }
-
-    public SignatureSigningParametersProvider getSignatureSigningParametersProvider() {
-        return signatureSigningParametersProvider;
-    }
-
-    public SAML2SignatureTrustEngineProvider getSignatureTrustEngineProvider() {
-        return signatureTrustEngineProvider;
-    }
-
-    public ValueGenerator getStateGenerator() {
-        return stateGenerator;
-    }
-
-    public void setStateGenerator(final ValueGenerator stateGenerator) {
-        assertNotNull("stateGenerator", stateGenerator);
-        this.stateGenerator = stateGenerator;
-    }
-
-    public SAML2ProfileHandler<LogoutRequest> getLogoutProfileHandler() {
-        return logoutProfileHandler;
-    }
-
-    public void setLogoutProfileHandler(final SAML2ProfileHandler<LogoutRequest> logoutProfileHandler) {
-        this.logoutProfileHandler = logoutProfileHandler;
-    }
-
-    public ReplayCacheProvider getReplayCache() {
-        return replayCache;
-    }
 }

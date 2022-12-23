@@ -1,5 +1,13 @@
 package org.pac4j.oidc.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
+
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -8,6 +16,13 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Julio Arrebola
  * @since 2.0.0
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
+@NoArgsConstructor
 public class KeycloakOidcConfiguration extends OidcConfiguration {
 
     /** Keycloak auth realm **/
@@ -27,21 +42,5 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
     @Override
     public String getDiscoveryURI() {
         return baseUri+"/realms/"+realm+"/.well-known/openid-configuration";
-    }
-
-    public String getRealm() {
-        return realm;
-    }
-
-    public void setRealm(String realm) {
-        this.realm = realm;
-    }
-
-    public String getBaseUri() {
-        return baseUri;
-    }
-
-    public void setBaseUri(String baseUri) {
-        this.baseUri = baseUri;
     }
 }

@@ -1,8 +1,13 @@
 package org.pac4j.saml.config;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
@@ -57,6 +62,11 @@ import java.util.function.Supplier;
 @Slf4j
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString(of = {"serviceProviderEntityId", "serviceProviderMetadataResource", "identityProviderMetadataResource"})
+@With
+@AllArgsConstructor
+@NoArgsConstructor
 public class SAML2Configuration extends BaseClientConfiguration {
 
     protected static final String RESOURCE_PREFIX = "resource:";
@@ -214,9 +224,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private int identityProviderMetadataConnectTimeout = 2500;
 
     private int identityProviderMetadataReadTimeout = 2500;
-
-    public SAML2Configuration() {
-    }
 
     public SAML2Configuration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
                               final String identityProviderMetadataPath) {

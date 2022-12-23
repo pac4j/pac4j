@@ -1,5 +1,11 @@
 package org.pac4j.oauth.profile.facebook;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import org.pac4j.oauth.config.OAuth20Configuration;
 
 /**
@@ -8,15 +14,21 @@ import org.pac4j.oauth.config.OAuth20Configuration;
  * @author Jerome Leleu
  * @since 3.0.0
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
 public class FacebookConfiguration extends OAuth20Configuration {
 
-    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,"
+    public static final String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,"
         + "timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,"
         + "favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
 
     protected String fields = DEFAULT_FIELDS;
 
-    public final static String DEFAULT_SCOPE = "user_likes,user_birthday,email,user_hometown,user_location";
+    public static final String DEFAULT_SCOPE = "user_likes,user_birthday,email,user_hometown,user_location";
 
     protected int limit = FacebookProfileDefinition.DEFAULT_LIMIT;
 
@@ -26,37 +38,5 @@ public class FacebookConfiguration extends OAuth20Configuration {
 
     public FacebookConfiguration() {
         setScope(DEFAULT_SCOPE);
-    }
-
-    public String getFields() {
-        return fields;
-    }
-
-    public void setFields(String fields) {
-        this.fields = fields;
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public boolean isRequiresExtendedToken() {
-        return requiresExtendedToken;
-    }
-
-    public void setRequiresExtendedToken(boolean requiresExtendedToken) {
-        this.requiresExtendedToken = requiresExtendedToken;
-    }
-
-    public boolean isUseAppsecretProof() {
-        return useAppsecretProof;
-    }
-
-    public void setUseAppsecretProof(boolean useAppsecretProof) {
-        this.useAppsecretProof = useAppsecretProof;
     }
 }

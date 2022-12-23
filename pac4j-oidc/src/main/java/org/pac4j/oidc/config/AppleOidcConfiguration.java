@@ -11,6 +11,13 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.SubjectType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.store.GuavaStore;
@@ -31,6 +38,13 @@ import java.util.concurrent.TimeUnit;
  * @author Charley Wu
  * @since 5.0.0
  */
+@ToString(callSuper = true, exclude = "privateKey")
+@Getter
+@Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppleOidcConfiguration extends OidcConfiguration {
     /**
      * Max expiration timeout for client secret (6 months in seconds)
@@ -119,45 +133,5 @@ public class AppleOidcConfiguration extends OidcConfiguration {
             store.set(getClientId(), secret);
         }
         return secret;
-    }
-
-    public ECPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(ECPrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public String getPrivateKeyID() {
-        return privateKeyID;
-    }
-
-    public void setPrivateKeyID(String privateKeyID) {
-        this.privateKeyID = privateKeyID;
-    }
-
-    public String getTeamID() {
-        return teamID;
-    }
-
-    public void setTeamID(String teamID) {
-        this.teamID = teamID;
-    }
-
-    public Store<String, String> getStore() {
-        return store;
-    }
-
-    public void setStore(Store<String, String> store) {
-        this.store = store;
-    }
-
-    public Duration getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(Duration timeout) {
-        this.timeout = timeout;
     }
 }

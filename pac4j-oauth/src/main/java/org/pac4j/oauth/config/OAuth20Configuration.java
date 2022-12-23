@@ -2,9 +2,13 @@ package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuthService;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
@@ -24,6 +28,10 @@ import java.util.Map;
 @ToString(callSuper = true)
 @Getter
 @Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
+@NoArgsConstructor
 public class OAuth20Configuration extends OAuthConfiguration {
 
     public static final String OAUTH_CODE = "code";
