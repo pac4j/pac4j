@@ -38,17 +38,12 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     @Override
     @SuppressWarnings("PMD.NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
-        var sql = String.format("SELECT metadata FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
-        var metadata = decodeMetadata(template.queryForObject(sql, String.class));
+        var metadata = fetchMetadata();
         try (var is = new ByteArrayInputStream(metadata)) {
             var document = Configuration.getParserPool().parse(is);
             var root = document.getDocumentElement();
             return new DOMMetadataResolver(root);
         }
-    }
-
-    protected byte[] decodeMetadata(final String metadata) {
-        return Base64.getDecoder().decode(metadata);
     }
 
     @Override
@@ -72,21 +67,38 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
 
         try {
             var sql = String.format("SELECT entityId FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
-            var metadataId = template.queryForObject(sql, String.class);
-            logger.debug("Updating metadata entity [{}]", metadataId);
-            sql = String.format("UPDATE %s SET metadata='%s' WHERE entityId='%s'", this.tableName,
-                encodeMetadata(metadataToUse), metadataId);
-            var count = template.update(sql);
-            return count > 0;
+            var entityId = template.queryForObject(sql, String.class);
+            logger.debug("Updating metadata entity [{}]", entityId);
+            return updateMetadata(metadataToUse);
         } catch (final EmptyResultDataAccessException e) {
-            var insert = new SimpleJdbcInsert(this.template)
-                .withTableName(String.format("%s", this.tableName))
-                .usingColumns("entityId", "metadata");
-            var parameters = new HashMap<String, Object>();
-            parameters.put("entityId", this.entityId);
-            parameters.put("metadata", encodeMetadata(metadataToUse));
-            return insert.execute(parameters) > 0;
+            return insertMetadata(metadataToUse);
         }
+    }
+
+    protected boolean updateMetadata(final String metadataToUse) {
+        var updateSql = String.format("UPDATE %s SET metadata='%s' WHERE entityId='%s'", this.tableName,
+            encodeMetadata(metadataToUse), this.entityId);
+        var count = template.update(updateSql);
+        return count > 0;
+    }
+
+    protected boolean insertMetadata(String metadataToUse) {
+        var insert = new SimpleJdbcInsert(this.template)
+            .withTableName(String.format("%s", this.tableName))
+            .usingColumns("entityId", "metadata");
+        var parameters = new HashMap<String, Object>();
+        parameters.put("entityId", this.entityId);
+        parameters.put("metadata", encodeMetadata(metadataToUse));
+        return insert.execute(parameters) > 0;
+    }
+
+    protected byte[] fetchMetadata() {
+        var sql = String.format("SELECT metadata FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
+        return decodeMetadata(template.queryForObject(sql, String.class));
+    }
+
+    protected byte[] decodeMetadata(final String metadata) {
+        return Base64.getDecoder().decode(metadata);
     }
 
     protected String encodeMetadata(String metadataToUse) {
