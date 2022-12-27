@@ -34,7 +34,7 @@ public class SAML2JdbcMetadataGeneratorIT implements TestsConstants {
             .setType(EmbeddedDatabaseType.H2)
             .build();
         var template = new JdbcTemplate(dataSource);
-        template.execute("CREATE TABLE `sp-metadata` (entityId VARCHAR(255), metadata CHARACTER LARGE OBJECT)");
+        template.execute("CREATE TABLE sp_metadata (entityId VARCHAR(255), metadata CHARACTER LARGE OBJECT)");
         jdbcMetadataGenerator = new SAML2JdbcMetadataGenerator(template, ENTITY_ID);
     }
 

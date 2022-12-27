@@ -241,7 +241,7 @@ service provider metadata generators if an implementation is discovered.
 
 Service provider metadata can alternatively be stored and managed via relational databases.
 The generator expects an instance of `JdbcTemplate` to work with your relational database. By default, the expected
-database table is named `sp-metadata` with two columns, `entityId` and `metadata` (which should allow for large text values).
+database table is named `sp_metadata` with two columns, `entityId` and `metadata` (which should allow for large text values).
 Metadata is base-64 encoded/decoded by this generator on save and/or fetch operations.
 
 ```java
