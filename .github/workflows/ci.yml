@@ -26,7 +26,7 @@ jobs:
                   java-version: ${{ env.JDK_CURRENT }}
                   distribution: ${{ env.DISTRIBUTION }}
             - name: Cache Maven dependencies
-              uses: actions/cache@c1a5de879eb890d062a85ee0252d6036480b1fe2 # v3
+              uses: actions/cache@4723a57e26efda3a62cbde1812113b730952852d # v3
               with:
                   path: ~/.m2
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
