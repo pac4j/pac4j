@@ -10,9 +10,13 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
@@ -43,6 +47,10 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Getter
 @Setter
 @ToString(exclude = {"secret", "providerMetadata"})
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
+@NoArgsConstructor
 public class OidcConfiguration extends BaseClientConfiguration {
 
     public static final String SCOPE = "scope";
@@ -58,8 +66,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public static final String CODE_CHALLENGE = "code_challenge";
     public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
 
-    public static final List<ResponseType> AUTHORIZATION_CODE_FLOWS = Collections
-        .unmodifiableList(Arrays.asList(new ResponseType(ResponseType.Value.CODE)));
+    public static final List<ResponseType> AUTHORIZATION_CODE_FLOWS = List.of(new ResponseType(ResponseType.Value.CODE));
     public static final List<ResponseType> IMPLICIT_FLOWS = Collections
         .unmodifiableList(Arrays.asList(new ResponseType(OIDCResponseTypeValue.ID_TOKEN),
             new ResponseType(OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));

@@ -1,5 +1,11 @@
 package org.pac4j.oauth.profile.linkedin2;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import org.pac4j.oauth.config.OAuth20Configuration;
 
 /**
@@ -9,6 +15,12 @@ import org.pac4j.oauth.config.OAuth20Configuration;
  * @author Vassilis Virvilis
  * @since 3.0.0
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
 public class LinkedIn2Configuration extends OAuth20Configuration {
     public static final String DEFAULT_SCOPE = "r_liteprofile r_emailaddress";
 
@@ -19,13 +31,5 @@ public class LinkedIn2Configuration extends OAuth20Configuration {
 
     public LinkedIn2Configuration() {
         setScope(DEFAULT_SCOPE);
-    }
-
-    public String getProfileUrl() {
-        return profileUrl;
-    }
-
-    public void setProfileUrl(final String profileUrl) {
-        this.profileUrl = profileUrl;
     }
 }

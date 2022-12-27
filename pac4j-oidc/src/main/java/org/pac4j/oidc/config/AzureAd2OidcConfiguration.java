@@ -1,5 +1,11 @@
 package org.pac4j.oidc.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.util.HttpUtils;
 
@@ -11,6 +17,12 @@ import static org.pac4j.core.util.CommonHelper.isBlank;
  * @author Charley Wu
  * @since 5.0.0
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
 public class AzureAd2OidcConfiguration extends OidcConfiguration {
 
     /** AzureAd tenant **/
@@ -51,14 +63,6 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
     @Override
     public String getDiscoveryURI() {
         return "https://login.microsoftonline.com/" + getTenant() + "/v2.0/.well-known/openid-configuration";
-    }
-
-    public String getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(String tenant) {
-        this.tenant = tenant;
     }
 
     public String makeOauth2TokenRequest(String refreshToken) {

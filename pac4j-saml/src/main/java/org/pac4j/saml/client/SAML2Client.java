@@ -1,5 +1,7 @@
 package org.pac4j.saml.client;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -53,30 +55,45 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 public class SAML2Client extends IndirectClient {
 
+    @Getter
     protected SAMLContextProvider contextProvider;
 
+    @Getter
     protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
+    @Getter
     protected SAML2ProfileHandler<AuthnRequest> profileHandler;
 
+    @Getter
+    @Setter
     protected SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
 
+    @Getter
     protected SAML2ResponseValidator authnResponseValidator;
 
+    @Getter
     protected SAML2LogoutValidator logoutValidator;
 
+    @Getter
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
-    protected SAML2MetadataResolver idpMetadataResolver;
+    @Getter
+    protected SAML2MetadataResolver identityProviderMetadataResolver;
 
-    protected SAML2MetadataResolver spMetadataResolver;
+    @Getter
+    protected SAML2MetadataResolver serviceProviderMetadataResolver;
 
     protected Decrypter decrypter;
 
+    @Getter
+    @Setter
     protected SAML2Configuration configuration;
 
+    @Getter
+    @Setter
     protected ValueGenerator stateGenerator = new SAML2StateGenerator(this);
 
+    @Getter
     protected ReplayCacheProvider replayCache;
 
     protected SOAPPipelineProvider soapPipelineProvider;
@@ -133,10 +150,10 @@ public class SAML2Client extends IndirectClient {
             messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator, this.configuration);
         } else if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_ARTIFACT_BINDING_URI)) {
             messageReceiver = new SAML2ArtifactBindingMessageReceiver(this.authnResponseValidator,
-                    this.idpMetadataResolver, this.spMetadataResolver, this.soapPipelineProvider, this.configuration);
+                this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver,
+                this.soapPipelineProvider, this.configuration);
         } else {
-            throw new TechnicalException(
-                    "Unsupported response binding type: " + configuration.getResponseBindingType());
+            throw new TechnicalException("Unsupported response binding type: " + configuration.getResponseBindingType());
         }
 
         this.profileHandler = new SAML2WebSSOProfileHandler(
@@ -182,7 +199,8 @@ public class SAML2Client extends IndirectClient {
 
     protected void initSignatureTrustEngineProvider() {
         // Build provider for digital signature validation and encryption
-        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(this.idpMetadataResolver, this.spMetadataResolver);
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(
+            this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver);
         if (this.configuration.isAllSignatureValidationDisabled()) {
             this.signatureTrustEngineProvider = new LogOnlySignatureTrustEngineProvider(this.signatureTrustEngineProvider);
         }
@@ -190,18 +208,18 @@ public class SAML2Client extends IndirectClient {
 
     protected void initSAMLContextProvider() {
         // Build the contextProvider
-        this.contextProvider = new SAML2ContextProvider(this.idpMetadataResolver, this.spMetadataResolver,
+        this.contextProvider = new SAML2ContextProvider(this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver,
                 this.configuration.getSamlMessageStoreFactory());
     }
 
     protected void initServiceProviderMetadataResolver() {
-        this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
-        this.spMetadataResolver.resolve();
+        this.serviceProviderMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
+        this.serviceProviderMetadataResolver.resolve();
     }
 
     protected void initIdentityProviderMetadataResolver() {
-        this.idpMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
-        ((SAML2IdentityProviderMetadataResolver) this.idpMetadataResolver).init();
+        this.identityProviderMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
+        ((SAML2IdentityProviderMetadataResolver) this.identityProviderMetadataResolver).init();
     }
 
     protected void initDecrypter() {
@@ -217,7 +235,7 @@ public class SAML2Client extends IndirectClient {
     }
 
     public void destroy() {
-        ((SAML2ServiceProviderMetadataResolver) spMetadataResolver).destroy();
+        ((SAML2ServiceProviderMetadataResolver) serviceProviderMetadataResolver).destroy();
     }
 
     @Override
@@ -225,80 +243,12 @@ public class SAML2Client extends IndirectClient {
         configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
     }
 
-    public SAML2ResponseValidator getAuthnResponseValidator() {
-        return this.authnResponseValidator;
-    }
-
-    public final SAML2MetadataResolver getServiceProviderMetadataResolver() {
-        return this.spMetadataResolver;
-    }
-
-    public final SAML2MetadataResolver getIdentityProviderMetadataResolver() {
-        return this.idpMetadataResolver;
-    }
-
     public final String getIdentityProviderResolvedEntityId() {
-        return this.idpMetadataResolver.getEntityId();
+        return this.identityProviderMetadataResolver.getEntityId();
     }
 
     public final String getServiceProviderResolvedEntityId() {
-        return this.spMetadataResolver.getEntityId();
+        return this.serviceProviderMetadataResolver.getEntityId();
     }
 
-    public void setConfiguration(final SAML2Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public final SAML2Configuration getConfiguration() {
-        return this.configuration;
-    }
-
-    public SAMLContextProvider getContextProvider() {
-        return contextProvider;
-    }
-
-    public SAML2LogoutValidator getLogoutValidator() {
-        return logoutValidator;
-    }
-
-    public SAML2MetadataResolver getIdpMetadataResolver() {
-        return idpMetadataResolver;
-    }
-
-    public SAML2MetadataResolver getSpMetadataResolver() {
-        return spMetadataResolver;
-    }
-
-    public SAML2ProfileHandler<AuthnRequest> getProfileHandler() {
-        return profileHandler;
-    }
-
-    public SignatureSigningParametersProvider getSignatureSigningParametersProvider() {
-        return signatureSigningParametersProvider;
-    }
-
-    public SAML2SignatureTrustEngineProvider getSignatureTrustEngineProvider() {
-        return signatureTrustEngineProvider;
-    }
-
-    public ValueGenerator getStateGenerator() {
-        return stateGenerator;
-    }
-
-    public void setStateGenerator(final ValueGenerator stateGenerator) {
-        assertNotNull("stateGenerator", stateGenerator);
-        this.stateGenerator = stateGenerator;
-    }
-
-    public SAML2ProfileHandler<LogoutRequest> getLogoutProfileHandler() {
-        return logoutProfileHandler;
-    }
-
-    public void setLogoutProfileHandler(final SAML2ProfileHandler<LogoutRequest> logoutProfileHandler) {
-        this.logoutProfileHandler = logoutProfileHandler;
-    }
-
-    public ReplayCacheProvider getReplayCache() {
-        return replayCache;
-    }
 }

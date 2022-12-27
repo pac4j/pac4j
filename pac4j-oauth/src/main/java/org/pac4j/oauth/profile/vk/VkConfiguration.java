@@ -1,5 +1,11 @@
 package org.pac4j.oauth.profile.vk;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import lombok.experimental.Accessors;
 import org.pac4j.oauth.config.OAuth20Configuration;
 
 /**
@@ -8,6 +14,12 @@ import org.pac4j.oauth.config.OAuth20Configuration;
  * @author Jerome Leleu
  * @since 3.0.0
  */
+@ToString(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
+@With
+@AllArgsConstructor
 public class VkConfiguration extends OAuth20Configuration {
 
     public final static String DEFAULT_FIELDS = "sex,bdate,photo_50,photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,"
@@ -20,13 +32,5 @@ public class VkConfiguration extends OAuth20Configuration {
 
     public VkConfiguration() {
         setScope(DEFAULT_SCOPE);
-    }
-
-    public String getFields() {
-        return fields;
-    }
-
-    public void setFields(final String fields) {
-        this.fields = fields;
     }
 }
