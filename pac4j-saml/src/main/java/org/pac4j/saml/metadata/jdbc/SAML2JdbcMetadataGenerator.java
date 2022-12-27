@@ -24,7 +24,7 @@ import java.util.HashMap;
  * @since 5.7.0
  */
 public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
-    private String tableName = "sp-metadata";
+    private String tableName = "sp_metadata";
 
     private final JdbcTemplate template;
 
@@ -38,7 +38,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     @Override
     @SuppressWarnings("PMD.NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
-        var sql = String.format("SELECT metadata FROM `%s` WHERE entityId='%s'", this.tableName, this.entityId);
+        var sql = String.format("SELECT metadata FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
         var metadata = decodeMetadata(template.queryForObject(sql, String.class));
         try (var is = new ByteArrayInputStream(metadata)) {
             var document = Configuration.getParserPool().parse(is);
@@ -71,16 +71,16 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
         }
 
         try {
-            var sql = String.format("SELECT entityId FROM `%s` WHERE entityId='%s'", this.tableName, this.entityId);
+            var sql = String.format("SELECT entityId FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
             var metadataId = template.queryForObject(sql, String.class);
             logger.debug("Updating metadata entity [{}]", metadataId);
-            sql = String.format("UPDATE `%s` SET metadata='%s' WHERE entityId='%s'", this.tableName,
+            sql = String.format("UPDATE %s SET metadata='%s' WHERE entityId='%s'", this.tableName,
                 encodeMetadata(metadataToUse), metadataId);
             var count = template.update(sql);
             return count > 0;
         } catch (final EmptyResultDataAccessException e) {
             var insert = new SimpleJdbcInsert(this.template)
-                .withTableName(String.format("`%s`", this.tableName))
+                .withTableName(String.format("%s", this.tableName))
                 .usingColumns("entityId", "metadata");
             var parameters = new HashMap<String, Object>();
             parameters.put("entityId", this.entityId);
