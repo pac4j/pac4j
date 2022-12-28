@@ -29,10 +29,9 @@ public class DefaultFrameworkAdapter extends FrameworkAdapter {
         CommonHelper.assertNotNull("config", config);
 
         config.setSecurityLogicIfUndefined(DefaultSecurityLogic.INSTANCE);
-        config.setCallbackLogic(DefaultCallbackLogic.INSTANCE);
-        config.setLogoutLogic(DefaultLogoutLogic.INSTANCE);
-
-        config.setProfileManagerFactory(ProfileManagerFactory.DEFAULT);
+        config.setCallbackLogicIfUndefined(DefaultCallbackLogic.INSTANCE);
+        config.setLogoutLogicIfUndefined(DefaultLogoutLogic.INSTANCE);
+        config.setProfileManagerFactoryIfUndefined(ProfileManagerFactory.DEFAULT);
     }
 
     @Override
