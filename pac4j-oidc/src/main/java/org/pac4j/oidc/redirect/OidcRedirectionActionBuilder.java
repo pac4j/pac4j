@@ -109,11 +109,13 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
         // Build authentication request query string
-        final String queryString;
+        String queryString;
         try {
-            queryString = AuthenticationRequest.parse(params.entrySet().stream().collect(
-                Collectors.toMap(Map.Entry::getKey, e -> Collections.singletonList(e.getValue())))).toQueryString();
-        } catch (Exception e) {
+            val parameters = params.entrySet().stream().collect(
+                Collectors.toMap(Map.Entry::getKey, e -> Collections.singletonList(e.getValue())));
+            queryString = AuthenticationRequest.parse(parameters).toQueryString();
+            queryString = queryString.replaceAll("\\+", "%20");
+        } catch (final Exception e) {
             throw new TechnicalException(e);
         }
         return client.getConfiguration().getProviderMetadata().getAuthorizationEndpointURI().toString() + '?' + queryString;
