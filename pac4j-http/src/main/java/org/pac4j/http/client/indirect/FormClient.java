@@ -74,7 +74,7 @@ public class FormClient extends IndirectClient {
         assertNotBlank("usernameParameter", this.usernameParameter);
         assertNotBlank("passwordParameter", this.passwordParameter);
 
-        setRedirectionActionBuilderIfUndefined((ctx, session) -> {
+        setRedirectionActionBuilderIfUndefined((ctx, session, profileManagerFactory) -> {
             val finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
         });

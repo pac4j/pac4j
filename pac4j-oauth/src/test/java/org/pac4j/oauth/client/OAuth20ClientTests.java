@@ -6,6 +6,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.util.generator.StaticValueGenerator;
@@ -36,7 +37,8 @@ public final class OAuth20ClientTests implements TestsConstants {
         var client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.getConfiguration().setStateGenerator(new StaticValueGenerator("OK"));
-        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         var url = new URL(action.getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
     }
@@ -47,11 +49,12 @@ public final class OAuth20ClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         client.getConfiguration().setStateGenerator(new StaticValueGenerator("oldstate"));
         val mockWebContext = MockWebContext.create();
-        var action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore()).get();
+        var action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         var url = new URL(action.getLocation());
         val stringMap = TestsHelper.splitQuery(url);
         assertEquals(stringMap.get("state"), "oldstate");
-        action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore()).get();
+        action = (FoundAction) client.getRedirectionAction(mockWebContext, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         var url2 = new URL(action.getLocation());
         val stringMap2 = TestsHelper.splitQuery(url2);
         assertEquals(stringMap2.get("state"), "oldstate");
@@ -61,12 +64,14 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testStateRandom() throws MalformedURLException {
         OAuth20Client client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        var action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         var url = new URL(action.getLocation());
         val stringMap = TestsHelper.splitQuery(url);
         assertNotNull(stringMap.get("state"));
 
-        action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        action = (FoundAction) client.getRedirectionAction(MockWebContext.create(), new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         var url2 = new URL(action.getLocation());
         val stringMap2 = TestsHelper.splitQuery(url2);
         assertNotNull(stringMap2.get("state"));
@@ -75,7 +80,8 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testGetRedirectionGithub() {
-        val action = (FoundAction) getClient().getRedirectionAction(MockWebContext.create(), new MockSessionStore()).get();
+        val action = (FoundAction) getClient().getRedirectionAction(MockWebContext.create(), new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         val url = action.getLocation();
         assertTrue(url != null && !url.isEmpty());
     }
@@ -97,16 +103,16 @@ public final class OAuth20ClientTests implements TestsConstants {
     public void testMissingKey() {
         val client = getClient();
         client.setKey(null);
-        TestsHelper.expectException(() -> client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()),
-            TechnicalException.class, "key cannot be blank");
+        TestsHelper.expectException(() -> client.getRedirectionAction(MockWebContext.create(), new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), TechnicalException.class, "key cannot be blank");
     }
 
     @Test
     public void testMissingSecret() {
         val client = getClient();
         client.setSecret(null);
-        TestsHelper.expectException(() -> client.getRedirectionAction(MockWebContext.create(), new MockSessionStore()),
-            TechnicalException.class, "secret cannot be blank");
+        TestsHelper.expectException(() -> client.getRedirectionAction(MockWebContext.create(), new MockSessionStore(),
+                ProfileManagerFactory.DEFAULT), TechnicalException.class, "secret cannot be blank");
     }
 
     @Test
@@ -132,7 +138,7 @@ public final class OAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testDefaultScopeGoogle() {
-        getGoogleClient().getRedirectionAction(MockWebContext.create(), new MockSessionStore());
+        getGoogleClient().getRedirectionAction(MockWebContext.create(), new MockSessionStore(), ProfileManagerFactory.DEFAULT);
     }
 
     @Test

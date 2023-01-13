@@ -15,6 +15,7 @@ import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -65,11 +66,13 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     }
 
     @Override
-    public SAML2MessageContext buildContext(final SAML2Client client, final WebContext webContext, final SessionStore sessionStore) {
+    public SAML2MessageContext buildContext(final SAML2Client client, final WebContext webContext,
+                                            final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory) {
         val context = buildServiceProviderContext(client, webContext, sessionStore);
         addIDPContext(context);
         context.setWebContext(webContext);
         context.setSessionStore(sessionStore);
+        context.setProfileManagerFactory(profileManagerFactory);
         return context;
     }
 

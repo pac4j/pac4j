@@ -9,6 +9,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.WithLocationAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -40,10 +41,11 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
     @Override
     public HttpAction buildAjaxResponse(final WebContext context, final SessionStore sessionStore,
+                                        final ProfileManagerFactory profileManagerFactory,
                                         final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            val action = redirectionActionBuilder.getRedirectionAction(context, sessionStore).orElse(null);
+            val action = redirectionActionBuilder.getRedirectionAction(context, sessionStore, profileManagerFactory).orElse(null);
             if (action instanceof WithLocationAction) {
                 url = ((WithLocationAction) action).getLocation();
             }

@@ -39,7 +39,7 @@ public final class MockIndirectClient extends IndirectClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        setRedirectionActionBuilderIfUndefined((ctx, store) -> Optional.of(redirectAction));
+        setRedirectionActionBuilderIfUndefined((ctx, store, pmf) -> Optional.of(redirectAction));
         setCredentialsExtractorIfUndefined((ctx, store, factory) -> returnCredentials.get());
         setAuthenticatorIfUndefined((cred, ctx, store) -> {
             cred.setUserProfile(profile);

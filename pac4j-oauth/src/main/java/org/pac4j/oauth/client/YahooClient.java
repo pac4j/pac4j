@@ -31,7 +31,7 @@ public class YahooClient extends OAuth10Client {
         configuration.setApi(YahooApi.instance());
         configuration.setProfileDefinition(new YahooProfileDefinition());
         setProfileCreatorIfUndefined(new YahooProfileCreator(configuration, this));
-        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "http://login.yahoo.com/config/login?logout=1")));
 
         super.internalInit(forceReinit);

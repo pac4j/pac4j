@@ -130,7 +130,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                                 }
                             }
                             val logoutAction =
-                                client.get().getLogoutAction(context, sessionStore, profile, targetUrl);
+                                client.get().getLogoutAction(context, sessionStore, profileManagerFactory, profile, targetUrl);
                             LOGGER.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {
                                 action = logoutAction.get();

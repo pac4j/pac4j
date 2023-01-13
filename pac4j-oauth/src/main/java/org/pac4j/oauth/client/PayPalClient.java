@@ -1,7 +1,7 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
 import org.pac4j.oauth.profile.paypal.PayPalProfileDefinition;
 import org.pac4j.scribe.builder.api.PayPalApi20;
@@ -39,7 +39,7 @@ public class PayPalClient extends OAuth20Client {
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
         configuration.setTokenAsHeader(true);
-        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.paypal.com/myaccount/logout")));
 
         super.internalInit(forceReinit);

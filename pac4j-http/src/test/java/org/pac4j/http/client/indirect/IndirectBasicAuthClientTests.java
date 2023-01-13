@@ -77,7 +77,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         val basicAuthClient = getBasicAuthClient();
         var context = MockWebContext.create();
-        val action = (FoundAction) basicAuthClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) basicAuthClient.getRedirectionAction(context, new MockSessionStore(),
+            ProfileManagerFactory.DEFAULT).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
     }

@@ -36,7 +36,7 @@ public abstract class RunClient implements TestsConstants {
         val client = getClient();
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        val url = ((FoundAction) client.getRedirectionAction(context, sessionStore).get()).getLocation();
+        val url = ((FoundAction) client.getRedirectionAction(context, sessionStore, ProfileManagerFactory.DEFAULT).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
         if (CommonHelper.isNotBlank(getLogin()) && CommonHelper.isNotBlank(getPassword())) {
             logger.warn("Use credentials: {} / {}", getLogin(), getPassword());

@@ -115,7 +115,7 @@ public final class CasClientTests implements TestsConstants {
         val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
-        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         assertFalse(action.getLocation().indexOf("renew=true") >= 0);
     }
 
@@ -127,7 +127,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         configuration.setRenew(true);
         val context = MockWebContext.create();
-        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         assertTrue(action.getLocation().indexOf("renew=true") >= 0);
     }
 
@@ -138,7 +138,7 @@ public final class CasClientTests implements TestsConstants {
         val casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
-        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         assertFalse(action.getLocation().indexOf("gateway=true") >= 0);
     }
 
@@ -150,7 +150,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
         configuration.setGateway(true);
-        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) casClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         assertTrue(action.getLocation().indexOf("gateway=true") >= 0);
         val credentials = casClient.getCredentials(context, new MockSessionStore(),
             ProfileManagerFactory.DEFAULT);

@@ -70,7 +70,7 @@ public final class FormClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         val formClient = getFormClient();
         var context = MockWebContext.create();
-        val action = (FoundAction) formClient.getRedirectionAction(context, new MockSessionStore()).get();
+        val action = (FoundAction) formClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         assertEquals(LOGIN_URL, action.getLocation());
     }
 

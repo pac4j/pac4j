@@ -1,9 +1,10 @@
 package org.pac4j.core.logout;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ public class NoLogoutActionBuilder implements LogoutActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                       final ProfileManagerFactory profileManagerFactory,
                                                        final UserProfile currentProfile, final String targetUrl) {
         return Optional.empty();
     }

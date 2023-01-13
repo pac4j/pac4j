@@ -6,6 +6,7 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -33,8 +34,9 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore) {
-        val context = this.client.getContextProvider().buildContext(this.client, wc, sessionStore);
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore,
+                                                            final ProfileManagerFactory profileManagerFactory) {
+        val context = this.client.getContextProvider().buildContext(this.client, wc, sessionStore, profileManagerFactory);
         val relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
 
         val authnRequest = this.saml2ObjectBuilder.build(context);

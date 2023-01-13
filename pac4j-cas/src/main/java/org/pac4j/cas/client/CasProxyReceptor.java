@@ -42,7 +42,7 @@ public final class CasProxyReceptor extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("store", this.store);
 
-        setRedirectionActionBuilderIfUndefined((ctx, store)
+        setRedirectionActionBuilderIfUndefined((ctx, store, pmf)
             -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         setCredentialsExtractorIfUndefined((ctx, store, factory) -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
