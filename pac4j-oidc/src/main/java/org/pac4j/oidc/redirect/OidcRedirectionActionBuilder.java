@@ -11,6 +11,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -42,7 +43,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
+    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
+                                                            final ProfileManagerFactory profileManagerFactory) {
         val configContext = new OidcConfigurationContext(context, client.getConfiguration());
         val params = buildParams(context);
 

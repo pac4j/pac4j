@@ -12,6 +12,7 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -71,20 +72,22 @@ public final class OidcRedirectTests implements TestsConstants {
             }
             @Override
             public HttpAction buildAjaxResponse(final WebContext context, final SessionStore sessionStore,
+                                                final ProfileManagerFactory profileManagerFactory,
                                                 final RedirectionActionBuilder redirectionActionBuilder) {
                 return new StatusAction(401);
             }
         });
 
-        var context = MockWebContext.create();
-        final SessionStore sessionStore = new MockSessionStore();
+        val context = MockWebContext.create();
+        val sessionStore = new MockSessionStore();
+        val pmf = ProfileManagerFactory.DEFAULT;
 
-        val firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore).orElse(null);
+        val firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore, pmf).orElse(null);
         var state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
 
         try {
             //noinspection ThrowableNotThrown
-            client.getRedirectionAction(context, sessionStore);
+            client.getRedirectionAction(context, sessionStore, pmf);
             fail("Ajax request should throw exception");
         } catch (Exception e) {
             var stateAfterAjax = (State) sessionStore.get(context, client.getStateSessionAttributeName()).orElse(null);

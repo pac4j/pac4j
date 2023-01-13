@@ -12,6 +12,7 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -41,6 +42,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                       final ProfileManagerFactory profileManagerFactory,
                                                        final UserProfile currentProfile, final String targetUrl) {
         val logoutUrl = configuration.findLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {

@@ -1,8 +1,8 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.oauth.profile.wordpress.WordPressProfileDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
+import org.pac4j.oauth.profile.wordpress.WordPressProfileDefinition;
 import org.pac4j.scribe.builder.api.WordPressApi20;
 
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class WordPressClient extends OAuth20Client {
         configuration.setApi(new WordPressApi20());
         configuration.setProfileDefinition(new WordPressProfileDefinition());
         configuration.setTokenAsHeader(true);
-        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://wordpress.com/wp-login.php?action=logout")));
 
         super.internalInit(forceReinit);

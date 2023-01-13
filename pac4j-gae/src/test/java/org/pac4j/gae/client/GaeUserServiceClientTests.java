@@ -57,12 +57,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
         val localClient = new GaeUserServiceClient();
-        localClient.getRedirectionAction(context, new MockSessionStore());
+        localClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT);
     }
 
     @Test
     public void testRedirect() {
-        final HttpAction action = client.getRedirectionAction(context, new MockSessionStore()).get();
+        final HttpAction action = client.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
         assertEquals(HttpConstants.FOUND, action.getCode());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
             Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((FoundAction) action).getLocation());

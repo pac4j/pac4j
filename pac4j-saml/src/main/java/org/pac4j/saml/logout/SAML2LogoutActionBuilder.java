@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
@@ -52,11 +53,12 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     @Override
     public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                       final ProfileManagerFactory profileManagerFactory,
                                                        final UserProfile currentProfile, final String targetUrl) {
         try {
             if (currentProfile instanceof SAML2Profile) {
                 val saml2Profile = (SAML2Profile) currentProfile;
-                val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
+                val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore, profileManagerFactory);
                 val relayState = this.stateGenerator.generateValue(context, sessionStore);
 
                 val logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);

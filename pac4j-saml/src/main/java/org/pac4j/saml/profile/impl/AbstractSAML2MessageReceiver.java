@@ -86,6 +86,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
         decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
         decodedCtx.setWebContext(context.getWebContext());
         decodedCtx.setSessionStore(context.getSessionStore());
+        decodedCtx.setProfileManagerFactory(context.getProfileManagerFactory());
         return decodedCtx;
     }
 

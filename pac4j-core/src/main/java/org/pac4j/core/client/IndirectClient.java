@@ -97,15 +97,19 @@ public abstract class IndirectClient extends BaseClient {
      * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
      * an AJAX one, an unauthorized response is thrown instead of a "redirection".</p>
      *
-     * @param context context
+     * @param context the web context
+     * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @return the "redirection" action
      */
     @Override
-    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
+    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
+                                                                  final ProfileManagerFactory profileManagerFactory) {
         init();
         // it's an AJAX request -> appropriate action
         if (ajaxRequestResolver.isAjax(context, sessionStore)) {
-            val httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore, redirectionActionBuilder);
+            val httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore,
+                profileManagerFactory, redirectionActionBuilder);
             logger.debug("AJAX request detected -> returning " + httpAction + " for " + context.getFullRequestURL());
             cleanRequestedUrl(context, sessionStore);
             throw httpAction;
@@ -119,7 +123,7 @@ public abstract class IndirectClient extends BaseClient {
             throw HttpActionHelper.buildUnauthenticatedAction(context);
         }
 
-        return redirectionActionBuilder.getRedirectionAction(context, sessionStore);
+        return redirectionActionBuilder.getRedirectionAction(context, sessionStore, profileManagerFactory);
     }
 
     private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
@@ -167,9 +171,10 @@ public abstract class IndirectClient extends BaseClient {
 
     @Override
     public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                             final ProfileManagerFactory profileManagerFactory,
                                                              final UserProfile currentProfile, final String targetUrl) {
         init();
-        return logoutActionBuilder.getLogoutAction(context, sessionStore, currentProfile, targetUrl);
+        return logoutActionBuilder.getLogoutAction(context, sessionStore, profileManagerFactory, currentProfile, targetUrl);
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {

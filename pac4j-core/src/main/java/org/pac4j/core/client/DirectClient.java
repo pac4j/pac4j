@@ -35,7 +35,8 @@ public abstract class DirectClient extends BaseClient {
     }
 
     @Override
-    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore) {
+    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
+                                                                  final ProfileManagerFactory profileManagerFactory) {
         return Optional.empty();
     }
 
@@ -48,6 +49,7 @@ public abstract class DirectClient extends BaseClient {
 
     @Override
     public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
+                                                             final ProfileManagerFactory profileManagerFactory,
                                                              final UserProfile currentProfile, final String targetUrl) {
         return Optional.empty();
     }

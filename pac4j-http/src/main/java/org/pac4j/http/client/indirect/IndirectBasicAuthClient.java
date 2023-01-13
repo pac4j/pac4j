@@ -58,7 +58,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
-        setRedirectionActionBuilderIfUndefined((webContext, sessionStore) ->
+        setRedirectionActionBuilderIfUndefined((webContext, sessionStore, profileManagerFactory) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
         setCredentialsExtractorIfUndefined(new BasicAuthExtractor());
     }

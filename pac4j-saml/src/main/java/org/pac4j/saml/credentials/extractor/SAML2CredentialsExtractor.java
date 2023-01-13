@@ -62,7 +62,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
                                          final ProfileManagerFactory profileManagerFactory) {
-        val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore);
+        val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore, profileManagerFactory);
         val logoutEndpoint = isLogoutEndpointRequest(context, samlContext);
         if (logoutEndpoint) {
             receiveLogout(samlContext);

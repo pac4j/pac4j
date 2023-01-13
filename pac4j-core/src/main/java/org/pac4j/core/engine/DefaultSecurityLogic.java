@@ -26,6 +26,7 @@ import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Collections;
@@ -163,7 +164,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                     if (startAuthentication(context, sessionStore, currentClients)) {
                         LOGGER.debug("Starting authentication");
                         saveRequestedUrl(context, sessionStore, currentClients, config.getClients().getAjaxRequestResolver());
-                        action = redirectToIdentityProvider(context, sessionStore, currentClients);
+                        action = redirectToIdentityProvider(context, sessionStore, profileManagerFactory, currentClients);
                     } else {
                         LOGGER.debug("unauthorized");
                         action = unauthorized(context, sessionStore, currentClients);
@@ -244,13 +245,15 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      *
      * @param context the web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @param currentClients the current clients
      * @return the performed redirection
      */
     protected HttpAction redirectToIdentityProvider(final WebContext context, final SessionStore sessionStore,
+                                                    final ProfileManagerFactory profileManagerFactory,
                                                     final List<Client> currentClients) {
         val currentClient = (IndirectClient) currentClients.get(0);
-        return currentClient.getRedirectionAction(context, sessionStore).get();
+        return currentClient.getRedirectionAction(context, sessionStore, profileManagerFactory).get();
     }
 
     /**

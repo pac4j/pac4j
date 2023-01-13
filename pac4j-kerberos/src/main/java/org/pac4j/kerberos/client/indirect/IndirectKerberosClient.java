@@ -37,7 +37,7 @@ public class IndirectKerberosClient extends IndirectClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        setRedirectionActionBuilderIfUndefined((webContext, sessionStore) ->
+        setRedirectionActionBuilderIfUndefined((webContext, sessionStore, profileManagerFactory) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
         setCredentialsExtractorIfUndefined(new KerberosExtractor());
     }

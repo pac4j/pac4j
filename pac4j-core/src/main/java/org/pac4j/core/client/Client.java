@@ -41,9 +41,11 @@ public interface Client {
      *
      * @param context the current web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @return the redirection to perform (optional)
      */
-    Optional<RedirectionAction> getRedirectionAction(WebContext context, SessionStore sessionStore);
+    Optional<RedirectionAction> getRedirectionAction(WebContext context, SessionStore sessionStore,
+                                                     ProfileManagerFactory profileManagerFactory);
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
@@ -82,10 +84,12 @@ public interface Client {
      *
      * @param context the current web context
      * @param sessionStore the session store
+     * @param profileManagerFactory the profile manager factory
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
      * @return the redirection to perform (optional)
      */
     Optional<RedirectionAction> getLogoutAction(WebContext context, SessionStore sessionStore,
+                                                ProfileManagerFactory profileManagerFactory,
                                                 UserProfile currentProfile, String targetUrl);
 }

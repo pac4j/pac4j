@@ -1,9 +1,9 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileCreator;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileDefinition;
-import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class DropBoxClient extends OAuth20Client {
         configuration.setApi(DropboxApi20.INSTANCE);
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
 
-        setLogoutActionBuilderIfUndefined((ctx, session, profile, targetUrl) ->
+        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
             Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.dropbox.com/logout")));
         setProfileCreatorIfUndefined(new DropBoxProfileCreator(configuration, this));
 
