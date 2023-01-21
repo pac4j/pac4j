@@ -61,8 +61,8 @@ public class SAML2CredentialsSerializationTests {
         attr.setNameFormat("pac4j");
         attributes.add(attr);
         val credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid), "example.issuer.com",
-            SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index", contexts,
-            UUID.randomUUID().toString());
+            SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index",
+            contexts, List.of(), UUID.randomUUID().toString());
         val data = SerializationUtils.serialize(credentials);
         val result = (SAML2Credentials) SerializationUtils.deserialize(data);
         assertNotNull(result);

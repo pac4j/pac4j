@@ -5,7 +5,17 @@ import lombok.val;
 import org.opensaml.core.xml.schema.XSURI;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.xmlsec.encryption.support.DecryptionException;
@@ -16,7 +26,18 @@ import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.exceptions.*;
+import org.pac4j.saml.exceptions.SAMAssertionSubjectException;
+import org.pac4j.saml.exceptions.SAMLAssertionAudienceException;
+import org.pac4j.saml.exceptions.SAMLAssertionConditionException;
+import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
+import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
+import org.pac4j.saml.exceptions.SAMLAuthnSessionCriteriaException;
+import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.exceptions.SAMLInResponseToMismatchException;
+import org.pac4j.saml.exceptions.SAMLReplayException;
+import org.pac4j.saml.exceptions.SAMLSignatureRequiredException;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
+import org.pac4j.saml.exceptions.SAMLSubjectConfirmationException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
@@ -27,7 +48,11 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +66,7 @@ import java.util.stream.Collectors;
  */
 public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator {
 
-    private SAML2Configuration configuration;
+    private final SAML2Configuration configuration;
 
     public SAML2AuthnResponseValidator(
         final SAML2SignatureTrustEngineProvider engine,
