@@ -32,6 +32,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     public static final String SESSION_INDEX = "sessionindex";
     public static final String ISSUER_ID = "issuerId";
     public static final String AUTHN_CONTEXT = "authnContext";
+    public static final String AUTHN_CONTEXT_AUTHORITIES = "authnContextAuthorities";
     public static final String SAML_NAME_ID_FORMAT = "samlNameIdFormat";
     public static final String SAML_NAME_ID_NAME_QUALIFIER = "samlNameIdNameQualifier";
     public static final String SAML_NAME_ID_SP_NAME_QUALIFIER = "samlNameIdSpNameQualifier";
@@ -119,6 +120,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         // Add in issuerID and authnContexts
         profile.addAuthenticationAttribute(ISSUER_ID, credentials.getIssuerId());
         profile.addAuthenticationAttribute(AUTHN_CONTEXT, credentials.getAuthnContexts());
+        profile.addAuthenticationAttribute(AUTHN_CONTEXT_AUTHORITIES, credentials.getAuthnContextAuthorities());
         // Retrieve conditions attributes
         // Adding them to both the "regular" and authentication attributes so we don't break anyone currently using it.
         val conditions = credentials.getConditions();

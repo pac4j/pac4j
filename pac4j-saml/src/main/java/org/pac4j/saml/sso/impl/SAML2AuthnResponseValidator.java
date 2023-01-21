@@ -2,6 +2,7 @@ package org.pac4j.saml.sso.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.val;
+import org.opensaml.core.xml.schema.XSURI;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.*;
@@ -90,13 +91,20 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         val issuerEntityId = subjectAssertion.getIssuer().getValue();
         val authnStatements = subjectAssertion.getAuthnStatements();
         final List<String> authnContexts = new ArrayList<>();
+        final List<String> authnContextAuthorities = new ArrayList<>();
         for (val authnStatement : authnStatements) {
+            if (authnStatement.getAuthnContext().getAuthenticatingAuthorities() != null) {
+                authnContextAuthorities.addAll(authnStatement.getAuthnContext().getAuthenticatingAuthorities()
+                    .stream().map(XSURI::getURI).toList());
+            }
             if (authnStatement.getAuthnContext().getAuthnContextClassRef() != null) {
                 authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getURI());
             }
         }
         return new SAML2Credentials(samlNameId, issuerEntityId, attributes,
-            subjectAssertion.getConditions(), sessionIndex, authnContexts, response.getInResponseTo());
+            subjectAssertion.getConditions(), sessionIndex,
+            authnContexts, authnContextAuthorities,
+            response.getInResponseTo());
     }
 
     protected List<Attribute> collectAssertionAttributes(final Assertion subjectAssertion) {
