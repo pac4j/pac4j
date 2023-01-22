@@ -40,12 +40,14 @@ public class SAML2Credentials extends Credentials {
     private final String issuerId;
 
     private final List<String> authnContexts;
+    private final List<String> authnContextAuthorities;
 
     private final String inResponseTo;
 
     public SAML2Credentials(final SAMLNameID nameId, final String issuerId,
                             final List<SAMLAttribute> samlAttributes, final Conditions conditions,
                             final String sessionIndex, final List<String> authnContexts,
+                            final List<String> authnContextAuthorities,
                             final String inResponseTo) {
         this.nameId = nameId;
         this.issuerId = issuerId;
@@ -66,6 +68,7 @@ public class SAML2Credentials extends Credentials {
         } else {
             this.conditions = null;
         }
+        this.authnContextAuthorities = authnContextAuthorities;
         this.authnContexts = authnContexts;
 
         LOGGER.info("Constructed SAML2 credentials: {}", this);

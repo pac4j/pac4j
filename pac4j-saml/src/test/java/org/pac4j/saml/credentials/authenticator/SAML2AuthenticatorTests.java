@@ -195,7 +195,8 @@ public class SAML2AuthenticatorTests {
 
         val credentials = new SAML2Credentials(SAML2Credentials.SAMLNameID.from(nameid),
             "example.issuer.com",
-            SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index", contexts,
+            SAML2Credentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index",
+            contexts, List.of(),
             UUID.randomUUID().toString());
         return credentials;
     }
