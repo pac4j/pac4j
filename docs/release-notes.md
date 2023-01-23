@@ -20,6 +20,10 @@ title: Release notes&#58;
 - Framework specificities (to set up by default) are specified in `org.pac4j.framework.adapter.FrameworkAdapterImpl` or `org.pac4j.jee.adapter.JEEFramworkAdapter` or `DefaultFrameworkAdapter`
 - Renamed `defaultXXX` methods as `setXXXIfUndefined`
 - Gather the web context, the session store and the profile manager factory in a `CallContext`
+- `Client` interface:
+  - Split the `getCredentials` method into the `getCredentials` and `validateCredentials` methods (for `AuthenticationCredentials`)
+  - Add a new `processLogout` method based on the `LogoutProcessor` component (for `LogoutCredentials`)
+- Renamed the `LogoutHandler` as `SessionLogoutHandler`
 
 ---
 
