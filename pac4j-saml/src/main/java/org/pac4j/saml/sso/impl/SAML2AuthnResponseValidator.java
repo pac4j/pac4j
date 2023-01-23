@@ -12,7 +12,7 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
@@ -49,12 +49,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final Decrypter decrypter,
         final ReplayCacheProvider replayCache,
         final SAML2Configuration saml2Configuration) {
-        super(engine, decrypter, saml2Configuration.getLogoutHandler(), replayCache, saml2Configuration.getUriComparator());
+        super(engine, decrypter, saml2Configuration.getSessionLogoutHandler(), replayCache, saml2Configuration.getUriComparator());
         this.configuration = saml2Configuration;
     }
 
     @Override
-    public Credentials validate(final SAML2MessageContext context) {
+    public AuthenticationCredentials validate(final SAML2MessageContext context) {
 
         val message = (SAMLObject) context.getMessageContext().getMessage();
 

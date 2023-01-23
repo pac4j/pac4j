@@ -12,6 +12,8 @@ import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.FrameworkParameters;
+import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.LogoutCredentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
@@ -70,7 +72,6 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             val clients = config.getClients();
             assertNotNull("clients", clients);
 
-            // logic
             val foundClients = clientFinder.find(clients, webContext, defaultClient);
             assertTrue(foundClients != null && foundClients.size() == 1,
                 "unable to find one indirect client for the callback: check the callback URL for a client name parameter or suffix path"
@@ -79,20 +80,33 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            val credentials = foundClient.getCredentials(ctx);
-            LOGGER.debug("credentials: {}", credentials);
+            val credentials = foundClient.getCredentials(ctx).orElse(null);
+            LOGGER.debug("extracted credentials: {}", credentials);
 
-            val optProfile = foundClient.getUserProfile(ctx, credentials.orElse(null));
-            LOGGER.debug("optProfile: {}", optProfile);
-            if (optProfile.isPresent()) {
-                val profile = optProfile.get();
-                val saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(webContext, profile);
-                val multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
-                LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                saveUserProfile(ctx, config, profile, saveProfileInSession, multiProfile, renewSession);
+            if (credentials instanceof LogoutCredentials logoutCredentials) {
+
+                action = foundClient.processLogout(ctx, logoutCredentials);
+
+            } else {
+
+                if (credentials != null) {
+                    val authenticationCredentials =
+                        foundClient.validateCredentials(ctx, (AuthenticationCredentials) credentials).orElse(null);
+                    LOGGER.debug("validated credentials: {}", authenticationCredentials);
+
+                    val optProfile = foundClient.getUserProfile(ctx, authenticationCredentials);
+                    LOGGER.debug("optProfile: {}", optProfile);
+                    if (optProfile.isPresent()) {
+                        val profile = optProfile.get();
+                        val saveProfileInSession = ((BaseClient) foundClient).getSaveProfileInSession(webContext, profile);
+                        val multiProfile = ((BaseClient) foundClient).isMultiProfile(webContext, profile);
+                        LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
+                        saveUserProfile(ctx, config, profile, saveProfileInSession, multiProfile, renewSession);
+                    }
+                }
+
+                action = redirectToOriginallyRequestedUrl(ctx, defaultUrl);
             }
-
-            action = redirectToOriginallyRequestedUrl(ctx, defaultUrl);
 
         } catch (final RuntimeException e) {
             return handleException(e, httpActionAdapter, webContext);

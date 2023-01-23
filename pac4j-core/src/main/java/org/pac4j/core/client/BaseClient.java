@@ -8,6 +8,7 @@ import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -57,33 +58,56 @@ public abstract class BaseClient extends InitializableObject implements Client {
 
     private static boolean warned;
 
-    /**
-     * Retrieve the credentials.
-     *
-     * @param ctx the context
-     * @return the credentials
-     */
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    @Override
+    public String getName() {
+        if (CommonHelper.isBlank(this.name)) {
+            return this.getClass().getSimpleName();
+        }
+        return this.name;
+    }
+
+    @Override
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
+        init();
         try {
-            val optCredentials = this.credentialsExtractor.extract(ctx);
-            if (optCredentials.isPresent()) {
-                val t0 = System.currentTimeMillis();
-                try {
-                    return this.authenticator.validate(ctx, optCredentials.get());
-                } finally {
-                    val t1 = System.currentTimeMillis();
-                    logger.debug("Credentials validation took: {} ms", t1 - t0);
-                }
-            }
+            val credentials = this.credentialsExtractor.extract(ctx).orElse(null);
+            checkCredentials(ctx, credentials);
+            return Optional.ofNullable(credentials);
         } catch (CredentialsException e) {
-            logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
-            logger.debug("Failed to retrieve or validate credentials", e);
+            logger.info("Failed to retrieve credentials: {}", e.getMessage());
+            logger.debug("Failed to retrieve redentials", e);
         }
         return Optional.empty();
     }
 
     @Override
-    public final Optional<UserProfile> getUserProfile(CallContext ctx, final Credentials credentials) {
+    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
+        init();
+        val t0 = System.currentTimeMillis();
+        try {
+            val newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
+            checkCredentials(ctx, credentials);
+            return Optional.ofNullable(newCredentials);
+        } catch (CredentialsException e) {
+            logger.info("Failed to validate credentials: {}", e.getMessage());
+            logger.debug("Failed to validate credentials", e);
+        } finally {
+            val t1 = System.currentTimeMillis();
+            logger.debug("Credentials validation took: {} ms", t1 - t0);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Check the credentials.
+     *
+     * @param ctx the context
+     * @param credentials the credentials
+     */
+    protected void checkCredentials(final CallContext ctx, final Credentials credentials) {}
+
+    @Override
+    public final Optional<UserProfile> getUserProfile(CallContext ctx, final AuthenticationCredentials credentials) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
@@ -96,7 +120,8 @@ public abstract class BaseClient extends InitializableObject implements Client {
             }
         }
 
-        var profile = retrieveUserProfile(ctx, credentials);
+        var profile = this.profileCreator.create(ctx, credentials);
+        logger.debug("profile: {}", profile);
         if (profile.isPresent()) {
             profile.get().setClientName(getName());
             if (this.authorizationGenerators != null) {
@@ -108,30 +133,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
         return profile;
     }
 
-    /**
-     * Retrieve a user profile.
-     *
-     * @param ctx         the context
-     * @param credentials the credentials
-     * @return the user profile
-     */
-    protected final Optional<UserProfile> retrieveUserProfile(final CallContext ctx, final Credentials credentials) {
-        val profile = this.profileCreator.create(ctx, credentials);
-        logger.debug("profile: {}", profile);
-        return profile;
-    }
-
     @Override
     public Optional<UserProfile> renewUserProfile(final CallContext ctx, final UserProfile profile) {
         return Optional.empty();
-    }
-
-    @Override
-    public String getName() {
-        if (CommonHelper.isBlank(this.name)) {
-            return this.getClass().getSimpleName();
-        }
-        return this.name;
     }
 
     /**
@@ -140,8 +144,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @param ctx          the context
      * @param oldSessionId the old session identifier
      */
-    public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-    }
+    public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {}
 
     public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);

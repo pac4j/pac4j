@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
@@ -31,7 +31,7 @@ public class LocalCachingProfileCreatorTests {
         private static int generator = 0;
 
         @Override
-        public Optional<UserProfile> create(final CallContext ctx, Credentials credentials) {
+        public Optional<UserProfile> create(final CallContext ctx, AuthenticationCredentials credentials) {
             final CommonProfile profile = new CommonProfile();
             profile.setId("" + generator++);
             return Optional.of(profile);
@@ -43,7 +43,7 @@ public class LocalCachingProfileCreatorTests {
         private static final NoProfileCreator INSTANCE = new NoProfileCreator();
 
         @Override
-        public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
+        public Optional<UserProfile> create(final CallContext ctx, final AuthenticationCredentials credentials) {
             return Optional.empty();
         }
     }

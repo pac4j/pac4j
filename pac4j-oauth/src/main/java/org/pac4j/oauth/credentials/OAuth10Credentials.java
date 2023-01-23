@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 
 /**
  * This class represents an OAuth credentials for OAuth 1.0 a request token, a token and a verifier.
@@ -17,7 +17,7 @@ import org.pac4j.core.credentials.Credentials;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class OAuth10Credentials extends Credentials {
+public class OAuth10Credentials extends AuthenticationCredentials {
 
     private static final long serialVersionUID = -167715058574799025L;
     private OAuth1RequestToken requestToken;

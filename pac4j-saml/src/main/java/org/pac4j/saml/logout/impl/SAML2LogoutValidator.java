@@ -11,11 +11,11 @@ import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -61,7 +61,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     private String expectedDestination;
 
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
-                                final LogoutHandler logoutHandler, final String postLogoutURL,
+                                final SessionLogoutHandler logoutHandler, final String postLogoutURL,
                                 final ReplayCacheProvider replayCache, final URIComparator uriComparator) {
         super(engine, decrypter, logoutHandler, replayCache, uriComparator);
         this.postLogoutURL = postLogoutURL;
@@ -73,7 +73,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      * @param context the context
      */
     @Override
-    public Credentials validate(final SAML2MessageContext context) {
+    public AuthenticationCredentials validate(final SAML2MessageContext context) {
         val message = (SAMLObject) context.getMessageContext().getMessage();
         // IDP-initiated
         if (message instanceof LogoutRequest logoutRequest) {

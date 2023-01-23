@@ -179,7 +179,7 @@ public class SAML2Client extends IndirectClient {
 
     protected void initSAMLLogoutResponseValidator() {
         this.logoutValidator = new SAML2LogoutValidator(this.signatureTrustEngineProvider,
-            this.decrypter, this.configuration.getLogoutHandler(),
+            this.decrypter, this.configuration.getSessionLogoutHandler(),
             this.configuration.getPostLogoutURL(), this.replayCache,
             this.configuration.getUriComparator());
         this.logoutValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
@@ -239,7 +239,7 @@ public class SAML2Client extends IndirectClient {
 
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        configuration.findLogoutHandler().renewSession(ctx, oldSessionId);
+        configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 
     public final String getIdentityProviderResolvedEntityId() {

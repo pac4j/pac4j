@@ -9,6 +9,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.LogoutCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -19,6 +20,7 @@ import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
+import org.pac4j.core.logout.processor.LogoutProcessor;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.HttpActionHelper;
@@ -56,6 +58,8 @@ public abstract class IndirectClient extends BaseClient {
     private AjaxRequestResolver ajaxRequestResolver;
 
     private RedirectionActionBuilder redirectionActionBuilder;
+
+    private LogoutProcessor logoutProcessor;
 
     private LogoutActionBuilder logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
@@ -97,9 +101,7 @@ public abstract class IndirectClient extends BaseClient {
      * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
      * an AJAX one, an unauthorized response is thrown instead of a "redirection".</p>
      *
-     * @param context the web context
-     * @param sessionStore the session store
-     * @param profileManagerFactory the profile manager factory
+     * @param ctx the context
      * @return the "redirection" action
      */
     @Override
@@ -128,46 +130,24 @@ public abstract class IndirectClient extends BaseClient {
         return redirectionActionBuilder.getRedirectionAction(ctx);
     }
 
-    private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
-        logger.debug("clean requested URL from session");
-        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
-    }
-
-    private void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
-        logger.debug("clean authentication attempt from session");
-        sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
-    }
-
-    private void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
-        if (checkAuthenticationAttempt) {
-            logger.debug("save authentication attempt in session");
-            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
-        }
-    }
-
-    /**
-     * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
-     * <ul>
-     * <li>if the <code>CasClient</code> receives a logout request, it returns a 200 HTTP status code</li>
-     * <li>for the <code>IndirectBasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response
-     * (401 HTTP status code) is returned to request credentials through a popup.</li>
-     * </ul>
-     *
-     * @param ctx the current context
-     * @return the credentials
-     */
     @Override
-    public final Optional<Credentials> getCredentials(final CallContext ctx) {
-        init();
-        val optCredentials = retrieveCredentials(ctx);
+    protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
         // no credentials and no profile returned -> save this authentication has already been tried and failed
-        if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
+        if (credentials == null && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");
-            saveAttemptedAuthentication(ctx.webContext(), ctx.sessionStore());
+            saveAttemptedAuthentication(webContext, sessionStore);
         } else {
-            cleanAttemptedAuthentication(ctx.webContext(), ctx.sessionStore());
+            cleanAttemptedAuthentication(webContext, sessionStore);
         }
-        return optCredentials;
+    }
+
+    @Override
+    public HttpAction processLogout(final CallContext ctx, final LogoutCredentials credentials) {
+        init();
+        assertNotNull("logoutProcessor", logoutProcessor);
+        return this.logoutProcessor.processLogout(ctx, credentials);
     }
 
     @Override
@@ -182,16 +162,14 @@ public abstract class IndirectClient extends BaseClient {
         return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
     }
 
-    protected void setRedirectionActionBuilderIfUndefined(final RedirectionActionBuilder redirectActionBuilder) {
-        if (this.redirectionActionBuilder == null) {
-            this.redirectionActionBuilder = redirectActionBuilder;
-        }
+    private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
+        logger.debug("clean requested URL from session");
+        sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
     }
 
-    protected void setLogoutActionBuilderIfUndefined(final LogoutActionBuilder logoutActionBuilder) {
-        if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
-            this.logoutActionBuilder = logoutActionBuilder;
-        }
+    private void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
+        logger.debug("clean authentication attempt from session");
+        sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
     }
 
     public String getStateSessionAttributeName() {
@@ -204,5 +182,30 @@ public abstract class IndirectClient extends BaseClient {
 
     public String getCodeVerifierSessionAttributeName() {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
+    }
+
+    private void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
+        if (checkAuthenticationAttempt) {
+            logger.debug("save authentication attempt in session");
+            sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+        }
+    }
+
+    protected void setRedirectionActionBuilderIfUndefined(final RedirectionActionBuilder redirectActionBuilder) {
+        if (this.redirectionActionBuilder == null) {
+            this.redirectionActionBuilder = redirectActionBuilder;
+        }
+    }
+
+    protected void setLogoutProcessorIfUndefined(final LogoutProcessor logoutProcessor) {
+        if (this.logoutProcessor == null) {
+            this.logoutProcessor = logoutProcessor;
+        }
+    }
+
+    protected void setLogoutActionBuilderIfUndefined(final LogoutActionBuilder logoutActionBuilder) {
+        if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
+            this.logoutActionBuilder = logoutActionBuilder;
+        }
     }
 }

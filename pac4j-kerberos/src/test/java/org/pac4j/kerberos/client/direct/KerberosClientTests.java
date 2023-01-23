@@ -87,11 +87,12 @@ public class KerberosClientTests implements TestsConstants {
         val context = MockWebContext.create();
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
-        val credentials = (KerberosCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (KerberosCredentials) client.getCredentials(ctx).get();
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
-
-        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val authnCredentials = client.validateCredentials(ctx, credentials);
+        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials.get()).get();
         assertEquals("garry", profile.getId());
     }
 }

@@ -1,15 +1,9 @@
 package org.pac4j.saml.config;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.apache.commons.lang3.StringUtils;
@@ -22,24 +16,15 @@ import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
-import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
-import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
-import org.pac4j.saml.metadata.SAML2MetadataGenerator;
-import org.pac4j.saml.metadata.SAML2MetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataSigner;
-import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
-import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
+import org.pac4j.saml.metadata.*;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
@@ -58,14 +43,7 @@ import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -205,7 +183,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private URIComparator uriComparator = new BasicURLComparator();
 
-    private LogoutHandler logoutHandler;
+    private SessionLogoutHandler sessionLogoutHandler;
 
     private String postLogoutURL;
 
@@ -336,8 +314,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
             keystoreGenerator.generate();
         }
 
-        if (logoutHandler == null) {
-            logoutHandler = new DefaultLogoutHandler();
+        if (sessionLogoutHandler == null) {
+            sessionLogoutHandler = new DefaultSessionLogoutHandler();
         }
 
         initSignatureSigningConfiguration();
@@ -405,10 +383,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.serviceProviderMetadataResource = mapPathToResource(path);
     }
 
-    public LogoutHandler findLogoutHandler() {
+    public SessionLogoutHandler findSessionLogoutHandler() {
         init();
 
-        return logoutHandler;
+        return sessionLogoutHandler;
     }
 
     private void initSignatureSigningConfiguration() {

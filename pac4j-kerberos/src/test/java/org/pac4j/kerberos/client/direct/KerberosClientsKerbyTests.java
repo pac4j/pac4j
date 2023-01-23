@@ -12,6 +12,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
@@ -102,7 +103,11 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         val context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertFalse(setupDirectKerberosClient().getCredentials(new CallContext(context, new MockSessionStore())).isPresent());
+        val client = setupDirectKerberosClient();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = client.getCredentials(ctx);
+        val authnCredentials = client.validateCredentials(ctx, (AuthenticationCredentials) credentials.get());
+        assertFalse(authnCredentials.isPresent());
     }
 
     @Test
@@ -133,8 +138,10 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         IndirectKerberosClient kerbClient,
         MockWebContext context,
         String expectedMsg) {
+        val ctx = new CallContext(context, new MockSessionStore());
         try {
-            kerbClient.getCredentials(new CallContext(context, new MockSessionStore()));
+            val credentials = kerbClient.getCredentials(ctx);
+            kerbClient.validateCredentials(ctx, (AuthenticationCredentials) credentials.get());
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());
@@ -148,11 +155,11 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
         // mock web request
         val context = mockWebRequestContext(spnegoWebTicket);
-        val credentials = client.getCredentials(new CallContext(context, new MockSessionStore()));
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = client.getCredentials(ctx);
         assertTrue(credentials.isPresent());
-        System.out.println(credentials.get());
-
-        val profile = client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials.get());
+        val authnCredentials = client.validateCredentials(ctx, (AuthenticationCredentials) credentials.get());
+        val profile = client.getUserProfile(ctx, authnCredentials.get());
         assertTrue(profile.isPresent());
         assertEquals(clientPrincipal, profile.get().getId());
     }

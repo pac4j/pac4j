@@ -13,7 +13,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Default logout handler.
+ * Default session logout handler.
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -22,15 +22,15 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Setter
 @Slf4j
-public class DefaultLogoutHandler implements LogoutHandler {
+public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
 
     private Store<String, Object> store = new GuavaStore<>(10000, 30, TimeUnit.MINUTES);
 
     private boolean destroySession;
 
-    public DefaultLogoutHandler() {}
+    public DefaultSessionLogoutHandler() {}
 
-    public DefaultLogoutHandler(final Store<String, Object> store) {
+    public DefaultSessionLogoutHandler(final Store<String, Object> store) {
         this.store = store;
     }
 

@@ -1,7 +1,10 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.LogoutCredentials;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
 
@@ -33,13 +36,21 @@ public interface Client {
     Optional<RedirectionAction> getRedirectionAction(CallContext ctx);
 
     /**
-     * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
-     * this step.</p>
+     * Get the credentials from the context.
      *
      * @param ctx the current context
      * @return the credentials (optional)
      */
     Optional<Credentials> getCredentials(CallContext ctx);
+
+    /**
+     * Validate the authentication credentials.
+     *
+     * @param ctx the current context
+     * @param credentials the authentication credentials
+     * @return the credentials (optional)
+     */
+    Optional<AuthenticationCredentials> validateCredentials(CallContext ctx, AuthenticationCredentials credentials);
 
     /**
      * Get the user profile based on the provided credentials.
@@ -48,7 +59,7 @@ public interface Client {
      * @param credentials credentials
      * @return the user profile (optional)
      */
-    Optional<UserProfile> getUserProfile(CallContext ctx, Credentials credentials);
+    Optional<UserProfile> getUserProfile(CallContext ctx, AuthenticationCredentials credentials);
 
     /**
      * Renew the user profile.
@@ -58,6 +69,15 @@ public interface Client {
      * @return the renewed user profile (optional).
      */
     Optional<UserProfile> renewUserProfile(CallContext ctx, UserProfile profile);
+
+    /**
+     * Process the logout credentials.
+     *
+     * @param ctx the current context
+     * @param credentials the logout credentials
+     * @return the resulting HTTP action
+     */
+    HttpAction processLogout(CallContext ctx, LogoutCredentials credentials);
 
     /**
      * <p>Return the logout action (indirect clients).</p>

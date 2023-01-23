@@ -10,7 +10,7 @@ import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SingleLogoutServiceBuilder;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
@@ -106,7 +106,7 @@ public class SAML2LogoutValidatorTests {
             val validator = new SAML2LogoutValidator(
                 getTrustEngine(),
                 mock(Decrypter.class),
-                mock(LogoutHandler.class),
+                mock(SessionLogoutHandler.class),
                 null,
                 mock(ReplayCacheProvider.class),
                 new ExcludingParametersURIComparator()
@@ -160,7 +160,7 @@ public class SAML2LogoutValidatorTests {
         val validator = new SAML2LogoutValidator(
             getTrustEngine(),
             mock(Decrypter.class),
-            mock(LogoutHandler.class),
+            mock(SessionLogoutHandler.class),
             null,
             mock(ReplayCacheProvider.class),
             new ExcludingParametersURIComparator()

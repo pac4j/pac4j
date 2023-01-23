@@ -70,12 +70,13 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        val credentials = (GaeUserCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (GaeUserCredentials) client.getCredentials(ctx).get();
         val user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals(Pac4jConstants.EMPTY_STRING, user.getAuthDomain());
-        val profile =
-            (GaeUserServiceProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val authnCredentials = client.validateCredentials(ctx, credentials).get();
+        val profile = (GaeUserServiceProfile) client.getUserProfile(ctx, authnCredentials).get();
         LOGGER.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
         assertEquals(GaeUserServiceProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + EMAIL, profile.getTypedId());

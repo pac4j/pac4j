@@ -16,6 +16,7 @@ import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.FrameworkParameters;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
@@ -114,21 +115,23 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                         if (currentClient instanceof DirectClient directClient) {
                             LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
-                            val credentials = currentClient.getCredentials(ctx);
+                            val credentials = currentClient.getCredentials(ctx).orElse(null);
                             LOGGER.debug("credentials: {}", credentials);
-                            if (credentials.isPresent()) {
-                                val optProfile =
-                                    currentClient.getUserProfile(ctx, credentials.get());
-                                LOGGER.debug("profile: {}", optProfile);
-                                if (optProfile.isPresent()) {
-                                    val profile = optProfile.get();
-                                    val saveProfileInSession = directClient.getSaveProfileInSession(webContext, profile);
-                                    val multiProfile = directClient.isMultiProfile(webContext, profile);
-                                    LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
-                                    manager.save(saveProfileInSession, profile, multiProfile);
-                                    updated = true;
-                                    if (!multiProfile) {
-                                        break;
+                            if (credentials instanceof AuthenticationCredentials authenticationCredentials) {
+                                val authnCredentials = currentClient.validateCredentials(ctx, authenticationCredentials);
+                                if (authnCredentials.isPresent()) {
+                                    val optProfile = currentClient.getUserProfile(ctx, authnCredentials.get());
+                                    LOGGER.debug("profile: {}", optProfile);
+                                    if (optProfile.isPresent()) {
+                                        val profile = optProfile.get();
+                                        val saveProfileInSession = directClient.getSaveProfileInSession(webContext, profile);
+                                        val multiProfile = directClient.isMultiProfile(webContext, profile);
+                                        LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
+                                        manager.save(saveProfileInSession, profile, multiProfile);
+                                        updated = true;
+                                        if (!multiProfile) {
+                                            break;
+                                        }
                                     }
                                 }
                             }

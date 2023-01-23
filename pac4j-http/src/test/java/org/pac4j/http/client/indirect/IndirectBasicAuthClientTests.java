@@ -112,12 +112,18 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialsBadCredentials() {
+    public void testValidateCredentialsBadCredentials() {
         val basicAuthClient = getBasicAuthClient();
-        val header = USERNAME + ":" + PASSWORD;
-        val context = getContextWithAuthorizationHeader("Basic "
-                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
-        verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
+        val context = MockWebContext.create();
+        try {
+            basicAuthClient.validateCredentials(new CallContext(context, new MockSessionStore()),
+                new UsernamePasswordCredentials(USERNAME, PASSWORD));
+            fail("should throw HttpAction");
+        } catch (final HttpAction e) {
+            assertEquals(401, e.getCode());
+            assertEquals("Basic realm=\"authentication required\"",
+                context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
+        }
     }
 
     @Test

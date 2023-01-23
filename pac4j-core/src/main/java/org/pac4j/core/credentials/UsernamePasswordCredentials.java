@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString(exclude = "password")
-public class UsernamePasswordCredentials extends Credentials {
+public class UsernamePasswordCredentials extends AuthenticationCredentials {
 
     private static final long serialVersionUID = -7229878989627796565L;
 

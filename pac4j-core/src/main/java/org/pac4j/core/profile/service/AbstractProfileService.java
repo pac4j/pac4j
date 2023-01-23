@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -293,7 +293,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
     @Override
-    public Optional<Credentials> validate(final CallContext ctx, Credentials cred) {
+    public Optional<AuthenticationCredentials> validate(final CallContext ctx, AuthenticationCredentials cred) {
         init();
 
         assertNotNull("credentials", cred);

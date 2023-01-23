@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -56,9 +57,10 @@ public class DirectDigestAuthClientTests implements TestsConstants {
                 DIGEST_AUTHORIZATION_HEADER_VALUE);
         context.setRequestMethod(HTTP_METHOD.GET.name());
 
-        val credentials = (DigestCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
-
-        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (DigestCredentials) client.getCredentials(ctx).get();
+        val authnCredentials = (AuthenticationCredentials) client.validateCredentials(ctx, credentials).get();
+        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
 
         val ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
         val serverDigest1 = credentials.calculateServerDigest(true, ha1);

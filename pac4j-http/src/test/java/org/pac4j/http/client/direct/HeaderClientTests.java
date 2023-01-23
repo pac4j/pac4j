@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -60,9 +60,11 @@ public final class HeaderClientTests implements TestsConstants {
         val client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new SimpleTestTokenAuthenticator());
         val context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
-        val credentials = (TokenCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(VALUE, credentials.getToken());
-        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val authnCredentials = (AuthenticationCredentials) client.validateCredentials(ctx, credentials).get();
+        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(VALUE, profile.getId());
     }
 
@@ -70,7 +72,7 @@ public final class HeaderClientTests implements TestsConstants {
     public void testProfileCreation() {
         val client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new ProfileCreator() {
             @Override
-            public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
+            public Optional<UserProfile> create(final CallContext ctx, final AuthenticationCredentials credentials) {
                 val profile = new CommonProfile();
                 profile.setId(KEY);
                 return Optional.of(profile);
@@ -78,9 +80,11 @@ public final class HeaderClientTests implements TestsConstants {
         });
         val context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
-        val credentials = (TokenCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(VALUE, credentials.getToken());
-        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val authnCredentials = (AuthenticationCredentials) client.validateCredentials(ctx, credentials).get();
+        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(KEY, profile.getId());
     }
 }

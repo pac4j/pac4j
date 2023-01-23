@@ -5,6 +5,7 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -44,29 +45,40 @@ public class IndirectKerberosClient extends IndirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
+        init();
         CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
         val webContext = ctx.webContext();
-
         // set the www-authenticate in case of error
         webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
 
         final Optional<Credentials> credentials;
         try {
-            // retrieve credentials
             credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("kerberos credentials : {}", credentials);
             if (!credentials.isPresent()) {
                 throw HttpActionHelper.buildUnauthenticatedAction(webContext);
             }
-            // validate credentials
-            getAuthenticator().validate(ctx, credentials.get());
+            return credentials;
         } catch (final CredentialsException e) {
             throw HttpActionHelper.buildUnauthenticatedAction(webContext);
         }
+    }
 
-        return credentials;
+    @Override
+    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
+        init();
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+
+        val webContext = ctx.webContext();
+        // set the www-authenticate in case of error
+        webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
+
+        try {
+            return getAuthenticator().validate(ctx, credentials);
+        } catch (final CredentialsException e) {
+            throw HttpActionHelper.buildUnauthenticatedAction(webContext);
+        }
     }
 }

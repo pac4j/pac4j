@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -50,8 +51,10 @@ public final class IpClientTests implements TestsConstants {
         val client = new IpClient(new SimpleTestTokenAuthenticator());
         val context = MockWebContext.create();
         context.setRemoteAddress(IP);
-        val credentials = (TokenCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
-        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (TokenCredentials) client.getCredentials(ctx).get();
+        val authnCredentials = (AuthenticationCredentials) client.validateCredentials(ctx, credentials).get();
+        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(IP, profile.getId());
     }
 }

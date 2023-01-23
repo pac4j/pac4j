@@ -80,6 +80,6 @@ public class OidcClient extends IndirectClient {
 
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        configuration.findLogoutHandler().renewSession(ctx, oldSessionId);
+        configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 }

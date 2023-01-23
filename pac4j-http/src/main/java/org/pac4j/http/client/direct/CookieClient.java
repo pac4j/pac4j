@@ -1,5 +1,7 @@
 package org.pac4j.http.client.direct;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.util.CommonHelper;
@@ -13,6 +15,8 @@ import org.pac4j.http.credentials.extractor.CookieExtractor;
  */
 public class CookieClient extends DirectClient {
 
+    @Getter
+    @Setter
     private String cookieName;
 
     public CookieClient() {}
@@ -27,13 +31,5 @@ public class CookieClient extends DirectClient {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
         setCredentialsExtractorIfUndefined(new CookieExtractor(this.cookieName));
-    }
-
-    public String getCookieName() {
-        return cookieName;
-    }
-
-    public void setCookieName(String cookieName) {
-        this.cookieName = cookieName;
     }
 }

@@ -10,7 +10,7 @@ import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -39,7 +39,7 @@ public abstract class AbstractSAML2MessageReceiver implements SAML2MessageReceiv
     }
 
     @Override
-    public Credentials receiveMessage(final SAML2MessageContext context) {
+    public AuthenticationCredentials receiveMessage(final SAML2MessageContext context) {
         context.setSaml2Configuration(saml2Configuration);
         val peerContext = context.getSAMLPeerEntityContext();
         val webContext = context.getWebContext();

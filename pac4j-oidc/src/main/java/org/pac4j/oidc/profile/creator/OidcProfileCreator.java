@@ -11,7 +11,7 @@ import com.nimbusds.openid.connect.sdk.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
@@ -60,7 +60,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
+    public Optional<UserProfile> create(final CallContext ctx, final AuthenticationCredentials credentials) {
         init();
 
         OidcCredentials oidcCredentials = null;
@@ -107,7 +107,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 // keep the session ID if provided
                 val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                 if (isNotBlank(sid)) {
-                    configuration.findLogoutHandler().recordSession(ctx, sid);
+                    configuration.findSessionLogoutHandler().recordSession(ctx, sid);
                 }
             }
 

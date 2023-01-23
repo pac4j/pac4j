@@ -1,12 +1,7 @@
 package org.pac4j.cas.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.val;
 import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
 import org.apereo.cas.client.util.PrivateKeyUtils;
 import org.apereo.cas.client.validation.*;
@@ -17,8 +12,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 
 import javax.net.ssl.HostnameVerifier;
@@ -74,7 +69,7 @@ public class CasConfiguration extends BaseClientConfiguration {
 
     private ProxyList allowedProxyChains = new ProxyList();
 
-    private LogoutHandler logoutHandler;
+    private SessionLogoutHandler sessionLogoutHandler;
 
     private TicketValidator defaultTicketValidator;
 
@@ -158,8 +153,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     }
 
     protected void initializeLogoutHandler() {
-        if (this.logoutHandler == null) {
-            this.logoutHandler = new DefaultLogoutHandler();
+        if (this.sessionLogoutHandler == null) {
+            this.sessionLogoutHandler = new DefaultSessionLogoutHandler();
         }
     }
 
@@ -286,10 +281,10 @@ public class CasConfiguration extends BaseClientConfiguration {
         this.allowedProxyChains = new ProxyList(proxyChains);
     }
 
-    public LogoutHandler findLogoutHandler() {
+    public SessionLogoutHandler findSessionLogoutHandler() {
         init();
 
-        return logoutHandler;
+        return sessionLogoutHandler;
     }
 
     public String computeFinalRestUrl(final WebContext context) {

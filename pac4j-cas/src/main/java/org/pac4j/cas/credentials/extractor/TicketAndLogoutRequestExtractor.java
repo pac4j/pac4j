@@ -43,7 +43,7 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
-        val logoutHandler = configuration.findLogoutHandler();
+        val logoutHandler = configuration.findSessionLogoutHandler();
 
         val webContext = ctx.webContext();
 

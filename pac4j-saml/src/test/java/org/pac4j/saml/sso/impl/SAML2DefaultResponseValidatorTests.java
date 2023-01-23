@@ -20,7 +20,7 @@ import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
@@ -82,7 +82,7 @@ public class SAML2DefaultResponseValidatorTests {
         cfg.setForceKeystoreGeneration(true);
         cfg.setWantsAssertionsSigned(wantsAssertionsSigned);
         cfg.setWantsResponsesSigned(wantsResponsesSigned);
-        cfg.setLogoutHandler(mock(LogoutHandler.class));
+        cfg.setSessionLogoutHandler(mock(SessionLogoutHandler.class));
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         return cfg;
     }

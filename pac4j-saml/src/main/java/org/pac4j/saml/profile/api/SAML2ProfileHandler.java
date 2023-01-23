@@ -2,7 +2,7 @@ package org.pac4j.saml.profile.api;
 
 import org.opensaml.saml.common.SAMLObject;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 
 /**
  * Handles a SAML protocol profile.
@@ -12,5 +12,5 @@ import org.pac4j.core.credentials.Credentials;
 public interface SAML2ProfileHandler<T extends SAMLObject> {
     void send(SAML2MessageContext context, T msg, Object state);
 
-    Credentials receive(SAML2MessageContext context);
+    AuthenticationCredentials receive(SAML2MessageContext context);
 }

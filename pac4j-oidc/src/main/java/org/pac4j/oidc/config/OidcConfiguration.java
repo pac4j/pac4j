@@ -10,19 +10,13 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.val;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.profile.creator.TokenValidator;
@@ -150,7 +144,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /** time period advance (in seconds) for considering an access token expired */
     private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
 
-    private LogoutHandler logoutHandler;
+    private SessionLogoutHandler sessionLogoutHandler;
 
     private TokenValidator tokenValidator;
 
@@ -205,8 +199,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
                 throw new TechnicalException(e);
             }
         }
-        if (this.logoutHandler == null) {
-            this.logoutHandler = new DefaultLogoutHandler();
+        if (this.sessionLogoutHandler == null) {
+            this.sessionLogoutHandler = new DefaultSessionLogoutHandler();
         }
     }
 
@@ -312,10 +306,10 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.valueRetriever = valueRetriever;
     }
 
-    public LogoutHandler findLogoutHandler() {
+    public SessionLogoutHandler findSessionLogoutHandler() {
         init();
 
-        return logoutHandler;
+        return sessionLogoutHandler;
     }
 
     public TokenValidator findTokenValidator() {

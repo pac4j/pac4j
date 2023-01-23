@@ -1,6 +1,6 @@
 package org.pac4j.saml.profile.api;
 
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
@@ -10,5 +10,5 @@ import org.pac4j.saml.context.SAML2MessageContext;
  */
 @FunctionalInterface
 public interface SAML2MessageReceiver {
-    Credentials receiveMessage(SAML2MessageContext context);
+    AuthenticationCredentials receiveMessage(SAML2MessageContext context);
 }

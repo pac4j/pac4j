@@ -7,7 +7,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuthService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -27,7 +27,7 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
     }
 
     @Override
-    protected OAuth1AccessToken getAccessToken(final Credentials credentials) {
+    protected OAuth1AccessToken getAccessToken(final AuthenticationCredentials credentials) {
         // we assume the access token only has been passed: it can be a bearer call (HTTP client)
         if (credentials instanceof TokenCredentials) {
             val accessToken = ((TokenCredentials) credentials).getToken();

@@ -1,7 +1,8 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.LogoutCredentials;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
 
@@ -34,18 +35,17 @@ public abstract class DirectClient extends BaseClient {
 
     @Override
     public final Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
-        return Optional.empty();
+        throw new UnsupportedOperationException("Direct clients cannot redirect for login");
     }
 
     @Override
-    public final Optional<Credentials> getCredentials(final CallContext ctx) {
-        init();
-        return retrieveCredentials(ctx);
+    public final HttpAction processLogout(final CallContext ctx, final LogoutCredentials credentials) {
+        throw new UnsupportedOperationException("Direct clients cannot process logout");
     }
 
     @Override
     public final Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile,
                                                              final String targetUrl) {
-        return Optional.empty();
+        throw new UnsupportedOperationException("Direct clients cannot redirect for logout");
     }
 }

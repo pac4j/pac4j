@@ -13,8 +13,8 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
-import org.pac4j.core.logout.handler.DefaultLogoutHandler;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -25,7 +25,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
- * <p>By default, the {@link LogoutHandler} will be a {@link DefaultLogoutHandler}. Use <code>null</code> to
+ * <p>By default, the {@link SessionLogoutHandler} will be a {@link DefaultSessionLogoutHandler}. Use <code>null</code> to
  * disable logout support.</p>
  *
  * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
@@ -68,6 +68,6 @@ public class CasClient extends IndirectClient {
 
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        configuration.findLogoutHandler().renewSession(ctx, oldSessionId);
+        configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 }

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -72,9 +73,12 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testGetBadCredentials() {
         val formClient = getFormClient();
-        val context = MockWebContext.create();
-        assertFalse(formClient.getCredentials(new CallContext(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD), new MockSessionStore())).isPresent());
+        val context = MockWebContext.create()
+            .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+            .addRequestParameter(formClient.getPasswordParameter(), PASSWORD);
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = (AuthenticationCredentials) formClient.getCredentials(ctx).get();
+        assertFalse(formClient.validateCredentials(ctx, credentials).isPresent());
     }
 
     @Test

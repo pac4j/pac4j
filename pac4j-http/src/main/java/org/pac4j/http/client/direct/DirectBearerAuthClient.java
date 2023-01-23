@@ -55,11 +55,11 @@ public class DirectBearerAuthClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
         // set the www-authenticate in case of error
         ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
             HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 
-        return super.retrieveCredentials(ctx);
+        return super.getCredentials(ctx);
     }
 }

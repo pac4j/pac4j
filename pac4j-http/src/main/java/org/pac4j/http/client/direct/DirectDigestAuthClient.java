@@ -56,13 +56,13 @@ public class DirectDigestAuthClient extends DirectClient {
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
         // set the www-authenticate in case of error
         val nonce = calculateNonce();
         ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
             + nonce + "\"");
 
-        return super.retrieveCredentials(ctx);
+        return super.getCredentials(ctx);
     }
 
     /**

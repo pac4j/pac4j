@@ -6,7 +6,7 @@ import org.apereo.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -59,7 +59,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
+    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
         init();
 
         val webContext = ctx.webContext();

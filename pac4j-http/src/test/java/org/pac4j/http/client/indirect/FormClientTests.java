@@ -89,22 +89,21 @@ public final class FormClientTests implements TestsConstants {
     @Test
     public void testGetCredentialsMissingPassword() {
         val formClient = getFormClient();
-        val context = MockWebContext.create();
+        val context = MockWebContext.create().addRequestParameter(formClient.getPasswordParameter(), PASSWORD);
         val action = (FoundAction) TestsHelper.expectException(
-            () -> formClient.getCredentials(new CallContext(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD),
-                new MockSessionStore())));
+            () -> formClient.getCredentials(new CallContext(context, new MockSessionStore())));
         assertEquals(302, action.getCode());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
                + FormClient.MISSING_FIELD_ERROR, action.getLocation());
     }
 
     @Test
-    public void testGetCredentials() {
+    public void testValidateCredentials() {
         val formClient = getFormClient();
         val context = MockWebContext.create();
         val action = (FoundAction) TestsHelper.expectException(
-            () -> formClient.getCredentials(new CallContext(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD), new MockSessionStore())));
+            () -> formClient.validateCredentials(new CallContext(context, new MockSessionStore()),
+                new UsernamePasswordCredentials(USERNAME, PASSWORD)));
         assertEquals(302, action.getCode());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
                 + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), action.getLocation());

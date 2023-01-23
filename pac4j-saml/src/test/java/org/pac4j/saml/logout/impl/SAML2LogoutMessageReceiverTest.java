@@ -13,7 +13,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -111,7 +111,7 @@ public class SAML2LogoutMessageReceiverTest {
         var validator = new SAML2LogoutValidator(
             engine,
             mock(Decrypter.class),
-            mock(LogoutHandler.class),
+            mock(SessionLogoutHandler.class),
             postLogoutUrl,
             mock(ReplayCacheProvider.class),
             new BasicURLComparator()

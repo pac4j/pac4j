@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
@@ -34,11 +34,11 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     private int timeout;
     private TimeUnit timeUnit;
 
-    private Store<Credentials, UserProfile> store;
+    private Store<AuthenticationCredentials, UserProfile> store;
 
     public LocalCachingAuthenticator() {}
 
-    public LocalCachingAuthenticator(final Authenticator delegate, final Store<Credentials, UserProfile> store) {
+    public LocalCachingAuthenticator(final Authenticator delegate, final Store<AuthenticationCredentials, UserProfile> store) {
         this.delegate = delegate;
         this.store = store;
     }
@@ -52,7 +52,7 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
+    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials credentials) {
         init();
 
         var optProfile = this.store.get(credentials);
@@ -81,11 +81,11 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         }
     }
 
-    public void removeFromCache(final Credentials credentials) {
+    public void removeFromCache(final AuthenticationCredentials credentials) {
         this.store.remove(credentials);
     }
 
-    public boolean isCached(final Credentials credentials) {
+    public boolean isCached(final AuthenticationCredentials credentials) {
         return this.store.get(credentials).isPresent();
     }
 }

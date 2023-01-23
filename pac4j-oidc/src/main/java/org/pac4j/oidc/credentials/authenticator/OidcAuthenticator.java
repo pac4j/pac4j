@@ -12,7 +12,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.client.OidcClient;
@@ -150,7 +150,7 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
+    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
         val credentials = (OidcCredentials) cred;
         val code = credentials.getCode();
         // if we have a code

@@ -10,7 +10,7 @@ import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierConte
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.pac4j.core.logout.handler.LogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ConfigurationContext;
@@ -70,7 +70,7 @@ public class SAML2CredentialsTest {
         when(mockSAMLSubjectNameIdentifierContext.getSAML2SubjectNameID()).thenReturn(mock(NameID.class));
 
         saml2Configuration = new SAML2Configuration();
-        saml2Configuration.setLogoutHandler(mock(LogoutHandler.class));
+        saml2Configuration.setSessionLogoutHandler(mock(SessionLogoutHandler.class));
 
         mockSaml2MessageContext = mock(SAML2MessageContext.class);
         when(mockSaml2MessageContext.getMessageContext()).thenReturn(mockMessageContext);

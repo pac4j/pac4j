@@ -6,6 +6,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -52,7 +53,7 @@ public abstract class RunClient implements TestsConstants {
         populateContextWithUrl(context, returnedUrl);
         val credentials = client.getCredentials(new CallContext(context, sessionStore));
         if (credentials.isPresent()) {
-            val profile = client.getUserProfile(new CallContext(context, sessionStore), credentials.get());
+            val profile = client.getUserProfile(new CallContext(context, sessionStore), (AuthenticationCredentials) credentials.get());
             logger.debug("userProfile: {}", profile);
             if (profile.isPresent() || !canCancel()) {
                 verifyProfile((CommonProfile) profile.get());

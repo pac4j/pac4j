@@ -6,7 +6,9 @@ import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 import org.pac4j.core.exception.CredentialsException;
@@ -81,28 +83,38 @@ public class FormClient extends IndirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
+        init();
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
-        assertNotNull("authenticator", getAuthenticator());
 
         val username = ctx.webContext().getRequestParameter(this.usernameParameter).orElse(null);
         final Optional<Credentials> credentials;
         try {
-            // retrieve credentials
             credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (!credentials.isPresent()) {
                 throw handleInvalidCredentials(ctx, username,
                     "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR);
             }
-            // validate credentials
-            getAuthenticator().validate(ctx, credentials.get());
+            return credentials;
         } catch (final CredentialsException e) {
             throw handleInvalidCredentials(ctx, username,
                 "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
         }
+    }
 
-        return credentials;
+    @Override
+    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
+        init();
+        assertNotNull("authenticator", getAuthenticator());
+
+        val username = ((UsernamePasswordCredentials) credentials).getUsername();
+        try {
+            return getAuthenticator().validate(ctx, credentials);
+        } catch (final CredentialsException e) {
+            throw handleInvalidCredentials(ctx, username,
+                "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
+        }
     }
 
     protected HttpAction handleInvalidCredentials(final CallContext ctx, final String username, String message, String errorMessage) {

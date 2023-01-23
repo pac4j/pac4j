@@ -62,7 +62,7 @@ public class OidcExtractor implements CredentialsExtractor {
                     //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     val sid = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     LOGGER.debug("Handling back-channel logout for sessionId: {}", sid);
-                    configuration.findLogoutHandler().destroySessionBack(ctx, sid);
+                    configuration.findSessionLogoutHandler().destroySessionBack(ctx, sid);
                 } catch (final java.text.ParseException e) {
                     LOGGER.error("Cannot validate JWT logout token", e);
                     throw new BadRequestAction();
@@ -71,7 +71,7 @@ public class OidcExtractor implements CredentialsExtractor {
                 val sid = webContext.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
                 LOGGER.debug("Handling front-channel logout for sessionId: {}", sid);
                 // front-channel logout
-                configuration.findLogoutHandler().destroySessionFront(ctx, sid);
+                configuration.findSessionLogoutHandler().destroySessionFront(ctx, sid);
             }
             webContext.setResponseHeader("Cache-Control", "no-cache, no-store");
             webContext.setResponseHeader("Pragma", "no-cache");

@@ -11,7 +11,7 @@ import org.pac4j.core.context.CallContext;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public interface LogoutHandler {
+public interface SessionLogoutHandler {
 
     /**
      * Associates a key with the current web session.

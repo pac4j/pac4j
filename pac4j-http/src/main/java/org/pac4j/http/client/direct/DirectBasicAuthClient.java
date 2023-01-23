@@ -51,10 +51,10 @@ public class DirectBasicAuthClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
         addAuthenticateHeader(ctx.webContext());
 
-        return super.retrieveCredentials(ctx);
+        return super.getCredentials(ctx);
     }
 
     protected void addAuthenticateHeader(final WebContext context) {

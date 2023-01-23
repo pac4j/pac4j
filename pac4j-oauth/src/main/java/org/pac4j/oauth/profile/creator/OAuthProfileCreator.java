@@ -11,7 +11,7 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
@@ -54,7 +54,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     }
 
     @Override
-    public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
+    public Optional<UserProfile> create(final CallContext ctx, final AuthenticationCredentials credentials) {
         try {
             val token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(ctx.webContext(), token);
@@ -69,7 +69,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      * @param credentials credentials
      * @return the access token
      */
-    protected abstract Token getAccessToken(final Credentials credentials);
+    protected abstract Token getAccessToken(final AuthenticationCredentials credentials);
 
     /**
      * Retrieve the user profile from the access token.

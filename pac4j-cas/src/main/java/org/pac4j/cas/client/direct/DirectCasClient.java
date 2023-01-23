@@ -11,6 +11,7 @@ import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
@@ -73,11 +74,10 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+    public Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
 
         val webContext = ctx.webContext();
-
         try {
             var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
             val loginUrl = configuration.computeFinalLoginUrl(webContext);
@@ -86,22 +86,37 @@ public class DirectCasClient extends DirectClient {
             if (!credentials.isPresent()) {
                 // redirect to the login page
                 val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
-                        callbackUrl, configuration.isRenew(), false, null);
+                    callbackUrl, configuration.isRenew(), false, null);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
                 throw HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl);
             }
 
+            return credentials;
+        } catch (CredentialsException e) {
+            logger.error("Failed to retrieve CAS credentials", e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
+        init();
+
+        val webContext = ctx.webContext();
+
+        try {
+            var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
             // clean url from ticket parameter
             callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
             val casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
-            casAuthenticator.validate(ctx, credentials.get());
+            casAuthenticator.validate(ctx, credentials);
 
-            return credentials;
+            return Optional.of(credentials);
         } catch (CredentialsException e) {
-            logger.error("Failed to retrieve or validate CAS credentials", e);
+            logger.error("Failed to validate CAS credentials", e);
             return Optional.empty();
         }
     }
