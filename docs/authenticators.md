@@ -5,7 +5,7 @@ title: Authenticators&#58;
 
 [HTTP](clients/http.html) [clients](clients.html) require an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) to validate the credentials.
 
-This `Authenticator` interface has only one method: `Optional<Credentials> validate(Credentials credentials, WebContext context, SessionStore sessionStore)`.
+This `Authenticator` interface has only one method: `Optional<Credentials> validate(CallContext ctx, Credentials credentials)`.
 
 [`Credentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java) can be of two kinds:
 

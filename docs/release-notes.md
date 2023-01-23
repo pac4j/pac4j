@@ -19,6 +19,7 @@ title: Release notes&#58;
 - Customisations for the endpoints/interceptors can only be done via the `Config` component and thanks to the `FrameworkParameters`
 - Framework specificities (to set up by default) are specified in `org.pac4j.framework.adapter.FrameworkAdapterImpl` or `org.pac4j.jee.adapter.JEEFramworkAdapter` or `DefaultFrameworkAdapter`
 - Renamed `defaultXXX` methods as `setXXXIfUndefined`
+- Gather the web context, the session store and the profile manager factory in a `CallContext`
 
 ---
 
