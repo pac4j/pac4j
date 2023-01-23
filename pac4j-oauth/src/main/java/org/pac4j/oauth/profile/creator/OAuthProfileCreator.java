@@ -9,8 +9,8 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -54,10 +54,10 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     }
 
     @Override
-    public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         try {
             val token = getAccessToken(credentials);
-            return retrieveUserProfileFromToken(context, token);
+            return retrieveUserProfileFromToken(ctx.webContext(), token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }

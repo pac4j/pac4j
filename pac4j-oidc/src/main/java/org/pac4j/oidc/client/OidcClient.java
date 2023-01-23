@@ -5,8 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -61,7 +60,7 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    public Optional<UserProfile> renewUserProfile(final UserProfile profile, final WebContext context, final SessionStore sessionStore) {
+    public Optional<UserProfile> renewUserProfile(final CallContext ctx, final UserProfile profile) {
         val oidcProfile = (OidcProfile) profile;
         val refreshToken = oidcProfile.getRefreshToken();
         if (refreshToken != null) {
@@ -72,7 +71,7 @@ public class OidcClient extends IndirectClient {
 
             // Create a profile if the refresh grant was successful
             if (credentials.getAccessToken() != null) {
-                return getUserProfile(credentials, context, sessionStore);
+                return getUserProfile(ctx, credentials);
             }
         }
 
@@ -80,7 +79,7 @@ public class OidcClient extends IndirectClient {
     }
 
     @Override
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
-        configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
+    public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
+        configuration.findLogoutHandler().renewSession(ctx, oldSessionId);
     }
 }

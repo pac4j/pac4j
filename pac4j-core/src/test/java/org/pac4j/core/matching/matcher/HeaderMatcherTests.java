@@ -2,6 +2,7 @@ package org.pac4j.core.matching.matcher;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -22,7 +23,7 @@ public final class HeaderMatcherTests implements TestsConstants {
     @Test
     public void testNullHeaderName() {
         val matcher = new HeaderMatcher();
-        TestsHelper.expectException(() -> matcher.matches(MockWebContext.create(), new MockSessionStore()),
+        TestsHelper.expectException(() -> matcher.matches(new CallContext(MockWebContext.create(), new MockSessionStore())),
             TechnicalException.class, "headerName cannot be blank");
     }
 
@@ -30,34 +31,34 @@ public final class HeaderMatcherTests implements TestsConstants {
     public void testNullExpectedValueHeader() {
         val matcher = new HeaderMatcher(NAME, null);
         val context = MockWebContext.create().addRequestHeader(NAME, VALUE);
-        assertFalse(matcher.matches(context, new MockSessionStore()));
+        assertFalse(matcher.matches(new CallContext(context, new MockSessionStore())));
     }
 
     @Test
     public void testNullExpectedValueNull() {
         val matcher = new HeaderMatcher(NAME, null);
         val context = MockWebContext.create();
-        assertTrue(matcher.matches(context, new MockSessionStore()));
+        assertTrue(matcher.matches(new CallContext(context, new MockSessionStore())));
     }
 
     @Test
     public void testRegexExpectedRightValueHeader() {
         val matcher = new HeaderMatcher(NAME, ".*A.*");
         val context = MockWebContext.create().addRequestHeader(NAME, "BAC");
-        assertTrue(matcher.matches(context, new MockSessionStore()));
+        assertTrue(matcher.matches(new CallContext(context, new MockSessionStore())));
     }
 
     @Test
     public void testRegexExpectedBadValueHeader() {
         val matcher = new HeaderMatcher(NAME, ".*A.*");
         val context = MockWebContext.create().addRequestHeader(NAME, "BOC");
-        assertFalse(matcher.matches(context, new MockSessionStore()));
+        assertFalse(matcher.matches(new CallContext(context, new MockSessionStore())));
     }
 
     @Test
     public void testRegexExpectedNullHeader() {
         val matcher = new HeaderMatcher(NAME, ".*A.*");
         val context = MockWebContext.create();
-        assertFalse(matcher.matches(context, new MockSessionStore()));
+        assertFalse(matcher.matches(new CallContext(context, new MockSessionStore())));
     }
 }

@@ -92,7 +92,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         val authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setPasswordAttribute(null);
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, null, null), TechnicalException.class,
+        TestsHelper.expectException(() -> authenticator.validate(null, credentials), TechnicalException.class,
             "passwordAttribute cannot be blank");
     }
 
@@ -104,7 +104,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         val authenticator = new MongoProfileService(getClient(), attribute);
         authenticator.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         val credentials = new UsernamePasswordCredentials(username, password);
-        authenticator.validate(credentials, null, null);
+        authenticator.validate(null, credentials);
 
         return credentials;
     }
@@ -165,7 +165,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         mongoProfileService.create(profile, MONGO_PASS);
         // check credentials
         val credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
-        mongoProfileService.validate(credentials, null, null);
+        mongoProfileService.validate(null, credentials);
         val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -218,7 +218,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         mongoProfileService.create(profile, MONGO_PASS);
         // check credentials
         val credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS);
-        mongoProfileService.validate(credentials, null, null);
+        mongoProfileService.validate(null, credentials);
         assertNotNull(credentials.getUserProfile());
     }
 

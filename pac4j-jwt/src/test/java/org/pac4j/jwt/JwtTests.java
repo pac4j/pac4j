@@ -55,7 +55,7 @@ public final class JwtTests implements TestsConstants {
         val credentials = new TokenCredentials(token);
         val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
-        authenticator.validate(credentials, null, null);
+        authenticator.validate(null, credentials);
         assertNotNull(credentials.getUserProfile());
     }
 
@@ -73,7 +73,7 @@ public final class JwtTests implements TestsConstants {
         var token = generator.generate(claimsMap);
         val credentials = new TokenCredentials(token);
         val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET));
-        authenticator.validate(credentials, null, null);
+        authenticator.validate(null, credentials);
         assertNotNull(credentials.getUserProfile());
         assertTrue(credentials.getUserProfile().containsAttribute("id"));
         assertTrue(credentials.getUserProfile().containsAttribute("name"));
@@ -220,7 +220,7 @@ public final class JwtTests implements TestsConstants {
         val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
         val credentials = new TokenCredentials(token);
-        authenticator.validate(credentials, null, null);
+        authenticator.validate(null, credentials);
         val profile2 = (FacebookProfile) credentials.getUserProfile();
         generator.generate(profile2);
     }
@@ -349,7 +349,7 @@ public final class JwtTests implements TestsConstants {
 
     private UserProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
         val credentials = new TokenCredentials(token);
-        authenticator.validate(credentials, null, null);
+        authenticator.validate(null, credentials);
         val profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
         val fbProfile = (FacebookProfile) profile2;
@@ -374,7 +374,7 @@ public final class JwtTests implements TestsConstants {
         val authenticator =
             new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         val credentials = new TokenCredentials("fakeToken");
-        authenticator.validate(credentials, null, null);
+        authenticator.validate(null, credentials);
     }
 
     @Test

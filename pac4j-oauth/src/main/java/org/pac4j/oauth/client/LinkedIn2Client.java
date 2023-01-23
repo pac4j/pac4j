@@ -51,8 +51,8 @@ public class LinkedIn2Client extends OAuth20Client {
             }
             return false;
         });
-        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
-            Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.linkedin.com/uas/logout")));
+        setLogoutActionBuilderIfUndefined((ctx, profile, targetUrl) ->
+            Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx.webContext(), "https://www.linkedin.com/uas/logout")));
         setProfileCreatorIfUndefined(new LinkedIn2ProfileCreator(configuration, this));
 
         super.internalInit(forceReinit);

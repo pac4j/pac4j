@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.util.HttpActionHelper;
@@ -20,17 +19,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
- * <p>Default logout logic:</p>
- *
- * <p>If the <code>localLogout</code> property is <code>true</code>, the pac4j profiles are removed from the web session
- * (and the web session is destroyed if the <code>destroySession</code> property is <code>true</code>).</p>
- *
- * <p>A post logout action is computed as the redirection to the <code>url</code> request parameter if it matches the
- * <code>logoutUrlPattern</code> or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
- *
- * <p>If the <code>centralLogout</code> property is <code>true</code>, the user is redirected to the identity provider
- * for a central logout and then optionally to the post logout redirection URL (if it's supported by the identity provider and if it's an
- * absolute URL). If no central logout is defined, the post logout action is performed directly.</p>
+ * Default logout logic.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -48,20 +37,14 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         LOGGER.debug("=== LOGOUT ===");
 
         // checks
-        assertNotNull("config", config);
-        assertNotNull("config.getWebContextFactory()", config.getWebContextFactory());
-        val context = config.getWebContextFactory().newContext(parameters);
-        assertNotNull("context", context);
+        val ctx = buildContext(config, parameters);
+        val webContext = ctx.webContext();
         val httpActionAdapter = config.getHttpActionAdapter();
         assertNotNull("httpActionAdapter", httpActionAdapter);
 
         HttpAction action;
         try {
-            assertNotNull("config.getSessionStoreFactory()", config.getSessionStoreFactory());
-            val sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
-            assertNotNull("sessionStore", sessionStore);
-            val profileManagerFactory = config.getProfileManagerFactory();
-            assertNotNull("profileManagerFactory", profileManagerFactory);
+            val sessionStore = ctx.sessionStore();
 
             // default values
             final String logoutUrlPattern;
@@ -79,19 +62,19 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             assertNotNull("configClients", configClients);
 
             // logic
-            val manager = profileManagerFactory.apply(context, sessionStore);
+            val manager = ctx.profileManagerFactory().apply(webContext, sessionStore);
             manager.setConfig(config);
             val profiles = manager.getProfiles();
 
             // compute redirection URL
-            val url = context.getRequestParameter(Pac4jConstants.URL);
+            val url = webContext.getRequestParameter(Pac4jConstants.URL);
             var redirectUrl = defaultUrl;
             if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
                 redirectUrl = url.get();
             }
             LOGGER.debug("redirectUrl: {}", redirectUrl);
             if (redirectUrl != null) {
-                action = HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
+                action = HttpActionHelper.buildRedirectUrlAction(webContext, redirectUrl);
             } else {
                 action = NoContentAction.INSTANCE;
             }
@@ -102,7 +85,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                 manager.removeProfiles();
                 if (destroySession) {
                     if (sessionStore != null) {
-                        val removed = sessionStore.destroySession(context);
+                        val removed = sessionStore.destroySession(webContext);
                         if (!removed) {
                             LOGGER.error("Unable to destroy the web session. The session store may not support this feature");
                         }
@@ -123,14 +106,14 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
                         if (client.isPresent()) {
                             String targetUrl = null;
                             if (redirectUrl != null) {
-                                redirectUrl = enhanceRedirectUrl(config, client.get(), context, sessionStore, redirectUrl);
+                                redirectUrl = enhanceRedirectUrl(ctx, config, client.get(), redirectUrl);
                                 if (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) ||
                                     redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS)) {
                                     targetUrl = redirectUrl;
                                 }
                             }
                             val logoutAction =
-                                client.get().getLogoutAction(context, sessionStore, profileManagerFactory, profile, targetUrl);
+                                client.get().getLogoutAction(ctx, profile, targetUrl);
                             LOGGER.debug("Logout action: {}", logoutAction);
                             if (logoutAction.isPresent()) {
                                 action = logoutAction.get();
@@ -142,14 +125,13 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             }
 
         } catch (final RuntimeException e) {
-            return handleException(e, httpActionAdapter, context);
+            return handleException(e, httpActionAdapter, webContext);
         }
 
-        return httpActionAdapter.adapt(action, context);
+        return httpActionAdapter.adapt(action, webContext);
     }
 
-    protected String enhanceRedirectUrl(final Config config, final Client client, final WebContext context,
-                                        final SessionStore sessionStore, final String redirectUrl) {
+    protected String enhanceRedirectUrl(final CallContext ctx, final Config config, final Client client, final String redirectUrl) {
         return redirectUrl;
     }
 }

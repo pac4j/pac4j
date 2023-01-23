@@ -2,8 +2,8 @@ package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.exceptions.OAuthException;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -36,9 +36,9 @@ abstract class OAuthAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         try {
-            retrieveAccessToken(context, credentials);
+            retrieveAccessToken(ctx.webContext(), credentials);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }

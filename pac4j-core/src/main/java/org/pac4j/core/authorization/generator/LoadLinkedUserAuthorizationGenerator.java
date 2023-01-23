@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.ProfileService;
@@ -35,7 +34,7 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
+    public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         CommonHelper.assertNotNull("profileService", profileService);
 
         val linkedProfile = profileService.findByLinkedId(profile.getId());

@@ -1,8 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -34,7 +33,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         init();
 
         val ip = ((TokenCredentials) credentials).getToken();

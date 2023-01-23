@@ -82,7 +82,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     public void authentFailed() {
         val ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        ldapProfileService.validate(credentials, null, null);
+        ldapProfileService.validate(null, credentials);
     }
 
     @Test
@@ -91,7 +91,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
             new LdapProfileService(connectionFactory, authenticator, Pac4jConstants.EMPTY_STRING, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        ldapProfileService.validate(credentials, null, null);
+        ldapProfileService.validate(null, credentials);
 
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -107,7 +107,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
             new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        ldapProfileService.validate(credentials, null, null);
+        ldapProfileService.validate(null, credentials);
 
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -124,7 +124,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
             + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD);
-        ldapProfileService.validate(credentials, null, null);
+        ldapProfileService.validate(null, credentials);
 
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -153,7 +153,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         ldapProfileService.create(profile, LDAP_PASS);
         // check credentials
         val credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS);
-        ldapProfileService.validate(credentials, null, null);
+        ldapProfileService.validate(null, credentials);
         val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -184,7 +184,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         assertEquals(LDAP_USER2, result2.get(LdapServer.SN));
         // check credentials
         val credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2);
-        ldapProfileService.validate(credentials2, null, null);
+        ldapProfileService.validate(null, credentials2);
         val profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // remove

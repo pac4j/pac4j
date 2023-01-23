@@ -6,12 +6,10 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -42,11 +40,12 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
-                                                            final ProfileManagerFactory profileManagerFactory) {
+    public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         try {
 
-            val service = (OAuth10aService) this.configuration.buildService(context, client);
+            val webContext = ctx.webContext();
+
+            val service = (OAuth10aService) this.configuration.buildService(webContext, client);
             final OAuth1RequestToken requestToken;
             try {
                 requestToken = service.getRequestToken();
@@ -55,10 +54,10 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             }
             LOGGER.debug("requestToken: {}", requestToken);
             // save requestToken in user session
-            sessionStore.set(context, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
+            ctx.sessionStore().set(webContext, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             val authorizationUrl = service.getAuthorizationUrl(requestToken);
             LOGGER.debug("authorizationUrl: {}", authorizationUrl);
-            return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

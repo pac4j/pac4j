@@ -4,10 +4,9 @@ import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
@@ -59,7 +58,7 @@ public final class OidcRedirectTests implements TestsConstants {
         client.setAjaxRequestResolver(new AjaxRequestResolver() {
             boolean first = true;
             @Override
-            public boolean isAjax(final WebContext context, final SessionStore sessionStore) {
+            public boolean isAjax(final CallContext ctx) {
                 /*
                  * Considers that the first request is not ajax, all the subsequent ones are
                  */
@@ -71,26 +70,24 @@ public final class OidcRedirectTests implements TestsConstants {
                 }
             }
             @Override
-            public HttpAction buildAjaxResponse(final WebContext context, final SessionStore sessionStore,
-                                                final ProfileManagerFactory profileManagerFactory,
-                                                final RedirectionActionBuilder redirectionActionBuilder) {
+            public HttpAction buildAjaxResponse(final CallContext ctx, final RedirectionActionBuilder redirectionActionBuilder) {
                 return new StatusAction(401);
             }
         });
 
-        val context = MockWebContext.create();
+        val webContext = MockWebContext.create();
         val sessionStore = new MockSessionStore();
-        val pmf = ProfileManagerFactory.DEFAULT;
+        val ctx = new CallContext(webContext, sessionStore, ProfileManagerFactory.DEFAULT);
 
-        val firstRequestAction = (FoundAction) client.getRedirectionAction(context, sessionStore, pmf).orElse(null);
+        val firstRequestAction = (FoundAction) client.getRedirectionAction(ctx).orElse(null);
         var state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
 
         try {
             //noinspection ThrowableNotThrown
-            client.getRedirectionAction(context, sessionStore, pmf);
+            client.getRedirectionAction(ctx);
             fail("Ajax request should throw exception");
         } catch (Exception e) {
-            var stateAfterAjax = (State) sessionStore.get(context, client.getStateSessionAttributeName()).orElse(null);
+            var stateAfterAjax = (State) sessionStore.get(webContext, client.getStateSessionAttributeName()).orElse(null);
             assertEquals("subsequent ajax request should not override the state in the session store", state, stateAfterAjax.toString());
         }
 

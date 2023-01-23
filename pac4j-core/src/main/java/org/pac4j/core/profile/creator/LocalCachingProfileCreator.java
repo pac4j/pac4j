@@ -5,8 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
@@ -53,13 +52,13 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
     }
 
     @Override
-    public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         init();
 
         val optProfile = this.store.get(credentials);
         if (optProfile.isEmpty()) {
             LOGGER.debug("No cached credentials found. Delegating profile creation to {}...", delegate);
-            val profile = delegate.create(credentials, context, sessionStore);
+            val profile = delegate.create(ctx, credentials);
             if (profile.isPresent()) {
                 LOGGER.debug("Caching credential. Using profile {}...", profile.get());
                 store.set(credentials, profile.get());

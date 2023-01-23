@@ -3,17 +3,16 @@ package org.pac4j.http.client.indirect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -58,34 +57,36 @@ public class IndirectBasicAuthClient extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
-        setRedirectionActionBuilderIfUndefined((webContext, sessionStore, profileManagerFactory) ->
-            Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext))));
+        setRedirectionActionBuilderIfUndefined(ctx -> {
+            val webContext = ctx.webContext();
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, computeFinalCallbackUrl(webContext)));
+        });
         setCredentialsExtractorIfUndefined(new BasicAuthExtractor());
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
-                                                        final ProfileManagerFactory profileManagerFactory) {
+    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
+        val webContext = ctx.webContext();
         // set the www-authenticate in case of error
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BASIC_HEADER_PREFIX + "realm=\"" + realmName + "\"");
+        webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BASIC_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
+            credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("credentials : {}", credentials);
 
             if (!credentials.isPresent()) {
-                throw HttpActionHelper.buildUnauthenticatedAction(context);
+                throw HttpActionHelper.buildUnauthenticatedAction(webContext);
             }
 
             // validate credentials
-            getAuthenticator().validate(credentials.get(), context, sessionStore);
+            getAuthenticator().validate(ctx, credentials.get());
         } catch (final CredentialsException e) {
-            throw HttpActionHelper.buildUnauthenticatedAction(context);
+            throw HttpActionHelper.buildUnauthenticatedAction(webContext);
         }
 
         return credentials;

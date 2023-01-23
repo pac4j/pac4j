@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.client.SAML2Client;
@@ -52,25 +50,25 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
-                                                       final ProfileManagerFactory profileManagerFactory,
-                                                       final UserProfile currentProfile, final String targetUrl) {
+    public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         try {
             if (currentProfile instanceof SAML2Profile) {
                 val saml2Profile = (SAML2Profile) currentProfile;
-                val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore, profileManagerFactory);
-                val relayState = this.stateGenerator.generateValue(context, sessionStore);
+                val samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
+                val relayState = this.stateGenerator.generateValue(ctx);
 
                 val logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
                 this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
 
+                val webContext = ctx.webContext();
+
                 val adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
                 if (this.configuration.getSpLogoutRequestBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
                     val content = adapter.getOutgoingContent();
-                    return Optional.of(HttpActionHelper.buildFormPostContentAction(context, content));
+                    return Optional.of(HttpActionHelper.buildFormPostContentAction(webContext, content));
                 }
                 val location = adapter.getRedirectUrl();
-                return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
+                return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
             }
         } catch (final Exception e) {
             if (LOGGER.isDebugEnabled()) {

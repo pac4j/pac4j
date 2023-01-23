@@ -42,13 +42,14 @@ public final class CasProxyReceptor extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("store", this.store);
 
-        setRedirectionActionBuilderIfUndefined((ctx, store, pmf)
+        setRedirectionActionBuilderIfUndefined(ctx
             -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
-        setCredentialsExtractorIfUndefined((ctx, store, factory) -> {
+        setCredentialsExtractorIfUndefined(ctx -> {
+            val webContext = ctx.webContext();
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
-            val proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+            val proxyGrantingTicketIou = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
-            val proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+            val proxyGrantingTicket = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
             if (!proxyGrantingTicket.isPresent() || !proxyGrantingTicketIou.isPresent()) {
@@ -61,7 +62,7 @@ public final class CasProxyReceptor extends IndirectClient {
             logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
             throw new OkAction("<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         });
-        setAuthenticatorIfUndefined((credentials, ctx, store)
+        setAuthenticatorIfUndefined((ctx, credentials)
             -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }
 }

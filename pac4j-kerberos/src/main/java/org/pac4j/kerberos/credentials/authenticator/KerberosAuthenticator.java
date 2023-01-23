@@ -1,8 +1,7 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
@@ -39,7 +38,7 @@ public class KerberosAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         val credentials = (KerberosCredentials) cred;
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         var ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());

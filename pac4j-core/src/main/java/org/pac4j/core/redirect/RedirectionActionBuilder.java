@@ -1,9 +1,7 @@
 package org.pac4j.core.redirect;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -35,11 +33,8 @@ public interface RedirectionActionBuilder {
     /**
      * Return the appropriate "redirection" action.
      *
-     * @param context the web context
-     * @param sessionStore the session store
-     * @param profileManagerFactory the profile manager factory
+     * @param ctx the context
      * @return the "redirection" action (optional)
      */
-    Optional<RedirectionAction> getRedirectionAction(WebContext context, SessionStore sessionStore,
-                                                     ProfileManagerFactory profileManagerFactory);
+    Optional<RedirectionAction> getRedirectionAction(CallContext ctx);
 }

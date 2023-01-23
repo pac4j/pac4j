@@ -2,11 +2,9 @@ package org.pac4j.core.credentials.extractor;
 
 import lombok.Getter;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -29,10 +27,10 @@ public class FormExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        val username = context.getRequestParameter(this.usernameParameter);
-        val password = context.getRequestParameter(this.passwordParameter);
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val webContext = ctx.webContext();
+        val username = webContext.getRequestParameter(this.usernameParameter);
+        val password = webContext.getRequestParameter(this.passwordParameter);
         if (!username.isPresent() || !password.isPresent()) {
             return Optional.empty();
         }

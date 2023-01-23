@@ -3,8 +3,7 @@ package org.pac4j.core.authorization.generator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.*;
@@ -41,7 +40,7 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
+    public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         generateAuth(profile, this.roleAttributes);
         return Optional.of(profile);
     }

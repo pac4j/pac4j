@@ -3,12 +3,12 @@ package org.pac4j.oauth.credentials.extractor;
 import com.github.scribejava.core.exceptions.OAuthException;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -39,9 +39,10 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val webContext = ctx.webContext();
+
+        val hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(webContext);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {
             logger.debug("authentication has been cancelled by user");
@@ -53,7 +54,7 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
             val oauthCredentialsException =
                 new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             for (val key : OAuthCredentialsException.ERROR_NAMES) {
-                val value = context.getRequestParameter(key);
+                val value = webContext.getRequestParameter(key);
                 if (value.isPresent()) {
                     errorFound = true;
                     oauthCredentialsException.setErrorMessage(key, value.get());
@@ -62,7 +63,7 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
             if (errorFound) {
                 throw oauthCredentialsException;
             } else {
-                return getOAuthCredentials(context, sessionStore);
+                return getOAuthCredentials(webContext, ctx.sessionStore());
             }
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

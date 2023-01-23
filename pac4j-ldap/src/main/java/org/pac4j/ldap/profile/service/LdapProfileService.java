@@ -10,8 +10,7 @@ import org.ldaptive.auth.AuthenticationResponse;
 import org.ldaptive.auth.AuthenticationResultCode;
 import org.ldaptive.auth.Authenticator;
 import org.ldaptive.handler.ResultPredicate;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.AccountNotFoundException;
@@ -184,7 +183,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
 
         val credentials = (UsernamePasswordCredentials) cred;

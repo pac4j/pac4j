@@ -7,11 +7,10 @@ import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -43,15 +42,16 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
-                                                            final ProfileManagerFactory profileManagerFactory) {
-        val configContext = new OidcConfigurationContext(context, client.getConfiguration());
-        val params = buildParams(context);
+    public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
+        val webContext = ctx.webContext();
 
-        val computedCallbackUrl = client.computeFinalCallbackUrl(context);
+        val configContext = new OidcConfigurationContext(webContext, client.getConfiguration());
+        val params = buildParams(webContext);
+
+        val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
         params.put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
 
-        addStateAndNonceParameters(context, sessionStore, params);
+        addStateAndNonceParameters(ctx, params);
 
         var maxAge = configContext.getMaxAge();
         if (maxAge != null) {
@@ -68,7 +68,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         val location = buildAuthenticationRequestUrl(params);
         LOGGER.debug("Authentication request url: {}", location);
 
-        return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, location));
+        return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
     }
 
     protected Map<String, String> buildParams(final WebContext webContext) {
@@ -84,26 +84,29 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         return new HashMap<>(authParams);
     }
 
-    protected void addStateAndNonceParameters(final WebContext context, final SessionStore sessionStore, final Map<String, String> params) {
+    protected void addStateAndNonceParameters(final CallContext ctx, final Map<String, String> params) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
         // Init state for CSRF mitigation
         if (client.getConfiguration().isWithState()) {
-            val state = new State(client.getConfiguration().getStateGenerator().generateValue(context, sessionStore));
+            val state = new State(client.getConfiguration().getStateGenerator().generateValue(ctx));
             params.put(OidcConfiguration.STATE, state.getValue());
-            sessionStore.set(context, client.getStateSessionAttributeName(), state);
+            sessionStore.set(webContext, client.getStateSessionAttributeName(), state);
         }
 
         // Init nonce for replay attack mitigation
         if (client.getConfiguration().isUseNonce()) {
             val nonce = new Nonce();
             params.put(OidcConfiguration.NONCE, nonce.getValue());
-            sessionStore.set(context, client.getNonceSessionAttributeName(), nonce.getValue());
+            sessionStore.set(webContext, client.getNonceSessionAttributeName(), nonce.getValue());
         }
 
         var pkceMethod = client.getConfiguration().findPkceMethod();
         if (pkceMethod != null) {
             val verfifier = new CodeVerifier(
-                client.getConfiguration().getCodeVerifierGenerator().generateValue(context, sessionStore));
-            sessionStore.set(context, client.getCodeVerifierSessionAttributeName(), verfifier);
+                client.getConfiguration().getCodeVerifierGenerator().generateValue(ctx));
+            sessionStore.set(webContext, client.getCodeVerifierSessionAttributeName(), verfifier);
             params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());
             params.put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
         }

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -19,7 +20,6 @@ import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -103,27 +103,29 @@ public abstract class IndirectClient extends BaseClient {
      * @return the "redirection" action
      */
     @Override
-    public final Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
-                                                                  final ProfileManagerFactory profileManagerFactory) {
+    public final Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         init();
+
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
         // it's an AJAX request -> appropriate action
-        if (ajaxRequestResolver.isAjax(context, sessionStore)) {
-            val httpAction = ajaxRequestResolver.buildAjaxResponse(context, sessionStore,
-                profileManagerFactory, redirectionActionBuilder);
-            logger.debug("AJAX request detected -> returning " + httpAction + " for " + context.getFullRequestURL());
-            cleanRequestedUrl(context, sessionStore);
+        if (ajaxRequestResolver.isAjax(ctx)) {
+            val httpAction = ajaxRequestResolver.buildAjaxResponse(ctx, redirectionActionBuilder);
+            logger.debug("AJAX request detected -> returning " + httpAction + " for " + ctx.webContext().getFullRequestURL());
+            cleanRequestedUrl(webContext, sessionStore);
             throw httpAction;
         }
         // authentication has already been tried -> unauthorized
-        val attemptedAuth = sessionStore.get(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        val attemptedAuth = sessionStore.get(webContext, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (attemptedAuth.isPresent() && !Pac4jConstants.EMPTY_STRING.equals(attemptedAuth.get())) {
             logger.debug("authentication already attempted -> 401");
-            cleanAttemptedAuthentication(context, sessionStore);
-            cleanRequestedUrl(context, sessionStore);
-            throw HttpActionHelper.buildUnauthenticatedAction(context);
+            cleanAttemptedAuthentication(webContext, sessionStore);
+            cleanRequestedUrl(webContext, sessionStore);
+            throw HttpActionHelper.buildUnauthenticatedAction(webContext);
         }
 
-        return redirectionActionBuilder.getRedirectionAction(context, sessionStore, profileManagerFactory);
+        return redirectionActionBuilder.getRedirectionAction(ctx);
     }
 
     private void cleanRequestedUrl(final WebContext context, final SessionStore sessionStore) {
@@ -151,30 +153,28 @@ public abstract class IndirectClient extends BaseClient {
      * (401 HTTP status code) is returned to request credentials through a popup.</li>
      * </ul>
      *
-     * @param context the current web context
+     * @param ctx the current context
      * @return the credentials
      */
     @Override
-    public final Optional<Credentials> getCredentials(final WebContext context, final SessionStore sessionStore,
-                                                      final ProfileManagerFactory profileManagerFactory) {
+    public final Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
-        val optCredentials = retrieveCredentials(context, sessionStore, profileManagerFactory);
+        val optCredentials = retrieveCredentials(ctx);
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (!optCredentials.isPresent() && getProfileFactoryWhenNotAuthenticated() == null) {
             logger.debug("no credentials and profile returned -> remember the authentication attempt");
-            saveAttemptedAuthentication(context, sessionStore);
+            saveAttemptedAuthentication(ctx.webContext(), ctx.sessionStore());
         } else {
-            cleanAttemptedAuthentication(context, sessionStore);
+            cleanAttemptedAuthentication(ctx.webContext(), ctx.sessionStore());
         }
         return optCredentials;
     }
 
     @Override
-    public final Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
-                                                             final ProfileManagerFactory profileManagerFactory,
-                                                             final UserProfile currentProfile, final String targetUrl) {
+    public final Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile,
+                                                             final String targetUrl) {
         init();
-        return logoutActionBuilder.getLogoutAction(context, sessionStore, profileManagerFactory, currentProfile, targetUrl);
+        return logoutActionBuilder.getLogoutAction(ctx, currentProfile, targetUrl);
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {

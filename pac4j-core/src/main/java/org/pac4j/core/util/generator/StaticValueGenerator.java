@@ -1,7 +1,6 @@
 package org.pac4j.core.util.generator;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -21,7 +20,7 @@ public class StaticValueGenerator implements ValueGenerator {
     }
 
     @Override
-    public String generateValue(final WebContext webContext, final SessionStore sessionStore) {
+    public String generateValue(final CallContext ctx) {
         CommonHelper.assertNotNull("value", value);
         return value;
     }

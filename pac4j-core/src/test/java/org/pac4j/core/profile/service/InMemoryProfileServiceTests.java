@@ -4,6 +4,7 @@ import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
@@ -70,13 +71,13 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     @Test(expected = AccountNotFoundException.class)
     public void authentFailed() {
         val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        inMemoryProfileService.validate(credentials, null, null);
+        inMemoryProfileService.validate(new CallContext(null, null), credentials);
     }
 
     @Test
     public void authentSuccessSingleAttribute() {
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-        inMemoryProfileService.validate(credentials, null, null);
+        inMemoryProfileService.validate(new CallContext(null, null), credentials);
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(GOOD_USERNAME, profile.getUsername());
@@ -94,7 +95,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         inMemoryProfileService.create(profile, TEST_PASS);
         // check credentials
         val credentials = new UsernamePasswordCredentials(TEST_USER, TEST_PASS);
-        inMemoryProfileService.validate(credentials, null, null);
+        inMemoryProfileService.validate(new CallContext(null, null), credentials);
         val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -125,7 +126,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
         val credentials2 = new UsernamePasswordCredentials(TEST_USER2, TEST_PASS2);
-        inMemoryProfileService.validate(credentials2, null, null);
+        inMemoryProfileService.validate(new CallContext(null, null), credentials2);
         val profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
         // update with no password update
@@ -136,7 +137,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         assertEquals(5, result2.size());
         assertEquals(TEST_USER2, result2.get(USERNAME));
         // check credentials
-        inMemoryProfileService.validate(credentials2, null, null);
+        inMemoryProfileService.validate(new CallContext(null, null), credentials2);
         val profile4 = credentials.getUserProfile();
         assertNotNull(profile4);
         // remove

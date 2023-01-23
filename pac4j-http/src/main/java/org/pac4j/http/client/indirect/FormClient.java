@@ -5,15 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -74,50 +72,51 @@ public class FormClient extends IndirectClient {
         assertNotBlank("usernameParameter", this.usernameParameter);
         assertNotBlank("passwordParameter", this.passwordParameter);
 
-        setRedirectionActionBuilderIfUndefined((ctx, session, profileManagerFactory) -> {
-            val finalLoginUrl = getUrlResolver().compute(this.loginUrl, ctx);
-            return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, finalLoginUrl));
+        setRedirectionActionBuilderIfUndefined(ctx -> {
+            val webContext = ctx.webContext();
+            val finalLoginUrl = getUrlResolver().compute(this.loginUrl, webContext);
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, finalLoginUrl));
         });
         setCredentialsExtractorIfUndefined(new FormExtractor(usernameParameter, passwordParameter));
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
-                                                        final ProfileManagerFactory profileManagerFactory) {
+    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
         assertNotNull("credentialsExtractor", getCredentialsExtractor());
         assertNotNull("authenticator", getAuthenticator());
 
-        val username = context.getRequestParameter(this.usernameParameter).orElse(null);
+        val username = ctx.webContext().getRequestParameter(this.usernameParameter).orElse(null);
         final Optional<Credentials> credentials;
         try {
             // retrieve credentials
-            credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
+            credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (!credentials.isPresent()) {
-                throw handleInvalidCredentials(context, sessionStore, username,
+                throw handleInvalidCredentials(ctx, username,
                     "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR);
             }
             // validate credentials
-            getAuthenticator().validate(credentials.get(), context, sessionStore);
+            getAuthenticator().validate(ctx, credentials.get());
         } catch (final CredentialsException e) {
-            throw handleInvalidCredentials(context, sessionStore, username,
+            throw handleInvalidCredentials(ctx, username,
                 "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
         }
 
         return credentials;
     }
 
-    protected HttpAction handleInvalidCredentials(final WebContext context, final SessionStore sessionStore,
-                                                  final String username, String message, String errorMessage) {
+    protected HttpAction handleInvalidCredentials(final CallContext ctx, final String username, String message, String errorMessage) {
+        val webContext = ctx.webContext();
+
         // it's an AJAX request -> unauthorized (instead of a redirection)
-        if (getAjaxRequestResolver().isAjax(context, sessionStore)) {
+        if (getAjaxRequestResolver().isAjax(ctx)) {
             logger.info("AJAX request detected -> returning 401");
-            return HttpActionHelper.buildUnauthenticatedAction(context);
+            return HttpActionHelper.buildUnauthenticatedAction(webContext);
         } else {
             var redirectionUrl = addParameter(this.loginUrl, this.usernameParameter, username);
             redirectionUrl = addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
             logger.debug("redirectionUrl: {}", redirectionUrl);
-            return HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl);
+            return HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl);
         }
     }
 

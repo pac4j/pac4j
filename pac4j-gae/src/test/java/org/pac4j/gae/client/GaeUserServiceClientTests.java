@@ -7,6 +7,7 @@ import lombok.val;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -14,7 +15,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -57,12 +57,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
         val localClient = new GaeUserServiceClient();
-        localClient.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT);
+        localClient.getRedirectionAction(new CallContext(context, new MockSessionStore()));
     }
 
     @Test
     public void testRedirect() {
-        final HttpAction action = client.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
+        final HttpAction action = client.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
         assertEquals(HttpConstants.FOUND, action.getCode());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL + "?" +
             Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + client.getName()), ((FoundAction) action).getLocation());
@@ -70,13 +70,12 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsUserProfile() {
-        val credentials = (GaeUserCredentials) client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
+        val credentials = (GaeUserCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
         val user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());
         assertEquals(Pac4jConstants.EMPTY_STRING, user.getAuthDomain());
         val profile =
-            (GaeUserServiceProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+            (GaeUserServiceProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
         LOGGER.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
         assertEquals(GaeUserServiceProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + EMAIL, profile.getTypedId());

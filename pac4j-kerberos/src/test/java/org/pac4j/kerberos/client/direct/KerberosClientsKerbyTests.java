@@ -8,11 +8,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
 import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
@@ -83,8 +83,8 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     @Test
     public void testDirectNoAuth() {
         // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
-        assertFalse(setupDirectKerberosClient().getCredentials(MockWebContext.create(), new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).isPresent());
+        assertFalse(setupDirectKerberosClient().getCredentials(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).isPresent());
     }
 
     @Test
@@ -102,8 +102,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         // a request with an incorrect Kerberos token, yields NULL credentials also
         val context = MockWebContext.create()
             .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
-        assertFalse(setupDirectKerberosClient().getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).isPresent());
+        assertFalse(setupDirectKerberosClient().getCredentials(new CallContext(context, new MockSessionStore())).isPresent());
     }
 
     @Test
@@ -135,7 +134,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         MockWebContext context,
         String expectedMsg) {
         try {
-            kerbClient.getCredentials(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT);
+            kerbClient.getCredentials(new CallContext(context, new MockSessionStore()));
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());
@@ -149,12 +148,11 @@ public class KerberosClientsKerbyTests implements TestsConstants {
 
         // mock web request
         val context = mockWebRequestContext(spnegoWebTicket);
-        val credentials = client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT);
+        val credentials = client.getCredentials(new CallContext(context, new MockSessionStore()));
         assertTrue(credentials.isPresent());
         System.out.println(credentials.get());
 
-        val profile = client.getUserProfile(credentials.get(), context, new MockSessionStore());
+        val profile = client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials.get());
         assertTrue(profile.isPresent());
         assertEquals(clientPrincipal, profile.get().getId());
     }

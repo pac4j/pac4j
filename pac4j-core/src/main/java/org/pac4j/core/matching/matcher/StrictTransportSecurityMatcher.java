@@ -3,9 +3,9 @@ package org.pac4j.core.matching.matcher;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.pac4j.core.context.WebContext;
+import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContextHelper;
-import org.pac4j.core.context.session.SessionStore;
 
 /**
  * Strict transport security header matcher.
@@ -32,9 +32,10 @@ public class StrictTransportSecurityMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
-        if (WebContextHelper.isHttpsOrSecure(context)) {
-            context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
+    public boolean matches(final CallContext ctx) {
+        val webContext = ctx.webContext();
+        if (WebContextHelper.isHttpsOrSecure(webContext)) {
+            webContext.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }
         return true;
     }

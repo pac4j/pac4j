@@ -8,6 +8,7 @@ import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.Gender;
@@ -48,7 +49,7 @@ public class SAML2AuthenticatorTests {
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
         val authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+        authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
 
         val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
@@ -62,7 +63,7 @@ public class SAML2AuthenticatorTests {
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
         val authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+        authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
 
         val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
@@ -76,7 +77,7 @@ public class SAML2AuthenticatorTests {
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
         val authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+        authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
 
         val finalProfile = credentials.getUserProfile();
         authenticator.getProfileDefinition().convertAndAdd(credentials.getUserProfile(), PROFILE_ATTRIBUTE, CommonProfileDefinition.GENDER,
@@ -107,7 +108,7 @@ public class SAML2AuthenticatorTests {
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
         val authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+        authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
 
         val finalProfile = credentials.getUserProfile();
         authenticator.getProfileDefinition().convertAndAdd(credentials.getUserProfile(), PROFILE_ATTRIBUTE, CommonProfileDefinition.GENDER,
@@ -136,7 +137,7 @@ public class SAML2AuthenticatorTests {
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
         val authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+        authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
 
         val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));
@@ -150,7 +151,7 @@ public class SAML2AuthenticatorTests {
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
         val authenticator = new SAML2Authenticator("username", mappedAttributes);
-        authenticator.validate(credentials, MockWebContext.create(), new MockSessionStore());
+        authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
 
         val finalProfile = credentials.getUserProfile();
         assertTrue(finalProfile.containsAttribute("mapped-display-name"));

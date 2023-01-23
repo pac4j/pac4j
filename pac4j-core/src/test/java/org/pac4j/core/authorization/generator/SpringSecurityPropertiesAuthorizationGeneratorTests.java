@@ -29,7 +29,7 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
         val generator = new SpringSecurityPropertiesAuthorizationGenerator(properties);
         val profile = new CommonProfile();
         profile.setId(USERNAME);
-        generator.generate(null, null, profile);
+        generator.generate(null, profile);
         return profile.getRoles();
     }
 

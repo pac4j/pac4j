@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.Arrays;
@@ -31,7 +30,7 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
+    public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         if (defaultRoles != null) {
             profile.addRoles(defaultRoles);
         }

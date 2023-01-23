@@ -2,11 +2,9 @@ package org.pac4j.core.logout;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Optional;
@@ -36,9 +34,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
-                                                       final ProfileManagerFactory profileManagerFactory,
-                                                       final UserProfile currentProfile, final String targetUrl) {
+    public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         if (isBlank(serverLogoutUrl)) {
             return Optional.empty();
         }
@@ -48,6 +44,6 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
             redirectUrl = addParameter(redirectUrl, postLogoutUrlParameter, targetUrl);
         }
         LOGGER.debug("redirectUrl: {}", redirectUrl);
-        return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectUrl));
+        return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx.webContext(), redirectUrl));
     }
 }

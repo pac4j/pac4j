@@ -3,12 +3,12 @@ package org.pac4j.kerberos.client.direct;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
@@ -67,8 +67,7 @@ public class KerberosClientTests implements TestsConstants {
     @Test
     public void testMissingKerberosHeader() {
         val client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        val credentials = client.getCredentials(MockWebContext.create(), new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT);
+        val credentials = client.getCredentials(new CallContext(MockWebContext.create(), new MockSessionStore()));
         assertFalse(credentials.isPresent());
     }
 
@@ -76,8 +75,7 @@ public class KerberosClientTests implements TestsConstants {
     public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
         final WebContext context = MockWebContext.create();
         val client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        val credentials = client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT);
+        val credentials = client.getCredentials(new CallContext(context, new MockSessionStore()));
         assertFalse(credentials.isPresent());
         assertEquals("Negotiate", context.getResponseHeader(HttpConstants.AUTHENTICATE_HEADER).get());
     }
@@ -89,12 +87,11 @@ public class KerberosClientTests implements TestsConstants {
         val context = MockWebContext.create();
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
-        val credentials = (KerberosCredentials) client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
+        val credentials = (KerberosCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 
-        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
         assertEquals("garry", profile.getId());
     }
 }

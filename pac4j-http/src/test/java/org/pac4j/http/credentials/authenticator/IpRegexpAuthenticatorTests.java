@@ -2,6 +2,7 @@ package org.pac4j.http.credentials.authenticator;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
@@ -29,13 +30,13 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     public void testNoPattern() {
         val credentials = new TokenCredentials(GOOD_IP);
         var authenticator = new IpRegexpAuthenticator();
-        authenticator.validate(credentials, null, new MockSessionStore());
+        authenticator.validate(new CallContext(null, new MockSessionStore()), credentials);
     }
 
     @Test
     public void testValidateGoodIP() {
         val credentials = new TokenCredentials(GOOD_IP);
-        authenticator.validate(credentials, null, new MockSessionStore());
+        authenticator.validate(new CallContext(null, new MockSessionStore()), credentials);
         val profile = (IpProfile) credentials.getUserProfile();
         assertEquals(GOOD_IP, profile.getId());
     }
@@ -43,7 +44,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     @Test
     public void testValidateBadIP() {
         val credentials = new TokenCredentials(BAD_IP);
-        TestsHelper.expectException(() -> authenticator.validate(credentials, null, new MockSessionStore()), CredentialsException.class,
-            "Unauthorized IP address: " + BAD_IP);
+        TestsHelper.expectException(() -> authenticator.validate(new CallContext(null, new MockSessionStore()), credentials),
+            CredentialsException.class, "Unauthorized IP address: " + BAD_IP);
     }
 }

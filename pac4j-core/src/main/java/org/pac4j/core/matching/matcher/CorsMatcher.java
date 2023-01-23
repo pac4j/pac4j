@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -37,30 +36,32 @@ public class CorsMatcher implements Matcher {
     private String allowHeaders;
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
+    public boolean matches(final CallContext ctx) {
+        val webContext = ctx.webContext();
+
         CommonHelper.assertNotBlank("allowOrigin", allowOrigin);
 
-        context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, allowOrigin);
+        webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, allowOrigin);
 
         if (CommonHelper.isNotBlank(exposeHeaders)) {
-            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_EXPOSE_HEADERS_HEADER, exposeHeaders);
+            webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_EXPOSE_HEADERS_HEADER, exposeHeaders);
         }
 
         if (maxAge != -1) {
-            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_MAX_AGE_HEADER, Pac4jConstants.EMPTY_STRING + maxAge);
+            webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_MAX_AGE_HEADER, Pac4jConstants.EMPTY_STRING + maxAge);
         }
 
         if (allowCredentials != null && allowCredentials) {
-            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER, allowCredentials.toString());
+            webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER, allowCredentials.toString());
         }
 
         if (allowMethods != null) {
             val methods = allowMethods.stream().map(Enum::toString).collect(Collectors.joining(", "));
-            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER, methods);
+            webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER, methods);
         }
 
         if (CommonHelper.isNotBlank(allowHeaders)) {
-            context.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_HEADERS_HEADER, allowHeaders);
+            webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_HEADERS_HEADER, allowHeaders);
         }
 
         return true;

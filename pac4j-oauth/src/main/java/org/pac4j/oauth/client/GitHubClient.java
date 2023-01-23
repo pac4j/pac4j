@@ -36,8 +36,8 @@ public class GitHubClient extends OAuth20Client {
         configuration.setApi(GitHubApi.instance());
         configuration.setProfileDefinition(new GitHubProfileDefinition());
         configuration.setTokenAsHeader(true);
-        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
-            Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://github.com/logout")));
+        setLogoutActionBuilderIfUndefined((ctx, profile, targetUrl) ->
+            Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx.webContext(), "https://github.com/logout")));
 
         super.internalInit(forceReinit);
     }

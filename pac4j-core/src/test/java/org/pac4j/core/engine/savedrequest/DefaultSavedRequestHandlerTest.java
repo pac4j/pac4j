@@ -3,6 +3,7 @@ package org.pac4j.core.engine.savedrequest;
 import lombok.val;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
@@ -43,7 +44,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     public void testSaveGet() {
         val context = MockWebContext.create().setFullRequestURL(PAC4J_URL);
         val sessionStore = new MockSessionStore();
-        handler.save(context, sessionStore);
+        handler.save(new CallContext(context, sessionStore));
         val location = (String) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
         assertEquals(PAC4J_URL, location);
     }
@@ -53,7 +54,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         val context = MockWebContext.create().setFullRequestURL(PAC4J_URL).setRequestMethod("POST");
         context.addRequestParameter(KEY, VALUE);
         val sessionStore = new MockSessionStore();
-        handler.save(context, sessionStore);
+        handler.save(new CallContext(context, sessionStore));
         val action = (OkAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
         assertEquals(FORM_DATA, action.getContent());
     }
@@ -62,7 +63,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
     public void testRestoreNoRequestedUrl() {
         val context = MockWebContext.create();
         val sessionStore = new MockSessionStore();
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -73,7 +74,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         val context = MockWebContext.create();
         val sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(LOGIN_URL, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -84,7 +85,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         val context = MockWebContext.create();
         val sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, VALUE);
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(VALUE, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -95,7 +96,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         val context = MockWebContext.create();
         val sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof FoundAction);
         assertEquals(PAC4J_URL, ((FoundAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -107,7 +108,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         context.setRequestMethod("POST");
         val sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new FoundAction(PAC4J_URL));
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof SeeOtherAction);
         assertEquals(PAC4J_URL, ((SeeOtherAction) action).getLocation());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -119,7 +120,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         val formPost = HttpActionHelper.buildFormPostContent(context);
         val sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof OkAction);
         assertEquals(FORM_DATA, ((OkAction) action).getContent());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());
@@ -132,7 +133,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         context.setRequestMethod("POST");
         val sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
-        val action = handler.restore(context, sessionStore, LOGIN_URL);
+        val action = handler.restore(new CallContext(context, sessionStore), LOGIN_URL);
         assertTrue(action instanceof OkAction);
         assertEquals(FORM_DATA, ((OkAction) action).getContent());
         assertFalse(sessionStore.get(context, Pac4jConstants.REQUESTED_URL).isPresent());

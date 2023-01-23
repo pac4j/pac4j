@@ -2,6 +2,7 @@ package org.pac4j.core.http.ajax;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 
 import static org.junit.Assert.assertFalse;
@@ -20,23 +21,23 @@ public final class DefaultAjaxRequestResolverTests {
     @Test
     public void testRealAjaxRequest() {
         val context = MockWebContext.create().addRequestHeader("X-Requested-With", "XMLHttpRequest");
-        assertTrue(resolver.isAjax(context, null));
+        assertTrue(resolver.isAjax(new CallContext(context, null)));
     }
 
     @Test
     public void testForcedAjaxParameter() {
         val context = MockWebContext.create().addRequestParameter("is_ajax_request", "true");
-        assertTrue(resolver.isAjax(context, null));
+        assertTrue(resolver.isAjax(new CallContext(context, null)));
     }
 
     @Test
     public void testForcedAjaxHeader() {
         val context = MockWebContext.create().addRequestHeader("is_ajax_request", "true");
-        assertTrue(resolver.isAjax(context, null));
+        assertTrue(resolver.isAjax(new CallContext(context, null)));
     }
 
     @Test
     public void testNotAnAjaxRequest() {
-        assertFalse(resolver.isAjax(MockWebContext.create(), null));
+        assertFalse(resolver.isAjax(new CallContext(MockWebContext.create(), null)));
     }
 }

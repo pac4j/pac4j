@@ -2,10 +2,10 @@ package org.pac4j.cas.client;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -40,8 +40,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
         val action = (HttpAction) TestsHelper.expectException(
-            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE),
-                new MockSessionStore(), ProfileManagerFactory.DEFAULT));
+            () -> client.getCredentials(new CallContext(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE),
+                new MockSessionStore())));
         assertEquals(200, action.getCode());
     }
 
@@ -50,9 +50,9 @@ public final class CasProxyReceptorTests implements TestsConstants {
         val client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
-        val action = (HttpAction) TestsHelper.expectException(
-            () -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE),
-                new MockSessionStore(), ProfileManagerFactory.DEFAULT));
+        val action = (HttpAction) TestsHelper.expectException(()
+            -> client.getCredentials(new CallContext(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE),
+                new MockSessionStore())));
         assertEquals(200, action.getCode());
     }
 
@@ -63,8 +63,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
         val context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        val action = (HttpAction) TestsHelper.expectException(() -> client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT));
+        val action = (HttpAction) TestsHelper.expectException(()
+            -> client.getCredentials(new CallContext(context, new MockSessionStore())));
         assertEquals(200, action.getCode());
     }
 }

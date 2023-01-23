@@ -28,8 +28,8 @@ public final class AnonymousClient extends DirectClient {
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        setCredentialsExtractorIfUndefined((ctx, store, factory) -> Optional.of(AnonymousCredentials.INSTANCE));
-        setAuthenticatorIfUndefined((cred, ctx, store) -> {
+        setCredentialsExtractorIfUndefined(ctx -> Optional.of(AnonymousCredentials.INSTANCE));
+        setAuthenticatorIfUndefined((ctx, cred) -> {
             cred.setUserProfile(AnonymousProfile.INSTANCE);
             return Optional.of(AnonymousCredentials.INSTANCE);
         });

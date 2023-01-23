@@ -1,11 +1,9 @@
 package org.pac4j.core.credentials.extractor;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
@@ -58,14 +56,13 @@ public class HeaderExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
+    public Optional<Credentials> extract(final CallContext ctx) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-        var header = context.getRequestHeader(this.headerName);
+        var header = ctx.webContext().getRequestHeader(this.headerName);
         if (!header.isPresent()) {
-            header = context.getRequestHeader(this.headerName.toLowerCase());
+            header = ctx.webContext().getRequestHeader(this.headerName.toLowerCase());
             if (!header.isPresent()) {
                 return Optional.empty();
             }

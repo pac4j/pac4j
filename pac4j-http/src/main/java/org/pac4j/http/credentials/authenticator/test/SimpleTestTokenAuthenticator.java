@@ -1,8 +1,7 @@
 package org.pac4j.http.credentials.authenticator.test;
 
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -21,7 +20,7 @@ import java.util.Optional;
 public class SimpleTestTokenAuthenticator implements Authenticator {
 
     @Override
-    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         if (cred == null) {
             throw new CredentialsException("credentials must not be null");
         }

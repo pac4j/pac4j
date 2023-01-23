@@ -2,9 +2,8 @@ package org.pac4j.oidc.logout;
 
 import com.nimbusds.openid.connect.sdk.LogoutRequest;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -12,7 +11,6 @@ import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -41,9 +39,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getLogoutAction(final WebContext context, final SessionStore sessionStore,
-                                                       final ProfileManagerFactory profileManagerFactory,
-                                                       final UserProfile currentProfile, final String targetUrl) {
+    public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         val logoutUrl = configuration.findLogoutUrl();
         if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
             try {
@@ -57,13 +53,14 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                     logoutRequest = new LogoutRequest(endSessionEndpoint, idToken);
                 }
 
-                if (ajaxRequestResolver.isAjax(context, sessionStore)) {
-                    sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
-                    context.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
+                val webContext = ctx.webContext();
+                if (ajaxRequestResolver.isAjax(ctx)) {
+                    ctx.sessionStore().set(webContext, Pac4jConstants.REQUESTED_URL, null);
+                    webContext.setResponseHeader(HttpConstants.LOCATION_HEADER, logoutRequest.toURI().toString());
                     throw new ForbiddenAction();
                 }
 
-                return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, logoutRequest.toURI().toString()));
+                return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, logoutRequest.toURI().toString()));
             } catch (final URISyntaxException e) {
                 throw new TechnicalException(e);
             }

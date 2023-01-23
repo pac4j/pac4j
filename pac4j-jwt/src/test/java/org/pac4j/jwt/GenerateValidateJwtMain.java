@@ -55,7 +55,7 @@ public class GenerateValidateJwtMain {
         config.setPublicKey(pub);
 
         var authenticator = new JwtAuthenticator(config);
-        authenticator.validate(new TokenCredentials(JWT), null, null);
+        authenticator.validate(null, new TokenCredentials(JWT));
         System.out.println("verified");
     }
 }

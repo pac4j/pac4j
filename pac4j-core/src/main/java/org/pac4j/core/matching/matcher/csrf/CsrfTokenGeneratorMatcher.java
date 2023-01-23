@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.Cookie;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -45,17 +44,19 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
+    public boolean matches(final CallContext ctx) {
+        val webContext = ctx.webContext();
+
         CommonHelper.assertNotNull("csrfTokenGenerator", csrfTokenGenerator);
         if (addTokenAsAttribute || addTokenAsHeader || addTokenAsCookie) {
-            val token = csrfTokenGenerator.get(context, sessionStore);
+            val token = csrfTokenGenerator.get(webContext, ctx.sessionStore());
 
             if (addTokenAsAttribute) {
-                context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
+                webContext.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
             }
 
             if (addTokenAsHeader) {
-                context.setResponseHeader(Pac4jConstants.CSRF_TOKEN, token);
+                webContext.setResponseHeader(Pac4jConstants.CSRF_TOKEN, token);
             }
 
             if (addTokenAsCookie) {
@@ -63,7 +64,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
                 if (CommonHelper.isNotBlank(domain)) {
                     cookie.setDomain(domain);
                 } else {
-                    cookie.setDomain(context.getServerName());
+                    cookie.setDomain(webContext.getServerName());
                 }
                 if (CommonHelper.isNotBlank(path)) {
                     cookie.setPath(path);
@@ -80,7 +81,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
                 if (CommonHelper.isNotBlank(sameSitePolicy)) {
                     cookie.setSameSitePolicy(sameSitePolicy);
                 }
-                context.addResponseCookie(cookie);
+                webContext.addResponseCookie(cookie);
             }
         }
         return true;

@@ -3,10 +3,8 @@ package org.pac4j.saml.redirect;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -34,23 +32,24 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext wc, final SessionStore sessionStore,
-                                                            final ProfileManagerFactory profileManagerFactory) {
-        val context = this.client.getContextProvider().buildContext(this.client, wc, sessionStore, profileManagerFactory);
-        val relayState = this.client.getStateGenerator().generateValue(wc, sessionStore);
+    public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
+        val context = this.client.getContextProvider().buildContext(ctx, this.client);
+        val relayState = this.client.getStateGenerator().generateValue(ctx);
 
         val authnRequest = this.saml2ObjectBuilder.build(context);
         this.client.getProfileHandler().send(context, authnRequest, relayState);
 
         val adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
 
+        val webContext = ctx.webContext();
+
         val bindingType = this.client.getConfiguration().getAuthnRequestBindingType();
         if (SAMLConstants.SAML2_POST_BINDING_URI.equalsIgnoreCase(bindingType) ||
             SAMLConstants.SAML2_POST_SIMPLE_SIGN_BINDING_URI.equalsIgnoreCase(bindingType)) {
             val content = adapter.getOutgoingContent();
-            return Optional.of(HttpActionHelper.buildFormPostContentAction(wc, content));
+            return Optional.of(HttpActionHelper.buildFormPostContentAction(webContext, content));
         }
         val location = adapter.getRedirectUrl();
-        return Optional.of(HttpActionHelper.buildRedirectUrlAction(wc, location));
+        return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
     }
 }

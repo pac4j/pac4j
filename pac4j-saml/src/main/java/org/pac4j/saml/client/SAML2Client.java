@@ -8,8 +8,7 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -17,12 +16,7 @@ import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
-import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
-import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
-import org.pac4j.saml.crypto.LogOnlySignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
+import org.pac4j.saml.crypto.*;
 import org.pac4j.saml.logout.SAML2LogoutActionBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutMessageReceiver;
 import org.pac4j.saml.logout.impl.SAML2LogoutProfileHandler;
@@ -244,8 +238,8 @@ public class SAML2Client extends IndirectClient {
     }
 
     @Override
-    public void notifySessionRenewal(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
-        configuration.findLogoutHandler().renewSession(oldSessionId, context, sessionStore);
+    public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
+        configuration.findLogoutHandler().renewSession(ctx, oldSessionId);
     }
 
     public final String getIdentityProviderResolvedEntityId() {

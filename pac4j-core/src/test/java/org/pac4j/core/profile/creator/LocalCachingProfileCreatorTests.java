@@ -2,10 +2,9 @@ package org.pac4j.core.profile.creator;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.CommonProfile;
@@ -32,7 +31,7 @@ public class LocalCachingProfileCreatorTests {
         private static int generator = 0;
 
         @Override
-        public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+        public Optional<UserProfile> create(final CallContext ctx, Credentials credentials) {
             final CommonProfile profile = new CommonProfile();
             profile.setId("" + generator++);
             return Optional.of(profile);
@@ -44,7 +43,7 @@ public class LocalCachingProfileCreatorTests {
         private static final NoProfileCreator INSTANCE = new NoProfileCreator();
 
         @Override
-        public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+        public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
             return Optional.empty();
         }
     }
@@ -53,7 +52,7 @@ public class LocalCachingProfileCreatorTests {
     public void testCachingNoProfile() {
         val c1 = new TokenCredentials("T1");
         val pc = new LocalCachingProfileCreator(NoProfileCreator.INSTANCE, 10, 10, TimeUnit.SECONDS);
-        val optProfile = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val optProfile = pc.create(new CallContext(MockWebContext.create(), new MockSessionStore()), c1);
         assertTrue(optProfile.isEmpty());
         assertTrue(pc.getStore().get(c1).isEmpty());
     }
@@ -62,12 +61,12 @@ public class LocalCachingProfileCreatorTests {
     public void testCachingProfile() {
         val c1 = new TokenCredentials("T1");
         val pc = new LocalCachingProfileCreator(SimpleProfileCreator.INSTANCE, 10, 1, TimeUnit.SECONDS);
-        val optProfile = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val optProfile = pc.create(new CallContext(MockWebContext.create(), new MockSessionStore()), c1);
         assertTrue(optProfile.isPresent());
         val profileId = optProfile.get().getId();
         assertEquals(profileId, pc.getStore().get(c1).get().getId());
 
-        val optProfile2 = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val optProfile2 = pc.create(new CallContext(MockWebContext.create(), new MockSessionStore()), c1);
         assertTrue(optProfile2.isPresent());
         val profileId2 = optProfile2.get().getId();
         assertEquals(profileId, pc.getStore().get(c1).get().getId());
@@ -75,7 +74,7 @@ public class LocalCachingProfileCreatorTests {
 
         TestsHelper.wait(1500);
 
-        val optProfile3 = pc.create(c1, MockWebContext.create(), new MockSessionStore());
+        val optProfile3 = pc.create(new CallContext(MockWebContext.create(), new MockSessionStore()), c1);
         assertTrue(optProfile3.isPresent());
         val profileId3 = optProfile3.get().getId();
         assertEquals(profileId3, pc.getStore().get(c1).get().getId());

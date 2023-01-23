@@ -29,7 +29,7 @@ public final class DefaultRolesAuthorizationGeneratorTests {
 
     private void checkEmptyProfile(final DefaultRolesAuthorizationGenerator generator) {
         val profile = new CommonProfile();
-        generator.generate(null, null, profile);
+        generator.generate(null, profile);
         assertEquals(0, profile.getRoles().size());
     }
 
@@ -47,7 +47,7 @@ public final class DefaultRolesAuthorizationGeneratorTests {
 
     private void checkProfile(final DefaultRolesAuthorizationGenerator generator) {
         val profile = new CommonProfile();
-        generator.generate(null, null, profile);
+        generator.generate(null, profile);
         val roles = profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.containsAll(DEFAULT_ROLES_LIST));

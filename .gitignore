@@ -36,3 +36,4 @@ pac4j-saml/saml-signing-cert.*
 krb5.conf
 documentation/.jekyll-cache/
 dependency-reduced-pom.xml
+.vscode

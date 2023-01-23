@@ -7,6 +7,7 @@ import lombok.val;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -112,7 +113,7 @@ public class ProfileManager {
                     val client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
                         try {
-                            val newProfile = client.get().renewUserProfile(profile, context, sessionStore);
+                            val newProfile = client.get().renewUserProfile(new CallContext(context, sessionStore), profile);
                             if (newProfile.isPresent()) {
                                 LOGGER.debug("Renewed by profile: {}", newProfile);
                                 profiles.put(key, newProfile.get());

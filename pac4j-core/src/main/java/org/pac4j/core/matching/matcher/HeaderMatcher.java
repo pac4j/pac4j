@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.regex.Pattern;
@@ -35,10 +34,10 @@ public class HeaderMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
+    public boolean matches(final CallContext ctx) {
         CommonHelper.assertNotBlank("headerName", headerName);
 
-        val headerValue = context.getRequestHeader(this.headerName);
+        val headerValue = ctx.webContext().getRequestHeader(this.headerName);
         val headerNull = expectedValue == null && !headerValue.isPresent();
         val headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
         return headerNull || headerMatches;

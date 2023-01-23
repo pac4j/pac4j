@@ -2,6 +2,7 @@ package org.pac4j.core.client;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -10,7 +11,6 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -34,10 +34,10 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        val action = (FoundAction) client.getRedirectionAction(context, sessionStore, ProfileManagerFactory.DEFAULT).get();
+        val action = (FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
         val redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
-        val credentials = client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
+        val credentials = client.getCredentials(new CallContext(context, sessionStore));
         assertFalse(credentials.isPresent());
     }
 
@@ -47,7 +47,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
-        val action = (FoundAction) client.getRedirectionAction(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT).get();
+        val action = (FoundAction) client.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
         val redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
@@ -58,7 +58,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         val context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
-        assertFalse(client.getUserProfile(null, context, null).isPresent());
+        assertFalse(client.getUserProfile(new CallContext(context, null), null).isPresent());
     }
 
     @Test
@@ -69,7 +69,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setProfileFactoryWhenNotAuthenticated(p -> AnonymousProfile.INSTANCE);
         val context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
-        assertEquals(AnonymousProfile.INSTANCE, client.getUserProfile(null, context, null).get());
+        assertEquals(AnonymousProfile.INSTANCE, client.getUserProfile(new CallContext(context, null), null).get());
     }
 
     @Test
@@ -79,8 +79,8 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create()
                                         .addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
-        val e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT));
+        val e = (HttpAction) TestsHelper.expectException(() ->
+            client.getRedirectionAction(new CallContext(context, new MockSessionStore())));
         assertEquals(401, e.getCode());
     }
 
@@ -92,8 +92,7 @@ public final class BaseClientTests implements TestsConstants {
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
-        val e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(context, sessionStore,
-            ProfileManagerFactory.DEFAULT));
+        val e = (HttpAction) TestsHelper.expectException(() -> client.getRedirectionAction(new CallContext(context, sessionStore)));
         assertEquals(401, e.getCode());
     }
 
@@ -104,7 +103,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
+        client.getCredentials(new CallContext(context, sessionStore));
         assertEquals("true", sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
     }
 
@@ -113,6 +112,6 @@ public final class BaseClientTests implements TestsConstants {
         val client =
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         val context = MockWebContext.create();
-        TestsHelper.expectException(() -> client.getRedirectionAction(context, null, ProfileManagerFactory.DEFAULT));
+        TestsHelper.expectException(() -> client.getRedirectionAction(new CallContext(context, null)));
     }
 }

@@ -5,8 +5,7 @@ import lombok.val;
 import org.apereo.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -60,14 +59,16 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
+
+        val webContext = ctx.webContext();
 
         val credentials = (TokenCredentials) cred;
         val ticket = credentials.getToken();
         try {
-            val finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, context);
-            val assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
+            val finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, webContext);
+            val assertion = configuration.retrieveTicketValidator(webContext).validate(ticket, finalCallbackUrl);
             val principal = assertion.getPrincipal();
             LOGGER.debug("principal: {}", principal);
 

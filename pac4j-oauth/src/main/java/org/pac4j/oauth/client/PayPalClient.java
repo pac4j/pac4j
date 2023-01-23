@@ -39,8 +39,8 @@ public class PayPalClient extends OAuth20Client {
         configuration.setApi(new PayPalApi20());
         configuration.setProfileDefinition(new PayPalProfileDefinition());
         configuration.setTokenAsHeader(true);
-        setLogoutActionBuilderIfUndefined((ctx, session, pmf, profile, targetUrl) ->
-            Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, "https://www.paypal.com/myaccount/logout")));
+        setLogoutActionBuilderIfUndefined((ctx, profile, targetUrl) ->
+            Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx.webContext(), "https://www.paypal.com/myaccount/logout")));
 
         super.internalInit(forceReinit);
     }

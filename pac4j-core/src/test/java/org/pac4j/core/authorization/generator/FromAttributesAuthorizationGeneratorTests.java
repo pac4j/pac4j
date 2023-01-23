@@ -49,7 +49,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     @Test
     public void testNoConfigWithCollections() {
         val generator = new FromAttributesAuthorizationGenerator(new ArrayList<>());
-        generator.generate(null, null, this.profile);
+        generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
 
@@ -57,7 +57,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     public void testNoConfig() {
         val generator =
                 new FromAttributesAuthorizationGenerator((String[]) null);
-        generator.generate(null, null, this.profile);
+        generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
 
@@ -67,7 +67,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
             ATTRIB1
         };
         val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
-        generator.generate(null, null, this.profile);
+        generator.generate(null, this.profile);
         val roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
@@ -80,7 +80,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
             ATTRIB5
         };
         val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
-        generator.generate(null, null, this.profile);
+        generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
 
@@ -91,7 +91,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         };
         val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.setSplitChar("|");
-        generator.generate(null, null, this.profile);
+        generator.generate(null, this.profile);
         val roles = this.profile.getRoles();
         assertEquals(1, roles.size());
         assertTrue(roles.contains(VALUE1));
@@ -103,7 +103,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                 ATTRIB3, ATTRIB4
         };
         val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
-        generator.generate(null, null, this.profile);
+        generator.generate(null, this.profile);
         val roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
         for(var value : ATTRIB_ARRAY) {

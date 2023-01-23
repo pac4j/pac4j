@@ -10,8 +10,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
@@ -21,7 +20,6 @@ import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Optional;
@@ -75,20 +73,22 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
-                                                        final ProfileManagerFactory profileManagerFactory) {
+    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
         init();
-        try {
-            var callbackUrl = callbackUrlResolver.compute(urlResolver, context.getFullRequestURL(), getName(), context);
-            val loginUrl = configuration.computeFinalLoginUrl(context);
 
-            val credentials = getCredentialsExtractor().extract(context, sessionStore, profileManagerFactory);
+        val webContext = ctx.webContext();
+
+        try {
+            var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
+            val loginUrl = configuration.computeFinalLoginUrl(webContext);
+
+            val credentials = getCredentialsExtractor().extract(ctx);
             if (!credentials.isPresent()) {
                 // redirect to the login page
                 val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                         callbackUrl, configuration.isRenew(), false, null);
                 logger.debug("redirectionUrl: {}", redirectionUrl);
-                throw HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl);
+                throw HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl);
             }
 
             // clean url from ticket parameter
@@ -97,7 +97,7 @@ public class DirectCasClient extends DirectClient {
             val casAuthenticator =
                 new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
             casAuthenticator.init();
-            casAuthenticator.validate(credentials.get(), context, sessionStore);
+            casAuthenticator.validate(ctx, credentials.get());
 
             return credentials;
         } catch (CredentialsException e) {

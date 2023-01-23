@@ -33,18 +33,19 @@ public class GaeUserServiceClient extends IndirectClient {
     protected void internalInit(final boolean forceReinit) {
         service = UserServiceFactory.getUserService();
         CommonHelper.assertNotNull("service", this.service);
-        setRedirectionActionBuilderIfUndefined((ctx, session, profileManagerFactory) -> {
-            val destinationUrl = computeFinalCallbackUrl(ctx);
+        setRedirectionActionBuilderIfUndefined(ctx -> {
+            val webContext = ctx.webContext();
+            val destinationUrl = computeFinalCallbackUrl(webContext);
             val loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
                 : service.createLoginURL(destinationUrl, authDomain);
-            return Optional.of(HttpActionHelper.buildRedirectUrlAction(ctx, loginUrl));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, loginUrl));
         });
-        setCredentialsExtractorIfUndefined((ctx, session, factory) -> {
+        setCredentialsExtractorIfUndefined(ctx -> {
             val credentials = new GaeUserCredentials();
             credentials.setUser(service.getCurrentUser());
             return Optional.of(credentials);
         });
-        setAuthenticatorIfUndefined((credentials, ctx, session) -> {
+        setAuthenticatorIfUndefined((ctx, credentials) -> {
             val user = ((GaeUserCredentials) credentials).getUser();
             if (user != null) {
                 val profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();

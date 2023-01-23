@@ -66,7 +66,7 @@ public final class ClientsTests implements TestsConstants {
         final AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
         final UrlResolver urlResolver = new DefaultUrlResolver();
         final CallbackUrlResolver callbackUrlResolver = new QueryParameterCallbackUrlResolver();
-        final AuthorizationGenerator authorizationGenerator = (context, store, profile) -> Optional.of(profile);
+        final AuthorizationGenerator authorizationGenerator = (ctx, profile) -> Optional.of(profile);
         clients.setCallbackUrl(CALLBACK_URL);
         clients.setAjaxRequestResolver(ajaxRequestResolver);
         clients.setUrlResolver(urlResolver);

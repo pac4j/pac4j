@@ -1,8 +1,7 @@
 package org.pac4j.core.matching.matcher;
 
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 
 /**
  * Cache control header matcher.
@@ -13,8 +12,9 @@ import org.pac4j.core.context.session.SessionStore;
 public class CacheControlMatcher implements Matcher {
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
-        val url = context.getFullRequestURL().toLowerCase();
+    public boolean matches(final CallContext ctx) {
+        val webContext = ctx.webContext();
+        val url = webContext.getFullRequestURL().toLowerCase();
         if (!url.endsWith(".css")
                 && !url.endsWith(".js")
                 && !url.endsWith(".png")
@@ -23,9 +23,9 @@ public class CacheControlMatcher implements Matcher {
                 && !url.endsWith(".jpeg")
                 && !url.endsWith(".bmp")
                 && !url.endsWith(".gif")) {
-            context.setResponseHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
-            context.setResponseHeader("Pragma", "no-cache");
-            context.setResponseHeader("Expires", "0");
+            webContext.setResponseHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+            webContext.setResponseHeader("Pragma", "no-cache");
+            webContext.setResponseHeader("Expires", "0");
         }
         return true;
     }

@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Arrays;
@@ -35,9 +34,9 @@ public class HttpMethodMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
+    public boolean matches(final CallContext ctx) {
         CommonHelper.assertNotNull("methods", methods);
-        val requestMethod = context.getRequestMethod();
+        val requestMethod = ctx.webContext().getRequestMethod();
 
         for (val method : methods) {
             if (method.name().equalsIgnoreCase(requestMethod)) {

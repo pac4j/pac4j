@@ -4,14 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.pac4j.core.client.DirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
@@ -57,11 +55,11 @@ public class DirectBearerAuthClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
-                                                        final ProfileManagerFactory profileManagerFactory) {
+    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
         // set the www-authenticate in case of error
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
+        ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
+            HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 
-        return super.retrieveCredentials(context, sessionStore, profileManagerFactory);
+        return super.retrieveCredentials(ctx);
     }
 }

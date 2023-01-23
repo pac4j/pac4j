@@ -2,9 +2,9 @@ package org.pac4j.http.client.direct;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
@@ -57,9 +57,8 @@ public final class X509ClientTests implements TestsConstants {
         val certs = new X509Certificate[1];
         certs[0] = cert;
         context.setRequestAttribute(X509CredentialsExtractor.CERTIFICATE_REQUEST_ATTRIBUTE, certs);
-        val credentials = (X509Credentials) client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
-        val profile = (X509Profile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val credentials = (X509Credentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
+        val profile = (X509Profile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
         assertEquals("jerome", profile.getId());
     }
 }

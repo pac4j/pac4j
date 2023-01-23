@@ -131,7 +131,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testNotAuthenticatedButMatcher() {
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addMatcher(NAME, (context, store) -> false);
+        config.addMatcher(NAME, ctx -> false);
         matchers = NAME;
         call();
         assertNull(action);

@@ -2,13 +2,13 @@ package org.pac4j.core.run;
 
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
@@ -36,7 +36,7 @@ public abstract class RunClient implements TestsConstants {
         val client = getClient();
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        val url = ((FoundAction) client.getRedirectionAction(context, sessionStore, ProfileManagerFactory.DEFAULT).get()).getLocation();
+        val url = ((FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
         if (CommonHelper.isNotBlank(getLogin()) && CommonHelper.isNotBlank(getPassword())) {
             logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
@@ -50,9 +50,9 @@ public abstract class RunClient implements TestsConstants {
         val scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
         val returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
-        val credentials = client.getCredentials(context, sessionStore, ProfileManagerFactory.DEFAULT);
+        val credentials = client.getCredentials(new CallContext(context, sessionStore));
         if (credentials.isPresent()) {
-            val profile = client.getUserProfile(credentials.get(), context, sessionStore);
+            val profile = client.getUserProfile(new CallContext(context, sessionStore), credentials.get());
             logger.debug("userProfile: {}", profile);
             if (profile.isPresent() || !canCancel()) {
                 verifyProfile((CommonProfile) profile.get());

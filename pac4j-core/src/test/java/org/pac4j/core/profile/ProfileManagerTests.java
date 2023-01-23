@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
@@ -105,7 +106,7 @@ public final class ProfileManagerTests {
         val client1 = mock(BaseClient.class);
         when(client1.getName()).thenReturn(CLIENT1);
         profileManager.setConfig(new Config(client1));
-        when(client1.renewUserProfile(profile1, context, sessionStore)).thenReturn(Optional.of(profile2));
+        when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(profile2, profileManager.getProfile().get());
         assertTrue(profileManager.isAuthenticated());
@@ -123,7 +124,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, profile1);
         val client1 = mock(BaseClient.class);
         when(client1.getName()).thenReturn(CLIENT1);
-        when(client1.renewUserProfile(profile1, context, sessionStore)).thenReturn(Optional.of(profile2));
+        when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());
@@ -142,7 +143,7 @@ public final class ProfileManagerTests {
         val client1 = mock(BaseClient.class);
         when(client1.getName()).thenReturn(CLIENT2);
         profileManager.setConfig(new Config(client1));
-        when(client1.renewUserProfile(profile1, context, sessionStore)).thenReturn(Optional.of(profile2));
+        when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());

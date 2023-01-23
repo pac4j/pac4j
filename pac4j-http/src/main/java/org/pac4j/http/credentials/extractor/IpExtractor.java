@@ -4,12 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -45,19 +44,19 @@ public class IpExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val webContext = ctx.webContext();
         final Optional<String> ip;
         if (alternateIpHeaders.isEmpty()) {
-            ip = Optional.ofNullable(context.getRemoteAddr());
+            ip = Optional.ofNullable(webContext.getRemoteAddr());
         } else {
-            val requestSourceIp = context.getRemoteAddr();
+            val requestSourceIp = webContext.getRemoteAddr();
             if (this.proxyIp.isEmpty()) {
-                ip = ipFromHeaders(context);
+                ip = ipFromHeaders(webContext);
             }
             // if using proxy, check if the ip proxy is correct
             else if (this.proxyIp.equals(requestSourceIp)) {
-                ip = ipFromHeaders(context);
+                ip = ipFromHeaders(webContext);
             } else {
                 ip = Optional.empty();
             }

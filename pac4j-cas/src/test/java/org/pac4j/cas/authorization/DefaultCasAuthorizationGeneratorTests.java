@@ -3,6 +3,7 @@ package org.pac4j.cas.authorization;
 import lombok.val;
 import org.junit.Test;
 import org.pac4j.cas.profile.CasProfile;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.util.TestsConstants;
 
@@ -24,7 +25,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         val attributes = new HashMap<String, Object>();
         val profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, new MockSessionStore(), profile);
+        generator.generate(new CallContext(null, new MockSessionStore()), profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -35,7 +36,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
         val profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, new MockSessionStore(), profile);
+        generator.generate(new CallContext(null, new MockSessionStore()), profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -46,7 +47,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
         val profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, new MockSessionStore(), profile);
+        generator.generate(new CallContext(null, new MockSessionStore()), profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -57,7 +58,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
         val profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(null, new MockSessionStore(), profile);
+        generator.generate(new CallContext(null, new MockSessionStore()), profile);
         assertEquals(true, profile.isRemembered());
     }
 }

@@ -2,11 +2,9 @@ package org.pac4j.http.credentials.extractor;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.http.credentials.X509Credentials;
 
 import java.security.cert.X509Certificate;
@@ -24,10 +22,9 @@ public class X509CredentialsExtractor implements CredentialsExtractor  {
     public static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
+    public Optional<Credentials> extract(final CallContext ctx) {
         val certificates =
-            (Optional<X509Certificate[]>) context.getRequestAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
+            (Optional<X509Certificate[]>) ctx.webContext().getRequestAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 
         if (certificates.isPresent() && certificates.get().length > 0) {
             val certificate = certificates.get()[0];

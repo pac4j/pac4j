@@ -6,11 +6,10 @@ import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.LogoutRequest;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.client.SAML2Client;
@@ -60,17 +59,18 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        val samlContext = this.contextProvider.buildContext(this.saml2Client, context, sessionStore, profileManagerFactory);
-        val logoutEndpoint = isLogoutEndpointRequest(context, samlContext);
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val webContext = ctx.webContext();
+
+        val samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
+        val logoutEndpoint = isLogoutEndpointRequest(webContext, samlContext);
         if (logoutEndpoint) {
             receiveLogout(samlContext);
             sendLogoutResponse(samlContext);
-            adaptLogoutResponseToBinding(context, samlContext);
+            adaptLogoutResponseToBinding(webContext, samlContext);
             return Optional.empty();
         }
-        return receiveLogin(samlContext, context);
+        return receiveLogin(samlContext, webContext);
     }
 
     protected Optional<Credentials> receiveLogin(final SAML2MessageContext samlContext, final WebContext context) {

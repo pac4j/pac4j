@@ -9,14 +9,13 @@ import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
 import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
@@ -48,12 +47,12 @@ public class OidcExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        val logoutEndpoint = context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val webContext = ctx.webContext();
+        val logoutEndpoint = webContext.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
             .isPresent();
         if (logoutEndpoint) {
-            val logoutToken = context.getRequestParameter("logout_token");
+            val logoutToken = webContext.getRequestParameter("logout_token");
             // back-channel logout
             if (logoutToken.isPresent()) {
                 try {
@@ -63,23 +62,23 @@ public class OidcExtractor implements CredentialsExtractor {
                     //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     val sid = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                     LOGGER.debug("Handling back-channel logout for sessionId: {}", sid);
-                    configuration.findLogoutHandler().destroySessionBack(context, sessionStore, profileManagerFactory, sid);
+                    configuration.findLogoutHandler().destroySessionBack(ctx, sid);
                 } catch (final java.text.ParseException e) {
                     LOGGER.error("Cannot validate JWT logout token", e);
                     throw new BadRequestAction();
                 }
             } else {
-                val sid = context.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
+                val sid = webContext.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
                 LOGGER.debug("Handling front-channel logout for sessionId: {}", sid);
                 // front-channel logout
-                configuration.findLogoutHandler().destroySessionFront(context, sessionStore, profileManagerFactory, sid);
+                configuration.findLogoutHandler().destroySessionFront(ctx, sid);
             }
-            context.setResponseHeader("Cache-Control", "no-cache, no-store");
-            context.setResponseHeader("Pragma", "no-cache");
+            webContext.setResponseHeader("Cache-Control", "no-cache, no-store");
+            webContext.setResponseHeader("Pragma", "no-cache");
             throw new OkAction(Pac4jConstants.EMPTY_STRING);
         } else {
-            val computedCallbackUrl = client.computeFinalCallbackUrl(context);
-            val parameters = retrieveParameters(context);
+            val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
+            val parameters = retrieveParameters(webContext);
             AuthenticationResponse response;
             try {
                 response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
@@ -105,7 +104,7 @@ public class OidcExtractor implements CredentialsExtractor {
             if (configuration.isWithState()) {
                 // Validate state for CSRF mitigation
                 val requestState = (State) configuration.getValueRetriever()
-                    .retrieve(client.getStateSessionAttributeName(), client, context, sessionStore)
+                    .retrieve(ctx, client.getStateSessionAttributeName(), client)
                     .orElseThrow(() -> new TechnicalException("State cannot be determined"));
 
                 val responseState = successResponse.getState();

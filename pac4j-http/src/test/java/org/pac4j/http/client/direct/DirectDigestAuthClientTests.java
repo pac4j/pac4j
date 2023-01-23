@@ -2,11 +2,11 @@ package org.pac4j.http.client.direct;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.CredentialUtil;
@@ -29,15 +29,15 @@ public class DirectDigestAuthClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         val digestAuthClient = new DirectDigestAuthClient(null);
-        TestsHelper.expectException(() -> digestAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore(),
-                ProfileManagerFactory.DEFAULT), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> digestAuthClient.getCredentials(new CallContext(MockWebContext.create(),
+                new MockSessionStore())), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         val digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
-        TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, HTTP_METHOD.POST.name(),
-                null, null, null, null, null, null, null), MockWebContext.create(), new MockSessionStore()), TechnicalException.class,
+        TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new CallContext(MockWebContext.create(), new MockSessionStore()),
+                new DigestCredentials(TOKEN, HTTP_METHOD.POST.name(), null, null, null, null, null, null, null)), TechnicalException.class,
                 "profileCreator cannot be null");
     }
 
@@ -56,10 +56,9 @@ public class DirectDigestAuthClientTests implements TestsConstants {
                 DIGEST_AUTHORIZATION_HEADER_VALUE);
         context.setRequestMethod(HTTP_METHOD.GET.name());
 
-        val credentials = (DigestCredentials) client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
+        val credentials = (DigestCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
 
-        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
 
         val ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
         val serverDigest1 = credentials.calculateServerDigest(true, ha1);

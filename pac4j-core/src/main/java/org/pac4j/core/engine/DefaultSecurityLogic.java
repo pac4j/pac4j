@@ -14,9 +14,8 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultSecurityClientFinder;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.FrameworkParameters;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.ForbiddenAction;
@@ -26,7 +25,6 @@ import org.pac4j.core.matching.checker.DefaultMatchingChecker;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Collections;
@@ -78,21 +76,14 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
         LOGGER.debug("=== SECURITY ===");
 
         // checks
-        assertNotNull("config", config);
-        assertNotNull("config.getWebContextFactory()", config.getWebContextFactory());
-        val context = config.getWebContextFactory().newContext(parameters);
-        assertNotNull("context", context);
+        val ctx = buildContext(config, parameters);
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
         val httpActionAdapter = config.getHttpActionAdapter();
         assertNotNull("httpActionAdapter", httpActionAdapter);
 
         HttpAction action;
         try {
-            assertNotNull("config.getSessionStoreFactory()", config.getSessionStoreFactory());
-            val sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
-            assertNotNull("sessionStore", sessionStore);
-            val profileManagerFactory = config.getProfileManagerFactory();
-            assertNotNull("profileManagerFactory", profileManagerFactory);
-
             assertNotNull("clientFinder", clientFinder);
             assertNotNull("authorizationChecker", authorizationChecker);
             assertNotNull("matchingChecker", matchingChecker);
@@ -101,17 +92,17 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
             assertNotNull("configClients", configClients);
 
             // logic
-            LOGGER.debug("url: {}", context.getFullRequestURL());
+            LOGGER.debug("url: {}", webContext.getFullRequestURL());
             LOGGER.debug("clients: {} | matchers: {}", clients, matchers);
-            val currentClients = clientFinder.find(configClients, context, clients);
+            val currentClients = clientFinder.find(configClients, webContext, clients);
             LOGGER.debug("currentClients: {}", currentClients);
 
-            if (matchingChecker.matches(context, sessionStore, matchers, config.getMatchers(), currentClients)) {
+            if (matchingChecker.matches(ctx, matchers, config.getMatchers(), currentClients)) {
 
-                val manager = profileManagerFactory.apply(context, sessionStore);
+                val manager = ctx.profileManagerFactory().apply(webContext, sessionStore);
                 manager.setConfig(config);
                 var profiles = this.loadProfilesFromSession
-                    ? loadProfiles(manager, context, sessionStore, currentClients)
+                    ? loadProfiles(ctx, manager, currentClients)
                     : List.<UserProfile>of();
                 LOGGER.debug("Loaded profiles (from session: {}): {} ", this.loadProfilesFromSession, profiles);
 
@@ -123,16 +114,16 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                         if (currentClient instanceof DirectClient directClient) {
                             LOGGER.debug("Performing authentication for direct client: {}", currentClient);
 
-                            val credentials = currentClient.getCredentials(context, sessionStore, profileManagerFactory);
+                            val credentials = currentClient.getCredentials(ctx);
                             LOGGER.debug("credentials: {}", credentials);
                             if (credentials.isPresent()) {
                                 val optProfile =
-                                    currentClient.getUserProfile(credentials.get(), context, sessionStore);
+                                    currentClient.getUserProfile(ctx, credentials.get());
                                 LOGGER.debug("profile: {}", optProfile);
                                 if (optProfile.isPresent()) {
                                     val profile = optProfile.get();
-                                    val saveProfileInSession = directClient.getSaveProfileInSession(context, profile);
-                                    val multiProfile = directClient.isMultiProfile(context, profile);
+                                    val saveProfileInSession = directClient.getSaveProfileInSession(webContext, profile);
+                                    val multiProfile = directClient.isMultiProfile(webContext, profile);
                                     LOGGER.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                     manager.save(saveProfileInSession, profile, multiProfile);
                                     updated = true;
@@ -144,7 +135,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                         }
                     }
                     if (updated) {
-                        profiles = loadProfiles(manager, context, sessionStore, currentClients);
+                        profiles = loadProfiles(ctx, manager, currentClients);
                         LOGGER.debug("Reloaded profiles: {}", profiles);
                     }
                 }
@@ -152,63 +143,60 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 // we have profile(s) -> check authorizations; otherwise, redirect to identity provider or 401
                 if (isNotEmpty(profiles)) {
                     LOGGER.debug("authorizers: {}", authorizers);
-                    if (authorizationChecker.isAuthorized(context, sessionStore, profiles,
+                    if (authorizationChecker.isAuthorized(webContext, sessionStore, profiles,
                                                           authorizers, config.getAuthorizers(), currentClients)) {
                         LOGGER.debug("authenticated and authorized -> grant access");
-                        return securityGrantedAccessAdapter.adapt(context, sessionStore, profiles);
+                        return securityGrantedAccessAdapter.adapt(webContext, sessionStore, profiles);
                     } else {
                         LOGGER.debug("forbidden");
-                        action = forbidden(context, sessionStore, currentClients, profiles, authorizers);
+                        action = forbidden(ctx, currentClients, profiles, authorizers);
                     }
                 } else {
-                    if (startAuthentication(context, sessionStore, currentClients)) {
+                    if (startAuthentication(ctx, currentClients)) {
                         LOGGER.debug("Starting authentication");
-                        saveRequestedUrl(context, sessionStore, currentClients, config.getClients().getAjaxRequestResolver());
-                        action = redirectToIdentityProvider(context, sessionStore, profileManagerFactory, currentClients);
+                        saveRequestedUrl(ctx, currentClients, config.getClients().getAjaxRequestResolver());
+                        action = redirectToIdentityProvider(ctx, currentClients);
                     } else {
                         LOGGER.debug("unauthorized");
-                        action = unauthorized(context, sessionStore, currentClients);
+                        action = unauthorized(ctx, currentClients);
                     }
                 }
 
             } else {
 
                 LOGGER.debug("no matching for this request -> grant access");
-                return securityGrantedAccessAdapter.adapt(context, sessionStore, Collections.emptyList());
+                return securityGrantedAccessAdapter.adapt(webContext, sessionStore, Collections.emptyList());
             }
 
         } catch (final Exception e) {
-            return handleException(e, httpActionAdapter, context);
+            return handleException(e, httpActionAdapter, webContext);
         }
 
-        return httpActionAdapter.adapt(action, context);
+        return httpActionAdapter.adapt(action, webContext);
     }
 
     /**
      * Load the profiles.
      *
+     * @param ctx the context
      * @param manager the profile manager
-     * @param context the web context
-     * @param sessionStore the session store
      * @param clients the current clients
      * @return
      */
-    protected List<UserProfile> loadProfiles(final ProfileManager manager, final WebContext context, final SessionStore sessionStore,
-                                             final List<Client> clients) {
+    protected List<UserProfile> loadProfiles(final CallContext ctx, final ProfileManager manager, final List<Client> clients) {
         return manager.getProfiles();
     }
 
     /**
      * Return a forbidden error.
      *
-     * @param context the web context
-     * @param sessionStore the session store
+     * @param ctx the context
      * @param currentClients the current clients
      * @param profiles the current profiles
      * @param authorizers the authorizers
      * @return a forbidden error
      */
-    protected HttpAction forbidden(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients,
+    protected HttpAction forbidden(final CallContext ctx, final List<Client> currentClients,
                                    final List<UserProfile> profiles, final String authorizers) {
         return new ForbiddenAction();
     }
@@ -216,55 +204,48 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
     /**
      * Return whether we must start a login process if the first client is an indirect one.
      *
-     * @param context the web context
-     * @param sessionStore the session store
+     * @param ctx the context
      * @param currentClients the current clients
      * @return whether we must start a login process
      */
-    protected boolean startAuthentication(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients) {
+    protected boolean startAuthentication(final CallContext ctx, final List<Client> currentClients) {
         return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClient;
     }
 
     /**
      * Save the requested url.
      *
-     * @param context the web context
-     * @param sessionStore the session store
+     * @param ctx the context
      * @param currentClients the current clients
      * @param ajaxRequestResolver the AJAX request resolver
      */
-    protected void saveRequestedUrl(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients,
+    protected void saveRequestedUrl(final CallContext ctx, final List<Client> currentClients,
                                     final AjaxRequestResolver ajaxRequestResolver) {
-        if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(context, sessionStore)) {
-            savedRequestHandler.save(context, sessionStore);
+        if (ajaxRequestResolver == null || !ajaxRequestResolver.isAjax(ctx)) {
+            savedRequestHandler.save(ctx);
         }
     }
 
     /**
      * Perform a redirection to start the login process of the first indirect client.
      *
-     * @param context the web context
-     * @param sessionStore the session store
-     * @param profileManagerFactory the profile manager factory
+     * @param ctx the context
      * @param currentClients the current clients
      * @return the performed redirection
      */
-    protected HttpAction redirectToIdentityProvider(final WebContext context, final SessionStore sessionStore,
-                                                    final ProfileManagerFactory profileManagerFactory,
-                                                    final List<Client> currentClients) {
+    protected HttpAction redirectToIdentityProvider(final CallContext ctx, final List<Client> currentClients) {
         val currentClient = (IndirectClient) currentClients.get(0);
-        return currentClient.getRedirectionAction(context, sessionStore, profileManagerFactory).get();
+        return currentClient.getRedirectionAction(ctx).get();
     }
 
     /**
      * Return an unauthorized error.
      *
-     * @param context the web context
-     * @param sessionStore the session store
+     * @param ctx the context
      * @param currentClients the current clients
      * @return an unauthorized error
      */
-    protected HttpAction unauthorized(final WebContext context, final SessionStore sessionStore, final List<Client> currentClients) {
-        return HttpActionHelper.buildUnauthenticatedAction(context);
+    protected HttpAction unauthorized(final CallContext ctx, final List<Client> currentClients) {
+        return HttpActionHelper.buildUnauthenticatedAction(ctx.webContext());
     }
 }

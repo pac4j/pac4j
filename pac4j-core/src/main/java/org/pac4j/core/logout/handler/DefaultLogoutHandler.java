@@ -5,9 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
@@ -37,16 +35,19 @@ public class DefaultLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void recordSession(final WebContext context, final SessionStore sessionStore, final String key) {
+    public void recordSession(final CallContext ctx, final String key) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
         if (sessionStore == null) {
             LOGGER.error("No session store available for this web context");
         } else {
-            val optSessionId = sessionStore.getSessionId(context, true);
+            val optSessionId = sessionStore.getSessionId(webContext, true);
             if (optSessionId.isEmpty()) {
                 LOGGER.error("No session identifier retrieved although the session creation has been requested");
             } else {
                 val sessionId = optSessionId.get();
-                val optTrackableSession = sessionStore.getTrackableSession(context);
+                val optTrackableSession = sessionStore.getTrackableSession(webContext);
 
                 if (optTrackableSession.isPresent()) {
                     val trackableSession = optTrackableSession.get();
@@ -62,12 +63,13 @@ public class DefaultLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void destroySessionFront(final WebContext context, final SessionStore sessionStore,
-                                    final ProfileManagerFactory profileManagerFactory, final String key) {
+    public void destroySessionFront(final CallContext ctx, final String key) {
+        val sessionStore = ctx.sessionStore();
+
         if (sessionStore == null) {
             LOGGER.error("No session store available for this web context");
         } else {
-            val optCurrentSessionId = sessionStore.getSessionId(context, false);
+            val optCurrentSessionId = sessionStore.getSessionId(ctx.webContext(), false);
 
             if (optCurrentSessionId.isPresent()) {
                 store.remove(key);
@@ -78,28 +80,30 @@ public class DefaultLogoutHandler implements LogoutHandler {
                 store.remove(currentSessionId);
 
                 if (CommonHelper.areEquals(key, sessionToKey)) {
-                    destroy(context, sessionStore, profileManagerFactory, "front");
+                    destroy(ctx, "front");
                 } else {
                     LOGGER.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
                         + "key is not the same as the one linked to the current session");
                 }
             } else {
                 LOGGER.warn("no session for front channel logout => trying back channel logout");
-                destroySessionBack(context, sessionStore, profileManagerFactory, key);
+                destroySessionBack(ctx, key);
             }
         }
     }
 
-    protected void destroy(final WebContext context, final SessionStore sessionStore,
-                           final ProfileManagerFactory profileManagerFactory, final String channel) {
+    protected void destroy(final CallContext ctx, final String channel) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
         // remove profiles
-        val manager = profileManagerFactory.apply(context, sessionStore);
+        val manager = ctx.profileManagerFactory().apply(webContext, sessionStore);
         manager.removeProfiles();
         LOGGER.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session
         if (destroySession) {
             LOGGER.debug("destroy the whole session");
-            val invalidated = sessionStore.destroySession(context);
+            val invalidated = sessionStore.destroySession(webContext);
             if (!invalidated) {
                 LOGGER.error("The session has not been invalidated");
             }
@@ -107,8 +111,10 @@ public class DefaultLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void destroySessionBack(final WebContext context, final SessionStore sessionStore,
-                                   final ProfileManagerFactory profileManagerFactory, final String key) {
+    public void destroySessionBack(final CallContext ctx, final String key) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
         val optTrackableSession = store.get(key);
         LOGGER.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
         if (!optTrackableSession.isPresent()) {
@@ -122,15 +128,15 @@ public class DefaultLogoutHandler implements LogoutHandler {
                 LOGGER.error("No session store available for this web context");
             } else {
                 val optNewSessionStore = sessionStore
-                    .buildFromTrackableSession(context, optTrackableSession.get());
+                    .buildFromTrackableSession(webContext, optTrackableSession.get());
                 if (optNewSessionStore.isPresent()) {
                     val newSessionStore = optNewSessionStore.get();
                     LOGGER.debug("newSesionStore: {}", newSessionStore);
-                    val sessionId = newSessionStore.getSessionId(context, true).get();
+                    val sessionId = newSessionStore.getSessionId(webContext, true).get();
                     LOGGER.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
-                    destroy(context, newSessionStore, profileManagerFactory, "back");
+                    destroy(ctx, "back");
                 } else {
                     LOGGER.error("The session store should be able to build a new session store from the tracked session");
                 }
@@ -139,14 +145,14 @@ public class DefaultLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void renewSession(final String oldSessionId, final WebContext context, final SessionStore sessionStore) {
+    public void renewSession(final CallContext ctx, final String oldSessionId) {
         val optKey = store.get(oldSessionId);
         LOGGER.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
         if (optKey.isPresent()) {
             val key = (String) optKey.get();
             store.remove(key);
             store.remove(oldSessionId);
-            recordSession(context, sessionStore, key);
+            recordSession(ctx, key);
         }
     }
 }

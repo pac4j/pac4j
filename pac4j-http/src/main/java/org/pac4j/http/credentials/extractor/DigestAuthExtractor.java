@@ -2,15 +2,13 @@ package org.pac4j.http.credentials.extractor;
 
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.http.credentials.DigestCredentials;
@@ -53,13 +51,12 @@ public class DigestAuthExtractor implements CredentialsExtractor {
      * If in the Authorization header it is not specified a username and response, we throw CredentialsException because
      * the client uses an username and a password to authenticate. response is just a MD5 encoded value
      * based on user provided password and RFC 2617 digest authentication encoding rules
-     * @param context the current web context
+     * @param ctx the current context
      * @return the Digest credentials
      */
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        val credentials = this.extractor.extract(context, sessionStore, profileManagerFactory);
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val credentials = this.extractor.extract(ctx);
         if (!credentials.isPresent()) {
             return Optional.empty();
         }
@@ -78,7 +75,7 @@ public class DigestAuthExtractor implements CredentialsExtractor {
         val cnonce = valueMap.get("cnonce");
         val nc = valueMap.get("nc");
         val qop = valueMap.get("qop");
-        val method = context.getRequestMethod();
+        val method = ctx.webContext().getRequestMethod();
 
         return Optional.of(new DigestCredentials(response, method, username, realm, nonce, uri, cnonce, nc, qop));
     }

@@ -1,7 +1,6 @@
 package org.pac4j.core.credentials.authenticator;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 
@@ -19,7 +18,7 @@ public interface Authenticator {
 
     Authenticator ALWAYS_VALIDATE = new Authenticator() {
         @Override
-        public Optional<Credentials> validate(Credentials credentials, WebContext context, SessionStore sessionStore) {
+        public Optional<Credentials> validate(CallContext ctx, Credentials credentials) {
             return Optional.of(credentials);
         }
     };
@@ -27,10 +26,9 @@ public interface Authenticator {
     /**
      * Validate the credentials. It should throw a {@link CredentialsException} in case of failure.
      *
+     * @param ctx the context
      * @param credentials the given credentials
-     * @param context the web context
-     * @param sessionStore the session store
      * @return the credentials
      */
-    Optional<Credentials> validate(Credentials credentials, WebContext context, SessionStore sessionStore);
+    Optional<Credentials> validate(CallContext ctx, Credentials credentials);
 }

@@ -11,8 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -151,15 +150,15 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         val credentials = (OidcCredentials) cred;
         val code = credentials.getCode();
         // if we have a code
         if (code != null) {
             try {
-                val computedCallbackUrl = client.computeFinalCallbackUrl(context);
+                val computedCallbackUrl = client.computeFinalCallbackUrl(ctx.webContext());
                 var verifier = (CodeVerifier) configuration.getValueRetriever()
-                    .retrieve(client.getCodeVerifierSessionAttributeName(), client, context, sessionStore).orElse(null);
+                    .retrieve(ctx, client.getCodeVerifierSessionAttributeName(), client).orElse(null);
                 // Token request
                 val request = createTokenRequest(new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
                 executeTokenRequest(request, credentials);

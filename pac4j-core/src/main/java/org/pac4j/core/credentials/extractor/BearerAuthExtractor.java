@@ -1,10 +1,8 @@
 package org.pac4j.core.credentials.extractor;
 
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -27,8 +25,7 @@ public class BearerAuthExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        return this.extractor.extract(context, sessionStore, profileManagerFactory);
+    public Optional<Credentials> extract(final CallContext ctx) {
+        return this.extractor.extract(ctx);
     }
 }

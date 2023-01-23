@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.WithLocationAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -29,34 +27,34 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
     private boolean addRedirectionUrlAsHeader = false;
 
     @Override
-    public boolean isAjax(final WebContext context, final SessionStore sessionStore) {
+    public boolean isAjax(final CallContext ctx) {
+        val webContext = ctx.webContext();
         val xmlHttpRequest = AJAX_HEADER_VALUE
-            .equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
+            .equalsIgnoreCase(webContext.getRequestHeader(AJAX_HEADER_NAME).orElse(null));
         val hasDynamicAjaxParameter = Boolean.TRUE.toString()
-            .equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
+            .equalsIgnoreCase(webContext.getRequestHeader(IS_AJAX_REQUEST).orElse(null));
         val hasDynamicAjaxHeader = Boolean.TRUE.toString()
-            .equalsIgnoreCase(context.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
+            .equalsIgnoreCase(webContext.getRequestParameter(IS_AJAX_REQUEST).orElse(null));
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
 
     @Override
-    public HttpAction buildAjaxResponse(final WebContext context, final SessionStore sessionStore,
-                                        final ProfileManagerFactory profileManagerFactory,
-                                        final RedirectionActionBuilder redirectionActionBuilder) {
+    public HttpAction buildAjaxResponse(final CallContext ctx, final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;
         if (addRedirectionUrlAsHeader) {
-            val action = redirectionActionBuilder.getRedirectionAction(context, sessionStore, profileManagerFactory).orElse(null);
+            val action = redirectionActionBuilder.getRedirectionAction(ctx).orElse(null);
             if (action instanceof WithLocationAction) {
                 url = ((WithLocationAction) action).getLocation();
             }
         }
 
-        if (!context.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isPresent()) {
+        val webContext = ctx.webContext();
+        if (!webContext.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isPresent()) {
             if (CommonHelper.isNotBlank(url)) {
-                context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+                webContext.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
             LOGGER.debug("Faces is not used: returning unauthenticated error for url: {}", url);
-            return HttpActionHelper.buildUnauthenticatedAction(context);
+            return HttpActionHelper.buildUnauthenticatedAction(webContext);
         }
 
         val buffer = new StringBuilder();
@@ -68,6 +66,6 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         buffer.append("</partial-response>");
 
         LOGGER.debug("Faces is used: returning partial response content for url: {}", url);
-        return HttpActionHelper.buildFormPostContentAction(context, buffer.toString());
+        return HttpActionHelper.buildFormPostContentAction(webContext, buffer.toString());
     }
 }

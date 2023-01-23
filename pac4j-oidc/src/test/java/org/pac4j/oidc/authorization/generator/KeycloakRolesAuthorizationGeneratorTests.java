@@ -4,6 +4,7 @@ import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
@@ -40,7 +41,7 @@ public class KeycloakRolesAuthorizationGeneratorTests {
         val profile = new KeycloakOidcProfile();
         final AccessToken accessToken = new BearerAccessToken(ACCESS_TOKEN);
         profile.setAccessToken(accessToken);
-        generator.generate(MockWebContext.create(), new MockSessionStore(), profile);
+        generator.generate(new CallContext(MockWebContext.create(), new MockSessionStore()), profile);
         assertEquals(4, profile.getRoles().size());
     }
 }

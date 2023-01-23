@@ -20,7 +20,7 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnNoProfile() {
-        assertFalse(AuthenticatorProfileCreator.INSTANCE.create(new TokenCredentials(TOKEN), null, null).isPresent());
+        assertFalse(AuthenticatorProfileCreator.INSTANCE.create(null, new TokenCredentials(TOKEN)).isPresent());
     }
 
     @Test
@@ -28,7 +28,7 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
         val profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN);
         credentials.setUserProfile(profile);
-        val profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(credentials, null, null).get();
+        val profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(null, credentials).get();
         assertEquals(profile, profile2);
     }
 }

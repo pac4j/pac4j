@@ -2,6 +2,7 @@ package org.pac4j.core.engine.savedrequest;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.context.session.SessionStore;
@@ -22,15 +23,18 @@ import org.pac4j.core.util.Pac4jConstants;
 public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
     @Override
-    public void save(final WebContext context, final SessionStore sessionStore) {
-        val requestedUrl = getRequestedUrl(context, sessionStore);
-        if (WebContextHelper.isPost(context)) {
+    public void save(final CallContext ctx) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
+        val requestedUrl = getRequestedUrl(webContext, sessionStore);
+        if (WebContextHelper.isPost(webContext)) {
             LOGGER.debug("requestedUrl with data: {}", requestedUrl);
-            val formPost = HttpActionHelper.buildFormPostContent(context);
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
+            val formPost = HttpActionHelper.buildFormPostContent(webContext);
+            sessionStore.set(webContext, Pac4jConstants.REQUESTED_URL, new OkAction(formPost));
         } else {
             LOGGER.debug("requestedUrl: {}", requestedUrl);
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, requestedUrl);
+            sessionStore.set(webContext, Pac4jConstants.REQUESTED_URL, requestedUrl);
         }
     }
 
@@ -39,11 +43,14 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
     }
 
     @Override
-    public HttpAction restore(final WebContext context, final SessionStore sessionStore, final String defaultUrl) {
-        val optRequestedUrl = sessionStore.get(context, Pac4jConstants.REQUESTED_URL);
+    public HttpAction restore(final CallContext ctx, final String defaultUrl) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
+        val optRequestedUrl = sessionStore.get(webContext, Pac4jConstants.REQUESTED_URL);
         HttpAction requestedAction = null;
         if (optRequestedUrl.isPresent()) {
-            sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
+            sessionStore.set(webContext, Pac4jConstants.REQUESTED_URL, null);
             val requestedUrl = optRequestedUrl.get();
             if (requestedUrl instanceof String) {
                 requestedAction = new FoundAction((String) requestedUrl);
@@ -57,9 +64,9 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
 
         LOGGER.debug("requestedAction: {}", requestedAction.getMessage());
         if (requestedAction instanceof FoundAction) {
-            return HttpActionHelper.buildRedirectUrlAction(context, ((FoundAction) requestedAction).getLocation());
+            return HttpActionHelper.buildRedirectUrlAction(webContext, ((FoundAction) requestedAction).getLocation());
         } else {
-            return HttpActionHelper.buildFormPostContentAction(context, ((OkAction) requestedAction).getContent());
+            return HttpActionHelper.buildFormPostContentAction(webContext, ((OkAction) requestedAction).getContent());
         }
     }
 }

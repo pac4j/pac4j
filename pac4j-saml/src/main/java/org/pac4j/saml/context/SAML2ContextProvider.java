@@ -13,9 +13,9 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -55,24 +55,21 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     }
 
     @Override
-    public final SAML2MessageContext buildServiceProviderContext(final SAML2Client client,
-                                                                 final WebContext webContext,
-                                                                 final SessionStore sessionStore) {
+    public final SAML2MessageContext buildServiceProviderContext(final CallContext ctx, final SAML2Client client) {
         val context = new SAML2MessageContext();
         context.setSaml2Configuration(client.getConfiguration());
-        addTransportContext(webContext, sessionStore, context);
+        addTransportContext(ctx.webContext(), ctx.sessionStore(), context);
         addSPContext(context);
         return context;
     }
 
     @Override
-    public SAML2MessageContext buildContext(final SAML2Client client, final WebContext webContext,
-                                            final SessionStore sessionStore, final ProfileManagerFactory profileManagerFactory) {
-        val context = buildServiceProviderContext(client, webContext, sessionStore);
+    public SAML2MessageContext buildContext(final CallContext ctx, final SAML2Client client) {
+        val context = buildServiceProviderContext(ctx, client);
         addIDPContext(context);
-        context.setWebContext(webContext);
-        context.setSessionStore(sessionStore);
-        context.setProfileManagerFactory(profileManagerFactory);
+        context.setWebContext(ctx.webContext());
+        context.setSessionStore(ctx.sessionStore());
+        context.setProfileManagerFactory(ctx.profileManagerFactory());
         return context;
     }
 

@@ -1,7 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.Optional;
@@ -18,10 +17,9 @@ public interface AuthorizationGenerator {
     /**
      * Generate the authorization information from and for the user profile.
      *
-     * @param context the web context
-     * @param sessionStore the session store
+     * @param ctx the current context
      * @param profile the user profile for which to generate the authorization information.
      * @return the updated profile or a new one (optional)
      */
-    Optional<UserProfile> generate(WebContext context, SessionStore sessionStore, UserProfile profile);
+    Optional<UserProfile> generate(CallContext ctx, UserProfile profile);
 }

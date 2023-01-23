@@ -5,17 +5,16 @@ import lombok.val;
 import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -43,40 +42,41 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
+    public Optional<Credentials> extract(final CallContext ctx) {
         val logoutHandler = configuration.findLogoutHandler();
 
+        val webContext = ctx.webContext();
+
         // like the SingleSignOutFilter from the Apereo CAS client:
-        if (isTokenRequest(context)) {
-            val ticket = getArtifactParameter(context).get();
-            logoutHandler.recordSession(context, sessionStore, ticket);
+        if (isTokenRequest(webContext)) {
+            val ticket = getArtifactParameter(webContext).get();
+            logoutHandler.recordSession(ctx, ticket);
             val casCredentials = new TokenCredentials(ticket);
             LOGGER.debug("casCredentials: {}", casCredentials);
             return Optional.of(casCredentials);
 
-        } else if (isBackLogoutRequest(context)) {
-            val logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
+        } else if (isBackLogoutRequest(webContext)) {
+            val logoutMessage = webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
             LOGGER.trace("Logout request:\n{}", logoutMessage);
 
             val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonHelper.isNotBlank(ticket)) {
-                logoutHandler.destroySessionBack(context, sessionStore, profileManagerFactory, ticket);
+                logoutHandler.destroySessionBack(ctx, ticket);
             }
             LOGGER.debug("back logout request: no credential returned");
             throw NoContentAction.INSTANCE;
 
-        } else if (isFrontLogoutRequest(context)) {
+        } else if (isFrontLogoutRequest(webContext)) {
             val logoutMessage = uncompressLogoutMessage(
-                context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get());
+                webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get());
             LOGGER.trace("Logout request:\n{}", logoutMessage);
 
             val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonHelper.isNotBlank(ticket)) {
-                logoutHandler.destroySessionFront(context, sessionStore, profileManagerFactory, ticket);
+                logoutHandler.destroySessionFront(ctx, ticket);
             }
             LOGGER.debug("front logout request: no credential returned");
-            throwFinalActionForFrontChannelLogout(context);
+            throwFinalActionForFrontChannelLogout(webContext);
         }
 
         return Optional.empty();

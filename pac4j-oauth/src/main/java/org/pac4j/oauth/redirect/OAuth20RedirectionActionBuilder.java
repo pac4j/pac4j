@@ -6,11 +6,9 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -39,23 +37,24 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
-                                                            final ProfileManagerFactory profileManagerFactory) {
+    public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
+        val webContext = ctx.webContext();
+
         try {
 
             final String state;
             if (configuration.isWithState()) {
-                state = this.configuration.getStateGenerator().generateValue(context, sessionStore);
+                state = this.configuration.getStateGenerator().generateValue(ctx);
                 LOGGER.debug("save sessionState: {}", state);
-                sessionStore.set(context, client.getStateSessionAttributeName(), state);
+                ctx.sessionStore().set(webContext, client.getStateSessionAttributeName(), state);
             } else {
                 state = null;
             }
-            val service = (OAuth20Service) this.configuration.buildService(context, client);
+            val service = (OAuth20Service) this.configuration.buildService(webContext, client);
             val authorizationUrl = new AuthorizationUrlBuilder(service)
                 .state(state).additionalParams(this.configuration.getCustomParams()).build();
             LOGGER.debug("authorizationUrl: {}", authorizationUrl);
-            return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, authorizationUrl));
+            return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, authorizationUrl));
 
         } catch (final OAuthException e) {
             throw new TechnicalException(e);

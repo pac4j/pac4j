@@ -2,10 +2,9 @@ package org.pac4j.http.client.direct;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -13,7 +12,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
@@ -33,16 +31,16 @@ public final class HeaderClientTests implements TestsConstants {
     @Test
     public void testMissingTokendAuthenticator() {
         val client = new HeaderClient(VALUE, (Authenticator) null);
-        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create(), new MockSessionStore(),
-                ProfileManagerFactory.DEFAULT), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> client.getCredentials(new CallContext(MockWebContext.create(), new MockSessionStore())),
+                TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         val client = new HeaderClient(NAME, new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
-        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN),
-                MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> client.getUserProfile(new CallContext(MockWebContext.create(), new MockSessionStore()),
+            new TokenCredentials(TOKEN)), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -62,10 +60,9 @@ public final class HeaderClientTests implements TestsConstants {
         val client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new SimpleTestTokenAuthenticator());
         val context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
-        val credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
+        val credentials = (TokenCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
         assertEquals(VALUE, credentials.getToken());
-        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
         assertEquals(VALUE, profile.getId());
     }
 
@@ -73,7 +70,7 @@ public final class HeaderClientTests implements TestsConstants {
     public void testProfileCreation() {
         val client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new ProfileCreator() {
             @Override
-            public Optional<UserProfile> create(Credentials credentials, WebContext context, SessionStore sessionStore) {
+            public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
                 val profile = new CommonProfile();
                 profile.setId(KEY);
                 return Optional.of(profile);
@@ -81,10 +78,9 @@ public final class HeaderClientTests implements TestsConstants {
         });
         val context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
-        val credentials = (TokenCredentials) client.getCredentials(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
+        val credentials = (TokenCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
         assertEquals(VALUE, credentials.getToken());
-        val profile = (CommonProfile) client.getUserProfile(credentials, context, new MockSessionStore()).get();
+        val profile = (CommonProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
         assertEquals(KEY, profile.getId());
     }
 }

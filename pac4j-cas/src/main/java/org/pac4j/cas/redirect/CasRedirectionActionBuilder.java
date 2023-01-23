@@ -6,10 +6,8 @@ import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -37,19 +35,20 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     @Override
-    public Optional<RedirectionAction> getRedirectionAction(final WebContext context, final SessionStore sessionStore,
-                                                            final ProfileManagerFactory profileManagerFactory) {
-        var computeLoginUrl = configuration.computeFinalLoginUrl(context);
-        val computedCallbackUrl = client.computeFinalCallbackUrl(context);
+    public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
+        val webContext = ctx.webContext();
+
+        var computeLoginUrl = configuration.computeFinalLoginUrl(webContext);
+        val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
 
         val renew = configuration.isRenew()
-            || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent();
+            || webContext.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent();
         val gateway = configuration.isGateway()
-            || context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
+            || webContext.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
         val redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
         LOGGER.debug("redirectionUrl: {}", redirectionUrl);
-        return Optional.of(HttpActionHelper.buildRedirectUrlAction(context, redirectionUrl));
+        return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl));
     }
 
     protected String getServiceParameter() {

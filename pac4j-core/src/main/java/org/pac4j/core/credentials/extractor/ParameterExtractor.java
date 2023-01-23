@@ -2,13 +2,11 @@ package org.pac4j.core.credentials.extractor;
 
 import lombok.ToString;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContextHelper;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -39,15 +37,15 @@ public class ParameterExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        if (WebContextHelper.isGet(context) && !supportGetRequest) {
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val webContext = ctx.webContext();
+        if (WebContextHelper.isGet(webContext) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");
-        } else if (WebContextHelper.isPost(context) && !supportPostRequest) {
+        } else if (WebContextHelper.isPost(webContext) && !supportPostRequest) {
             throw new CredentialsException("POST requests not supported");
         }
 
-        val value = context.getRequestParameter(this.parameterName);
+        val value = webContext.getRequestParameter(this.parameterName);
         if (!value.isPresent()) {
             return Optional.empty();
         }

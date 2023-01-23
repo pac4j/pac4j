@@ -1,14 +1,12 @@
 package org.pac4j.core.credentials.extractor;
 
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -33,9 +31,8 @@ public class BasicAuthExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        val optCredentials = this.extractor.extract(context, sessionStore, profileManagerFactory);
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val optCredentials = this.extractor.extract(ctx);
         return optCredentials.map(cred -> {
 
             val credentials = (TokenCredentials) cred;

@@ -3,8 +3,7 @@ package org.pac4j.cas.authorization;
 import lombok.val;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator 
     }
 
     @Override
-    public Optional<UserProfile> generate(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
+    public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         val rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
         val isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);

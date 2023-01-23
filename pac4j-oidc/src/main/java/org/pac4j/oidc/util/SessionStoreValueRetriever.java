@@ -1,10 +1,11 @@
 package org.pac4j.oidc.util;
 
-import java.util.Optional;
-
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
+
+import java.util.Optional;
 
 /**
  * The default implementation of {@link ValueRetriever} that reads the values
@@ -17,8 +18,7 @@ public class SessionStoreValueRetriever implements ValueRetriever {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<Object> retrieve(final String key, final OidcClient client,
-                                     final WebContext webContext, final SessionStore sessionStore) {
-        return sessionStore.get(webContext, key);
+    public Optional<Object> retrieve(final CallContext ctx, final String key, final OidcClient client) {
+        return ctx.sessionStore().get(ctx.webContext(), key);
     }
 }

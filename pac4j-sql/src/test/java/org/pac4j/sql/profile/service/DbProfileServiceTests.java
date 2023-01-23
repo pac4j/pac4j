@@ -41,7 +41,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     @Test
     public void testNullPasswordEncoder() {
         val dbProfileService = new DbProfileService(ds, FIRSTNAME);
-        TestsHelper.expectException(() -> dbProfileService.validate(null, null, null), TechnicalException.class,
+        TestsHelper.expectException(() -> dbProfileService.validate(null, null), TechnicalException.class,
             "passwordEncoder cannot be null");
     }
 
@@ -49,7 +49,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     public void testNullDataSource() {
         val dbProfileService = new DbProfileService(null, FIRSTNAME);
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
-        TestsHelper.expectException(() -> dbProfileService.validate(null, null, null),
+        TestsHelper.expectException(() -> dbProfileService.validate(null, null),
             TechnicalException.class, "dataSource cannot be null");
     }
 
@@ -58,7 +58,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
         val credentials = new UsernamePasswordCredentials(username, password);
-        dbProfileService.validate(credentials, null, null);
+        dbProfileService.validate(null, credentials);
 
         return credentials;
     }
@@ -117,7 +117,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.create(profile, DB_PASS);
         // check credentials
         val credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
-        dbProfileService.validate(credentials, null, null);
+        dbProfileService.validate(null, credentials);
         val profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
         // check data
@@ -169,7 +169,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.create(profile, DB_PASS);
         // check credentials
         val credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
-        dbProfileService.validate(credentials, null, null);
+        dbProfileService.validate(null, credentials);
         assertNotNull(credentials.getUserProfile());
 
         // clean up

@@ -10,8 +10,7 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -61,7 +60,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<UserProfile> create(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         init();
 
         OidcCredentials oidcCredentials = null;
@@ -95,7 +94,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) sessionStore.get(context, client.getNonceSessionAttributeName()).orElse(null));
+                nonce = new Nonce((String) ctx.sessionStore().get(ctx.webContext(), client.getNonceSessionAttributeName()).orElse(null));
             } else {
                 nonce = null;
             }
@@ -108,7 +107,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 // keep the session ID if provided
                 val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                 if (isNotBlank(sid)) {
-                    configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
+                    configuration.findLogoutHandler().recordSession(ctx, sid);
                 }
             }
 

@@ -1,13 +1,12 @@
 package org.pac4j.oidc.util;
 
-import java.util.Optional;
-
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.oidc.client.OidcClient;
-
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
+import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.oidc.client.OidcClient;
+
+import java.util.Optional;
 
 /**
  * ValueRetriever retrieves a given value from the {@link WebContext}. It can
@@ -22,5 +21,5 @@ import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 @FunctionalInterface
 public interface ValueRetriever {
 
-    Optional<Object> retrieve(String key, OidcClient client, WebContext webContext, SessionStore sessionStore);
+    Optional<Object> retrieve(CallContext ctx, String key, OidcClient client);
 }

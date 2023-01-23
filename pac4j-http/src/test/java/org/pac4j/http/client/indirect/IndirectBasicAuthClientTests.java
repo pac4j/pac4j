@@ -2,6 +2,7 @@ package org.pac4j.http.client.indirect;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -9,7 +10,6 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -33,8 +33,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testMissingUsernamePasswordAuthenticator() {
         val basicAuthClient = new IndirectBasicAuthClient(NAME, null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create(), new MockSessionStore(),
-                ProfileManagerFactory.DEFAULT), TechnicalException.class, "authenticator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(new CallContext(MockWebContext.create(), new MockSessionStore())),
+                TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
@@ -42,8 +42,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         val basicAuthClient = new IndirectBasicAuthClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         basicAuthClient.setProfileCreator(null);
-        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD),
-                MockWebContext.create(), new MockSessionStore()), TechnicalException.class, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new CallContext(MockWebContext.create(), new MockSessionStore()),
+            new UsernamePasswordCredentials(USERNAME, PASSWORD)), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -77,8 +77,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         val basicAuthClient = getBasicAuthClient();
         var context = MockWebContext.create();
-        val action = (FoundAction) basicAuthClient.getRedirectionAction(context, new MockSessionStore(),
-            ProfileManagerFactory.DEFAULT).get();
+        val action = (FoundAction) basicAuthClient.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
     }
@@ -126,9 +125,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         val basicAuthClient = getBasicAuthClient();
         val header = USERNAME + ":" + USERNAME;
         val credentials = (UsernamePasswordCredentials) basicAuthClient
-            .getCredentials(getContextWithAuthorizationHeader("Basic "
-                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8))), new MockSessionStore(),
-                ProfileManagerFactory.DEFAULT).get();
+            .getCredentials(new CallContext(getContextWithAuthorizationHeader("Basic "
+                + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8))), new MockSessionStore())).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }
@@ -137,7 +135,7 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
             IndirectBasicAuthClient basicAuthClient,
             MockWebContext context) {
         try {
-            basicAuthClient.getCredentials(context, new MockSessionStore(), ProfileManagerFactory.DEFAULT);
+            basicAuthClient.getCredentials(new CallContext(context, new MockSessionStore()));
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());

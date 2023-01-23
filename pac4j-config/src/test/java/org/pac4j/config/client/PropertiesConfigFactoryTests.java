@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -182,7 +183,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             assertTrue(formClient2.getAuthenticator() instanceof LdapProfileService);
             val ldapAuthenticator = (LdapProfileService) formClient2.getAuthenticator();
             val ldapCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-            ldapAuthenticator.validate(ldapCredentials, MockWebContext.create(), new MockSessionStore());
+            ldapAuthenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), ldapCredentials);
             assertNotNull(ldapCredentials.getUserProfile());
 
             val indirectBasicAuthClient =
@@ -196,7 +197,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             val dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
             val dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
-            dbAuthenticator.validate(dbCredentials, MockWebContext.create(), new MockSessionStore());
+            dbAuthenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), dbCredentials);
             assertNotNull(dbCredentials.getUserProfile());
 
             val directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7").get();

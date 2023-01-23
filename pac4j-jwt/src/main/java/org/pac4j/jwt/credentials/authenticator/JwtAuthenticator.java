@@ -6,9 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -114,7 +113,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     public UserProfile validateToken(final String token) {
         val credentials = new TokenCredentials(token);
         try {
-            validate(credentials, null, null);
+            validate(new CallContext(null, null), credentials);
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         } catch (final CredentialsException e) {
@@ -126,15 +125,18 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials cred, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
 
         val credentials = (TokenCredentials) cred;
         val token = credentials.getToken();
 
-        if (context != null) {
-            // set the www-authenticate in case of error
-            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Bearer realm=\"" + realmName + "\"");
+        if (ctx != null) {
+            val webContext = ctx.webContext();
+            if (webContext != null) {
+                // set the www-authenticate in case of error
+                webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Bearer realm=\"" + realmName + "\"");
+            }
         }
 
         try {
@@ -214,7 +216,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 }
             }
 
-            createJwtProfile(credentials, jwt, context, sessionStore);
+            createJwtProfile(ctx, credentials, jwt);
 
         } catch (final ParseException e) {
             throw new CredentialsException("Cannot decrypt / verify JWT", e);
@@ -224,13 +226,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @SuppressWarnings("unchecked")
-    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt, final WebContext context,
-                                    final SessionStore sessionStore) throws ParseException {
+    protected void createJwtProfile(final CallContext ctx, final TokenCredentials credentials, final JWT jwt) throws ParseException {
         val claimSet = jwt.getJWTClaimsSet();
         var subject = claimSet.getSubject();
         if (subject == null) {
             if (identifierGenerator != null) {
-                subject = identifierGenerator.generateValue(context, sessionStore);
+                subject = identifierGenerator.generateValue(ctx);
             }
             if (subject == null) {
                 throw new TechnicalException("The JWT must contain a subject or an id must be generated via the identifierGenerator");

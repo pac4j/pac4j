@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -120,8 +119,8 @@ public class PathMatcher implements Matcher {
     }
 
     @Override
-    public boolean matches(final WebContext context, final SessionStore sessionStore) {
-        return matches(context.getPath());
+    public boolean matches(final CallContext ctx) {
+        return matches(ctx.webContext().getPath());
     }
 
     // Returns true if a path should be authenticated, false to skip authentication.

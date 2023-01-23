@@ -4,11 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.pac4j.core.config.Config;
+import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
+
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * <p>Abstract logic to handle exceptions:</p>
@@ -64,5 +69,22 @@ public abstract class AbstractExceptionAwareLogic {
         } else {
             throw new RuntimeException(exception);
         }
+    }
+
+    protected CallContext buildContext(final Config config, final FrameworkParameters parameters) {
+        assertNotNull("config", config);
+
+        assertNotNull("config.getWebContextFactory()", config.getWebContextFactory());
+        val webContext = config.getWebContextFactory().newContext(parameters);
+        assertNotNull("context", webContext);
+
+        assertNotNull("config.getSessionStoreFactory()", config.getSessionStoreFactory());
+        val sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
+        assertNotNull("sessionStore", sessionStore);
+
+        val profileManagerFactory = config.getProfileManagerFactory();
+        assertNotNull("profileManagerFactory", profileManagerFactory);
+
+        return new CallContext(webContext, sessionStore, profileManagerFactory);
     }
 }

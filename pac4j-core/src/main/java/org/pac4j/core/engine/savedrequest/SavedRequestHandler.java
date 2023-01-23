@@ -1,7 +1,6 @@
 package org.pac4j.core.engine.savedrequest;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.HttpAction;
 
 /**
@@ -15,18 +14,16 @@ public interface SavedRequestHandler {
     /**
      * Saves the current web context.
      *
-     * @param webContext the web context
-     * @param sessionStore the session store
+     * @param ctx the context
      */
-    void save(WebContext webContext, SessionStore sessionStore);
+    void save(CallContext ctx);
 
     /**
      * Restore the saved request.
      *
-     * @param webContext the web context
-     * @param sessionStore the session store
+     * @param ctx the context
      * @param defaultUrl the default URL
      * @return the originally requested URL
      */
-    HttpAction restore(WebContext webContext, SessionStore sessionStore, String defaultUrl);
+    HttpAction restore(CallContext ctx, String defaultUrl);
 }

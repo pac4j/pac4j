@@ -2,12 +2,10 @@ package org.pac4j.http.credentials.extractor;
 
 import lombok.ToString;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 
 import java.util.Optional;
 
@@ -27,9 +25,8 @@ public class CookieExtractor implements CredentialsExtractor {
     }
 
     @Override
-    public Optional<Credentials> extract(final WebContext context, final SessionStore sessionStore,
-                                         final ProfileManagerFactory profileManagerFactory) {
-        val col = context.getRequestCookies();
+    public Optional<Credentials> extract(final CallContext ctx) {
+        val col = ctx.webContext().getRequestCookies();
         for (val c : col) {
             if (c.getName().equals(this.cookieName)) {
                 return Optional.of(new TokenCredentials(c.getValue()));

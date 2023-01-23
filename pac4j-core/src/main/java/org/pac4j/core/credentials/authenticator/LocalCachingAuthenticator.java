@@ -5,8 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.store.GuavaStore;
@@ -53,13 +52,13 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
     }
 
     @Override
-    public Optional<Credentials> validate(final Credentials credentials, final WebContext context, final SessionStore sessionStore) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         init();
 
         var optProfile = this.store.get(credentials);
         if (optProfile.isEmpty()) {
             LOGGER.debug("No cached credentials found. Delegating authentication to {}...", delegate);
-            delegate.validate(credentials, context, sessionStore);
+            delegate.validate(ctx, credentials);
             val profile = credentials.getUserProfile();
             LOGGER.debug("Caching credential. Using profile {}...", profile);
             store.set(credentials, profile);

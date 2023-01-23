@@ -4,14 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.pac4j.core.client.DirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
@@ -52,11 +51,10 @@ public class DirectBasicAuthClient extends DirectClient {
     }
 
     @Override
-    protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore,
-                                                        final ProfileManagerFactory profileManagerFactory) {
-        addAuthenticateHeader(context);
+    protected Optional<Credentials> retrieveCredentials(final CallContext ctx) {
+        addAuthenticateHeader(ctx.webContext());
 
-        return super.retrieveCredentials(context, sessionStore, profileManagerFactory);
+        return super.retrieveCredentials(ctx);
     }
 
     protected void addAuthenticateHeader(final WebContext context) {
