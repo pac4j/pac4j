@@ -5,6 +5,7 @@ import lombok.val;
 import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.cas.credentials.SessionKeyCredentials;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -13,58 +14,48 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.exception.http.NoContentAction;
-import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Base64;
 import java.util.Optional;
 import java.util.zip.Inflater;
 
 /**
- * CAS ticket extractor or logout request handler.
+ * CAS credentials extractor.
  *
  * @author Jerome Leleu
- * @since 1.9.2
+ * @since 6.0.0
  */
 @Slf4j
-public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
+public class CasCredentialsExtractor implements CredentialsExtractor {
 
     private final static int DECOMPRESSION_FACTOR = 10;
 
     protected CasConfiguration configuration;
 
-    public TicketAndLogoutRequestExtractor(final CasConfiguration configuration) {
+    public CasCredentialsExtractor(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
-        val logoutHandler = configuration.findSessionLogoutHandler();
+        Credentials credentials = null;
 
         val webContext = ctx.webContext();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(webContext)) {
             val ticket = getArtifactParameter(webContext).get();
-            logoutHandler.recordSession(ctx, ticket);
-            val casCredentials = new TokenCredentials(ticket);
-            LOGGER.debug("casCredentials: {}", casCredentials);
-            return Optional.of(casCredentials);
+            credentials = new TokenCredentials(ticket);
 
         } else if (isBackLogoutRequest(webContext)) {
             val logoutMessage = webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
             LOGGER.trace("Logout request:\n{}", logoutMessage);
 
             val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonHelper.isNotBlank(ticket)) {
-                logoutHandler.destroySessionBack(ctx, ticket);
-            }
-            LOGGER.debug("back logout request: no credential returned");
-            throw NoContentAction.INSTANCE;
+            credentials = new SessionKeyCredentials(LogoutType.BACK, ticket);
 
         } else if (isFrontLogoutRequest(webContext)) {
             val logoutMessage = uncompressLogoutMessage(
@@ -72,14 +63,11 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             LOGGER.trace("Logout request:\n{}", logoutMessage);
 
             val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonHelper.isNotBlank(ticket)) {
-                logoutHandler.destroySessionFront(ctx, ticket);
-            }
-            LOGGER.debug("front logout request: no credential returned");
-            throwFinalActionForFrontChannelLogout(webContext);
+            credentials = new SessionKeyCredentials(LogoutType.FRONT, ticket);
         }
 
-        return Optional.empty();
+        LOGGER.debug("extracted credentials: {}", credentials);
+        return Optional.ofNullable(credentials);
     }
 
     protected boolean isTokenRequest(final WebContext context) {
@@ -133,27 +121,6 @@ public class TicketAndLogoutRequestExtractor implements CredentialsExtractor {
             if (decompresser != null) {
                 decompresser.end();
             }
-        }
-    }
-
-    protected void throwFinalActionForFrontChannelLogout(final WebContext context) {
-        val relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
-        // if we have a state value -> redirect to the CAS server to continue the logout process
-        if (relayStateValue.isPresent()) {
-            val buffer = new StringBuilder();
-            buffer.append(configuration.getPrefixUrl());
-            if (!configuration.getPrefixUrl().endsWith("/")) {
-                buffer.append("/");
-            }
-            buffer.append("logout?_eventId=next&");
-            buffer.append(CasConfiguration.RELAY_STATE_PARAMETER);
-            buffer.append("=");
-            buffer.append(CommonHelper.urlEncode(relayStateValue.get()));
-            val redirectUrl = buffer.toString();
-            LOGGER.debug("Redirection url to the CAS server: {}", redirectUrl);
-            throw HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
-        } else {
-            throw new OkAction(Pac4jConstants.EMPTY_STRING);
         }
     }
 }

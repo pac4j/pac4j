@@ -72,6 +72,8 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
             val principal = assertion.getPrincipal();
             LOGGER.debug("principal: {}", principal);
 
+            configuration.findSessionLogoutHandler().recordSession(ctx, ticket);
+
             val id = principal.getName();
             val newPrincipalAttributes = new HashMap<String, Object>();
             val newAuthenticationAttributes = new HashMap<String, Object>();

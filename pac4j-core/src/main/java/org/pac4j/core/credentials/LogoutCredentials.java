@@ -17,7 +17,7 @@ public abstract class LogoutCredentials implements Credentials {
     private static final long serialVersionUID = 2731359448582897749L;
 
     @Getter
-    private LogoutType type = null;
+    protected LogoutType type = null;
 
     @Override
     public abstract boolean equals(Object o);

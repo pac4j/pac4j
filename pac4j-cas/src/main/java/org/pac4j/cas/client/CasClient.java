@@ -6,7 +6,8 @@ import lombok.ToString;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
+import org.pac4j.cas.credentials.extractor.CasCredentialsExtractor;
+import org.pac4j.cas.logout.processor.CasLogoutProcessor;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
@@ -54,8 +55,9 @@ public class CasClient extends IndirectClient {
         configuration.setUrlResolver(this.getUrlResolver());
 
         setRedirectionActionBuilderIfUndefined(new CasRedirectionActionBuilder(configuration, this));
-        setCredentialsExtractorIfUndefined(new TicketAndLogoutRequestExtractor(configuration));
+        setCredentialsExtractorIfUndefined(new CasCredentialsExtractor(configuration));
         setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
+        setLogoutProcessorIfUndefined(new CasLogoutProcessor(configuration));
         setLogoutActionBuilderIfUndefined(new CasLogoutActionBuilder(configuration.computeFinalPrefixUrl(null) + "logout",
             configuration.getPostLogoutUrlParameter()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
