@@ -3,13 +3,9 @@ package org.pac4j.saml.client;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ContextProvider;
@@ -18,27 +14,20 @@ import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
 import org.pac4j.saml.crypto.*;
 import org.pac4j.saml.logout.SAML2LogoutActionBuilder;
-import org.pac4j.saml.logout.impl.SAML2LogoutMessageReceiver;
-import org.pac4j.saml.logout.impl.SAML2LogoutProfileHandler;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender;
 import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
 import org.pac4j.saml.logout.processor.SAML2LogoutProcessor;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
-import org.pac4j.saml.profile.api.SAML2MessageReceiver;
-import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.redirect.SAML2RedirectionActionBuilder;
 import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.sso.artifact.DefaultSOAPPipelineProvider;
-import org.pac4j.saml.sso.artifact.SAML2ArtifactBindingMessageReceiver;
 import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
 import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
-import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
-import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
@@ -60,13 +49,6 @@ public class SAML2Client extends IndirectClient {
 
     @Getter
     protected SignatureSigningParametersProvider signatureSigningParametersProvider;
-
-    @Getter
-    protected SAML2ProfileHandler<AuthnRequest> profileHandler;
-
-    @Getter
-    @Setter
-    protected SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
 
     @Getter
     protected SAML2ResponseValidator authnResponseValidator;
@@ -129,9 +111,7 @@ public class SAML2Client extends IndirectClient {
         initSAMLReplayCache();
         initSAMLResponseValidator();
         initSOAPPipelineProvider();
-        initSAMLProfileHandler();
         initSAMLLogoutResponseValidator();
-        initSAMLLogoutProfileHandler();
 
         setRedirectionActionBuilderIfUndefined(new SAML2RedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new SAML2CredentialsExtractor(this, this.identityProviderMetadataResolver,
@@ -146,38 +126,16 @@ public class SAML2Client extends IndirectClient {
         this.soapPipelineProvider = new DefaultSOAPPipelineProvider(this);
     }
 
-    protected void initSAMLProfileHandler() {
-        final SAML2MessageReceiver messageReceiver;
-        if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            messageReceiver = new SAML2WebSSOMessageReceiver(this.authnResponseValidator, this.configuration);
-        } else if (configuration.getResponseBindingType().equals(SAMLConstants.SAML2_ARTIFACT_BINDING_URI)) {
-            messageReceiver = new SAML2ArtifactBindingMessageReceiver(this.authnResponseValidator,
-                this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver,
-                this.soapPipelineProvider, this.configuration);
-        } else {
-            throw new TechnicalException("Unsupported response binding type: " + configuration.getResponseBindingType());
-        }
-
-        this.profileHandler = new SAML2WebSSOProfileHandler(
-                new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
-                        this.configuration.getAuthnRequestBindingType(),
-                        true,
-                        this.configuration.isAuthnRequestSigned()),
-                messageReceiver);
-    }
-
-    protected void initSAMLLogoutProfileHandler() {
-        this.logoutProfileHandler = new SAML2LogoutProfileHandler(getLogoutRequestMessageSender(), getLogoutMessageReceiver());
-    }
-
-    protected SAML2LogoutMessageReceiver getLogoutMessageReceiver() {
-        return new SAML2LogoutMessageReceiver(this.logoutValidator, this.configuration);
-    }
-
-    protected SAML2LogoutRequestMessageSender getLogoutRequestMessageSender() {
+    public SAML2LogoutRequestMessageSender getLogoutRequestMessageSender() {
         return new SAML2LogoutRequestMessageSender(this.signatureSigningParametersProvider,
             this.configuration.getSpLogoutRequestBindingType(), false,
             this.configuration.isSpLogoutRequestSigned());
+    }
+
+    public SAML2WebSSOMessageSender getSSOMessageSender() {
+        return new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
+            this.configuration.getAuthnRequestBindingType(), true,
+            this.configuration.isAuthnRequestSigned());
     }
 
     protected void initSAMLLogoutResponseValidator() {

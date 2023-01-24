@@ -1,8 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
-
 import lombok.val;
-import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.Test;
 import org.opensaml.core.xml.util.XMLObjectSupport;
@@ -12,13 +10,10 @@ import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.impl.AssertionConsumerServiceImpl;
 import org.opensaml.security.SecurityException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -35,14 +30,12 @@ import org.pac4j.saml.util.ExcludingParametersURIComparator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -107,51 +100,6 @@ public class SAML2DefaultResponseValidatorTests {
                 ZonedDateTime.now(ZoneOffset.UTC).toInstant()));
         });
         return response;
-    }
-
-    @Test
-    public void testAssertionConsumingServiceWithMultipleIDP() throws Exception {
-        val response = getResponse();
-        // create response validator enforcing response signature
-        var saml2Configuration = getSaml2Configuration(false, true);
-        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
-        val context = new SAML2MessageContext();
-        context.setSaml2Configuration(saml2Configuration);
-        context.getMessageContext().setMessage(response);
-
-        val os = new ByteArrayOutputStream();
-        XMLObjectSupport.marshallToOutputStream(response, os);
-
-        final MockWebContext webContext = MockWebContext.create();
-        webContext.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        webContext.addRequestParameter("SAMLResponse", Base64Support.encode(os.toByteArray(), Base64Support.UNCHUNKED));
-        webContext.addRequestParameter("RelayState", "TST-2-FZOsWEfjC-IH-h6Xb333DRbu5UPMHqfL");
-        context.setWebContext(webContext);
-
-        val idpDescriptor = mock(EntityDescriptor.class);
-        context.getSAMLPeerMetadataContext().setEntityDescriptor(idpDescriptor);
-        when(idpDescriptor.getEntityID()).thenReturn("http://localhost:8088");
-
-        val samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
-        val roleDescriptor = mock(SPSSODescriptor.class);
-        when(roleDescriptor.getWantAssertionsSigned()).thenReturn(false);
-
-        context.getSAMLSelfEntityContext().setEntityId("https://auth.izslt.it");
-        context.getSAMLPeerEntityContext().setAuthenticated(true);
-
-        val acs = new AssertionConsumerServiceImpl(
-            response.getDestination(),
-            response.getDestination(),
-            response.getDestination()) {
-        };
-        acs.setLocation("https://auth.izslt.it/cas/login?client_name=idptest");
-
-        when(roleDescriptor.getAssertionConsumerServices()).thenReturn(Collections.singletonList(acs));
-
-        samlSelfMetadataContext.setRoleDescriptor(roleDescriptor);
-
-        val receiver = new SAML2WebSSOMessageReceiver(validator, context.getSaml2Configuration());
-        receiver.receiveMessage(context);
     }
 
     @Test

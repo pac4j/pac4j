@@ -3,7 +3,6 @@ package org.pac4j.saml.logout;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.logout.LogoutActionBuilder;
@@ -14,8 +13,8 @@ import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestBuilder;
+import org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender;
 import org.pac4j.saml.profile.SAML2Profile;
-import org.pac4j.saml.profile.api.SAML2ProfileHandler;
 
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     protected SAML2LogoutRequestBuilder saml2LogoutRequestBuilder;
 
-    protected final SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
+    protected final SAML2LogoutRequestMessageSender saml2LogoutRequestMessageSender;
 
     protected final SAMLContextProvider contextProvider;
 
@@ -42,7 +41,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     public SAML2LogoutActionBuilder(final SAML2Client client) {
         this.saml2Client = client;
-        this.logoutProfileHandler = client.getLogoutProfileHandler();
+        this.saml2LogoutRequestMessageSender = client.getLogoutRequestMessageSender();
         this.contextProvider = client.getContextProvider();
         this.configuration = client.getConfiguration();
         this.stateGenerator = client.getStateGenerator();
@@ -58,7 +57,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
                 val relayState = this.stateGenerator.generateValue(ctx);
 
                 val logoutRequest = this.saml2LogoutRequestBuilder.build(samlContext, saml2Profile);
-                this.logoutProfileHandler.send(samlContext, logoutRequest, relayState);
+                saml2LogoutRequestMessageSender.sendMessage(samlContext, logoutRequest, relayState);
 
                 val webContext = ctx.webContext();
 

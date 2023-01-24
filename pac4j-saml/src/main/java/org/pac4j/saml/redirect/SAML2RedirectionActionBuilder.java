@@ -37,7 +37,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
         val relayState = this.client.getStateGenerator().generateValue(ctx);
 
         val authnRequest = this.saml2ObjectBuilder.build(context);
-        this.client.getProfileHandler().send(context, authnRequest, relayState);
+        this.client.getSSOMessageSender().sendMessage(context, authnRequest, relayState);
 
         val adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
 
