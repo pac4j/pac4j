@@ -12,10 +12,11 @@ import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.BadRequestAction;
-import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
@@ -27,19 +28,19 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 /**
- * Extract the authorization code on the callback.
+ * Extract the OIDC credentials.
  *
  * @author Jerome Leleu
- * @since 1.9.2
+ * @since 6.0.0
  */
 @Slf4j
-public class OidcExtractor implements CredentialsExtractor {
+public class OidcCredentialsExtractor implements CredentialsExtractor {
 
     protected OidcConfiguration configuration;
 
     protected OidcClient client;
 
-    public OidcExtractor(final OidcConfiguration configuration, final OidcClient client) {
+    public OidcCredentialsExtractor(final OidcConfiguration configuration, final OidcClient client) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotNull("client", client);
         this.configuration = configuration;
@@ -49,33 +50,31 @@ public class OidcExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();
-        val logoutEndpoint = webContext.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER)
-            .isPresent();
-        if (logoutEndpoint) {
-            val logoutToken = webContext.getRequestParameter("logout_token");
-            // back-channel logout
-            if (logoutToken.isPresent()) {
-                try {
-                    val jwt = JWTParser.parse(logoutToken.get());
-                    // we should use the tokenValidator, but we can't as validation fails on missing claims: exp, iat...
-                    //final IDTokenClaimsSet claims = configuration.findTokenValidator().validate(jwt, null);
-                    //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                    val sid = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                    LOGGER.debug("Handling back-channel logout for sessionId: {}", sid);
-                    configuration.findSessionLogoutHandler().destroySessionBack(ctx, sid);
-                } catch (final java.text.ParseException e) {
-                    LOGGER.error("Cannot validate JWT logout token", e);
-                    throw new BadRequestAction();
-                }
-            } else {
-                val sid = webContext.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID).orElse(null);
-                LOGGER.debug("Handling front-channel logout for sessionId: {}", sid);
-                // front-channel logout
-                configuration.findSessionLogoutHandler().destroySessionFront(ctx, sid);
+        val logoutToken = webContext.getRequestParameter("logout_token");
+        val sid = webContext.getRequestParameter(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+
+        // back-channel logout
+        if (logoutToken.isPresent()) {
+            try {
+                val jwt = JWTParser.parse(logoutToken.get());
+                // we should use the tokenValidator, but we can't as validation fails on missing claims: exp, iat...
+                //final IDTokenClaimsSet claims = configuration.findTokenValidator().validate(jwt, null);
+                //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                val sessionId = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                LOGGER.debug("Handling back-channel logout for sessionId: {}", sessionId);
+                return Optional.of(new SessionKeyCredentials(LogoutType.BACK, sessionId));
+            } catch (final java.text.ParseException e) {
+                LOGGER.error("Cannot validate JWT logout token", e);
+                throw new BadRequestAction();
             }
-            webContext.setResponseHeader("Cache-Control", "no-cache, no-store");
-            webContext.setResponseHeader("Pragma", "no-cache");
-            throw new OkAction(Pac4jConstants.EMPTY_STRING);
+
+        // front channel logout
+        } else if (sid.isPresent()) {
+            val sessionId = sid.get();
+            LOGGER.debug("Handling front-channel logout for sessionId: {}", sessionId);
+            return Optional.of(new SessionKeyCredentials(LogoutType.FRONT, sessionId));
+
+        // authentication
         } else {
             val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
             val parameters = retrieveParameters(webContext);

@@ -1,9 +1,8 @@
-package org.pac4j.cas.credentials;
+package org.pac4j.core.credentials;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.pac4j.core.credentials.LogoutCredentials;
 import org.pac4j.core.logout.LogoutType;
 
 /**
