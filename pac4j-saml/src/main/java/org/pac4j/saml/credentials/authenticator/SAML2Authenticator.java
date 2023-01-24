@@ -6,9 +6,11 @@ import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.credentials.SAML2Credentials;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
+import org.pac4j.saml.credentials.SAML2InternalCredentials;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.SAML2ProfileDefinition;
+import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,8 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final SAML2ResponseValidator validator;
+
     private final String attributeAsId;
 
     /**
@@ -49,13 +53,15 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
      */
     private final Map<String, String> mappedAttributes;
 
-    public SAML2Authenticator(final String attributeAsId, final Map<String, String> mappedAttributes) {
+    public SAML2Authenticator(final SAML2ResponseValidator validator, final String attributeAsId,
+                              final Map<String, String> mappedAttributes) {
+        this.validator = validator;
         this.attributeAsId = attributeAsId;
         this.mappedAttributes = mappedAttributes;
     }
 
-    public SAML2Authenticator(final String attributeAsId) {
-        this(attributeAsId, new HashMap<>());
+    public SAML2Authenticator(final SAML2ResponseValidator validator, final String attributeAsId) {
+        this(validator, attributeAsId, new HashMap<>());
     }
 
     @Override
@@ -67,7 +73,19 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
         init();
 
-        val credentials = (SAML2Credentials) cred;
+        val credentials = validateCredentials(cred);
+        buildProfile(credentials);
+
+        return Optional.of(credentials);
+    }
+
+    protected SAML2InternalCredentials validateCredentials(final AuthenticationCredentials cred) {
+        val saml2Credentials = (SAML2AuthenticationCredentials) cred;
+
+        return (SAML2InternalCredentials) validator.validate(saml2Credentials.getContext());
+    }
+
+    protected void buildProfile(final SAML2InternalCredentials credentials) {
         val profile = (SAML2Profile) getProfileDefinition().newProfile();
 
         val nameId = credentials.getNameId();
@@ -135,7 +153,5 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         }
 
         credentials.setUserProfile(profile);
-
-        return Optional.of(credentials);
     }
 }

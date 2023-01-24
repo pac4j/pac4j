@@ -4,7 +4,7 @@ import lombok.val;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.pac4j.core.profile.converter.AttributeConverter;
-import org.pac4j.saml.credentials.SAML2Credentials;
+import org.pac4j.saml.credentials.SAML2InternalCredentials;
 
 /**
  * A simple attribute converter for SAML2.
@@ -17,7 +17,7 @@ public class SimpleSAML2AttributeConverter implements AttributeConverter {
     @Override
     public Object convert(final Object a) {
         val attribute = (Attribute) a;
-        val samlAttribute = new SAML2Credentials.SAMLAttribute();
+        val samlAttribute = new SAML2InternalCredentials.SAMLAttribute();
         samlAttribute.setFriendlyName(attribute.getFriendlyName());
         samlAttribute.setName(attribute.getName());
         samlAttribute.setNameFormat(attribute.getNameFormat());

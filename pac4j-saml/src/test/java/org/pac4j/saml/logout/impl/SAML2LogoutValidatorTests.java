@@ -175,7 +175,7 @@ public class SAML2LogoutValidatorTests {
             assertNotNull(expectedException);
         }
 
-        validator.setIsPartialLogoutTreatedAsSuccess(true);
+        validator.setPartialLogoutTreatedAsSuccess(true);
         validator.validate(context);
     }
 }

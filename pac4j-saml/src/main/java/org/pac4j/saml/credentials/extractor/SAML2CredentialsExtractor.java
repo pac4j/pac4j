@@ -1,61 +1,66 @@
 package org.pac4j.saml.credentials.extractor;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
+import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.opensaml.saml.saml2.core.LogoutRequest;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.logout.LogoutType;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
-import org.pac4j.saml.credentials.SAML2Credentials;
-import org.pac4j.saml.logout.impl.SAML2LogoutResponseBuilder;
-import org.pac4j.saml.logout.impl.SAML2LogoutResponseMessageSender;
-import org.pac4j.saml.profile.api.SAML2ProfileHandler;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
+import org.pac4j.saml.credentials.SAML2LogoutCredentials;
+import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
+import org.pac4j.saml.sso.artifact.SAML2ArtifactBindingDecoder;
+import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
+import org.pac4j.saml.transport.AbstractPac4jDecoder;
+import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
+import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateDecoder;
+import org.pac4j.saml.util.Configuration;
 
 import java.util.Optional;
 
 /**
- * Credentials extractor of SAML2 credentials.
+ * SAML2 credentials extractor.
  *
  * @author Jerome Leleu
- * @since 3.4.0
+ * @since 6.0.0
  */
 public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
-    protected final SAMLContextProvider contextProvider;
+    private final SAMLContextProvider contextProvider;
 
-    protected final SAML2ProfileHandler<AuthnRequest> profileHandler;
+    private final SAML2Client saml2Client;
 
-    protected final SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
+    private final SAML2Configuration saml2Configuration;
 
-    protected final String spLogoutResponseBindingType;
+    private final SAML2MetadataResolver idpMetadataResolver;
 
-    @Getter
-    @Setter
-    protected SAML2LogoutResponseBuilder saml2LogoutResponseBuilder;
+    private final SAML2MetadataResolver spMetadataResolver;
 
-    protected final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
+    private final SOAPPipelineProvider soapPipelineProvider;
 
-    protected final SAML2Client saml2Client;
-
-    public SAML2CredentialsExtractor(final SAML2Client client) {
+    public SAML2CredentialsExtractor(final SAML2Client client, final SAML2MetadataResolver idpMetadataResolver,
+                                     final SAML2MetadataResolver spMetadataResolver, final SOAPPipelineProvider soapPipelineProvider) {
         this.saml2Client = client;
 
+        this.saml2Configuration = client.getConfiguration();
         this.contextProvider = client.getContextProvider();
-        this.profileHandler = client.getProfileHandler();
-        this.logoutProfileHandler = client.getLogoutProfileHandler();
-        this.spLogoutResponseBindingType = client.getConfiguration().getSpLogoutResponseBindingType();
-        this.saml2LogoutResponseBuilder = new SAML2LogoutResponseBuilder(spLogoutResponseBindingType);
-        this.saml2LogoutResponseMessageSender = new SAML2LogoutResponseMessageSender(client.getSignatureSigningParametersProvider(),
-            spLogoutResponseBindingType, false, client.getConfiguration().isSpLogoutRequestSigned());
+        this.idpMetadataResolver = idpMetadataResolver;
+        this.spMetadataResolver = spMetadataResolver;
+        this.soapPipelineProvider = soapPipelineProvider;
     }
 
     @Override
@@ -63,46 +68,138 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
         val webContext = ctx.webContext();
 
         val samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
-        val logoutEndpoint = isLogoutEndpointRequest(webContext, samlContext);
-        if (logoutEndpoint) {
-            receiveLogout(samlContext);
-            sendLogoutResponse(samlContext);
-            adaptLogoutResponseToBinding(webContext, samlContext);
-            return Optional.empty();
-        }
-        return receiveLogin(samlContext, webContext);
-    }
+        samlContext.setSaml2Configuration(saml2Configuration);
+        val peerContext = samlContext.getSAMLPeerEntityContext();
 
-    protected Optional<Credentials> receiveLogin(final SAML2MessageContext samlContext, final WebContext context) {
-        samlContext.setSaml2Configuration(saml2Client.getConfiguration());
-        val credentials = (SAML2Credentials) this.profileHandler.receive(samlContext);
-        return Optional.ofNullable(credentials);
-    }
+        peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
+        samlContext.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
-    protected void adaptLogoutResponseToBinding(final WebContext context, final SAML2MessageContext samlContext) {
-        val adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
-        if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            val content = adapter.getOutgoingContent();
-            throw HttpActionHelper.buildFormPostContentAction(context, content);
+        val decoder = getDecoder(webContext);
+
+        val decodedCtx = prepareDecodedContext(samlContext, decoder);
+
+        val message = decodedCtx.getMessageContext().getMessage();
+        if (message instanceof Response response) {
+            decodedCtx.getSAMLEndpointContext().setEndpoint(decodedCtx.getSPAssertionConsumerService(response));
+            decodedCtx.getProfileRequestContext().setProfileId("urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser");
+
+            return Optional.of(new SAML2AuthenticationCredentials(decodedCtx));
         } else {
-            val location = adapter.getRedirectUrl();
-            throw HttpActionHelper.buildRedirectUrlAction(context, location);
+            decodedCtx.getProfileRequestContext().setProfileId("urn:oasis:names:tc:SAML:2.0:profiles:SSO:logout");
+
+            // SOAP is considered back channel
+            val binding = decodedCtx.getSAMLBindingContext().getBindingUri();
+            val type = CommonHelper.areEquals(binding, SAMLConstants.SAML2_SOAP11_BINDING_URI) ? LogoutType.BACK : LogoutType.FRONT;
+
+            return Optional.of(new SAML2LogoutCredentials(type, decodedCtx));
         }
     }
 
-    protected void sendLogoutResponse(final SAML2MessageContext samlContext) {
-        val logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
-        this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
-            samlContext.getSAMLBindingContext().getRelayState());
+    protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
+        final AbstractPac4jDecoder decoder;
+        val artifact = webContext.getRequestParameter("SAMLart");
+        // artifact binding
+        if (artifact.isPresent()) {
+            decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
+                spMetadataResolver, soapPipelineProvider);
+            try {
+                decoder.setParserPool(Configuration.getParserPool());
+                decoder.initialize();
+                decoder.decode();
+            } catch (final Exception e) {
+                throw new SAMLException("Error decoding Artifact SAML message", e);
+            }
+
+        // POST / SOAP binding
+        } else if (WebContextHelper.isPost(webContext)) {
+            decoder = new Pac4jHTTPPostDecoder(webContext);
+            try {
+                decoder.setParserPool(Configuration.getParserPool());
+                decoder.initialize();
+                decoder.decode();
+
+            } catch (final Exception e) {
+                throw new SAMLException("Error decoding POST SAML message", e);
+            }
+
+        // HTTP Redirect binding
+        } else if (WebContextHelper.isGet(webContext)) {
+            decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
+
+            try {
+                decoder.setParserPool(Configuration.getParserPool());
+                decoder.initialize();
+                decoder.decode();
+
+            } catch (final Exception e) {
+                throw new SAMLException("Error decoding HTTP-Redirect SAML message", e);
+            }
+        } else {
+            throw new SAMLException("Unsupported binding");
+        }
+        return decoder;
     }
 
-    protected void receiveLogout(final SAML2MessageContext samlContext) {
-        samlContext.setSaml2Configuration(saml2Client.getConfiguration());
-        this.logoutProfileHandler.receive(samlContext);
+    protected SAML2MessageContext prepareDecodedContext(final SAML2MessageContext context, final AbstractPac4jDecoder decoder) {
+        val decodedCtx = new SAML2MessageContext();
+        decodedCtx.setSaml2Configuration(saml2Configuration);
+
+        decodedCtx.setMessageContext(decoder.getMessageContext());
+        val message = (SAMLObject) decoder.getMessageContext().getMessage();
+        if (message == null) {
+            throw new SAMLException("Response from the context cannot be null");
+        }
+        decodedCtx.getMessageContext().setMessage(message);
+        context.getMessageContext().setMessage(message);
+        decodedCtx.setSamlMessageStore(context.getSamlMessageStore());
+
+        val bindingContext = prepareBindingContext(context, decoder, decodedCtx);
+
+        val metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
+        if (metadata == null) {
+            throw new SAMLException("IDP Metadata cannot be null");
+        }
+
+        preparePeerEntityContext(decoder, decodedCtx, bindingContext, metadata);
+        prepareSelfEntityContext(context, decodedCtx);
+
+        decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
+        decodedCtx.setWebContext(context.getWebContext());
+        decodedCtx.setSessionStore(context.getSessionStore());
+        decodedCtx.setProfileManagerFactory(context.getProfileManagerFactory());
+        return decodedCtx;
     }
 
-    protected boolean isLogoutEndpointRequest(final WebContext context,
-                                              final SAML2MessageContext samlContext) {
-        return context.getRequestParameter(Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER).isPresent();
+    protected void prepareSelfEntityContext(final SAML2MessageContext context, final SAML2MessageContext decodedCtx) {
+        decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
+        decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
+        decodedCtx.getSAMLSelfEntityContext().setRole(context.getSAMLSelfEntityContext().getRole());
+    }
+
+    protected void preparePeerEntityContext(final AbstractPac4jDecoder decoder,
+                                            final SAML2MessageContext decodedCtx,
+                                            final SAMLBindingContext bindingContext,
+                                            final EntityDescriptor metadata) {
+        val decodedPeerContext = decoder.getMessageContext().getSubcontext(SAMLPeerEntityContext.class);
+        CommonHelper.assertNotNull("SAMLPeerEntityContext", bindingContext);
+
+        decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
+        decodedCtx.getSAMLPeerEntityContext().setAuthenticated(decodedPeerContext != null && decodedPeerContext.isAuthenticated());
+    }
+
+    protected SAMLBindingContext prepareBindingContext(final SAML2MessageContext context,
+                                                       final AbstractPac4jDecoder decoder,
+                                                       final SAML2MessageContext decodedCtx) {
+        val bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
+        CommonHelper.assertNotNull("SAMLBindingContext", bindingContext);
+        decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
+        decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
+        decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
+        decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext
+                .isIntendedDestinationEndpointURIRequired());
+        val relayState = bindingContext.getRelayState();
+        decodedCtx.getSAMLBindingContext().setRelayState(relayState);
+        context.getSAMLBindingContext().setRelayState(relayState);
+        return bindingContext;
     }
 }

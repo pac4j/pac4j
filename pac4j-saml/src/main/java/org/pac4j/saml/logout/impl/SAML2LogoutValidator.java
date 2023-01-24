@@ -1,5 +1,7 @@
 package org.pac4j.saml.logout.impl;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import org.opensaml.saml.common.SAMLObject;
@@ -19,7 +21,7 @@ import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.credentials.SAML2Credentials;
+import org.pac4j.saml.credentials.SAML2InternalCredentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
@@ -36,6 +38,8 @@ import java.util.Objects;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Getter
+@Setter
 public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
     private String postLogoutURL;
@@ -127,7 +131,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             nameId = decryptEncryptedId(encryptedID, decrypter);
         }
 
-        val samlNameId = SAML2Credentials.SAMLNameID.from(nameId);
+        val samlNameId = SAML2InternalCredentials.SAMLNameID.from(nameId);
         String sessionIndex = null;
         val sessionIndexes = logoutRequest.getSessionIndexes();
         if (sessionIndexes != null && !sessionIndexes.isEmpty()) {
@@ -216,33 +220,5 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         }
 
         super.validateSuccess(status);
-    }
-
-    public void setActionOnSuccess(final boolean actionOnSuccess) {
-        this.actionOnSuccess = actionOnSuccess;
-    }
-
-    public void setPostLogoutURL(final String postLogoutURL) {
-        this.postLogoutURL = postLogoutURL;
-    }
-
-    public void setExpectedDestination(final String expectedDestination) {
-        this.expectedDestination = expectedDestination;
-    }
-
-    public void setIsPartialLogoutTreatedAsSuccess(final boolean isPartialLogoutTreatedAsSuccess) {
-        this.isPartialLogoutTreatedAsSuccess = isPartialLogoutTreatedAsSuccess;
-    }
-
-    public String getPostLogoutURL() {
-        return postLogoutURL;
-    }
-
-    public boolean isActionOnSuccess() {
-        return actionOnSuccess;
-    }
-
-    public String getExpectedDestination() {
-        return expectedDestination;
     }
 }

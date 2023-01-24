@@ -22,6 +22,7 @@ import org.pac4j.saml.logout.impl.SAML2LogoutMessageReceiver;
 import org.pac4j.saml.logout.impl.SAML2LogoutProfileHandler;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender;
 import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
+import org.pac4j.saml.logout.processor.SAML2LogoutProcessor;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
@@ -133,9 +134,11 @@ public class SAML2Client extends IndirectClient {
         initSAMLLogoutProfileHandler();
 
         setRedirectionActionBuilderIfUndefined(new SAML2RedirectionActionBuilder(this));
-        setCredentialsExtractorIfUndefined(new SAML2CredentialsExtractor(this));
-        setAuthenticatorIfUndefined(new SAML2Authenticator(this.configuration.getAttributeAsId(),
+        setCredentialsExtractorIfUndefined(new SAML2CredentialsExtractor(this, this.identityProviderMetadataResolver,
+            this.serviceProviderMetadataResolver, this.soapPipelineProvider));
+        setAuthenticatorIfUndefined(new SAML2Authenticator(authnResponseValidator, this.configuration.getAttributeAsId(),
             this.configuration.getMappedAttributes()));
+        setLogoutProcessor(new SAML2LogoutProcessor(this));
         setLogoutActionBuilderIfUndefined(new SAML2LogoutActionBuilder(this));
     }
 
@@ -183,7 +186,7 @@ public class SAML2Client extends IndirectClient {
             this.configuration.getPostLogoutURL(), this.replayCache,
             this.configuration.getUriComparator());
         this.logoutValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
-        this.logoutValidator.setIsPartialLogoutTreatedAsSuccess(this.configuration.isPartialLogoutTreatedAsSuccess());
+        this.logoutValidator.setPartialLogoutTreatedAsSuccess(this.configuration.isPartialLogoutTreatedAsSuccess());
     }
 
     protected void initSAMLResponseValidator() {
