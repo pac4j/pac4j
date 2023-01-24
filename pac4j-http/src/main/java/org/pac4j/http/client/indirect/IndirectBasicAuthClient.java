@@ -7,7 +7,6 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
@@ -90,18 +89,22 @@ public class IndirectBasicAuthClient extends IndirectClient {
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
-        init();
-        assertNotNull("authenticator", getAuthenticator());
+    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials != null) {
+            init();
+            assertNotNull("authenticator", getAuthenticator());
 
-        val webContext = ctx.webContext();
-        // set the www-authenticate in case of error
-        webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, HttpConstants.BASIC_HEADER_PREFIX + "realm=\"" + realmName + "\"");
+            val webContext = ctx.webContext();
+            // set the www-authenticate in case of error
+            webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
+                HttpConstants.BASIC_HEADER_PREFIX + "realm=\"" + realmName + "\"");
 
-        try {
-            return getAuthenticator().validate(ctx, credentials);
-        } catch (final CredentialsException e) {
-            throw HttpActionHelper.buildUnauthenticatedAction(webContext);
+            try {
+                return getAuthenticator().validate(ctx, credentials);
+            } catch (final CredentialsException e) {
+                throw HttpActionHelper.buildUnauthenticatedAction(webContext);
+            }
         }
+        return Optional.empty();
     }
 }

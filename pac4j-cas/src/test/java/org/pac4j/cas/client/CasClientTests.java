@@ -7,7 +7,6 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.LogoutCredentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.WithContentAction;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
@@ -168,7 +167,7 @@ public final class CasClientTests implements TestsConstants {
             .setRequestMethod(HTTP_METHOD.POST.name());
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = casClient.getCredentials(ctx);
-        val action = casClient.processLogout(ctx, (LogoutCredentials) credentials.get());
+        val action = casClient.processLogout(ctx, credentials.get());
         assertEquals(204, action.getCode());
     }
 
@@ -195,7 +194,7 @@ public final class CasClientTests implements TestsConstants {
                 .setRequestMethod(HTTP_METHOD.GET.name());
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = casClient.getCredentials(ctx);
-        val action = casClient.processLogout(ctx, (LogoutCredentials) credentials.get());
+        val action = casClient.processLogout(ctx, credentials.get());
         assertEquals(200, action.getCode());
         assertEquals(Pac4jConstants.EMPTY_STRING, ((WithContentAction) action).getContent());
     }
@@ -212,7 +211,7 @@ public final class CasClientTests implements TestsConstants {
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HTTP_METHOD.GET.name());
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = casClient.getCredentials(ctx);
-        val action = casClient.processLogout(ctx, (LogoutCredentials) credentials.get());
+        val action = casClient.processLogout(ctx, credentials.get());
         assertEquals(FOUND, action.getCode());
     }
 

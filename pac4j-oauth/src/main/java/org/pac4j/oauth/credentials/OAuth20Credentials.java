@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 
 /**
  * This class represents an OAuth credentials for OAuth 2.0 an authorization code.
@@ -16,7 +16,7 @@ import org.pac4j.core.credentials.AuthenticationCredentials;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class OAuth20Credentials extends AuthenticationCredentials {
+public class OAuth20Credentials extends Credentials {
 
     private static final long serialVersionUID = -1370874913317625788L;
     private String code;

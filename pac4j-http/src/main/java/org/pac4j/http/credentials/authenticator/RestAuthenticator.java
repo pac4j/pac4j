@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -64,7 +64,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
 
         val credentials = (UsernamePasswordCredentials) cred;

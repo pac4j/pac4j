@@ -21,8 +21,8 @@ title: Release notes&#58;
 - Renamed `defaultXXX` methods as `setXXXIfUndefined`
 - Gather the web context, the session store and the profile manager factory in a `CallContext`
 - `Client` interface:
-  - Split the `getCredentials` method into the `getCredentials` and `validateCredentials` methods (for `AuthenticationCredentials`)
-  - Add a new `processLogout` method based on the `LogoutProcessor` component (for `LogoutCredentials`)
+  - Split the `getCredentials` method into the `getCredentials` and `validateCredentials` methods
+  - Add a new `processLogout` method based on the `LogoutProcessor` component
 - Renamed the `LogoutHandler` as `SessionLogoutHandler`
 
 ---

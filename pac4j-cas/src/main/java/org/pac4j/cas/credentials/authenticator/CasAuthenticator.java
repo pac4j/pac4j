@@ -6,7 +6,7 @@ import org.apereo.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -59,47 +59,48 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
-        init();
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
+        if (cred instanceof TokenCredentials credentials) {
+            init();
 
-        val webContext = ctx.webContext();
+            val webContext = ctx.webContext();
 
-        val credentials = (TokenCredentials) cred;
-        val ticket = credentials.getToken();
-        try {
-            val finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, webContext);
-            val assertion = configuration.retrieveTicketValidator(webContext).validate(ticket, finalCallbackUrl);
-            val principal = assertion.getPrincipal();
-            LOGGER.debug("principal: {}", principal);
+            val ticket = credentials.getToken();
+            try {
+                val finalCallbackUrl = callbackUrlResolver.compute(urlResolver, callbackUrl, clientName, webContext);
+                val assertion = configuration.retrieveTicketValidator(webContext).validate(ticket, finalCallbackUrl);
+                val principal = assertion.getPrincipal();
+                LOGGER.debug("principal: {}", principal);
 
-            configuration.findSessionLogoutHandler().recordSession(ctx, ticket);
+                configuration.findSessionLogoutHandler().recordSession(ctx, ticket);
 
-            val id = principal.getName();
-            val newPrincipalAttributes = new HashMap<String, Object>();
-            val newAuthenticationAttributes = new HashMap<String, Object>();
-            // restore both sets of attributes
-            val oldPrincipalAttributes = principal.getAttributes();
-            val oldAuthenticationAttributes = assertion.getAttributes();
-            if (oldPrincipalAttributes != null) {
-                oldPrincipalAttributes.entrySet().stream()
-                    .forEach(e -> newPrincipalAttributes.put(e.getKey(), e.getValue()));
+                val id = principal.getName();
+                val newPrincipalAttributes = new HashMap<String, Object>();
+                val newAuthenticationAttributes = new HashMap<String, Object>();
+                // restore both sets of attributes
+                val oldPrincipalAttributes = principal.getAttributes();
+                val oldAuthenticationAttributes = assertion.getAttributes();
+                if (oldPrincipalAttributes != null) {
+                    oldPrincipalAttributes.entrySet().stream()
+                        .forEach(e -> newPrincipalAttributes.put(e.getKey(), e.getValue()));
+                }
+                if (oldAuthenticationAttributes != null) {
+                    oldAuthenticationAttributes.entrySet().stream()
+                        .forEach(e -> newAuthenticationAttributes.put(e.getKey(), e.getValue()));
+                }
+
+                val profile = getProfileDefinition().newProfile(id, configuration.getProxyReceptor(), principal);
+                profile.setId(ProfileHelper.sanitizeIdentifier(id));
+                getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
+                LOGGER.debug("profile returned by CAS: {}", profile);
+
+                credentials.setUserProfile(profile);
+            } catch (final TicketValidationException e) {
+                var message = "cannot validate CAS ticket: " + ticket;
+                throw new TechnicalException(message, e);
             }
-            if (oldAuthenticationAttributes != null) {
-                oldAuthenticationAttributes.entrySet().stream()
-                    .forEach(e -> newAuthenticationAttributes.put(e.getKey(), e.getValue()));
-            }
-
-            val profile = getProfileDefinition().newProfile(id, configuration.getProxyReceptor(), principal);
-            profile.setId(ProfileHelper.sanitizeIdentifier(id));
-            getProfileDefinition().convertAndAdd(profile, newPrincipalAttributes, newAuthenticationAttributes);
-            LOGGER.debug("profile returned by CAS: {}", profile);
-
-            credentials.setUserProfile(profile);
-        } catch (final TicketValidationException e) {
-            var message = "cannot validate CAS ticket: " + ticket;
-            throw new TechnicalException(message, e);
         }
 
-        return Optional.of(credentials);
+        return Optional.ofNullable(cred);
     }
 }

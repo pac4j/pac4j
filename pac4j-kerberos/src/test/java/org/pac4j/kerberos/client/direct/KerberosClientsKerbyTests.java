@@ -12,7 +12,6 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.kerberos.client.indirect.IndirectKerberosClient;
@@ -106,7 +105,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         val client = setupDirectKerberosClient();
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = client.getCredentials(ctx);
-        val authnCredentials = client.validateCredentials(ctx, (AuthenticationCredentials) credentials.get());
+        val authnCredentials = client.validateCredentials(ctx, credentials.get());
         assertFalse(authnCredentials.isPresent());
     }
 
@@ -141,7 +140,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         val ctx = new CallContext(context, new MockSessionStore());
         try {
             val credentials = kerbClient.getCredentials(ctx);
-            kerbClient.validateCredentials(ctx, (AuthenticationCredentials) credentials.get());
+            kerbClient.validateCredentials(ctx, credentials.get());
             fail("should throw HttpAction");
         } catch (final HttpAction e) {
             assertEquals(401, e.getCode());
@@ -158,7 +157,7 @@ public class KerberosClientsKerbyTests implements TestsConstants {
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = client.getCredentials(ctx);
         assertTrue(credentials.isPresent());
-        val authnCredentials = client.validateCredentials(ctx, (AuthenticationCredentials) credentials.get());
+        val authnCredentials = client.validateCredentials(ctx, credentials.get());
         val profile = client.getUserProfile(ctx, authnCredentials.get());
         assertTrue(profile.isPresent());
         assertEquals(clientPrincipal, profile.get().getId());

@@ -9,7 +9,7 @@ import com.github.scribejava.core.oauth.OAuthService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -30,7 +30,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     }
 
     @Override
-    protected OAuth2AccessToken getAccessToken(final AuthenticationCredentials credentials) {
+    protected OAuth2AccessToken getAccessToken(final Credentials credentials) {
         // we assume the access token only has been passed: it can be a bearer call (HTTP client)
         if (credentials instanceof TokenCredentials) {
             val accessToken = ((TokenCredentials) credentials).getToken();

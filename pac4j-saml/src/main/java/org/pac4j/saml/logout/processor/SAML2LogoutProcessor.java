@@ -4,17 +4,15 @@ import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.LogoutCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.logout.processor.LogoutProcessor;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
-import org.pac4j.saml.credentials.SAML2LogoutCredentials;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutResponseMessageSender;
-import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
 
 /**
  * The SAML2 logout processor.
@@ -34,8 +32,6 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
 
     private final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
 
-    private final SAML2LogoutValidator logoutValidator;
-
     public SAML2LogoutProcessor(final SAML2Client client) {
         this.contextProvider = client.getContextProvider();
         this.saml2Client = client;
@@ -43,16 +39,11 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
         this.saml2LogoutResponseBuilder = new SAML2LogoutResponseBuilder(spLogoutResponseBindingType);
         this.saml2LogoutResponseMessageSender = new SAML2LogoutResponseMessageSender(client.getSignatureSigningParametersProvider(),
             spLogoutResponseBindingType, false, client.getConfiguration().isSpLogoutRequestSigned());
-        this.logoutValidator = client.getLogoutValidator();
     }
 
     @Override
-    public HttpAction processLogout(final CallContext ctx, final LogoutCredentials credentials) {
-        var samlContext = ((SAML2LogoutCredentials) credentials).getContext();
-
-        logoutValidator.validate(samlContext);
-
-        samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
+    public HttpAction processLogout(final CallContext ctx, final Credentials credentials) {
+        val samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
 
         sendLogoutResponse(samlContext);
 

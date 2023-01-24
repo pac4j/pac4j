@@ -9,7 +9,6 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.credentials.LogoutCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
@@ -144,7 +143,7 @@ public abstract class IndirectClient extends BaseClient {
     }
 
     @Override
-    public HttpAction processLogout(final CallContext ctx, final LogoutCredentials credentials) {
+    public HttpAction processLogout(final CallContext ctx, final Credentials credentials) {
         init();
         assertNotNull("logoutProcessor", logoutProcessor);
         return this.logoutProcessor.processLogout(ctx, credentials);

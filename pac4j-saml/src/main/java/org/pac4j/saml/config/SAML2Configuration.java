@@ -467,9 +467,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
-        val url = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
-        val logoutUrl = CommonHelper.addParameter(url, Pac4jConstants.LOGOUT_ENDPOINT_PARAMETER, "true");
-        // the logout URL is callback URL with an extra parameter
+        val logoutUrl = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
         generator.setSingleLogoutServiceUrl(logoutUrl);
     }
 

@@ -8,7 +8,6 @@ import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -81,19 +80,21 @@ public abstract class BaseClient extends InitializableObject implements Client {
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
-        init();
-        val t0 = System.currentTimeMillis();
-        try {
-            val newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
-            checkCredentials(ctx, credentials);
-            return Optional.ofNullable(newCredentials);
-        } catch (CredentialsException e) {
-            logger.info("Failed to validate credentials: {}", e.getMessage());
-            logger.debug("Failed to validate credentials", e);
-        } finally {
-            val t1 = System.currentTimeMillis();
-            logger.debug("Credentials validation took: {} ms", t1 - t0);
+    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials != null) {
+            init();
+            val t0 = System.currentTimeMillis();
+            try {
+                val newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
+                checkCredentials(ctx, credentials);
+                return Optional.ofNullable(newCredentials);
+            } catch (CredentialsException e) {
+                logger.info("Failed to validate credentials: {}", e.getMessage());
+                logger.debug("Failed to validate credentials", e);
+            } finally {
+                val t1 = System.currentTimeMillis();
+                logger.debug("Credentials validation took: {} ms", t1 - t0);
+            }
         }
         return Optional.empty();
     }
@@ -107,7 +108,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     protected void checkCredentials(final CallContext ctx, final Credentials credentials) {}
 
     @Override
-    public final Optional<UserProfile> getUserProfile(CallContext ctx, final AuthenticationCredentials credentials) {
+    public final Optional<UserProfile> getUserProfile(CallContext ctx, final Credentials credentials) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {

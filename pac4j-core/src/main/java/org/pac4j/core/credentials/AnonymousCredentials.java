@@ -6,7 +6,7 @@ package org.pac4j.core.credentials;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class AnonymousCredentials extends AuthenticationCredentials {
+public final class AnonymousCredentials extends Credentials {
 
     private static final long serialVersionUID = 7526472295622776147L;
 

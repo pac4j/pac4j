@@ -13,7 +13,7 @@ import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
@@ -77,7 +77,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      * @param context the context
      */
     @Override
-    public AuthenticationCredentials validate(final SAML2MessageContext context) {
+    public Credentials validate(final SAML2MessageContext context) {
         val message = (SAMLObject) context.getMessageContext().getMessage();
         // IDP-initiated
         if (message instanceof LogoutRequest logoutRequest) {

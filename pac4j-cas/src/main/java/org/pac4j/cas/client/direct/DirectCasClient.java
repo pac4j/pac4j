@@ -11,7 +11,6 @@ import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
@@ -99,26 +98,28 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
-        init();
+    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials != null) {
+            init();
 
-        val webContext = ctx.webContext();
+            val webContext = ctx.webContext();
 
-        try {
-            var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
-            // clean url from ticket parameter
-            callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
-            callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            val casAuthenticator =
-                new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
-            casAuthenticator.init();
-            casAuthenticator.validate(ctx, credentials);
+            try {
+                var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
+                // clean url from ticket parameter
+                callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
+                callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
+                val casAuthenticator =
+                    new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
+                casAuthenticator.init();
+                casAuthenticator.validate(ctx, credentials);
 
-            return Optional.of(credentials);
-        } catch (CredentialsException e) {
-            logger.error("Failed to validate CAS credentials", e);
-            return Optional.empty();
+                return Optional.of(credentials);
+            } catch (CredentialsException e) {
+                logger.error("Failed to validate CAS credentials", e);
+            }
         }
+        return Optional.empty();
     }
 
     @Override

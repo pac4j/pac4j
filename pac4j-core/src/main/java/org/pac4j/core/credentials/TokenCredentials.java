@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-public class TokenCredentials extends AuthenticationCredentials {
+public class TokenCredentials extends Credentials {
 
     private static final long serialVersionUID = -4270718634364817595L;
 

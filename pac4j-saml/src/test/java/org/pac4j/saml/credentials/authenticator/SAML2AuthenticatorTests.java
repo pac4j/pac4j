@@ -45,7 +45,7 @@ public class SAML2AuthenticatorTests {
         val credentials = createCredentialsForTest(true, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        val authenticator = new SAML2Authenticator(null, "username", mappedAttributes);
+        val authenticator = new SAML2Authenticator(null, null, "username", mappedAttributes);
         authenticator.init();
         authenticator.buildProfile(credentials);
 
@@ -60,7 +60,7 @@ public class SAML2AuthenticatorTests {
         val credentials = createCredentialsForTest(false, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        val authenticator = new SAML2Authenticator(null, "username", mappedAttributes);
+        val authenticator = new SAML2Authenticator(null, null, "username", mappedAttributes);
         authenticator.init();
         authenticator.buildProfile(credentials);
 
@@ -75,7 +75,7 @@ public class SAML2AuthenticatorTests {
         val credentials = createCredentialsForTest(false, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        val authenticator = new SAML2Authenticator(null, "username", mappedAttributes);
+        val authenticator = new SAML2Authenticator(null, null, "username", mappedAttributes);
         authenticator.init();
         authenticator.buildProfile(credentials);
 
@@ -107,7 +107,7 @@ public class SAML2AuthenticatorTests {
         val credentials = createCredentialsForTest(false, true);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        val authenticator = new SAML2Authenticator(null, "username", mappedAttributes);
+        val authenticator = new SAML2Authenticator(null, null, "username", mappedAttributes);
         authenticator.init();
         authenticator.buildProfile(credentials);
 
@@ -137,7 +137,7 @@ public class SAML2AuthenticatorTests {
         val credentials = createCredentialsForTest(true, false);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        val authenticator = new SAML2Authenticator(null, "username", mappedAttributes);
+        val authenticator = new SAML2Authenticator(null, null, "username", mappedAttributes);
         authenticator.init();
         authenticator.buildProfile(credentials);
 
@@ -152,7 +152,7 @@ public class SAML2AuthenticatorTests {
         val credentials = createCredentialsForTest(false, false);
         final Map<String, String> mappedAttributes = createMappedAttributesForTest();
 
-        val authenticator = new SAML2Authenticator(null, "username", mappedAttributes);
+        val authenticator = new SAML2Authenticator(null, null, "username", mappedAttributes);
         authenticator.init();
         authenticator.buildProfile(credentials);
 

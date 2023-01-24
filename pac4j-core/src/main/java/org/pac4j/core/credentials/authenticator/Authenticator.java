@@ -1,13 +1,13 @@
 package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 
 import java.util.Optional;
 
 /**
- * An authenticator is responsible for validating {@link AuthenticationCredentials} and should throw a {@link CredentialsException}
+ * An authenticator is responsible for validating {@link Credentials} and should throw a {@link CredentialsException}
  * if the authentication fails.
  *
  * @author Jerome Leleu
@@ -18,7 +18,7 @@ public interface Authenticator {
 
     Authenticator ALWAYS_VALIDATE = new Authenticator() {
         @Override
-        public Optional<AuthenticationCredentials> validate(CallContext ctx, AuthenticationCredentials credentials) {
+        public Optional<Credentials> validate(CallContext ctx, Credentials credentials) {
             return Optional.of(credentials);
         }
     };
@@ -30,5 +30,5 @@ public interface Authenticator {
      * @param credentials the given credentials
      * @return the credentials
      */
-    Optional<AuthenticationCredentials> validate(CallContext ctx, AuthenticationCredentials credentials);
+    Optional<Credentials> validate(CallContext ctx, Credentials credentials);
 }

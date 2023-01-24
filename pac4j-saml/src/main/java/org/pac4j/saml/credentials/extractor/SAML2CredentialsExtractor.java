@@ -19,8 +19,7 @@ import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
-import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
-import org.pac4j.saml.credentials.SAML2LogoutCredentials;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.sso.artifact.SAML2ArtifactBindingDecoder;
@@ -83,7 +82,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
             decodedCtx.getSAMLEndpointContext().setEndpoint(decodedCtx.getSPAssertionConsumerService(response));
             decodedCtx.getProfileRequestContext().setProfileId("urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser");
 
-            return Optional.of(new SAML2AuthenticationCredentials(decodedCtx));
+            return Optional.of(new SAML2Credentials(decodedCtx));
         } else {
             decodedCtx.getProfileRequestContext().setProfileId("urn:oasis:names:tc:SAML:2.0:profiles:SSO:logout");
 
@@ -91,7 +90,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
             val binding = decodedCtx.getSAMLBindingContext().getBindingUri();
             val type = CommonHelper.areEquals(binding, SAMLConstants.SAML2_SOAP11_BINDING_URI) ? LogoutType.BACK : LogoutType.FRONT;
 
-            return Optional.of(new SAML2LogoutCredentials(type, decodedCtx));
+            return Optional.of(new SAML2Credentials(type, decodedCtx));
         }
     }
 

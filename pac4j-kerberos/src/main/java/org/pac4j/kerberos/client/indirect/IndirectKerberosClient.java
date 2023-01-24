@@ -5,7 +5,6 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.credentials.AuthenticationCredentials;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -67,7 +66,7 @@ public class IndirectKerberosClient extends IndirectClient {
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validateCredentials(final CallContext ctx, final AuthenticationCredentials credentials) {
+    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
         init();
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 

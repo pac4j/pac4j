@@ -11,9 +11,9 @@ import org.pac4j.core.logout.LogoutType;
  * @author Jerome LELEU
  * @since 6.0.0
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class SessionKeyCredentials extends LogoutCredentials {
+public class SessionKeyCredentials extends Credentials {
 
     @Getter
     private final String sessionKey;

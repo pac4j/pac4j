@@ -12,7 +12,7 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2InternalCredentials;
@@ -54,7 +54,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     }
 
     @Override
-    public AuthenticationCredentials validate(final SAML2MessageContext context) {
+    public Credentials validate(final SAML2MessageContext context) {
 
         val message = (SAMLObject) context.getMessageContext().getMessage();
 

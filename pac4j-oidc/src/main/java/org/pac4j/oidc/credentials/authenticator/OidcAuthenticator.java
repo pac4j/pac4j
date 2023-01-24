@@ -12,7 +12,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.client.OidcClient;
@@ -150,23 +150,24 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
-        val credentials = (OidcCredentials) cred;
-        val code = credentials.getCode();
-        // if we have a code
-        if (code != null) {
-            try {
-                val computedCallbackUrl = client.computeFinalCallbackUrl(ctx.webContext());
-                var verifier = (CodeVerifier) configuration.getValueRetriever()
-                    .retrieve(ctx, client.getCodeVerifierSessionAttributeName(), client).orElse(null);
-                // Token request
-                val request = createTokenRequest(new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
-                executeTokenRequest(request, credentials);
-            } catch (final URISyntaxException | IOException | ParseException e) {
-                throw new TechnicalException(e);
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
+        if (cred instanceof OidcCredentials credentials) {
+            val code = credentials.getCode();
+            // if we have a code
+            if (code != null) {
+                try {
+                    val computedCallbackUrl = client.computeFinalCallbackUrl(ctx.webContext());
+                    var verifier = (CodeVerifier) configuration.getValueRetriever()
+                        .retrieve(ctx, client.getCodeVerifierSessionAttributeName(), client).orElse(null);
+                    // Token request
+                    val request = createTokenRequest(new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
+                    executeTokenRequest(request, credentials);
+                } catch (final URISyntaxException | IOException | ParseException e) {
+                    throw new TechnicalException(e);
+                }
             }
         }
-        return Optional.of(credentials);
+        return Optional.ofNullable(cred);
     }
 
     public void refresh(final OidcCredentials credentials) {

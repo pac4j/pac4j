@@ -116,8 +116,8 @@ public class SAML2Client extends IndirectClient {
         setRedirectionActionBuilderIfUndefined(new SAML2RedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new SAML2CredentialsExtractor(this, this.identityProviderMetadataResolver,
             this.serviceProviderMetadataResolver, this.soapPipelineProvider));
-        setAuthenticatorIfUndefined(new SAML2Authenticator(authnResponseValidator, this.configuration.getAttributeAsId(),
-            this.configuration.getMappedAttributes()));
+        setAuthenticatorIfUndefined(new SAML2Authenticator(authnResponseValidator, this.logoutValidator,
+            this.configuration.getAttributeAsId(), this.configuration.getMappedAttributes()));
         setLogoutProcessor(new SAML2LogoutProcessor(this));
         setLogoutActionBuilderIfUndefined(new SAML2LogoutActionBuilder(this));
     }

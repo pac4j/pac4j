@@ -5,7 +5,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -26,7 +26,7 @@ public class OAuth20Authenticator extends OAuthAuthenticator {
     }
 
     @Override
-    protected void retrieveAccessToken(final WebContext context, final AuthenticationCredentials credentials) {
+    protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
         var oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
         val code = oAuth20Credentials.getCode();

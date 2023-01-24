@@ -6,7 +6,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -65,7 +65,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(TOKEN, credentials.getToken());
-        val authnCredentials = (AuthenticationCredentials) client.validateCredentials(ctx, credentials).get();
+        val authnCredentials = client.validateCredentials(ctx, credentials).get();
         val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(TOKEN, profile.getId());
     }
@@ -74,7 +74,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
     public void testProfileCreation() {
         val client = new DirectBearerAuthClient(new ProfileCreator() {
             @Override
-            public Optional<UserProfile> create(final CallContext ctx, final AuthenticationCredentials credentials) {
+            public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
                 val profile = new CommonProfile();
                 profile.setId(KEY);
                 return Optional.of(profile);
@@ -86,7 +86,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(TOKEN, credentials.getToken());
-        val authnCredentials = (AuthenticationCredentials) client.validateCredentials(ctx, credentials).get();
+        val authnCredentials = client.validateCredentials(ctx, credentials).get();
         val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(KEY, profile.getId());
     }

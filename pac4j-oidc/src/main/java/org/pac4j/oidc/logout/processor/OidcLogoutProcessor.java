@@ -2,7 +2,7 @@ package org.pac4j.oidc.logout.processor;
 
 import lombok.val;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.LogoutCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
@@ -30,7 +30,7 @@ public class OidcLogoutProcessor implements LogoutProcessor {
     }
 
     @Override
-    public HttpAction processLogout(final CallContext ctx, final LogoutCredentials logoutCredentials) {
+    public HttpAction processLogout(final CallContext ctx, final Credentials logoutCredentials) {
         assertTrue(logoutCredentials instanceof SessionKeyCredentials, "credentials must be of type SessionKeyCredentials");
         val credentials = (SessionKeyCredentials) logoutCredentials;
         val sessionKey = credentials.getSessionKey();

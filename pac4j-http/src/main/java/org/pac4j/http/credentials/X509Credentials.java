@@ -2,7 +2,7 @@ package org.pac4j.http.credentials;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 
 import java.security.cert.X509Certificate;
 
@@ -14,7 +14,7 @@ import java.security.cert.X509Certificate;
  */
 @EqualsAndHashCode
 @Getter
-public class X509Credentials extends AuthenticationCredentials {
+public class X509Credentials extends Credentials {
 
     private static final long serialVersionUID = 2733744949087200768L;
 

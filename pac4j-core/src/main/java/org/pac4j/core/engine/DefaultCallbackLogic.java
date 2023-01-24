@@ -12,8 +12,6 @@ import org.pac4j.core.client.finder.DefaultCallbackClientFinder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.FrameworkParameters;
-import org.pac4j.core.credentials.AuthenticationCredentials;
-import org.pac4j.core.credentials.LogoutCredentials;
 import org.pac4j.core.engine.savedrequest.DefaultSavedRequestHandler;
 import org.pac4j.core.engine.savedrequest.SavedRequestHandler;
 import org.pac4j.core.exception.http.HttpAction;
@@ -80,21 +78,19 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
             LOGGER.debug("foundClient: {}", foundClient);
             assertNotNull("foundClient", foundClient);
 
-            val credentials = foundClient.getCredentials(ctx).orElse(null);
+            var credentials = foundClient.getCredentials(ctx).orElse(null);
             LOGGER.debug("extracted credentials: {}", credentials);
+            credentials = foundClient.validateCredentials(ctx, credentials).orElse(null);
+            LOGGER.debug("validated credentials: {}", credentials);
 
-            if (credentials instanceof LogoutCredentials logoutCredentials) {
+            if (credentials != null && !credentials.isForAuthentication()) {
 
-                action = foundClient.processLogout(ctx, logoutCredentials);
+                action = foundClient.processLogout(ctx, credentials);
 
             } else {
 
                 if (credentials != null) {
-                    val authenticationCredentials =
-                        foundClient.validateCredentials(ctx, (AuthenticationCredentials) credentials).orElse(null);
-                    LOGGER.debug("validated credentials: {}", authenticationCredentials);
-
-                    val optProfile = foundClient.getUserProfile(ctx, authenticationCredentials);
+                    val optProfile = foundClient.getUserProfile(ctx, credentials);
                     LOGGER.debug("optProfile: {}", optProfile);
                     if (optProfile.isPresent()) {
                         val profile = optProfile.get();

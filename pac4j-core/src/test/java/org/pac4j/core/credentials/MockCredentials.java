@@ -6,7 +6,7 @@ package org.pac4j.core.credentials;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class MockCredentials extends AuthenticationCredentials {
+public final class MockCredentials extends Credentials {
 
     private static final long serialVersionUID = 7137723104269576820L;
 

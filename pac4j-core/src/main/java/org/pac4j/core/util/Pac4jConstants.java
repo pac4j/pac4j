@@ -82,8 +82,6 @@ public interface Pac4jConstants {
 
     String DEFAULT_REALM_NAME = "authentication required";
 
-    String LOGOUT_ENDPOINT_PARAMETER = "logoutendpoint";
-
     String OIDC_CLAIM_SESSIONID = "sid";
 
     /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */

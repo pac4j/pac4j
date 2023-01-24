@@ -7,7 +7,7 @@ import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
@@ -40,7 +40,7 @@ public class CasRestAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<AuthenticationCredentials> validate(final CallContext ctx, final AuthenticationCredentials cred) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         val credentials = (UsernamePasswordCredentials) cred;
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");

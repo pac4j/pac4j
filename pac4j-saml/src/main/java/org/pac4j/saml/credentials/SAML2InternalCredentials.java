@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.converter.AttributeConverter;
 
 import java.io.Serializable;
@@ -25,7 +25,7 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class SAML2InternalCredentials extends AuthenticationCredentials {
+public class SAML2InternalCredentials extends Credentials {
 
     private static final long serialVersionUID = 5040516205957826527L;
 

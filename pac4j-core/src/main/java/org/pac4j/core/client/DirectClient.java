@@ -1,7 +1,7 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.credentials.LogoutCredentials;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
@@ -39,7 +39,7 @@ public abstract class DirectClient extends BaseClient {
     }
 
     @Override
-    public final HttpAction processLogout(final CallContext ctx, final LogoutCredentials credentials) {
+    public final HttpAction processLogout(final CallContext ctx, final Credentials credentials) {
         throw new UnsupportedOperationException("Direct clients cannot process logout");
     }
 

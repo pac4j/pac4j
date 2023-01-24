@@ -1,7 +1,7 @@
 package org.pac4j.kerberos.credentials;
 
 import lombok.ToString;
-import org.pac4j.core.credentials.AuthenticationCredentials;
+import org.pac4j.core.credentials.Credentials;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
  * @since 2.1.0
  */
 @ToString
-public class KerberosCredentials extends AuthenticationCredentials {
+public class KerberosCredentials extends Credentials {
     private byte[] kerberosTicket;
     /**
      *
