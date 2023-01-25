@@ -103,20 +103,16 @@ public class FormClient extends IndirectClient {
     }
 
     @Override
-    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
-        if (credentials != null) {
-            init();
-            assertNotNull("authenticator", getAuthenticator());
+    protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
+        assertNotNull("authenticator", getAuthenticator());
 
-            val username = ((UsernamePasswordCredentials) credentials).getUsername();
-            try {
-                return getAuthenticator().validate(ctx, credentials);
-            } catch (final CredentialsException e) {
-                throw handleInvalidCredentials(ctx, username,
-                    "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
-            }
+        val username = ((UsernamePasswordCredentials) credentials).getUsername();
+        try {
+            return getAuthenticator().validate(ctx, credentials);
+        } catch (final CredentialsException e) {
+            throw handleInvalidCredentials(ctx, username,
+                "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
         }
-        return Optional.empty();
     }
 
     protected HttpAction handleInvalidCredentials(final CallContext ctx, final String username, String message, String errorMessage) {

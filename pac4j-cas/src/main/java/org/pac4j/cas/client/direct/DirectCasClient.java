@@ -98,28 +98,24 @@ public class DirectCasClient extends DirectClient {
     }
 
     @Override
-    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
-        if (credentials != null) {
-            init();
+    protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
+        val webContext = ctx.webContext();
 
-            val webContext = ctx.webContext();
+        try {
+            var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
+            // clean url from ticket parameter
+            callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
+            callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
+            val casAuthenticator =
+                new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
+            casAuthenticator.init();
+            casAuthenticator.validate(ctx, credentials);
 
-            try {
-                var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
-                // clean url from ticket parameter
-                callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
-                callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-                val casAuthenticator =
-                    new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
-                casAuthenticator.init();
-                casAuthenticator.validate(ctx, credentials);
-
-                return Optional.of(credentials);
-            } catch (CredentialsException e) {
-                logger.error("Failed to validate CAS credentials", e);
-            }
+            return Optional.of(credentials);
+        } catch (CredentialsException e) {
+            logger.error("Failed to validate CAS credentials", e);
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override

@@ -66,8 +66,7 @@ public class IndirectKerberosClient extends IndirectClient {
     }
 
     @Override
-    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
-        init();
+    protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
 
         val webContext = ctx.webContext();

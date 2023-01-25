@@ -19,7 +19,7 @@ public class SessionKeyCredentials extends Credentials {
     private final String sessionKey;
 
     public SessionKeyCredentials(final LogoutType type, final String sessionKey) {
-        this.type = type;
+        this.logoutType = type;
         this.sessionKey = sessionKey;
     }
 }

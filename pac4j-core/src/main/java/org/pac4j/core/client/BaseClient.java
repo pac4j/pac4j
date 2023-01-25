@@ -80,23 +80,30 @@ public abstract class BaseClient extends InitializableObject implements Client {
     }
 
     @Override
-    public Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
+    public final Optional<Credentials> validateCredentials(final CallContext ctx, final Credentials credentials) {
         if (credentials != null) {
             init();
             val t0 = System.currentTimeMillis();
             try {
-                val newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
-                checkCredentials(ctx, credentials);
-                return Optional.ofNullable(newCredentials);
-            } catch (CredentialsException e) {
-                logger.info("Failed to validate credentials: {}", e.getMessage());
-                logger.debug("Failed to validate credentials", e);
+                return internalValidateCredentials(ctx, credentials);
             } finally {
                 val t1 = System.currentTimeMillis();
                 logger.debug("Credentials validation took: {} ms", t1 - t0);
             }
         }
         return Optional.empty();
+    }
+
+    protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
+        try {
+            val newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
+            checkCredentials(ctx, credentials);
+            return Optional.ofNullable(newCredentials);
+        } catch (CredentialsException e) {
+            logger.info("Failed to validate credentials: {}", e.getMessage());
+            logger.debug("Failed to validate credentials", e);
+            return Optional.empty();
+        }
     }
 
     /**

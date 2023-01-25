@@ -43,7 +43,7 @@ public class CasLogoutProcessor implements LogoutProcessor {
 
         val logoutHandler = configuration.findSessionLogoutHandler();
 
-        if (credentials.getType() == LogoutType.BACK) {
+        if (credentials.getLogoutType() == LogoutType.BACK) {
             if (isNotBlank(sessionKey)) {
                 logoutHandler.destroySessionBack(ctx, sessionKey);
             }

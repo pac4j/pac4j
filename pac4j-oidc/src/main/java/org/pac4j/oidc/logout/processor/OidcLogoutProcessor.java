@@ -36,7 +36,7 @@ public class OidcLogoutProcessor implements LogoutProcessor {
         val sessionKey = credentials.getSessionKey();
 
         val sessionLogoutHandler = configuration.findSessionLogoutHandler();
-        if (credentials.getType() == LogoutType.BACK) {
+        if (credentials.getLogoutType() == LogoutType.BACK) {
             sessionLogoutHandler.destroySessionBack(ctx, sessionKey);
         } else {
             sessionLogoutHandler.destroySessionFront(ctx, sessionKey);

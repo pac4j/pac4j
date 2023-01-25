@@ -30,7 +30,7 @@ public class SAML2Credentials extends Credentials {
     }
 
     public SAML2Credentials(final LogoutType type, final SAML2MessageContext context) {
-        this.type = type;
+        this.logoutType = type;
         this.context = context;
     }
 }

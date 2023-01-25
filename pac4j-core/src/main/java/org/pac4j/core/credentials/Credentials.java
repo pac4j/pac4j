@@ -28,9 +28,9 @@ public abstract class Credentials implements Serializable {
     private UserProfile userProfile = null;
 
     @Getter
-    protected LogoutType type = null;
+    protected LogoutType logoutType = null;
 
     public boolean isForAuthentication() {
-        return type == null;
+        return logoutType == null;
     }
 }
