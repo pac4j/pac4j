@@ -6,6 +6,9 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
@@ -80,7 +83,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
                 store.remove(currentSessionId);
 
                 if (CommonHelper.areEquals(key, sessionToKey)) {
-                    destroy(ctx, "front");
+                    destroy(ctx.webContext(), sessionStore, ctx.profileManagerFactory(), "front");
                 } else {
                     LOGGER.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
                         + "key is not the same as the one linked to the current session");
@@ -92,12 +95,10 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
         }
     }
 
-    protected void destroy(final CallContext ctx, final String channel) {
-        val webContext = ctx.webContext();
-        val sessionStore = ctx.sessionStore();
-
+    protected void destroy(final WebContext webContext, final SessionStore sessionStore,
+                           final ProfileManagerFactory profileManagerFactory, final String channel) {
         // remove profiles
-        val manager = ctx.profileManagerFactory().apply(webContext, sessionStore);
+        val manager = profileManagerFactory.apply(webContext, sessionStore);
         manager.removeProfiles();
         LOGGER.debug("{} channel logout call: destroy the user profiles", channel);
         // and optionally the web session
@@ -136,7 +137,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
                     LOGGER.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);
 
-                    destroy(ctx, "back");
+                    destroy(webContext, newSessionStore, ctx.profileManagerFactory(), "back");
                 } else {
                     LOGGER.error("The session store should be able to build a new session store from the tracked session");
                 }
