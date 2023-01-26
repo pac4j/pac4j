@@ -53,8 +53,8 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
             logger.debug("code: {}", code);
             return Optional.of(new OAuth20Credentials(code));
         } else {
-            val message = "No credential found";
-            throw new OAuthCredentialsException(message);
+            logger.debug("No credential found");
+            return Optional.empty();
         }
     }
 }

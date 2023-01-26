@@ -9,7 +9,6 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 
 import java.util.Optional;
 
@@ -40,8 +39,8 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor {
             logger.debug("token: {} / verifier: {}", token, verifier);
             return Optional.of(new OAuth10Credentials(tokenSession, token, verifier));
         } else {
-            val message = "No credential found";
-            throw new OAuthCredentialsException(message);
+            logger.debug("No credential found");
+            return Optional.empty();
         }
     }
 }

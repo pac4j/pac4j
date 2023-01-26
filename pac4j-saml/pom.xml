@@ -255,24 +255,28 @@
 
     <repositories>
         <repository>
-            <id>shib-snapshots</id>
-            <url>https://build.shibboleth.net/nexus/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>shibboleth-releases</id>
+            <name>Shibboleth Releases Repository</name>
+            <url>https://build.shibboleth.net/maven/releases/</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
             </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
-            <id>shib-release</id>
-            <url>https://build.shibboleth.net/nexus/content/groups/public</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>shibboleth-snapshots</id>
+            <name>Shibboleth Snapshots Repository</name>
+            <url>https://build.shibboleth.net/maven/snapshots/</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
         </repository>
     </repositories>
 </project>
