@@ -24,6 +24,7 @@ title: Release notes&#58;
   - Split the `getCredentials` method into the `getCredentials` and `validateCredentials` methods
   - Add a new `processLogout` method based on the `LogoutProcessor` component
 - Renamed the `LogoutHandler` as `SessionLogoutHandler`
+- Created the `SpringResourceLoader` for OIDC/SAML metadata loading: for the OIDC support, the `discoveryURI` can use the "file:", "classpath:" or "resource:" prefix in addition to HTTP/HTTPS URLs
 
 ---
 
