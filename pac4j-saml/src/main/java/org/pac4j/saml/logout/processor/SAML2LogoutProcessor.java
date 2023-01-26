@@ -75,7 +75,7 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
 
         // IDP-initiated
         if (message instanceof LogoutRequest) {
-            sendLogoutResponse(samlContext);
+            sendLogoutResponse(samlContext, saml2Credentials);
             return adaptLogoutResponseToBinding(ctx.webContext(), samlContext);
 
         // SP-initiated
@@ -90,7 +90,8 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
         throw new SAMLException("SAML message must be a LogoutRequest or LogoutResponse type");
     }
 
-    protected void sendLogoutResponse(final SAML2MessageContext samlContext) {
+    protected void sendLogoutResponse(final SAML2MessageContext samlContext, final SAML2Credentials saml2Credentials) {
+        samlContext.getSAMLBindingContext().setRelayState(saml2Credentials.getContext().getSAMLBindingContext().getRelayState());
         val logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
         this.saml2LogoutResponseMessageSender.sendMessage(samlContext, logoutResponse,
             samlContext.getSAMLBindingContext().getRelayState());
