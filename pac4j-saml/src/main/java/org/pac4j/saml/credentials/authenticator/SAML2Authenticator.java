@@ -6,8 +6,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.credentials.SAML2Credentials;
-import org.pac4j.saml.credentials.SAML2InternalCredentials;
 import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.SAML2ProfileDefinition;
@@ -75,23 +75,23 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     }
 
     @Override
-    public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
+    public Optional<Credentials> validate(final CallContext ctx, final Credentials extractedCredentials) {
         init();
 
-        val saml2Credentials = (SAML2Credentials) cred;
+        val saml2Credentials = (SAML2Credentials) extractedCredentials;
 
         val samlContext = saml2Credentials.getContext();
         if (saml2Credentials.isForAuthentication()) {
-            val credentials = (SAML2InternalCredentials) loginValidator.validate(samlContext);
-            buildProfile(credentials);
-            return Optional.of(credentials);
+            val authenticationCredentials = (SAML2AuthenticationCredentials) loginValidator.validate(samlContext);
+            buildProfile(authenticationCredentials);
+            return Optional.of(authenticationCredentials);
         } else {
             logoutValidator.validate(samlContext);
-            return Optional.of(cred);
+            return Optional.of(extractedCredentials);
         }
     }
 
-    protected void buildProfile(final SAML2InternalCredentials credentials) {
+    protected void buildProfile(final SAML2AuthenticationCredentials credentials) {
         val profile = (SAML2Profile) getProfileDefinition().newProfile();
 
         val nameId = credentials.getNameId();

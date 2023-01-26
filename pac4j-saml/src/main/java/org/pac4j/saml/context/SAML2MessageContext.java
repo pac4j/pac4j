@@ -2,6 +2,7 @@ package org.pac4j.saml.context;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.messaging.context.MessageContext;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString
 public class SAML2MessageContext {
 
     /**

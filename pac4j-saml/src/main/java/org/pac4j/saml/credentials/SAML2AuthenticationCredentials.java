@@ -25,7 +25,7 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class SAML2InternalCredentials extends Credentials {
+public class SAML2AuthenticationCredentials extends Credentials {
 
     private static final long serialVersionUID = 5040516205957826527L;
 
@@ -44,11 +44,11 @@ public class SAML2InternalCredentials extends Credentials {
 
     private final String inResponseTo;
 
-    public SAML2InternalCredentials(final SAMLNameID nameId, final String issuerId,
-                                    final List<SAMLAttribute> samlAttributes, final Conditions conditions,
-                                    final String sessionIndex, final List<String> authnContexts,
-                                    final List<String> authnContextAuthorities,
-                                    final String inResponseTo) {
+    public SAML2AuthenticationCredentials(final SAMLNameID nameId, final String issuerId,
+                                          final List<SAMLAttribute> samlAttributes, final Conditions conditions,
+                                          final String sessionIndex, final List<String> authnContexts,
+                                          final List<String> authnContextAuthorities,
+                                          final String inResponseTo) {
         this.nameId = nameId;
         this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;

@@ -107,11 +107,9 @@ public class SAML2LogoutValidatorTests {
                 getTrustEngine(),
                 mock(Decrypter.class),
                 mock(SessionLogoutHandler.class),
-                null,
                 mock(ReplayCacheProvider.class),
                 new ExcludingParametersURIComparator()
             );
-            validator.setActionOnSuccess(false);
             validator.validate(context);
         } catch (final Exception e) {
             fail(e.getMessage());
@@ -161,11 +159,9 @@ public class SAML2LogoutValidatorTests {
             getTrustEngine(),
             mock(Decrypter.class),
             mock(SessionLogoutHandler.class),
-            null,
             mock(ReplayCacheProvider.class),
             new ExcludingParametersURIComparator()
         );
-        validator.setActionOnSuccess(false);
 
         try {
             validator.validate(context);

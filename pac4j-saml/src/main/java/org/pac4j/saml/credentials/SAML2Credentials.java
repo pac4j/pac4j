@@ -16,7 +16,7 @@ import java.io.Serial;
  * @since 6.0.0
  */
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class SAML2Credentials extends Credentials {
 
     @Serial

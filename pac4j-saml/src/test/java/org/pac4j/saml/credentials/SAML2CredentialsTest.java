@@ -15,7 +15,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ConfigurationContext;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.credentials.SAML2InternalCredentials.SAMLAttribute;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLAttribute;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.profile.converter.ComplexTypeSAML2AttributeConverter;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
@@ -184,7 +184,7 @@ public class SAML2CredentialsTest {
         assertEquals(List.of("Product-X Dev", "Product-X Test"), resultAttributes.get("groups"));
     }
 
-    private SAML2InternalCredentials extractCredentials(String filename) throws Exception {
+    private SAML2AuthenticationCredentials extractCredentials(String filename) throws Exception {
         var file = new File(SAML2CredentialsTest.class.getClassLoader().getResource(filename).getFile());
 
         var xmlObject = XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(),
@@ -194,6 +194,6 @@ public class SAML2CredentialsTest {
         var assertion = response.getAssertions().get(0);
         when(mockSaml2MessageContext.getSubjectAssertion()).thenReturn(assertion);
 
-        return (SAML2InternalCredentials) validator.validate(mockSaml2MessageContext);
+        return (SAML2AuthenticationCredentials) validator.validate(mockSaml2MessageContext);
     }
 }

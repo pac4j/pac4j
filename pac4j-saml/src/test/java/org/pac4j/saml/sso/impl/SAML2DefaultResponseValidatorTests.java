@@ -20,7 +20,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.credentials.SAML2InternalCredentials;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
 import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
@@ -188,7 +188,7 @@ public class SAML2DefaultResponseValidatorTests {
         when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
         samlEndpointContext.setEndpoint(endpoint);
 
-        var credentials = (SAML2InternalCredentials) validator.validate(context);
+        var credentials = (SAML2AuthenticationCredentials) validator.validate(context);
         assertEquals("longosibilla@libero.it", credentials.getNameId().getValue());
     }
 

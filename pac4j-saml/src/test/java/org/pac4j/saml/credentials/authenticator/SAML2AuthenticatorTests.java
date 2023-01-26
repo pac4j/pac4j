@@ -10,7 +10,7 @@ import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.saml.credentials.SAML2InternalCredentials;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
@@ -170,7 +170,7 @@ public class SAML2AuthenticatorTests {
         return mappedAttributes;
     }
 
-    private SAML2InternalCredentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
+    private SAML2AuthenticationCredentials createCredentialsForTest(boolean includeNotBefore, boolean includeNotOnOrAfter) {
         val nameid = nameIdBuilder.buildObject();
         nameid.setValue("pac4j");
         nameid.setSPNameQualifier("pac4j");
@@ -197,9 +197,9 @@ public class SAML2AuthenticatorTests {
         attributes.add(createAttribute("givenName", "urn:oid:2.5.4.42", "developer"));
         attributes.add(createAttribute("surname", "urn:oid:2.5.4.4", "security"));
 
-        val credentials = new SAML2InternalCredentials(SAML2InternalCredentials.SAMLNameID.from(nameid),
+        val credentials = new SAML2AuthenticationCredentials(SAML2AuthenticationCredentials.SAMLNameID.from(nameid),
             "example.issuer.com",
-            SAML2InternalCredentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index",
+            SAML2AuthenticationCredentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index",
             contexts, List.of(),
             UUID.randomUUID().toString());
         return credentials;

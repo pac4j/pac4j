@@ -14,7 +14,7 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.credentials.SAML2InternalCredentials;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.*;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
@@ -74,12 +74,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         return buildSAML2Credentials(context, response);
     }
 
-    protected SAML2InternalCredentials buildSAML2Credentials(final SAML2MessageContext context,
-                                                             final Response response) {
+    protected SAML2AuthenticationCredentials buildSAML2Credentials(final SAML2MessageContext context,
+                                                                   final Response response) {
         val subjectAssertion = context.getSubjectAssertion();
 
         val samlAttributes = collectAssertionAttributes(subjectAssertion);
-        val attributes = SAML2InternalCredentials.SAMLAttribute.from(configuration.getSamlAttributeConverter(), samlAttributes);
+        val attributes = SAML2AuthenticationCredentials.SAMLAttribute.from(configuration.getSamlAttributeConverter(), samlAttributes);
 
         val samlNameId = determineNameID(context, attributes);
         val sessionIndex = getSessionIndex(subjectAssertion);
@@ -101,7 +101,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
                 authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getURI());
             }
         }
-        return new SAML2InternalCredentials(samlNameId, issuerEntityId, attributes,
+        return new SAML2AuthenticationCredentials(samlNameId, issuerEntityId, attributes,
             subjectAssertion.getConditions(), sessionIndex,
             authnContexts, authnContextAuthorities,
             response.getInResponseTo());
@@ -130,21 +130,21 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         return attributes;
     }
 
-    protected SAML2InternalCredentials.SAMLNameID determineNameID(final SAML2MessageContext context,
-                                                                  final List<SAML2InternalCredentials.SAMLAttribute> attributes) {
+    protected SAML2AuthenticationCredentials.SAMLNameID determineNameID(final SAML2MessageContext context,
+                final List<SAML2AuthenticationCredentials.SAMLAttribute> attributes) {
         var configContext = context.getConfigurationContext();
         if (configContext.getNameIdAttribute() != null) {
             val nameId = attributes
                 .stream()
                 .filter(attribute -> attribute.getName().equals(configContext.getNameIdAttribute()))
                 .findFirst()
-                .map(SAML2InternalCredentials.SAMLNameID::from);
+                .map(SAML2AuthenticationCredentials.SAMLNameID::from);
             if (nameId.isPresent()) {
                 return nameId.get();
             }
         }
         val nameId = Objects.requireNonNull(context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID());
-        return SAML2InternalCredentials.SAMLNameID.from(nameId);
+        return SAML2AuthenticationCredentials.SAMLNameID.from(nameId);
     }
 
     /**

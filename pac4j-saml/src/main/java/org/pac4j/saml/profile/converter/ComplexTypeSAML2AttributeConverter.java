@@ -4,7 +4,7 @@ import lombok.val;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.pac4j.core.profile.converter.AttributeConverter;
-import org.pac4j.saml.credentials.SAML2InternalCredentials;
+import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -25,17 +25,17 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
     public Object convert(final Object a) {
         val attribute = (Attribute) a;
 
-        List<SAML2InternalCredentials.SAMLAttribute> extractedAttributes = new ArrayList<>();
+        val extractedAttributes = new ArrayList<SAML2AuthenticationCredentials.SAMLAttribute>();
 
         // collect all complex values
         attribute.getAttributeValues().stream()
             .filter(XMLObject::hasChildren)
             .forEach(attributeValue -> {
-                List<SAML2InternalCredentials.SAMLAttribute> attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
+                val attrs = collectAttributesFromNodeList(attributeValue.getDOM().getChildNodes());
                 extractedAttributes.addAll(attrs);
             });
         // collect all simple values
-        SAML2InternalCredentials.SAMLAttribute simpleValues = from(attribute);
+        SAML2AuthenticationCredentials.SAMLAttribute simpleValues = from(attribute);
         if (!simpleValues.getAttributeValues().isEmpty()) {
             extractedAttributes.add(simpleValues);
         }
@@ -43,8 +43,8 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
         return extractedAttributes;
     }
 
-    private SAML2InternalCredentials.SAMLAttribute from(Attribute attribute) {
-        val samlAttribute = new SAML2InternalCredentials.SAMLAttribute();
+    private SAML2AuthenticationCredentials.SAMLAttribute from(Attribute attribute) {
+        val samlAttribute = new SAML2AuthenticationCredentials.SAMLAttribute();
         samlAttribute.setFriendlyName(attribute.getFriendlyName());
         samlAttribute.setName(attribute.getName());
         samlAttribute.setNameFormat(attribute.getNameFormat());
@@ -59,9 +59,9 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
         return samlAttribute;
     }
 
-    private List<SAML2InternalCredentials.SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
+    private List<SAML2AuthenticationCredentials.SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
 
-        var results = new ArrayList<SAML2InternalCredentials.SAMLAttribute>();
+        var results = new ArrayList<SAML2AuthenticationCredentials.SAMLAttribute>();
 
         if (nodeList == null) {
             return results;
@@ -73,7 +73,7 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
             if (node.hasChildNodes()) {
                 results.addAll(collectAttributesFromNodeList(node.getChildNodes()));
             } else if (!node.getTextContent().isBlank()) {
-                SAML2InternalCredentials.SAMLAttribute samlAttribute = new SAML2InternalCredentials.SAMLAttribute();
+                SAML2AuthenticationCredentials.SAMLAttribute samlAttribute = new SAML2AuthenticationCredentials.SAMLAttribute();
                 samlAttribute.setName(node.getParentNode().getLocalName());
                 samlAttribute.getAttributeValues().add(node.getTextContent());
                 results.add(samlAttribute);
