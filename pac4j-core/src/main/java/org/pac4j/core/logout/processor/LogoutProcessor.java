@@ -10,6 +10,7 @@ import org.pac4j.core.exception.http.HttpAction;
  * @author Jerome LELEU
  * @since 6.0.0
  */
+@FunctionalInterface
 public interface LogoutProcessor {
 
     HttpAction processLogout(CallContext ctx, Credentials credentials);

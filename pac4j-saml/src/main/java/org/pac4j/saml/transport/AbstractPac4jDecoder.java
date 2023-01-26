@@ -122,6 +122,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
         val bindingContext = messageContext.getMessageContext().getSubcontext(SAMLBindingContext.class, true);
         bindingContext.setBindingUri(getBindingURI(messageContext));
         bindingContext.setHasBindingSignature(false);
+        bindingContext.setRelayState(bindingContext.getRelayState());
         bindingContext.setIntendedDestinationEndpointURIRequired(SAMLBindingSupport.isMessageSigned(messageContext.getMessageContext()));
     }
 

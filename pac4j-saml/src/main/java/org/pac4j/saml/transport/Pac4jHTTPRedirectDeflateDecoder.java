@@ -3,6 +3,7 @@ package org.pac4j.saml.transport;
 import lombok.val;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
@@ -34,6 +35,10 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         val messageContext = new SAML2MessageContext();
 
         if (WebContextHelper.isGet(context)) {
+            val relayState = this.context.getRequestParameter("RelayState").orElse(null);
+            logger.debug("Decoded SAML relay state of: {}", relayState);
+            SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
+
             val base64DecodedMessage = this.getBase64DecodedMessage();
             val inflatedMessage = inflate(base64DecodedMessage);
             val inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
