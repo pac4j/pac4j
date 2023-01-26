@@ -45,6 +45,7 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     private final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
 
     @Setter
+    @Getter
     private String postLogoutURL;
 
     /**
