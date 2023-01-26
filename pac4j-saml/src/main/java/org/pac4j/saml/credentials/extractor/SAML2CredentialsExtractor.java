@@ -163,9 +163,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
         prepareSelfEntityContext(context, decodedCtx);
 
         decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
-        decodedCtx.setWebContext(context.getWebContext());
-        decodedCtx.setSessionStore(context.getSessionStore());
-        decodedCtx.setProfileManagerFactory(context.getProfileManagerFactory());
+        decodedCtx.setCallContext(context.getCallContext());
         return decodedCtx;
     }
 

@@ -14,7 +14,9 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.security.SecurityException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -107,7 +109,7 @@ public class SAML2DefaultResponseValidatorTests {
         var saml2Configuration = getSaml2Configuration(false, false);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
         assertFalse("Expected wantAssertionsSigned == false", validator.wantsAssertionsSigned(context));
@@ -118,7 +120,7 @@ public class SAML2DefaultResponseValidatorTests {
         var saml2Configuration = getSaml2Configuration(true, false);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         assertNull("Expected SPSSODescriptor to be null", context.getSPSSODescriptor());
         assertTrue("Expected wantAssertionsSigned == true", validator.wantsAssertionsSigned(context));
@@ -129,7 +131,7 @@ public class SAML2DefaultResponseValidatorTests {
         var saml2Configuration = getSaml2Configuration(false, false);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
 
         val samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
@@ -146,7 +148,7 @@ public class SAML2DefaultResponseValidatorTests {
         var saml2Configuration = getSaml2Configuration(true, false);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
 
         val samlSelfMetadataContext = context.getSAMLSelfMetadataContext();
@@ -170,7 +172,7 @@ public class SAML2DefaultResponseValidatorTests {
         response.getAssertions().get(0).setSignature(null);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         context.getMessageContext().setMessage(response);
 
@@ -204,7 +206,7 @@ public class SAML2DefaultResponseValidatorTests {
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
         context.setSaml2Configuration(saml2Configuration);
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.getMessageContext().setMessage(response);
 
         val samlSelfEntityContext = context.getSAMLSelfEntityContext();
@@ -228,7 +230,7 @@ public class SAML2DefaultResponseValidatorTests {
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
         context.setSaml2Configuration(saml2Configuration);
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         val peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(true);
         context.getMessageContext().addSubcontext(peerEntityContext);
@@ -240,7 +242,7 @@ public class SAML2DefaultResponseValidatorTests {
         val saml2Configuration = getSaml2Configuration(false, false);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         val peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(false);
@@ -264,7 +266,7 @@ public class SAML2DefaultResponseValidatorTests {
         var saml2Configuration = getSaml2Configuration(false, true);
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         val peerEntityContext = new SAMLPeerEntityContext();
         peerEntityContext.setAuthenticated(true);
@@ -286,7 +288,7 @@ public class SAML2DefaultResponseValidatorTests {
         response.setInResponseTo(null);
 
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         context.getMessageContext().setMessage(response);
 
@@ -320,7 +322,7 @@ public class SAML2DefaultResponseValidatorTests {
         response.setDestination(null);
 
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         context.getMessageContext().setMessage(response);
 
@@ -355,7 +357,7 @@ public class SAML2DefaultResponseValidatorTests {
         response.setDestination(null);
 
         val context = new SAML2MessageContext();
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(saml2Configuration);
         context.getMessageContext().setMessage(response);
 

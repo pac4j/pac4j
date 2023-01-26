@@ -14,9 +14,7 @@ import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.metadata.*;
 import org.opensaml.soap.messaging.context.SOAP11Context;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.profile.factory.ProfileManagerFactory;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -45,9 +43,7 @@ public class SAML2MessageContext {
 
     private SAML2Configuration saml2Configuration;
 
-    private WebContext webContext;
-
-    private SessionStore sessionStore;
+    private CallContext callContext;
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
@@ -59,16 +55,15 @@ public class SAML2MessageContext {
 
     private SAMLMessageStore samlMessageStore;
 
-    private ProfileManagerFactory profileManagerFactory;
-
     public SAML2MessageContext() {
         super();
     }
 
     public SAML2ConfigurationContext getConfigurationContext() {
-        CommonHelper.assertNotNull("webContext", this.webContext);
+        val webContext = callContext.webContext();
+        CommonHelper.assertNotNull("webContext", webContext);
         CommonHelper.assertNotNull("saml2Configuration", this.saml2Configuration);
-        return new SAML2ConfigurationContext(this.webContext, this.saml2Configuration);
+        return new SAML2ConfigurationContext(webContext, this.saml2Configuration);
     }
 
     public final SPSSODescriptor getSPSSODescriptor() {

@@ -67,9 +67,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     public SAML2MessageContext buildContext(final CallContext ctx, final SAML2Client client) {
         val context = buildServiceProviderContext(ctx, client);
         addIDPContext(context);
-        context.setWebContext(ctx.webContext());
-        context.setSessionStore(ctx.sessionStore());
-        context.setProfileManagerFactory(ctx.profileManagerFactory());
+        context.setCallContext(ctx);
         return context;
     }
 

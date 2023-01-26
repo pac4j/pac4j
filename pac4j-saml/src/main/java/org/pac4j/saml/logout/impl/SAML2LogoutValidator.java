@@ -12,7 +12,6 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
@@ -146,11 +145,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
             val bindingUri = context.getSAMLBindingContext().getBindingUri();
             logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
             if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
-                logoutHandler.destroySessionBack(new CallContext(context.getWebContext(), context.getSessionStore(),
-                    context.getProfileManagerFactory()), sloKey);
+                logoutHandler.destroySessionBack(context.getCallContext(), sloKey);
             } else {
-                logoutHandler.destroySessionFront(new CallContext(context.getWebContext(), context.getSessionStore(),
-                    context.getProfileManagerFactory()), sloKey);
+                logoutHandler.destroySessionFront(context.getCallContext(), sloKey);
             }
         }
     }

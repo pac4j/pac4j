@@ -11,7 +11,6 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -86,7 +85,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         val sessionIndex = getSessionIndex(subjectAssertion);
         val sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
-            logoutHandler.recordSession(new CallContext(context.getWebContext(), context.getSessionStore()), sloKey);
+            logoutHandler.recordSession(context.getCallContext(), sloKey);
         }
 
         val issuerEntityId = subjectAssertion.getIssuer().getValue();

@@ -8,6 +8,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.impl.EntityDescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SingleLogoutServiceBuilder;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
@@ -74,8 +75,7 @@ public class SAML2LogoutValidatorTests {
         context.setMessageContext(samlMessage);
         val entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
-        context.setWebContext(webContext);
-        context.setSessionStore(new MockSessionStore());
+        context.setCallContext(new CallContext(webContext, new MockSessionStore()));
 
         val spDescriptor = new SPSSODescriptorBuilder().buildObject();
         val logoutService = new SingleLogoutServiceBuilder().buildObject();

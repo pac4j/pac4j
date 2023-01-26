@@ -3,6 +3,7 @@ package org.pac4j.cas.credentials.extractor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apereo.cas.client.Protocol;
+import org.apereo.cas.client.util.XmlUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.context.CallContext;
@@ -54,7 +55,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
             val logoutMessage = webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
             LOGGER.trace("Logout request:\n{}", logoutMessage);
 
-            val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
+            val ticket = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
             credentials = new SessionKeyCredentials(LogoutType.BACK, ticket);
 
         } else if (isFrontLogoutRequest(webContext)) {
@@ -62,7 +63,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
                 webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get());
             LOGGER.trace("Logout request:\n{}", logoutMessage);
 
-            val ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
+            val ticket = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
             credentials = new SessionKeyCredentials(LogoutType.FRONT, ticket);
         }
 

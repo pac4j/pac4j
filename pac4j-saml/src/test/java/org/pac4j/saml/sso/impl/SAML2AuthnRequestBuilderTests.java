@@ -8,6 +8,7 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -80,7 +81,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         context.getSAMLPeerMetadataContext().setRoleDescriptor(idpDescriptor);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         context.getSAMLSelfEntityContext().setEntityId("entity-id");
-        context.setWebContext(MockWebContext.create());
+        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(configuration);
         return context;
     }
@@ -100,7 +101,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     public void testForceAuthAsRequestAttribute() {
         val builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
-        context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
+        context.getCallContext().webContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
         assertNotNull(builder.build(context));
     }
 
@@ -108,7 +109,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     public void testPassiveAuthAsRequestAttribute() {
         val builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
-        context.getWebContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
+        context.getCallContext().webContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
         assertNotNull(builder.build(context));
     }
 
