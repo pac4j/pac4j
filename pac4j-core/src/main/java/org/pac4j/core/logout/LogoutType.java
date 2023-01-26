@@ -7,5 +7,5 @@ package org.pac4j.core.logout;
  * @since 6.0.0
  */
 public enum LogoutType {
-    BACK, FRONT
+    UNDEFINED, BACK, FRONT
 }

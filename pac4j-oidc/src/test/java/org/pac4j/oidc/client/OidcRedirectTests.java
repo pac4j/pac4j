@@ -16,6 +16,7 @@ import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -42,7 +43,9 @@ public final class OidcRedirectTests implements TestsConstants {
         val configuration = new OidcConfiguration();
         configuration.setClientId("testClient");
         configuration.setSecret("secret");
-        configuration.setProviderMetadata(providerMetadata);
+        val metadataResolver = mock(OidcOpMetadataResolver.class);
+        when(metadataResolver.load()).thenReturn(providerMetadata);
+        configuration.setOpMetadataResolver(metadataResolver);
 
         val client = new OidcClient();
         client.setConfiguration(configuration);

@@ -1,5 +1,7 @@
 package org.pac4j.saml.metadata;
 
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -14,24 +16,18 @@ import org.opensaml.saml.metadata.resolver.index.impl.RoleMetadataIndex;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.resource.SpringResourceHelper;
+import org.pac4j.core.resource.SpringResourceLoader;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.UrlResource;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.Proxy;
-import java.net.URLConnection;
 import java.util.Collections;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Resolve and download idp metadata to form a metadata resolver.
@@ -41,22 +37,20 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Misagh Moayyed
  * @since 1.7
  */
-public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
-    private static final long NO_LAST_MODIFIED = -1;
+@Slf4j
+public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<MetadataResolver> implements SAML2MetadataResolver {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final ReentrantLock lock = new ReentrantLock();
-    private MetadataResolver metadataResolver;
-    private long lastModified = NO_LAST_MODIFIED;
+    @Setter
     private Proxy proxy = Proxy.NO_PROXY;
-
+    @Setter
     private HostnameVerifier hostnameVerifier;
+    @Setter
     private SSLSocketFactory sslSocketFactory;
 
     private final SAML2Configuration configuration;
 
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
+        super(configuration.getIdentityProviderMetadataResource());
         if (configuration.getSslSocketFactory() != null) {
             setSslSocketFactory(configuration.getSslSocketFactory());
         }
@@ -66,71 +60,24 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         this.configuration = configuration;
     }
 
-    public void init() {
-        this.metadataResolver = resolve(true);
-        hasChanged();
-    }
-
     @Override
-    public final MetadataResolver resolve(final boolean force) {
-        if (lock.tryLock()) {
-            try {
-                var reload = force || hasChanged();
-                if (reload) {
-                    this.metadataResolver = buildMetadataResolver();
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-        return metadataResolver;
+    public final MetadataResolver resolve() {
+        return load();
     }
 
-    boolean hasChanged() {
-        long newLastModified;
-        try {
-            var idpMetadataResource = configuration.getIdentityProviderMetadataResource();
-            newLastModified = idpMetadataResource.lastModified();
-        } catch (final Exception e) {
-            newLastModified = NO_LAST_MODIFIED;
-        }
-        val hasChanged = lastModified != newLastModified;
-        logger.debug("lastModified: {} / newLastModified: {} -> hasChanged: {}", lastModified, newLastModified, hasChanged);
-        lastModified = newLastModified;
-        return hasChanged;
-    }
-
-    protected MetadataResolver buildMetadataResolver() {
-        return initializeMetadataResolver();
-    }
-
-    public long getLastModified() {
-        return lastModified;
-    }
-
-    /**
-     * If no idpEntityId declared, select first EntityDescriptor entityId as our IDP.
-     *
-     * @return entity id of the idp
-     */
-    protected String determineIdentityProviderEntityId() {
-        var idpEntityId = configuration.getIdentityProviderEntityId();
-        if (idpEntityId == null) {
-            var it = ((IterableMetadataSource) metadataResolver).iterator();
-            if (it.hasNext()) {
-                var entityDescriptor = it.next();
-                idpEntityId = entityDescriptor.getEntityID();
-            }
-        }
-
-        if (idpEntityId == null) {
-            throw new SAMLException("No idp entityId found");
-        }
-        return idpEntityId;
+    protected void internalLoad() {
+        this.loaded = initializeMetadataResolver();
     }
 
     protected DOMMetadataResolver initializeMetadataResolver() {
-        try (var in = getMetadataResourceInputStream()) {
+        try (var in = SpringResourceHelper.getResourceInputStream(
+            configuration.getIdentityProviderMetadataResource(),
+            proxy,
+            sslSocketFactory,
+            hostnameVerifier,
+            configuration.getIdentityProviderMetadataConnectTimeout(),
+            configuration.getIdentityProviderMetadataReadTimeout()
+        )) {
             var parsedInput = Configuration.getParserPool().parse(in);
             var metadataRoot = parsedInput.getDocumentElement();
             var resolver = new DOMMetadataResolver(metadataRoot);
@@ -152,37 +99,25 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         }
     }
 
-    protected InputStream getMetadataResourceInputStream() throws IOException {
-        var idpMetadataResource = configuration.getIdentityProviderMetadataResource();
-        if (idpMetadataResource instanceof UrlResource) {
-            var con = idpMetadataResource.getURL().openConnection(proxy);
-            if (con instanceof HttpsURLConnection) {
-                HttpsURLConnection connection = (HttpsURLConnection) con;
-                if (this.sslSocketFactory != null) {
-                    connection.setSSLSocketFactory(this.sslSocketFactory);
-                }
-                if (this.hostnameVerifier != null) {
-                    connection.setHostnameVerifier(this.hostnameVerifier);
-                }
-            }
-
-            try {
-                prepareMetadataRemoteConnection(con);
-                return con.getInputStream();
-            } catch (final Exception e) {
-                if (con instanceof HttpURLConnection) {
-                    ((HttpURLConnection) con).disconnect();
-                }
-                throw new TechnicalException("Error getting idp metadata resource", e);
+    /**
+     * If no idpEntityId declared, select first EntityDescriptor entityId as our IDP.
+     *
+     * @return entity id of the idp
+     */
+    protected String determineIdentityProviderEntityId() {
+        var idpEntityId = configuration.getIdentityProviderEntityId();
+        if (idpEntityId == null) {
+            var it = ((IterableMetadataSource) loaded).iterator();
+            if (it.hasNext()) {
+                var entityDescriptor = it.next();
+                idpEntityId = entityDescriptor.getEntityID();
             }
         }
 
-        return idpMetadataResource.getInputStream();
-    }
-
-    protected void prepareMetadataRemoteConnection(final URLConnection connection) {
-        connection.setConnectTimeout(configuration.getIdentityProviderMetadataConnectTimeout());
-        connection.setReadTimeout(configuration.getIdentityProviderMetadataReadTimeout());
+        if (idpEntityId == null) {
+            throw new SAMLException("No idp entityId found");
+        }
+        return idpEntityId;
     }
 
     @Override
@@ -213,17 +148,5 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         } catch (final ResolverException e) {
             throw new SAMLException("Error initializing idpMetadataProvider", e);
         }
-    }
-
-    public void setProxy(final Proxy proxy) {
-        this.proxy = proxy;
-    }
-
-    public void setHostnameVerifier(final HostnameVerifier hostnameVerifier) {
-        this.hostnameVerifier = hostnameVerifier;
-    }
-
-    public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
     }
 }

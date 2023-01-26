@@ -14,11 +14,11 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.profile.converter.AttributeConverter;
+import org.pac4j.core.resource.SpringResourceHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
@@ -40,7 +40,6 @@ import org.springframework.core.io.UrlResource;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Period;
 import java.util.*;
@@ -62,12 +61,6 @@ import java.util.function.Supplier;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SAML2Configuration extends BaseClientConfiguration {
-
-    protected static final String RESOURCE_PREFIX = "resource:";
-
-    protected static final String CLASSPATH_PREFIX = "classpath:";
-
-    protected static final String FILE_PREFIX = "file:";
 
     protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
 
@@ -221,8 +214,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     public SAML2Configuration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
                               final String identityProviderMetadataPath) {
-        this(null, null, mapPathToResource(keystorePath), keystorePassword, privateKeyPassword,
-            mapPathToResource(identityProviderMetadataPath), null, null,
+        this(null, null, SpringResourceHelper.buildResourceFromPath(keystorePath), keystorePassword, privateKeyPassword,
+            SpringResourceHelper.buildResourceFromPath(identityProviderMetadataPath), null, null,
             DEFAULT_PROVIDER_NAME, null, null);
     }
 
@@ -258,35 +251,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.providerName = providerName;
         this.authnRequestExtensions = authnRequestExtensions;
         this.attributeAsId = attributeAsId;
-    }
-
-    protected static UrlResource newUrlResource(final String url) {
-        try {
-            return new UrlResource(url);
-        } catch (final MalformedURLException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    private static Resource mapPathToResource(final String path) {
-        CommonHelper.assertNotBlank("path", path);
-        try {
-            if (path.startsWith(RESOURCE_PREFIX)) {
-                return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
-            }
-            if (path.startsWith(CLASSPATH_PREFIX)) {
-                return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
-            }
-            if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
-                return new UrlResource(new URL(path));
-            }
-            if (path.startsWith(FILE_PREFIX)) {
-                return new FileSystemResource(path.substring(FILE_PREFIX.length()));
-            }
-            return new FileSystemResource(path);
-        } catch (final Exception e) {
-            throw new TechnicalException(e);
-        }
     }
 
     public void setCallbackUrl(final String callbackUrl) {
@@ -340,11 +304,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     public void setIdentityProviderMetadataResourceUrl(final String url) {
-        this.identityProviderMetadataResource = newUrlResource(url);
+        this.identityProviderMetadataResource = SpringResourceHelper.newUrlResource(url);
     }
 
     public void setIdentityProviderMetadataPath(final String path) {
-        this.identityProviderMetadataResource = mapPathToResource(path);
+        this.identityProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
     }
 
     public void setKeystoreResourceFilepath(final String path) {
@@ -356,11 +320,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     public void setKeystoreResourceUrl(final String url) {
-        this.keystoreResource = mapPathToResource(url);
+        this.keystoreResource = SpringResourceHelper.buildResourceFromPath(url);
     }
 
     public void setKeystorePath(final String path) {
-        this.keystoreResource = mapPathToResource(path);
+        this.keystoreResource = SpringResourceHelper.buildResourceFromPath(path);
     }
 
     public void setPrivateKeyPassword(final String privateKeyPassword) {
@@ -380,7 +344,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     public void setServiceProviderMetadataPath(final String path) {
-        this.serviceProviderMetadataResource = mapPathToResource(path);
+        this.serviceProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
     }
 
     public SessionLogoutHandler findSessionLogoutHandler() {

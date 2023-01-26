@@ -1,14 +1,11 @@
 package org.pac4j.oidc.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.val;
 import org.pac4j.core.util.HttpUtils;
+import org.pac4j.oidc.metadata.AzureAdOpMetadataResolver;
 
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.isBlank;
 
 /**
@@ -32,7 +29,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
     }
 
     public AzureAd2OidcConfiguration(final OidcConfiguration oidcConfiguration) {
-        this.setProviderMetadata(oidcConfiguration.getProviderMetadata());
+        this.setOpMetadataResolver(oidcConfiguration.getOpMetadataResolver());
         this.setClientId(oidcConfiguration.getClientId());
         this.setSecret(oidcConfiguration.getSecret());
         this.setScope(oidcConfiguration.getScope());
@@ -55,6 +52,12 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
         if (isBlank(getTenant())){
             // default value
             setTenant("common");
+        }
+
+        if (this.getOpMetadataResolver() == null) {
+            assertNotBlank("discoveryURI", getDiscoveryURI());
+            this.opMetadataResolver = new AzureAdOpMetadataResolver(this);
+            this.opMetadataResolver.init();
         }
 
         super.internalInit(forceReinit);

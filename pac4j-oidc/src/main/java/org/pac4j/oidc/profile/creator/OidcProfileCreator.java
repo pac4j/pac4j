@@ -100,7 +100,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
             // Check ID Token
             if (oidcCredentials != null) {
-                val claimsSet = configuration.findTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
+                val claimsSet = configuration.getOpMetadataResolver().getTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
                 assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
@@ -112,8 +112,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             // User Info request
-            if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                val userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(), accessToken);
+            val opMetadata = configuration.getOpMetadataResolver().load();
+            if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
+                val userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
                 val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
                 val httpResponse = userInfoHttpRequest.send();
@@ -171,7 +172,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             final AccessToken accessToken = credentials.getAccessToken();
             if (accessToken != null) {
                 var accessTokenJwt = JWTParser.parse(accessToken.getValue());
-                var accessTokenClaims = configuration.findTokenValidator().validate(accessTokenJwt, nonce);
+                var accessTokenClaims = configuration.getOpMetadataResolver().getTokenValidator().validate(accessTokenJwt, nonce);
 
                 // add attributes of the access token if they don't already exist
                 for (val entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {

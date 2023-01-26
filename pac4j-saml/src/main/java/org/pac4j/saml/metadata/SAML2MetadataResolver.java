@@ -10,11 +10,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
  * @since 1.7
  */
 public interface SAML2MetadataResolver {
-    MetadataResolver resolve(boolean force);
-
-    default MetadataResolver resolve() {
-        return resolve(false);
-    }
+    MetadataResolver resolve();
 
     String getEntityId();
 

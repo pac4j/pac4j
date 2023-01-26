@@ -123,6 +123,6 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         } catch (final Exception e) {
             throw new TechnicalException(e);
         }
-        return client.getConfiguration().getProviderMetadata().getAuthorizationEndpointURI().toString() + '?' + queryString;
+        return client.getConfiguration().getOpMetadataResolver().load().getAuthorizationEndpointURI().toString() + '?' + queryString;
     }
 }

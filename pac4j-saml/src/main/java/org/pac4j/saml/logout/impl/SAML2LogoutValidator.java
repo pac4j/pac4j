@@ -13,10 +13,12 @@ import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
@@ -68,13 +70,13 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         if (message instanceof LogoutRequest logoutRequest) {
             val engine = this.signatureTrustEngineProvider.build();
             validateLogoutRequest(logoutRequest, context, engine);
-            return null;
+            return new SAML2Credentials(LogoutType.UNDEFINED, context);
 
         // SP-initiated
         } else if (message instanceof LogoutResponse logoutResponse) {
             val engine = this.signatureTrustEngineProvider.build();
             validateLogoutResponse(logoutResponse, context, engine);
-            return null;
+            return new SAML2Credentials(LogoutType.UNDEFINED, context);
         }
 
         throw new SAMLException("SAML message must be a LogoutRequest or LogoutResponse type");

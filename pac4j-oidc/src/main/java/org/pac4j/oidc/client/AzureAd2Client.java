@@ -67,7 +67,7 @@ public class AzureAd2Client extends OidcClient {
             headers.put(HttpConstants.CONTENT_TYPE_HEADER, HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE);
             headers.put(HttpConstants.ACCEPT_HEADER, HttpConstants.APPLICATION_JSON);
             // get the token endpoint from discovery URI
-            val tokenEndpointURL = azureConfig.findProviderMetadata().getTokenEndpointURI().toURL();
+            val tokenEndpointURL = azureConfig.getOpMetadataResolver().load().getTokenEndpointURI().toURL();
             connection = HttpUtils.openPostConnection(tokenEndpointURL, headers);
 
             val out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(),

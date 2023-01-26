@@ -19,11 +19,7 @@ import java.net.Proxy;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class SAML2IdentityProviderMetadataResolverTest {
@@ -56,7 +52,6 @@ public class SAML2IdentityProviderMetadataResolverTest {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
-        metadataResolver.init();
     }
 
     @Test
@@ -70,6 +65,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
 
     @Test
     public void resolveMetadataDocumentAsString() {
+        metadataResolver.init();
         var metadata = metadataResolver.getMetadata();
         assertNotNull(metadata);
     }
@@ -113,19 +109,18 @@ public class SAML2IdentityProviderMetadataResolverTest {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new UrlResource("https://sso.union.edu/idp/shibboleth"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
-        metadataResolver.init();
 
         var resolver = metadataResolver.resolve();
         assertNotNull(resolver);
 
         assertFalse(metadataResolver.hasChanged());
         assertEquals(0, metadataResolver.getLastModified());
-        assertNotNull(metadataResolver.resolve(true));
+        assertNotNull(metadataResolver.load());
 
         var addr = new InetSocketAddress("unknown.example.com", 8080);
         var proxy = new Proxy(Proxy.Type.HTTP, addr);
         metadataResolver.setProxy(proxy);
-        assertThrows(TechnicalException.class, () -> metadataResolver.resolve(true));
+        assertThrows(TechnicalException.class, () -> metadataResolver.internalLoad());
     }
 
     @Test

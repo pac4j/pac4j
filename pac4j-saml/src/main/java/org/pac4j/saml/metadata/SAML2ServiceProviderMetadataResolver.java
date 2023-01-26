@@ -48,7 +48,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     }
 
     @Override
-    public final MetadataResolver resolve(final boolean force) {
+    public final MetadataResolver resolve() {
         return this.metadataResolver;
     }
 

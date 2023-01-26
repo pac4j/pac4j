@@ -20,8 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests {@link TokenValidator}.
@@ -35,15 +36,16 @@ public final class TokenValidatorTests implements TestsConstants {
 
     private OidcConfiguration configuration;
 
+    private OIDCProviderMetadata metadata;
+
     private List<JWSAlgorithm> algorithms;
 
     @Before
     public void setUp() throws URISyntaxException {
         configuration = mock(OidcConfiguration.class);
-        final OIDCProviderMetadata metadata = mock(OIDCProviderMetadata.class);
+        metadata = mock(OIDCProviderMetadata.class);
         when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
         when(metadata.getJWKSetURI()).thenReturn(new URI(PAC4J_BASE_URL));
-        when(configuration.findProviderMetadata()).thenReturn(metadata);
         when(configuration.getClientId()).thenReturn(ID);
         when(configuration.getSecret()).thenReturn(CLIENT_SECRET);
         algorithms = new ArrayList<>();
@@ -52,14 +54,14 @@ public final class TokenValidatorTests implements TestsConstants {
 
     @Test
     public void testNoAlgoDefinedAtProvider() {
-        TestsHelper.expectException(() -> new TokenValidator(configuration), TechnicalException.class,
+        TestsHelper.expectException(() -> new TokenValidator(configuration, metadata), TechnicalException.class,
             "There must at least one JWS algorithm supported on the OpenID Connect provider side");
     }
 
     @Test
     public void testNoneAlgoNotAllowed() {
         algorithms.add(JWSAlgorithm.parse("none"));
-        TestsHelper.expectException(() -> new TokenValidator(configuration), TechnicalException.class,
+        TestsHelper.expectException(() -> new TokenValidator(configuration, metadata), TechnicalException.class,
             "Unsigned ID tokens are not allowed: they must be explicitly enabled on client side and " +
                 "the response_type used must return no ID Token from the authorization endpoint");
     }
@@ -68,7 +70,7 @@ public final class TokenValidatorTests implements TestsConstants {
     public void testNoneAlgoAllowed() {
         algorithms.add(JWSAlgorithm.parse("none"));
         when(configuration.isAllowUnsignedIdTokens()).thenReturn(true);
-        final TokenValidator validator = new TokenValidator(configuration);
+        final TokenValidator validator = new TokenValidator(configuration, metadata);
         final List<IDTokenValidator> validators = validator.getIdTokenValidators();
         assertEquals(1, validators.size());
         assertTrue(validators.get(0) instanceof IDTokenValidator);
@@ -79,7 +81,7 @@ public final class TokenValidatorTests implements TestsConstants {
         when(configuration.getResponseType()).thenReturn("code id_token");
         algorithms.add(JWSAlgorithm.parse("none"));
         when(configuration.isAllowUnsignedIdTokens()).thenReturn(true);
-        TestsHelper.expectException(() -> new TokenValidator(configuration), TechnicalException.class,
+        TestsHelper.expectException(() -> new TokenValidator(configuration, metadata), TechnicalException.class,
             "Unsigned ID tokens are not allowed: they must be explicitly enabled on client side and " +
                 "the response_type used must return no ID Token from the authorization endpoint");
     }
@@ -88,7 +90,7 @@ public final class TokenValidatorTests implements TestsConstants {
     public void testTwoAlgorithms() {
         algorithms.add(JWSAlgorithm.HS256);
         algorithms.add(JWSAlgorithm.RS256);
-        final TokenValidator validator = new TokenValidator(configuration);
+        final TokenValidator validator = new TokenValidator(configuration, metadata);
         final List<IDTokenValidator> validators = validator.getIdTokenValidators();
         assertEquals(2, validators.size());
     }
@@ -98,7 +100,7 @@ public final class TokenValidatorTests implements TestsConstants {
         algorithms.add(JWSAlgorithm.HS256);
         algorithms.add(JWSAlgorithm.RS256);
         when(configuration.getPreferredJwsAlgorithm()).thenReturn(JWSAlgorithm.HS256);
-        final TokenValidator validator = new TokenValidator(configuration);
+        final TokenValidator validator = new TokenValidator(configuration, metadata);
         final List<IDTokenValidator> validators = validator.getIdTokenValidators();
         assertEquals(1, validators.size());
     }
@@ -106,7 +108,7 @@ public final class TokenValidatorTests implements TestsConstants {
     @Test
     public void testValidateIdToken() throws Exception {
         algorithms.add(JWSAlgorithm.HS256);
-        final TokenValidator validator = new TokenValidator(configuration);
+        final TokenValidator validator = new TokenValidator(configuration, metadata);
 
         final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(CLIENT_SECRET, JWSAlgorithm.HS256));
         final Map<String, Object> claims = new HashMap<>();

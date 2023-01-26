@@ -42,7 +42,6 @@ public class SAML2LogoutValidatorTests {
         var config = getSaml2Configuration();
 
         var idp = new SAML2IdentityProviderMetadataResolver(config);
-        idp.init();
         var sp = new SAML2ServiceProviderMetadataResolver(config);
         return new ExplicitSignatureTrustEngineProvider(idp, sp);
     }

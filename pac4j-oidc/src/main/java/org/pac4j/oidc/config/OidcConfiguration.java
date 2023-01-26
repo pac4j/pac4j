@@ -9,7 +9,6 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.pac4j.core.client.config.BaseClientConfiguration;
@@ -17,16 +16,15 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 
 import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
@@ -116,8 +114,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private ResourceRetriever resourceRetriever;
 
-    private OIDCProviderMetadata providerMetadata;
-
     private ResponseType responseType = AUTHORIZATION_CODE_FLOWS.get(0);
 
     private String responseMode;
@@ -146,8 +142,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private SessionLogoutHandler sessionLogoutHandler;
 
-    private TokenValidator tokenValidator;
-
     private boolean allowUnsignedIdTokens;
 
     /** If enabled, try to process the access token as a JWT and include its claims in the profile.
@@ -161,6 +155,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private String SSLFactory;
 
+    protected OidcOpMetadataResolver opMetadataResolver;
+
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -173,8 +169,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
         if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()) {
             assertNotBlank("secret", getSecret());
         }
-        if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {
-            throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
+        if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null) {
+            throw new TechnicalException("You must define either the discovery URL or directly the provider metadata resolver");
         }
 
         // default value
@@ -183,31 +179,21 @@ public class OidcConfiguration extends BaseClientConfiguration {
                 setResourceRetriever(SSLFactory == null ?
                     new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) :
                     new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false,
-                        (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance()));
+                        (SSLSocketFactory) CommonHelper.getConstructor(SSLFactory).newInstance()));
             } catch (ClassNotFoundException | InvocationTargetException | InstantiationException
-                | IllegalAccessException | NoSuchMethodException e) {
+                     | IllegalAccessException | NoSuchMethodException e) {
                 throw new TechnicalException("SSLFactory loaded fail, please check your configuration");
             }
         }
-        if (this.getProviderMetadata() == null) {
+
+        if (this.getOpMetadataResolver() == null) {
             assertNotBlank("discoveryURI", getDiscoveryURI());
-            try {
-                // Download OIDC metadata
-                this.setProviderMetadata(OIDCProviderMetadata.parse(getResourceRetriever().retrieveResource(
-                    new URL(this.getDiscoveryURI())).getContent()));
-            } catch (final IOException | ParseException e) {
-                throw new TechnicalException(e);
-            }
+            this.opMetadataResolver = new OidcOpMetadataResolver(this);
         }
+
         if (this.sessionLogoutHandler == null) {
             this.sessionLogoutHandler = new DefaultSessionLogoutHandler();
         }
-    }
-
-    public OIDCProviderMetadata findProviderMetadata() {
-        init();
-
-        return this.providerMetadata;
     }
 
     public void setDiscoveryURIIfUndefined(final String discoveryURI) {
@@ -240,10 +226,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
             return null;
         }
         if (getPkceMethod() == null) {
-            if (getProviderMetadata() == null) {
-                return null;
-            }
-            val methods = getProviderMetadata().getCodeChallengeMethods();
+            val opMetadataResolver = getOpMetadataResolver().load();
+            val methods = opMetadataResolver.getCodeChallengeMethods();
             if (methods == null || methods.isEmpty()) {
                 return null;
             }
@@ -281,8 +265,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public String findLogoutUrl() {
         init();
 
-        if(logoutUrl == null && getProviderMetadata().getEndSessionEndpointURI() != null) {
-            return getProviderMetadata().getEndSessionEndpointURI().toString();
+        val opMetadataResolver = getOpMetadataResolver().load();
+        if(logoutUrl == null && opMetadataResolver.getEndSessionEndpointURI() != null) {
+            return opMetadataResolver.getEndSessionEndpointURI().toString();
         }
         return logoutUrl;
     }
@@ -310,13 +295,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
         init();
 
         return sessionLogoutHandler;
-    }
-
-    public TokenValidator findTokenValidator() {
-        if (this.tokenValidator == null) {
-            setTokenValidator(new TokenValidator(this));
-        }
-        return tokenValidator;
     }
 
     public String getResponseType() {

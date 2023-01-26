@@ -94,7 +94,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             LOGGER.debug("Authentication response successful");
             var successResponse = (AuthenticationSuccessResponse) response;
 
-            var metadata = configuration.getProviderMetadata();
+            var metadata = configuration.getOpMetadataResolver().load();
             if (metadata.supportsAuthorizationResponseIssuerParam() &&
                 !metadata.getIssuer().equals(successResponse.getIssuer())) {
                 throw new TechnicalException("Issuer mismatch, possible mix-up attack.");

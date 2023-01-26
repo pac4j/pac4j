@@ -9,6 +9,7 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -31,13 +32,18 @@ public class TokenValidator {
 
     private final List<IDTokenValidator> idTokenValidators;
 
-    protected final OidcConfiguration configuration;
+    private final OidcConfiguration configuration;
 
-    public TokenValidator(final OidcConfiguration configuration) {
+    private final OIDCProviderMetadata metadata;
+
+    public TokenValidator(final OidcConfiguration configuration, final OIDCProviderMetadata metadata) {
         CommonHelper.assertNotNull("configuration", configuration);
+        CommonHelper.assertNotNull("metadata", metadata);
+        this.configuration = configuration;
+        this.metadata = metadata;
 
         // check algorithms
-        val metadataAlgorithms = configuration.findProviderMetadata().getIDTokenJWSAlgs();
+        val metadataAlgorithms = metadata.getIDTokenJWSAlgs();
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
             "There must at least one JWS algorithm supported on the OpenID Connect provider side");
         List<JWSAlgorithm> jwsAlgorithms = new ArrayList<>();
@@ -66,35 +72,31 @@ public class TokenValidator {
                         "the response_type used must return no ID Token from the authorization endpoint");
                 }
                 LOGGER.warn("Allowing unsigned ID tokens");
-                idTokenValidator = new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID);
+                idTokenValidator = new IDTokenValidator(metadata.getIssuer(), _clientID);
             } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
                 val _secret = new Secret(configuration.getSecret());
-                idTokenValidator = createHMACTokenValidator(configuration, jwsAlgorithm, _clientID, _secret);
+                idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
             } else {
-                idTokenValidator = createRSATokenValidator(configuration, jwsAlgorithm, _clientID);
+                idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
             }
             idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
 
             idTokenValidators.add(idTokenValidator);
         }
-
-        this.configuration = configuration;
     }
 
-    protected IDTokenValidator createRSATokenValidator(final OidcConfiguration configuration,
-                                                       final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
+    protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
-            return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
-                configuration.findProviderMetadata().getJWKSetURI().toURL(), configuration.findResourceRetriever());
+            return new IDTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, metadata.getJWKSetURI().toURL(),
+                configuration.findResourceRetriever());
         } catch (final MalformedURLException e) {
             throw new TechnicalException(e);
         }
     }
 
-    protected IDTokenValidator createHMACTokenValidator(final OidcConfiguration configuration, final JWSAlgorithm jwsAlgorithm,
-                                                        final ClientID clientID, final Secret secret) {
-        return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
+    protected IDTokenValidator createHMACTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID, final Secret secret) {
+        return new IDTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, secret);
     }
 
     public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce)

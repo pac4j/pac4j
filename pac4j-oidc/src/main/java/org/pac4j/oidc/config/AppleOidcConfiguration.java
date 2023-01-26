@@ -11,18 +11,13 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.SubjectType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oidc.metadata.StaticOidcOpMetadataResolver;
 
 import java.net.URI;
 import java.security.interfaces.ECPrivateKey;
@@ -94,8 +89,9 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         // https://developer.apple.com/documentation/sign_in_with_apple/generate_and_validate_tokens
         providerMetadata.setTokenEndpointURI(URI.create("https://appleid.apple.com/auth/token"));
         providerMetadata.setIDTokenJWSAlgs(Collections.singletonList(JWSAlgorithm.RS256));
-        setProviderMetadata(providerMetadata);
+        this.opMetadataResolver = new StaticOidcOpMetadataResolver(this, providerMetadata);
         setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+
         super.internalInit(forceReinit);
     }
 
