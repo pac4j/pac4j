@@ -44,7 +44,8 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
 
     private final SAML2LogoutResponseMessageSender saml2LogoutResponseMessageSender;
 
-    private final String postLogoutURL;
+    @Setter
+    private String postLogoutURL;
 
     /**
      * When set to false, will cause the validator
