@@ -177,6 +177,7 @@ public class SAML2Client extends IndirectClient {
 
     protected void initIdentityProviderMetadataResolver() {
         this.identityProviderMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
+        this.identityProviderMetadataResolver.resolve();
     }
 
     protected void initDecrypter() {
