@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -11,6 +12,7 @@ import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
 /**
  * @author Misagh Moayyed
  */
+@Slf4j
 public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRequest> {
 
     public SAML2WebSSOMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
@@ -24,13 +26,13 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
     protected boolean mustSignRequest(final SPSSODescriptor spDescriptor, final IDPSSODescriptor idpssoDescriptor) {
         var signOutboundContext = false;
         if (this.isRequestSigned) {
-            logger.debug("Requests are expected to be always signed before submission");
+            LOGGER.debug("Requests are expected to be always signed before submission");
             signOutboundContext = true;
         } else if (spDescriptor.isAuthnRequestsSigned()) {
-            logger.debug("The service provider metadata indicates that authn requests are signed");
+            LOGGER.debug("The service provider metadata indicates that authn requests are signed");
             signOutboundContext = true;
         } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
-            logger.debug("The identity provider metadata indicates that authn requests may be signed");
+            LOGGER.debug("The identity provider metadata indicates that authn requests may be signed");
             signOutboundContext = true;
         }
         return signOutboundContext;

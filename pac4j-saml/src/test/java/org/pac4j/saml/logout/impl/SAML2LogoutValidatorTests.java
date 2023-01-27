@@ -64,7 +64,7 @@ public class SAML2LogoutValidatorTests {
     }
 
     private static SAML2MessageContext getSaml2MessageContext(final MockWebContext webContext, final String xml) {
-        val context = new SAML2MessageContext();
+        val context = new SAML2MessageContext(new CallContext(webContext, new MockSessionStore()));
         context.setSaml2Configuration(getSaml2Configuration());
 
         val samlMessage = new MessageContext();
@@ -74,7 +74,6 @@ public class SAML2LogoutValidatorTests {
         context.setMessageContext(samlMessage);
         val entityDescriptor = new EntityDescriptorBuilder().buildObject();
         context.getSAMLPeerMetadataContext().setEntityDescriptor(entityDescriptor);
-        context.setCallContext(new CallContext(webContext, new MockSessionStore()));
 
         val spDescriptor = new SPSSODescriptorBuilder().buildObject();
         val logoutService = new SingleLogoutServiceBuilder().buildObject();

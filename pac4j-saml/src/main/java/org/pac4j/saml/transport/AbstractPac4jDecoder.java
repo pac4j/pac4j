@@ -2,6 +2,7 @@ package org.pac4j.saml.transport;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import lombok.Getter;
 import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.component.ComponentInitializationException;
@@ -16,7 +17,7 @@ import org.opensaml.messaging.decoder.AbstractMessageDecoder;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.slf4j.Logger;
@@ -41,23 +42,24 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
     /** Parser pool used to deserialize the message. */
     protected ParserPool parserPool;
 
-    protected final WebContext context;
+    @Getter
+    protected final CallContext callContext;
 
-    public AbstractPac4jDecoder(final WebContext context) {
+    public AbstractPac4jDecoder(final CallContext context) {
         CommonHelper.assertNotNull("context", context);
-        this.context = context;
+        this.callContext = context;
     }
 
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         Optional<String> encodedMessage = Optional.empty();
         for (val parameter : SAML_PARAMETERS) {
-            encodedMessage = this.context.getRequestParameter(parameter);
+            encodedMessage = this.callContext.webContext().getRequestParameter(parameter);
             if (encodedMessage.isPresent()) {
                 break;
             }
         }
         if (!encodedMessage.isPresent()) {
-            encodedMessage = Optional.ofNullable(this.context.getRequestContent());
+            encodedMessage = Optional.ofNullable(this.callContext.webContext().getRequestContent());
             // we have a body, it may be the SAML request/response directly
             // but we also try to parse it as a list key=value where the value is the SAML request/response
             if (encodedMessage.isPresent()) {

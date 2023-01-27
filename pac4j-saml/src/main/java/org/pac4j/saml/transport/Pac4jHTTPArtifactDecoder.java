@@ -1,13 +1,14 @@
 package org.pac4j.saml.transport;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.annotation.constraint.NonnullAfterInit;
 import net.shibboleth.shared.annotation.constraint.NotEmpty;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.component.ComponentInitializationException;
-import net.shibboleth.shared.component.ComponentSupport;
 import net.shibboleth.shared.logic.Constraint;
 import net.shibboleth.shared.primitive.StringSupport;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -43,8 +44,8 @@ import org.opensaml.saml.saml2.metadata.ArtifactResolutionService;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.security.SecurityException;
 import org.opensaml.soap.client.SOAPClient;
-import org.opensaml.soap.client.http.PipelineFactoryHttpSOAPClient;
 import org.opensaml.soap.common.SOAPException;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.util.SAML2Utils;
 
@@ -63,9 +64,11 @@ import java.time.ZonedDateTime;
 public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements SAMLMessageDecoder {
 
     /**
-     * The web context
+     * The call context
      */
-    private WebContext webContext;
+    @Getter
+    @Setter
+    private CallContext callContext;
 
     /**
      * Parser pool used to deserialize the message.
@@ -75,56 +78,76 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * Optional {@link BindingDescriptor} to inject into {@link SAMLBindingContext} created.
      */
+    @Getter
+    @Setter
     private BindingDescriptor bindingDescriptor;
 
     /**
      * SAML 2 artifact builder factory.
      */
     @NonnullAfterInit
+    @Getter
+    @Setter
     private SAML2ArtifactBuilderFactory artifactBuilderFactory;
 
     /**
      * Resolver for ArtifactResolutionService endpoints.
      **/
     @NonnullAfterInit
+    @Getter
+    @Setter
     private EndpointResolver<ArtifactResolutionService> artifactEndpointResolver;
 
     /**
      * Role descriptor resolver.
      */
     @NonnullAfterInit
+    @Getter
+    @Setter
     private RoleDescriptorResolver roleDescriptorResolver;
 
     /**
      * The peer entity role QName.
      */
     @NonnullAfterInit
+    @Getter
+    @Setter
     private QName peerEntityRole;
 
     /**
      * Resolver for the self entityID, based on the peer entity data.
      */
     @NonnullAfterInit
+    @Getter
+    @Setter
     private Resolver<String, CriteriaSet> selfEntityIDResolver;
 
     /**
      * SOAP client.
      */
+    @Getter
+    @Setter
     private SOAPClient soapClient;
 
     /**
      * The SOAP client message pipeline name.
      */
+    @Getter
+    @Setter
     private String soapPipelineName;
 
     /**
      * SOAP client security configuration profile ID.
      */
+    @Getter
+    @Setter
     private String soapClientSecurityConfigurationProfileId;
 
     /**
      * Identifier generation strategy.
      */
+    @Getter
+    @Setter
     private IdentifierGenerationStrategy idStrategy;
 
     /**
@@ -141,7 +164,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     public void decode() throws MessageDecodingException {
         LOGGER.debug("Beginning to decode message from WebContext");
 
-        LOGGER.debug("HttpServletRequest indicated Content-Type: {}", webContext.getRequestHeader("Content-type"));
+        LOGGER.debug("HttpServletRequest indicated Content-Type: {}", callContext.webContext().getRequestHeader("Content-type"));
 
         super.decode();
 
@@ -173,11 +196,11 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     protected void doDecode() throws MessageDecodingException {
         val messageContext = new MessageContext();
 
-        val relayState = StringSupport.trim(webContext.getRequestParameter("RelayState").orElse(null));
+        val relayState = StringSupport.trim(callContext.webContext().getRequestParameter("RelayState").orElse(null));
         LOGGER.debug("Decoded SAML relay state of: {}", relayState);
         SAMLBindingSupport.setRelayState(messageContext, relayState);
 
-        processArtifact(messageContext, webContext);
+        processArtifact(messageContext, callContext.webContext());
 
         populateBindingContext(messageContext);
 
@@ -249,201 +272,6 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     }
 
     /**
-     * Get the identifier generation strategy.
-     *
-     * @return Returns the identifier generation strategy
-     */
-    @NonnullAfterInit
-    public IdentifierGenerationStrategy getIdentifierGenerationStrategy() {
-        return idStrategy;
-    }
-
-    /**
-     * Set the identifier generation strategy.
-     *
-     * @param strategy the identifier generation strategy
-     */
-    public void setIdentifierGenerationStrategy(final IdentifierGenerationStrategy strategy) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        idStrategy = strategy;
-    }
-
-    /**
-     * Get the resolver for the self entityID.
-     *
-     * @return the resolver
-     */
-    @NonnullAfterInit
-    public Resolver<String, CriteriaSet> getSelfEntityIDResolver() {
-        return selfEntityIDResolver;
-    }
-
-    /**
-     * Set the resolver for the self entityID.
-     *
-     * @param resolver the resolver instance
-     */
-    public void setSelfEntityIDResolver(final Resolver<String, CriteriaSet> resolver) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        selfEntityIDResolver = resolver;
-    }
-
-    /**
-     * Get the peer entity role {@link QName}.
-     *
-     * @return the peer entity role
-     */
-    @NonnullAfterInit
-    public QName getPeerEntityRole() {
-        return peerEntityRole;
-    }
-
-    /**
-     * Set the peer entity role {@link QName}.
-     *
-     * @param role the peer entity role
-     */
-    public void setPeerEntityRole(final QName role) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        peerEntityRole = role;
-    }
-
-    /**
-     * Get the artifact endpoint resolver.
-     *
-     * @return the endpoint resolver
-     */
-    @NonnullAfterInit
-    public EndpointResolver<ArtifactResolutionService> getArtifactEndpointResolver() {
-        return artifactEndpointResolver;
-    }
-
-    /**
-     * Set the artifact endpoint resolver.
-     *
-     * @param resolver the new resolver
-     */
-    public void setArtifactEndpointResolver(final EndpointResolver<ArtifactResolutionService> resolver) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        artifactEndpointResolver = resolver;
-    }
-
-    /**
-     * Get the role descriptor resolver.
-     *
-     * <p>
-     * Must be capable of resolving descriptors based on {@link ArtifactCriterion}.
-     * </p>
-     *
-     * @return the role descriptor resolver
-     */
-    @NonnullAfterInit
-    public RoleDescriptorResolver getRoleDescriptorResolver() {
-        return roleDescriptorResolver;
-    }
-
-    /**
-     * Set the role descriptor resolver.
-     *
-     * <p>
-     * Must be capable of resolving descriptors based on {@link ArtifactCriterion}.
-     * </p>
-     *
-     * @param resolver the role descriptor resolver
-     */
-    public void setRoleDescriptorResolver(final RoleDescriptorResolver resolver) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        roleDescriptorResolver = resolver;
-    }
-
-    /**
-     * Get the SAML 2 artifact builder factory.
-     *
-     * @return the artifact builder factory in use
-     */
-    @NonnullAfterInit
-    public SAML2ArtifactBuilderFactory getArtifactBuilderFactory() {
-        return artifactBuilderFactory;
-    }
-
-    /**
-     * Set the SAML 2 artifact builder factory.
-     *
-     * @param factory the artifact builder factory
-     */
-    public void setArtifactBuilderFactory(final SAML2ArtifactBuilderFactory factory) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        artifactBuilderFactory = factory;
-    }
-
-    /**
-     * Get the SOAP client instance.
-     *
-     * @return the SOAP client
-     */
-    @NonnullAfterInit
-    public SOAPClient getSOAPClient() {
-        return soapClient;
-    }
-
-    /**
-     * Set the SOAP client instance.
-     *
-     * @param client the SOAP client
-     */
-    public void setSOAPClient(final SOAPClient client) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        soapClient = client;
-    }
-
-    /**
-     * Get the name of the specific SOAP client message pipeline to use,
-     * for example with {@link PipelineFactoryHttpSOAPClient}.
-     *
-     * @return the pipeline name, or null
-     */
-    public String getSOAPPipelineName() {
-        return soapPipelineName;
-    }
-
-    /**
-     * Set the name of the specific SOAP client message pipeline to use,
-     * for example with {@link PipelineFactoryHttpSOAPClient}.
-     *
-     * @param name the pipeline name, or null
-     */
-    public void setSOAPPipelineName(final String name) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        soapPipelineName = StringSupport.trimOrNull(name);
-    }
-
-    /**
-     * Get the SOAP client security configuration profile ID to use.
-     *
-     * @return the client security configuration profile ID, or null
-     */
-    public String getSOAPClientSecurityConfigurationProfileId() {
-        return soapClientSecurityConfigurationProfileId;
-    }
-
-    /**
-     * Set the SOAP client security configuration profile ID to use.
-     *
-     * @param profileId the profile ID, or null
-     */
-    public void setSOAPClientSecurityConfigurationProfileId(final String profileId) {
-        soapClientSecurityConfigurationProfileId = StringSupport.trimOrNull(profileId);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -452,25 +280,6 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         return SAMLConstants.SAML2_ARTIFACT_BINDING_URI;
     }
 
-    /**
-     * Get an optional {@link BindingDescriptor} to inject into {@link SAMLBindingContext} created.
-     *
-     * @return binding descriptor
-     */
-    public BindingDescriptor getBindingDescriptor() {
-        return bindingDescriptor;
-    }
-
-    /**
-     * Set an optional {@link BindingDescriptor} to inject into {@link SAMLBindingContext} created.
-     *
-     * @param descriptor a binding descriptor
-     */
-    public void setBindingDescriptor(final BindingDescriptor descriptor) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-        bindingDescriptor = descriptor;
-    }
 
     /**
      * Process the incoming artifact by decoding the artifacts, dereferencing it from the artifact issuer and
@@ -531,8 +340,8 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
                 .setOutboundMessage(buildArtifactResolveRequestMessage(
                     artifact, ars.getLocation(), selfEntityID))
                 .setProtocol(SAMLConstants.SAML20P_NS)
-                .setPipelineName(getSOAPPipelineName())
-                .setSecurityConfigurationProfileId(getSOAPClientSecurityConfigurationProfileId())
+                .setPipelineName(soapPipelineName)
+                .setSecurityConfigurationProfileId(soapClientSecurityConfigurationProfileId)
                 .setPeerRoleDescriptor(peerRoleDescriptor)
                 .setSelfEntityID(selfEntityID)
                 .build();
@@ -751,10 +560,4 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         bindingContext.setIntendedDestinationEndpointURIRequired(false);
     }
 
-    public synchronized void setWebContext(final WebContext webContext) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
-
-        this.webContext = webContext;
-    }
 }

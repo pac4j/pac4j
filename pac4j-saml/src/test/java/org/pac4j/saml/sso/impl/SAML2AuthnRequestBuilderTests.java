@@ -77,11 +77,10 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         val spDescriptor = mock(SPSSODescriptor.class);
         when(spDescriptor.getAssertionConsumerServices()).thenReturn(Collections.singletonList(acs));
 
-        val context = new SAML2MessageContext();
+        val context = new SAML2MessageContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.getSAMLPeerMetadataContext().setRoleDescriptor(idpDescriptor);
         context.getSAMLSelfMetadataContext().setRoleDescriptor(spDescriptor);
         context.getSAMLSelfEntityContext().setEntityId("entity-id");
-        context.setCallContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
         context.setSaml2Configuration(configuration);
         return context;
     }

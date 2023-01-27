@@ -45,7 +45,7 @@ public class SAML2MessageContext {
 
     private SAML2Configuration saml2Configuration;
 
-    private CallContext callContext;
+    private final CallContext callContext;
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
@@ -57,8 +57,8 @@ public class SAML2MessageContext {
 
     private SAMLMessageStore samlMessageStore;
 
-    public SAML2MessageContext() {
-        super();
+    public SAML2MessageContext(final CallContext callContext) {
+        this.callContext = callContext;
     }
 
     public SAML2ConfigurationContext getConfigurationContext() {

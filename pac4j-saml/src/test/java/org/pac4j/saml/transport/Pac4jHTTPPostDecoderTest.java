@@ -5,7 +5,9 @@ import net.shibboleth.shared.component.ComponentInitializationException;
 import org.junit.Test;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.saml2.core.impl.ResponseImpl;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.saml.util.Configuration;
 
 import java.net.URLDecoder;
@@ -99,7 +101,7 @@ public class Pac4jHTTPPostDecoderTest {
 
         webContext.setRequestMethod("POST");
         val decoder =
-            new Pac4jHTTPPostDecoder(webContext);
+            new Pac4jHTTPPostDecoder(new CallContext(webContext, new MockSessionStore()));
         val message = "SAMLResponse=" + SAML_RESPONSE
                 + "&RelayState=https%3A%2F%2Flocalhost%3A8443%2Fanzo_authenticate%3Fclient_name%3DGSAML";
 
@@ -114,7 +116,7 @@ public class Pac4jHTTPPostDecoderTest {
 
         webContext.setRequestMethod("POST");
         val decoder =
-            new Pac4jHTTPPostDecoder(webContext);
+            new Pac4jHTTPPostDecoder(new CallContext(webContext, new MockSessionStore()));
         val message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
 
         webContext.setRequestContent(message);
@@ -128,7 +130,7 @@ public class Pac4jHTTPPostDecoderTest {
 
         webContext.setRequestMethod("POST");
         val decoder =
-            new Pac4jHTTPPostDecoder(webContext);
+            new Pac4jHTTPPostDecoder(new CallContext(webContext, new MockSessionStore()));
         val message = URLDecoder.decode(SAML_RESPONSE, StandardCharsets.UTF_8.name());
         webContext.addRequestParameter("SAMLResponse", message);
         decode(decoder);

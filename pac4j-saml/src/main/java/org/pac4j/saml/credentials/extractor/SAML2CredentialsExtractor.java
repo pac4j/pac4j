@@ -9,7 +9,6 @@ import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -64,8 +63,6 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
-        val webContext = ctx.webContext();
-
         val samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
         samlContext.setSaml2Configuration(saml2Configuration);
         val peerContext = samlContext.getSAMLPeerEntityContext();
@@ -73,7 +70,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         samlContext.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
-        val decoder = getDecoder(webContext);
+        val decoder = getDecoder(ctx);
 
         val decodedCtx = prepareDecodedContext(samlContext, decoder);
 
@@ -94,12 +91,12 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
         }
     }
 
-    protected AbstractPac4jDecoder getDecoder(final WebContext webContext) {
+    protected AbstractPac4jDecoder getDecoder(final CallContext callContext) {
         final AbstractPac4jDecoder decoder;
-        val artifact = webContext.getRequestParameter("SAMLart");
+        val artifact = callContext.webContext().getRequestParameter("SAMLart");
         // artifact binding
         if (artifact.isPresent()) {
-            decoder = new SAML2ArtifactBindingDecoder(webContext, idpMetadataResolver,
+            decoder = new SAML2ArtifactBindingDecoder(callContext, idpMetadataResolver,
                 spMetadataResolver, soapPipelineProvider);
             try {
                 decoder.setParserPool(Configuration.getParserPool());
@@ -110,8 +107,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
             }
 
         // POST / SOAP binding
-        } else if (WebContextHelper.isPost(webContext)) {
-            decoder = new Pac4jHTTPPostDecoder(webContext);
+        } else if (WebContextHelper.isPost(callContext.webContext())) {
+            decoder = new Pac4jHTTPPostDecoder(callContext);
             try {
                 decoder.setParserPool(Configuration.getParserPool());
                 decoder.initialize();
@@ -122,8 +119,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
             }
 
         // HTTP Redirect binding
-        } else if (WebContextHelper.isGet(webContext)) {
-            decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
+        } else if (WebContextHelper.isGet(callContext.webContext())) {
+            decoder = new Pac4jHTTPRedirectDeflateDecoder(callContext);
 
             try {
                 decoder.setParserPool(Configuration.getParserPool());
@@ -140,7 +137,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     }
 
     protected SAML2MessageContext prepareDecodedContext(final SAML2MessageContext context, final AbstractPac4jDecoder decoder) {
-        val decodedCtx = new SAML2MessageContext();
+        val decodedCtx = new SAML2MessageContext(decoder.getCallContext());
         decodedCtx.setSaml2Configuration(saml2Configuration);
 
         decodedCtx.setMessageContext(decoder.getMessageContext());
@@ -163,7 +160,6 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
         prepareSelfEntityContext(context, decodedCtx);
 
         decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
-        decodedCtx.setCallContext(context.getCallContext());
         return decodedCtx;
     }
 

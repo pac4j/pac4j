@@ -56,7 +56,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     @Override
     public final SAML2MessageContext buildServiceProviderContext(final CallContext ctx, final SAML2Client client) {
-        val context = new SAML2MessageContext();
+        val context = new SAML2MessageContext(ctx);
         context.setSaml2Configuration(client.getConfiguration());
         addTransportContext(ctx.webContext(), ctx.sessionStore(), context);
         addSPContext(context);
@@ -67,7 +67,6 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     public SAML2MessageContext buildContext(final CallContext ctx, final SAML2Client client) {
         val context = buildServiceProviderContext(ctx, client);
         addIDPContext(context);
-        context.setCallContext(ctx);
         return context;
     }
 

@@ -8,7 +8,7 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.binding.impl.SAMLSOAPDecoderBodyHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.soap.soap11.Envelope;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.util.SAML2Utils;
@@ -24,16 +24,16 @@ import java.io.ByteArrayInputStream;
  */
 public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
 
-    public Pac4jHTTPPostDecoder(final WebContext context) {
+    public Pac4jHTTPPostDecoder(final CallContext context) {
         super(context);
     }
 
     @Override
     protected void doDecode() throws MessageDecodingException {
-        val messageContext = new SAML2MessageContext();
+        val messageContext = new SAML2MessageContext(callContext);
 
-        if (WebContextHelper.isPost(context)) {
-            val relayState = this.context.getRequestParameter("RelayState").orElse(null);
+        if (WebContextHelper.isPost(callContext.webContext())) {
+            val relayState = this.callContext.webContext().getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
             val base64DecodedMessage = this.getBase64DecodedMessage();
