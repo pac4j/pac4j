@@ -22,7 +22,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
  * <p>An extended access token can be requested by setting <code>true</code> on the
- * {@link FacebookConfiguration#setRequiresExtendedToken(boolean)} method.</p>
+ * <code>FacebookConfiguration#setRequiresExtendedToken(boolean)</code> method.</p>
  * <p>It returns a {@link FacebookProfile}.</p>
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
