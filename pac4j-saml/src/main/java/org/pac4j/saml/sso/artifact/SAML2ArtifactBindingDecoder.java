@@ -12,7 +12,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.security.SecurityException;
 import org.opensaml.soap.client.http.PipelineFactoryHttpSOAPClient;
 import org.opensaml.soap.common.SOAPException;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.transport.AbstractPac4jDecoder;
@@ -33,8 +33,8 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
 
     private final SOAPPipelineProvider soapPipelineProvider;
 
-    public SAML2ArtifactBindingDecoder(final WebContext context, final SAML2MetadataResolver idpMetadataResolver,
-            final SAML2MetadataResolver spMetadataResolver, final SOAPPipelineProvider soapPipelineProvider) {
+    public SAML2ArtifactBindingDecoder(final CallContext context, final SAML2MetadataResolver idpMetadataResolver,
+                                       final SAML2MetadataResolver spMetadataResolver, final SOAPPipelineProvider soapPipelineProvider) {
         super(context);
         this.idpMetadataResolver = idpMetadataResolver;
         this.spMetadataResolver = spMetadataResolver;
@@ -56,7 +56,7 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
                     idpMetadataResolver.resolve());
             roleResolver.initialize();
 
-            val messageContext = new SAML2MessageContext();
+            val messageContext = new SAML2MessageContext(getCallContext());
 
             val soapClient = new PipelineFactoryHttpSOAPClient() {
                 @SuppressWarnings("rawtypes")
@@ -71,12 +71,12 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
             soapClient.setHttpClient(soapPipelineProvider.getHttpClientBuilder().buildClient());
 
             val artifactDecoder = new Pac4jHTTPArtifactDecoder();
-            artifactDecoder.setWebContext(context);
+            artifactDecoder.setCallContext(callContext);
             artifactDecoder.setSelfEntityIDResolver(new FixedEntityIdResolver(spMetadataResolver));
             artifactDecoder.setRoleDescriptorResolver(roleResolver);
             artifactDecoder.setArtifactEndpointResolver(endpointResolver);
             artifactDecoder.setPeerEntityRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
-            artifactDecoder.setSOAPClient(soapClient);
+            artifactDecoder.setSoapClient(soapClient);
             artifactDecoder.setParserPool(getParserPool());
             artifactDecoder.initialize();
             artifactDecoder.decode();

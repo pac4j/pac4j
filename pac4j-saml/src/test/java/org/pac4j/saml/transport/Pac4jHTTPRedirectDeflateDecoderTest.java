@@ -6,7 +6,9 @@ import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.core.impl.AuthnRequestImpl;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.saml.util.Configuration;
 
 import java.io.StringReader;
@@ -47,7 +49,7 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
         val message = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
 
         webContext.addRequestParameter("SAMLResponse", message);
-        val decoder = new Pac4jHTTPRedirectDeflateDecoder(webContext);
+        val decoder = new Pac4jHTTPRedirectDeflateDecoder(new CallContext(webContext, new MockSessionStore()));
         decoder.setParserPool(Configuration.getParserPool());
         decoder.initialize();
         decoder.decode();

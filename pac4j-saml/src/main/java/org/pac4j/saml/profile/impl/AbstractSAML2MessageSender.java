@@ -1,5 +1,7 @@
 package org.pac4j.saml.profile.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.messaging.context.MessageContext;
@@ -24,8 +26,6 @@ import org.pac4j.saml.transport.Pac4jHTTPPostSimpleSignEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
 import org.pac4j.saml.util.SAML2Utils;
 import org.pac4j.saml.util.VelocityEngineFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Common message sender.
@@ -33,23 +33,13 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 3.4.0
  */
+@RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implements SAML2MessageSender<T> {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
-
     protected final SignatureSigningParametersProvider signatureSigningParametersProvider;
     protected final String destinationBindingType;
     protected final boolean signErrorResponses;
     protected final boolean isRequestSigned;
-
-    public AbstractSAML2MessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
-                                      final String destinationBindingType,
-                                      final boolean signErrorResponses,
-                                      final boolean isRequestSigned) {
-        this.signatureSigningParametersProvider = signatureSigningParametersProvider;
-        this.destinationBindingType = destinationBindingType;
-        this.signErrorResponses = signErrorResponses;
-        this.isRequestSigned = isRequestSigned;
-    }
 
     @Override
     public void sendMessage(final SAML2MessageContext context,
@@ -63,7 +53,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
         val encoder = getMessageEncoder(spDescriptor, idpssoDescriptor, context);
 
-        val outboundContext = new SAML2MessageContext();
+        val outboundContext = new SAML2MessageContext(context.getCallContext());
         outboundContext.setMessageContext(context.getMessageContext());
         outboundContext.getProfileRequestContext().setProfileId(outboundContext.getProfileRequestContext().getProfileId());
 
@@ -133,7 +123,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
 
             if (!destinationBindingType.equals(SAMLConstants.SAML2_REDIRECT_BINDING_URI) &&
                     mustSignRequest(spDescriptor, idpssoDescriptor)) {
-                logger.debug("Signing SAML2 outbound context...");
+                LOGGER.debug("Signing SAML2 outbound context...");
                 val handler = new
                     SAMLOutboundProtocolMessageSigningHandler();
                 handler.setSignErrorResponses(this.signErrorResponses);

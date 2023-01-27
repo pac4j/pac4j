@@ -5,7 +5,7 @@ import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.util.SAML2Utils;
@@ -26,16 +26,16 @@ import java.util.zip.InflaterInputStream;
  */
 public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
-    public Pac4jHTTPRedirectDeflateDecoder(final WebContext context) {
+    public Pac4jHTTPRedirectDeflateDecoder(final CallContext context) {
         super(context);
     }
 
     @Override
     protected void doDecode() throws MessageDecodingException {
-        val messageContext = new SAML2MessageContext();
+        val messageContext = new SAML2MessageContext(callContext);
 
-        if (WebContextHelper.isGet(context)) {
-            val relayState = this.context.getRequestParameter("RelayState").orElse(null);
+        if (WebContextHelper.isGet(callContext.webContext())) {
+            val relayState = this.callContext.webContext().getRequestParameter("RelayState").orElse(null);
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
 
