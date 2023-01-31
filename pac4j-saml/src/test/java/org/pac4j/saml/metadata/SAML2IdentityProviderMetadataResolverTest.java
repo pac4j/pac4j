@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.config.SAML2Configuration;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 
@@ -121,6 +122,20 @@ public class SAML2IdentityProviderMetadataResolverTest {
         var proxy = new Proxy(Proxy.Type.HTTP, addr);
         metadataResolver.setProxy(proxy);
         assertThrows(TechnicalException.class, () -> metadataResolver.internalLoad());
+    }
+
+    @Test
+    public void resolveMetadataFromByteArray() throws Exception {
+        var configuration = new SAML2Configuration();
+        configuration.setIdentityProviderMetadataResource(
+                new ByteArrayResource(new ClassPathResource("idp-metadata.xml").getInputStream().readAllBytes()));
+        metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
+
+        var resolver = metadataResolver.resolve();
+        assertNotNull(resolver);
+
+        assertFalse(metadataResolver.hasChanged());
+        assertNotNull(metadataResolver.load());
     }
 
     @Test

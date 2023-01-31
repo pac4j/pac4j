@@ -1,10 +1,12 @@
 package org.pac4j.core.resource;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.util.InitializableObject;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,6 +23,7 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
     private static final long NO_LAST_MODIFIED = -1;
 
     private final ReentrantLock lock = new ReentrantLock();
+    private final AtomicBoolean byteArrayHasChanged = new AtomicBoolean(true);
     @Getter
     private long lastModified = NO_LAST_MODIFIED;
 
@@ -48,6 +51,10 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
 
     public boolean hasChanged() {
         if (resource != null) {
+            if (resource instanceof ByteArrayResource) {
+                return byteArrayHasChanged.getAndSet(false);
+            }
+
             long newLastModified;
             try {
                 newLastModified = resource.lastModified();
