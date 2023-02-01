@@ -25,6 +25,7 @@ title: Release notes&#58;
   - Add a new `processLogout` method based on the `LogoutProcessor` component
 - Renamed the `LogoutHandler` as `SessionLogoutHandler`
 - Created the `SpringResourceLoader` for OIDC/SAML metadata loading: for the OIDC support, the `discoveryURI` can use the "file:", "classpath:" or "resource:" prefix in addition to HTTP/HTTPS URLs
+- The `DefaultSessionLogoutHandler` smartly tries a front channel logout and then a back channel logout
 
 ---
 
