@@ -66,31 +66,57 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
     }
 
     @Override
-    public void destroySessionFront(final CallContext ctx, final String key) {
+    public void destroySession(final CallContext ctx, final String key) {
+        val webContext = ctx.webContext();
         val sessionStore = ctx.sessionStore();
 
+        val optTrackableSession = store.get(key);
+        if (optTrackableSession.isPresent()) {
+            store.remove(key);
+        }
+
         if (sessionStore == null) {
-            LOGGER.error("No session store available for this web context");
-        } else {
-            val optCurrentSessionId = sessionStore.getSessionId(ctx.webContext(), false);
+            LOGGER.warn("No session store. Cannot destroy session");
+            return;
+        }
 
-            if (optCurrentSessionId.isPresent()) {
-                store.remove(key);
-                val currentSessionId = optCurrentSessionId.get();
-                LOGGER.debug("currentSessionId: {}", currentSessionId);
-                val sessionToKey = (String) store.get(currentSessionId).orElse(null);
-                LOGGER.debug("-> key: {}", key);
-                store.remove(currentSessionId);
+        val optCurrentSessionId = sessionStore.getSessionId(ctx.webContext(), false);
+        if (optCurrentSessionId.isPresent()) {
 
-                if (CommonHelper.areEquals(key, sessionToKey)) {
-                    destroy(ctx.webContext(), sessionStore, ctx.profileManagerFactory(), "front");
-                } else {
-                    LOGGER.error("The user profiles (and session) can not be destroyed for the front channel logout because the provided "
-                        + "key is not the same as the one linked to the current session");
-                }
+            val currentSessionId = optCurrentSessionId.get();
+            LOGGER.debug("current sessionId: {}", currentSessionId);
+            val keyForCurrentSession = (String) store.get(currentSessionId).orElse(null);
+            LOGGER.debug("key associated to the current session: {}", key);
+            store.remove(currentSessionId);
+
+            if (CommonHelper.areEquals(key, keyForCurrentSession)) {
+                destroy(webContext, sessionStore, ctx.profileManagerFactory(), "front");
+                return;
             } else {
-                LOGGER.warn("no session for front channel logout => trying back channel logout");
-                destroySessionBack(ctx, key);
+                LOGGER.debug("Unknown (new) web session: cannot perform front channel logout");
+            }
+        } else {
+            LOGGER.debug("No web session: cannot perform front channel logout");
+        }
+
+        LOGGER.debug("TrackableSession: {} for key: {}", optTrackableSession, key);
+        if (!optTrackableSession.isPresent()) {
+            LOGGER.warn("No trackable session: cannot perform back channel logout");
+        } else {
+
+            val optNewSessionStore = sessionStore
+                .buildFromTrackableSession(webContext, optTrackableSession.get());
+            if (optNewSessionStore.isPresent()) {
+                val newSessionStore = optNewSessionStore.get();
+                LOGGER.debug("newSesionStore: {}", newSessionStore);
+                val sessionId = newSessionStore.getSessionId(webContext, true).get();
+                LOGGER.debug("new sessionId: {}", sessionId);
+                store.remove(sessionId);
+
+                destroy(webContext, newSessionStore, ctx.profileManagerFactory(), "back");
+                return;
+            } else {
+                LOGGER.warn("Cannot build new session store from tracked session: cannot perform back channel logout");
             }
         }
     }
@@ -107,40 +133,6 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
             val invalidated = sessionStore.destroySession(webContext);
             if (!invalidated) {
                 LOGGER.error("The session has not been invalidated");
-            }
-        }
-    }
-
-    @Override
-    public void destroySessionBack(final CallContext ctx, final String key) {
-        val webContext = ctx.webContext();
-        val sessionStore = ctx.sessionStore();
-
-        val optTrackableSession = store.get(key);
-        LOGGER.debug("key: {} -> trackableSession: {}", key, optTrackableSession);
-        if (!optTrackableSession.isPresent()) {
-            LOGGER.error("No trackable session found for back channel logout. Either the session store does not support to track session "
-                + "or it has expired from the store and the store settings must be updated (expired data)");
-        } else {
-            store.remove(key);
-
-            // renew context with the original session store
-            if (sessionStore == null) {
-                LOGGER.error("No session store available for this web context");
-            } else {
-                val optNewSessionStore = sessionStore
-                    .buildFromTrackableSession(webContext, optTrackableSession.get());
-                if (optNewSessionStore.isPresent()) {
-                    val newSessionStore = optNewSessionStore.get();
-                    LOGGER.debug("newSesionStore: {}", newSessionStore);
-                    val sessionId = newSessionStore.getSessionId(webContext, true).get();
-                    LOGGER.debug("remove sessionId: {}", sessionId);
-                    store.remove(sessionId);
-
-                    destroy(webContext, newSessionStore, ctx.profileManagerFactory(), "back");
-                } else {
-                    LOGGER.error("The session store should be able to build a new session store from the tracked session");
-                }
             }
         }
     }

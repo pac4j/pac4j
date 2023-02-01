@@ -45,13 +45,13 @@ public class CasLogoutProcessor implements LogoutProcessor {
 
         if (credentials.getLogoutType() == LogoutType.BACK) {
             if (isNotBlank(sessionKey)) {
-                logoutHandler.destroySessionBack(ctx, sessionKey);
+                logoutHandler.destroySession(ctx, sessionKey);
             }
             LOGGER.debug("back logout: no content returned");
             return NoContentAction.INSTANCE;
         } else {
             if (isNotBlank(sessionKey)) {
-                logoutHandler.destroySessionFront(ctx, sessionKey);
+                logoutHandler.destroySession(ctx, sessionKey);
             }
             val action = getFinalActionForFrontChannelLogout(ctx.webContext());
             LOGGER.debug("front logout, returning: {}", action);

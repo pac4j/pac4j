@@ -24,22 +24,12 @@ public interface SessionLogoutHandler {
     }
 
     /**
-     * Destroys the current web session for the given key for a front channel logout.
+     * Destroys the current web session for the given key for a front or back channel logout.
      *
      * @param ctx the context
      * @param key the key
      */
-    default void destroySessionFront(CallContext ctx, String key) {
-        // do nothing by default
-    }
-
-    /**
-     * Destroys the current web session for the given key for a back channel logout.
-     *
-     * @param ctx the context
-     * @param key the key
-     */
-    default void destroySessionBack(CallContext ctx, String key) {
+    default void destroySession(CallContext ctx, String key) {
         // do nothing by default
     }
 

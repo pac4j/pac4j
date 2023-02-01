@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.core.Status;
@@ -120,13 +119,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
         val sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null) {
-            val bindingUri = context.getSAMLBindingContext().getBindingUri();
-            logger.debug("Using SLO key {} as the session index with the binding uri {}", sloKey, bindingUri);
-            if (SAMLConstants.SAML2_SOAP11_BINDING_URI.equals(bindingUri)) {
-                logoutHandler.destroySessionBack(context.getCallContext(), sloKey);
-            } else {
-                logoutHandler.destroySessionFront(context.getCallContext(), sloKey);
-            }
+            logoutHandler.destroySession(context.getCallContext(), sloKey);
         }
     }
 

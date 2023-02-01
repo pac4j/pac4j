@@ -6,7 +6,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.logout.processor.LogoutProcessor;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -36,11 +35,7 @@ public class OidcLogoutProcessor implements LogoutProcessor {
         val sessionKey = credentials.getSessionKey();
 
         val sessionLogoutHandler = configuration.findSessionLogoutHandler();
-        if (credentials.getLogoutType() == LogoutType.BACK) {
-            sessionLogoutHandler.destroySessionBack(ctx, sessionKey);
-        } else {
-            sessionLogoutHandler.destroySessionFront(ctx, sessionKey);
-        }
+        sessionLogoutHandler.destroySession(ctx, sessionKey);
 
         val webContext = ctx.webContext();
         webContext.setResponseHeader("Cache-Control", "no-cache, no-store");

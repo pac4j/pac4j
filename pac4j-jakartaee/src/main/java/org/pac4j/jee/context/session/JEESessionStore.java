@@ -1,6 +1,7 @@
 package org.pac4j.jee.context.session;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @since 1.8.1
  */
 @Slf4j
+@ToString
 public class JEESessionStore implements SessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();
