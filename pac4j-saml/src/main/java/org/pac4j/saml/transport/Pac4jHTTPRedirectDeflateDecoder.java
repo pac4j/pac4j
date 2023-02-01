@@ -61,7 +61,8 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
                 // deflate compression only
                 return internalInflate(input, new Inflater());
             } catch (final IOException e2) {
-                throw new MessageDecodingException("Cannot decode message", e2);
+                logger.warn("Cannot inflate message, returning it as is");
+                return new ByteArrayInputStream(input);
             }
         }
     }
