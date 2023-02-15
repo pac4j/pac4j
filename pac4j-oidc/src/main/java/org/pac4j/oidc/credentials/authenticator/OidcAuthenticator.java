@@ -94,13 +94,13 @@ public class OidcAuthenticator implements Authenticator {
                 final var _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretBasic(_clientID, _secret);
             } else if (ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(chosenMethod)) {
-                final var privateKetJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
-                assertNotNull("privateKetJwtConfig", privateKetJwtConfig);
-                final var jwsAlgo = privateKetJwtConfig.getJwsAlgorithm();
-                assertNotNull("privateKetJwtConfig.getJwsAlgorithm()", jwsAlgo);
-                final var privateKey = privateKetJwtConfig.getPrivateKey();
-                assertNotNull("privateKetJwtConfig.getPrivateKey()", privateKey);
-                final var keyID = privateKetJwtConfig.getKeyID();
+                final var privateKeyJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
+                assertNotNull("privateKeyJwtConfig", privateKeyJwtConfig);
+                final var jwsAlgo = privateKeyJwtConfig.getJwsAlgorithm();
+                assertNotNull("privateKeyJwtConfig.getJwsAlgorithm()", jwsAlgo);
+                final var privateKey = privateKeyJwtConfig.getPrivateKey();
+                assertNotNull("privateKeyJwtConfig.getPrivateKey()", privateKey);
+                final var keyID = privateKeyJwtConfig.getKeyID();
                 try {
                     clientAuthentication = new PrivateKeyJWT(_clientID, configuration.findProviderMetadata().getTokenEndpointURI(),
                         jwsAlgo, privateKey, keyID, null);
