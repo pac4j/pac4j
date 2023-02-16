@@ -130,13 +130,13 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
                 val _secret = new Secret(configuration.getSecret());
                 return new ClientSecretBasic(_clientID, _secret);
             } else if (ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(chosenMethod)) {
-                val privateKetJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
-                assertNotNull("privateKetJwtConfig", privateKetJwtConfig);
-                val jwsAlgo = privateKetJwtConfig.getJwsAlgorithm();
-                assertNotNull("privateKetJwtConfig.getJwsAlgorithm()", jwsAlgo);
-                val privateKey = privateKetJwtConfig.getPrivateKey();
-                assertNotNull("privateKetJwtConfig.getPrivateKey()", privateKey);
-                val keyID = privateKetJwtConfig.getKeyID();
+                val privateKeyJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
+                assertNotNull("privateKeyJwtConfig", privateKeyJwtConfig);
+                val jwsAlgo = privateKeyJwtConfig.getJwsAlgorithm();
+                assertNotNull("privateKeyJwtConfig.getJwsAlgorithm()", jwsAlgo);
+                val privateKey = privateKeyJwtConfig.getPrivateKey();
+                assertNotNull("privateKeyJwtConfig.getPrivateKey()", privateKey);
+                val keyID = privateKeyJwtConfig.getKeyID();
                 try {
                     return new PrivateKeyJWT(_clientID, this.loaded.getTokenEndpointURI(), jwsAlgo, privateKey, keyID, null);
                 } catch (final JOSEException e) {
