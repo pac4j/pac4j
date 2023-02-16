@@ -7,6 +7,7 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
+import java.util.Set;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -61,23 +62,24 @@ public class OidcAuthenticator implements Authenticator {
 
         if (configuration.getSecret() != null) {
             // check authentication methods
-            final var metadataMethods = configuration.findProviderMetadata()
+            final var serverSupportedAuthMethods = configuration.findProviderMetadata()
                 .getTokenEndpointAuthMethods();
 
             final var preferredMethod = getPreferredAuthenticationMethod(configuration);
 
             final ClientAuthenticationMethod chosenMethod;
-            if (isNotEmpty(metadataMethods)) {
+            if (isNotEmpty(serverSupportedAuthMethods)) {
                 if (preferredMethod != null) {
-                    if (metadataMethods.contains(preferredMethod)) {
+                    if (serverSupportedAuthMethods.contains(preferredMethod)) {
                         chosenMethod = preferredMethod;
                     } else {
                         throw new TechnicalException(
                             "Preferred authentication method (" + preferredMethod + ") not supported "
-                                + "by provider according to provider metadata (" + metadataMethods + ").");
+                                + "by provider according to provider metadata (" + serverSupportedAuthMethods + ").");
                     }
                 } else {
-                    chosenMethod = firstSupportedMethod(metadataMethods);
+                    chosenMethod = firstSupportedMethod(serverSupportedAuthMethods,
+                        configuration.getSupportedClientAuthenticationMethods());
                 }
             } else {
                 chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
@@ -92,13 +94,13 @@ public class OidcAuthenticator implements Authenticator {
                 final var _secret = new Secret(configuration.getSecret());
                 clientAuthentication = new ClientSecretBasic(_clientID, _secret);
             } else if (ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(chosenMethod)) {
-                final var privateKetJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
-                assertNotNull("privateKetJwtConfig", privateKetJwtConfig);
-                final var jwsAlgo = privateKetJwtConfig.getJwsAlgorithm();
-                assertNotNull("privateKetJwtConfig.getJwsAlgorithm()", jwsAlgo);
-                final var privateKey = privateKetJwtConfig.getPrivateKey();
-                assertNotNull("privateKetJwtConfig.getPrivateKey()", privateKey);
-                final var keyID = privateKetJwtConfig.getKeyID();
+                final var privateKeyJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
+                assertNotNull("privateKeyJwtConfig", privateKeyJwtConfig);
+                final var jwsAlgo = privateKeyJwtConfig.getJwsAlgorithm();
+                assertNotNull("privateKeyJwtConfig.getJwsAlgorithm()", jwsAlgo);
+                final var privateKey = privateKeyJwtConfig.getPrivateKey();
+                assertNotNull("privateKeyJwtConfig.getPrivateKey()", privateKey);
+                final var keyID = privateKeyJwtConfig.getKeyID();
                 try {
                     clientAuthentication = new PrivateKeyJWT(_clientID, configuration.findProviderMetadata().getTokenEndpointURI(),
                         jwsAlgo, privateKey, keyID, null);
@@ -112,9 +114,8 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     /**
-     * The preferred {@link ClientAuthenticationMethod} specified in the given
-     * {@link OidcConfiguration}, or <code>null</code> meaning that the a
-     * provider-supported method should be chosen.
+     * The preferred {@link ClientAuthenticationMethod} specified in the given {@link OidcConfiguration}, or <code>null</code> meaning that
+     * the a provider-supported method should be chosen.
      */
     private static ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
         final var configurationMethod = config.getClientAuthenticationMethod();
@@ -130,19 +131,22 @@ public class OidcAuthenticator implements Authenticator {
     }
 
     /**
-     * The first {@link ClientAuthenticationMethod} from the given list of
-     * methods that is supported by this implementation.
+     * The first {@link ClientAuthenticationMethod} from the given list of methods that is supported by this implementation.
      *
      * @throws TechnicalException if none of the provider-supported methods is supported.
      */
-    private static ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
+    private static ClientAuthenticationMethod firstSupportedMethod(
+        final List<ClientAuthenticationMethod> serverSupportedAuthMethods,
+        Set<ClientAuthenticationMethod> clientSupportedAuthMethods) {
+        Collection<ClientAuthenticationMethod> supportedMethods =
+            clientSupportedAuthMethods != null ? clientSupportedAuthMethods : SUPPORTED_METHODS;
         var firstSupported =
-            metadataMethods.stream().filter(SUPPORTED_METHODS::contains).findFirst();
+            serverSupportedAuthMethods.stream().filter(supportedMethods::contains).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
         } else {
             throw new TechnicalException("None of the Token endpoint provider metadata authentication methods are supported: " +
-                metadataMethods);
+                serverSupportedAuthMethods);
         }
     }
 
