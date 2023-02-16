@@ -6,6 +6,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -99,22 +100,22 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
         if (configuration.getSecret() != null) {
             // check authentication methods
-            val metadataMethods = this.loaded.getTokenEndpointAuthMethods();
-
+            val serverSupportedAuthMethods = this.loaded.getTokenEndpointAuthMethods();
             val preferredMethod = getPreferredAuthenticationMethod(configuration);
 
             final ClientAuthenticationMethod chosenMethod;
-            if (isNotEmpty(metadataMethods)) {
+            if (isNotEmpty(serverSupportedAuthMethods)) {
                 if (preferredMethod != null) {
-                    if (metadataMethods.contains(preferredMethod)) {
+                    if (serverSupportedAuthMethods.contains(preferredMethod)) {
                         chosenMethod = preferredMethod;
                     } else {
                         throw new TechnicalException(
                             "Preferred authentication method (" + preferredMethod + ") not supported "
-                                + "by provider according to provider metadata (" + metadataMethods + ").");
+                                + "by provider according to provider metadata (" + serverSupportedAuthMethods + ").");
                     }
                 } else {
-                    chosenMethod = firstSupportedMethod(metadataMethods);
+                    chosenMethod = firstSupportedMethod(serverSupportedAuthMethods,
+                        configuration.getSupportedClientAuthenticationMethods());
                 }
             } else {
                 chosenMethod = preferredMethod != null ? preferredMethod : ClientAuthenticationMethod.getDefault();
@@ -161,14 +162,18 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         return configurationMethod;
     }
 
-    private ClientAuthenticationMethod firstSupportedMethod(final List<ClientAuthenticationMethod> metadataMethods) {
+    private static ClientAuthenticationMethod firstSupportedMethod(
+        final List<ClientAuthenticationMethod> serverSupportedAuthMethods,
+        Set<ClientAuthenticationMethod> clientSupportedAuthMethods) {
+        Collection<ClientAuthenticationMethod> supportedMethods =
+            clientSupportedAuthMethods != null ? clientSupportedAuthMethods : SUPPORTED_METHODS;
         var firstSupported =
-            metadataMethods.stream().filter(SUPPORTED_METHODS::contains).findFirst();
+            serverSupportedAuthMethods.stream().filter(supportedMethods::contains).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
         } else {
             throw new TechnicalException("None of the Token endpoint provider metadata authentication methods are supported: " +
-                metadataMethods);
+                serverSupportedAuthMethods);
         }
     }
 }
