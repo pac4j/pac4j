@@ -16,6 +16,10 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 
+/**
+ * @author Mathias Loesch
+ * @since 5.7.1
+ */
 public class OidcAuthenticatorTest {
 
 
