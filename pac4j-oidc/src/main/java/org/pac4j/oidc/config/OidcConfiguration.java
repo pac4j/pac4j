@@ -91,6 +91,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* client authentication method used at token End Point */
     private ClientAuthenticationMethod clientAuthenticationMethod;
 
+    /* Optional list of authentication methods supported by the client */
+    private Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods;
+
     /* The private key JWT client authentication method configuration */
     private PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig;
 
@@ -217,6 +220,15 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public void setClientAuthenticationMethodAsString(final String auth) {
         this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
+    }
+
+    public Set<ClientAuthenticationMethod> getSupportedClientAuthenticationMethods() {
+        return supportedClientAuthenticationMethods;
+    }
+
+    public void setSupportedClientAuthenticationMethods(
+        Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods) {
+        this.supportedClientAuthenticationMethods = supportedClientAuthenticationMethods;
     }
 
     public CodeChallengeMethod findPkceMethod() {
