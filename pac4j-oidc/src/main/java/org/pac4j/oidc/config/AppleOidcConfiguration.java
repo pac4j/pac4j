@@ -13,10 +13,10 @@ import com.nimbusds.openid.connect.sdk.SubjectType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.metadata.StaticOidcOpMetadataResolver;
 
 import java.net.URI;
@@ -122,7 +122,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
             signer = new ECDSASigner(privateKey);
             signedJWT.sign(signer);
         } catch (JOSEException e) {
-            throw new TechnicalException(e);
+            throw new OidcException(e);
         }
         var secret = signedJWT.serialize();
         if (store != null) {
