@@ -45,6 +45,9 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
         this.setResponseType(oidcConfiguration.getResponseType());
         this.setResponseMode(oidcConfiguration.getResponseMode());
         this.setLogoutUrl(oidcConfiguration.getLogoutUrl());
+        if (oidcConfiguration instanceof AzureAd2OidcConfiguration azureAd2OidcConfiguration) {
+            this.setTenant(azureAd2OidcConfiguration.getTenant());
+        }
     }
 
     @Override
