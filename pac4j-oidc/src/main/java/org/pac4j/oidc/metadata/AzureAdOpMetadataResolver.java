@@ -21,6 +21,8 @@ public class AzureAdOpMetadataResolver extends OidcOpMetadataResolver {
     protected void internalLoad() {
         this.loaded = retrieveMetadata();
 
+        this.clientAuthentication = computeClientAuthentication();
+
         this.tokenValidator = new AzureAdTokenValidator(configuration, this.loaded);
     }
 }
