@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.pac4j.oidc.exceptions.OidcException;
 
 /**
  * Redirect to the OpenID Connect provider.
@@ -121,7 +121,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
             queryString = AuthenticationRequest.parse(parameters).toQueryString();
             queryString = queryString.replaceAll("\\+", "%20");
         } catch (final Exception e) {
-            throw new TechnicalException(e);
+            throw new OidcException(e);
         }
         return client.getConfiguration().getOpMetadataResolver().load().getAuthorizationEndpointURI().toString() + '?' + queryString;
     }

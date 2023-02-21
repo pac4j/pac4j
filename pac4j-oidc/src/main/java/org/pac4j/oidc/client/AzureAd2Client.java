@@ -4,12 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.PathParameterCallbackUrlResolver;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
 import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
+import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.exceptions.OidcTokenException;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
@@ -77,13 +78,13 @@ public class AzureAd2Client extends OidcClient {
 
             val responseCode = connection.getResponseCode();
             if (responseCode != 200) {
-                throw new TechnicalException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
+                throw new OidcTokenException("request for access token failed: " + HttpUtils.buildHttpErrorMessage(connection));
             }
             var body = HttpUtils.readBody(connection);
             final Map<String, Object> res = objectMapper.readValue(body, typeRef);
             return (String) res.get("access_token");
         } catch (final IOException e) {
-            throw new TechnicalException(e);
+            throw new OidcException(e);
         } finally {
             HttpUtils.closeConnection(connection);
         }

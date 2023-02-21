@@ -14,7 +14,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.util.CommonHelper;
@@ -26,6 +25,11 @@ import org.pac4j.oidc.credentials.OidcCredentials;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.exceptions.OidcIssuerMismatchException;
+import org.pac4j.oidc.exceptions.OidcMissingSessionStateException;
+import org.pac4j.oidc.exceptions.OidcMissingStateParameterException;
+import org.pac4j.oidc.exceptions.OidcStateMismatchException;
 
 /**
  * Extract the OIDC credentials.
@@ -82,7 +86,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             try {
                 response = AuthenticationResponseParser.parse(new URI(computedCallbackUrl), parameters);
             } catch (final URISyntaxException | ParseException e) {
-                throw new TechnicalException(e);
+                throw new OidcException(e);
             }
 
             if (response instanceof AuthenticationErrorResponse) {
@@ -97,23 +101,23 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             var metadata = configuration.getOpMetadataResolver().load();
             if (metadata.supportsAuthorizationResponseIssuerParam() &&
                 !metadata.getIssuer().equals(successResponse.getIssuer())) {
-                throw new TechnicalException("Issuer mismatch, possible mix-up attack.");
+                throw new OidcIssuerMismatchException("Issuer mismatch, possible mix-up attack.");
             }
 
             if (configuration.isWithState()) {
                 // Validate state for CSRF mitigation
                 val requestState = (State) configuration.getValueRetriever()
                     .retrieve(ctx, client.getStateSessionAttributeName(), client)
-                    .orElseThrow(() -> new TechnicalException("State cannot be determined"));
+                    .orElseThrow(() -> new OidcMissingSessionStateException("State cannot be determined"));
 
                 val responseState = successResponse.getState();
                 if (responseState == null) {
-                    throw new TechnicalException("Missing state parameter");
+                    throw new OidcMissingStateParameterException("Missing state parameter");
                 }
 
                 LOGGER.debug("Request state: {}/response state: {}", requestState, responseState);
                 if (!requestState.equals(responseState)) {
-                    throw new TechnicalException(
+                    throw new OidcStateMismatchException(
                         "State parameter is different from the one sent in authentication request.");
                 }
             }
