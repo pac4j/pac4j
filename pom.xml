@@ -69,7 +69,7 @@
 		<commons-io.version>2.11.0</commons-io.version>
 		<commons-lang3.version>3.12.0</commons-lang3.version>
 		<guava.version>31.1-jre</guava.version>
-		<nimbus-jose-jwt.version>9.30.2</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
 		<spring.version>6.0.5</spring.version>
 		<spring.security.version>6.0.2</spring.security.version>
 		<shiro.version>1.11.0</shiro.version>

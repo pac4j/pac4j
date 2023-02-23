@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.saml.config.SAML2Configuration;

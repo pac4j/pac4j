@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.shibboleth.shared.net.URIComparator;
 import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.HttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.Issuer;

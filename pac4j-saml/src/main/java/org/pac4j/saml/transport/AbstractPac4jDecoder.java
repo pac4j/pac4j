@@ -9,7 +9,7 @@ import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.logic.Constraint;
 import net.shibboleth.shared.xml.ParserPool;
 import net.shibboleth.shared.xml.XMLParserException;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.hc.core5.net.URLEncodedUtils;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;

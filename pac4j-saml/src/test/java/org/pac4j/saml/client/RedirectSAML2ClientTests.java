@@ -1,7 +1,7 @@
 package org.pac4j.saml.client;
 
 import lombok.val;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.hc.core5.net.URLEncodedUtils;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;

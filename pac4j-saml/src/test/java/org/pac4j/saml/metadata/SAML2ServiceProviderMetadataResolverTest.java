@@ -3,7 +3,7 @@ package org.pac4j.saml.metadata;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.SAML2HttpClientBuilder;
