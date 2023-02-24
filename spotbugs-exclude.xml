@@ -54,5 +54,22 @@
         <Class name="~.*SAML2ClientConfiguration"/>
         <Bug code="REC" />
     </Match>
-
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
+    <Match>
+        <Class name="~.*ProfileHelper"/>
+        <Bug pattern="EI_EXPOSE_STATIC_REP2" />
+    </Match>
+    <Match>
+        <Class name="~.*ProfileHelper"/>
+        <Bug pattern="MS_EXPOSE_REP" />
+    </Match>
+    <Match>
+        <Class name="~.*JsonHelper"/>
+        <Bug pattern="MS_EXPOSE_REP" />
+    </Match>
 </FindBugsFilter>
